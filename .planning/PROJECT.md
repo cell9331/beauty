@@ -18,7 +18,14 @@ The project owner's local iOS host can integrate `BeautySDK` and get natural,
 controllable, real-time and still-image beauty processing through a stable
 modular facade without distributing the SDK or its model resources.
 
-## Current Milestone: v1.19 Genuine Upper-Eyelid Fullness Promotion
+## Deferred Milestone: v1.19 Genuine Upper-Eyelid Fullness Promotion
+
+**Status:** Canceled by the project owner on 2026-08-25 before data/model
+Plans 80-21 and 80-22. Existing experimental code and completed evidence are
+retained unchanged, but no training, qualification, public activation, or
+follow-on phase is active. `去脂` remains `future`, `眼睛` remains `partial`,
+and the public SDK inventory remains exactly 61 fields / five presets / 74
+renderer cases.
 
 **Goal:** Deliver a directly callable owner-local, positive-only opaque still-image
 upper-eyelid-fullness-reduction SDK control only after genuine authorized
@@ -106,16 +113,12 @@ and `眼睛 = partial`.
 completed 2026-08-22 as an SDK-only failed-productization decision with exact
 public absence. It is not a shipping, launch, or release-readiness claim.
 **Latest historical UI milestone:** v1.1 Meitu UI on 2026-06-24, retained only as archived evidence.
-**Current work:** v1.19 has terminated four hand-authored candidates, adopted
-the learned hybrid decision, quarantined the failed implementation under
-explicit experimental names, and verified a strict package-only prediction
-boundary whose no-model state emits no proposal. The owner-only policy removes
-compiled-weight redistribution as a gate and allows license-compatible
-non-commercial research corpora to enter an isolated local pretraining path.
-Training still requires exact upper-eyelid-fullness targets, identity-disjoint
-splits, actual-use authorization, a fresh frozen private qualification, and
-blinded review; owner-local public implementation is forbidden until those
-quality gates pass.
+**Current work:** No `去脂` work is active. v1.19 terminated four hand-authored
+candidates, retained them under explicit experimental names, and verified a
+strict package-only prediction boundary whose no-model state emits no proposal.
+The owner then canceled dataset admission, exact-target authoring, training,
+Core ML conversion, qualification, and public activation. A future explicit
+milestone must reauthorize the work and revalidate all evidence gates.
 
 **Implementation state:** v1.16 froze the current CPU renderer as the reference backend, added generated CPU oracles, a public-only SwiftPM consumer, the SDK-owned renderer CLI, and conditional `BeautyResult` sendability. v1.17 added the package-only backend-neutral boundary, bounded Metal runtime and feature passes, public `.cpu`/`.gpu` configuration with typed unavailable-GPU failure, and generated CPU/GPU parity gates. v1.18 added package-only per-eye semantic support, bounded tone/frequency editor mechanics, frozen private-evidence tooling, and fail-closed decision/absence gates while preserving the 61-field/five-preset/74-case public surface. Historical application taxonomy remains archive-only.
 
@@ -637,9 +640,9 @@ The verified SDK-only slice implements exactly `大小`, `宽度`, and `微笑`.
 
 Current and future milestone sequence:
 
-- **Next milestone:** not yet selected. A `去脂` promotion retry is eligible
-  only with a newly supplied complete rights-approved genuine bundle and
-  blinded review; otherwise preserve exact public absence.
+- **Next milestone:** not yet selected. `去脂` is explicitly deferred; a retry
+  requires a new owner decision and milestone plus suitable data, a qualified
+  method, a complete rights-approved genuine bundle, and blinded review.
 - **Future Hairline and Semantic Masking:** approved local semantic-region foundation plus `发际线`.
 - **Future Double-Chin and Facial-Feature Closeout:** `去双下巴`, `去双下巴 Pro`, and a later narrow taxonomy audit.
 - **Other shaping groups:** `比例` and `3D塑颜` remain outside this narrow facial-feature sequence.
@@ -729,18 +732,18 @@ Current visual reference contracts:
   realtime/pixel-buffer, UI/Demo, restricted external weights, tracked portrait
   media, medical claims, mandatory physical-device gates, commercial approval,
   packaging, shipping, launch, and release readiness remain excluded.
-- **v1.19 scope boundary:** v1.19 may add one public positive-only opaque
-  still-image `upperEyelidFullnessReduction` control only after a complete
-  rights-approved genuine bundle and blinded original-detail human review pass
-  their frozen gates. Generated fixtures, landmarks, `upperEyelidLift`, warp,
-  smoothing, or borrowed sibling evidence cannot authorize promotion.
+- **v1.19 scope boundary:** v1.19 was canceled on 2026-08-25 without a public
+  `upperEyelidFullnessReduction` control. Plans 80-21/22 and Phases 81-84 are
+  unexecuted; exact 61/5/74 absence and `去脂 = future` are final for this
+  milestone. Retained experimental code authorizes no effect or efficacy claim.
 
 ## Key Decisions
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
+| Cancel v1.19 and defer `去脂`, retaining current experimental code. | The owner chose not to continue the data/target/training burden for this effect. Retaining the quarantined mechanics preserves research value without presenting a failed heuristic or absent model as a usable SDK capability. | Effective 2026-08-25: Plans 80-21/22 and Phases 81-84 are canceled unexecuted; no public field/resource/route exists; `去脂` stays future and existing teeth/sclera controls are unchanged. |
 | Keep `BeautySDK` owner-only and non-distributed. | The owner explicitly does not provide the SDK to others or publish it. Swift `public` remains necessary for the owner's local host and compatibility tests, but external package/binary/model/weight/customer/App Store release is not a product goal. | Active from 2026-08-25: actual-use licensing replaces redistribution rights as the current model gate; research-only sources remain in a non-commercial lane, and any future distribution change requires a new full audit. |
-| Reopen upper-eyelid-fullness promotion as v1.19, evidence first. | The user explicitly authorized a new automatic milestone, while the v1.18 re-audit proved all code/actionable seams are ready and isolated the remaining blocker to genuine evidence and human review. | Pending: public implementation remains closed until the Phase-80 evidence decision passes. |
+| Reopen upper-eyelid-fullness promotion as v1.19, evidence first. | The user explicitly authorized a new automatic milestone, while the v1.18 re-audit proved all code/actionable seams are ready and isolated the remaining blocker to genuine evidence and human review. | Historical and superseded on 2026-08-25 by the cancellation decision above. |
 | Make v1.18 a conditional-productization milestone for still-image upper-eyelid fullness reduction. | Research found no production-ready public `去脂` model; the deterministic tone/frequency spike preserved texture and containment but lacked a genuine positive, while the tested warp lost texture without clearer semantic benefit. | Verified 2026-08-22 on the failing branch: `mechanics-only-not-promotion`, exact 61/5/74 absence, `去脂 = future`, and `眼睛 = partial`. |
 | Split the next work into non-Metal v1.16 and Metal v1.17. | Repository/API/test cleanup and CPU reference capture should stabilize the SDK boundary before a new GPU implementation changes render execution. | Queued: v1.16 Phases 66-69, then v1.17 Phases 70-74. |
 | Preserve both CPU and GPU render backends; select them through `BeautyConfiguration`, not `BeautyParameters`. | CPU is the current verified implementation and strongest parity oracle. Backend choice is execution policy, while beauty strengths/presets must remain backend-independent and compatibility-stable. | Planned: public `BeautyRenderBackend.cpu/gpu` arrives only after complete GPU coverage; default and legacy decode are `.cpu`, explicit unavailable `.gpu` fails without silent fallback. |

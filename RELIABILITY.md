@@ -471,6 +471,12 @@ efficacy and naturalness remain pending the separately frozen private gate.
 
 ## v1.19 Learned Upper-Eyelid Reliability Contract
 
+The owner canceled this runtime path on 2026-08-25. No predictor or model
+resource will be registered in v1.19; the existing package-only validator stays
+fail-closed and experimental code remains unreachable from the public facade.
+The remaining contract is retained only for a separately authorized future
+milestone.
+
 The candidate-v4 private matrix invalidated its generated reliability premise:
 repeatable genuine runs failed applicability, boundary continuity, and minimum
 relief before review. No v5 threshold retune is allowed. The replacement seam

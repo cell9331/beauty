@@ -317,6 +317,11 @@ and semantic analyzer as experimental and makes the new model owner unavailable
 by default. This is a product correction: a safe no-op is preferable to showing
 another dark patch while the rights-approved learned model does not yet exist.
 
+On 2026-08-25 the owner canceled the remaining `去脂` work. This is a deliberate
+future deferral, not a blocker: the experimental code stays package-only, no
+model or public control will be added, and the independently completed
+`teethWhitening` and `scleraRednessReduction` still-image journeys are unchanged.
+
 This branch is accepted only on SDK-owned evidence: exact public absence,
 canonical extent/orientation/mirror and named-sRGB metadata preservation,
 alpha and request-local failure isolation, CPU-reference authority, explicit

@@ -1,14 +1,23 @@
-# Roadmap: Beauty v1.19 Genuine Upper-Eyelid Fullness Promotion
+# Roadmap: Beauty v1.19 Genuine Upper-Eyelid Fullness Promotion (Canceled)
 
 ## Overview
 
-v1.19 promotes one directly callable, positive-only opaque still-image
+v1.19 was intended to promote one directly callable, positive-only opaque still-image
 upper-eyelid-fullness-reduction control only if a complete rights-approved
 private genuine bundle and blinded 100%-detail human review produce a passing,
 sanitized decision. Phase 80 is the hard fail-closed boundary: a missing,
 incomplete, mechanics-only, generated, or failed evidence result preserves the
 exact 61-field/five-preset/74-renderer-case public absence and stops all public
 activation work.
+
+The project owner canceled this milestone on 2026-08-25 before Plans 80-21 and
+80-22. No dataset admission, target authoring, training, Core ML conversion,
+qualification, public field, provider, resource, renderer case, or facade route
+will be added. Existing package-only experimental code is retained unchanged.
+`去脂` remains `future`, `眼睛` remains `partial`, and exact 61/5/74 public
+absence remains the current result. The remaining text is retained as the
+historical conditional plan that would require an explicit new milestone to
+resume.
 
 “Promotion” and “public” in this roadmap are owner-local engineering terms:
 the promoted Swift surface is callable only by Apps/tools controlled by the
@@ -42,19 +51,19 @@ distribution, and release readiness remain out of scope.
 - ✅ **v1.16 SDK-Only Foundation and CPU Reference** — Phases 66–69, completed 2026-08-15.
 - ✅ **v1.17 Dual CPU/GPU Metal Rendering** — Phases 70–74, archived 2026-08-17 with bounded post-archive dispositions completed 2026-08-18.
 - ✅ **v1.18 Upper-Eyelid Fullness Reduction** — Phases 75–79, completed 2026-08-22 on the verified failing public-absence branch.
-- 📋 **v1.19 Genuine Upper-Eyelid Fullness Promotion** — Phases 80–84, planned.
+- ⛔ **v1.19 Genuine Upper-Eyelid Fullness Promotion** — Canceled 2026-08-25 after 17 completed/terminal Phase-80 plans; Plans 80-21/22 and Phases 81-84 were not executed.
 
 ## Phases
 
-- [ ] **Phase 80: Genuine Evidence and Qualification Gate** - Admit the complete private bundle, conduct the frozen blinded review, and issue the sanitized pass/fail decision before any public activation.
-- [ ] **Phase 81: Safe Owner-Local Still-Image Activation** - On a passing Phase-80 decision only, expose one compatible positive-only control to the owner's local host and complete the opaque per-eye still-image route.
-- [ ] **Phase 82: Owner-Local Output and Backend Qualification** - Prove the promoted facade pixels, metadata, determinism, combined behavior, CPU oracle, and bounded GPU transport.
-- [ ] **Phase 83: Taxonomy and Owner Promotion** - Promote exactly `去脂` and close aggregate `眼睛` only after all evidence, API, safety, compatibility, and output gates pass.
-- [ ] **Phase 84: SDK-Only Closeout and Independent Audit** - Reproduce the archive-first zero-skip gate and independently verify the exact promoted surface and claim boundaries.
+- [x] **Phase 80: Genuine Evidence and Qualification Gate** - Canceled without promotion after the owner stopped the remaining data/model work; completed and terminal experimental evidence is retained.
+- [x] **Phase 81: Safe Owner-Local Still-Image Activation** - Canceled unstarted; no public control or route exists.
+- [x] **Phase 82: Owner-Local Output and Backend Qualification** - Canceled unstarted.
+- [x] **Phase 83: Taxonomy and Owner Promotion** - Canceled unstarted; taxonomy remains `去脂 = future`.
+- [x] **Phase 84: SDK-Only Closeout and Independent Audit** - Canceled unstarted; no promotion closeout is claimed.
 
 ## Gate Rule
 
-Phase 81 may begin only when Phase 80 emits a frozen source/model/data-split-
+If a new milestone explicitly reopens this work, activation may begin only when it emits a frozen source/model/data-split-
 bound passing decision from paired training data licensed for the actual
 owner-only use, a
 complete rights-approved unseen genuine bundle, and blinded 100%-detail review.
@@ -103,7 +112,7 @@ natural, identity-preserving, and safe on authorized genuine evidence.
    reviewer identity, or freeform text; the public surface remains exactly
    61/5/74 until that decision passes.
 
-**Plans**: 17 completed or terminally closed; two learned-path data/model and qualification plans remain
+**Plans**: 17 completed or terminally closed; Plans 80-21 and 80-22 canceled unexecuted
 
 - [x] 80-01-PLAN.md
 - [x] 80-02-PLAN.md
@@ -125,8 +134,8 @@ natural, identity-preserving, and safe on authorized genuine evidence.
 - [x] 80-18-PLAN.md — candidate-v4 hard stop preserved with no promotion artifact
 - [x] 80-19-PLAN.md — research and adopt the owned-data learned hybrid decision before code
 - [x] 80-20-PLAN.md — quarantine rejected heuristics and add a fail-closed internal prediction seam
-- [ ] 80-21-PLAN.md — admit paired-data rights, train, ablate, convert, and select the learned model
-- [ ] 80-22-PLAN.md — freeze learned qualification, run private automation/review, and verify Phase 80
+- [ ] 80-21-PLAN.md — **canceled unexecuted**; no corpus admission, targets, training, conversion, or selection
+- [ ] 80-22-PLAN.md — **canceled unexecuted**; no learned qualification or promotion decision
 
 ### Phase 81: Safe Owner-Local Still-Image Activation
 
@@ -267,12 +276,12 @@ orphaned or duplicate mappings.
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 | --- | --- | --- | --- | --- |
-| 80. Genuine Evidence and Qualification Gate | v1.19 | 17/22 | Active: research-data admission and exact target authoring | - |
-| 81. Safe Owner-Local Still-Image Activation | v1.19 | 0/TBD | Not started | - |
-| 82. Owner-Local Output and Backend Qualification | v1.19 | 0/TBD | Not started | - |
-| 83. Taxonomy and Owner Promotion | v1.19 | 0/TBD | Not started | - |
-| 84. SDK-Only Closeout and Independent Audit | v1.19 | 0/TBD | Not started | - |
+| 80. Genuine Evidence and Qualification Gate | v1.19 | 17/22 | Canceled without promotion | 2026-08-25 |
+| 81. Safe Owner-Local Still-Image Activation | v1.19 | 0/TBD | Canceled unstarted | 2026-08-25 |
+| 82. Owner-Local Output and Backend Qualification | v1.19 | 0/TBD | Canceled unstarted | 2026-08-25 |
+| 83. Taxonomy and Owner Promotion | v1.19 | 0/TBD | Canceled unstarted | 2026-08-25 |
+| 84. SDK-Only Closeout and Independent Audit | v1.19 | 0/TBD | Canceled unstarted | 2026-08-25 |
 
 ---
 *Roadmap created: 2026-08-22*
-*Last updated: 2026-08-25 after owner-only/non-distributed contract adoption*
+*Last updated: 2026-08-25 after owner cancellation and future deferral*

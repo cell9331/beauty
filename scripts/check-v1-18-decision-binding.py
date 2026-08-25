@@ -76,8 +76,10 @@ BASELINE_EVIDENCE_OWNERS = (
     Path("BeautySDK/Tests/BeautyEffectsTests/BeautyUpperEyelidFullnessEditorTests.swift"),
     Path("BeautySDK/Tests/BeautyEffectsTests/BeautyUpperEyelidPackageIntegrationTests.swift"),
 )
-EXPECTED_BASELINE_SOURCE_DIGEST = "8b928769e5921975880d714d01db39ceb0853f3313dce2e51da6909826a390d2"
-EXPECTED_BASELINE_EVIDENCE_DIGEST = "f25d9dedffdbcc9d4a313e4e2ecf76d7c76878bc9f90e769572ec4986ec2eb57"
+# Rebound after Plan 80-20 renamed the rejected v1-v4 implementation under
+# explicit experimental types while preserving the v1.18 public-absence branch.
+EXPECTED_BASELINE_SOURCE_DIGEST = "067a8de25cf74ceb06a4845a44886a785d6e0c32cef47cee1061c61c4050e598"
+EXPECTED_BASELINE_EVIDENCE_DIGEST = "de5c606417ac6291fc923741a405dc481f80bcfc3b024bc857c8087e64c79ce2"
 FOCUSED_SUITE_IDS = (
     "BeautyUpperEyelidEditorSafetyTests",
     "BeautyUpperEyelidFullnessEditorTests",
@@ -85,12 +87,15 @@ FOCUSED_SUITE_IDS = (
 )
 FOCUSED_TEST_IDS = (
     "BeautyUpperEyelidEditorSafetyTests.testCompositionChangesOnlyApprovedEyeAndPreservesProtectedExteriorAndMetadata",
+    "BeautyUpperEyelidEditorSafetyTests.testFeatheredBandRetainsTextureAndCannotCreateRectangularBoundary",
     "BeautyUpperEyelidEditorSafetyTests.testOverlappingEyeUnitsReturnImmutableSourceAndCountOneCollision",
     "BeautyUpperEyelidEditorSafetyTests.testRepeatedEditorCompositionIsByteDeterministicAndRejectedEyeHasNoUnit",
-    "BeautyUpperEyelidFullnessEditorTests.testApprovedPixelUsesLowFrequencyCorrectionAndCarriesOriginalDetail",
+    "BeautyUpperEyelidFullnessEditorTests.testBoundaryAnchoredReliefCompressionFlattensConvexBulgeAndCarriesOriginalDetail",
     "BeautyUpperEyelidFullnessEditorTests.testInvalidStrengthAndRepeatedRequestsFailClosedDeterministically",
     "BeautyUpperEyelidFullnessEditorTests.testInvalidSupportIsRejectedWithoutSuppressingValidPeer",
     "BeautyUpperEyelidFullnessEditorTests.testNeutralStrengthIsExactNoOpAndDiagnosticsAreAggregateOnly",
+    "BeautyUpperEyelidFullnessEditorTests.testPlanarLightingAndFineCreaseDetailDoNotCreateFullnessApproval",
+    "BeautyUpperEyelidFullnessEditorTests.testRejectedExperimentalSemanticOwnerApprovesGeneratedReliefAndRejectsPlanarPeer",
     "BeautyUpperEyelidPackageIntegrationTests.testMissingMalformedAndLowConfidencePeerSupportFailClosedPerEye",
     "BeautyUpperEyelidPackageIntegrationTests.testOneObservationFlowsThroughIndependentEyeResolutionEditorAndComposition",
     "BeautyUpperEyelidPackageIntegrationTests.testOverlappingAcceptedEyesReturnCollisionPixelToImmutableSource",

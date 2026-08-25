@@ -1,4 +1,4 @@
-# Requirements: v1.19 Genuine Upper-Eyelid Fullness Promotion
+# Requirements: v1.19 Genuine Upper-Eyelid Fullness Promotion (Canceled)
 
 **Defined:** 2026-08-22
 **Core Value:** The project owner's local iOS host can integrate `BeautySDK`
@@ -10,6 +10,11 @@ surface. Third-party users, package publication, binaries, customer delivery,
 commercialization, App Store release, and model/weight distribution are not
 requirements and are prohibited unless a future milestone explicitly reopens
 license, security, privacy, compatibility, and product review.
+
+**Status:** Canceled by the project owner on 2026-08-25. All 14 unchecked
+requirements are retained as deferred specifications, not pending work or
+partially satisfied claims. A future explicit milestone must re-adopt and
+revalidate them before `去脂` can move beyond `future`.
 
 ## v1.19 Requirements
 
@@ -112,20 +117,20 @@ Roadmap creation will map every requirement to exactly one phase.
 
 | Requirement | Phase | Status |
 | --- | --- | --- |
-| EVID-03 | Phase 80 | Pending |
-| EVID-04 | Phase 80 | Pending |
-| EVID-05 | Phase 80 | Pending |
-| QUAL-03 | Phase 80 | Pending |
-| QUAL-04 | Phase 80 | Pending |
-| QUAL-05 | Phase 80 | Pending |
-| SAFE-04 | Phase 81 | Pending |
-| API-01 | Phase 81 | Pending |
-| API-02 | Phase 81 | Pending |
-| COMPAT-03 | Phase 81 | Pending |
-| OUT-01 | Phase 82 | Pending |
-| BACKEND-02 | Phase 82 | Pending |
-| DOCS-02 | Phase 83 | Pending |
-| CLOSE-01 | Phase 84 | Pending |
+| EVID-03 | Phase 80 | Deferred after cancellation |
+| EVID-04 | Phase 80 | Deferred after cancellation |
+| EVID-05 | Phase 80 | Deferred after cancellation |
+| QUAL-03 | Phase 80 | Deferred after cancellation |
+| QUAL-04 | Phase 80 | Deferred after cancellation |
+| QUAL-05 | Phase 80 | Deferred after cancellation |
+| SAFE-04 | Phase 81 | Deferred after cancellation |
+| API-01 | Phase 81 | Deferred after cancellation |
+| API-02 | Phase 81 | Deferred after cancellation |
+| COMPAT-03 | Phase 81 | Deferred after cancellation |
+| OUT-01 | Phase 82 | Deferred after cancellation |
+| BACKEND-02 | Phase 82 | Deferred after cancellation |
+| DOCS-02 | Phase 83 | Deferred after cancellation |
+| CLOSE-01 | Phase 84 | Deferred after cancellation |
 
 **Coverage:**
 
@@ -135,4 +140,4 @@ Roadmap creation will map every requirement to exactly one phase.
 
 ---
 *Requirements defined: 2026-08-22*
-*Last updated: 2026-08-25 after owner-only/non-distributed contract adoption*
+*Last updated: 2026-08-25 after owner cancellation and future deferral*

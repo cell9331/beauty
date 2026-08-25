@@ -192,6 +192,11 @@ gates, so it is historical mechanics rather than a current product path.
 
 ## 5A. Learned Upper-Eyelid Boundary
 
+This boundary is dormant as of the owner's 2026-08-25 cancellation. The
+experimental types remain in `BeautyEffects` for possible future research, but
+no model resource, Core ML import, public parameter, facade route, or training
+work is active. Reuse requires a new explicit milestone.
+
 Plan 80-19 adopts an on-device learned hybrid as the only implementation route
 that may later qualify as visibly obvious `去脂`. The model is trained only from
 owned data or data explicitly licensed for the project's actual owner-local,

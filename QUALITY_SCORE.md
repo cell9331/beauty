@@ -386,6 +386,15 @@ automated non-pass made those conditions ineligible.
 
 ## Phase 80 Learned-Path Decision Quality Evidence
 
+The owner canceled the learned path on 2026-08-25 before Plans 80-21/22. The
+boundary-only evidence below is retained, but learned efficacy is no longer an
+active quality gate and no promotion closeout is expected for v1.19. Exact
+61/5/74 absence is the final current result. Cancellation closeout passes 34/34
+teeth/sclera/combined integration tests, 74/74 parameter/renderer-contract
+tests, the rebound v1.18 absence gate with 15/15 mutation checks and 13/13
+focused tests, and the archive-first all-opt-in SwiftPM gate at 813/0/0 with
+eight opt-ins exactly once and zero skips.
+
 Candidate v4 subsequently failed its frozen private automated matrix twice with
 identical applicability, boundary-continuity, and minimum-relief dispositions;
 review never opened. Candidate-v5 threshold tuning is canceled. Plan 80-19
@@ -408,5 +417,6 @@ Plan 80-20 adds no efficacy score. Its quality result is boundary-only:
 `8/0/0` learned prediction tests, `23/0/0` all upper-eyelid tests, and plain full
 SwiftPM `813/0/8`, plus archive, SDK-only boundary, exact 61/5/74 absence, and
 diff-hygiene passes. Rejected mechanics are explicit experiments; the learned
-owner has no model and produces no proposals. Final zero-skip closeout remains
-ineligible until Plans 80-21/22 supply and qualify a licensed model.
+owner has no model and produces no proposals. Final promotion closeout was
+canceled with Plans 80-21/22; any future retry must create a new milestone and
+requalify its data/model/evidence contract.

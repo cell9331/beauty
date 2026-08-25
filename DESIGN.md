@@ -1386,6 +1386,11 @@ genuine automation failed before human review and made the candidate terminal.
 
 ## v1.19 Phase 80 Learned-Hybrid Decision
 
+The owner deferred `去脂` on 2026-08-25 before data/model execution. The design
+below is retained as an unimplemented future option; Plan 80-20's package-only
+fail-closed seam and experimental mechanics remain, while Plans 80-21/22,
+training, resources, public API, and activation are canceled.
+
 Candidate v4 is terminal after repeatable private automated applicability,
 boundary-continuity, and minimum-relief failures. Candidates v1-v4 jointly
 reject another handcrafted tone/frequency retune: the rules either produce a

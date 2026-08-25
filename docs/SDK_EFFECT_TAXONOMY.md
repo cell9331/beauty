@@ -57,6 +57,12 @@ local-retouch controls. Neither implies realtime/pixel-buffer support.
 dark-circle removal, or global smoothing. Request-local masks and face geometry
 are implementation details, not taxonomy entries or public diagnostics.
 
+The owner explicitly deferred `去脂` on 2026-08-25. Retained
+`BeautyExperimentalUpperEyelid*` mechanics and the package-only no-model
+prediction seam do not make it callable or implemented; no training or
+activation work is active. `teethWhitening` and `scleraRednessReduction` remain
+independent implemented opaque still-image controls.
+
 Candidate v1-v4 also prove that regional darkening or fixed relief thresholds
 are not sufficient. The only adopted route that may later promote `去脂` is an
 independently qualified, actual-use-licensed learned local editor with bounded

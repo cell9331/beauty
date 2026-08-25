@@ -1,7 +1,7 @@
 ---
 phase: 80
 decision: learned-bounded-hybrid-upper-eyelid-editor
-status: adopted-for-implementation
+status: deferred-unimplemented
 date: 2026-08-25
 public_surface: unchanged-61-5-74
 implementation_gate: actual-use-approved-owner-local-paired-training-data
@@ -10,6 +10,12 @@ implementation_gate: actual-use-approved-owner-local-paired-training-data
 # Upper-Eyelid Fullness Reduction: Implementable Technical Decision
 
 ## 0. Executive decision / 决策摘要
+
+**Current disposition (2026-08-25):** The project owner canceled further
+`去脂` work. This design is retained as research history only. No dataset,
+target-authoring, training, Core ML conversion, qualification, model resource,
+public parameter, or facade route is active or authorized. Existing
+experimental code remains package-only and fail-closed.
 
 `去脂` is a cosmetic visual effect that makes a genuinely full or puffy upper
 eyelid look flatter and less bulky. It is not eye opening, upper-lid lifting,

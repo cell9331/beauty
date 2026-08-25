@@ -4,11 +4,11 @@ milestone: v1.19
 milestone_name: Genuine Upper-Eyelid Fullness Promotion
 current_phase: 80
 current_phase_name: Genuine Evidence and Qualification Gate
-status: active
-stopped_at: Phase 80 Plan 21 research-data admission and exact target authoring
-last_updated: "2026-08-25T03:40:34Z"
+status: canceled
+stopped_at: v1.19 canceled by owner; upper-eyelid fullness deferred
+last_updated: "2026-08-25T04:06:47Z"
 last_activity: 2026-08-25
-last_activity_desc: Owner-only non-distribution contract adopted; research-only data path reopened
+last_activity_desc: Owner canceled v1.19; experimental code retained and public absence preserved
 progress:
   total_phases: 5
   completed_phases: 0
@@ -26,14 +26,14 @@ See: `.planning/PROJECT.md` (updated 2026-08-25)
 **Core value:** The project owner's local iOS host can integrate `BeautySDK`
 and get natural, controllable, real-time and still-image beauty processing
 without distributing the SDK, model, or weights.
-**Current focus:** Phase 80 — Genuine Evidence and Qualification Gate
+**Current focus:** No active `去脂` milestone; upper-eyelid fullness is future work
 
 ## Current Position
 
-Phase: 80 (Genuine Evidence and Qualification Gate) — ACTIVE
-Plan: 21 of 22
-Status: Research-only corpus admission and exact upper-eyelid target authoring are next; redistribution is prohibited, not a gate
-Last activity: 2026-08-25 — current owners synchronized to owner-only local use
+Phase: 80 (Genuine Evidence and Qualification Gate) — CANCELED
+Plan: 17 completed/terminal plans; Plans 80-21 and 80-22 canceled unexecuted
+Status: The owner stopped `去脂`; no data, model, qualification, or activation work is active
+Last activity: 2026-08-25 — v1.19 canceled with code retained and exact public absence preserved
 
 Progress: [███████▋░░] 77%
 
@@ -71,6 +71,12 @@ roadmaps.
 ## Accumulated Context
 
 ### Decisions
+
+- [Project]: On 2026-08-25 the owner canceled further `去脂` work. Existing
+  `BeautyExperimentalUpperEyelid*` mechanics and the fail-closed package-only
+  prediction seam remain in source, but Plans 80-21/22 and Phases 81-84 will
+  not execute. `去脂` stays `future`; no public field, model, resource, or route
+  may be inferred from retained code.
 
 - Phase 80 is a hard gate: the complete rights-approved genuine bundle and
   blinded 100%-detail review must both pass before any public field, renderer
@@ -119,7 +125,10 @@ roadmaps.
 
 None found under `.planning/todos/pending/`.
 
-### Blockers/Concerns
+### Historical Stop Evidence (not active blockers)
+
+- There is no active blocker to resolve: the missing exact paired data/model
+  path is now a consciously deferred product choice, not pending work.
 
 - Candidate-v4 private automation failed twice with identical normalized
   applicability, boundary-continuity, and minimum-relief reasons. The attempt
@@ -156,10 +165,11 @@ None found under `.planning/todos/pending/`.
 | Owner-local product | Device performance, broader population sufficiency, and owner-local visual approval | Future | v1.19 scope |
 | External/commercial distribution | SDK commercialization, customers, package registry, binary/model/weight transfer, App Store, packaging, shipping, launch, and release readiness | Prohibited until explicitly reopened | owner-only project contract |
 | Algorithm breadth | Restricted external models/weights and unrelated beauty features | Future | v1.19 scope |
+| Upper-eyelid fullness | Dataset admission, target authoring, training, Core ML conversion, qualification, and public activation | Future; explicitly canceled for v1.19 | owner decision 2026-08-25 |
 
 ## Session Continuity
 
-Last session: 2026-08-25T03:40:34Z
-Stopped at: Phase 80 Plan 21 research-data admission and exact target authoring
+Last session: 2026-08-25T04:06:47Z
+Stopped at: v1.19 canceled by owner; `去脂` deferred with experimental code retained
 Resume file: None
-Next action: admit one official-source, actual-use-compatible local research corpus, freeze identity-disjoint splits and owner-authored exact targets, then train/ablate/convert the local learned candidate; do not resume heuristic tuning or distribute any data/model artifact.
+Next action: None for `去脂`. Keep exact 61/5/74 public absence; a future explicit owner decision and a new milestone are required before data, model, or activation work resumes.

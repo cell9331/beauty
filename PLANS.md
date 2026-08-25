@@ -30,9 +30,9 @@
 
 | Field | Value |
 | --- | --- |
-| Status | `active` |
+| Status | `canceled` |
 | Scope | Replace the failed hand-authored route with an actual-use-authorized owner-local learned hybrid, qualify it on unseen genuine evidence, then continue the internal milestone only from a verified pass. SDK and learned resources remain non-distributed. |
-| Current Step | Plans 80-19 and 80-20 are complete. Plan 80-21 resumes with official-source license admission for an isolated non-commercial research corpus, identity-disjoint splits, and exact upper-eyelid target authoring before local training. |
+| Current Step | Canceled by the project owner on 2026-08-25. Plans 80-21 and 80-22 will not run; no dataset download, target authoring, training, model conversion, qualification, or public activation is authorized. |
 | Constraint | The 2026-08-25 Hugging Face audit found no ready-made exact upper-eyelid-fullness pair set. PPR10K and FFHQR may be considered only for license-compatible non-commercial local research/pretraining; neither supplies the target labels. MirrorPPR47M remains inadmissible because no usable license grant was found. |
 | Privacy | Only aggregate counts and normalized reasons may enter repository evidence; media, masks, locators, rights details, and per-fixture rows remain external. |
 | Distribution | Swift `public` is owner-local access only. No SDK package, binary, model, compiled weight, private fixture, or derived data leaves the owner-controlled environment; a future scope change requires a new full license/security/product audit. |
@@ -57,7 +57,7 @@ Checklist:
 | Select an implementable learned path before code | `completed` | Plan 80-19 and `80-LEARNED-HYBRID-DECISION.md` reject v5 threshold tuning and freeze the owned-data per-eye applicability/support/flow/tone design, Core ML route, data/license contract, qualification gates, and stop rules. No algorithm source changed. |
 | Repair the old code boundary | `completed` | Plan 80-20 quarantines v1-v4 under `BeautyExperimentalUpperEyelid*`, adds the strict package-only prediction validator, passes 8/0/0 learned, 23/0/0 upper-eyelid, plain 813/0/8, archive/boundary/diff checks, and preserves exact 61/5/74 absence. |
 | Audit Hugging Face training-data candidates | `completed` | `80-HUGGINGFACE-DATASET-AUDIT.md` finds no ready-made exact target set; it preserves MirrorPPR47M/unknown-license rejection and identifies official PPR10K/FFHQR as research-only pretraining candidates under upstream terms. No third-party portraits were downloaded. |
-| Train and qualify the learned path | `active` | Plans 80-21 and 80-22 now require actual-use license admission, identity-disjoint data, owner-authored exact targets, local-only Core ML conversion, frozen private automation, and blinded review. Redistribution is prohibited rather than a gate. |
+| Train and qualify the learned path | `canceled` | The owner chose not to continue `去脂`. Plans 80-21 and 80-22 are retained as unexecuted historical proposals; the experimental code and fail-closed prediction seam remain package-only, and exact 61/5/74 public absence is preserved. |
 
 ### P-2026-08-14-phase-66-sdk-only-boundary
 
@@ -82,6 +82,17 @@ Checklist:
 
 > 以下记录均为已完成或已被后续权威取代的执行历史，不是 Active plan。
 
+### C-2026-08-25-defer-upper-eyelid-fullness
+
+| Field | Value |
+| --- | --- |
+| Status | `canceled` |
+| Canceled | 2026-08-25 |
+| Decision | Stop all `去脂` data, training, qualification, and activation work. Keep the existing experimental mechanics and fail-closed learned boundary unchanged for possible future research. |
+| Public surface | No `upperEyelidFullnessReduction` field, provider, resource, renderer case, or facade route exists. `去脂` remains `future`, aggregate `眼睛` remains `partial`, and the public inventory remains exactly 61 fields / five presets / 74 renderer cases. |
+| Preserved capabilities | `teethWhitening` and `scleraRednessReduction` remain independently implemented, directly callable opaque `CIImage` still-image controls; this cancellation does not change their code or contracts. |
+| Verification | Teeth/sclera/combined public-facade integration passes 34/34; parameter and public renderer-contract tests pass 74/74; the v1.18 absence binding is rebound to the already-landed Plan-80-20 experimental source/test baseline and passes 15/15 mutation checks plus 13/13 focused tests; the archive-first all-opt-in gate passes 813/0/0 with eight opt-ins exactly once and zero skips. No Swift production source is modified. |
+
 ### C-2026-08-25-owner-only-non-distributed-sdk-contract
 
 | Field | Value |
@@ -91,7 +102,7 @@ Checklist:
 | Scope | Synchronize every current owner, codebase map, active v1.19 contract, Phase-80 learned/data plan, and local-fixture policy to the user's owner-only, non-distributed SDK decision without rewriting historical attempts, summaries, or archives. |
 | Public meaning | Swift `public` remains the callable/compatibility surface for Apps and tools controlled by the owner; it is not a third-party SDK, package registry, binary/customer/App Store, model, or weight release contract. |
 | License effect | Actual-use licensing replaces compiled-weight redistribution as the current admission rule. Research-only datasets and their derived models may enter only a separated owner-local non-commercial research lane; internal commercial use still requires an explicit compatible grant. |
-| Phase-80 effect | The Hugging Face audit now admits official PPR10K/FFHQR only as research candidates under upstream terms, keeps MirrorPPR47M rejected without a usable grant, and records that no candidate supplies exact upper-eyelid-fullness targets. Plan 80-21 is active for official-source admission, isolated local storage, target authoring, training, ablation, and local Core ML conversion. |
+| Phase-80 effect | Historical at completion and superseded by `C-2026-08-25-defer-upper-eyelid-fullness`: the Hugging Face audit admitted official PPR10K/FFHQR only as research candidates under upstream terms and kept MirrorPPR47M rejected. Plan 80-21 was subsequently canceled before any source admission, target authoring, training, ablation, or Core ML conversion. |
 | Verification | Archive verification passed for both pinned UI ZIPs; `check-sdk-only-boundary.sh --post-archive` passed; `git diff --check` passed; current-owner terminology, stale commercial/redistribution blocker, binary/model diff, and common-secret-pattern scans passed. No Swift source, test, media, model, or historical evidence changed. |
 
 Outcome:

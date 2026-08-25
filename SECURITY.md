@@ -450,3 +450,8 @@ positive local Jacobian, and bounded/smooth tone. Diagnostics expose only side,
 normalized reason, and accepted sample count; validated tensors remain request-
 local. The rejected heuristic is available only under explicit
 `BeautyExperimentalUpperEyelid*` package names and has no public/facade route.
+
+The owner canceled the remaining `去脂` data/model path on 2026-08-25. No
+portrait corpus, target, checkpoint, compiled weight, or model resource is to
+be admitted under v1.19; retained experimental source does not reopen any
+privacy or resource boundary. A future retry requires a new explicit audit.

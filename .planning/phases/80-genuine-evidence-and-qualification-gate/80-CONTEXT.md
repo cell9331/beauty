@@ -1,7 +1,7 @@
 # Phase 80: Genuine Evidence and Qualification Gate - Context
 
 **Gathered:** 2026-08-22
-**Status:** Ready for planning
+**Status:** Canceled by owner on 2026-08-25; retained for future reference
 **Mode:** Auto-generated (discuss skipped via workflow.skip_discuss)
 
 <domain>
@@ -22,6 +22,10 @@ smoothing, or the invalidated warp for the intended fullness semantic.
 
 <decisions>
 ## Implementation Decisions
+
+The owner canceled further `去脂` work on 2026-08-25. Existing experimental
+source and completed evidence remain unchanged, but Plans 80-21/22 and every
+activation phase are inactive. A new explicit milestone is required to resume.
 
 ### the agent's Discretion
 
