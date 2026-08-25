@@ -122,6 +122,27 @@ private let phase63ReversedObservedRightEye = BeautyObservedEyeSupport(
     pupil: [CoordinatePoint(x: 0.25, y: 0.72)]
 )
 
+private let provisionalUpperEyelidObservedEyes = [
+    BeautyObservedEyeSupport(
+        side: .left,
+        contour: [
+            CoordinatePoint(x: 0.15, y: 0.25),
+            CoordinatePoint(x: 0.35, y: 0.25),
+            CoordinatePoint(x: 0.35, y: 0.50),
+            CoordinatePoint(x: 0.15, y: 0.50),
+        ]
+    ),
+    BeautyObservedEyeSupport(
+        side: .right,
+        contour: [
+            CoordinatePoint(x: 0.65, y: 0.25),
+            CoordinatePoint(x: 0.85, y: 0.25),
+            CoordinatePoint(x: 0.85, y: 0.50),
+            CoordinatePoint(x: 0.65, y: 0.50),
+        ]
+    ),
+]
+
 @_spi(Testing) public enum SDKTestingFaceDetectionFixture: Sendable {
     case usableFace
     case missingObservedFaceContour
@@ -775,6 +796,14 @@ package final class SDKTestingCanonicalStillImageHarness: @unchecked Sendable {
     case noFace
 }
 
+@_spi(Testing) public enum SDKTestingUpperEyelidSupport: Sendable {
+    case paired
+    case leftOnly
+    case rightOnly
+    case malformed
+    case noFace
+}
+
 @_spi(Testing) public enum SDKTestingLocalSupportFixture: Sendable {
     case noFace
     case missingSupport
@@ -802,6 +831,7 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
         case availableMissingUnrelatedGeometry(valueID: Int, omissionIndex: Int)
         case malformed
         case scleraEyes(SDKTestingScleraEyeSupport)
+        case upperEyelid(SDKTestingUpperEyelidSupport)
     }
 
     package let admittedPrivateDemandCount: Int
@@ -1226,7 +1256,7 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
             case .noFace, .missingSupport:
                 currentAggregateSupportValueID = nil
                 currentRequestIsMalformed = false
-            case .scleraEyes:
+            case .scleraEyes, .upperEyelid:
                 currentAggregateSupportValueID = nil
                 currentRequestIsMalformed = false
             }
@@ -1247,6 +1277,26 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
             )]
         case .malformed:
             return [Self.observation(observedLipSupport: Self.malformedLipSupport)]
+        case .upperEyelid(let support):
+            switch support {
+            case .paired:
+                return [Self.upperEyelidObservation()]
+            case .leftOnly:
+                return [Self.upperEyelidObservation(
+                    eyes: provisionalUpperEyelidObservedEyes.filter { $0.side == .left }
+                )]
+            case .rightOnly:
+                return [Self.upperEyelidObservation(
+                    eyes: provisionalUpperEyelidObservedEyes.filter { $0.side == .right }
+                )]
+            case .malformed:
+                let invalid = [CoordinatePoint(x: .nan, y: .nan)]
+                return [Self.upperEyelidObservation(
+                    eyebrows: BeautyObservedEyebrowSupport(left: invalid, right: invalid)
+                )]
+            case .noFace:
+                return []
+            }
         case .scleraEyes(let support):
             switch support {
             case .paired:
@@ -1321,6 +1371,47 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
             landmarks: landmarks,
             observedEyeSupport: observedEyeSupport,
             observedLipSupport: observedLipSupport
+        )
+    }
+
+    private static func upperEyelidObservation(
+        eyes: [BeautyObservedEyeSupport] = provisionalUpperEyelidObservedEyes,
+        eyebrows: BeautyObservedEyebrowSupport? = nil
+    ) -> VisionDetectionObservation {
+        VisionDetectionObservation(
+            stableID: "provisional-upper-eyelid-fixture",
+            confidence: 0.96,
+            normalizedArea: 1,
+            visionBounds: CoordinateRect(x: 0, y: 0, width: 1, height: 1),
+            landmarks: .complete,
+            observedEyeSupport: eyes,
+            observedEyebrowSupport: eyebrows ?? upperEyelidEyebrowSupport(for: eyes)
+        )
+    }
+
+    private static func upperEyelidEyebrowSupport(
+        for eyes: [BeautyObservedEyeSupport]
+    ) -> BeautyObservedEyebrowSupport {
+        func eyebrow(for side: BeautyObservedEyeSide) -> [CoordinatePoint]? {
+            guard let eye = eyes.first(where: { $0.side == side }),
+                  !eye.contour.isEmpty,
+                  eye.contour.allSatisfy(\.isFinite),
+                  let minimumX = eye.contour.map(\.x).min(),
+                  let maximumX = eye.contour.map(\.x).max(),
+                  let eyeTop = eye.contour.map(\.y).max()
+            else {
+                return nil
+            }
+            let eyebrowY = min(0.98, eyeTop + 0.12)
+            return [
+                CoordinatePoint(x: minimumX, y: eyebrowY),
+                CoordinatePoint(x: (minimumX + maximumX) * 0.5, y: min(0.99, eyebrowY + 0.02)),
+                CoordinatePoint(x: maximumX, y: eyebrowY),
+            ]
+        }
+        return BeautyObservedEyebrowSupport(
+            left: eyebrow(for: .left),
+            right: eyebrow(for: .right)
         )
     }
 
@@ -1485,6 +1576,18 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
         try self.init(
             admittedPrivateDemandCount: admittedPrivateDemandCount,
             fixtures: eyeSupportSequence.map { .scleraEyes($0) },
+            compositionScenarios: compositionScenarios
+        )
+    }
+
+    public convenience init(
+        admittedPrivateDemandCount: Int,
+        upperEyelidSupportSequence: [SDKTestingUpperEyelidSupport],
+        compositionScenarios: [SDKTestingLocalCompositionScenario?] = [nil]
+    ) throws {
+        try self.init(
+            admittedPrivateDemandCount: admittedPrivateDemandCount,
+            fixtures: upperEyelidSupportSequence.map { .upperEyelid($0) },
             compositionScenarios: compositionScenarios
         )
     }

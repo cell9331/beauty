@@ -26,8 +26,33 @@
 
 ## 3. Active
 
-The latest v1.20 entry below is completed and retained at the top for session
-continuity; there are no remaining active plans for this milestone.
+The latest v1.21 entry is complete and retained here for session continuity;
+there are no remaining active plans for this milestone.
+
+### C-2026-08-25-v1-21-provisional-upper-eyelid-public-activation
+
+| Field | Value |
+| --- | --- |
+| Status | `completed` |
+| Scope | Keep `去脂`, add owner-local public `upperEyelidFullnessReduction`, route it through retained bounded v4 mechanics, record weak visual quality as future debt, and close v1.21. |
+| Owner Acceptance | The owner directs that manual checks be treated as accepted. This is recorded as a supplied product decision; no new blinded review run or transcript is claimed. |
+| Privacy | Per-eye support, masks, pixels, proposals, paths, and experimental summaries remain request-local/package-only; durable evidence is aggregate and code/test based. |
+| Distribution | Swift `public` remains owner-local access only; no SDK, binary, model, weight, fixture, output, or derived data is distributed. |
+
+Checklist:
+
+| Step | Status | Evidence |
+| --- | --- | --- |
+| Add public scalar and admission | `completed` | `BeautyParameters` trailing default-zero/Codable/clamped field plus `BeautyEffectResolver.localRetouchAdmission`. |
+| Route retained mechanics through public still-image facade | `completed` | One selected observation resolves existing per-eye semantic support/editor units into immutable-source composition. |
+| Add public output and compatibility coverage | `completed` | New facade test passes 4/4, including paired/one-eye/malformed/no-face support; parameter/resource/renderer inventories updated to 62/5/75. |
+| Synchronize owner contracts and GSD archive | `completed` | Taxonomy, root owners, v1.21 requirements/roadmap/phase archive, project/state/milestone ledgers. |
+| Run complete SDK-only closeout | `completed` | Focused public upper-eyelid 4/4; parameter/renderer/process/resource/resolver/foundation suites 50/50, 24/24, 7/7, 15/15, 29/29, 25/25; final archive-first no-skip SwiftPM 817/0/0 with eight opt-ins exactly once and zero skips. |
+
+Known quality debt: the current source-derived effect is conservative and
+visually weak. Future optimization must use a new explicit milestone, preserve
+the public neutral/Codable/fail-closed contract, and cannot infer device,
+commercial, or distribution authority.
 
 ### C-2026-08-25-v1-20-owner-local-retouch-acceptance
 
@@ -3416,13 +3441,15 @@ Outcome:
 | Completed | 2026-06-26 |
 | Scope | Closed v1.2 as reduced-scope complete: retained Phase 11 local static HTML baselines and browser evidence, canceled Phase 12 HTML-to-SwiftUI Delta Contract, Phase 13 Home SwiftUI Fidelity Pass, Phase 14 Editor SwiftUI Fidelity Pass, and Phase 15 v1.2 Visual QA and Closeout by user decision. |
 | Requirements | HTML-01 through HTML-05 complete; AUDIT-01 through AUDIT-03, HSWIFT-01 through HSWIFT-03, ESWIFT-01 through ESWIFT-03, and VQA-01 through VQA-03 canceled. |
-| Files | `.planning/milestones/v1.2-phases/11-html-reference-baselines/11-CONTEXT.md`, `.planning/milestones/v1.2-phases/11-html-reference-baselines/11-DISCUSSION-LOG.md`, `.planning/milestones/v1.2-phases/11-html-reference-baselines/11-RESEARCH.md`, `.planning/milestones/v1.2-phases/11-html-reference-baselines/11-VALIDATION.md`, `.planning/milestones/v1.2-phases/11-html-reference-baselines/11-PATTERNS.md`, `.planning/milestones/v1.2-phases/11-html-reference-baselines/11-01-PLAN.md`, `.planning/milestones/v1.2-phases/11-html-reference-baselines/11-02-PLAN.md`, `.planning/milestones/v1.2-phases/11-html-reference-baselines/11-03-PLAN.md`, `.planning/milestones/v1.2-phases/11-html-reference-baselines/11-04-PLAN.md`, `.planning/milestones/v1.2-phases/11-html-reference-baselines/11-01-SUMMARY.md`, `.planning/milestones/v1.2-phases/11-html-reference-baselines/11-02-SUMMARY.md`, `.planning/milestones/v1.2-phases/11-html-reference-baselines/11-03-SUMMARY.md`, `.planning/milestones/v1.2-phases/11-html-reference-baselines/11-04-SUMMARY.md`, `meituxiuxiu/html/README.md`, `meituxiuxiu/html/styles.css`, `meituxiuxiu/html/home.html`, `meituxiuxiu/html/editor.html`, `meituxiuxiu/html/offline-check.mjs`, `.planning/evidence/v1.2/VISUAL-EVIDENCE.md`, `.planning/evidence/v1.2/home-html-first-screen.png`, `.planning/evidence/v1.2/home-html-sticky-state.png`, `.planning/evidence/v1.2/editor-html-tool-panel.png`, `.planning/PROJECT.md`, `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md`, `.planning/STATE.md`, `PLANS.md` |
-| Verification | Phase 11 verification remains the retained evidence: HTML-01 through HTML-05 complete; Home and Editor static scans passed; `node meituxiuxiu/html/offline-check.mjs` passed; Playwright captured three 390x844 PNG screenshots under `.planning/evidence/v1.2/`. Cancellation cleanup verified with `git diff --check` over planning files. |
+| Files | `.planning/milestones/v1.2-REQUIREMENTS.md`, `.planning/milestones/v1.2-ROADMAP.md`, `.planning/milestones/v1.2-MILESTONE-AUDIT.md`, `.planning/milestones/v1.2-phases/11-html-reference-baselines/`, `archives/legacy-ui/`, `.planning/evidence/v1.2/`, `.planning/PROJECT.md`, `.planning/MILESTONES.md`, and `PLANS.md` |
+| Verification | The verified `meituxiuxiu` archive restores to a new temporary directory; its local `offline-check.mjs` and required-label scans pass; the three retained 390x844 PNGs are present. The replay path is archive-first and never assumes an active `meituxiuxiu/html` tree. Historical visual debt is recorded in the v1.2 re-verification artifact. |
 | Build | Not run for the cancellation cleanup; only planning Markdown files changed after Phase 11. |
 
 Outcome:
 
-- Phase 11 HTML reference outputs remain available under `meituxiuxiu/html/` and `.planning/evidence/v1.2/`.
+- Phase 11 HTML reference outputs remain available in the verified `meituxiuxiu`
+  ZIP under `archives/legacy-ui/` and `.planning/evidence/v1.2/`; restore the
+  ZIP only to a new temporary directory for inspection.
 - Phase 12-15 planning and execution are intentionally canceled, not open blockers.
 - Future SwiftUI visual tuning must be promoted as a new milestone or phase instead of resuming canceled v1.2 work by default.
 

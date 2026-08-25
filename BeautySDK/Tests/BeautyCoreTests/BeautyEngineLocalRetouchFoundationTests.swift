@@ -289,12 +289,12 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
         XCTAssertEqual(harness.pixelBufferSummaryAvailability, "notRun")
     }
 
-    func testCurrentProductionAdmissionInventoryIsExactlyEmpty() {
+    func testLegacyProductionAdmissionInventoryRemainsEmpty() {
         XCTAssertEqual(SDKTestingLocalRetouchFoundationHarness.productionAdmissionCount, 0)
         XCTAssertEqual(SDKTestingLocalRetouchFoundationHarness.productionAdmissionNames, [])
     }
 
-    func testPhase59TeethAdmissionKeepsOpaqueFoundationAndBothStillEntriesInactive() throws {
+    func testLocalRetouchAdmissionKeepsOpaqueFoundationAndLegacyStillEntriesNeutral() throws {
         let repositoryRoot = URL(fileURLWithPath: #filePath)
             .deletingLastPathComponent().deletingLastPathComponent()
             .deletingLastPathComponent().deletingLastPathComponent()
@@ -312,9 +312,10 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
         XCTAssertTrue(normalizedResolver.contains("var opaqueDemandCount = 0"))
         XCTAssertTrue(normalizedResolver.contains("normalized.teethWhitening > 0"))
         XCTAssertTrue(normalizedResolver.contains("normalized.scleraRednessReduction > 0"))
+        XCTAssertTrue(normalizedResolver.contains("normalized.upperEyelidFullnessReduction > 0"))
         XCTAssertEqual(
             normalizedResolver.components(separatedBy: "opaqueDemandCount += 1").count - 1,
-            2
+            3
         )
         XCTAssertTrue(normalizedResolver.contains("BeautyLocalRetouchAdmission(opaqueDemandCount: opaqueDemandCount)"))
         XCTAssertEqual(SDKTestingLocalRetouchFoundationHarness.productionAdmissionCount, 0)
@@ -359,7 +360,7 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
         XCTAssertEqual(resultColor.detectionSummary, .notRun)
     }
 
-    func testPhase56PixelBufferAndResetStayOutsideClosedTeethRoute() throws {
+    func testPixelBufferAndResetStayOutsideStillImageLocalRetouch() throws {
         let harness = try SDKTestingLocalRetouchFoundationHarness(admittedPrivateDemandCount: 0)
         _ = try harness.invokePixelBuffer(parameters: .init(skinWhitening: 0.1))
         harness.reset()
@@ -373,7 +374,7 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
         XCTAssertEqual(harness.compositionObservation.compositionInvocationCount, 0)
     }
 
-    func testPhase57ClosedEyeRetouchGatesKeepSiblingRoutesAbsentAndStillEntriesInactive() throws {
+    func testLegacyGeometryGatesKeepSiblingRoutesAbsentAndStillEntriesNeutral() throws {
         let repositoryRoot = URL(fileURLWithPath: #filePath)
             .deletingLastPathComponent().deletingLastPathComponent()
             .deletingLastPathComponent().deletingLastPathComponent()
@@ -391,9 +392,10 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
         XCTAssertTrue(normalizedResolver.contains("var opaqueDemandCount = 0"))
         XCTAssertTrue(normalizedResolver.contains("normalized.teethWhitening > 0"))
         XCTAssertTrue(normalizedResolver.contains("normalized.scleraRednessReduction > 0"))
+        XCTAssertTrue(normalizedResolver.contains("normalized.upperEyelidFullnessReduction > 0"))
         XCTAssertEqual(
             normalizedResolver.components(separatedBy: "opaqueDemandCount += 1").count - 1,
-            2
+            3
         )
         XCTAssertTrue(normalizedResolver.contains("BeautyLocalRetouchAdmission(opaqueDemandCount: opaqueDemandCount)"))
         XCTAssertEqual(SDKTestingLocalRetouchFoundationHarness.productionAdmissionCount, 0)
@@ -429,7 +431,7 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
         XCTAssertEqual(try Self.renderedRGBA8(processColor), try Self.renderedRGBA8(resultColor.output))
     }
 
-    func testPhase57PixelBufferResetAndOpaqueMechanicsStayOutsideEyeCandidates() throws {
+    func testPixelBufferResetAndOpaqueMechanicsStayOutsideEyeCandidates() throws {
         let harness = try SDKTestingLocalRetouchFoundationHarness(admittedPrivateDemandCount: 0)
         _ = try harness.invokePixelBuffer(parameters: .init(eyeHeight: 0.2, upperEyelidLift: 0.1))
         harness.reset()
@@ -458,9 +460,10 @@ final class BeautyEngineLocalRetouchFoundationTests: XCTestCase {
         XCTAssertTrue(normalizedResolver.contains("var opaqueDemandCount = 0"))
         XCTAssertTrue(normalizedResolver.contains("normalized.teethWhitening > 0"))
         XCTAssertTrue(normalizedResolver.contains("normalized.scleraRednessReduction > 0"))
+        XCTAssertTrue(normalizedResolver.contains("normalized.upperEyelidFullnessReduction > 0"))
         XCTAssertEqual(
             normalizedResolver.components(separatedBy: "opaqueDemandCount += 1").count - 1,
-            2
+            3
         )
         XCTAssertTrue(normalizedResolver.contains("BeautyLocalRetouchAdmission(opaqueDemandCount: opaqueDemandCount)"))
         XCTAssertEqual(SDKTestingLocalRetouchFoundationHarness.productionAdmissionCount, 0)

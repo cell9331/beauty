@@ -1,100 +1,66 @@
-# Requirements: Beauty v1.20 Owner-Local Still-Image Retouch Acceptance
+# Requirements: Beauty v1.21 Provisional Upper-Eyelid Public Activation
 
 **Defined:** 2026-08-25
-**Core Value:** The project owner's local iOS host can call the existing
-`BeautySDK` still-image retouch controls and verify their output without
-distributing the SDK, images, or derived artifacts.
 
-**Distribution Boundary:** Swift `public` is an owner-local callable surface.
-The SDK, binaries, models, private portraits, rendered outputs, and derived
-data remain inside owner-controlled environments. This milestone is not a
-package, customer, App Store, shipping, launch, or release-readiness effort.
+**Core Value:** The project owner's local host can keep and publicly call the
+existing `去脂` API while the SDK preserves bounded, deterministic, fail-closed
+still-image behavior.
 
-**Scope decision:** `白牙` (`teethWhitening`) and `祛红血丝`
-(`scleraRednessReduction`) are retained as the two implemented opaque
-still-image local-retouch effects. `去脂` remains future and is not reopened,
-modified, trained, or activated here.
+**Owner Acceptance:** The owner directs the milestone to treat manual checks as
+accepted and explicitly states that the current visual result is not very good
+and should be optimized later. This is recorded as an owner-provided decision;
+no new blinded review transcript or result is fabricated.
 
 ## v1 Requirements
 
-### Owner-Local API Contract
-
-- [x] **API-01**: The owner's local host can call
-  `BeautyEngine.process(image:orientation:parameters:)` or
-  `processResult(image:metadata:parameters:)` with a `CIImage` and set either
-  `teethWhitening` or `scleraRednessReduction` without using internal targets,
-  UI code, network services, or model downloads.
-- [x] **API-02**: The owner-local usage contract documents positive-only
-  strengths, default-zero and finite clamping, opaque still-image input,
-  `.photo` metadata, source-exact neutral behavior, named-sRGB output, and
-  typed failure/degradation boundaries for both effects.
-
-### Authorized Portrait Batch
-
-- [x] **VAL-01**: The SDK-owned renderer can process the owner's authorized
-  local portrait directory separately for `teethWhitening` and
-  `scleraRednessReduction`, producing a reconciled aggregate report with no
-  failed or skipped render units.
-- [x] **VAL-02**: Each batch output is checked through the existing renderer
-  contract for successful decode/render/encode, preserved extent and alpha,
-  deterministic output metadata, and effect-local bounded deltas when support
-  is admitted; portraits without trustworthy support may remain source-exact.
-  Raw pixels, masks, landmarks, private paths, and portrait files are not
-  copied into the repository or durable milestone evidence.
-
-### Boundary and Closeout
-
-- [x] **BOUND-01**: The current taxonomy, public inventory, renderer inventory,
-  and owner documentation continue to describe exactly the two implemented
-  retouches while keeping `去脂 = future`, no inert upper-eyelid route, and no
-  new model/resource/network/UI/device/commercial behavior.
-- [x] **CLOSE-01**: The SDK-only archive, boundary, focused image/output,
-  no-skip, and full SwiftPM gates pass with nonzero tests, zero failures, and
-  zero skipped tests; the milestone records the exact commands and aggregate
-  counts without claiming hardware or release readiness.
+- [x] **API-01**: `BeautyParameters` exposes trailing positive-only
+  `upperEyelidFullnessReduction`, defaults/missing/non-finite values to zero,
+  clamps finite values to `0...1`, round-trips with Codable, and admits positive
+  local-retouch intent without changing presets or other parameters.
+- [x] **OUT-01**: Both public still-image facade entries route positive intent
+  through the existing one-request per-eye semantic relief editor and
+  immutable-source composer, with actual deterministic pixel change when
+  supported and source-exact neutral/no-face/rejected behavior otherwise.
+- [x] **ACCEPT-01**: Current taxonomy and owner contracts mark `去脂` implemented
+  for owner-local opaque still-image use with a provisional weak-quality caveat,
+  retain internal experimental provenance, and preserve the historical
+  v1.18/v1.19 non-promotion evidence.
+- [x] **CLOSE-01**: Public/static inventories reconcile at 62 fields, five
+  presets, and 75 renderer cases; focused tests, archive verification, SDK-only
+  boundary, historical v1.18 binding, full SwiftPM, and no-skip closeout pass
+  without adding UI, model, network, device, or distribution scope.
 
 ## Future Requirements
 
-- **FUTURE-01**: Any future `去脂` promotion requires a separately authorized
-  milestone with a rights-compatible genuine dataset, exact target authoring,
-  trained/converted model, blinded review, and a new fail-closed qualification
-  decision before any public field or route exists.
-- **FUTURE-02**: Realtime/pixel-buffer, transparent/HDR/video inputs, device
-  performance, population sufficiency, and owner-local visual approval require
-  separately scoped contracts and are not inherited from this still-image run.
-- **FUTURE-03**: Third-party distribution, packaging, commercialization,
-  monetization, customer delivery, App Store, shipping, launch, or release
-  readiness require an explicit boundary change and full re-audit.
+- **FUTURE-01**: Improve visual strength/naturalness behind the existing public
+  contract using a separately authorized milestone and new automated/product
+  evidence; do not silently remove or rename the field.
+- **FUTURE-02**: Any learned replacement requires actual-use-compatible data,
+  model/resource/license/security/privacy review and must remain owner-local.
+- **FUTURE-03**: Realtime/pixel-buffer, transparent/HDR/video, device,
+  population, commercial quality, packaging, shipping, launch, release, and
+  external distribution remain separately scoped or prohibited.
 
 ## Out of Scope
 
 | Feature | Reason |
 | --- | --- |
-| `去脂` / `upperEyelidFullnessReduction` | Explicitly canceled in v1.19; retained experimental code is fail-closed and must not be presented as a usable effect. |
-| Training, Core ML conversion, external model downloads, or new weights | No new AI/data path is needed to accept the already implemented two controls. |
-| UI/Demo restoration or application lifecycle | The active product surface is the SDK and its SDK-owned validation tools. |
-| Realtime, pixel-buffer, transparent, HDR, gain-map, or video retouch | These require separate input, scheduling, color, and output contracts. |
-| Persistent private evidence | Raw portraits, pixels, masks, landmarks, private paths, rights records, and reviewer identity stay outside durable evidence. |
-| Device/commercial/release claims | SwiftPM and local renderer evidence cannot establish hardware, population, packaging, shipping, or release readiness. |
+| New `去脂` algorithm or threshold retuning | The owner requested the existing implementation remain unchanged apart from public routing. |
+| New manual/blinded review evidence | Acceptance is the owner's explicit decision; no review run is fabricated. |
+| Training/model/weights/downloads | The current public route is the retained source-derived no-model v4 path. |
+| UI/Demo or realtime activation | The active product surface is SDK-only opaque still images. |
+| External/device/commercial/release claims | SwiftPM and owner acceptance do not establish these claims. |
 
 ## Traceability
 
 | Requirement | Phase | Status |
 | --- | --- | --- |
-| API-01 | Phase 85 | Complete |
-| API-02 | Phase 85 | Complete |
-| VAL-01 | Phase 86 | Complete |
-| VAL-02 | Phase 86 | Complete |
-| BOUND-01 | Phase 87 | Complete |
-| CLOSE-01 | Phase 87 | Complete |
+| API-01 | Phase 88 | Complete |
+| OUT-01 | Phase 88 | Complete |
+| ACCEPT-01 | Phase 88 | Complete |
+| CLOSE-01 | Phase 88 | Complete |
 
-**Coverage:**
-
-- v1 requirements: 6 total
-- Mapped to phases: 6
-- Complete: 6
-- Unmapped: 0 ✓
+**Coverage:** 4 total, 4 mapped, 4 complete, 0 unmapped.
 
 ---
-*Requirements defined: 2026-08-25*
-*Last updated: 2026-08-25 after v1.20 SDK-only closeout*
+*Last updated: 2026-08-25 for v1.21 closeout*

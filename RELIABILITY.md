@@ -5,6 +5,15 @@
 
 ## Current Post-Archive Audit Status
 
+v1.21 adds provisional upper-eyelid fullness to the existing still-image
+local-retouch transaction. Positive intent uses the selected observation and
+existing per-eye support/editor; neutral, no-face, missing/malformed/ambiguous
+support, unsupported relief, invalid source, and composition collision remain
+deterministic source-exact outcomes. The known weak visual result is accepted
+as product debt, not hidden as a reliability success claim.
+The final archive-first no-skip gate passed `816/0/0`, all eight opt-ins exactly
+once, and zero skips.
+
 The v1.17 archive at `afb04b4` is immutable historical evidence: its
 Metal-available host ran focused parity `12/0/0` and the full gate `765/0/0`.
 The current tree has repaired raw non-up/mirrored metadata routing (`53e8da1`),
@@ -67,6 +76,7 @@ false alpha/extent flags and still-image extent-origin drift.
 | R14 | `BeautyResult` crosses a concurrency boundary only for `Output: Sendable`; the public test proves field-preserving transfer and the boundary guard rejects an unconditional generic declaration. |
 | R15 | Image-producing milestone evidence validates actual output pixels and metadata against deterministic exact/bounded oracles; process completion without output checks is failure. |
 | R16 | Physical-device access or user feedback is not required for SDK milestone progress; a reproducible post-SDK finding gains an automated regression where possible, while device/product claims remain withheld without separate evidence. |
+| R17 | Upper-eyelid intent performs at most one canonicalization, one detection/mapping request, one request context, one immutable-source composition, and one render; no-face or per-eye rejection cannot contaminate siblings or later requests. |
 
 The automated image oracle applies contract-specific checks rather than one
 global visual heuristic: dimensions/extent, orientation/mirroring, color space,
@@ -97,7 +107,7 @@ The SDK-owned renderer treats its CLI boundary as untrusted input. It rejects
 unknown flags/cases/backends, missing values, duplicate scalar arguments,
 missing/invalid input or output directories, empty or undecodable images, and
 case-insensitive duplicate output stems before crediting work. It preserves the
-compatible 74-case inventory and accepts only the CPU token in v1.16; explicit
+  compatible 75-case current inventory (74 in the v1.16 historical snapshot) and accepts only the CPU token in v1.16; explicit
 GPU is rejected until v1.17. A requested matrix unit is credited only after an
 atomic PNG write, non-empty regular-file check, ImageIO reopen, and exact input
 dimension check. Missing, partial, failed, skipped, or report-write output can
@@ -116,9 +126,11 @@ validate/canonicalize
 → output or typed error
 ```
 
-Affected-eye/feature failure remains local. Teeth and sclera share the request
-owner but not evidence, support, admission, or promotion authority. Pixel-buffer
-processing and `reset()` create no local-retouch request work.
+Affected-eye/feature failure remains local. Teeth, sclera, and upper-eyelid
+fullness share the request owner but not support/admission authority. Upper-
+eyelid units are generated only after per-eye semantic and source-relief
+approval. Pixel-buffer processing and `reset()` create no local-retouch request
+work.
 
 The v1.16 historical geometry implementation was CPU/Core Image-backed and did
 not establish GPU execution. The current v1.17 route keeps CPU as the permanent
@@ -407,11 +419,10 @@ release-readiness evidence. The Phase-79 checker passes live mode and rejects
 eight opt-ins exactly once and zero skips.
 
 After archival, `scripts/check-v1-18-decision-binding.py` replaces—not mutates—
-that historical checker. It consumes the Phase-78 machine program and Phase-75
-canonical contract, validates five resolved Phase-79 contract artifacts, binds
-the deterministic-editor source/evidence digests and ten-test attestation, and
-rechecks exact 61/5/74 absence. Seven artifact-resolution checks cover active,
-archived, ambiguous, missing, direct/parent symlink, and outside-cwd cases. Failures expose
+that historical checker. v1.21 narrows its current responsibility to resolving
+and validating the immutable Phase-75/78/79 machine decision and archived
+61/5/74 disposition. It no longer treats later public-surface changes as drift
+or binds the current editor source/tests. Artifact-resolution failures expose
 only normalized reason identifiers; neither successful nor failed runs persist
 child transcripts or private paths.
 

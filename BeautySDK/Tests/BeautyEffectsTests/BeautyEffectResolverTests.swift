@@ -66,10 +66,20 @@ final class BeautyEffectResolverTests: XCTestCase {
             ("none", BeautyParameters(), 0),
             ("teeth", BeautyParameters(teethWhitening: 0.5), 1),
             ("sclera", BeautyParameters(scleraRednessReduction: 0.5), 1),
+            ("upper eyelid", BeautyParameters(upperEyelidFullnessReduction: 0.5), 1),
             (
                 "both",
                 BeautyParameters(teethWhitening: 0.5, scleraRednessReduction: 0.5),
                 2
+            ),
+            (
+                "all three",
+                BeautyParameters(
+                    teethWhitening: 0.5,
+                    scleraRednessReduction: 0.5,
+                    upperEyelidFullnessReduction: 0.5
+                ),
+                3
             ),
             (
                 "both overflow",
@@ -106,6 +116,13 @@ final class BeautyEffectResolverTests: XCTestCase {
                 1,
                 "positive sclera value \(value)"
             )
+            XCTAssertEqual(
+                BeautyEffectResolver.localRetouchAdmission(
+                    parameters: BeautyParameters(upperEyelidFullnessReduction: value)
+                ).demandCount,
+                1,
+                "positive upper-eyelid value \(value)"
+            )
         }
 
         for value in [Float(0), -Float.ulpOfOne, -1, .nan, .infinity, -.infinity] {
@@ -123,6 +140,13 @@ final class BeautyEffectResolverTests: XCTestCase {
                 0,
                 "normalized-away sclera value \(value)"
             )
+            XCTAssertEqual(
+                BeautyEffectResolver.localRetouchAdmission(
+                    parameters: BeautyParameters(upperEyelidFullnessReduction: value)
+                ).demandCount,
+                0,
+                "normalized-away upper-eyelid value \(value)"
+            )
         }
     }
 
@@ -132,7 +156,9 @@ final class BeautyEffectResolverTests: XCTestCase {
                 as? [String: Any]
         )
         for key in unrelatedObject.keys where
-            key != "teethWhitening" && key != "scleraRednessReduction"
+            key != "teethWhitening"
+                && key != "scleraRednessReduction"
+                && key != "upperEyelidFullnessReduction"
         {
             unrelatedObject[key] = 1
         }
@@ -168,6 +194,7 @@ final class BeautyEffectResolverTests: XCTestCase {
         var directObject: [String: Any] = [
             "teethWhitening": 0.5,
             "scleraRednessReduction": 0.5,
+            "upperEyelidFullnessReduction": 0.5,
         ]
         for alias in aliases {
             directObject[alias] = 1
@@ -178,7 +205,7 @@ final class BeautyEffectResolverTests: XCTestCase {
         )
         XCTAssertEqual(
             BeautyEffectResolver.localRetouchAdmission(parameters: direct).demandCount,
-            2
+            3
         )
     }
 

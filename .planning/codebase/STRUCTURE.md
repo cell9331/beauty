@@ -56,7 +56,7 @@ targets, and six test targets.
 - `BeautyResources`: bundled manifest and preset validation.
 - `BeautySDK`: sole host-facing facade and request orchestration.
 - `BeautyExampleRenderer`: executable consumer that imports the public product,
-  preserves the exact 74-case catalog, validates persisted PNGs, and writes a
+  preserves the exact 75-case catalog, validates persisted PNGs, and writes a
   versioned aggregate report plus disposable ignored output.
 - `IntegrationTests/BeautySDKConsumer`: separate local-path SwiftPM executable
   fixture importing only the public `BeautySDK` product; it is not an SDK target.

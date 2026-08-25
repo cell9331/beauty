@@ -224,13 +224,11 @@ extension BeautyResourceCatalogTests {
         XCTAssertEqual(presets.count, 5)
         for preset in presets {
             let object = try XCTUnwrap(JSONSerialization.jsonObject(with: JSONEncoder().encode(preset.parameters)) as? [String: Any])
-            XCTAssertEqual(Mirror(reflecting: preset.parameters).children.count, 61)
-            XCTAssertEqual(object.count, preset.parameters.filterId == nil ? 60 : 61)
+            XCTAssertEqual(Mirror(reflecting: preset.parameters).children.count, 62)
+            XCTAssertEqual(object.count, preset.parameters.filterId == nil ? 61 : 62)
             XCTAssertEqual(object["teethWhitening"] as? Double, 0)
             XCTAssertEqual(object["scleraRednessReduction"] as? Double, 0)
-            for forbidden in ["upperEyelidFullnessReduction"] {
-                XCTAssertNil(object[forbidden], "\(preset.id): \(forbidden)")
-            }
+            XCTAssertEqual(object["upperEyelidFullnessReduction"] as? Double, 0)
         }
     }
 
@@ -273,13 +271,18 @@ extension BeautyResourceCatalogTests {
             let object = try XCTUnwrap(
                 JSONSerialization.jsonObject(with: JSONEncoder().encode(preset.parameters)) as? [String: Any]
             )
-            XCTAssertEqual(Mirror(reflecting: preset.parameters).children.count, 61)
-            XCTAssertEqual(object.count, preset.parameters.filterId == nil ? 60 : 61)
+            XCTAssertEqual(Mirror(reflecting: preset.parameters).children.count, 62)
+            XCTAssertEqual(object.count, preset.parameters.filterId == nil ? 61 : 62)
             XCTAssertEqual(object["teethWhitening"] as? Double, 0, "\(preset.id): teethWhitening")
             XCTAssertEqual(
                 object["scleraRednessReduction"] as? Double,
                 0,
                 "\(preset.id): scleraRednessReduction"
+            )
+            XCTAssertEqual(
+                object["upperEyelidFullnessReduction"] as? Double,
+                0,
+                "\(preset.id): upperEyelidFullnessReduction"
             )
             for forbidden in candidateNames {
                 XCTAssertNil(object[forbidden], "\(preset.id): \(forbidden)")
@@ -314,7 +317,7 @@ extension BeautyResourceCatalogTests {
             "conjunctival_whitening", "ocular_redness", "ocular_redness_reduction", "ocular_whitening",
             "bloodshot_reduction", "bloodshot_eye_correction", "eyes.redness", "祛红血丝",
             "upperEyelidFullness", "upperLidFullness", "eyelidFullness", "lidFullness",
-            "upperEyelidFullnessReduction", "upperLidFullnessReduction", "eyelidFullnessReduction", "lidFullnessReduction",
+            "upperLidFullnessReduction", "eyelidFullnessReduction", "lidFullnessReduction",
             "upperEyelidFullnessRemoval", "upperLidFullnessRemoval", "eyelidFullnessRemoval", "lidFullnessRemoval",
             "upperEyelidFat", "upperLidFat", "eyelidFat", "lidFat",
             "upperEyelidFatReduction", "upperLidFatReduction", "eyelidFatReduction", "lidFatReduction",
@@ -340,9 +343,10 @@ extension BeautyResourceCatalogTests {
             let object = try XCTUnwrap(
                 JSONSerialization.jsonObject(with: JSONEncoder().encode(preset.parameters)) as? [String: Any]
             )
-            XCTAssertEqual(Mirror(reflecting: preset.parameters).children.count, 61)
-            XCTAssertEqual(object.count, preset.parameters.filterId == nil ? 60 : 61)
+            XCTAssertEqual(Mirror(reflecting: preset.parameters).children.count, 62)
+            XCTAssertEqual(object.count, preset.parameters.filterId == nil ? 61 : 62)
             XCTAssertEqual(object["scleraRednessReduction"] as? Double, 0)
+            XCTAssertEqual(object["upperEyelidFullnessReduction"] as? Double, 0)
             for forbidden in candidateNames {
                 XCTAssertNil(object[forbidden], "\(preset.id): \(forbidden)")
             }
@@ -362,9 +366,6 @@ extension BeautyResourceCatalogTests {
 
     func testPhase62IntentAdmissionKeepsExactFivePresetSourcesAndNeutralLocalRetouchKeys() throws {
         let expectedIDs = ["natural", "clear", "refined", "male-natural", "id-photo-natural"]
-        let candidates = [
-            "upperEyelidFullnessReduction",
-        ]
         let presets = try BeautyResourceCatalog.bundled().builtInPresets()
         XCTAssertEqual(presets.map(\.id), expectedIDs)
         XCTAssertEqual(presets.count, 5)
@@ -373,12 +374,10 @@ extension BeautyResourceCatalogTests {
             let object = try XCTUnwrap(
                 JSONSerialization.jsonObject(with: JSONEncoder().encode(preset.parameters)) as? [String: Any]
             )
-            XCTAssertEqual(Mirror(reflecting: preset.parameters).children.count, 61)
+            XCTAssertEqual(Mirror(reflecting: preset.parameters).children.count, 62)
             XCTAssertEqual(object["teethWhitening"] as? Double, 0)
             XCTAssertEqual(object["scleraRednessReduction"] as? Double, 0)
-            for candidate in candidates {
-                XCTAssertNil(object[candidate], "\(preset.id): \(candidate)")
-            }
+            XCTAssertEqual(object["upperEyelidFullnessReduction"] as? Double, 0)
         }
 
         let presetDirectory = repositoryRootURL()

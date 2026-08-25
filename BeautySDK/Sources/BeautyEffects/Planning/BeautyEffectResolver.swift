@@ -64,8 +64,8 @@ public enum BeautyEffectResolver {
         )
     }
 
-    /// Phase 62 admits one request-local opaque demand for each independently
-    /// qualified teeth or sclera intent. The carrier deliberately remains
+    /// Admits one request-local opaque demand for each owner-local still-image
+    /// retouch intent. The carrier deliberately remains
     /// feature-neutral; provider phases own masks and output.
     package static func localRetouchAdmission(
         parameters: BeautyParameters
@@ -76,6 +76,9 @@ public enum BeautyEffectResolver {
             opaqueDemandCount += 1
         }
         if normalized.scleraRednessReduction > 0 {
+            opaqueDemandCount += 1
+        }
+        if normalized.upperEyelidFullnessReduction > 0 {
             opaqueDemandCount += 1
         }
         return BeautyLocalRetouchAdmission(opaqueDemandCount: opaqueDemandCount)

@@ -2,10 +2,9 @@ import BeautyCore
 import BeautyDetection
 import Foundation
 
-/// Rejected v4 source-derived relief experiment retained only for generated
-/// regression evidence. Genuine automation invalidated its semantic admission,
-/// boundary, and minimum-relief assumptions; production code must use the
-/// fail-closed learned-prediction boundary instead.
+/// Source-derived relief model used by the provisional owner-local `去脂`
+/// route. Its bounded safety mechanics are retained, while its weak visual
+/// result remains an explicitly documented quality limitation.
 package struct BeautyExperimentalUpperEyelidReliefModel: Sendable {
     package struct Sample: Equatable, Sendable {
         package let pixelIndex: Int
@@ -338,8 +337,9 @@ private struct ReliefPatch: Sendable {
     }
 }
 
-/// Historical semantic adapter for the rejected v4 experiment. It is not a
-/// production fullness owner and must never back a public route.
+/// Conservative semantic adapter for the provisional owner-local route.
+/// It authorizes only source-derived convex relief inside the existing
+/// per-eye brow-to-lid envelope and otherwise fails closed.
 package enum BeautyExperimentalUpperEyelidFullnessSemanticAnalyzer {
     package static func makeOwner(
         source: BeautyCanonicalStillImage

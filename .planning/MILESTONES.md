@@ -1,5 +1,60 @@
 # Milestones
 
+## v1.21 Provisional Upper-Eyelid Public Activation (Completed: 2026-08-25)
+
+**Delivered:** Kept `去脂` and exposed it for owner-local use through the
+trailing positive-only `BeautyParameters.upperEyelidFullnessReduction`. Both
+public still-image entries reuse the existing bounded v4 per-eye semantic
+relief/editor and immutable-source composition route. Added public pixel/
+metadata/degradation coverage and the 75th renderer case.
+
+**Owner acceptance:** The owner directs that manual checks be treated as
+accepted for this milestone while explicitly recording that the visual result
+is currently weak and should improve later. No new blinded review is claimed.
+
+**Phases completed:** 88 (1 plan, 4 requirements)
+
+**Current boundary:** 62 public fields / five neutral presets / 75 renderer
+cases. Internal experimental names preserve provenance; no dataset, training,
+model, weight, Core ML resource, network, UI/Demo, realtime, device,
+commercial, packaging, shipping, launch, release, or distribution scope was
+added. v1.18/v1.19 records remain immutable historical non-promotion evidence.
+
+**Verification:** Focused public upper-eyelid integration passed 4/4; focused
+parameter/renderer/process/resource/resolver/foundation suites also passed.
+Archive, SDK-only, historical v1.18 binding, backend/Metal, public consumer,
+CPU-reference, and diff-hygiene checks passed. The final no-skip wrapper passed
+SwiftPM 817/0/0 with all eight opt-ins exactly once and zero skips.
+
+**Archives:** [roadmap](milestones/v1.21-ROADMAP.md),
+[requirements](milestones/v1.21-REQUIREMENTS.md),
+[audit](milestones/v1.21-MILESTONE-AUDIT.md), and
+[phase artifacts](milestones/v1.21-phases/).
+
+## v1.2 HTML Reference Baselines (Reduced-scope historical closeout: 2026-06-26)
+
+**Outcome:** Retained Phase 11's local static Home and Editor HTML reference
+package and its three browser captures. The later SwiftUI delta, fidelity, and
+visual-QA phases (12–15) were canceled by owner decision; their 12 requirements
+are not implementation failures. The source package is archive-only and must be
+restored to a temporary directory before inspection.
+
+**Scope:** HTML-01 through HTML-05 retained; AUDIT-01 through AUDIT-03,
+HSWIFT-01 through HSWIFT-03, ESWIFT-01 through ESWIFT-03, and VQA-01 through
+VQA-03 canceled.
+
+**Verification:** The verified `meituxiuxiu` ZIP restores offline, its local
+static contract scan passes, and the three retained PNG artifacts are present.
+The captures retain two historical layout defects (hero/action overlap and
+missing visible bottom tabs); because the UI package is immutable archive
+material and the follow-on visual phases were canceled, these are recorded as
+accepted historical debt rather than current SDK work.
+
+**Archives:** [roadmap](milestones/v1.2-ROADMAP.md),
+[requirements](milestones/v1.2-REQUIREMENTS.md),
+[audit](milestones/v1.2-MILESTONE-AUDIT.md), and
+[phase artifacts](milestones/v1.2-phases/).
+
 ## v1.20 Owner-Local Still-Image Retouch Acceptance (Completed: 2026-08-25)
 
 **Delivered:** Closed the owner-local usage loop for the two existing opaque

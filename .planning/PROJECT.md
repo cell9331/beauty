@@ -18,38 +18,40 @@ The project owner's local iOS host can integrate `BeautySDK` and get natural,
 controllable, real-time and still-image beauty processing through a stable
 modular facade without distributing the SDK or its model resources.
 
-## Current Milestone: v1.20 Owner-Local Still-Image Retouch Acceptance
+## Current Milestone: v1.21 Provisional Upper-Eyelid Public Activation
 
-**Goal:** Close the direct owner-local usage loop for the two already
-implemented opaque still-image retouches, `白牙` and `祛红血丝`, using the
-public Swift facade and temporary authorized-portrait validation.
+**Goal:** Keep `去脂` available through the owner-local public Swift facade by
+connecting `upperEyelidFullnessReduction` to the retained bounded v4 mechanics,
+then close the milestone with the effect's weak visual quality explicitly
+recorded as future debt.
 
 **Target features:**
 
-- Document the exact `BeautyEngine` / `BeautyParameters` call path, defaults,
-  input/output limits, and fail-closed behavior for both retouches.
-- Batch-render both controls against the owner's authorized local portrait
-  folder in temporary output space and retain only aggregate validation.
-- Re-run the SDK-only, no-skip, and full SwiftPM gates while preserving exact
-  61-field / five-preset / 74-case public inventory and `去脂 = future`.
+- Add the trailing positive-only, default-zero, Codable public field.
+- Reuse the existing one-observation, per-eye semantic support, bounded relief
+  editor, immutable-source composition, and fail-closed behavior.
+- Prove actual public-facade pixels/metadata, neutral/no-face degradation, and
+  exact 62-field / five-preset / 75-case current inventory.
+- Record manual acceptance as the owner's supplied product decision without
+  fabricating a new review run.
 
-**Non-negotiable boundary:** No algorithm change, training, model/data
-download, UI/Demo restoration, realtime expansion, device/commercial testing,
-packaging, shipping, launch, external distribution, or release-readiness claim
-is part of v1.20.
+**Non-negotiable boundary:** No new algorithm, training, data/model/weight,
+Core ML resource, network, UI/Demo, realtime, device/commercial, packaging,
+shipping, launch, distribution, or release-readiness work is part of v1.21.
 
-## Latest Completed Milestone: v1.20 Owner-Local Still-Image Retouch Acceptance
+## Latest Completed Milestone: v1.21 Provisional Upper-Eyelid Public Activation
 
-**Outcome:** The owner-local `CIImage` call path for `白牙` and `祛红血丝` is
-documented and batch-validated against 11 authorized local portraits per
-effect in temporary output space. Focused integration passed 34/34,
-parameter/renderer contract tests passed 74/74, and the final SDK-only no-skip
-gate passed 813/0/0 with eight opt-ins exactly once and zero skips. No
-production Swift source changed and no `去脂` surface was added.
+**Outcome:** `去脂` is callable from both public still-image entries through
+`BeautyParameters.upperEyelidFullnessReduction`. The route retains bounded
+per-eye source-derived relief editing and source-exact failure. The owner
+accepts current use while acknowledging that the effect is not very good and
+should improve later. Current inventory is 62 fields, five presets, and 75
+renderer cases.
 
-**Boundary:** This is package-host evidence for owner-controlled local use. It
-does not claim device, population, commercial, packaging, shipping, launch, or
-release readiness. `去脂` remains future with exact 61/5/74 public absence.
+**Boundary:** This is owner-local package-host/product-decision evidence. It
+does not rewrite v1.18/v1.19 failures or claim a new blinded review, learned
+model, device/population/commercial quality, packaging, shipping, launch,
+release readiness, or distribution.
 
 ## Deferred Milestone: v1.19 Genuine Upper-Eyelid Fullness Promotion
 
@@ -142,22 +144,19 @@ and `眼睛 = partial`.
 
 ## Current State
 
-**Latest completed milestone:** v1.20 Owner-Local Still-Image Retouch
-Acceptance, completed 2026-08-25 as an SDK-only owner-local integration and
-batch-validation closeout. It is not a shipping, launch, or release-readiness
-claim. v1.18 remains the latest algorithm-qualification milestone and v1.19
-remains canceled.
+**Latest completed milestone:** v1.21 Provisional Upper-Eyelid Public
+Activation, completed 2026-08-25 as an SDK-only owner-local API/output closeout.
+It is not a device, commercial, shipping, launch, or release-readiness claim.
+v1.18 remains immutable historical qualification evidence and v1.19 remains
+canceled as a learned/data effort.
 **Latest historical UI milestone:** v1.1 Meitu UI on 2026-06-24, retained only as archived evidence.
-**Current work:** v1.20 completed direct owner-local still-image validation of
-the already implemented `白牙` and `祛红血丝` controls against the authorized
-local portrait folder in temporary output space. No `去脂` work is active: v1.19
-terminated four hand-authored candidates, retained them under explicit
-experimental names, and verified a strict package-only prediction boundary
-whose no-model state emits no proposal. Dataset admission, exact-target
-authoring, training, Core ML conversion, qualification, and public activation
-remain canceled until a future milestone explicitly reauthorizes them.
+**Current work:** v1.21 exposes the retained no-model v4 `去脂` mechanics through
+the owner-local public still-image facade. The owner accepts current use while
+recording weak visual quality for future optimization. Dataset admission,
+exact-target authoring, training, Core ML conversion, learned qualification,
+and all external/device/commercial work remain inactive.
 
-**Implementation state:** v1.16 froze the current CPU renderer as the reference backend, added generated CPU oracles, a public-only SwiftPM consumer, the SDK-owned renderer CLI, and conditional `BeautyResult` sendability. v1.17 added the package-only backend-neutral boundary, bounded Metal runtime and feature passes, public `.cpu`/`.gpu` configuration with typed unavailable-GPU failure, and generated CPU/GPU parity gates. v1.18 added package-only per-eye semantic support, bounded tone/frequency editor mechanics, frozen private-evidence tooling, and fail-closed decision/absence gates while preserving the 61-field/five-preset/74-case public surface. v1.20 adds no renderer or algorithm code; it documents and exercises the existing teeth/sclera still-image surface. Historical application taxonomy remains archive-only.
+**Implementation state:** v1.16 froze the CPU reference and SDK-only consumer; v1.17 added bounded Metal execution and public backend policy; v1.18 added package-only per-eye semantic support and bounded relief mechanics at historical 61/5/74 absence; v1.20 documented and exercised teeth/sclera; v1.21 adds the trailing public scalar, existing-mechanics facade route, and 75th renderer case without a model or new algorithm. Historical application taxonomy remains archive-only.
 
 **Verification state:** The immutable v1.18 archive-first gate passed XCTest
 `797/0/0`. The post-archive remediation gate passes `800/0/0`, all eight
@@ -166,15 +165,18 @@ opt-ins exactly once, and `skipped_tests=0`. Available-host parity executed
 `metal_unavailable=0`, and `parity_executed=1`; unavailable Metal remains a
 terminal typed outcome with no CPU fallback or parity credit. Phase-79 live
 closeout passes and rejects 8/8 decision/surface/backend/metadata mutations.
+The current v1.21 archive-first no-skip closeout passes `817/0/0`, all eight
+opt-ins exactly once, and zero skips; its v1.18 binding check is explicitly
+historical while the current public inventory is 62/5/75.
 
-**Current audit boundary:** CPU remains the reference and `.cpu`/`.gpu` selection remains public. Local-retouch bytes are CPU-owned original-pixel/Q16 composition transported through an identity Metal pass, with no masks/proposals/support crossing into Metal. `.gpu` still images require exact-opaque bounded non-extended RGB before detection and emit named-sRGB output. Metal still-image coefficients and lip math match the CPU oracle within the pinned generated tolerance. `BeautyEngine` is intentionally non-`Sendable`; callers serialize all access to one instance, while independent instances may execute concurrently. Backend-result alpha/extent publication fails closed, and F-09 geometry provenance uses one immutable observation with mutation-tested ownership. Transparent input, end-to-end GPU local-retouch composition, shared-instance parallel safety, `去脂`, new semantic-mask features, model/network, UI/Demo, simulator/device, population/device/commercial, packaging, shipping, launch, and release readiness remain unsupported, future, or separately scoped.
+**Current audit boundary:** CPU remains the reference and `.cpu`/`.gpu` selection remains public. Local-retouch bytes are CPU-owned original-pixel/Q16 composition transported through an identity Metal pass, with no masks/proposals/support crossing into Metal. `.gpu` still images require exact-opaque bounded non-extended RGB before detection and emit named-sRGB output. `BeautyEngine` is intentionally non-`Sendable`; callers serialize one instance. `去脂` is owner-local opaque still-image only and fails closed per eye. Transparent input, end-to-end GPU local-retouch composition, shared-instance parallel safety, new learned/model/network work, UI/Demo, simulator/device, population/commercial, packaging, shipping, launch, release readiness, and distribution remain unsupported, future, or prohibited.
 
 **Archived v1.5 baseline:** Phase 26 records public facade geometry activation and privacy-safe routing; Phase 27 records deterministic saved-output geometry evidence and degradation verification; Phase 28 records scoped `脸型` per-tool renderer evidence, safety/degradation/redaction tests, and ledger/documentation closeout. Broader historical application/device/release evidence remains time-bounded and cannot satisfy current SDK requirements. The codebase maps were refreshed again from the post-archive active source/tests on 2026-08-14.
 
 **Code size:** the immutable `v1.15` tag contains 49,018 tracked Swift
-source/test lines. The active post-remediation SDK-only tree contains 74 Swift
-source files / 17,784 source lines and 79 SwiftPM test files / 34,997 test
-lines, excluding `.build` and archive contents.
+source/test lines. The active v1.21 SDK-only tree contains 76 Swift source files
+/ 18,857 source lines and 81 SwiftPM test files / 36,008 test lines, excluding
+`.build` and archive contents.
 
 ## Planned SDK-First Milestone Sequence
 
@@ -185,6 +187,9 @@ lines, excluding `.build` and archive contents.
    genuine evidence and blinded-review gates remained unsatisfied.
 4. **v1.20 Owner-Local Still-Image Retouch Acceptance** — completed 2026-08-25;
    validates direct `白牙` and `祛红血丝` calls and preserves `去脂 = future`.
+5. **v1.21 Provisional Upper-Eyelid Public Activation** — completed 2026-08-25;
+   exposes retained bounded v4 mechanics as owner-local `去脂`, records weak
+   visual quality, and preserves all model/device/distribution nonclaims.
 
 The backend choice is configuration/execution policy and must not change the public beauty-parameter or preset schema. Detection/support semantics remain shared. No backend may borrow success from the other: CPU and GPU each run the same SDK-owned input/output contract, and comparison evidence separately verifies their parity.
 
@@ -744,10 +749,14 @@ Historical milestone detail is archived in:
 
 Current visual reference contracts:
 
-- `meituxiuxiu/HOME_MAP.md` owns the Home screen reference structure and scroll behavior.
-- `meituxiuxiu/FUNCTION_MAP.md` owns the Editor `美型 / 五官` tool-panel taxonomy and visual behavior.
-- v1.2 HTML baselines live under `meituxiuxiu/html/` as retained reference artifacts.
-- v1.2 evidence lives under `.planning/evidence/v1.2/` and currently covers the retained HTML baselines only.
+- The historical `HOME_MAP.md` and `FUNCTION_MAP.md` sources are available only
+  inside the verified legacy UI archive; they are not active source inputs.
+- v1.2 HTML baselines live in the verified `meituxiuxiu` ZIP under
+  `archives/legacy-ui/`. Run `python3 scripts/archive-legacy-ui.py verify
+  --output archives/legacy-ui` and restore to a new temporary directory before
+  opening them.
+- v1.2 evidence lives under `.planning/evidence/v1.2/` and covers retained
+  historical HTML artifacts only; it is not current SwiftUI or SDK pass evidence.
 - v1.3 core beauty module plan lives under `docs/meitu-function-blueprint/`.
 - v1.3 example-image validation is documented in `docs/meitu-function-blueprint/EXAMPLE_IMAGE_VALIDATION.md` and implemented by the `BeautyExampleRenderer` SwiftPM executable.
 
@@ -762,7 +771,9 @@ Current visual reference contracts:
 - **Permissions:** Camera/photo prompts are app-owned; SDK APIs must not trigger protected-resource prompts by themselves.
 - **Resource trust:** Presets, LUTs, makeup packs, stickers, and future resource bundles are untrusted unless bundled, versioned, and validated.
 - **Toolchain:** Phase 21 observed Xcode 26.6 and Swift 6.3.3. Explicit iOS Simulator destinations are required for reliable `xcodebuild` evidence. Phase 23 focused Demo camera tests pass in the current environment, while Phase 22 screenshot evidence still needs the screenshot protocol rerun before a current visual pass can be claimed.
-- **HTML reference workflow:** v1.2 built and verified static local HTML references. If SwiftUI visual tuning is re-promoted later, it should cite a new explicit contract rather than raw screenshots alone.
+- **HTML reference workflow:** v1.2 retained verified static local HTML references
+  as archive-only material. If SwiftUI visual tuning is re-promoted later, it
+  should cite a new explicit contract rather than raw screenshots alone.
 - **Offline reference safety:** HTML references must use local code/assets only; no network fonts, remote media, analytics, upload, or hidden service calls.
 - **v1.3 scope boundary:** v1.3 designs and implements core beauty modules only; no new SwiftUI screens, Home/discovery, style resources, AI/background, video/body, gallery/account, search, premium access, commerce, or account authorization work.
 - **v1.5 scope boundary:** v1.5 starts from `docs/meitu-function-blueprint/SHAPE_FEATURE_LEDGER.md` and promotes only SDK-core geometry output plus the `脸型` existing-parameter slice; UI and non-face-shape groups stay out of scope unless the roadmap explicitly changes.
@@ -792,6 +803,11 @@ Current visual reference contracts:
   owner-local facade. It adds no algorithm, model, data, UI, realtime/device,
   commercial, packaging, shipping, launch, external-distribution, or release
   behavior; `去脂` remains future and exactly absent from the public surface.
+- **v1.21 scope boundary:** v1.21 supersedes that historical absence only for
+  the explicit owner-local, opaque still-image, no-model provisional scalar.
+  It records weak visual quality and preserves all data/model/device,
+  population, commercial, packaging, shipping, launch, release, and
+  distribution nonclaims.
 
 ## Key Decisions
 

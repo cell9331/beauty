@@ -82,7 +82,8 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
         "lipPeakDefinition_0p25",
         "lipPlump_0p25",
         "teethWhitening_1p00",
-        "scleraRednessReduction_1p00"
+        "scleraRednessReduction_1p00",
+        "upperEyelidFullnessReduction_1p00"
     ]
 
     private static let fixtureNames = [
@@ -198,7 +199,7 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
         let peak = try rendererCaseSnippet(for: "eyebrowPeakDefinition_0p25", in: try rendererSource())
         XCTAssertTrue(peak.contains("eyebrowPeakDefinition: 0.25"))
         XCTAssertEqual(allFields.filter { peak.contains("\($0):") }, ["eyebrowPeakDefinition"])
-        XCTAssertEqual(Set(Self.expectedRendererCaseIDs).count, 74)
+        XCTAssertEqual(Set(Self.expectedRendererCaseIDs).count, 75)
         XCTAssertEqual(Self.fixtureNames, ["portraits/p1.jpg", "negatives/no-face-gradient.png"])
         for parked in 1...5 {
             XCTAssertFalse(Self.fixtureNames.contains("portraits/e\(parked).png"))
@@ -377,8 +378,8 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
         }
 
         let caseIDs = rendererCaseIDs(in: source)
-        XCTAssertEqual(caseIDs.count, 74)
-        XCTAssertEqual(Set(caseIDs).count, 74)
+        XCTAssertEqual(caseIDs.count, 75)
+        XCTAssertEqual(Set(caseIDs).count, 75)
         for deferred in [
             "doubleChin", "doubleChinPro", "hairline", "foreheadHairline",
             "faceCombo", "chinWidth", "faceLift",
@@ -466,8 +467,8 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
         }
 
         let caseIDs = rendererCaseIDs(in: source)
-        XCTAssertEqual(caseIDs.count, 74)
-        XCTAssertEqual(Set(caseIDs).count, 74)
+        XCTAssertEqual(caseIDs.count, 75)
+        XCTAssertEqual(Set(caseIDs).count, 75)
         for alias in ["eyeCombo", "manualGaze", "perEyeAsymmetry"] {
             XCTAssertFalse(caseIDs.contains { $0 == alias || $0.hasPrefix("\(alias)_") })
             XCTAssertFalse(containsInitializerLabel(alias, in: source))
@@ -1058,8 +1059,8 @@ extension BeautyRendererOutputRegressionTests {
         let snippet = try rendererCaseSnippet(for: caseID, in: source)
 
         XCTAssertEqual(rendererCaseIDs(in: source), Self.expectedRendererCaseIDs)
-        XCTAssertEqual(Self.expectedRendererCaseIDs.count, 74)
-        XCTAssertEqual(Set(Self.expectedRendererCaseIDs).count, 74)
+        XCTAssertEqual(Self.expectedRendererCaseIDs.count, 75)
+        XCTAssertEqual(Set(Self.expectedRendererCaseIDs).count, 75)
         XCTAssertEqual(Self.expectedRendererCaseIDs.filter { $0 == caseID }.count, 1)
         XCTAssertTrue(snippet.contains("BeautyParameters(scleraRednessReduction: 1)"))
         XCTAssertEqual(["scleraRednessReduction:"].filter { snippet.contains($0) }, ["scleraRednessReduction:"])
@@ -1067,7 +1068,7 @@ extension BeautyRendererOutputRegressionTests {
             XCTAssertFalse(containsInitializerLabel(forbidden, in: source), forbidden)
             XCTAssertFalse(source.contains("\"\(forbidden)\""), forbidden)
         }
-        XCTAssertFalse(containsInitializerLabel("upperEyelidFullnessReduction", in: source))
+        XCTAssertTrue(containsInitializerLabel("upperEyelidFullnessReduction", in: source))
         XCTAssertTrue(source.contains("--no-watermark"))
         XCTAssertEqual(source.components(separatedBy: "engine.processResult(").count - 1, 1)
     }
@@ -1078,8 +1079,8 @@ extension BeautyRendererOutputRegressionTests {
         let snippet = try rendererCaseSnippet(for: caseID, in: source)
 
         XCTAssertEqual(rendererCaseIDs(in: source), Self.expectedRendererCaseIDs)
-        XCTAssertEqual(Self.expectedRendererCaseIDs.count, 74)
-        XCTAssertEqual(Set(Self.expectedRendererCaseIDs).count, 74)
+        XCTAssertEqual(Self.expectedRendererCaseIDs.count, 75)
+        XCTAssertEqual(Set(Self.expectedRendererCaseIDs).count, 75)
         XCTAssertEqual(Self.expectedRendererCaseIDs.filter { $0 == caseID }.count, 1)
         XCTAssertTrue(snippet.contains("BeautyParameters(teethWhitening: 1)"))
         XCTAssertEqual(["teethWhitening:"].filter { snippet.contains($0) }, ["teethWhitening:"])
@@ -1096,11 +1097,11 @@ extension BeautyRendererOutputRegressionTests {
         XCTAssertEqual(source.components(separatedBy: "engine.processResult(").count - 1, 1)
     }
 
-    func testDeferredUpperEyelidGateKeepsRendererAndSavedOutputSurfaceAbsent() throws {
+    func testProvisionalUpperEyelidRouteUsesOneCanonicalRendererCase() throws {
         let source = try rendererSource()
         let candidateNames = [
             "upperEyelidFullness", "upperLidFullness", "eyelidFullness", "lidFullness",
-            "upperEyelidFullnessReduction", "upperLidFullnessReduction", "eyelidFullnessReduction", "lidFullnessReduction",
+            "upperLidFullnessReduction", "eyelidFullnessReduction", "lidFullnessReduction",
             "upperEyelidFullnessRemoval", "upperLidFullnessRemoval", "eyelidFullnessRemoval", "lidFullnessRemoval",
             "upperEyelidFat", "upperLidFat", "eyelidFat", "lidFat",
             "upperEyelidFatReduction", "upperLidFatReduction", "eyelidFatReduction", "lidFatReduction",
@@ -1121,8 +1122,8 @@ extension BeautyRendererOutputRegressionTests {
         ]
 
         XCTAssertEqual(rendererCaseIDs(in: source), Self.expectedRendererCaseIDs)
-        XCTAssertEqual(Self.expectedRendererCaseIDs.count, 74)
-        XCTAssertEqual(Set(Self.expectedRendererCaseIDs).count, 74)
+        XCTAssertEqual(Self.expectedRendererCaseIDs.count, 75)
+        XCTAssertEqual(Set(Self.expectedRendererCaseIDs).count, 75)
         for forbidden in candidateNames {
             XCTAssertFalse(
                 Self.expectedRendererCaseIDs.contains { $0 == forbidden || $0.hasPrefix("\(forbidden)_") },
@@ -1131,6 +1132,11 @@ extension BeautyRendererOutputRegressionTests {
             XCTAssertFalse(containsInitializerLabel(forbidden, in: source), forbidden)
             XCTAssertFalse(source.contains("\"\(forbidden)\""), forbidden)
         }
+
+        let caseID = "upperEyelidFullnessReduction_1p00"
+        let snippet = try rendererCaseSnippet(for: caseID, in: source)
+        XCTAssertEqual(Self.expectedRendererCaseIDs.filter { $0 == caseID }.count, 1)
+        XCTAssertTrue(snippet.contains("BeautyParameters(upperEyelidFullnessReduction: 1)"))
 
         for shipped in [
             "skinSmoothing_0p50", "eyeHeight_0p25", "upperEyelidLift_0p25",
@@ -1141,25 +1147,16 @@ extension BeautyRendererOutputRegressionTests {
         XCTAssertEqual(source.components(separatedBy: "engine.processResult(").count - 1, 1)
     }
 
-    func testIndependentLocalRetouchOutputRoutesKeepUpperEyelidCandidateAbsent() throws {
+    func testIndependentLocalRetouchOutputRoutesIncludeUpperEyelidControl() throws {
         let source = try rendererSource()
-        let candidates = ["upperEyelidFullnessReduction"]
 
         XCTAssertEqual(rendererCaseIDs(in: source), Self.expectedRendererCaseIDs)
-        XCTAssertEqual(Self.expectedRendererCaseIDs.count, 74)
-        XCTAssertEqual(Set(Self.expectedRendererCaseIDs).count, 74)
+        XCTAssertEqual(Self.expectedRendererCaseIDs.count, 75)
+        XCTAssertEqual(Set(Self.expectedRendererCaseIDs).count, 75)
         XCTAssertTrue(Self.expectedRendererCaseIDs.contains("teethWhitening_1p00"))
         XCTAssertTrue(Self.expectedRendererCaseIDs.contains("scleraRednessReduction_1p00"))
-        for candidate in candidates {
-            XCTAssertFalse(containsInitializerLabel(candidate, in: source), candidate)
-            XCTAssertFalse(source.contains("\"\(candidate)\""), candidate)
-            XCTAssertFalse(
-                Self.expectedRendererCaseIDs.contains {
-                    $0 == candidate || $0.hasPrefix("\(candidate)_")
-                },
-                candidate
-            )
-        }
+        XCTAssertTrue(containsInitializerLabel("upperEyelidFullnessReduction", in: source))
+        XCTAssertTrue(Self.expectedRendererCaseIDs.contains("upperEyelidFullnessReduction_1p00"))
         XCTAssertEqual(source.components(separatedBy: "engine.processResult(").count - 1, 1)
     }
 }

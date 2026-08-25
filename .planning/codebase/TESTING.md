@@ -70,7 +70,7 @@ transcript with:
 The repository-owned public-surface consumer preflight runs before the child and builds a separate
 local-path package that imports only public `BeautySDK`, generates a neutral
 RGBA input, and checks real output bytes/dimensions. The renderer regression
-suite covers the exact 74-case inventory, and
+suite covers the exact 75-case current inventory, and
 `BeautyExampleRendererProcessTests` invokes the compiled binary through
 Foundation `Process` for reproducible success, invalid matrix, collision,
 artifact replacement, control-character escaping, and independent render/encode

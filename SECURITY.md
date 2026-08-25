@@ -4,6 +4,15 @@
 
 ## Current Post-Archive Audit Status
 
+v1.21 activates the existing no-model upper-eyelid mechanics through one
+owner-local scalar. This adds no external trust boundary: support, semantic
+envelopes, pixels, proposals, and editor summaries stay package-only and
+request-local; only `upperEyelidFullnessReduction` crosses the public boundary.
+The owner accepts weak current visual quality, while the security posture
+continues to fail closed on missing or untrusted per-eye support.
+The final archive-first no-skip gate passed `816/0/0` with every opt-in exactly
+once and zero skips.
+
 The v1.17 archive at `afb04b4` preserves historical Metal-available evidence
 (focused `12/0/0`, full `765/0/0`). Post-archive remediation has restored public
 non-up/mirrored raw metadata compatibility (`53e8da1`), separated unavailable-
@@ -61,6 +70,7 @@ research-only data and derived models cannot supply that permission.
 | Generated CPU oracle → gate | regular in-tree Swift sources, in-memory fixtures, no media/location/private diagnostics, CPU-only tokens, bounded focused execution |
 | Automated image input/output oracle → milestone | generated in-memory or rights-approved ignored-local input, actual pixel/metadata assertions, temporary output, aggregate-only durable result; no physical-device dependency |
 | Public generic result → concurrency boundary | `BeautyResult` is `Sendable` only when `Output: Sendable`; public field-preserving transfer is tested, while unconditional generic sendability is rejected by the boundary mutation self-test |
+| Upper-eyelid public intent → experimental mechanics | positive finite scalar only; selected request-local observation; per-eye brow/eye envelope; source-derived relief approval; bounded channel deltas; immutable-source composition; no model/network/persistent anatomy |
 
 ## 3. Archive Entry and Extraction Safety
 
@@ -160,8 +170,10 @@ artifact.
 - Teeth coverage remains fixed to its qualified inner aperture. Sclera work
   preserves iris, pupil, highlight, lash/lid, skin, caruncle, exterior, alpha,
   and colored-interior protections.
-- `去脂` remains future upper-eyelid-fullness work and cannot alias existing eye,
-  brow, smoothing, eye-bag, or dark-circle behavior.
+- Provisional `去脂` is exposed only as `upperEyelidFullnessReduction` and
+  cannot alias existing eye, brow, smoothing, eye-bag, or dark-circle behavior.
+  Internal experimental names and weak-effect history are not public support or
+  efficacy claims.
 - Phase 76 support remains package-only and request-local. A mapped eye envelope
   can constrain ownership but cannot authorize fullness; an injected semantic
   owner must approve each eye independently. Missing, malformed, ambiguous,
@@ -177,8 +189,8 @@ artifact.
   source-exact without affecting an eligible peer.
 - Final composition is still owned by the existing composition owner: exterior
   and protected bytes, alpha, metadata, and overlap-to-source collision policy
-  are enforced there. The editor cannot bypass that owner or authorize a
-  public route.
+  are enforced there. The editor cannot bypass that owner; the public facade
+  may invoke it only through this existing owner chain.
 - Real-fixture masks must match finite zero-origin dimensions/orientation before
   measurement; synthetic/AI fixtures cannot establish product feasibility.
 - Phase 78 reuses the Phase 75 child-process evaluator and exports only fixed
@@ -188,11 +200,12 @@ artifact.
   redistribution rights plus bounded output and identical safety gates. No raw
   candidate output, review prose, private locator, or face-derived artifact is
   persisted, and the current comparator disposition is `not-admitted`.
-- Phase 79 consumes the failed decision as a hard authorization boundary:
+- Historically, Phase 79 consumed the failed decision as an authorization boundary:
   internal support/editor symbols cannot be reached through public fields,
   renderer cases, resources, package dependencies, or Testing SPI. The exact
-  61/5/74 absence is checked before closeout.
-- The current post-archive successor accepts only an explicit repository root
+  61/5/74 absence was checked at that closeout. v1.21 supersedes only the
+  current public-surface decision and does not rewrite that archive.
+- The current historical-binding successor accepts only an explicit repository root
   and resolves each Phase 75/78/79 artifact from exactly one active or archived
   v1.18 location. Missing, duplicate, non-file, unreadable, and symlink inputs
   fail closed with normalized reason identifiers; caller cwd cannot redirect
@@ -273,9 +286,9 @@ landmark values, raster bytes, path-like data, or framework error detail.
 The contract keeps `.cpu` as the only Phase-70 policy and does not add a public
 backend selector, parameter/preset key, Metal import, or new algorithm. CPU is
 the current reference. Metal resources/passes and public `.cpu`/`.gpu`
-configuration are later-phase scope. Existing 61-field parameters, five neutral
-presets, generated CPU oracles, 74-case renderer, and archive-only UI/Demo
-boundary remain unchanged.
+configuration were later-phase scope. At Phase 70 the 61-field parameters, five
+neutral presets, 74-case renderer, and archive-only UI/Demo boundary remained
+unchanged; the current v1.21 surface is 62/5/75.
 
 ## Phase 71 Metal Runtime Trust and Privacy Contract
 

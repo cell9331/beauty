@@ -64,9 +64,11 @@ docs/                            background and historical long-form material
 - 不把归档内容解压回仓库；恢复只进入新建临时目录，并先运行归档验证。
 - 不把 raw masks、landmarks、pixels、private fixture locators 或 child transcripts 写入持久证据。
 - v1.16 不修改 retained `Warp.metal`、不新增 Metal/GPU API/backend 或新算法。
-- `去脂` 已于 2026-08-25 明确延期：保留现有
-  `BeautyExperimentalUpperEyelid*` 与 package-only fail-closed seam，但不继续
-  数据、训练、模型、资格或公开路由工作；重新启动必须由后续里程碑明确授权。
+- `去脂` 于 2026-08-25 由所有者接受为效果偏弱但可用的 provisional
+  owner-local API：保留现有 `BeautyExperimentalUpperEyelid*` 内部命名与
+  fail-closed 安全边界，通过 `upperEyelidFullnessReduction` 公开调用。当前不继续
+  数据、训练、模型或权重工作；未来可优化内部效果，但不得把现状描述为商业视觉
+  质量、设备资格或外部分发批准。
 - 数据、模型和权重的许可证必须覆盖实际的所有者内部用途；“自用、不分发”
   不自动等于“允许商业使用”。research-only 数据及派生模型只能进入隔离的
   非商业研究/评估路径。device、SDK 商业化、monetization、packaging、shipping、

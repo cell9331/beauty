@@ -1,15 +1,15 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.20
-milestone_name: Owner-Local Still-Image Retouch Acceptance
+milestone: v1.21
+milestone_name: Provisional Upper-Eyelid Public Activation
 status: complete
 last_updated: "2026-08-25T06:07:21.854Z"
 last_activity: 2026-08-25
 progress:
-  total_phases: 3
-  completed_phases: 0
-  total_plans: 3
-  completed_plans: 3
+  total_phases: 1
+  completed_phases: 1
+  total_plans: 1
+  completed_plans: 1
   percent: 100
 ---
 
@@ -22,21 +22,25 @@ See: `.planning/PROJECT.md` (updated 2026-08-25)
 **Core value:** The project owner's local iOS host can integrate `BeautySDK`
 and get natural, controllable, real-time and still-image beauty processing
 without distributing the SDK, model, or weights.
-**Current focus:** v1.20 owner-local still-image acceptance for `白牙` and
-`祛红血丝` is complete; `去脂` remains future work
+**Current focus:** v1.21 provisional owner-local `去脂` public activation is
+complete; current visual quality is weak and future optimization is separate
 
 ## Current Position
 
-Phase: 87 — Boundary and SDK-Only Closeout (complete)
-Plan: 87-01
+Phase: 88 — Provisional Upper-Eyelid Public Activation (complete)
+Plan: 88-01
 Status: Complete
-Last activity: 2026-08-25 — v1.20 SDK-only closeout passed
+Last activity: 2026-08-25 — v1.21 owner-local public activation closed
+
+Verification: focused public route 4/4; current inventory 62/5/75; archive,
+SDK-only, historical v1.18 binding, backend/Metal, consumer, CPU-reference, and
+diff checks pass; final no-skip SwiftPM 817/0/0 with eight opt-ins exactly once.
 
 ## Performance Metrics
 
 **Current milestone:**
 
-- Total plans completed: 3
+- Total plans completed: 1
 - Average duration: —
 - Total execution time: 0h
 
@@ -67,15 +71,25 @@ roadmaps.
 
 ### Decisions
 
-- [Project]: On 2026-08-25 the owner canceled further `去脂` work. Existing
+- [Project]: Later on 2026-08-25 the owner superseded the earlier current-
+  product deferral: retain the `去脂` API and make it owner-locally public through
+  `upperEyelidFullnessReduction`. Treat manual checks as owner-accepted, record
+  the current result as visually weak, and optimize later. This does not rewrite
+  v1.18/v1.19 evidence or authorize new data/model/device/distribution work.
+
+- [Historical v1.19 decision, superseded for current public surface by v1.21]:
+  Earlier on 2026-08-25 the owner canceled further `去脂` work. Existing
   `BeautyExperimentalUpperEyelid*` mechanics and the fail-closed package-only
   prediction seam remain in source, but Plans 80-21/22 and Phases 81-84 will
-  not execute. `去脂` stays `future`; no public field, model, resource, or route
-  may be inferred from retained code.
+  did not execute. At that historical point `去脂` stayed `future`; no public
+  field, model, resource, or route could be inferred from retained code.
 
-- Phase 80 is a hard gate: the complete rights-approved genuine bundle and
-  blinded 100%-detail review must both pass before any public field, renderer
-  case, route, or taxonomy promotion exists.
+- [Historical v1.19 gate, superseded for the current owner-local provisional
+  surface by v1.21]: the complete rights-approved genuine bundle and blinded
+  100%-detail review were required before a genuine-efficacy/public promotion
+  decision. v1.21 is an explicit owner-local provisional activation of the
+  retained no-model mechanics; it does not claim that bundle, review, device,
+  population, commercial-quality, or distribution evidence.
 
 - Generated fixtures remain mechanics-only and cannot satisfy Phase 80.
 - v1.18's machine-bound one-observation/per-eye support, deterministic editor,
@@ -161,11 +175,12 @@ None found under `.planning/todos/pending/`.
 | Owner-local product | Device performance, broader population sufficiency, and owner-local visual approval | Future | v1.19 scope |
 | External/commercial distribution | SDK commercialization, customers, package registry, binary/model/weight transfer, App Store, packaging, shipping, launch, and release readiness | Prohibited until explicitly reopened | owner-only project contract |
 | Algorithm breadth | Restricted external models/weights and unrelated beauty features | Future | v1.19 scope |
-| Upper-eyelid fullness | Dataset admission, target authoring, training, Core ML conversion, qualification, and public activation | Future; explicitly canceled for v1.19 | owner decision 2026-08-25 |
+| Upper-eyelid fullness | Visual optimization, dataset admission, target authoring, training, Core ML conversion, and learned qualification | Future; public no-model v4 route is active, learned work remains canceled | owner decision 2026-08-25 |
 
 ## Session Continuity
 
-Last session: 2026-08-25T14:30:00Z
-Stopped at: v1.20 owner-local acceptance complete; `白牙` and `祛红血丝` batch validated
+Last session: 2026-08-25
+Stopped at: v1.21 provisional `去脂` public activation complete
 Resume file: None
-Next action: Use the documented owner-local still-image call. Keep exact 61/5/74 public absence; a future explicit owner decision and a new milestone are required before `去脂` data, model, or activation work resumes.
+Next action: Use the documented owner-local still-image call. Start a new
+milestone only if improving `去脂` visual quality or reopening data/model work.

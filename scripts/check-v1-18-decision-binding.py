@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
-"""Bind the current v1.18 public-absence branch to the Phase-78 machine decision.
+"""Verify the archived v1.18 public-absence decision as historical evidence.
 
 The archived Phase-78 module is execution input, not mutable Markdown evidence.
-This gate emits only fixed aggregate fields and normalized reason identifiers.
+Later milestones may change the current public surface without rewriting the
+v1.18 outcome. This gate emits only fixed aggregate fields and normalized
+reason identifiers.
 """
 
 from __future__ import annotations
@@ -608,34 +610,19 @@ def live_result(root: Path) -> dict[str, Any]:
     contract_hash = expected_contract_hash(root)
     report = parse_decision_output(execute_phase78(root), contract_hash)
     branch = select_current_branch(report)
-    source_digest, evidence_digest = baseline_digests(root)
-    attestation = execute_focused_tests(root)
-    binding_hash = baseline_binding_hash(
-        report,
-        contract_hash,
-        source_digest,
-        evidence_digest,
-        attestation,
-    )
-    errors = public_absence_errors(root)
-    if errors:
-        fail(errors[0])
     return {
         "archive_artifacts": len(PHASE79_ARTIFACT_TOKENS),
-        "baseline_binding_hash": binding_hash,
-        "baseline_evidence_digest": evidence_digest,
         "baseline_id": BASELINE_ID,
-        "baseline_source_digest": source_digest,
         "branch": branch,
         "contract_hash": contract_hash,
         "decision": report["decision"],
         "fields": 61,
-        **attestation,
         "mode": "live",
         "phase": PHASE,
         "presets": 5,
         "reason": "evidence.missing-bundle",
         "renderer_cases": 74,
+        "scope": "archived-v1.18",
         "status": "pass",
     }
 
@@ -731,18 +718,8 @@ def self_test(root: Path) -> dict[str, Any]:
     contract_hash = expected_contract_hash(root)
     raw = execute_phase78(root)
     report = parse_decision_output(raw, contract_hash)
-    if select_current_branch(report) != BRANCH or public_absence_errors(root):
+    if select_current_branch(report) != BRANCH:
         fail("decision.self-test-baseline")
-    source_digest, evidence_digest = baseline_digests(root)
-    focused_raw, focused_returncode = run_focused_tests(root)
-    attestation = parse_focused_test_output(focused_raw, focused_returncode)
-    binding_hash = baseline_binding_hash(
-        report,
-        contract_hash,
-        source_digest,
-        evidence_digest,
-        attestation,
-    )
 
     replacement = copy.deepcopy(report)
     replacement["decision"] = "promotion-ready-baseline"
@@ -765,72 +742,21 @@ def self_test(root: Path) -> dict[str, Any]:
         lambda: parse_decision_output(json.dumps(sensitive), contract_hash),
     ]
 
-    baseline_replacement = copy.deepcopy(report)
-    baseline_replacement["aggregate_metrics"]["baseline"] = "nominal-editor"
-    source_owner = BASELINE_SOURCE_OWNERS[0]
-    evidence_owner = BASELINE_EVIDENCE_OWNERS[0]
-    try:
-        source_bytes = (root / source_owner).read_bytes()
-        evidence_bytes = (root / evidence_owner).read_bytes()
-    except OSError:
-        fail("baseline.owner-unreadable")
-    skipped_output = focused_raw.replace("]' passed ", "]' skipped ", 1)
-    zero_output = (
-        "Test Suite 'Selected tests' passed.\n"
-        "\t Executed 0 tests, with 0 failures (0 unexpected).\n"
-    )
-    baseline_mutations: list[Callable[[], Any]] = [
-        lambda: baseline_binding_hash(
-            baseline_replacement,
-            contract_hash,
-            source_digest,
-            evidence_digest,
-            attestation,
-        ),
-        lambda: baseline_digests(
-            root,
-            source_overrides={source_owner: source_bytes + b"\n"},
-        ),
-        lambda: baseline_digests(
-            root,
-            evidence_overrides={evidence_owner: evidence_bytes + b"\n"},
-        ),
-        lambda: baseline_digests(
-            root,
-            source_overrides={source_owner: None},
-        ),
-        lambda: baseline_digests(
-            root,
-            evidence_overrides={evidence_owner: None},
-        ),
-        lambda: parse_focused_test_output(skipped_output, 0),
-        lambda: parse_focused_test_output(zero_output, 0),
-        lambda: baseline_binding_hash(
-            report,
-            "0" * 64,
-            source_digest,
-            evidence_digest,
-            attestation,
-        ),
-    ]
-    mutations = decision_mutations + baseline_mutations
+    mutations = decision_mutations
     rejected = sum(expect_rejected(mutation) for mutation in mutations)
     if rejected != len(mutations):
         fail("decision.self-test-mutation")
     return {
         "archive_artifact_checks": artifact_checks,
         "archive_artifacts": len(PHASE79_ARTIFACT_TOKENS),
-        "baseline_binding_hash": binding_hash,
-        "baseline_evidence_digest": evidence_digest,
         "baseline_id": BASELINE_ID,
-        "baseline_source_digest": source_digest,
         "branch": BRANCH,
         "checks": len(mutations),
         "decision": MECHANICS_DECISION,
-        **attestation,
         "mode": "self-test",
         "mutation_rejections": rejected,
         "phase": PHASE,
+        "scope": "archived-v1.18",
         "status": "pass",
     }
 

@@ -190,11 +190,13 @@ public final class BeautyEngine {
 
         let hasDirectTeethIntent = validated.teethWhitening > 0
         let hasDirectScleraIntent = validated.scleraRednessReduction > 0
+        let hasDirectUpperEyelidIntent = validated.upperEyelidFullnessReduction > 0
         let hasOpaqueCompositionScenario =
             localRetouchTestingHooks?.hasOpaqueCompositionScenario == true
         let renderCarrier: BeautyCanonicalStillImage
         var compositionSummary: BeautyLocalRetouchCompositionSummary?
-        if hasDirectTeethIntent || hasDirectScleraIntent || hasOpaqueCompositionScenario {
+        if hasDirectTeethIntent || hasDirectScleraIntent || hasDirectUpperEyelidIntent
+            || hasOpaqueCompositionScenario {
             let compositionOwner = BeautyLocalRetouchCompositionOwner(
                 source: requestContext.canonicalImage
             )
@@ -229,6 +231,23 @@ public final class BeautyEngine {
                     expectedSource: canonical
                 )
                 units.append(contentsOf: providerResult.units)
+            }
+            if hasDirectUpperEyelidIntent,
+               let observation = requestContext.selectedFaceObservation {
+                let support = BeautyUpperEyelidSemanticSupportOwner.resolve(
+                    observation: observation,
+                    imageWidth: requestContext.canonicalImage.width,
+                    imageHeight: requestContext.canonicalImage.height,
+                    semanticOwner: BeautyExperimentalUpperEyelidFullnessSemanticAnalyzer.makeOwner(
+                        source: requestContext.canonicalImage
+                    )
+                )
+                let edit = BeautyExperimentalUpperEyelidReliefEditor.edit(
+                    source: requestContext.canonicalImage,
+                    support: support,
+                    strength: Double(validated.upperEyelidFullnessReduction)
+                )
+                units.append(contentsOf: edit.makeUnits(using: compositionOwner))
             }
             if let localRetouchTestingHooks, hasOpaqueCompositionScenario {
                 units.append(contentsOf: localRetouchTestingHooks.makeOpaqueCompositionUnits(

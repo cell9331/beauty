@@ -33,7 +33,7 @@ contract without renaming or aliasing unsupported behavior.
 
 ## Current public parameter inventory
 
-The current contract contains exactly 61 stored fields: 60 numeric controls and
+The current contract contains exactly 62 stored fields: 61 numeric controls and
 the optional `filterId`. Unit controls normalize to `0...1`; signed controls
 normalize to `-1...1`; `filterId` is an optional logical resource identifier.
 
@@ -45,35 +45,34 @@ normalize to `-1...1`; `filterId` is an optional logical resource identifier.
 - Eyebrows: `eyebrowYPosition`, `eyebrowThickness`, `eyebrowLength`, `eyebrowSpacing`, `eyebrowHeadSpacing`, `eyebrowTilt`, `eyebrowPeakDefinition`
 - Nose: `noseSlim`, `noseWingSlim`, `noseTipSize`, `noseBridge`, `noseRootNarrowing`, `noseTipLift`
 - Mouth and local color: `mouthSize`, `mouthWidth`, `smile`, `mouthYPosition`, `mouthTilt`, `mouthXPosition`, `lipPeakDefinition`, `lipPlump`, `lipColor`, `teethWhitening`
-- Eye local color: `scleraRednessReduction`
+- Eye local retouch and color: `upperEyelidFullnessReduction`, `scleraRednessReduction`
 - Filter: `filterId`, `filterIntensity`
 <!-- SDK_PARAMETER_INVENTORY_END -->
 
 `lipColor` is color-only and is not evidence for geometric `丰唇` (`lipPlump`).
-`teethWhitening` and `scleraRednessReduction` are bounded opaque still-image
-local-retouch controls. Neither implies realtime/pixel-buffer support.
-`去脂` remains future upper-eyelid-fullness work and must not alias
+`teethWhitening`, `scleraRednessReduction`, and
+`upperEyelidFullnessReduction` are bounded opaque still-image local-retouch
+controls. None implies realtime/pixel-buffer support. `去脂` must not alias
 `eyeHeight`, `upperEyelidLift`, brow movement, eye opening, eye-bag removal,
 dark-circle removal, or global smoothing. Request-local masks and face geometry
 are implementation details, not taxonomy entries or public diagnostics.
 
-The owner explicitly deferred `去脂` on 2026-08-25. Retained
-`BeautyExperimentalUpperEyelid*` mechanics and the package-only no-model
-prediction seam do not make it callable or implemented; no training or
-activation work is active. `teethWhitening` and `scleraRednessReduction` remain
-independent implemented opaque still-image controls.
+The v1.18 Phase-78/79 decision remains immutable historical evidence that the
+then-current 61/5/74 surface did not promote the mechanics candidate. The owner
+first deferred further work on 2026-08-25, then superseded that current-product
+decision later the same day: the bounded v4 mechanics are accepted as a
+provisional owner-local `去脂` implementation and are callable through
+`upperEyelidFullnessReduction`. This is an owner-provided acceptance decision,
+not a claim that a new blinded review was run. The visual result is explicitly
+known to be weak and is future quality work.
 
-Candidate v1-v4 also prove that regional darkening or fixed relief thresholds
-are not sufficient. The only adopted route that may later promote `去脂` is an
-independently qualified, actual-use-licensed learned local editor with bounded
-upper-lid soft-tissue flow plus low-frequency tone; generic/landmark-driven warp remains
-a prohibited proxy. If that model/data path cannot pass, `去脂` stays `future`.
-
-The v1.18 Phase-78 decision is `mechanics-only-not-promotion`, so Phase 79
-closes the failing branch: package-only semantic support and deterministic
-editor mechanics do not create a public control, and `去脂` remains `future`.
-The `眼睛` group remains `partial` until a separately supplied rights-approved
-genuine bundle and blinded review satisfy the frozen quality gate.
+Internal `BeautyExperimentalUpperEyelid*` names remain unchanged to preserve
+provenance. The current route uses the existing source-derived relief analyzer,
+per-eye semantic envelope, bounded RGB correction, immutable-source
+composition, and source-exact failure behavior. It adds no trained model,
+weight, dataset, network path, geometry warp, or external distribution claim.
+Future optimization may replace the internal implementation but must preserve
+the public field's neutral/default/Codable and fail-closed contract.
 
 ## Legacy shaping and facial-feature mapping
 
@@ -113,7 +112,7 @@ names and visual organization are intentionally omitted from the active contract
 | 眼睛 | 眼高 | implemented | `eyeHeight` | Contour-height geometry. |
 | 眼睛 | 长度 | implemented | `eyeLength` | Contour-length geometry. |
 | 眼睛 | 眼距 | implemented | `eyeDistance` | Signed paired spacing. |
-| 眼睛 | 去脂 | future | — | Upper-eyelid fullness needs an independently qualified non-proxy method. |
+| 眼睛 | 去脂 | implemented | `upperEyelidFullnessReduction` | Provisional owner-accepted opaque still-image relief correction; bounded and fail-closed, with known weak visual quality. |
 | 眼睛 | 提肌 | implemented | `upperEyelidLift` | Upper-contour geometry; not `去脂`. |
 | 眼睛 | 眼瞳大小 | implemented | `pupilSize` | Requires plausible request-local pupil support. |
 | 眼睛 | 眼神矫正 | implemented | `gazeCorrection` | Bounded pupil-to-own-center correction. |
@@ -148,10 +147,11 @@ names and visual organization are intentionally omitted from the active contract
 | 眉毛 | 眉峰 | implemented | `eyebrowPeakDefinition` | Bounded interior-apex geometry. |
 <!-- SDK_LEGACY_TAXONOMY_END -->
 
-Branch status remains conservative: `3D塑颜` is future; `比例`, `脸型`, and
-`眼睛` are partial; `嘴唇`, `鼻子`, and `眉毛` are implemented at SDK-core
+Branch status remains conservative: `3D塑颜` is future; `比例` and `脸型` are
+partial; `眼睛`, `嘴唇`, `鼻子`, and `眉毛` are implemented at SDK-core
 scope. `脸型` is partial because double-chin and hairline semantic-region work is
-future. `眼睛` is partial solely because `去脂` is future.
+future. The `眼睛` branch is implemented with the explicit provisional-quality
+caveat on `去脂`; this does not establish commercial visual quality.
 
 ## Non-legacy SDK groups
 
@@ -170,7 +170,8 @@ Update this file in the same change that adds, removes, renames, or promotes a
 public effect. A row becomes `implemented` only with SDK behavior, safety and
 degradation coverage, and public-facade output evidence where applicable. Do not
 promote from archived UI presence, a disabled control, provider-only mechanics,
-or a future plan. The Phase-79 failing branch records exact 61-field, five-
-preset, 74-case absence and does not promote the mechanics candidate.
+or a future plan. The Phase-79 archive continues to record exact 61-field,
+five-preset, 74-case absence at its historical close. The current owner-accepted
+surface is 62 fields, five presets, and 75 renderer cases.
 `implemented` is an owner-local engineering status only and never authorizes
 external distribution or commercial release.

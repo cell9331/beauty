@@ -5,6 +5,15 @@
 
 ## Current Post-Archive Audit Status
 
+v1.21 is the current quality boundary for `去脂`: the existing bounded v4
+mechanics now have a public owner-local still-image scalar and deterministic
+facade pixel/metadata/failure coverage. The owner accepts the current result as
+usable while explicitly rating its visual effect weak; no new blinded review
+is claimed. This is score-3 provisional product acceptance, not device,
+commercial-quality, packaging, shipping, launch, or release-readiness evidence.
+The final archive-first no-skip closeout passed SwiftPM `816/0/0`, with all
+eight opt-ins exactly once and zero skips.
+
 v1.17 was historically archived at `afb04b4` with Metal-available focused
 `12/0/0` and full `765/0/0` evidence. The current tree has repaired public raw
 metadata compatibility (`53e8da1`), unavailable-host parity accounting
@@ -21,7 +30,7 @@ reference `41/0/0`. The archive-first closeout passed XCTest `776/0/0`, all
 eight opt-ins exactly once, and `skipped_tests=0`.
 
 The historical counts are not current full-gate evidence; the current count is
-the verified `776/0/0` closeout above. F-01 through F-10 are dispositioned with
+the verified v1.21 `816/0/0` closeout above. F-01 through F-10 are dispositioned with
 bounded contracts: CPU-owned local-retouch composition, exact-opaque GPU RGB
 input and named-sRGB output, tight generated still-image math parity, and
 caller serialization for a non-`Sendable` engine instance. Scores and acceptance
@@ -64,13 +73,13 @@ fresh candidate-v2 contract and private review.
 | --- | ---: | --- | --- |
 | Root owners | 4 | Current contracts consistently name SDK-only SwiftPM ownership and archive-only UI history. | Keep owners synchronized with code/tests. |
 | SDK package | 4 | One public library, one SDK-owned renderer, six internal/library targets, no remote dependency. | Preserve facade and dependency direction. |
-| Tests | 4 | 74 SwiftPM test files; current mutation-tested preflights and archive-first XCTest `776/0/0` pass with eight opt-ins and zero skips. Historical counts remain labeled historical; all ten audit findings are dispositioned. | Preserve deterministic pixel/metadata oracles; physical-iPhone feedback is optional and non-blocking. |
-| Repository consumer / CLI | 4 | Public-surface-only local-path fixture observes generated RGBA bytes/dimensions; compiled renderer covers 74-case discovery, reconciled reports, typed failures, and render/encode seams. | Preserve archive → boundary → consumer → no-skip ordering. |
+| Tests | 4 | 81 SwiftPM test files including public upper-eyelid facade pixel/metadata/failure coverage; historical gate counts remain labeled historical. | Preserve deterministic pixel/metadata oracles; physical-iPhone feedback is optional and non-blocking. |
+| Repository consumer / CLI | 4 | Public-surface-only local-path fixture observes generated RGBA bytes/dimensions; compiled renderer covers 75-case discovery, reconciled reports, typed failures, and render/encode seams. | Preserve archive → boundary → consumer → no-skip ordering. |
 | Archive integrity | 4 | Code-owned ZIP/manifest anchors, exact 45/26 inventories, bounded streamed extraction, frozen-retirement rollback, and safe restore self-tests pass. | Verify before every full closeout. |
 | SDK-only boundary | 4 | Retired roots are absent; scanner rejects symlinks, restored application/UI sources, stale current owners/maps, tracked media, application artifacts, retained-shader drift, and backend/API drift. | Keep scanner fail-closed. |
 | Security | 4 | Local-first input/resource/privacy and request-local local-retouch ownership are test-backed. | Reopen for any new trust boundary. |
 | Reliability | 3 | Typed errors, deterministic degradation/recovery, input bounds, no-skip handling, and archive recovery are specified/tested; device/performance evidence is outside scope. | Add only when a later authorized milestone requires it. |
-| Product acceptance | 3 | Bounded still-image teeth/sclera behavior and exact taxonomy remain SDK-core only; supported package-host parity is current but transparent/end-to-end-GPU/device claims remain excluded. | Preserve nonclaims and keep `去脂` future. |
+| Product acceptance | 3 | Bounded still-image teeth/sclera plus provisional owner-accepted `去脂` behavior are SDK-core only; the upper-eyelid visual result is known weak and transparent/end-to-end-GPU/device claims remain excluded. | Preserve nonclaims and optimize `去脂` only in a future explicit milestone. |
 
 No score of 5 is claimed. Package/fixture automation does not establish device
 performance, population sufficiency, or owner-local product visual approval.
@@ -84,14 +93,14 @@ are excluded by the owner-only distribution contract.
 
 | Inventory | Value |
 | --- | ---: |
-| Swift source files | 72 |
-| SwiftPM test files | 74 |
-| Swift source lines | 16,824 |
-| SwiftPM test lines | 33,569 |
-| Public `BeautyParameters` stored fields | 61 |
+| Swift source files | 76 |
+| SwiftPM test files | 81 |
+| Swift source lines | 18,857 |
+| SwiftPM test lines | 36,008 |
+| Public `BeautyParameters` stored fields | 62 |
 | `BeautyConfiguration` stored fields | 11 |
 | Built-in neutral presets | 5 |
-| Renderer cases | 74 |
+| Renderer cases | 75 |
 | Documented mandatory opt-ins | 8 |
 | Legacy archive bundles | 2 |
 
@@ -121,15 +130,13 @@ XCTest aggregate, one passed Swift Testing aggregate when that runner starts,
 and zero skip/disabled events from either format.
 
 `scripts/check-v1-18-decision-binding.py --repo-root <root>` is the current
-successor to the immutable historical Phase-79 checker. It resolves each Phase
-75/78/79 input from exactly one active or archived v1.18 location, rejects
-missing, ambiguous, non-file, and symlink artifacts, and remains independent of
-the caller's current directory. Its decision/baseline self-test and live run
-execute their focused SwiftPM children sequentially before the complete child;
-no nested or concurrent SwiftPM process is allowed. Durable output contains
-only fixed aggregate counts, normalized reasons, and contract/source/evidence/
-binding hashes—never child transcripts, private locators, pixels, masks,
-landmarks, support, or review prose.
+historical successor to the immutable Phase-79 checker. It resolves the
+archived Phase-75/78/79 machine decision, rejects missing or invalid historical
+inputs, and remains independent of caller cwd. It intentionally does not reject
+the later v1.21 public field/route/case or bind current editor/test digests.
+Durable output remains fixed aggregate status and normalized reasons—never
+child transcripts, private locators, pixels, masks, landmarks, support, or
+review prose.
 
 Physical-iPhone access, a manual device checkpoint, or pending user feedback is
 never an implicit prerequisite for this gate. Image-producing tests must assert
@@ -145,10 +152,10 @@ with zero failures and zero skips, all eight opt-ins exactly once, and separate
 Metal availability classifications. Its archive → boundary self-test/live scan → consumer → generated
 CPU → opt-in → one-child order is mandatory; the boundary self-test rejects an
 unconditional generic `BeautyResult` sendability declaration. The public
-concurrency focus is 3/0/0 and the current active inventory is 72 Swift source
-files, 74 SwiftPM test files, 16,824 source lines, and 33,569 test lines. The
-current remediation closeout is XCTest `776/0/0`, all eight opt-ins exactly
-once, and `skipped_tests=0`.
+concurrency focus is 3/0/0. The current v1.21 active inventory is 76 Swift source
+files, 81 SwiftPM test files, 18,857 source lines, and 36,008 test lines. The
+current closeout is XCTest `816/0/0`, all eight opt-ins exactly once, and
+`skipped_tests=0`.
 
 ## 5. Archive Quality Gate
 
@@ -389,7 +396,7 @@ automated non-pass made those conditions ineligible.
 The owner canceled the learned path on 2026-08-25 before Plans 80-21/22. The
 boundary-only evidence below is retained, but learned efficacy is no longer an
 active quality gate and no promotion closeout is expected for v1.19. Exact
-61/5/74 absence is the final current result. Cancellation closeout passes 34/34
+61/5/74 absence was the final v1.19 result. Cancellation closeout passes 34/34
 teeth/sclera/combined integration tests, 74/74 parameter/renderer-contract
 tests, the rebound v1.18 absence gate with 15/15 mutation checks and 13/13
 focused tests, and the archive-first all-opt-in SwiftPM gate at 813/0/0 with
@@ -406,17 +413,32 @@ The decision freezes data/license, paired-target, model, Core ML conversion,
 pixel composition, fail-closed, automated, human-review, privacy, and stop
 contracts before source remediation. It adds no quality credit: no model,
 training data, public field, resource, route, renderer case, or new output
-exists, and exact 61/5/74 public absence remains the current quality result.
+exists, and exact 61/5/74 public absence remains the v1.19 historical quality result.
 Plan 80-20 proves only the unavailable/invalid-prediction boundary. Learned
 efficacy remains blocked until actual-use-authorized identity-disjoint paired
 data with exact fullness targets, model parity, fresh genuine automation, and
 blinded review all pass. Research-only inputs and their derived models remain
 local and receive no commercial or distribution claim.
 
-Plan 80-20 adds no efficacy score. Its quality result is boundary-only:
+Plan 80-20 adds no efficacy score. Its historical quality result is boundary-only:
 `8/0/0` learned prediction tests, `23/0/0` all upper-eyelid tests, and plain full
 SwiftPM `813/0/8`, plus archive, SDK-only boundary, exact 61/5/74 absence, and
 diff-hygiene passes. Rejected mechanics are explicit experiments; the learned
 owner has no model and produces no proposals. Final promotion closeout was
 canceled with Plans 80-21/22; any future retry must create a new milestone and
 requalify its data/model/evidence contract.
+
+## v1.21 Provisional Upper-Eyelid Public Quality Evidence
+
+The owner later superseded only the current public-surface decision, not the
+v1.18/v1.19 evidence. v1.21 adds one generated end-to-end facade suite covering
+the trailing scalar's clamp/Codable/legacy-neutral behavior, both public
+still-image entries, actual changed pixels, deterministic repetition, exact
+alpha, no changes outside the owned union, one request transaction, and
+source-exact zero/no-face degradation. Static inventories now require 62 public
+fields, five neutral presets, and 75 renderer cases.
+
+This supports a provisional score of 3 for `去脂`: implementation and bounded
+automated behavior exist, and the owner accepts use with a known visual-quality
+gap. It does not erase failed genuine automation, claim a new human review,
+qualify a learned model, or establish device/population/commercial quality.

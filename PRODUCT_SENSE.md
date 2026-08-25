@@ -5,6 +5,17 @@
 
 ## Current Post-Archive Acceptance Status
 
+v1.21 is the current owner-local acceptance boundary. On 2026-08-25 the owner
+superseded the earlier `去脂` deferral and accepted the existing bounded v4
+mechanics as a provisional public still-image effect. The acceptance fact is
+owner-provided; the repository does not claim that a new blinded manual review
+was executed. Current visual quality is known to be weak and remains future
+optimization work. The callable surface is 62 `BeautyParameters` fields, five
+presets, and 75 renderer cases; this does not establish device, commercial,
+packaging, shipping, launch, or release readiness.
+The final archive-first no-skip gate passed `816/0/0` with all eight opt-ins
+exactly once and zero skips.
+
 v1.17 was historically archived at `afb04b4` after a Metal-available package
 host reported focused parity `12/0/0` and full `765/0/0`. The post-archive audit
 has repaired public non-up/mirrored raw metadata compatibility (`53e8da1`), made
@@ -59,7 +70,7 @@ maintainer creates a clean local-path SwiftPM consumer
 → imports only BeautySDK and generates a neutral RGBA input
 → observes real public-facade bytes and dimensions
 → runs BeautyExampleRenderer against explicit input/output directories
-→ discovers the exact 74-case catalog and reads the versioned aggregate report
+→ discovers the exact 75-case catalog and reads the versioned aggregate report
 → receives typed non-zero diagnostics for invalid or incomplete work
 ```
 
@@ -74,13 +85,13 @@ device journey and does not promote generated media as product evidence.
   External users, customer integrations, public package registries, sales,
   monetization, and distribution are outside the product contract.
 - `docs/SDK_EFFECT_TAXONOMY.md` owns exact implemented/partial/future status and
-  the 61-field mapping.
+  the 62-field mapping.
 - Historical UI layout, navigation, controls, badges, screenshots, and lifecycle
   do not establish SDK support or current acceptance.
-- Bounded opaque still-image `teethWhitening` and
-  `scleraRednessReduction` remain independently implemented.
-- `去脂`, semantic-mask features, new algorithms, and realtime local retouch
-  remain outside current acceptance. Phase-74 generated parity is historical;
+- Bounded opaque still-image `teethWhitening`, `scleraRednessReduction`, and
+  provisional `upperEyelidFullnessReduction` are independently callable.
+- New semantic-mask features, new algorithms, trained models, and realtime
+  local retouch remain outside current acceptance. Phase-74 generated parity is historical;
   current acceptance is limited to the verified bounded repairs, without a
   broad CPU/GPU equivalence claim.
 - Physical iPhone testing is optional user evaluation after SDK completion; its
@@ -90,7 +101,7 @@ device journey and does not promote generated media as product evidence.
 
 ## 2.1 Owner-Local Still-Image Retouch Call
 
-The two implemented local-retouch controls are directly callable from the
+The three implemented local-retouch controls are directly callable from the
 owner-controlled host. A minimal photo path is:
 
 ```swift
@@ -105,7 +116,8 @@ let metadata = BeautyInputMetadata(
 )
 let parameters = BeautyParameters(
     teethWhitening: 0.65,
-    scleraRednessReduction: 0.55
+    scleraRednessReduction: 0.55,
+    upperEyelidFullnessReduction: 0.60
 )
 let result = try engine.processResult(
     image: inputCIImage,
@@ -116,7 +128,7 @@ let outputCIImage = result.output
 ```
 
 `BeautyEngine.process(image:orientation:parameters:)` is the shorter equivalent
-when the host only needs the output image. Both controls are positive-only,
+when the host only needs the output image. All three controls are positive-only,
 default to zero, and clamp finite strengths to `0...1`. Zero strength is a
 source-preserving no-op. The supported local-retouch path is an opaque bounded
 still `CIImage` with `BeautyInputSource.photo`; transparent input is rejected,
@@ -126,8 +138,11 @@ before returning a result. Callers serialize access to one `BeautyEngine`
 instance; independent instances may run concurrently.
 
 This is an owner-local integration contract, not a third-party distribution or
-release claim. `去脂` has no public field or route and must not be substituted by
-`eyeHeight`, `upperEyelidLift`, a generic warp, smoothing, or a dark patch.
+release claim. `upperEyelidFullnessReduction` routes `去脂` through the existing
+per-eye semantic envelope and bounded relief editor. Missing or untrusted
+support is source-exact. The internal result is currently subtle/weak by owner
+decision and may improve later; it must not be substituted by `eyeHeight`,
+`upperEyelidLift`, a generic warp, smoothing, or an unrestricted dark patch.
 
 ## 3. Primary User Journey
 
@@ -173,7 +188,9 @@ Acceptance:
   local-retouch owner requires rights-approved positive/negative evidence, that
   evidence also runs through automated private opt-in scripts and frozen output
   assertions; it is separate from physical-device testing.
-- Teeth and sclera evidence cannot promote one another or `去脂`.
+- Teeth, sclera, and upper-eyelid mechanics remain independent evidence paths.
+  The owner's provisional `去脂` acceptance does not retroactively rewrite the
+  failed v1.18/v1.19 qualification records.
 
 ## 5. Current Verification Contract
 

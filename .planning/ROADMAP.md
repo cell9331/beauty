@@ -1,128 +1,58 @@
-# Roadmap: Beauty v1.20 Owner-Local Still-Image Retouch Acceptance
+# Roadmap: Beauty v1.21 Provisional Upper-Eyelid Public Activation
 
-## Overview
+## Milestone Goal
 
-v1.20 closes the practical owner-local usage loop for the two already
-implemented opaque still-image effects: `白牙` (`teethWhitening`) and
-`祛红血丝` (`scleraRednessReduction`). It documents the callable Swift surface,
-re-runs the SDK-owned renderer against the owner's authorized portrait folder
-in a temporary location, and closes the current no-skip/full SwiftPM evidence.
+Keep the existing upper-eyelid API surface and make it callable from the
+owner-controlled public Swift facade using the retained bounded v4 mechanics.
+Record the owner's acceptance that manual inspection is treated as passed for
+milestone purposes while the visual result remains weak and future work.
 
-The milestone does not change algorithm code, add parameters, train a model,
-download data, or reopen `去脂`. The exact public inventory remains 61 fields,
-five presets, and 74 renderer cases. `去脂` remains `future`; retained
-upper-eyelid experimental code remains package-only and fail-closed.
+## Boundary
 
-All work is SDK-only, owner-only, local-first, and non-distributed. Temporary
-portrait inputs and rendered outputs are never copied into the repository or
-durable evidence. Aggregate reports may record counts and contract outcomes,
-but not raw pixels, masks, landmarks, private paths, rights records, or review
-identity.
+- Owner-local, opaque still-image SDK use only.
+- No new algorithm, training, dataset, model, weight, download, Core ML
+  resource, Metal pass, retained shader change, UI/Demo, or pixel-buffer route.
+- Do not rewrite the immutable v1.18/v1.19 failure and cancellation records.
+- Owner acceptance is a supplied product decision, not evidence that this work
+  ran a new blinded review or established commercial visual quality.
+- No package, binary, source, model, fixture, output, or derived-data
+  distribution.
 
-## Milestones
+## Phase 88: Provisional Upper-Eyelid Public Activation
 
-- ✅ **v1.0–v1.18** — Historical SDK/UI milestones are archived under
-  `.planning/milestones/` with their original scope and evidence.
-- ⛔ **v1.19 Genuine Upper-Eyelid Fullness Promotion** — Canceled by the owner
-  on 2026-08-25; archived under `.planning/milestones/v1.19-*` with exact
-  61/5/74 public absence.
-- ◆ **v1.20 Owner-Local Still-Image Retouch Acceptance** — Current milestone;
-  validates direct use of the two implemented local retouches only.
+**Goal:** The owner's local host can call `去脂` through a stable public scalar,
+receive bounded deterministic still-image output, and retain source-exact
+failure behavior.
 
-## Phases
+**Requirements:** API-01, OUT-01, ACCEPT-01, CLOSE-01
 
-- [x] **Phase 85: Owner-Local API Contract** — Document and verify the direct
-  public Swift call path and its input/output boundaries.
-- [x] **Phase 86: Authorized Portrait Batch Validation** — Run both renderer
-  cases against the authorized local portrait directory in temporary output
-  space and retain only aggregate results.
-- [x] **Phase 87: Boundary and SDK-Only Closeout** — Reconcile taxonomy and
-  public absence of `去脂`, run the complete SDK-only gate, and finish the
-  milestone record.
+**Success Criteria:**
 
-## Phase Details
-
-### Phase 85: Owner-Local API Contract
-
-**Goal**: The project owner can copy a correct Swift still-image integration
-snippet and understand exactly when each of the two effects applies or fails
-closed.
-
-**Depends on**: Nothing
-
-**Requirements**: API-01, API-02
-
-**Success Criteria**:
-
-1. Owner documentation names the public `BeautyEngine` entry points,
-   `BeautyParameters` fields, `BeautyInputMetadata` source, and default-zero
-   positive-only behavior for both effects.
-2. The contract states that opaque `CIImage` still images are supported,
-   realtime/pixel-buffer local retouch is not, transparent input is rejected,
-   and output metadata/extent/alpha are validated by the SDK.
-3. A focused SwiftPM test run verifies the public facade bytes, local support,
-   neutral identity, failure isolation, and combined behavior for both effects.
-
-### Phase 86: Authorized Portrait Batch Validation
-
-**Goal**: The owner has a repeatable, temporary-output batch command proving
-both implemented controls can be invoked on the authorized local portrait set.
-
-**Depends on**: Phase 85
-
-**Requirements**: VAL-01, VAL-02
-
-**Success Criteria**:
-
-1. `BeautyExampleRenderer` renders one deterministic case for each effect
-   against every authorized local portrait input with no failed or skipped
-   units and a reconciled report.
-2. The two effect runs preserve output dimensions, alpha, and named-sRGB
-   metadata under the renderer's existing validation contract.
-3. Temporary outputs are kept outside the repository and the durable record
-   contains only aggregate counts, command shape, and validation status.
-
-### Phase 87: Boundary and SDK-Only Closeout
-
-**Goal**: The repository's current docs and automated gates agree that the two
-implemented retouches are directly usable while `去脂` remains absent/future.
-
-**Depends on**: Phase 86
-
-**Requirements**: BOUND-01, CLOSE-01
-
-**Success Criteria**:
-
-1. `docs/SDK_EFFECT_TAXONOMY.md` and owner docs describe `白牙` and
-   `祛红血丝` as implemented opaque still-image controls and keep `去脂`
-   future with no public field, route, or renderer case.
-2. Archive verification, SDK-only boundary, binding checks, no-skip wrapper,
-   and the full SwiftPM suite pass with nonzero tests, zero failures, and zero
-   skips.
-3. The v1.20 milestone record names the exact tested commands and aggregate
-   results while explicitly excluding device, commercial, packaging, shipping,
-   launch, and release-readiness claims.
+1. `BeautyParameters.upperEyelidFullnessReduction` is a trailing positive-only
+   default-zero Codable field and participates in normalization/admission.
+2. Both still-image facade entries reuse one canonical/detection/context/
+   immutable-source composition/render transaction and prove actual bounded
+   pixel output plus deterministic no-face/neutral degradation.
+3. Taxonomy and owner docs mark `去脂` implemented with a provisional weak-
+   quality caveat and keep all model/device/commercial/distribution nonclaims.
+4. Current inventories are 62 fields, five presets, and 75 renderer cases; the
+   archive/boundary/historical-binding/full no-skip gates pass.
 
 ## Requirement Coverage
 
 | Phase | Requirement Count | Requirement IDs |
 | --- | ---: | --- |
-| 85 | 2 | API-01, API-02 |
-| 86 | 2 | VAL-01, VAL-02 |
-| 87 | 2 | BOUND-01, CLOSE-01 |
+| 88 | 4 | API-01, OUT-01, ACCEPT-01, CLOSE-01 |
 
-**Coverage**: 6/6 v1.20 requirements are mapped exactly once; there are no
-orphaned or duplicate mappings.
+**Coverage:** 4/4 v1.21 requirements mapped exactly once.
 
 ## Progress
 
-**Execution Order**: Phase 85 → Phase 86 → Phase 87
+- [x] Phase 88: Provisional Upper-Eyelid Public Activation
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 | --- | --- | --- | --- | --- |
-| 85. Owner-Local API Contract | v1.20 | 1/1 | Complete | 2026-08-25 |
-| 86. Authorized Portrait Batch Validation | v1.20 | 1/1 | Complete | 2026-08-25 |
-| 87. Boundary and SDK-Only Closeout | v1.20 | 1/1 | Complete | 2026-08-25 |
+| 88. Provisional Upper-Eyelid Public Activation | v1.21 | 1/1 | Complete | 2026-08-25 |
 
 ---
-*Last updated: 2026-08-25 after v1.20 SDK-only closeout*
+*Last updated: 2026-08-25 for v1.21 closeout*

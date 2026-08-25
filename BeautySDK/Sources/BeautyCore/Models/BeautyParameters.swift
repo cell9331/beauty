@@ -67,6 +67,11 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
     public var filterIntensity: Float
     public var teethWhitening: Float
     public var scleraRednessReduction: Float
+    /// Owner-local, positive-only upper-eyelid fullness reduction for opaque still images.
+    ///
+    /// The current implementation is intentionally conservative and may produce a subtle
+    /// result. Missing or unsuitable per-eye support remains source-exact.
+    public var upperEyelidFullnessReduction: Float
 
     enum CodingKeys: String, CodingKey {
         case skinSmoothing
@@ -130,6 +135,7 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
         case filterIntensity
         case teethWhitening
         case scleraRednessReduction
+        case upperEyelidFullnessReduction
     }
 
     public init(
@@ -193,7 +199,8 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
         filterId: String? = nil,
         filterIntensity: Float = 0,
         teethWhitening: Float = 0,
-        scleraRednessReduction: Float = 0
+        scleraRednessReduction: Float = 0,
+        upperEyelidFullnessReduction: Float = 0
     ) {
         self.skinSmoothing = Self.clampUnit(skinSmoothing)
         self.skinWhitening = Self.clampUnit(skinWhitening)
@@ -263,6 +270,7 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
         self.filterIntensity = Self.clampUnit(filterIntensity)
         self.teethWhitening = Self.clampUnit(teethWhitening)
         self.scleraRednessReduction = Self.clampUnit(scleraRednessReduction)
+        self.upperEyelidFullnessReduction = Self.clampUnit(upperEyelidFullnessReduction)
     }
 
     public init(from decoder: Decoder) throws {
@@ -328,7 +336,8 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
             filterId: try container.decodeIfPresent(String.self, forKey: .filterId),
             filterIntensity: try container.decodeFloatIfPresent(.filterIntensity),
             teethWhitening: try container.decodeFloatIfPresent(.teethWhitening),
-            scleraRednessReduction: try container.decodeFloatIfPresent(.scleraRednessReduction)
+            scleraRednessReduction: try container.decodeFloatIfPresent(.scleraRednessReduction),
+            upperEyelidFullnessReduction: try container.decodeFloatIfPresent(.upperEyelidFullnessReduction)
         )
     }
 
@@ -394,7 +403,8 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
             filterId: filterId,
             filterIntensity: filterIntensity,
             teethWhitening: teethWhitening,
-            scleraRednessReduction: scleraRednessReduction
+            scleraRednessReduction: scleraRednessReduction,
+            upperEyelidFullnessReduction: upperEyelidFullnessReduction
         )
     }
 

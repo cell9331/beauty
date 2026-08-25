@@ -308,13 +308,13 @@ if re.search(r"\bpublic\s+(?:class|struct|enum|protocol)\b", implementation):
     raise SystemExit("public parity API drifted into test targets")
 
 parameters = re.findall(r"^\s*public var ([A-Za-z][A-Za-z0-9]*):", text["parameters"], re.MULTILINE)
-if len(parameters) != 61 or len(set(parameters)) != 61:
+if len(parameters) != 62 or len(set(parameters)) != 62:
     raise SystemExit("BeautyParameters inventory changed")
 if "BeautyRenderBackend" in text["parameters"]:
     raise SystemExit("backend selector leaked into parameters")
 if "\.package(" in text["package"] or re.search(r"https?://", text["package"]):
     raise SystemExit("package dependency drifted")
-if len(re.findall(r"^\s*RenderCase\(", text["renderer"], re.MULTILINE)) != 74:
+if len(re.findall(r"^\s*RenderCase\(", text["renderer"], re.MULTILINE)) != 75:
     raise SystemExit("renderer inventory changed")
 print("backend_parity_static_boundary_passed")
 PY

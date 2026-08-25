@@ -9,6 +9,15 @@
 
 ## Current Post-Archive Audit Status
 
+v1.21 extends the current public snapshot with the positive-only trailing field
+`upperEyelidFullnessReduction`. The owner accepts the existing bounded v4
+source-derived relief behavior as provisional while recording weak visual
+quality for future optimization. The public value is default-zero, finite
+clamped to `0...1`, non-finite-to-zero, Codable-compatible, and still-image
+only. It does not activate the package-only learned predictor seam.
+The final archive-first no-skip gate passed `816/0/0`, all eight opt-ins exactly
+once, with zero skips.
+
 The v1.17 archive at `afb04b4` retains its historical Phase-74 focused
 `12/0/0` and full `765/0/0` package-host evidence. The current tree has since
 repaired raw non-up/mirrored public metadata compatibility (`53e8da1`), made
@@ -109,7 +118,7 @@ SDK 以稳定、可预测的方式输出处理后的图像。SDK、模型和权�
 
 ### 4.2 BeautyParameters
 
-`BeautyParameters` 是所有可调效果的唯一公共参数模型。当前模型包含精确 **61 个 stored fields = 60 个 numeric fields + `filterId`**，覆盖基础皮肤、基础颜色、脸型、眼睛、鼻子、嘴巴、眉毛、滤镜，以及尾部兼容追加的 `teethWhitening` 和 `scleraRednessReduction`。
+`BeautyParameters` 是所有可调效果的唯一公共参数模型。当前模型包含精确 **62 个 stored fields = 61 个 numeric fields + `filterId`**，覆盖基础皮肤、基础颜色、脸型、眼睛、鼻子、嘴巴、眉毛、滤镜，以及尾部兼容追加的 `teethWhitening`、`scleraRednessReduction` 和 `upperEyelidFullnessReduction`。
 
 最低协议：
 
@@ -124,9 +133,9 @@ public struct BeautyParameters: Codable, Equatable, Sendable
 | Skin | `skinSmoothing`, `skinWhitening`, `skinRosy`, `skinSharpen` | `0.0...1.0` |
 | Color | `brightness`, `contrast`, `saturation`, `temperature`, `tint`, `exposure`, `highlight`, `shadow` | mixed |
 | Face Shape | shipped `faceSlim`, `faceSmall`, `faceVShape`, `jawSlim`, `chinLength`; new `faceContourSmooth`, `templeFullness`, `cheekboneSlim`, `chinTaper` | shipped mixed; new `0...1` |
-| Eyes | shipped `eyeSize`, `eyeTailLift`: `[0, 1]`; shipped `eyeDistance`, `eyeYPosition`: `[-1, 1]`; new `eyeHeight`, `eyeLength`, `upperEyelidLift`, `pupilSize`, `gazeCorrection`, `lowerEyelidDrop`, `innerCornerOpen`, `outerCornerOpen`, `eyeSymmetry`: `[0, 1]`; new `eyeTilt`: `[-1, 1]` | default-zero independent scalars; one signed new field |
+| Eyes | shipped `eyeSize`, `eyeTailLift`: `[0, 1]`; shipped `eyeDistance`, `eyeYPosition`: `[-1, 1]`; `eyeHeight`, `eyeLength`, `upperEyelidLift`, `pupilSize`, `gazeCorrection`, `lowerEyelidDrop`, `innerCornerOpen`, `outerCornerOpen`, `eyeSymmetry`, provisional `upperEyelidFullnessReduction`: `[0, 1]`; `eyeTilt`: `[-1, 1]` | default-zero independent scalars; one signed field |
 | Nose | `noseSlim`, `noseWingSlim`, signed `noseTipSize`, `noseBridge`, `noseRootNarrowing`, `noseTipLift` | legacy mixed + new positive-only `0...1` |
-| Mouth | `mouthSize`, `mouthWidth`, `smile`, `mouthYPosition`, `mouthTilt`, `mouthXPosition`, `lipPeakDefinition`, `lipPlump`, `lipColor` | mixed |
+| Mouth/local retouch | `mouthSize`, `mouthWidth`, `smile`, `mouthYPosition`, `mouthTilt`, `mouthXPosition`, `lipPeakDefinition`, `lipPlump`, `lipColor`, `teethWhitening`; eye-local `scleraRednessReduction` and `upperEyelidFullnessReduction` | mixed geometry/color plus positive-only local retouch |
 | Filter | `filterId`, `filterIntensity` | ID + `0.0...1.0` |
 
 Phase 28 completion evidence covers the existing Face Shape fields only: `faceSlim` for `脸宽`, `faceSmall` for `小脸`, signed `chinLength` for `下巴长短`, `faceVShape` for `V脸`, and `jawSlim` for both `下颌角` and alias-backed `下颌线`. It does not add a new public parameter or change the `BeautyParameters` shape.
@@ -192,7 +201,7 @@ Phase 28 completion evidence covers the existing Face Shape fields only: `faceSl
 
 ### Phase 49 Public Eyebrow Contract and Observed-Support Design
 
-- The seven independent additions are signed `eyebrowYPosition`, `eyebrowThickness`, `eyebrowLength`, `eyebrowSpacing`, `eyebrowHeadSpacing`, and `eyebrowTilt` in `-1...1`, plus positive-only `eyebrowPeakDefinition` in `0...1`. Every value defaults to zero, finite overflow clamps to its range, and non-finite input normalizes to zero. The Phase 49 snapshot was **59 stored fields: 58 numeric fields plus `filterId`**; the current inventory is the 61-field model above. Complete unequal values round-trip and compare independently; reset, snapshot diff, and non-mutating normalization include all seven. Removing the seven keys reconstructs the compatible legacy 52-key payload, and the unchanged five bundled presets decode seven zeros; historical 31/33/38/48/52 counts remain historical fixtures.
+- The seven independent additions are signed `eyebrowYPosition`, `eyebrowThickness`, `eyebrowLength`, `eyebrowSpacing`, `eyebrowHeadSpacing`, and `eyebrowTilt` in `-1...1`, plus positive-only `eyebrowPeakDefinition` in `0...1`. Every value defaults to zero, finite overflow clamps to its range, and non-finite input normalizes to zero. The Phase 49 snapshot was **59 stored fields: 58 numeric fields plus `filterId`**; the current inventory is the 62-field model above. Complete unequal values round-trip and compare independently; reset, snapshot diff, and non-mutating normalization include all seven. Removing the seven keys reconstructs the compatible legacy 52-key payload, and the unchanged five bundled presets decode seven zeros; historical 31/33/38/48/52 counts remain historical fixtures.
 - `VisionFaceDetector` copies actual Apple Vision `leftEyebrow` and `rightEyebrow` coordinate values from the existing selected-face landmarks request. Each side is independently preflighted as a non-empty open path with at most 16 points before mapping; rejected sides map zero eyebrow points. Accepted points pass the request-local `CoordinateMapper` exactly once, with four fixed face-axis probes used only to derive mapper-consistent right/down axes.
 - Anatomical side is decided from the mapped side centroid on the mapper-derived right axis. Phase 51 actual-image integration established that Apple Vision may return the open eyebrow region with both raw endpoints at the same anatomical end of its thick outline, so endpoint reversal alone is not an inner-to-outer centerline contract. After exactly-once mapping, accepted samples are therefore stably ordered by face-right-axis projection (left and right use opposite anatomical direction; projection ties retain provider order) before adapter validation. This preserves the exact mapped sample multiset without closing, remapping, retrying, or inferring polygon winding. Screen-axis sorting, eye contours, historical eye geometry, generated traces, and the synthetic face proxy remain prohibited as eyebrow evidence.
 - `BeautyFaceGeometryAdapter` validates each canonical side independently as an exact-bit-unique finite closed-unit open path with **4...16** points, face-relative endpoint chord **0.08...0.50**, vertical span at most **0.25**, no non-adjacent segment intersection, and projection epsilon **0.000001**. A semantic trace preserves exact canonical points, inner/outer endpoints, arithmetic center, and only a unique interior apex above epsilon; apex is optional and not Phase 49 provider eligibility. `BeautyEyebrowSemanticSupport.left/right` remain independent optionals and `pairEligible` is true only when both distinct sides survive.
@@ -261,6 +270,25 @@ Phase 28 completion evidence covers the existing Face Shape fields only: `faceSl
   sRGB metadata, exact alpha, deterministic request-local isolation, and the
   unchanged `Warp.metal`. Genuine evidence and device/product claims remain
   outside this SDK-only closeout.
+
+### v1.21 Provisional Upper-Eyelid Public Contract
+
+- The v1.18 branch above remains historical. v1.21 adds the trailing public
+  `Float` field `upperEyelidFullnessReduction`; zero/missing/non-finite input is
+  neutral, finite input clamps to `0...1`, and older payloads decode unchanged.
+- Positive still-image intent enters `localRetouchAdmission`, canonicalizes and
+  maps once, derives per-eye brow-to-lid support from the selected observation,
+  runs the existing source-derived relief analyzer/editor, and contributes
+  units to the same immutable-source composition owner as teeth and sclera.
+- Missing face, missing/malformed/ambiguous support, low confidence, unsupported
+  relief, invalid source, collisions, and rejected units remain source-exact at
+  the smallest owned unit. Alpha, extent, metadata, determinism, and protected
+  exterior pixels stay under existing output contracts.
+- Internal `BeautyExperimentalUpperEyelid*` names remain to record provenance
+  and the known weak result. Owner acceptance permits current owner-local use;
+  it is not a new blinded-review, learned-model, device, commercial-quality, or
+  distribution claim. Future internal replacement must retain the public
+  neutral/Codable/fail-closed semantics.
 
 ### Phase 50 Independent Eyebrow Geometry Contract
 

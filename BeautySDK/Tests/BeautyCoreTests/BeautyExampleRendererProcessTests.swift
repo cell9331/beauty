@@ -29,7 +29,7 @@ final class BeautyExampleRendererProcessTests: XCTestCase {
         "mouthWidth_plus0p35", "mouthWidth_minus0p35", "smile_0p50", "lipColor_0p50",
         "mouthYPosition_plus0p25", "mouthYPosition_minus0p25", "mouthTilt_plus0p25", "mouthTilt_minus0p25",
         "mouthXPosition_plus0p25", "mouthXPosition_minus0p25", "lipPeakDefinition_0p25", "lipPlump_0p25",
-        "teethWhitening_1p00", "scleraRednessReduction_1p00"
+        "teethWhitening_1p00", "scleraRednessReduction_1p00", "upperEyelidFullnessReduction_1p00"
     ]
 
     private nonisolated(unsafe) static var cachedExecutable: URL?
@@ -54,7 +54,7 @@ final class BeautyExampleRendererProcessTests: XCTestCase {
         let list = try JSONDecoder().decode(CaseList.self, from: firstList.stdout)
         XCTAssertEqual(list.schemaVersion, "beauty.example-renderer.cases.v1")
         XCTAssertEqual(list.cases, Self.expectedCases)
-        XCTAssertEqual(Set(list.cases).count, 74)
+        XCTAssertEqual(Set(list.cases).count, 75)
 
         let first = try makeFixtureTree(extension: "png")
         defer { removeTree(first.root) }

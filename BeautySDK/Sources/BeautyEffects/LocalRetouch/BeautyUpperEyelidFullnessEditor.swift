@@ -2,9 +2,10 @@ import BeautyCore
 import BeautyDetection
 import Foundation
 
-// Rejected v1-v4 mechanics retained only for generated regression evidence.
-// Production learned-path code must not use these types as semantic authority
-// or emit their proposals. See Phase 80 Plan 80-19.
+// The owner accepted the bounded v4 mechanics as the current provisional
+// owner-local implementation on 2026-08-25. The explicit experimental names
+// remain to preserve provenance and to signal that visual strength is weak and
+// expected to improve later; the public facade exposes only a scalar parameter.
 
 package enum BeautyExperimentalUpperEyelidReliefEditReason: String, Equatable, Sendable {
     case edited

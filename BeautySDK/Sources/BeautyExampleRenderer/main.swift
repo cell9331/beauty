@@ -388,6 +388,11 @@ let cases = [
         id: "scleraRednessReduction_1p00",
         displayName: "scleraRednessReduction 1.00",
         parameters: BeautyParameters(scleraRednessReduction: 1)
+    ),
+    RenderCase(
+        id: "upperEyelidFullnessReduction_1p00",
+        displayName: "upperEyelidFullnessReduction 1.00",
+        parameters: BeautyParameters(upperEyelidFullnessReduction: 1)
     )
 ]
 

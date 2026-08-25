@@ -122,8 +122,8 @@ if not re.search(r"\boutputImage\.extent\s*==\s*image\.extent\b", result_validat
     raise SystemExit("still-image results do not preserve the exact input extent")
 
 parameter_fields = re.findall(r"^\s*public var ([A-Za-z][A-Za-z0-9]*):", parameters, re.MULTILINE)
-if len(parameter_fields) != 61 or len(set(parameter_fields)) != 61:
-    raise SystemExit("BeautyParameters inventory is not exactly 61 fields")
+if len(parameter_fields) != 62 or len(set(parameter_fields)) != 62:
+    raise SystemExit("BeautyParameters inventory is not exactly 62 fields")
 if "renderBackend" in parameters or "BeautyRenderBackend" not in configuration:
     raise SystemExit("public backend configuration contract is missing or leaked into BeautyParameters")
 configuration_fields = re.findall(r"^\s*public var ([A-Za-z][A-Za-z0-9]*):", configuration, re.MULTILINE)
@@ -137,7 +137,7 @@ if [item.get("id") for item in manifest.get("presets", [])] != [
     "natural", "clear", "refined", "male-natural", "id-photo-natural"
 ]:
     raise SystemExit("preset inventory changed")
-if len(re.findall(r"^\s*RenderCase\(", schema_text[schema_sources[3]], re.MULTILINE)) != 74:
+if len(re.findall(r"^\s*RenderCase\(", schema_text[schema_sources[3]], re.MULTILINE)) != 75:
     raise SystemExit("renderer case inventory changed")
 
 print("backend_neutral_static_boundary_passed")
