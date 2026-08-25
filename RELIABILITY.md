@@ -464,3 +464,29 @@ bytes, color/alpha/extent/metadata preservation, smooth feathering, and
 determinism. The plain full SwiftPM run passes `805/0/8`; the eight skips are the
 established opt-in suites and are not milestone closeout evidence. Genuine
 efficacy and naturalness remain pending the separately frozen private gate.
+
+## v1.19 Learned Upper-Eyelid Reliability Contract
+
+The candidate-v4 private matrix invalidated its generated reliability premise:
+repeatable genuine runs failed applicability, boundary continuity, and minimum
+relief before review. No v5 threshold retune is allowed. The replacement seam
+has an explicit unavailable state and emits no proposal until one validated,
+checksum-bound learned predictor exists.
+
+Each per-eye prediction validates fixed tensor dimensions, finite confidence
+and uncertainty, calibrated admission, alpha containment, zero protected and
+boundary flow, bounded mapped displacement, smooth gradients, positive local
+Jacobian, bounded low-frequency tone, and independent-eye ownership. Invalid
+resource, compile, inference, output, crop, mirror, color, or mapping state
+fails only that eye to immutable source without heuristic or CPU-proxy fallback.
+The predictor resource is loaded once per owning engine/resource boundary;
+request crops, tensors, outputs, and composition state are never shared between
+requests.
+
+Before private review, source-model and converted Core ML output/decision parity
+must pass on representative and threshold-boundary cases. Generated SwiftPM
+oracles cover invalid/missing models, malformed outputs, protection, strength-
+zero identity, orientation/mirror/color/alpha/extent, determinism, cancellation,
+recovery, and public absence. Genuine efficacy still requires a frozen unseen
+private matrix to pass twice and blinded original-detail review; generated tests
+cannot supply that result.

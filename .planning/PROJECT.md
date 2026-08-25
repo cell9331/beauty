@@ -23,10 +23,10 @@ prove the non-proxy effect effective, natural, and safe.
   genuine positives, negatives, stress cases, complete local assets, and a
   frozen privacy-safe evidence contract.
 - Run predeclared blinded original-detail human review and bind its sanitized
-  aggregate decision to the already versioned deterministic editor baseline.
-- Preserve one-observation, independent per-eye support, geometry identity,
-  crease/texture detail, immutable-original composition, collision-to-source,
-  local failure, and aggregate-only diagnostics.
+  aggregate decision to one rights-approved, versioned learned-model baseline.
+- Preserve one-observation, independent per-eye support, eye-aperture/brow
+  identity, crease/texture detail, immutable-original composition,
+  collision-to-source, local failure, and aggregate-only diagnostics.
 - If and only if every genuine effectiveness, naturalness, safety, privacy,
   compatibility, and output gate passes, add one positive-only
   `upperEyelidFullnessReduction` field and opaque still-image public route.
@@ -36,12 +36,18 @@ prove the non-proxy effect effective, natural, and safe.
 
 **Non-negotiable boundary:** The implementation must not alias `eyeHeight`,
 `upperEyelidLift`, brow movement, eye opening, eye-bag/dark-circle removal,
-warp, or global smoothing. Generated fixtures remain mechanics-only. No public
-field or inert route may appear before genuine evidence and human review pass.
-Realtime/pixel-buffer behavior, transparent/HDR input, external restricted
-weights, UI/Demo restoration, medical claims, tracked portrait media, device/
-commercial approval, packaging, shipping, launch, and release readiness remain
-excluded.
+generic/landmark-driven warp, or global smoothing. Candidate v1-v4 prove that
+tone/frequency threshold tuning is not a credible visible `去脂` solution. The
+only admitted geometry exception is a learned, bounded, per-eye upper-lid
+soft-tissue displacement field paired with a low-frequency tone residual,
+trained from owned or explicitly commercially licensed paired data. It must
+leave eye contour/aperture, brow, lashes, iris/sclera, protected crease detail,
+and exterior pixels source-owned. Generated fixtures remain mechanics-only. No
+public field or inert route may appear before genuine evidence and human review
+pass. Realtime/pixel-buffer behavior, transparent/HDR input, external
+restricted weights, UI/Demo restoration, medical claims, tracked portrait
+media, device/commercial approval, packaging, shipping, launch, and release
+readiness remain excluded.
 
 ## Last Completed Milestone: v1.18 Upper-Eyelid Fullness Reduction
 
@@ -89,9 +95,12 @@ and `眼睛 = partial`.
 completed 2026-08-22 as an SDK-only failed-productization decision with exact
 public absence. It is not a shipping, launch, or release-readiness claim.
 **Latest historical UI milestone:** v1.1 Meitu UI on 2026-06-24, retained only as archived evidence.
-**Current work:** v1.19 retries upper-eyelid-fullness promotion under a newly
-authorized scope. The first gate remains the complete private genuine bundle
-and blinded review; public implementation is forbidden until it passes.
+**Current work:** v1.19 has terminated four hand-authored candidates and adopted
+the learned hybrid decision in Plan 80-19. Plan 80-20 may quarantine the failed
+heuristic and add only a fail-closed internal prediction seam. Training and
+promotion remain blocked on commercially authorized paired data, compiled-
+weight redistribution rights, a fresh frozen private qualification, and blinded
+review; public implementation is forbidden until those gates pass.
 
 **Implementation state:** v1.16 froze the current CPU renderer as the reference backend, added generated CPU oracles, a public-only SwiftPM consumer, the SDK-owned renderer CLI, and conditional `BeautyResult` sendability. v1.17 added the package-only backend-neutral boundary, bounded Metal runtime and feature passes, public `.cpu`/`.gpu` configuration with typed unavailable-GPU failure, and generated CPU/GPU parity gates. v1.18 added package-only per-eye semantic support, bounded tone/frequency editor mechanics, frozen private-evidence tooling, and fail-closed decision/absence gates while preserving the 61-field/five-preset/74-case public surface. Historical application taxonomy remains archive-only.
 
@@ -437,13 +446,16 @@ For any future semantic-masking milestone, a bundled Core ML resource must be lo
 
 ### Active in v1.19
 
-- [ ] Admit a complete rights-approved genuine upper-eyelid-fullness positive,
-  negative, and stress bundle without persisting private locators or media.
+- [ ] Admit commercially authorized identity-disjoint paired training data and
+  a separate complete rights-approved genuine upper-eyelid-fullness positive,
+  negative, and stress holdout without persisting private locators or media.
 - [ ] Complete predeclared blinded original-detail human review and emit only a
-  sanitized aggregate decision bound to the frozen contract and editor hash.
-- [ ] Prove the deterministic editor achieves the intended cosmetic semantic
-  without geometry movement, proxy behavior, crease erasure, protected-region
-  changes, or cross-eye failure contamination.
+  sanitized aggregate decision bound to the frozen contract, source commit,
+  dataset/split digest, converted model digest, and review rubric.
+- [ ] Prove the learned hybrid achieves the intended cosmetic semantic through
+  only bounded upper-lid soft-tissue flow and low-frequency tone, without eye-
+  contour/brow movement, generic warp, proxy behavior, crease erasure,
+  protected-region changes, or cross-eye failure contamination.
 - [ ] Add exactly one default-zero positive-only public
   `upperEyelidFullnessReduction` field and opaque still-image route only after
   the genuine evidence decision passes.

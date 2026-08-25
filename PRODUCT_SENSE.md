@@ -286,12 +286,21 @@ package-only per-eye support and deterministic fullness editor are reusable
 mechanics evidence, not a public `去脂` control, route, Testing SPI, preset key,
 or efficacy claim. The taxonomy remains `眼睛: partial` and `去脂: future`.
 
-Candidate v3 later confirmed the product distinction: making the upper-lid band
+Candidate v3 confirmed the product distinction: making the upper-lid band
 slightly darker is not a successful `去脂` result when a reviewer cannot see the
-lid become flatter or less puffy. Candidate v4 targets that missing visual
-outcome through bounded low-frequency relief compression while keeping eye
-opening, brow position, crease, lash line, and facial geometry fixed. It remains
-package-only and future-facing until genuine automation and human review pass.
+lid become flatter or less puffy. Candidate v4 then failed applicability,
+boundary, and minimum-relief automation on genuine inputs. These outcomes end
+the hand-authored tone/frequency route rather than inviting another threshold
+retune.
+
+The product may use the name `去脂` only for a learned, bounded local result that
+is clearly flatter and less bulky while preserving eye opening, brow position,
+lashes, iris/sclera, protected crease detail, identity, and skin texture. The
+adopted route combines a small upper-lid soft-tissue flow with a low-frequency
+tone residual and fails closed per eye. If the project keeps absolute geometry
+identity or cannot supply commercially authorized paired training data, the
+honest effect is only subtle `upperEyelidReliefSoftening`; `去脂` remains future
+and no public field or inert route is permitted.
 
 This branch is accepted only on SDK-owned evidence: exact public absence,
 canonical extent/orientation/mirror and named-sRGB metadata preservation,

@@ -9,8 +9,9 @@ controllable beauty processing through a stable modular facade.
 ### Genuine Evidence
 
 - [ ] **EVID-03**: The SDK owner can admit a complete rights-approved private
-  upper-eyelid-fullness bundle containing genuine positives, negatives, and
-  predeclared stress categories with every required local asset present.
+  upper-eyelid-fullness evaluation bundle plus identity-disjoint paired
+  training data whose rights cover target authoring, commercial model training,
+  derivatives, and redistribution of compiled Core ML weights.
 - [ ] **EVID-04**: A human reviewer can complete a blinded 100%-detail
   original/mask/after review under a rubric frozen before outcomes are seen.
 - [ ] **EVID-05**: The milestone can bind rights admission, blinded judgments,
@@ -21,7 +22,8 @@ controllable beauty processing through a stable modular facade.
 ### Effect Qualification
 
 - [ ] **QUAL-03**: Genuine positive fixtures show material upper-eyelid-
-  fullness reduction under predeclared target-region and effectiveness bounds.
+  fullness reduction under predeclared target-region, bounded-flow,
+  low-frequency-tone, and effectiveness bounds.
 - [ ] **QUAL-04**: Genuine negative and stress fixtures remain natural and
   fail closed or stay within predeclared no-op, structure, protected-region,
   texture, color, alpha, extent, and determinism bounds.
@@ -32,8 +34,9 @@ controllable beauty processing through a stable modular facade.
 ### Public SDK
 
 - [ ] **SAFE-04**: Each eye independently uses one current request observation,
-  qualified semantic support, immutable-original composition, and collision-
-  to-source behavior without geometry movement or proxy effects.
+  a qualified learned semantic prediction, bounded upper-lid soft-tissue flow,
+  immutable-original composition, and collision-to-source behavior without eye-
+  contour/brow movement, generic warp, or proxy effects.
 - [ ] **API-01**: An SDK integrator can set one positive-only default-zero
   `BeautyParameters.upperEyelidFullnessReduction` value in `0...1`, with
   finite clamping and backward-compatible Codable defaults.
@@ -79,10 +82,10 @@ controllable beauty processing through a stable modular facade.
 
 | Feature | Reason |
 | --- | --- |
-| `upperEyelidLift`, `eyeHeight`, eye opening, brow motion, eye-bag/dark-circle removal, warp, or smoothing as `去脂` | These are forbidden proxy semantics and cannot establish upper-eyelid-fullness reduction. |
+| `upperEyelidLift`, `eyeHeight`, eye opening, brow motion, eye-bag/dark-circle removal, generic/landmark-driven warp, or smoothing as `去脂` | These are forbidden proxy semantics and cannot establish upper-eyelid-fullness reduction. A separately qualified learned bounded upper-lid soft-tissue field is the sole geometry exception. |
 | Public field or inert route before genuine evidence passes | A compilable no-op or generated-fixture result would misrepresent product capability. |
 | Generated or AI portraits as product-feasibility evidence | They can prove mechanics only and receive zero genuine-efficacy weight. |
-| Unapproved Core ML or third-party weights | Dataset, checkpoint, conversion, redistribution, privacy, and resource ownership are not established. |
+| Unapproved Core ML or third-party weights; FFHQR/PPR10K production training | Dataset, checkpoint, conversion, redistribution, privacy, and resource ownership are not established; the cited public datasets are non-commercial/research-limited. |
 | Public or durable masks, landmarks, pixels, private fixture locators, reviewer identity, rights records, or freeform review text | These violate the local-retouch privacy boundary. |
 | UI/Demo restoration or application lifecycle | The repository remains SDK-only SwiftPM. |
 | Medical fat measurement or diagnosis | The intended behavior is a bounded cosmetic appearance effect only. |

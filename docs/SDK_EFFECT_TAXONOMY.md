@@ -52,6 +52,12 @@ local-retouch controls. Neither implies realtime/pixel-buffer support.
 dark-circle removal, or global smoothing. Request-local masks and face geometry
 are implementation details, not taxonomy entries or public diagnostics.
 
+Candidate v1-v4 also prove that regional darkening or fixed relief thresholds
+are not sufficient. The only adopted route that may later promote `去脂` is an
+independently qualified, owned-data learned local editor with bounded upper-lid
+soft-tissue flow plus low-frequency tone; generic/landmark-driven warp remains
+a prohibited proxy. If that model/data path cannot pass, `去脂` stays `future`.
+
 The v1.18 Phase-78 decision is `mechanics-only-not-promotion`, so Phase 79
 closes the failing branch: package-only semantic support and deterministic
 editor mechanics do not create a public control, and `去脂` remains `future`.

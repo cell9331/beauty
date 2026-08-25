@@ -5,23 +5,23 @@ milestone_name: Genuine Upper-Eyelid Fullness Promotion
 current_phase: 80
 current_phase_name: Genuine Evidence and Qualification Gate
 status: executing
-stopped_at: Phase 80 Plan 19 candidate-v5 mechanics
-last_updated: "2026-08-24T10:30:00Z"
-last_activity: 2026-08-24
-last_activity_desc: Candidate-v4 qualification frozen before private output; private automation started
+stopped_at: Phase 80 Plan 20 learned-path code-boundary repair
+last_updated: "2026-08-25T00:00:00Z"
+last_activity: 2026-08-25
+last_activity_desc: Learned hybrid decision frozen before further algorithm code changes
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 22
-  completed_plans: 15
-  percent: 68
+  completed_plans: 16
+  percent: 73
 ---
 
 # Project State
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (updated 2026-08-22)
+See: `.planning/PROJECT.md` (updated 2026-08-25)
 
 **Core value:** An iOS app can integrate `BeautySDK` and get natural,
 controllable, real-time and still-image beauty processing through a stable
@@ -31,11 +31,11 @@ modular facade.
 ## Current Position
 
 Phase: 80 (Genuine Evidence and Qualification Gate) — EXECUTING
-Plan: 19 of 22
-Status: Implementing candidate-v5 generated mechanics after candidate-v4 terminal automated non-pass
-Last activity: 2026-08-24 — v4 stopped before review; v5 remediation plan opened
+Plan: 20 of 22
+Status: Quarantining the rejected heuristic and adding a fail-closed learned prediction seam
+Last activity: 2026-08-25 — owned-data learned hybrid decision completed before source remediation
 
-Progress: [██████▊░░░] 68%
+Progress: [███████▎░░] 73%
 
 ## Performance Metrics
 
@@ -65,6 +65,7 @@ roadmaps.
 | Phase 80 P16 | 11 min | 1 task | 6 files |
 | Phase 80 P17 | 14 min | 1 completed task, 1 stopped checkpoint | 0 durable private files |
 | Phase 80 P18 | 2 min | 1 terminal stop | 3 aggregate-only records |
+| Phase 80 P19 | — | 2 tasks | documentation-only decision and owner synchronization |
 
 ## Accumulated Context
 
@@ -99,7 +100,9 @@ roadmaps.
 - [Phase 80]: Candidate v3 is terminal despite passing all automated rows because its first positive visual checkpoint found no clearly perceptible fullness reduction. — Uniform regional darkening is a tone change, not evidence that convex upper-lid relief has been reduced.
 - [Phase 80]: Candidate v4 must flatten a boundary-anchored low-frequency convexity residual while retaining exact geometry, chroma, and high-frequency source detail. — This targets the visible thick/puffy contour without eye opening, crease invention, brow motion, smoothing, or warp proxies.
 - [Phase 80]: Candidate v4 is terminal after repeatable automated applicability, boundary-continuity, and minimum-relief failures; human review never opened. — Signed correction could brighten negative residual, overshoot flat relief, and mis-authorize non-fullness surfaces.
-- [Phase 80]: Candidate v5 may compress only coherent positive relief toward the boundary reference and must reject unsupported surface cues before editing. — One-sign non-overshoot and source-exact negatives address v4 without threshold relaxation.
+- [Phase 80]: Candidate-v5 threshold tuning is canceled; v1-v4 establish that handcrafted tone/frequency analysis cannot reliably identify or visibly reduce genuine upper-lid fullness. — Retuning would overfit the private fixtures instead of repairing the semantic mismatch.
+- [Phase 80]: A visibly obvious `去脂` may advance only as an owned-data, on-device learned hybrid that predicts per-eye applicability, support alpha, bounded upper-lid soft-tissue flow, and low-frequency tone. — Generic/landmark warp and all eye/brow proxy controls remain prohibited; an absolute no-geometry route may only be named relief softening.
+- [Phase 80]: Model training is gated on commercial training/derivative/compiled-weight redistribution rights and identity-disjoint paired data. — The current eight-fixture private bundle remains holdout evaluation evidence and cannot train or calibrate the model.
 
 ### Pending Todos
 
@@ -110,8 +113,13 @@ None found under `.planning/todos/pending/`.
 - Candidate-v4 private automation failed twice with identical normalized
   applicability, boundary-continuity, and minimum-relief reasons. The attempt
   is terminal, review never opened, no canonical decision exists, and exact
-  61/5/74 public absence remains preserved. Candidate-v5 mechanics now own the
-  next source-bound remediation.
+  61/5/74 public absence remains preserved. Further heuristic candidates are
+  canceled; Plan 80-20 owns only code-boundary repair.
+
+- Plan 80-21 cannot train or select the learned candidate until the data owner
+  supplies commercially authorized paired data, target-author ownership,
+  identity-disjoint splits, and compiled Core ML weight redistribution rights.
+  FFHQR/PPR10K are research references only and receive no production weight.
 
 - The candidate-v1 external bundle was structurally complete and repeatably
   admitted at 8 fixtures, 24 assets, and 19 metric rows. Its automated texture
@@ -138,7 +146,7 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-24T10:30:00Z
-Stopped at: Phase 80 Plan 19 candidate-v5 mechanics
+Last session: 2026-08-25T00:00:00Z
+Stopped at: Phase 80 Plan 20 learned-path code-boundary repair
 Resume file: None
-Next action: implement and verify candidate-v5 positive-relief-only mechanics without generating private v5 output.
+Next action: quarantine rejected heuristic semantics and add the package-only fail-closed learned prediction boundary; do not fabricate or ship a model.

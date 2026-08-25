@@ -397,5 +397,31 @@ pixels.
 
 Public web examples are concept references only. They are not downloaded into
 the repository, used as fixtures or training data, or credited as qualification
-evidence. Only the previously authorized private originals may enter the later
-external v4 gate, whose durable record remains aggregate-only.
+evidence. Only the previously authorized private originals entered the frozen
+external v4 gate; its terminal durable record remains aggregate-only.
+
+## v1.19 Learned Upper-Eyelid Model Trust Boundary
+
+Candidates v1-v4 are terminal and their source-derived scores cannot authorize
+a production edit. Plan 80-19 admits a learned model only after data rights
+explicitly cover commercial training, retouched derivatives, target-author
+ownership, and redistribution of compiled Core ML weights. FFHQR, PPR10K, or
+any other non-commercial/research-limited portrait data cannot enter production
+training or contribute a shippable checkpoint.
+
+The future model resource is local-only, versioned, checksum-pinned, size-
+reviewed, and centrally resolved; caller paths, remote downloads, dynamic model
+replacement, and unknown third-party weights are rejected. The model receives
+only request-local canonical per-eye RGB plus permitted/protected priors. Crops,
+tensors, landmarks, masks, flow, tone, confidence, uncertainty, and pixels are
+released with the request and never enter Codable/public diagnostics or durable
+evidence. Durable records allow only aggregate counts, normalized dispositions,
+tool/model digests, and license-approval status.
+
+Prediction validation fails closed on resource absence or mismatch, unsupported
+platform, compilation failure, malformed shape, NaN/Inf, low confidence, high
+uncertainty, out-of-support alpha/flow/tone, non-zero protected/boundary flow,
+excess displacement, or fold-over risk. Eye aperture, lash, iris/pupil, sclera,
+brow, protected crease, exterior, overlap, and alpha remain immutable-source
+owned. The learned field never enters the public geometry pipeline or retained
+`Warp.metal`.

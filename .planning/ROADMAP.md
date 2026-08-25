@@ -12,15 +12,16 @@ activation work.
 
 The milestone began by reusing the v1.18 machine-bound one-observation/per-eye
 support, deterministic tone/frequency editor, immutable-original composer, and
-versioned baseline evidence. Candidate v1 was terminated after an automated
-texture failure and an early positive review found weak efficacy plus a hard
-rectangular darkening artifact. Phase 80 now owns a separately versioned
-support/editor remediation and fresh qualification cycle; the v1 outcome is
-immutable and contributes no passing credit. The milestone does not substitute
-`upperEyelidLift`, `eyeHeight`, brow movement, eye opening, warp, smoothing,
-eye-bag removal, or dark-circle removal. A passing Phase-80 decision unlocks
-one complete public vertical slice, followed by public output/backend proof,
-taxonomy promotion, and independent archive-first closeout.
+versioned baseline evidence. Four separately frozen hand-authored candidates
+are now terminal: they exposed weak semantics, block/boundary artifacts, false
+positives, overshoot, or no visible effect. Plan 80-19 therefore rejects further
+threshold retuning and adopts an owned-data learned hybrid: per-eye
+applicability, support alpha, bounded upper-lid soft-tissue flow, and a
+low-frequency tone residual. Generic/landmark-driven warp, `upperEyelidLift`,
+`eyeHeight`, brow movement, eye opening, smoothing, eye-bag removal, and dark-
+circle removal remain prohibited proxies. A passing learned Phase-80 decision
+unlocks one complete public vertical slice, followed by public output/backend
+proof, taxonomy promotion, and independent archive-first closeout.
 
 All work remains SDK-only and local-first. Private media, pixels, masks,
 landmarks, fixture locators, rights records, reviewer identity, and freeform
@@ -48,12 +49,13 @@ out of scope.
 
 ## Gate Rule
 
-Phase 81 may begin only when Phase 80 emits a frozen version-bound passing
-decision from the complete rights-approved genuine bundle and blinded
-100%-detail review. Candidate v1 is terminally non-promotable and cannot be
-retuned or relabeled. Any v2 non-pass preserves the same hard stop: no public
-field, inert route, renderer case, taxonomy promotion, or substitute proxy may
-be added.
+Phase 81 may begin only when Phase 80 emits a frozen source/model/data-split-
+bound passing decision from commercially authorized paired training data, a
+complete rights-approved unseen genuine bundle, and blinded 100%-detail review.
+Candidates v1-v4 are terminally non-promotable and cannot be retuned, relabeled,
+or used as learned-efficacy credit. Any learned-candidate non-pass preserves the
+same hard stop: no public field, inert route, renderer case, taxonomy promotion,
+or substitute proxy may be added.
 
 ## Phase Details
 
@@ -69,10 +71,12 @@ natural, identity-preserving, and safe on authorized genuine evidence.
 
 **Success Criteria** (what must be TRUE):
 
-1. The SDK owner can admit only a complete rights-approved private bundle with
-   genuine positives, negatives, every predeclared stress category, and every
-   required local asset; incomplete, generated, or mechanics-only bundles fail
-   closed and receive no product-evidence weight.
+1. The SDK owner can admit only commercially authorized identity-disjoint
+   paired training data plus a separate complete rights-approved private
+   evaluation bundle with genuine positives, negatives, every predeclared
+   stress category, and every required local asset; incomplete, generated,
+   research-only, or mechanics-only data fails closed and receives no product-
+   evidence or shippable-model weight.
 
 2. A human reviewer can inspect blinded original/mask/after triples at 100%
    detail and complete only the structured rubric frozen before any outcomes
@@ -92,7 +96,7 @@ natural, identity-preserving, and safe on authorized genuine evidence.
    reviewer identity, or freeform text; the public surface remains exactly
    61/5/74 until that decision passes.
 
-**Plans**: 15 completed or terminally closed; four candidate-v5 remediation, freeze, execution, and decision plans remain
+**Plans**: 16 completed or terminally closed; three learned-path repair, data/model, and qualification plans remain
 
 - [x] 80-01-PLAN.md
 - [x] 80-02-PLAN.md
@@ -112,10 +116,10 @@ natural, identity-preserving, and safe on authorized genuine evidence.
 - [x] 80-16-PLAN.md — candidate-v4 qualification freeze
 - [x] 80-17-PLAN.md — candidate-v4 private automation failed before review
 - [x] 80-18-PLAN.md — candidate-v4 hard stop preserved with no promotion artifact
-- [ ] 80-19-PLAN.md — candidate-v5 positive-relief-only editor and semantic remediation
-- [ ] 80-20-PLAN.md — candidate-v5 qualification freeze
-- [ ] 80-21-PLAN.md — candidate-v5 private automation and blinded review
-- [ ] 80-22-PLAN.md — candidate-v5 decision and Phase-80 verification
+- [x] 80-19-PLAN.md — research and adopt the owned-data learned hybrid decision before code
+- [ ] 80-20-PLAN.md — quarantine rejected heuristics and add a fail-closed internal prediction seam
+- [ ] 80-21-PLAN.md — admit paired-data rights, train, ablate, convert, and select the learned model
+- [ ] 80-22-PLAN.md — freeze learned qualification, run private automation/review, and verify Phase 80
 
 ### Phase 81: Safe Public Still-Image Activation
 
@@ -143,9 +147,11 @@ fullness reduction control through both opaque still-image facade entries.
    authorize its peer.
 
 4. Accepted edits use immutable-original composition and collision-to-source
-   behavior, preserve geometry, and cannot route through eye height,
-   upper-eyelid lift, brow movement, eye opening, warp, smoothing, eye-bag, or
-   dark-circle proxies.
+   behavior. Only the qualified bounded upper-lid soft-tissue field may alter
+   local sampling; eye contour/aperture, brow, lashes, iris/sclera, and
+   protected crease detail remain source-owned, and the effect cannot route
+   through eye height, upper-eyelid lift, brow movement, eye opening, generic/
+   landmark warp, smoothing, eye-bag, or dark-circle proxies.
 
 5. The promoted surface is exactly 62 parameter fields, five neutral preset
    identities, and 75 renderer cases; legacy decoding and all pre-existing

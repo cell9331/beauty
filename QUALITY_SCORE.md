@@ -377,7 +377,25 @@ metadata, deterministic repetition, peer isolation, and overlap-to-source.
 The full plain SwiftPM result is `805/0/8`; it is a development check, not the
 archive-first zero-skip closeout.
 
-These generated checks establish mechanics only. Candidate v4 cannot receive
-genuine efficacy, naturalness, or public-product weight until a new
-source-bound contract is frozen, the authorized private matrix passes twice,
-and every required 100%-detail human judgment passes.
+These generated checks established mechanics only. Candidate v4 could receive
+no genuine efficacy, naturalness, or public-product weight without two private
+automated passes and every required 100%-detail human judgment; its later
+automated non-pass made those conditions ineligible.
+
+## Phase 80 Learned-Path Decision Quality Evidence
+
+Candidate v4 subsequently failed its frozen private automated matrix twice with
+identical applicability, boundary-continuity, and minimum-relief dispositions;
+review never opened. Candidate-v5 threshold tuning is canceled. Plan 80-19
+selects an owned-data learned hybrid because visible fullness reduction needs
+both a bounded upper-lid soft-tissue contour change and compatible low-frequency
+shading, while source texture and protected regions remain immutable-owned.
+
+The decision freezes data/license, paired-target, model, Core ML conversion,
+pixel composition, fail-closed, automated, human-review, privacy, and stop
+contracts before source remediation. It adds no quality credit: no model,
+training data, public field, resource, route, renderer case, or new output
+exists, and exact 61/5/74 public absence remains the current quality result.
+Plan 80-20 may prove only the unavailable/invalid-prediction boundary. Learned
+efficacy remains blocked until commercially authorized paired data, model
+parity, fresh genuine automation, and blinded review all pass.

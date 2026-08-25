@@ -159,9 +159,9 @@ existing foundation types or resource filenames.
 - `BeautyParameters` is the public contract; archived labels/layout never create
   a field, alias, provider, or product claim.
 - `teethWhitening` and `scleraRednessReduction` are bounded opaque still-image
-  controls. `去脂` remains future at the public surface. Its candidate-v4
-  package mechanics use request-local CPU relief analysis and cannot proxy
-  through eye/brow movement, smoothing, warp, or a Metal route.
+  controls. `去脂` remains future at the public surface. Candidate v1-v4
+  package mechanics are terminal experiments and cannot proxy through eye/brow
+  movement, smoothing, generic/landmark-driven warp, or a Metal route.
 - Raw masks, landmarks, pupil positions, tooth/eye geometry, candidate pixels,
   and private fixture locations are request-local implementation details.
 - Generated output remains ignored and disposable; committed evidence is
@@ -176,13 +176,32 @@ collision-to-source ownership, and request recovery. The generated preflight
 opt-ins and the single full SwiftPM child; it records only aggregate pass
 counts. The current CPU/Core Image implementation remains the permanent reference.
 
-Candidate-v4 upper-eyelid mechanics add one package-only `BeautyEffects`
-analysis stage between semantic support and original-pixel composition. The
-stage box-filters only the admitted brow-to-lid patch, fits an affine
-illumination plane from its feather boundary, and reports the low-frequency
-central convexity residual. The same request-local result both gates semantic
-applicability and drives bounded equal-RGB proposals; it creates no model,
-resource, cache, network path, public field, renderer case, or GPU behavior.
+Candidate-v4 upper-eyelid mechanics added one package-only `BeautyEffects`
+analysis stage between semantic support and original-pixel composition. Its
+frozen private automation failed applicability, boundary, and minimum-relief
+gates, so it is historical mechanics rather than a current product path.
+
+## 5A. Learned Upper-Eyelid Boundary
+
+Plan 80-19 adopts an on-device learned hybrid as the only implementation route
+that may later qualify as visibly obvious `去脂`. The model is trained only from
+owned or explicitly commercially licensed paired data and predicts independent
+per-eye applicability/uncertainty, soft support, bounded upper-lid soft-tissue
+flow, and a low-frequency log-luminance residual. Apple Vision locates and
+normalizes each crop but does not own the fullness semantic.
+
+The learned flow is a narrow local-retouch exception, not a new public or
+generic geometry pipeline: it cannot move eye contour/aperture, brow, lashes,
+iris/sclera, or protected crease detail, and it does not modify retained
+`Warp.metal`. `BeautyDetection` owns one mapped observation, `BeautyResources`
+will own a checksum-pinned bundled Core ML resource only after license/model
+admission, and `BeautyEffects` owns request-local prediction validation plus
+CPU-reference immutable-source composition. Missing or invalid models and
+predictions fail closed. No public field, route, renderer case, preset, or model
+resource exists during the Plan-80-20 boundary repair.
+
+The full data/model/runtime/qualification authority is
+[`80-LEARNED-HYBRID-DECISION.md`](.planning/phases/80-genuine-evidence-and-qualification-gate/80-LEARNED-HYBRID-DECISION.md).
 
 ## 6. Archive Boundary
 

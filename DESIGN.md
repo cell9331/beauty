@@ -1377,7 +1377,39 @@ generated tests reject the v3 single-value contour, require central convexity
 to fall below `55%` of its source score, and retain existing metadata, alpha,
 containment, collision-to-source, determinism, and protected-region contracts.
 
-This generated baseline proves mechanics only. Candidate-v4 source and tests
-must be independently frozen before any private v4 output is generated; genuine
-automation and human 100%-detail review still decide whether the method is
-visibly correct enough for public promotion.
+This generated baseline proved mechanics only. Candidate-v4 source and tests
+were independently frozen before private v4 output was generated; the later
+genuine automation failed before human review and made the candidate terminal.
+
+## v1.19 Phase 80 Learned-Hybrid Decision
+
+Candidate v4 is terminal after repeatable private automated applicability,
+boundary-continuity, and minimum-relief failures. Candidates v1-v4 jointly
+reject another handcrafted tone/frequency retune: the rules either produce a
+tone artifact, fail negative ownership, overshoot, or do not create a clearly
+visible fullness reduction.
+
+The adopted future editor is one fixed-shape per-eye learned prediction with
+four outputs: calibrated applicability/uncertainty, soft target alpha, bounded
+two-channel upper-lid soft-tissue flow, and bounded one-channel low-frequency
+log-luminance residual. Vision eye/brow geometry owns crop normalization and
+hard containment only. Strength scales both admitted flow and tone; strength
+zero is byte-exact identity. Runtime resamples immutable source texture with
+the bounded flow, applies the smooth tone residual while retaining source
+high-frequency detail, and composes once against immutable source pixels.
+
+Flow is exactly zero in eye aperture, lash, iris, pupil, sclera, brow,
+protected crease, exterior, overlap, and feather-boundary pixels. Its mapped
+magnitude, gradients, and positive local Jacobian are versioned safety gates.
+Generic warp, landmark-driven warp, eye opening, brow movement, smoothing, and
+full-RGB generation remain prohibited. The model is unavailable by default and
+no proposal exists unless one commercially authorized, checksum-pinned Core ML
+candidate passes source/conversion parity plus private automated and blinded
+review gates.
+
+The current eight-fixture private bundle is a holdout only. Training requires
+separate identity-disjoint paired data with commercial training, derivative,
+target-author, and compiled-weight redistribution rights. Without that data,
+implementation stops after the package-only fail-closed prediction seam and
+`去脂` remains future with exact 61/5/74 public absence. The complete design is
+[`80-LEARNED-HYBRID-DECISION.md`](.planning/phases/80-genuine-evidence-and-qualification-gate/80-LEARNED-HYBRID-DECISION.md).
