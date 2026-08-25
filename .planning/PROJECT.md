@@ -18,26 +18,34 @@ The project owner's local iOS host can integrate `BeautySDK` and get natural,
 controllable, real-time and still-image beauty processing through a stable
 modular facade without distributing the SDK or its model resources.
 
-## Current Milestone: v1.21 Provisional Upper-Eyelid Public Activation
+## Current Milestone: v1.22 Non-Local Facial Effect Repairs
 
-**Goal:** Keep `去脂` available through the owner-local public Swift facade by
-connecting `upperEyelidFullnessReduction` to the retained bounded v4 mechanics,
-then close the milestone with the effect's weak visual quality explicitly
-recorded as future debt.
+**Goal:** Repair the existing non-local-retouch facial geometry controls that
+the authorized portrait batch screen found inert or too weak, and prove each
+repaired control through public-facade pixels, semantic ROI evidence, protected-
+region preservation, signed-direction behavior where applicable, and fail-
+closed degradation.
 
 **Target features:**
 
-- Add the trailing positive-only, default-zero, Codable public field.
-- Reuse the existing one-observation, per-eye semantic support, bounded relief
-  editor, immutable-source composition, and fail-closed behavior.
-- Prove actual public-facade pixels/metadata, neutral/no-face degradation, and
-  exact 62-field / five-preset / 75-case current inventory.
-- Record manual acceptance as the owner's supplied product decision without
-  fabricating a new review run.
+- Repair `faceContourSmooth` and strengthen `chinTaper` without aliasing other
+  face-shape controls.
+- Repair `gazeCorrection` through its existing pupil/eye-support semantics.
+- Repair both signed `eyebrowHeadSpacing` directions independently from whole-
+  eyebrow spacing.
+- Repair `noseBridge` and `noseRootNarrowing` as distinct nose controls.
+- Repair the negative `mouthWidth` direction without changing the positive
+  direction or borrowing `mouthSize` behavior.
+- Keep the repeatable five-batch, parameter-watermarked input/output comparison
+  and add ROI-, polarity-, protection-, determinism-, and degradation-specific
+  gates before closeout.
 
-**Non-negotiable boundary:** No new algorithm, training, data/model/weight,
-Core ML resource, network, UI/Demo, realtime, device/commercial, packaging,
-shipping, launch, distribution, or release-readiness work is part of v1.21.
+**Non-negotiable boundary:** `teethWhitening`, `scleraRednessReduction`, and
+`upperEyelidFullnessReduction` are explicitly excluded from repair. No new
+public parameter, preset, filter, feature family, model, weight, training data,
+network path, UI/Demo, realtime/pixel-buffer route, device/commercial claim,
+packaging, shipping, launch, distribution, or release-readiness work is part of
+v1.22.
 
 ## Latest Completed Milestone: v1.21 Provisional Upper-Eyelid Public Activation
 
@@ -150,9 +158,10 @@ It is not a device, commercial, shipping, launch, or release-readiness claim.
 v1.18 remains immutable historical qualification evidence and v1.19 remains
 canceled as a learned/data effort.
 **Latest historical UI milestone:** v1.1 Meitu UI on 2026-06-24, retained only as archived evidence.
-**Current work:** v1.21 exposes the retained no-model v4 `去脂` mechanics through
-the owner-local public still-image facade. The owner accepts current use while
-recording weak visual quality for future optimization. Dataset admission,
+**Current work:** v1.22 plans bounded repairs for seven existing non-local-
+retouch geometry parameters/eight signed renderer cases found inert or weak by
+the authorized portrait batch screen. White teeth, sclera redness reduction,
+and upper-eyelid fullness reduction are explicitly excluded. Dataset admission,
 exact-target authoring, training, Core ML conversion, learned qualification,
 and all external/device/commercial work remain inactive.
 
@@ -190,6 +199,9 @@ source/test lines. The active v1.21 SDK-only tree contains 76 Swift source files
 5. **v1.21 Provisional Upper-Eyelid Public Activation** — completed 2026-08-25;
    exposes retained bounded v4 mechanics as owner-local `去脂`, records weak
    visual quality, and preserves all model/device/distribution nonclaims.
+6. **v1.22 Non-Local Facial Effect Repairs** — active; repairs only the existing
+   face, gaze, eyebrow-head, nose, and negative mouth-width controls flagged by
+   the repeatable portrait screen, with semantic/locality/degradation evidence.
 
 The backend choice is configuration/execution policy and must not change the public beauty-parameter or preset schema. Detection/support semantics remain shared. No backend may borrow success from the other: CPU and GPU each run the same SDK-owned input/output contract, and comparison evidence separately verifies their parity.
 
@@ -507,6 +519,26 @@ For any future semantic-masking milestone, a bundled Core ML resource must be lo
 
 ## Requirements
 
+### Active in v1.22
+
+- [ ] Preserve the repeatable five-batch public-facade portrait screen and bind
+  its current 65-case inventory, parameter watermarks, neutral control, aggregate
+  pixel metrics, ignored media boundary, and privacy-safe local report.
+- [ ] Repair `faceContourSmooth` and `chinTaper` so each produces independently
+  detectable, bounded, semantically distinct output on eligible portrait input.
+- [ ] Repair `gazeCorrection` so it reduces the pupil-to-own-eye-center error on
+  eligible input while preserving eye contour, aperture, brow, and sibling-eye
+  failure isolation.
+- [ ] Repair positive and negative `eyebrowHeadSpacing` so both directions move
+  only the eyebrow-head support and remain distinct from `eyebrowSpacing`.
+- [ ] Repair `noseBridge` and `noseRootNarrowing` so both produce independently
+  detectable nose-local output and remain semantically distinguishable.
+- [ ] Repair negative `mouthWidth` so it contracts width in the expected direction
+  without changing the positive direction, mouth height, or protected face pixels.
+- [ ] Close every repaired control with exact-cap, neutral/no-face, missing/stale-
+  support, locality, polarity, determinism, privacy, compatibility, renderer,
+  batch-report, SDK-only boundary, and no-skip SwiftPM evidence.
+
 ### Deferred from v1.19 (not active)
 
 - [ ] Admit actual-use-authorized identity-disjoint paired training data for
@@ -808,11 +840,18 @@ Current visual reference contracts:
   It records weak visual quality and preserves all data/model/device,
   population, commercial, packaging, shipping, launch, release, and
   distribution nonclaims.
+- **v1.22 scope boundary:** v1.22 repairs only existing geometry/control behavior
+  flagged by the authorized portrait mechanical screen: `faceContourSmooth`,
+  `chinTaper`, `gazeCorrection`, signed `eyebrowHeadSpacing`, `noseBridge`,
+  `noseRootNarrowing`, and negative `mouthWidth`. `teethWhitening`,
+  `scleraRednessReduction`, and `upperEyelidFullnessReduction` remain unchanged
+  and are not execution or completion dependencies.
 
 ## Key Decisions
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
+| Start v1.22 with only the non-local-retouch weak/inert controls from the five-batch portrait screen. | The owner explicitly deferred repairs for white teeth, sclera redness, and upper-eyelid fullness while authorizing planning for the remaining findings. | Active: seven existing parameters/eight renderer directions are in scope; the three local-retouch controls are a hard scope fence. |
 | Start v1.20 with owner-local acceptance of `白牙` and `祛红血丝` only. | The owner canceled `去脂`; the two retained retouches already have public still-image routes and deterministic evidence, so the next useful step is direct-use documentation and authorized local validation rather than new algorithm work. | Completed 2026-08-25: Phases 85–87 closed API contract, temporary portrait batch validation, and SDK-only closeout. |
 | Cancel v1.19 and defer `去脂`, retaining current experimental code. | The owner chose not to continue the data/target/training burden for this effect. Retaining the quarantined mechanics preserves research value without presenting a failed heuristic or absent model as a usable SDK capability. | Effective 2026-08-25: Plans 80-21/22 and Phases 81-84 are canceled unexecuted; no public field/resource/route exists; `去脂` stays future and existing teeth/sclera controls are unchanged. |
 | Keep `BeautySDK` owner-only and non-distributed. | The owner explicitly does not provide the SDK to others or publish it. Swift `public` remains necessary for the owner's local host and compatibility tests, but external package/binary/model/weight/customer/App Store release is not a product goal. | Active from 2026-08-25: actual-use licensing replaces redistribution rights as the current model gate; research-only sources remain in a non-commercial lane, and any future distribution change requires a new full audit. |
@@ -856,4 +895,4 @@ Current visual reference contracts:
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-08-25 after v1.20 SDK-only closeout*
+*Last updated: 2026-08-25 for v1.22 milestone initialization*

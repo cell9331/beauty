@@ -1,16 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.21
-milestone_name: Provisional Upper-Eyelid Public Activation
-status: complete
-last_updated: "2026-08-25T06:07:21.854Z"
+milestone: v1.22
+milestone_name: Non-Local Facial Effect Repairs
+status: planning
+last_updated: "2026-08-25T10:01:55.903Z"
 last_activity: 2026-08-25
 progress:
-  total_phases: 1
-  completed_phases: 1
-  total_plans: 1
-  completed_plans: 1
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -27,14 +27,10 @@ complete; current visual quality is weak and future optimization is separate
 
 ## Current Position
 
-Phase: 88 — Provisional Upper-Eyelid Public Activation (complete)
-Plan: 88-01
-Status: Complete
-Last activity: 2026-08-25 — v1.21 owner-local public activation closed
-
-Verification: focused public route 4/4; current inventory 62/5/75; archive,
-SDK-only, historical v1.18 binding, backend/Metal, consumer, CPU-reference, and
-diff checks pass; final no-skip SwiftPM 817/0/0 with eight opt-ins exactly once.
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-08-25 — Milestone v1.22 started
 
 ## Performance Metrics
 
