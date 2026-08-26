@@ -1,5 +1,6 @@
 import CoreGraphics
 import CoreImage
+import CryptoKit
 import Darwin
 import Foundation
 
@@ -69,53 +70,83 @@ struct BatchManifest: Codable, Equatable {
     }
 }
 
-struct CaseSummary: Encodable {
+struct MechanicalCaseSummary: Codable, Equatable {
     let batchID: String
     let caseID: String
     let fixtureCount: Int
     let outputCount: Int
     let missingOutputCount: Int
-    let inputChangedPixels: Int
-    let inputComparedPixels: Int
-    let inputMeanAbsoluteRGBDelta: Double
-    let inputMaxRGBDelta: Int
+    let sourceChangedPixels: Int
+    let sourceComparedPixels: Int
+    let sourceAbsoluteRGBDelta: Int64
+    let sourceMaxRGBDelta: Int
     let neutralChangedPixels: Int
     let neutralComparedPixels: Int
-    let neutralMeanAbsoluteRGBDelta: Double
+    let neutralAbsoluteRGBDelta: Int64
     let neutralMaxRGBDelta: Int
-    let effectDetected: Bool
-    let verdict: String
+    let descriptiveStatus: String
 }
 
-struct BatchSummary: Encodable {
+struct BatchSummary: Codable, Equatable {
     let id: String
-    let label: String
     let caseCount: Int
-    let casesWithOutput: Int
-    let casesWithDetectedEffect: Int
-    let casesWithNoDetectedEffect: Int
+    let completeCaseCount: Int
     let missingOutputCount: Int
 }
 
-struct ComparisonReport: Encodable {
+struct ProtectedRegionSummary: Codable, Equatable {
+    let id: String
+    let changedPixels: Int64
+    let absoluteRGBDelta: Int64
+}
+
+struct SemanticDirectionSummary: Codable, Equatable {
+    let caseID: String
+    let metric: SemanticMetricKind
+    let fixtureCount: Int
+    let sourceTargetChangedPixels: Int64
+    let sourceTargetAbsoluteRGBDelta: Int64
+    let neutralTargetChangedPixels: Int64
+    let neutralTargetAbsoluteRGBDelta: Int64
+    let sourceSignedMarginQ16: Int64
+    let neutralSignedMarginQ16: Int64
+    let signedMarginQ16: Int64
+    let siblingDistinctMarginQ16: Int64
+    let outsideChangedPixels: Int64
+    let outsideAbsoluteRGBDelta: Int64
+    let protectedRegions: [ProtectedRegionSummary]
+    let failureReasonCodes: [String]
+    let verdict: String
+}
+
+struct StableSemanticPayload: Codable, Equatable {
     let schemaVersion: String
-    let generatedAtUTC: String
-    let controlCaseID: String
+    let contractID: String
+    let cpuReferenceToken: String
     let fixtureCount: Int
     let fixtureIDs: [String]
-    let watermarkExcludedRowsPerEdge: Int
-    let pixelTolerance: Int
-    let effectDetectionMinimumChangedPixels: Int
-    let effectDetectionMinimumMeanRGBDelta: Double
-    let controlOutputCount: Int
-    let controlMissingOutputCount: Int
-    let controlInputChangedPixels: Int
-    let controlInputComparedPixels: Int
-    let controlInputMeanAbsoluteRGBDelta: Double
-    let controlInputMaxRGBDelta: Int
+    let watermarkExcludedRowCount: Int
     let batches: [BatchSummary]
-    let cases: [CaseSummary]
-    let overallVerdict: String
+    let mechanicalCases: [MechanicalCaseSummary]
+    let semanticDirections: [SemanticDirectionSummary]
+    let verdict: String
+}
+
+struct SemanticReportEnvelope: Codable, Equatable {
+    struct VolatileRunMetadata: Codable, Equatable {
+        let generatedAtUTC: String
+        let attemptID: String
+    }
+
+    let volatile: VolatileRunMetadata
+    let stablePayloadDigest: String
+    let stablePayload: StableSemanticPayload
+}
+
+enum SemanticExitCode: Int32 {
+    case success = 0
+    case semanticFailure = 2
+    case infrastructureFailure = 3
 }
 
 struct CanonicalImage {
@@ -127,6 +158,7 @@ struct CanonicalImage {
 struct ComparisonMetrics {
     let comparedPixels: Int
     let changedPixels: Int
+    let absoluteRGBDelta: Int64
     let meanAbsoluteRGBDelta: Double
     let maxRGBDelta: Int
 }
@@ -140,10 +172,11 @@ enum CompareError: Error, CustomStringConvertible {
 
     var description: String {
         switch self {
-        case .invalidArguments(let message), .invalidManifest(let message),
-             .imageDecodeFailed(let message), .dimensionMismatch(let message),
-             .outputMissing(let message):
-            return message
+        case .invalidArguments: return "invalid_arguments"
+        case .invalidManifest: return "invalid_manifest"
+        case .imageDecodeFailed: return "image_decode"
+        case .dimensionMismatch: return "dimension_mismatch"
+        case .outputMissing: return "output_missing"
         }
     }
 }
@@ -922,12 +955,17 @@ func canonicalImage(at url: URL, context: CIContext) throws -> CanonicalImage {
     let extent = image.extent.integral
     let width = Int(extent.width.rounded(.toNearestOrAwayFromZero))
     let height = Int(extent.height.rounded(.toNearestOrAwayFromZero))
-    guard width > 0, height > 0,
+    guard width > 0, height > 0, width <= 8_192, height <= 8_192,
           let cgImage = context.createCGImage(image, from: extent) else {
         throw CompareError.imageDecodeFailed(url.path)
     }
 
-    var rgba = Array(repeating: UInt8(0), count: width * height * 4)
+    let pixels = try checkedMultiply(Int64(width), Int64(height))
+    let byteCount = try checkedMultiply(pixels, 4)
+    guard byteCount <= 256 * 1_024 * 1_024, byteCount <= Int64(Int.max) else {
+        throw CompareError.imageDecodeFailed(url.path)
+    }
+    var rgba = Array(repeating: UInt8(0), count: Int(byteCount))
     let colorSpace = CGColorSpace(name: CGColorSpace.sRGB)!
     let bitmapInfo = CGImageAlphaInfo.premultipliedLast.rawValue
     let drawn = rgba.withUnsafeMutableBytes { bytes in
@@ -962,11 +1000,12 @@ func metrics(
     guard lhs.width == rhs.width, lhs.height == rhs.height else {
         throw CompareError.dimensionMismatch("\(lhs.width)x\(lhs.height) vs \(rhs.width)x\(rhs.height)")
     }
-    let startRow = min(excludedRowsPerEdge, lhs.height)
-    let endRow = max(startRow, lhs.height - excludedRowsPerEdge)
+    try validateCanonicalPair(lhs, rhs)
+    let startRow = 0
+    let endRow = max(0, lhs.height - excludedRowsPerEdge)
     var comparedPixels = 0
     var changedPixels = 0
-    var totalDelta = 0
+    var totalDelta: Int64 = 0
     var maxDelta = 0
 
     for y in startRow..<endRow {
@@ -977,7 +1016,7 @@ func metrics(
             let blueDelta = abs(Int(lhs.rgba[index + 2]) - Int(rhs.rgba[index + 2]))
             let pixelDelta = max(redDelta, greenDelta, blueDelta)
             comparedPixels += 1
-            totalDelta += redDelta + greenDelta + blueDelta
+            totalDelta = try checkedAdd(totalDelta, Int64(redDelta + greenDelta + blueDelta))
             maxDelta = max(maxDelta, pixelDelta)
             if pixelDelta > tolerance {
                 changedPixels += 1
@@ -989,29 +1028,10 @@ func metrics(
     return ComparisonMetrics(
         comparedPixels: comparedPixels,
         changedPixels: changedPixels,
+        absoluteRGBDelta: totalDelta,
         meanAbsoluteRGBDelta: mean,
         maxRGBDelta: maxDelta
     )
-}
-
-func fixtureURLs(in inputURL: URL) -> [URL] {
-    guard let enumerator = FileManager.default.enumerator(
-        at: inputURL,
-        includingPropertiesForKeys: [.isRegularFileKey, .isSymbolicLinkKey],
-        options: [.skipsHiddenFiles]
-    ) else {
-        return []
-    }
-    return enumerator.compactMap { item in
-        guard let url = item as? URL,
-              url.deletingLastPathComponent().lastPathComponent == "portraits",
-              ["jpg", "jpeg", "png"].contains(url.pathExtension.lowercased()) else {
-            return nil
-        }
-        let values = try? url.resourceValues(forKeys: [.isRegularFileKey, .isSymbolicLinkKey])
-        guard values?.isRegularFile == true, values?.isSymbolicLink != true else { return nil }
-        return url
-    }.sorted { $0.lastPathComponent < $1.lastPathComponent }
 }
 
 func outputURL(runRoot: URL, batchID: String, stem: String, caseID: String) -> URL {
@@ -1023,7 +1043,10 @@ func outputURL(runRoot: URL, batchID: String, stem: String, caseID: String) -> U
 
 func aggregate(_ values: [ComparisonMetrics]) -> ComparisonMetrics {
     guard !values.isEmpty else {
-        return ComparisonMetrics(comparedPixels: 0, changedPixels: 0, meanAbsoluteRGBDelta: 0, maxRGBDelta: 0)
+        return ComparisonMetrics(
+            comparedPixels: 0, changedPixels: 0, absoluteRGBDelta: 0,
+            meanAbsoluteRGBDelta: 0, maxRGBDelta: 0
+        )
     }
     let compared = values.reduce(0) { $0 + $1.comparedPixels }
     let changed = values.reduce(0) { $0 + $1.changedPixels }
@@ -1033,8 +1056,449 @@ func aggregate(_ values: [ComparisonMetrics]) -> ComparisonMetrics {
     return ComparisonMetrics(
         comparedPixels: compared,
         changedPixels: changed,
+        absoluteRGBDelta: values.reduce(0) { $0 + $1.absoluteRGBDelta },
         meanAbsoluteRGBDelta: compared == 0 ? 0 : weightedMean / Double(compared),
         maxRGBDelta: values.map { $0.maxRGBDelta }.max() ?? 0
+    )
+}
+
+private func sha256Hex(_ data: Data) -> String {
+    SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
+}
+
+private func pathIsWithin(_ child: URL, root: URL) -> Bool {
+    let childParts = child.standardizedFileURL.pathComponents
+    let rootParts = root.standardizedFileURL.pathComponents
+    return childParts.count > rootParts.count && childParts.prefix(rootParts.count) == rootParts[...]
+}
+
+private func requireAdmittedDirectory(_ url: URL) throws {
+    let standardized = url.standardizedFileURL
+    let resolved = standardized.resolvingSymlinksInPath()
+    let values = try standardized.resourceValues(forKeys: [.isDirectoryKey, .isSymbolicLinkKey])
+    guard standardized.path == resolved.path,
+          values.isDirectory == true, values.isSymbolicLink != true else {
+        throw SemanticContractError.admission
+    }
+}
+
+private func requireAdmittedRegularFile(_ url: URL, beneath root: URL) throws {
+    let standardized = url.standardizedFileURL
+    let resolved = standardized.resolvingSymlinksInPath()
+    guard pathIsWithin(standardized, root: root), standardized.path == resolved.path else {
+        throw SemanticContractError.admission
+    }
+    let values = try standardized.resourceValues(forKeys: [
+        .isRegularFileKey, .isSymbolicLinkKey, .fileSizeKey
+    ])
+    guard values.isRegularFile == true, values.isSymbolicLink != true,
+          let size = values.fileSize, size > 0, size <= 64 * 1_024 * 1_024 else {
+        throw SemanticContractError.admission
+    }
+}
+
+private func admittedFixtureURLs(in inputRoot: URL) throws -> [URL] {
+    try requireAdmittedDirectory(inputRoot)
+    let portraitRoot = inputRoot.appendingPathComponent("portraits", isDirectory: true)
+    try requireAdmittedDirectory(portraitRoot)
+    guard let enumerator = FileManager.default.enumerator(
+        at: portraitRoot,
+        includingPropertiesForKeys: [.isRegularFileKey, .isDirectoryKey, .isSymbolicLinkKey],
+        options: [.skipsHiddenFiles]
+    ) else {
+        throw SemanticContractError.admission
+    }
+    var fixtures: [URL] = []
+    for case let url as URL in enumerator {
+        let values = try url.resourceValues(forKeys: [.isRegularFileKey, .isDirectoryKey, .isSymbolicLinkKey])
+        guard values.isSymbolicLink != true else { throw SemanticContractError.admission }
+        if values.isDirectory == true { continue }
+        guard values.isRegularFile == true,
+              ["jpg", "jpeg", "png"].contains(url.pathExtension.lowercased()) else {
+            throw SemanticContractError.admission
+        }
+        try requireAdmittedRegularFile(url, beneath: inputRoot)
+        let prefix = try Data(contentsOf: url, options: .mappedIfSafe).prefix(8)
+        let extensionName = url.pathExtension.lowercased()
+        let signatureMatches = extensionName == "png"
+            ? prefix.elementsEqual([137, 80, 78, 71, 13, 10, 26, 10])
+            : prefix.count >= 3 && prefix[prefix.startIndex] == 0xFF &&
+                prefix[prefix.index(after: prefix.startIndex)] == 0xD8 &&
+                prefix[prefix.index(prefix.startIndex, offsetBy: 2)] == 0xFF
+        guard signatureMatches else { throw SemanticContractError.admission }
+        fixtures.append(url)
+    }
+    fixtures.sort {
+        $0.lastPathComponent.utf8.lexicographicallyPrecedes($1.lastPathComponent.utf8)
+    }
+    guard !fixtures.isEmpty else { throw SemanticContractError.admission }
+    let foldedStems = fixtures.map { $0.deletingPathExtension().lastPathComponent.lowercased() }
+    guard Set(foldedStems).count == foldedStems.count,
+          foldedStems.allSatisfy(isStableIdentifier) else {
+        throw SemanticContractError.admission
+    }
+    return fixtures
+}
+
+private func expectedRunOutputs(
+    manifest: BatchManifest, fixtures: [URL], runRoot: URL
+) -> [URL] {
+    let stems = fixtures.map { $0.deletingPathExtension().lastPathComponent }
+    var outputs = stems.map {
+        outputURL(runRoot: runRoot, batchID: "control", stem: $0, caseID: manifest.control.id)
+    }
+    for batch in manifest.batches {
+        for caseID in batch.cases {
+            outputs.append(contentsOf: stems.map {
+                outputURL(runRoot: runRoot, batchID: batch.id, stem: $0, caseID: caseID)
+            })
+        }
+    }
+    return outputs
+}
+
+private func admitRunInventory(
+    manifest: BatchManifest,
+    fixtures: [URL],
+    runRoot: URL,
+    attemptID: String
+) throws -> [String: URL] {
+    try requireAdmittedDirectory(runRoot)
+    guard isStableIdentifier(attemptID), runRoot.lastPathComponent == attemptID else {
+        throw SemanticContractError.admission
+    }
+    let expected = expectedRunOutputs(manifest: manifest, fixtures: fixtures, runRoot: runRoot)
+    let expectedPaths = Set(expected.map { $0.standardizedFileURL.path })
+    guard let enumerator = FileManager.default.enumerator(
+        at: runRoot,
+        includingPropertiesForKeys: [
+            .isRegularFileKey, .isDirectoryKey, .isSymbolicLinkKey,
+            .contentModificationDateKey, .creationDateKey
+        ],
+        options: [.skipsHiddenFiles]
+    ) else {
+        throw SemanticContractError.admission
+    }
+    let rootValues = try runRoot.resourceValues(forKeys: [.creationDateKey])
+    guard let rootCreated = rootValues.creationDate else { throw SemanticContractError.admission }
+    var discovered: Set<String> = []
+    for case let url as URL in enumerator {
+        let values = try url.resourceValues(forKeys: [
+            .isRegularFileKey, .isDirectoryKey, .isSymbolicLinkKey,
+            .contentModificationDateKey
+        ])
+        guard values.isSymbolicLink != true else { throw SemanticContractError.admission }
+        if values.isDirectory == true { continue }
+        guard values.isRegularFile == true else { throw SemanticContractError.admission }
+        try requireAdmittedRegularFile(url, beneath: runRoot)
+        let path = url.standardizedFileURL.path
+        guard expectedPaths.contains(path), url.pathExtension.lowercased() == "png",
+              let modified = values.contentModificationDate,
+              modified >= rootCreated.addingTimeInterval(-1.0) else {
+            throw SemanticContractError.admission
+        }
+        let signature = try Data(contentsOf: url, options: .mappedIfSafe).prefix(8)
+        guard signature.elementsEqual([137, 80, 78, 71, 13, 10, 26, 10]) else {
+            throw SemanticContractError.admission
+        }
+        guard discovered.insert(path).inserted else { throw SemanticContractError.admission }
+    }
+    guard discovered == expectedPaths else { throw SemanticContractError.admission }
+    return Dictionary(uniqueKeysWithValues: expected.map { ($0.standardizedFileURL.path, $0) })
+}
+
+private func prepareReportDestination(_ reportURL: URL) throws {
+    let parent = reportURL.deletingLastPathComponent()
+    try FileManager.default.createDirectory(at: parent, withIntermediateDirectories: true)
+    try requireAdmittedDirectory(parent)
+    if FileManager.default.fileExists(atPath: reportURL.path) {
+        let values = try reportURL.resourceValues(forKeys: [.isRegularFileKey, .isSymbolicLinkKey])
+        guard values.isRegularFile == true, values.isSymbolicLink != true else {
+            throw SemanticContractError.admission
+        }
+        try FileManager.default.removeItem(at: reportURL)
+    }
+}
+
+private func canonicalPayload(_ payload: StableSemanticPayload) -> StableSemanticPayload {
+    let batchOrder = Dictionary(uniqueKeysWithValues: expectedBatchInventory.enumerated().map { ($1.0, $0) })
+    let caseOrder = Dictionary(uniqueKeysWithValues: expectedBatchInventory.flatMap { $0.1 }.enumerated().map { ($1, $0) })
+    let directionOrder = Dictionary(uniqueKeysWithValues: expectedSemanticContracts.enumerated().map { ($1.caseID, $0) })
+    let protectedOrder: [String: [String]] = [
+        "faceContourSmooth_0p25": ["centralAnatomy", "background", "watermark"],
+        "chinTaper_0p25": ["upperFace", "mouth", "background", "watermark"],
+        "gazeCorrection_0p25": ["eyeContours", "eyebrows", "background", "watermark"],
+        "eyebrowHeadSpacing_plus0p25": ["outerAnchors", "eyes", "background", "watermark"],
+        "eyebrowHeadSpacing_minus0p25": ["outerAnchors", "eyes", "background", "watermark"],
+        "noseBridge_0p30": ["root", "tip", "background", "watermark"],
+        "noseRootNarrowing_0p25": ["bridge", "tip", "background", "watermark"],
+        "mouthWidth_minus0p35": ["mouthHeight", "surroundingFace", "background", "watermark"]
+    ]
+    return StableSemanticPayload(
+        schemaVersion: payload.schemaVersion,
+        contractID: payload.contractID,
+        cpuReferenceToken: payload.cpuReferenceToken,
+        fixtureCount: payload.fixtureCount,
+        fixtureIDs: payload.fixtureIDs.sorted(),
+        watermarkExcludedRowCount: payload.watermarkExcludedRowCount,
+        batches: payload.batches.sorted { batchOrder[$0.id, default: Int.max] < batchOrder[$1.id, default: Int.max] },
+        mechanicalCases: payload.mechanicalCases.sorted { caseOrder[$0.caseID, default: Int.max] < caseOrder[$1.caseID, default: Int.max] },
+        semanticDirections: payload.semanticDirections.sorted {
+            directionOrder[$0.caseID, default: Int.max] < directionOrder[$1.caseID, default: Int.max]
+        }.map { direction in
+            SemanticDirectionSummary(
+                caseID: direction.caseID, metric: direction.metric,
+                fixtureCount: direction.fixtureCount,
+                sourceTargetChangedPixels: direction.sourceTargetChangedPixels,
+                sourceTargetAbsoluteRGBDelta: direction.sourceTargetAbsoluteRGBDelta,
+                neutralTargetChangedPixels: direction.neutralTargetChangedPixels,
+                neutralTargetAbsoluteRGBDelta: direction.neutralTargetAbsoluteRGBDelta,
+                sourceSignedMarginQ16: direction.sourceSignedMarginQ16,
+                neutralSignedMarginQ16: direction.neutralSignedMarginQ16,
+                signedMarginQ16: direction.signedMarginQ16,
+                siblingDistinctMarginQ16: direction.siblingDistinctMarginQ16,
+                outsideChangedPixels: direction.outsideChangedPixels,
+                outsideAbsoluteRGBDelta: direction.outsideAbsoluteRGBDelta,
+                protectedRegions: direction.protectedRegions.sorted {
+                    let order = protectedOrder[direction.caseID] ?? []
+                    return (order.firstIndex(of: $0.id) ?? Int.max) <
+                        (order.firstIndex(of: $1.id) ?? Int.max)
+                },
+                failureReasonCodes: direction.failureReasonCodes.sorted(),
+                verdict: direction.verdict
+            )
+        },
+        verdict: payload.verdict
+    )
+}
+
+private func stablePayloadData(_ payload: StableSemanticPayload) throws -> Data {
+    let encoder = JSONEncoder()
+    encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
+    return try encoder.encode(canonicalPayload(payload))
+}
+
+private func privacySafeJSON(_ data: Data) -> Bool {
+    guard let object = try? JSONSerialization.jsonObject(with: data) else { return false }
+    let forbiddenKeyFragments = [
+        "filepath", "filename", "rgba", "mask", "landmark", "geometry",
+        "coordinate", "childoutput", "transcript", "freetext"
+    ]
+    let forbiddenValues = ["/users/", "../", "\\\\", ".jpg", ".jpeg", ".png", "file://"]
+    func scan(_ value: Any) -> Bool {
+        if let dictionary = value as? [String: Any] {
+            for (key, child) in dictionary {
+                let folded = key.lowercased().replacingOccurrences(of: "_", with: "")
+                if folded == "path" || folded.hasSuffix("path") ||
+                    forbiddenKeyFragments.contains(where: folded.contains) { return false }
+                if !scan(child) { return false }
+            }
+        } else if let array = value as? [Any] {
+            return array.allSatisfy(scan)
+        } else if let string = value as? String {
+            let folded = string.lowercased()
+            return !forbiddenValues.contains(where: folded.contains)
+        }
+        return true
+    }
+    return scan(object)
+}
+
+private func validateStablePayload(
+    _ payload: StableSemanticPayload,
+    contracts: [SemanticContract]
+) throws {
+    let canonical = canonicalPayload(payload)
+    guard canonical.schemaVersion == "beauty.face-feature-batch-report.semantic.1",
+          isStableIdentifier(canonical.contractID),
+          canonical.cpuReferenceToken == "beauty_cpu_reference_v1",
+          canonical.fixtureCount > 0,
+          canonical.fixtureIDs.count == canonical.fixtureCount,
+          Set(canonical.fixtureIDs).count == canonical.fixtureIDs.count,
+          canonical.fixtureIDs.allSatisfy(isStableIdentifier),
+          canonical.batches.map(\ .id) == expectedBatchInventory.map(\ .0),
+          canonical.mechanicalCases.count == 65,
+          canonical.mechanicalCases.map(\ .caseID) == expectedBatchInventory.flatMap(\ .1),
+          canonical.semanticDirections.count == 8,
+          canonical.semanticDirections.map(\ .caseID) == expectedSemanticContracts.map(\ .caseID) else {
+        throw SemanticContractError.inventory
+    }
+    guard zip(canonical.batches, expectedBatchInventory).allSatisfy({ batch, expected in
+        batch.id == expected.0 && batch.caseCount == expected.1.count &&
+            batch.completeCaseCount == expected.1.count && batch.missingOutputCount == 0
+    }), canonical.mechanicalCases.allSatisfy({ row in
+        row.fixtureCount == canonical.fixtureCount && row.outputCount == canonical.fixtureCount &&
+            row.missingOutputCount == 0 && row.sourceComparedPixels > 0 &&
+            row.neutralComparedPixels > 0 && row.sourceChangedPixels >= 0 &&
+            row.neutralChangedPixels >= 0 && row.sourceAbsoluteRGBDelta >= 0 &&
+            row.neutralAbsoluteRGBDelta >= 0 &&
+            row.descriptiveStatus == "complete_mechanical_summary"
+    }) else {
+        throw SemanticContractError.inventory
+    }
+    let allowlistedReasons = Set(SemanticFailureReason.allCases.map(\ .rawValue))
+    guard contracts.map(\ .caseID) == expectedSemanticContracts.map(\ .caseID) else {
+        throw SemanticContractError.contracts
+    }
+    guard canonical.semanticDirections.allSatisfy({ direction in
+        direction.fixtureCount == canonical.fixtureCount &&
+            Set(direction.failureReasonCodes).isSubset(of: allowlistedReasons) &&
+            (direction.failureReasonCodes.isEmpty ? direction.verdict == "semantic_pass" : direction.verdict == "semantic_fail")
+    }) else {
+        throw SemanticContractError.verdict
+    }
+    for (direction, contract) in zip(canonical.semanticDirections, contracts) {
+        let fixtureCount = Int64(canonical.fixtureCount)
+        let minimumChanged = try checkedMultiply(Int64(contract.thresholds.minimumChangedPixels), fixtureCount)
+        let minimumDelta = try checkedMultiply(Int64(contract.thresholds.minimumAbsoluteRGBDelta), fixtureCount)
+        let minimumMargin = try checkedMultiply(Int64(contract.thresholds.minimumSignedMarginQ16), fixtureCount)
+        let maximumOutsideChanged = try checkedMultiply(Int64(contract.thresholds.maximumOutsideChangedPixels), fixtureCount)
+        let maximumOutsideDelta = try checkedMultiply(Int64(contract.thresholds.maximumOutsideAbsoluteRGBDelta), fixtureCount)
+        let signedPass: Bool
+        switch contract.expectedSign {
+        case .positive:
+            signedPass = direction.sourceSignedMarginQ16 >= minimumMargin &&
+                direction.neutralSignedMarginQ16 >= minimumMargin &&
+                direction.signedMarginQ16 >= minimumMargin
+        case .negative:
+            signedPass = direction.sourceSignedMarginQ16 <= -minimumMargin &&
+                direction.neutralSignedMarginQ16 <= -minimumMargin &&
+                direction.signedMarginQ16 <= -minimumMargin
+        }
+        let protectionByID = Dictionary(uniqueKeysWithValues: direction.protectedRegions.map { ($0.id, $0) })
+        let protectedPass = direction.protectedRegions.count == contract.protectedRegions.count &&
+            contract.protectedRegions.allSatisfy { protection in
+                guard let row = protectionByID[protection.id],
+                      let changedCeiling = try? checkedMultiply(Int64(protection.maximumChangedPixels), fixtureCount),
+                      let deltaCeiling = try? checkedMultiply(Int64(protection.maximumAbsoluteRGBDelta), fixtureCount) else {
+                    return false
+                }
+                return row.changedPixels <= changedCeiling && row.absoluteRGBDelta <= deltaCeiling
+            }
+        let aggregateGatesPass = direction.sourceTargetChangedPixels >= minimumChanged &&
+            direction.sourceTargetAbsoluteRGBDelta >= minimumDelta &&
+            direction.neutralTargetChangedPixels >= minimumChanged &&
+            direction.neutralTargetAbsoluteRGBDelta >= minimumDelta &&
+            signedPass &&
+            direction.siblingDistinctMarginQ16 >= Int64(contract.thresholds.minimumSignedMarginQ16) &&
+            direction.outsideChangedPixels <= maximumOutsideChanged &&
+            direction.outsideAbsoluteRGBDelta <= maximumOutsideDelta &&
+            protectedPass
+        if direction.verdict == "semantic_pass" && !aggregateGatesPass {
+            throw SemanticContractError.verdict
+        }
+    }
+    let allPass = canonical.semanticDirections.allSatisfy { $0.verdict == "semantic_pass" }
+    guard canonical.verdict == (allPass ? "semantic_pass" : "semantic_fail") else {
+        throw SemanticContractError.verdict
+    }
+    guard privacySafeJSON(try stablePayloadData(canonical)) else {
+        throw SemanticContractError.admission
+    }
+}
+
+private func writeSemanticReport(
+    payload: StableSemanticPayload,
+    contracts: [SemanticContract],
+    attemptID: String,
+    generatedAtUTC: String,
+    to reportURL: URL
+) throws -> String {
+    let stable = canonicalPayload(payload)
+    try validateStablePayload(stable, contracts: contracts)
+    let stableData = try stablePayloadData(stable)
+    let digest = sha256Hex(stableData)
+    let envelope = SemanticReportEnvelope(
+        volatile: .init(generatedAtUTC: generatedAtUTC, attemptID: attemptID),
+        stablePayloadDigest: digest,
+        stablePayload: stable
+    )
+    let encoder = JSONEncoder()
+    encoder.outputFormatting = [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]
+    let data = try encoder.encode(envelope)
+    guard privacySafeJSON(data) else { throw SemanticContractError.admission }
+    try data.write(to: reportURL, options: .atomic)
+    return digest
+}
+
+private func semanticDirectionSummary(
+    contract: SemanticContract,
+    sources: [CanonicalImage],
+    neutrals: [CanonicalImage],
+    candidates: [CanonicalImage],
+    siblingImages: [[CanonicalImage]]
+) throws -> SemanticDirectionSummary {
+    guard !sources.isEmpty, sources.count == neutrals.count,
+          sources.count == candidates.count,
+          siblingImages.allSatisfy({ $0.count == sources.count }) else {
+        throw SemanticContractError.admission
+    }
+    var sourceChanged: Int64 = 0
+    var sourceDelta: Int64 = 0
+    var neutralChanged: Int64 = 0
+    var neutralDelta: Int64 = 0
+    var sourceMargin: Int64 = 0
+    var neutralMargin: Int64 = 0
+    var signedMargin: Int64 = 0
+    var siblingMargin = Int64.max
+    var outsideChanged: Int64 = 0
+    var outsideDelta: Int64 = 0
+    var protected = Dictionary(uniqueKeysWithValues: contract.protectedRegions.map {
+        ($0.id, ProtectedRegionSummary(id: $0.id, changedPixels: 0, absoluteRGBDelta: 0))
+    })
+    var failures: Set<SemanticFailureReason> = []
+
+    for index in sources.indices {
+        do {
+            let measurement = try semanticMeasurement(
+                contract: contract,
+                source: sources[index], neutral: neutrals[index], candidate: candidates[index],
+                siblings: siblingImages.map { $0[index] },
+                watermarkRows: watermarkExcludedRows(width: sources[index].width)
+            )
+            sourceChanged = try checkedAdd(sourceChanged, measurement.sourceTarget.changedPixels)
+            sourceDelta = try checkedAdd(sourceDelta, measurement.sourceTarget.absoluteRGBDelta)
+            neutralChanged = try checkedAdd(neutralChanged, measurement.neutralTarget.changedPixels)
+            neutralDelta = try checkedAdd(neutralDelta, measurement.neutralTarget.absoluteRGBDelta)
+            sourceMargin = try checkedAdd(sourceMargin, measurement.sourceSignedMarginQ16)
+            neutralMargin = try checkedAdd(neutralMargin, measurement.neutralSignedMarginQ16)
+            signedMargin = try checkedAdd(signedMargin, measurement.signedMarginQ16)
+            siblingMargin = min(siblingMargin, measurement.siblingDistinctMarginQ16)
+            outsideChanged = try checkedAdd(outsideChanged, measurement.outsideChangedPixels)
+            outsideDelta = try checkedAdd(outsideDelta, measurement.outsideAbsoluteRGBDelta)
+            failures.formUnion(measurement.failureReasons)
+            for row in measurement.protected {
+                guard let existing = protected[row.id] else { throw SemanticContractError.verdict }
+                protected[row.id] = ProtectedRegionSummary(
+                    id: row.id,
+                    changedPixels: try checkedAdd(existing.changedPixels, row.changedPixels),
+                    absoluteRGBDelta: try checkedAdd(existing.absoluteRGBDelta, row.absoluteRGBDelta)
+                )
+            }
+        } catch SemanticContractError.admission {
+            failures.insert(.metricAdmission)
+        }
+    }
+    if siblingMargin == Int64.max { siblingMargin = 0 }
+    let reasonCodes = failures.map(\ .rawValue).sorted()
+    let protectedRows = contract.protectedRegions.compactMap { protected[$0.id] }
+    return SemanticDirectionSummary(
+        caseID: contract.caseID,
+        metric: contract.metric,
+        fixtureCount: sources.count,
+        sourceTargetChangedPixels: sourceChanged,
+        sourceTargetAbsoluteRGBDelta: sourceDelta,
+        neutralTargetChangedPixels: neutralChanged,
+        neutralTargetAbsoluteRGBDelta: neutralDelta,
+        sourceSignedMarginQ16: sourceMargin,
+        neutralSignedMarginQ16: neutralMargin,
+        signedMarginQ16: signedMargin,
+        siblingDistinctMarginQ16: siblingMargin,
+        outsideChangedPixels: outsideChanged,
+        outsideAbsoluteRGBDelta: outsideDelta,
+        protectedRegions: protectedRows,
+        failureReasonCodes: reasonCodes,
+        verdict: reasonCodes.isEmpty ? "semantic_pass" : "semantic_fail"
     )
 }
 
@@ -1296,6 +1760,249 @@ private func runDirectionMetricSelfTests(contracts: [SemanticContract]) throws -
     guard aliased.failureReasons.contains(.siblingAlias) else {
         throw SemanticContractError.verdict
     }
+    probes += 1
+
+    return probes
+}
+
+private func runSemanticReportSelfTests(manifest: BatchManifest) throws -> Int {
+    guard let contracts = manifest.semanticContracts else { throw SemanticContractError.contracts }
+    var probes = 0
+    func expect(_ error: SemanticContractError, _ body: () throws -> Void) throws {
+        do {
+            try body()
+        } catch let caught as SemanticContractError where caught == error {
+            probes += 1
+            return
+        } catch {
+            throw SemanticContractError.verdict
+        }
+        throw SemanticContractError.verdict
+    }
+
+    let fixtureCount = 1
+    let batches = expectedBatchInventory.map {
+        BatchSummary(id: $0.0, caseCount: $0.1.count, completeCaseCount: $0.1.count, missingOutputCount: 0)
+    }
+    let mechanical = expectedBatchInventory.flatMap { batch in
+        batch.1.map {
+            MechanicalCaseSummary(
+                batchID: batch.0, caseID: $0, fixtureCount: fixtureCount,
+                outputCount: fixtureCount, missingOutputCount: 0,
+                sourceChangedPixels: 0, sourceComparedPixels: 1,
+                sourceAbsoluteRGBDelta: 0, sourceMaxRGBDelta: 0,
+                neutralChangedPixels: 0, neutralComparedPixels: 1,
+                neutralAbsoluteRGBDelta: 0, neutralMaxRGBDelta: 0,
+                descriptiveStatus: "complete_mechanical_summary"
+            )
+        }
+    }
+    let directions = contracts.map { contract -> SemanticDirectionSummary in
+        let signed = Int64(contract.thresholds.minimumSignedMarginQ16) *
+            (contract.expectedSign == .positive ? 1 : -1)
+        return SemanticDirectionSummary(
+            caseID: contract.caseID, metric: contract.metric, fixtureCount: fixtureCount,
+            sourceTargetChangedPixels: Int64(contract.thresholds.minimumChangedPixels),
+            sourceTargetAbsoluteRGBDelta: Int64(contract.thresholds.minimumAbsoluteRGBDelta),
+            neutralTargetChangedPixels: Int64(contract.thresholds.minimumChangedPixels),
+            neutralTargetAbsoluteRGBDelta: Int64(contract.thresholds.minimumAbsoluteRGBDelta),
+            sourceSignedMarginQ16: signed, neutralSignedMarginQ16: signed,
+            signedMarginQ16: signed,
+            siblingDistinctMarginQ16: Int64(contract.thresholds.minimumSignedMarginQ16),
+            outsideChangedPixels: Int64(contract.thresholds.maximumOutsideChangedPixels),
+            outsideAbsoluteRGBDelta: Int64(contract.thresholds.maximumOutsideAbsoluteRGBDelta),
+            protectedRegions: contract.protectedRegions.map {
+                ProtectedRegionSummary(
+                    id: $0.id, changedPixels: Int64($0.maximumChangedPixels),
+                    absoluteRGBDelta: Int64($0.maximumAbsoluteRGBDelta)
+                )
+            },
+            failureReasonCodes: [], verdict: "semantic_pass"
+        )
+    }
+    let payload = StableSemanticPayload(
+        schemaVersion: "beauty.face-feature-batch-report.semantic.1",
+        contractID: "contract_001", cpuReferenceToken: "beauty_cpu_reference_v1",
+        fixtureCount: fixtureCount, fixtureIDs: ["portrait_001"],
+        watermarkExcludedRowCount: 10,
+        batches: batches, mechanicalCases: mechanical,
+        semanticDirections: directions, verdict: "semantic_pass"
+    )
+    try validateStablePayload(payload, contracts: contracts)
+
+    let reordered = StableSemanticPayload(
+        schemaVersion: payload.schemaVersion, contractID: payload.contractID,
+        cpuReferenceToken: payload.cpuReferenceToken, fixtureCount: payload.fixtureCount,
+        fixtureIDs: payload.fixtureIDs.reversed(),
+        watermarkExcludedRowCount: payload.watermarkExcludedRowCount,
+        batches: payload.batches.reversed(), mechanicalCases: payload.mechanicalCases.reversed(),
+        semanticDirections: payload.semanticDirections.reversed(), verdict: payload.verdict
+    )
+    let firstData = try stablePayloadData(payload)
+    let secondData = try stablePayloadData(reordered)
+    guard firstData == secondData, sha256Hex(firstData) == sha256Hex(secondData) else {
+        throw SemanticContractError.verdict
+    }
+    probes += 1
+
+    var insufficientDirections = directions
+    let first = insufficientDirections[0]
+    insufficientDirections[0] = SemanticDirectionSummary(
+        caseID: first.caseID, metric: first.metric, fixtureCount: first.fixtureCount,
+        sourceTargetChangedPixels: first.sourceTargetChangedPixels - 1,
+        sourceTargetAbsoluteRGBDelta: first.sourceTargetAbsoluteRGBDelta,
+        neutralTargetChangedPixels: first.neutralTargetChangedPixels,
+        neutralTargetAbsoluteRGBDelta: first.neutralTargetAbsoluteRGBDelta,
+        sourceSignedMarginQ16: first.sourceSignedMarginQ16,
+        neutralSignedMarginQ16: first.neutralSignedMarginQ16,
+        signedMarginQ16: first.signedMarginQ16,
+        siblingDistinctMarginQ16: first.siblingDistinctMarginQ16,
+        outsideChangedPixels: first.outsideChangedPixels,
+        outsideAbsoluteRGBDelta: first.outsideAbsoluteRGBDelta,
+        protectedRegions: first.protectedRegions,
+        failureReasonCodes: [], verdict: "semantic_pass"
+    )
+    try expect(.verdict) {
+        try validateStablePayload(StableSemanticPayload(
+            schemaVersion: payload.schemaVersion, contractID: payload.contractID,
+            cpuReferenceToken: payload.cpuReferenceToken, fixtureCount: payload.fixtureCount,
+            fixtureIDs: payload.fixtureIDs, watermarkExcludedRowCount: payload.watermarkExcludedRowCount,
+            batches: payload.batches, mechanicalCases: payload.mechanicalCases,
+            semanticDirections: insufficientDirections, verdict: payload.verdict
+        ), contracts: contracts)
+    }
+
+    try expect(.inventory) {
+        try validateStablePayload(StableSemanticPayload(
+            schemaVersion: payload.schemaVersion, contractID: payload.contractID,
+            cpuReferenceToken: payload.cpuReferenceToken, fixtureCount: payload.fixtureCount,
+            fixtureIDs: payload.fixtureIDs, watermarkExcludedRowCount: payload.watermarkExcludedRowCount,
+            batches: Array(payload.batches.dropLast()), mechanicalCases: payload.mechanicalCases,
+            semanticDirections: payload.semanticDirections, verdict: payload.verdict
+        ), contracts: contracts)
+    }
+    guard SemanticExitCode.success.rawValue == 0,
+          Set([SemanticExitCode.success.rawValue, SemanticExitCode.semanticFailure.rawValue,
+               SemanticExitCode.infrastructureFailure.rawValue]).count == 3 else {
+        throw SemanticContractError.verdict
+    }
+    probes += 1
+
+    let unsafe = try JSONSerialization.data(withJSONObject: [
+        "stable": ["rawRGBA": [0, 1], "sourcePath": "/Users/private/portrait.png"]
+    ])
+    guard !privacySafeJSON(unsafe), privacySafeJSON(firstData) else {
+        throw SemanticContractError.verdict
+    }
+    probes += 1
+
+    let temporaryRoot = FileManager.default.temporaryDirectory
+        .appendingPathComponent("beauty_semantic_report_\(UUID().uuidString)", isDirectory: true)
+    try FileManager.default.createDirectory(at: temporaryRoot, withIntermediateDirectories: true)
+    defer { try? FileManager.default.removeItem(at: temporaryRoot) }
+    let inputRoot = temporaryRoot.appendingPathComponent("input", isDirectory: true)
+    let portraits = inputRoot.appendingPathComponent("portraits", isDirectory: true)
+    try FileManager.default.createDirectory(at: portraits, withIntermediateDirectories: true)
+    let fixture = portraits.appendingPathComponent("Portrait_A.jpg")
+    try Data([0xFF, 0xD8, 0xFF, 0xD9]).write(to: fixture)
+    let admitted = try admittedFixtureURLs(in: inputRoot)
+    guard admitted.count == 1 else { throw SemanticContractError.verdict }
+    probes += 1
+
+    let duplicate = portraits.appendingPathComponent("portrait_a.PNG")
+    try Data([137, 80, 78, 71, 13, 10, 26, 10]).write(to: duplicate)
+    try expect(.admission) { _ = try admittedFixtureURLs(in: inputRoot) }
+    try FileManager.default.removeItem(at: duplicate)
+    let unsupported = portraits.appendingPathComponent("unsupported.gif")
+    try Data([1]).write(to: unsupported)
+    try expect(.admission) { _ = try admittedFixtureURLs(in: inputRoot) }
+    try FileManager.default.removeItem(at: unsupported)
+    let symlink = portraits.appendingPathComponent("linked.jpg")
+    try FileManager.default.createSymbolicLink(at: symlink, withDestinationURL: fixture)
+    try expect(.admission) { _ = try admittedFixtureURLs(in: inputRoot) }
+    try FileManager.default.removeItem(at: symlink)
+    let escaped = temporaryRoot.appendingPathComponent("escaped.jpg")
+    try Data([1]).write(to: escaped)
+    try expect(.admission) { try requireAdmittedRegularFile(escaped, beneath: inputRoot) }
+
+    let runRoot = temporaryRoot.appendingPathComponent("attempt_001", isDirectory: true)
+    try FileManager.default.createDirectory(at: runRoot, withIntermediateDirectories: true)
+    let expectedOutputs = expectedRunOutputs(manifest: manifest, fixtures: admitted, runRoot: runRoot)
+    let pngHeader = Data([137, 80, 78, 71, 13, 10, 26, 10])
+    for output in expectedOutputs {
+        try FileManager.default.createDirectory(at: output.deletingLastPathComponent(), withIntermediateDirectories: true)
+        try pngHeader.write(to: output)
+    }
+    _ = try admitRunInventory(manifest: manifest, fixtures: admitted, runRoot: runRoot, attemptID: "attempt_001")
+    probes += 1
+    let extra = runRoot.appendingPathComponent("unexpected.png")
+    try pngHeader.write(to: extra)
+    try expect(.admission) {
+        _ = try admitRunInventory(manifest: manifest, fixtures: admitted, runRoot: runRoot, attemptID: "attempt_001")
+    }
+    try FileManager.default.removeItem(at: extra)
+    let missing = expectedOutputs[0]
+    try FileManager.default.removeItem(at: missing)
+    try expect(.admission) {
+        _ = try admitRunInventory(manifest: manifest, fixtures: admitted, runRoot: runRoot, attemptID: "attempt_001")
+    }
+    try pngHeader.write(to: missing)
+    let stale = expectedOutputs[1]
+    try FileManager.default.setAttributes(
+        [.modificationDate: Date(timeIntervalSince1970: 1)], ofItemAtPath: stale.path
+    )
+    try expect(.admission) {
+        _ = try admitRunInventory(manifest: manifest, fixtures: admitted, runRoot: runRoot, attemptID: "attempt_001")
+    }
+    try FileManager.default.setAttributes([.modificationDate: Date()], ofItemAtPath: stale.path)
+    let linkedOutput = expectedOutputs[2]
+    try FileManager.default.removeItem(at: linkedOutput)
+    try FileManager.default.createSymbolicLink(at: linkedOutput, withDestinationURL: expectedOutputs[3])
+    try expect(.admission) {
+        _ = try admitRunInventory(manifest: manifest, fixtures: admitted, runRoot: runRoot, attemptID: "attempt_001")
+    }
+    try FileManager.default.removeItem(at: linkedOutput)
+    try pngHeader.write(to: linkedOutput)
+    try expect(.admission) {
+        _ = try admitRunInventory(manifest: manifest, fixtures: admitted, runRoot: runRoot, attemptID: "different_attempt")
+    }
+
+    let context = CIContext(options: nil)
+    do {
+        _ = try canonicalImage(at: fixture, context: context)
+        throw SemanticContractError.verdict
+    } catch is CompareError {
+        probes += 1
+    }
+    try expect(.admission) {
+        try validateCanonicalPair(generatedImage(rectangles: []), generatedImage(width: 81, rectangles: []))
+    }
+
+    let reportURL = temporaryRoot.appendingPathComponent("reports/report.json")
+    try FileManager.default.createDirectory(
+        at: reportURL.deletingLastPathComponent(), withIntermediateDirectories: true
+    )
+    try Data("prior_payload".utf8).write(to: reportURL)
+    try prepareReportDestination(reportURL)
+    guard !FileManager.default.fileExists(atPath: reportURL.path) else {
+        throw SemanticContractError.verdict
+    }
+    let digest = try writeSemanticReport(
+        payload: payload, contracts: contracts, attemptID: "attempt_001",
+        generatedAtUTC: "2000-01-01T00:00:00Z", to: reportURL
+    )
+    let decoded = try JSONDecoder().decode(SemanticReportEnvelope.self, from: Data(contentsOf: reportURL))
+    guard decoded.stablePayloadDigest == digest,
+          decoded.stablePayload == canonicalPayload(payload) else {
+        throw SemanticContractError.verdict
+    }
+    probes += 1
+    let secondReportURL = temporaryRoot.appendingPathComponent("reports/report_second.json")
+    let secondDigest = try writeSemanticReport(
+        payload: payload, contracts: contracts, attemptID: "attempt_002",
+        generatedAtUTC: "2099-12-31T23:59:59Z", to: secondReportURL
+    )
+    guard digest == secondDigest else { throw SemanticContractError.verdict }
     probes += 1
 
     return probes
@@ -1605,7 +2312,7 @@ let commandArguments = Array(CommandLine.arguments.dropFirst())
 if commandArguments == ["--self-test"] {
     do {
         let mutationCount = try runSemanticSelfTests()
-        print("semantic_contract_self_test=PASS mutations=\(mutationCount) directions=8 categories=boundary,ownership,admission,ordering,arithmetic,verdict")
+        print("semantic_validation_self_test=PASS mutations=\(mutationCount) inventories=5/65/8 categories=metric,boundary,ownership,admission,ordering,arithmetic,report,privacy,verdict")
         exit(0)
     } catch {
         fputs("semantic contract self-test failed: \(error)\n", stderr)
@@ -1619,32 +2326,36 @@ do {
     let runRoot = URL(fileURLWithPath: try argument("--run-root", in: arguments), isDirectory: true)
     let manifestURL = URL(fileURLWithPath: try argument("--manifest", in: arguments))
     let reportURL = URL(fileURLWithPath: try argument("--report", in: arguments))
+    let attemptID = try argument("--attempt-id", in: arguments)
+
+    try prepareReportDestination(reportURL)
+    try requireAdmittedRegularFile(manifestURL, beneath: manifestURL.deletingLastPathComponent())
 
     let manifestData = try Data(contentsOf: manifestURL)
     let manifest = try validateManifestData(manifestData)
     let allCaseIDs = manifest.batches.flatMap { $0.cases }
-    guard Set(allCaseIDs).count == allCaseIDs.count,
-          !allCaseIDs.contains(manifest.control.id),
-          !manifest.batches.isEmpty else {
-        throw CompareError.invalidManifest("duplicate, empty, or control case in manifest")
-    }
+    guard let contracts = manifest.semanticContracts else { throw SemanticContractError.contracts }
+    let fixtures = try admittedFixtureURLs(in: inputURL)
+    _ = try admitRunInventory(
+        manifest: manifest, fixtures: fixtures, runRoot: runRoot, attemptID: attemptID
+    )
 
-    let fixtures = fixtureURLs(in: inputURL)
-    guard !fixtures.isEmpty else {
-        throw CompareError.invalidManifest("no portrait fixtures found")
-    }
     let context = CIContext(options: [
         .workingColorSpace: CGColorSpace(name: CGColorSpace.sRGB)!,
         .outputColorSpace: CGColorSpace(name: CGColorSpace.sRGB)!
     ])
     let inputImages = try fixtures.map { try canonicalImage(at: $0, context: context) }
-    let width = inputImages.map { $0.width }.min() ?? 0
-    let watermarkFontSize = max(34.0, min(72.0, Double(width) / 30.0))
-    let watermarkPadding = max(24.0, Double(width) / 70.0)
-    let watermarkRows = Int(ceil(watermarkPadding + watermarkFontSize * 1.75 + 6.0))
     let tolerance = 2
-    let minimumChangedPixels = 32
-    let minimumMeanDelta = 0.05
+
+    for image in inputImages {
+        for contract in contracts {
+            try validateOwnership(contract, width: Int64(image.width), height: Int64(image.height))
+            _ = try watermarkSafeRegions(
+                contract.targetRegions, image: image,
+                excludedRows: watermarkExcludedRows(width: image.width)
+            )
+        }
+    }
 
     let controlImages = try fixtures.map { fixture -> CanonicalImage in
         let url = outputURL(
@@ -1653,133 +2364,113 @@ do {
             stem: fixture.deletingPathExtension().lastPathComponent,
             caseID: manifest.control.id
         )
-        guard FileManager.default.fileExists(atPath: url.path) else {
-            throw CompareError.outputMissing(url.lastPathComponent)
-        }
         return try canonicalImage(at: url, context: context)
     }
-    let inputToControl = try Array(zip(inputImages, controlImages)).map {
-        try metrics($0.0, $0.1, excludedRowsPerEdge: watermarkRows, tolerance: tolerance)
+    for (source, neutral) in zip(inputImages, controlImages) {
+        try validateCanonicalPair(source, neutral)
     }
-    let controlInputMetrics = aggregate(inputToControl)
 
-    var caseSummaries: [CaseSummary] = []
-    var batchSummaries: [BatchSummary] = []
-    var anyMissing = false
-
+    var candidateImages: [String: [CanonicalImage]] = [:]
     for batch in manifest.batches {
-        var casesWithOutput = 0
-        var casesWithEffect = 0
-        var missingOutputCount = 0
         for caseID in batch.cases {
-            var inputMetrics: [ComparisonMetrics] = []
-            var neutralMetrics: [ComparisonMetrics] = []
-            var outputCount = 0
-            var missingCount = 0
-
-            for (index, fixture) in fixtures.enumerated() {
-                let output = outputURL(
-                    runRoot: runRoot,
-                    batchID: batch.id,
+            let decoded = try fixtures.map { fixture -> CanonicalImage in
+                try canonicalImage(at: outputURL(
+                    runRoot: runRoot, batchID: batch.id,
                     stem: fixture.deletingPathExtension().lastPathComponent,
                     caseID: caseID
+                ), context: context)
+            }
+            for (source, candidate) in zip(inputImages, decoded) {
+                try validateCanonicalPair(source, candidate)
+            }
+            candidateImages[caseID] = decoded
+        }
+    }
+
+    var caseSummaries: [MechanicalCaseSummary] = []
+    var batchSummaries: [BatchSummary] = []
+
+    for batch in manifest.batches {
+        for caseID in batch.cases {
+            guard let rendered = candidateImages[caseID], rendered.count == fixtures.count else {
+                throw SemanticContractError.inventory
+            }
+            let inputMetric = aggregate(try inputImages.indices.map { index in
+                try metrics(
+                    inputImages[index], rendered[index],
+                    excludedRowsPerEdge: watermarkExcludedRows(width: inputImages[index].width),
+                    tolerance: tolerance
                 )
-                guard FileManager.default.fileExists(atPath: output.path) else {
-                    missingCount += 1
-                    continue
-                }
-                let rendered = try canonicalImage(at: output, context: context)
-                inputMetrics.append(try metrics(
-                    inputImages[index], rendered,
-                    excludedRowsPerEdge: watermarkRows,
+            })
+            let neutralMetric = aggregate(try inputImages.indices.map { index in
+                try metrics(
+                    controlImages[index], rendered[index],
+                    excludedRowsPerEdge: watermarkExcludedRows(width: inputImages[index].width),
                     tolerance: tolerance
-                ))
-                neutralMetrics.append(try metrics(
-                    controlImages[index], rendered,
-                    excludedRowsPerEdge: watermarkRows,
-                    tolerance: tolerance
-                ))
-                outputCount += 1
-            }
+                )
+            })
 
-            let inputMetric = aggregate(inputMetrics)
-            let neutralMetric = aggregate(neutralMetrics)
-            let effectDetected = neutralMetric.changedPixels >= minimumChangedPixels &&
-                neutralMetric.meanAbsoluteRGBDelta >= minimumMeanDelta
-            let verdict: String
-            if missingCount > 0 {
-                verdict = "missing_output"
-                anyMissing = true
-            } else if effectDetected {
-                verdict = "changed_vs_neutral"
-                casesWithEffect += 1
-            } else {
-                verdict = "no_detectable_change"
-            }
-            if outputCount == fixtures.count { casesWithOutput += 1 }
-            missingOutputCount += missingCount
-
-            caseSummaries.append(CaseSummary(
+            caseSummaries.append(MechanicalCaseSummary(
                 batchID: batch.id,
                 caseID: caseID,
                 fixtureCount: fixtures.count,
-                outputCount: outputCount,
-                missingOutputCount: missingCount,
-                inputChangedPixels: inputMetric.changedPixels,
-                inputComparedPixels: inputMetric.comparedPixels,
-                inputMeanAbsoluteRGBDelta: inputMetric.meanAbsoluteRGBDelta,
-                inputMaxRGBDelta: inputMetric.maxRGBDelta,
+                outputCount: fixtures.count,
+                missingOutputCount: 0,
+                sourceChangedPixels: inputMetric.changedPixels,
+                sourceComparedPixels: inputMetric.comparedPixels,
+                sourceAbsoluteRGBDelta: inputMetric.absoluteRGBDelta,
+                sourceMaxRGBDelta: inputMetric.maxRGBDelta,
                 neutralChangedPixels: neutralMetric.changedPixels,
                 neutralComparedPixels: neutralMetric.comparedPixels,
-                neutralMeanAbsoluteRGBDelta: neutralMetric.meanAbsoluteRGBDelta,
+                neutralAbsoluteRGBDelta: neutralMetric.absoluteRGBDelta,
                 neutralMaxRGBDelta: neutralMetric.maxRGBDelta,
-                effectDetected: effectDetected,
-                verdict: verdict
+                descriptiveStatus: "complete_mechanical_summary"
             ))
         }
         batchSummaries.append(BatchSummary(
             id: batch.id,
-            label: batch.label,
             caseCount: batch.cases.count,
-            casesWithOutput: casesWithOutput,
-            casesWithDetectedEffect: casesWithEffect,
-            casesWithNoDetectedEffect: casesWithOutput - casesWithEffect,
-            missingOutputCount: missingOutputCount
+            completeCaseCount: batch.cases.count,
+            missingOutputCount: 0
         ))
     }
 
-    let report = ComparisonReport(
-        schemaVersion: "beauty.face-feature-batch-report.v1",
-        generatedAtUTC: ISO8601DateFormatter().string(from: Date()),
-        controlCaseID: manifest.control.id,
+    let semanticDirections = try contracts.map { contract -> SemanticDirectionSummary in
+        guard let candidate = candidateImages[contract.caseID] else {
+            throw SemanticContractError.inventory
+        }
+        let siblings = try Array(contract.comparisonCaseIDs.dropFirst(2)).map { caseID -> [CanonicalImage] in
+            guard let images = candidateImages[caseID] else { throw SemanticContractError.inventory }
+            return images
+        }
+        return try semanticDirectionSummary(
+            contract: contract, sources: inputImages, neutrals: controlImages,
+            candidates: candidate, siblingImages: siblings
+        )
+    }
+    let overallPass = semanticDirections.allSatisfy { $0.verdict == "semantic_pass" }
+    let payload = StableSemanticPayload(
+        schemaVersion: "beauty.face-feature-batch-report.semantic.1",
+        contractID: sha256Hex(manifestData),
+        cpuReferenceToken: "beauty_cpu_reference_v1",
         fixtureCount: fixtures.count,
         fixtureIDs: fixtures.indices.map { String(format: "portrait_%03d", $0 + 1) },
-        watermarkExcludedRowsPerEdge: watermarkRows,
-        pixelTolerance: tolerance,
-        effectDetectionMinimumChangedPixels: minimumChangedPixels,
-        effectDetectionMinimumMeanRGBDelta: minimumMeanDelta,
-        controlOutputCount: controlImages.count,
-        controlMissingOutputCount: 0,
-        controlInputChangedPixels: controlInputMetrics.changedPixels,
-        controlInputComparedPixels: controlInputMetrics.comparedPixels,
-        controlInputMeanAbsoluteRGBDelta: controlInputMetrics.meanAbsoluteRGBDelta,
-        controlInputMaxRGBDelta: controlInputMetrics.maxRGBDelta,
+        watermarkExcludedRowCount: inputImages.reduce(0) {
+            $0 + watermarkExcludedRows(width: $1.width)
+        },
         batches: batchSummaries,
-        cases: caseSummaries,
-        overallVerdict: anyMissing ? "incomplete" : "completed_mechanical_comparison"
+        mechanicalCases: caseSummaries,
+        semanticDirections: semanticDirections,
+        verdict: overallPass ? "semantic_pass" : "semantic_fail"
     )
-    let encoder = JSONEncoder()
-    encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
-    try FileManager.default.createDirectory(at: reportURL.deletingLastPathComponent(), withIntermediateDirectories: true)
-    try encoder.encode(report).write(to: reportURL, options: .atomic)
-
-    print("wrote \(reportURL.path)")
-    print("fixtures=\(fixtures.count) cases=\(allCaseIDs.count) missing=\(caseSummaries.reduce(0) { $0 + $1.missingOutputCount })")
-    for batch in batchSummaries {
-        print("\(batch.id): outputs=\(batch.casesWithOutput)/\(batch.caseCount) effects=\(batch.casesWithDetectedEffect)")
-    }
-    if anyMissing { exit(2) }
+    let digest = try writeSemanticReport(
+        payload: payload, contracts: contracts, attemptID: attemptID,
+        generatedAtUTC: ISO8601DateFormatter().string(from: Date()), to: reportURL
+    )
+    print("semantic_report=complete batches=5 cases=\(allCaseIDs.count) directions=8 fixtures=\(fixtures.count)")
+    print("stable_payload_digest=\(digest) verdict=\(payload.verdict)")
+    exit(overallPass ? SemanticExitCode.success.rawValue : SemanticExitCode.semanticFailure.rawValue)
 } catch {
-    fputs("face-feature comparison failed: \(error)\n", stderr)
-    exit(1)
+    fputs("semantic_report=infrastructure_failure\n", stderr)
+    exit(SemanticExitCode.infrastructureFailure.rawValue)
 }
