@@ -30,6 +30,15 @@ def helper(*arguments, stdin=None):
     return result.stdout.decode("utf-8").strip()
 
 
+def helper_status(*arguments):
+    return subprocess.run(
+        [sys.executable, HELPER, *arguments],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        check=False,
+    ).returncode
+
+
 def ensure_directory(path):
     helper("ensure-directory", path)
 
@@ -112,6 +121,25 @@ def main():
                 raise BoundaryTestError()
             require_failure_envelope(safe_report)
 
+        component_cases = [
+            "report with spaces.json",
+            "语义报告.json",
+            "a" * 120,
+            "b" * 121,
+            "c" * 255,
+        ]
+        for component in component_cases:
+            candidate = os.path.join(safe_report_parent, component)
+            atomic_write(candidate, b'{"status":"semantic_pass"}')
+            if invoke(missing_input, output, candidate) != 2:
+                raise BoundaryTestError()
+            require_failure_envelope(candidate)
+        if helper_status(
+            "validate-file-destination",
+            os.path.join(safe_report_parent, "d" * 256),
+        ) == 0:
+            raise BoundaryTestError()
+
         input_root = os.path.join(root, "input")
         portraits = os.path.join(input_root, "portraits")
         ensure_directory(portraits)
@@ -148,7 +176,8 @@ def main():
         require_documentation_contract()
         print(
             "runner_boundary_self_test=PASS stale_pass=1 stale_fail=1 "
-            "alias_preserved=1 symlink_parent_preserved=1 invalid_report=1 docs=5"
+            "alias_preserved=1 symlink_parent_preserved=1 invalid_report=1 "
+            "spaces=1 unicode=1 component_bytes=120,121,255 docs=5"
         )
     finally:
         helper(

@@ -4,7 +4,6 @@
 import errno
 import json
 import os
-import re
 import secrets
 import stat
 import sys
@@ -12,7 +11,6 @@ import tempfile
 
 
 MAX_STDIN_BYTES = 16 * 1024 * 1024
-SAFE_NAME = re.compile(r"^[A-Za-z0-9_.-]{1,120}$")
 
 
 class PathSafetyError(Exception):
@@ -20,7 +18,7 @@ class PathSafetyError(Exception):
 
 
 def normalized_absolute(raw):
-    if not raw or any(character in raw for character in ("\n", "\r", "\0")):
+    if not raw or "\0" in raw:
         raise PathSafetyError()
     if ".." in raw.replace("\\", "/").split("/"):
         raise PathSafetyError()
@@ -30,9 +28,20 @@ def normalized_absolute(raw):
     return path
 
 
-def checked_name(name):
-    if not SAFE_NAME.fullmatch(name) or name in (".", ".."):
+def checked_name(name, parent_descriptor=None):
+    if not name or name in (".", "..") or "/" in name or "\0" in name:
         raise PathSafetyError()
+    try:
+        encoded = os.fsencode(name)
+    except UnicodeEncodeError as error:
+        raise PathSafetyError() from error
+    if parent_descriptor is not None:
+        try:
+            maximum = os.fpathconf(parent_descriptor, "PC_NAME_MAX")
+        except (OSError, ValueError) as error:
+            raise PathSafetyError() from error
+        if maximum >= 0 and len(encoded) > maximum:
+            raise PathSafetyError()
     return name
 
 
@@ -44,7 +53,7 @@ def open_directory(path, create=False):
     )
     try:
         for component in path.split(os.path.sep)[1:]:
-            checked_name(component)
+            checked_name(component, descriptor)
             try:
                 next_descriptor = os.open(
                     component,
@@ -83,6 +92,75 @@ def ensure_directory(path):
     return normalized_absolute(path)
 
 
+def validate_directory(path, require_existing=False):
+    path = normalized_absolute(path)
+    descriptor = os.open(
+        os.path.sep,
+        os.O_RDONLY | os.O_DIRECTORY | os.O_CLOEXEC,
+    )
+    missing = False
+    try:
+        for component in path.split(os.path.sep)[1:]:
+            checked_name(component, descriptor)
+            if missing:
+                continue
+            try:
+                next_descriptor = os.open(
+                    component,
+                    os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW | os.O_CLOEXEC,
+                    dir_fd=descriptor,
+                )
+            except FileNotFoundError:
+                if require_existing:
+                    raise
+                missing = True
+                continue
+            os.close(descriptor)
+            descriptor = next_descriptor
+    finally:
+        os.close(descriptor)
+    return path
+
+
+def validate_file_destination(path):
+    path, parent, destination = split_direct_child(path)
+    descriptor = os.open(
+        os.path.sep,
+        os.O_RDONLY | os.O_DIRECTORY | os.O_CLOEXEC,
+    )
+    missing = False
+    try:
+        for component in parent.split(os.path.sep)[1:]:
+            checked_name(component, descriptor)
+            if missing:
+                continue
+            try:
+                next_descriptor = os.open(
+                    component,
+                    os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW | os.O_CLOEXEC,
+                    dir_fd=descriptor,
+                )
+            except FileNotFoundError:
+                missing = True
+                continue
+            os.close(descriptor)
+            descriptor = next_descriptor
+        checked_name(destination, descriptor)
+        if not missing:
+            try:
+                metadata = os.stat(
+                    destination, dir_fd=descriptor, follow_symlinks=False
+                )
+            except FileNotFoundError:
+                pass
+            else:
+                if not stat.S_ISREG(metadata.st_mode):
+                    raise PathSafetyError()
+    finally:
+        os.close(descriptor)
+    return path
+
+
 def make_temporary(parent, prefix, suffix, directory):
     parent = normalized_absolute(parent)
     checked_name(prefix)
@@ -91,7 +169,10 @@ def make_temporary(parent, prefix, suffix, directory):
     parent_descriptor = open_directory(parent)
     try:
         for _ in range(128):
-            name = checked_name(prefix + secrets.token_hex(8) + suffix)
+            name = checked_name(
+                prefix + secrets.token_hex(8) + suffix,
+                parent_descriptor,
+            )
             try:
                 if directory:
                     os.mkdir(name, mode=0o700, dir_fd=parent_descriptor)
@@ -125,6 +206,7 @@ def atomic_write(path, data, after_parent_open=None):
     parent_descriptor = open_directory(parent)
     temporary_name = None
     try:
+        checked_name(destination, parent_descriptor)
         if after_parent_open is not None:
             after_parent_open()
         try:
@@ -136,7 +218,8 @@ def atomic_write(path, data, after_parent_open=None):
         except FileNotFoundError:
             pass
         temporary_name = checked_name(
-            "." + destination + ".tmp." + secrets.token_hex(8)
+            ".beauty-tmp-" + secrets.token_hex(8),
+            parent_descriptor,
         )
         descriptor = os.open(
             temporary_name,
@@ -178,6 +261,7 @@ def remove_file(path, after_parent_open=None):
     _, parent, name = split_direct_child(path)
     parent_descriptor = open_directory(parent)
     try:
+        checked_name(name, parent_descriptor)
         if after_parent_open is not None:
             after_parent_open()
         try:
@@ -199,7 +283,7 @@ def remove_file(path, after_parent_open=None):
 
 def remove_directory_contents(descriptor):
     for name in os.listdir(descriptor):
-        checked_name(name)
+        checked_name(name, descriptor)
         metadata = os.stat(name, dir_fd=descriptor, follow_symlinks=False)
         if stat.S_ISDIR(metadata.st_mode):
             child = os.open(
@@ -226,6 +310,7 @@ def remove_tree(path, expected_parent, prefix, after_parent_open=None):
         raise PathSafetyError()
     parent_descriptor = open_directory(parent)
     try:
+        checked_name(name, parent_descriptor)
         if after_parent_open is not None:
             after_parent_open()
         try:
@@ -341,6 +426,12 @@ def main(arguments):
     command = arguments[0]
     if command == "ensure-directory" and len(arguments) == 2:
         print(ensure_directory(arguments[1]))
+    elif command == "validate-directory" and len(arguments) == 2:
+        print(validate_directory(arguments[1]))
+    elif command == "validate-existing-directory" and len(arguments) == 2:
+        print(validate_directory(arguments[1], require_existing=True))
+    elif command == "validate-file-destination" and len(arguments) == 2:
+        print(validate_file_destination(arguments[1]))
     elif command == "temp-file" and len(arguments) == 4:
         print(make_temporary(arguments[1], arguments[2], arguments[3], False))
     elif command == "temp-directory" and len(arguments) == 3:

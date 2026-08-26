@@ -138,6 +138,10 @@ PY
     echo "report_not_owner_local" >&2
     return 1
   fi
+  if ! path_operation validate-file-destination "$admitted_report" >/dev/null; then
+    echo "report_path_admission_failed" >&2
+    return 1
+  fi
   report_path="$admitted_report"
 }
 
@@ -260,6 +264,12 @@ PY
   if [[ "$admitted_report" == "$repo_root"/* ]] &&
       ! git -C "$repo_root" check-ignore -q --no-index "$admitted_report"; then
     echo "report_not_owner_local" >&2
+    return 1
+  fi
+  if ! path_operation validate-existing-directory "$admitted_input" >/dev/null ||
+      ! path_operation validate-directory "$admitted_output" >/dev/null ||
+      ! path_operation validate-file-destination "$admitted_report" >/dev/null; then
+    echo "path_admission_failed" >&2
     return 1
   fi
 
