@@ -450,6 +450,68 @@ private enum SemanticFailureReason: String, Codable, CaseIterable {
     case siblingAlias = "sibling_alias"
 }
 
+private func expectedFailureReasonCodes(
+    for direction: SemanticDirectionSummary,
+    contract: SemanticContract,
+    fixtureCount: Int
+) throws -> [String] {
+    guard fixtureCount > 0 else { throw SemanticContractError.admission }
+    let count = Int64(fixtureCount)
+    let minimumChanged = try checkedMultiply(Int64(contract.thresholds.minimumChangedPixels), count)
+    let minimumDelta = try checkedMultiply(Int64(contract.thresholds.minimumAbsoluteRGBDelta), count)
+    let minimumMargin = try checkedMultiply(Int64(contract.thresholds.minimumSignedMarginQ16), count)
+    let maximumOutsideChanged = try checkedMultiply(Int64(contract.thresholds.maximumOutsideChangedPixels), count)
+    let maximumOutsideDelta = try checkedMultiply(Int64(contract.thresholds.maximumOutsideAbsoluteRGBDelta), count)
+    var reasons: Set<SemanticFailureReason> = []
+    if direction.sourceTargetChangedPixels < minimumChanged ||
+        direction.sourceTargetAbsoluteRGBDelta < minimumDelta {
+        reasons.insert(.sourceTargetSignal)
+    }
+    if direction.neutralTargetChangedPixels < minimumChanged ||
+        direction.neutralTargetAbsoluteRGBDelta < minimumDelta {
+        reasons.insert(.neutralTargetSignal)
+    }
+    switch contract.expectedSign {
+    case .positive:
+        if direction.sourceSignedMarginQ16 < minimumMargin || direction.signedMarginQ16 < minimumMargin {
+            reasons.insert(.sourceDirection)
+        }
+        if direction.neutralSignedMarginQ16 < minimumMargin || direction.signedMarginQ16 < minimumMargin {
+            reasons.insert(.neutralDirection)
+        }
+    case .negative:
+        if direction.sourceSignedMarginQ16 > -minimumMargin || direction.signedMarginQ16 > -minimumMargin {
+            reasons.insert(.sourceDirection)
+        }
+        if direction.neutralSignedMarginQ16 > -minimumMargin || direction.signedMarginQ16 > -minimumMargin {
+            reasons.insert(.neutralDirection)
+        }
+    }
+    if direction.siblingDistinctMarginQ16 < Int64(contract.thresholds.minimumSignedMarginQ16) {
+        reasons.insert(.siblingAlias)
+    }
+    if direction.outsideChangedPixels > maximumOutsideChanged ||
+        direction.outsideAbsoluteRGBDelta > maximumOutsideDelta {
+        reasons.insert(.outsideLocality)
+    }
+    let protectionByID = Dictionary(uniqueKeysWithValues: direction.protectedRegions.map { ($0.id, $0) })
+    guard protectionByID.count == direction.protectedRegions.count,
+          direction.protectedRegions.count == contract.protectedRegions.count else {
+        throw SemanticContractError.verdict
+    }
+    for protection in contract.protectedRegions {
+        guard let row = protectionByID[protection.id] else {
+            throw SemanticContractError.verdict
+        }
+        let maximumChanged = try checkedMultiply(Int64(protection.maximumChangedPixels), count)
+        let maximumDelta = try checkedMultiply(Int64(protection.maximumAbsoluteRGBDelta), count)
+        if row.changedPixels > maximumChanged || row.absoluteRGBDelta > maximumDelta {
+            reasons.insert(.protectedRegion)
+        }
+    }
+    return reasons.map(\ .rawValue).sorted()
+}
+
 private struct SemanticMeasurement: Equatable {
     let sourceTarget: RegionSignal
     let neutralTarget: RegionSignal
@@ -1344,55 +1406,18 @@ private func validateStablePayload(
     }) else {
         throw SemanticContractError.inventory
     }
-    let allowlistedReasons = Set(SemanticFailureReason.allCases.map(\ .rawValue))
     guard contracts.map(\ .caseID) == expectedSemanticContracts.map(\ .caseID) else {
         throw SemanticContractError.contracts
     }
-    guard canonical.semanticDirections.allSatisfy({ direction in
-        direction.fixtureCount == canonical.fixtureCount &&
-            Set(direction.failureReasonCodes).isSubset(of: allowlistedReasons) &&
-            (direction.failureReasonCodes.isEmpty ? direction.verdict == "semantic_pass" : direction.verdict == "semantic_fail")
-    }) else {
-        throw SemanticContractError.verdict
-    }
     for (direction, contract) in zip(canonical.semanticDirections, contracts) {
-        let fixtureCount = Int64(canonical.fixtureCount)
-        let minimumChanged = try checkedMultiply(Int64(contract.thresholds.minimumChangedPixels), fixtureCount)
-        let minimumDelta = try checkedMultiply(Int64(contract.thresholds.minimumAbsoluteRGBDelta), fixtureCount)
-        let minimumMargin = try checkedMultiply(Int64(contract.thresholds.minimumSignedMarginQ16), fixtureCount)
-        let maximumOutsideChanged = try checkedMultiply(Int64(contract.thresholds.maximumOutsideChangedPixels), fixtureCount)
-        let maximumOutsideDelta = try checkedMultiply(Int64(contract.thresholds.maximumOutsideAbsoluteRGBDelta), fixtureCount)
-        let signedPass: Bool
-        switch contract.expectedSign {
-        case .positive:
-            signedPass = direction.sourceSignedMarginQ16 >= minimumMargin &&
-                direction.neutralSignedMarginQ16 >= minimumMargin &&
-                direction.signedMarginQ16 >= minimumMargin
-        case .negative:
-            signedPass = direction.sourceSignedMarginQ16 <= -minimumMargin &&
-                direction.neutralSignedMarginQ16 <= -minimumMargin &&
-                direction.signedMarginQ16 <= -minimumMargin
+        guard direction.fixtureCount == canonical.fixtureCount else {
+            throw SemanticContractError.verdict
         }
-        let protectionByID = Dictionary(uniqueKeysWithValues: direction.protectedRegions.map { ($0.id, $0) })
-        let protectedPass = direction.protectedRegions.count == contract.protectedRegions.count &&
-            contract.protectedRegions.allSatisfy { protection in
-                guard let row = protectionByID[protection.id],
-                      let changedCeiling = try? checkedMultiply(Int64(protection.maximumChangedPixels), fixtureCount),
-                      let deltaCeiling = try? checkedMultiply(Int64(protection.maximumAbsoluteRGBDelta), fixtureCount) else {
-                    return false
-                }
-                return row.changedPixels <= changedCeiling && row.absoluteRGBDelta <= deltaCeiling
-            }
-        let aggregateGatesPass = direction.sourceTargetChangedPixels >= minimumChanged &&
-            direction.sourceTargetAbsoluteRGBDelta >= minimumDelta &&
-            direction.neutralTargetChangedPixels >= minimumChanged &&
-            direction.neutralTargetAbsoluteRGBDelta >= minimumDelta &&
-            signedPass &&
-            direction.siblingDistinctMarginQ16 >= Int64(contract.thresholds.minimumSignedMarginQ16) &&
-            direction.outsideChangedPixels <= maximumOutsideChanged &&
-            direction.outsideAbsoluteRGBDelta <= maximumOutsideDelta &&
-            protectedPass
-        if direction.verdict == "semantic_pass" && !aggregateGatesPass {
+        let expectedReasons = try expectedFailureReasonCodes(
+            for: direction, contract: contract, fixtureCount: canonical.fixtureCount
+        )
+        if direction.failureReasonCodes != expectedReasons ||
+            direction.verdict != (expectedReasons.isEmpty ? "semantic_pass" : "semantic_fail") {
             throw SemanticContractError.verdict
         }
     }
@@ -1454,8 +1479,6 @@ private func semanticDirectionSummary(
     var protected = Dictionary(uniqueKeysWithValues: contract.protectedRegions.map {
         ($0.id, ProtectedRegionSummary(id: $0.id, changedPixels: 0, absoluteRGBDelta: 0))
     })
-    var failures: Set<SemanticFailureReason> = []
-
     for index in sources.indices {
         let measurement = try semanticMeasurement(
             contract: contract,
@@ -1473,7 +1496,6 @@ private func semanticDirectionSummary(
         siblingMargin = min(siblingMargin, measurement.siblingDistinctMarginQ16)
         outsideChanged = try checkedAdd(outsideChanged, measurement.outsideChangedPixels)
         outsideDelta = try checkedAdd(outsideDelta, measurement.outsideAbsoluteRGBDelta)
-        failures.formUnion(measurement.failureReasons)
         for row in measurement.protected {
             guard let existing = protected[row.id] else { throw SemanticContractError.verdict }
             protected[row.id] = ProtectedRegionSummary(
@@ -1484,9 +1506,8 @@ private func semanticDirectionSummary(
         }
     }
     if siblingMargin == Int64.max { siblingMargin = 0 }
-    let reasonCodes = failures.map(\ .rawValue).sorted()
     let protectedRows = contract.protectedRegions.compactMap { protected[$0.id] }
-    return SemanticDirectionSummary(
+    let provisional = SemanticDirectionSummary(
         caseID: contract.caseID,
         metric: contract.metric,
         fixtureCount: sources.count,
@@ -1501,6 +1522,26 @@ private func semanticDirectionSummary(
         outsideChangedPixels: outsideChanged,
         outsideAbsoluteRGBDelta: outsideDelta,
         protectedRegions: protectedRows,
+        failureReasonCodes: [],
+        verdict: "semantic_pass"
+    )
+    let reasonCodes = try expectedFailureReasonCodes(
+        for: provisional, contract: contract, fixtureCount: sources.count
+    )
+    return SemanticDirectionSummary(
+        caseID: provisional.caseID, metric: provisional.metric,
+        fixtureCount: provisional.fixtureCount,
+        sourceTargetChangedPixels: provisional.sourceTargetChangedPixels,
+        sourceTargetAbsoluteRGBDelta: provisional.sourceTargetAbsoluteRGBDelta,
+        neutralTargetChangedPixels: provisional.neutralTargetChangedPixels,
+        neutralTargetAbsoluteRGBDelta: provisional.neutralTargetAbsoluteRGBDelta,
+        sourceSignedMarginQ16: provisional.sourceSignedMarginQ16,
+        neutralSignedMarginQ16: provisional.neutralSignedMarginQ16,
+        signedMarginQ16: provisional.signedMarginQ16,
+        siblingDistinctMarginQ16: provisional.siblingDistinctMarginQ16,
+        outsideChangedPixels: provisional.outsideChangedPixels,
+        outsideAbsoluteRGBDelta: provisional.outsideAbsoluteRGBDelta,
+        protectedRegions: provisional.protectedRegions,
         failureReasonCodes: reasonCodes,
         verdict: reasonCodes.isEmpty ? "semantic_pass" : "semantic_fail"
     )
@@ -1807,6 +1848,30 @@ private func runSemanticReportSelfTests(manifest: BatchManifest) throws -> Int {
         }
         throw SemanticContractError.verdict
     }
+    func replacingDirection(
+        _ direction: SemanticDirectionSummary,
+        sourceTargetChangedPixels: Int64? = nil,
+        failureReasonCodes: [String]? = nil,
+        verdict: String? = nil
+    ) -> SemanticDirectionSummary {
+        SemanticDirectionSummary(
+            caseID: direction.caseID, metric: direction.metric,
+            fixtureCount: direction.fixtureCount,
+            sourceTargetChangedPixels: sourceTargetChangedPixels ?? direction.sourceTargetChangedPixels,
+            sourceTargetAbsoluteRGBDelta: direction.sourceTargetAbsoluteRGBDelta,
+            neutralTargetChangedPixels: direction.neutralTargetChangedPixels,
+            neutralTargetAbsoluteRGBDelta: direction.neutralTargetAbsoluteRGBDelta,
+            sourceSignedMarginQ16: direction.sourceSignedMarginQ16,
+            neutralSignedMarginQ16: direction.neutralSignedMarginQ16,
+            signedMarginQ16: direction.signedMarginQ16,
+            siblingDistinctMarginQ16: direction.siblingDistinctMarginQ16,
+            outsideChangedPixels: direction.outsideChangedPixels,
+            outsideAbsoluteRGBDelta: direction.outsideAbsoluteRGBDelta,
+            protectedRegions: direction.protectedRegions,
+            failureReasonCodes: failureReasonCodes ?? direction.failureReasonCodes,
+            verdict: verdict ?? direction.verdict
+        )
+    }
 
     let fixtureCount = 1
     let batches = expectedBatchInventory.map {
@@ -1899,6 +1964,45 @@ private func runSemanticReportSelfTests(manifest: BatchManifest) throws -> Int {
             semanticDirections: insufficientDirections, verdict: payload.verdict
         ), contracts: contracts)
     }
+
+    func expectRejectedDirections(_ mutatedDirections: [SemanticDirectionSummary]) throws {
+        try expect(.verdict) {
+            try validateStablePayload(StableSemanticPayload(
+                schemaVersion: payload.schemaVersion, contractID: payload.contractID,
+                cpuReferenceToken: payload.cpuReferenceToken, fixtureCount: payload.fixtureCount,
+                fixtureIDs: payload.fixtureIDs, watermarkExcludedRowCount: payload.watermarkExcludedRowCount,
+                batches: payload.batches, mechanicalCases: payload.mechanicalCases,
+                semanticDirections: mutatedDirections, verdict: "semantic_fail"
+            ), contracts: contracts)
+        }
+    }
+    var extraReason = directions
+    extraReason[0] = replacingDirection(
+        extraReason[0], failureReasonCodes: [SemanticFailureReason.outsideLocality.rawValue],
+        verdict: "semantic_fail"
+    )
+    try expectRejectedDirections(extraReason)
+
+    var missingReason = directions
+    missingReason[0] = replacingDirection(
+        missingReason[0], sourceTargetChangedPixels: missingReason[0].sourceTargetChangedPixels - 1,
+        failureReasonCodes: [], verdict: "semantic_fail"
+    )
+    try expectRejectedDirections(missingReason)
+
+    var wrongReason = directions
+    wrongReason[0] = replacingDirection(
+        wrongReason[0], sourceTargetChangedPixels: wrongReason[0].sourceTargetChangedPixels - 1,
+        failureReasonCodes: [SemanticFailureReason.sourceDirection.rawValue], verdict: "semantic_fail"
+    )
+    try expectRejectedDirections(wrongReason)
+
+    var allPassingFailure = directions
+    allPassingFailure[0] = replacingDirection(
+        allPassingFailure[0], failureReasonCodes: [SemanticFailureReason.protectedRegion.rawValue],
+        verdict: "semantic_fail"
+    )
+    try expectRejectedDirections(allPassingFailure)
 
     try expect(.inventory) {
         try validateStablePayload(StableSemanticPayload(
