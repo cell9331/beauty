@@ -1277,17 +1277,138 @@ private func admitRunInventory(
     return Dictionary(uniqueKeysWithValues: expected.map { ($0.standardizedFileURL.path, $0) })
 }
 
-private func prepareReportDestination(_ reportURL: URL) throws {
-    let parent = reportURL.deletingLastPathComponent()
-    try FileManager.default.createDirectory(at: parent, withIntermediateDirectories: true)
+private struct FileIdentity: Equatable {
+    let device: dev_t
+    let inode: ino_t
+}
+
+private func existingFileIdentity(_ url: URL) throws -> FileIdentity? {
+    var metadata = stat()
+    if lstat(url.standardizedFileURL.path, &metadata) != 0 {
+        guard errno == ENOENT else { throw SemanticContractError.admission }
+        return nil
+    }
+    guard (metadata.st_mode & S_IFMT) == S_IFREG else {
+        throw SemanticContractError.admission
+    }
+    return FileIdentity(device: metadata.st_dev, inode: metadata.st_ino)
+}
+
+private func admitReportDestination(
+    _ reportURL: URL,
+    manifestURL: URL,
+    inputRoot: URL,
+    runRoot: URL,
+    protectedFiles: [URL]
+) throws {
+    let report = reportURL.standardizedFileURL
+    let manifest = manifestURL.standardizedFileURL
+    let input = inputRoot.standardizedFileURL
+    let run = runRoot.standardizedFileURL
+    let parent = report.deletingLastPathComponent()
+    guard report.path != manifest.path,
+          report.lastPathComponent != ".",
+          report.lastPathComponent != "..",
+          !pathIsWithin(report, root: input),
+          !pathIsWithin(report, root: run) else {
+        throw SemanticContractError.admission
+    }
     try requireAdmittedDirectory(parent)
-    if FileManager.default.fileExists(atPath: reportURL.path) {
-        let values = try reportURL.resourceValues(forKeys: [.isRegularFileKey, .isSymbolicLinkKey])
-        guard values.isRegularFile == true, values.isSymbolicLink != true else {
+    let reportIdentity = try existingFileIdentity(report)
+    if let reportIdentity {
+        for protected in [manifest] + protectedFiles {
+            if try existingFileIdentity(protected) == reportIdentity {
+                throw SemanticContractError.admission
+            }
+        }
+    }
+}
+
+private func openDirectoryNoFollow(_ directory: URL) throws -> Int32 {
+    let path = directory.path
+    guard path.hasPrefix("/") else {
+        throw SemanticContractError.admission
+    }
+    var descriptor = open("/", O_RDONLY | O_DIRECTORY | O_CLOEXEC)
+    guard descriptor >= 0 else { throw SemanticContractError.admission }
+    do {
+        for component in path.split(separator: "/").map(String.init) {
+            let next = openat(
+                descriptor, component,
+                O_RDONLY | O_DIRECTORY | O_NOFOLLOW | O_CLOEXEC
+            )
+            guard next >= 0 else { throw SemanticContractError.admission }
+            close(descriptor)
+            descriptor = next
+        }
+        return descriptor
+    } catch {
+        close(descriptor)
+        throw error
+    }
+}
+
+private func canonicalExistingDirectory(_ directory: URL) throws -> URL {
+    guard let resolved = realpath(directory.path, nil) else {
+        throw SemanticContractError.admission
+    }
+    defer { free(resolved) }
+    return URL(fileURLWithPath: String(cString: resolved), isDirectory: true)
+}
+
+private func atomicWrite(_ data: Data, to reportURL: URL) throws {
+    let report = reportURL
+    let parent = report.deletingLastPathComponent()
+    let destinationName = report.lastPathComponent
+    guard !destinationName.isEmpty, destinationName != ".", destinationName != ".." else {
+        throw SemanticContractError.admission
+    }
+    let parentDescriptor = try openDirectoryNoFollow(parent)
+    defer { close(parentDescriptor) }
+
+    var destinationMetadata = stat()
+    if fstatat(
+        parentDescriptor, destinationName, &destinationMetadata, AT_SYMLINK_NOFOLLOW
+    ) == 0 {
+        guard (destinationMetadata.st_mode & S_IFMT) == S_IFREG else {
             throw SemanticContractError.admission
         }
-        try FileManager.default.removeItem(at: reportURL)
+    } else if errno != ENOENT {
+        throw SemanticContractError.admission
     }
+
+    let temporaryName = ".\(destinationName).tmp.\(UUID().uuidString)"
+    let temporaryDescriptor = openat(
+        parentDescriptor, temporaryName,
+        O_WRONLY | O_CREAT | O_EXCL | O_NOFOLLOW | O_CLOEXEC,
+        S_IRUSR | S_IWUSR
+    )
+    guard temporaryDescriptor >= 0 else { throw SemanticContractError.admission }
+    var temporaryExists = true
+    defer {
+        close(temporaryDescriptor)
+        if temporaryExists {
+            _ = unlinkat(parentDescriptor, temporaryName, 0)
+        }
+    }
+
+    try data.withUnsafeBytes { bytes in
+        guard let base = bytes.baseAddress else { return }
+        var written = 0
+        while written < bytes.count {
+            let count = Darwin.write(
+                temporaryDescriptor, base.advanced(by: written), bytes.count - written
+            )
+            guard count > 0 else { throw SemanticContractError.admission }
+            written += count
+        }
+    }
+    guard fsync(temporaryDescriptor) == 0 else { throw SemanticContractError.admission }
+    guard renameat(
+        parentDescriptor, temporaryName,
+        parentDescriptor, destinationName
+    ) == 0 else { throw SemanticContractError.admission }
+    temporaryExists = false
 }
 
 private func canonicalPayload(_ payload: StableSemanticPayload) -> StableSemanticPayload {
@@ -1450,7 +1571,7 @@ private func writeSemanticReport(
     encoder.outputFormatting = [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]
     let data = try encoder.encode(envelope)
     guard privacySafeJSON(data) else { throw SemanticContractError.admission }
-    try data.write(to: reportURL, options: .atomic)
+    try atomicWrite(data, to: reportURL)
     return digest
 }
 
@@ -2028,7 +2149,7 @@ private func runSemanticReportSelfTests(manifest: BatchManifest) throws -> Int {
     }
     probes += 1
 
-    let temporaryRoot = FileManager.default.temporaryDirectory
+    let temporaryRoot = try canonicalExistingDirectory(FileManager.default.temporaryDirectory)
         .appendingPathComponent("beauty_semantic_report_\(UUID().uuidString)", isDirectory: true)
     try FileManager.default.createDirectory(at: temporaryRoot, withIntermediateDirectories: true)
     defer { try? FileManager.default.removeItem(at: temporaryRoot) }
@@ -2138,11 +2259,96 @@ private func runSemanticReportSelfTests(manifest: BatchManifest) throws -> Int {
     try FileManager.default.createDirectory(
         at: reportURL.deletingLastPathComponent(), withIntermediateDirectories: true
     )
-    try Data("prior_payload".utf8).write(to: reportURL)
-    try prepareReportDestination(reportURL)
-    guard !FileManager.default.fileExists(atPath: reportURL.path) else {
+    let manifestAliasURL = temporaryRoot.appendingPathComponent("manifest.json")
+    let manifestAliasBytes = Data("manifest_bytes".utf8)
+    try manifestAliasBytes.write(to: manifestAliasURL)
+    let protectedFiles = admitted + expectedOutputs
+
+    try expect(.admission) {
+        try admitReportDestination(
+            manifestAliasURL, manifestURL: manifestAliasURL,
+            inputRoot: inputRoot, runRoot: runRoot, protectedFiles: protectedFiles
+        )
+    }
+    guard try Data(contentsOf: manifestAliasURL) == manifestAliasBytes else {
         throw SemanticContractError.verdict
     }
+    probes += 1
+
+    let fixtureBytes = try Data(contentsOf: fixture)
+    try expect(.admission) {
+        try admitReportDestination(
+            fixture, manifestURL: manifestAliasURL,
+            inputRoot: inputRoot, runRoot: runRoot, protectedFiles: protectedFiles
+        )
+    }
+    guard try Data(contentsOf: fixture) == fixtureBytes else {
+        throw SemanticContractError.verdict
+    }
+    probes += 1
+
+    let renderedAlias = expectedOutputs[0]
+    let renderedBytes = try Data(contentsOf: renderedAlias)
+    try expect(.admission) {
+        try admitReportDestination(
+            renderedAlias, manifestURL: manifestAliasURL,
+            inputRoot: inputRoot, runRoot: runRoot, protectedFiles: protectedFiles
+        )
+    }
+    guard try Data(contentsOf: renderedAlias) == renderedBytes else {
+        throw SemanticContractError.verdict
+    }
+    probes += 1
+
+    try expect(.admission) {
+        try admitReportDestination(
+            runRoot, manifestURL: manifestAliasURL,
+            inputRoot: inputRoot, runRoot: runRoot, protectedFiles: protectedFiles
+        )
+    }
+    guard try Data(contentsOf: renderedAlias) == renderedBytes else {
+        throw SemanticContractError.verdict
+    }
+    probes += 1
+
+    let reportParentAlias = temporaryRoot.appendingPathComponent("reports-link")
+    try FileManager.default.createSymbolicLink(
+        at: reportParentAlias, withDestinationURL: reportURL.deletingLastPathComponent()
+    )
+    let aliasedParentReport = reportParentAlias.appendingPathComponent("report.json")
+    let reportParentBytes = Data("report_parent_bytes".utf8)
+    try reportParentBytes.write(to: reportURL)
+    try expect(.admission) {
+        try admitReportDestination(
+            aliasedParentReport, manifestURL: manifestAliasURL,
+            inputRoot: inputRoot, runRoot: runRoot, protectedFiles: protectedFiles
+        )
+    }
+    guard try Data(contentsOf: reportURL) == reportParentBytes else {
+        throw SemanticContractError.verdict
+    }
+    try FileManager.default.removeItem(at: reportParentAlias)
+    probes += 1
+
+    let hardLinkedReport = temporaryRoot.appendingPathComponent("reports/hard-link.json")
+    try FileManager.default.linkItem(at: fixture, to: hardLinkedReport)
+    try expect(.admission) {
+        try admitReportDestination(
+            hardLinkedReport, manifestURL: manifestAliasURL,
+            inputRoot: inputRoot, runRoot: runRoot, protectedFiles: protectedFiles
+        )
+    }
+    guard try Data(contentsOf: fixture) == fixtureBytes else {
+        throw SemanticContractError.verdict
+    }
+    try FileManager.default.removeItem(at: hardLinkedReport)
+    probes += 1
+
+    try Data("prior_payload".utf8).write(to: reportURL)
+    try admitReportDestination(
+        reportURL, manifestURL: manifestAliasURL,
+        inputRoot: inputRoot, runRoot: runRoot, protectedFiles: protectedFiles
+    )
     let digest = try writeSemanticReport(
         payload: payload, contracts: contracts, attemptID: "attempt_001",
         generatedAtUTC: "2000-01-01T00:00:00Z", to: reportURL
@@ -2657,7 +2863,6 @@ do {
     let reportURL = URL(fileURLWithPath: try argument("--report", in: arguments))
     let attemptID = try argument("--attempt-id", in: arguments)
 
-    try prepareReportDestination(reportURL)
     try requireAdmittedRegularFile(manifestURL, beneath: manifestURL.deletingLastPathComponent())
 
     let manifestData = try Data(contentsOf: manifestURL)
@@ -2665,8 +2870,12 @@ do {
     let allCaseIDs = manifest.batches.flatMap { $0.cases }
     guard let contracts = manifest.semanticContracts else { throw SemanticContractError.contracts }
     let fixtures = try admittedFixtureURLs(in: inputURL)
-    _ = try admitRunInventory(
+    let admittedOutputs = try admitRunInventory(
         manifest: manifest, fixtures: fixtures, runRoot: runRoot, attemptID: attemptID
+    )
+    try admitReportDestination(
+        reportURL, manifestURL: manifestURL, inputRoot: inputURL, runRoot: runRoot,
+        protectedFiles: fixtures + Array(admittedOutputs.values)
     )
 
     let context = CIContext(options: [
