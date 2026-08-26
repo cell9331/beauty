@@ -379,6 +379,432 @@ private func validateManifest(_ manifest: BatchManifest) throws {
     }
 }
 
+private struct RegionSignal: Codable, Equatable {
+    let comparedPixels: Int64
+    let changedPixels: Int64
+    let absoluteRGBDelta: Int64
+}
+
+private struct ProtectedMeasurement: Codable, Equatable {
+    let id: String
+    let changedPixels: Int64
+    let absoluteRGBDelta: Int64
+}
+
+private enum SemanticFailureReason: String, Codable, CaseIterable {
+    case sourceTargetSignal = "source_target_signal"
+    case neutralTargetSignal = "neutral_target_signal"
+    case sourceDirection = "source_direction"
+    case neutralDirection = "neutral_direction"
+    case outsideLocality = "outside_locality"
+    case protectedRegion = "protected_region"
+    case siblingAlias = "sibling_alias"
+    case metricAdmission = "metric_admission"
+}
+
+private struct SemanticMeasurement: Equatable {
+    let sourceTarget: RegionSignal
+    let neutralTarget: RegionSignal
+    let sourceSignedMarginQ16: Int64
+    let neutralSignedMarginQ16: Int64
+    let signedMarginQ16: Int64
+    let siblingDistinctMarginQ16: Int64
+    let outsideChangedPixels: Int64
+    let outsideAbsoluteRGBDelta: Int64
+    let protected: [ProtectedMeasurement]
+    let failureReasons: [SemanticFailureReason]
+
+    var semanticPass: Bool { failureReasons.isEmpty }
+}
+
+private struct WeightedMoment {
+    var weight: Int64 = 0
+    var weightedX: Int64 = 0
+    var weightedY: Int64 = 0
+    var pixelCount: Int64 = 0
+}
+
+private func checkedMultiply(_ lhs: Int64, _ rhs: Int64) throws -> Int64 {
+    let (value, overflow) = lhs.multipliedReportingOverflow(by: rhs)
+    guard !overflow else { throw SemanticContractError.arithmetic }
+    return value
+}
+
+private func checkedAbsolute(_ value: Int64) throws -> Int64 {
+    guard value != Int64.min else { throw SemanticContractError.arithmetic }
+    return Swift.abs(value)
+}
+
+private func watermarkExcludedRows(width: Int) -> Int {
+    let fontSize = max(34.0, min(72.0, Double(width) / 30.0))
+    let padding = max(24.0, Double(width) / 70.0)
+    return Int(ceil(padding * 2.0 + fontSize * 1.75))
+}
+
+private func validateCanonicalPair(_ lhs: CanonicalImage, _ rhs: CanonicalImage) throws {
+    guard lhs.width > 0, lhs.height > 0,
+          lhs.width == rhs.width, lhs.height == rhs.height else {
+        throw SemanticContractError.admission
+    }
+    let pixels = try checkedMultiply(Int64(lhs.width), Int64(lhs.height))
+    let byteCount = try checkedMultiply(pixels, 4)
+    guard byteCount == Int64(lhs.rgba.count), byteCount == Int64(rhs.rgba.count) else {
+        throw SemanticContractError.admission
+    }
+}
+
+private func watermarkSafeRegions(
+    _ regions: [NormalizedRegion], image: CanonicalImage, excludedRows: Int,
+    allowEmpty: Bool = false
+) throws -> [RasterizedRegion] {
+    let comparableMaxY = Int64(max(0, image.height - excludedRows))
+    let rasterized = try regions.map {
+        try rasterize($0, width: Int64(image.width), height: Int64(image.height))
+    }.compactMap { region -> RasterizedRegion? in
+        let clippedMaxY = min(region.maxY, comparableMaxY)
+        guard region.minY < clippedMaxY else { return nil }
+        return RasterizedRegion(
+            minX: region.minX, maxX: region.maxX,
+            minY: region.minY, maxY: clippedMaxY
+        )
+    }
+    guard allowEmpty || !rasterized.isEmpty else { throw SemanticContractError.admission }
+    return rasterized
+}
+
+private func contains(_ regions: [RasterizedRegion], x: Int64, y: Int64) -> Bool {
+    regions.contains { $0.minX <= x && x < $0.maxX && $0.minY <= y && y < $0.maxY }
+}
+
+private func lumaQ8(_ image: CanonicalImage, x: Int, y: Int) -> Int64 {
+    let index = (y * image.width + x) * 4
+    return Int64(image.rgba[index]) * 77 +
+        Int64(image.rgba[index + 1]) * 150 +
+        Int64(image.rgba[index + 2]) * 29
+}
+
+private func darknessMoment(
+    _ image: CanonicalImage,
+    regions: [RasterizedRegion],
+    darkCoreOnly: Bool = false
+) throws -> WeightedMoment {
+    var result = WeightedMoment()
+    let darkCoreLimit = Int64(80 * 256)
+    for region in regions {
+        for y in Int(region.minY)..<Int(region.maxY) {
+            for x in Int(region.minX)..<Int(region.maxX) {
+                let luma = lumaQ8(image, x: x, y: y)
+                if darkCoreOnly && luma > darkCoreLimit { continue }
+                let weight = darkCoreOnly ? Int64(1) : max(0, Int64(255 * 256) - luma)
+                if weight == 0 { continue }
+                result.weight = try checkedAdd(result.weight, weight)
+                result.weightedX = try checkedAdd(result.weightedX, try checkedMultiply(weight, Int64(x) * 2 + 1))
+                result.weightedY = try checkedAdd(result.weightedY, try checkedMultiply(weight, Int64(y) * 2 + 1))
+                result.pixelCount = try checkedAdd(result.pixelCount, 1)
+            }
+        }
+    }
+    guard result.weight > 0, result.pixelCount > 0 else { throw SemanticContractError.admission }
+    return result
+}
+
+private func normalizedCentroidQ16(
+    weightedCoordinate: Int64, weight: Int64, extent: Int
+) throws -> Int64 {
+    guard weight > 0, extent > 0 else { throw SemanticContractError.admission }
+    let denominator = try checkedMultiply(weight, Int64(extent) * 2)
+    return try checkedMultiply(weightedCoordinate, 65_536) / denominator
+}
+
+private func contourContinuityGain(
+    _ image: CanonicalImage, regions: [RasterizedRegion]
+) throws -> Int64 {
+    var totalRoughness: Int64 = 0
+    var secondDifferences: Int64 = 0
+    for region in regions {
+        var rowCentroids: [Int64] = []
+        for y in Int(region.minY)..<Int(region.maxY) {
+            let row = RasterizedRegion(minX: region.minX, maxX: region.maxX, minY: Int64(y), maxY: Int64(y + 1))
+            let moment = try darknessMoment(image, regions: [row])
+            rowCentroids.append(try normalizedCentroidQ16(
+                weightedCoordinate: moment.weightedX, weight: moment.weight, extent: image.width
+            ))
+        }
+        guard rowCentroids.count >= 3 else { throw SemanticContractError.admission }
+        for index in 1..<(rowCentroids.count - 1) {
+            let doubled = try checkedMultiply(rowCentroids[index], 2)
+            let difference = try checkedAdd(try checkedAdd(rowCentroids[index - 1], rowCentroids[index + 1]), -doubled)
+            totalRoughness = try checkedAdd(totalRoughness, try checkedAbsolute(difference))
+            secondDifferences = try checkedAdd(secondDifferences, 1)
+        }
+    }
+    guard secondDifferences > 0 else { throw SemanticContractError.admission }
+    return -(totalRoughness / secondDifferences)
+}
+
+private func centerlineTaper(
+    _ image: CanonicalImage, regions: [RasterizedRegion]
+) throws -> Int64 {
+    let moment = try darknessMoment(image, regions: regions)
+    var weightedDistance: Int64 = 0
+    for region in regions {
+        for y in Int(region.minY)..<Int(region.maxY) {
+            for x in Int(region.minX)..<Int(region.maxX) {
+                let weight = max(0, Int64(255 * 256) - lumaQ8(image, x: x, y: y))
+                if weight == 0 { continue }
+                let distance = try checkedAbsolute(Int64(x) * 2 + 1 - Int64(image.width))
+                weightedDistance = try checkedAdd(weightedDistance, try checkedMultiply(weight, distance))
+            }
+        }
+    }
+    let denominator = try checkedMultiply(moment.weight, Int64(image.width))
+    return -(try checkedMultiply(weightedDistance, 65_536) / denominator)
+}
+
+private func pupilToOwnEyeCenter(
+    _ image: CanonicalImage, regions: [RasterizedRegion]
+) throws -> Int64 {
+    guard regions.count == 2 else { throw SemanticContractError.admission }
+    var totalDistanceQ16: Int64 = 0
+    for region in regions {
+        let moment = try darknessMoment(image, regions: [region], darkCoreOnly: true)
+        let area = try checkedMultiply(region.maxX - region.minX, region.maxY - region.minY)
+        guard moment.pixelCount >= 4, moment.pixelCount * 3 < area else {
+            throw SemanticContractError.admission
+        }
+        let centroidX2 = moment.weightedX / moment.weight
+        let centroidY2 = moment.weightedY / moment.weight
+        let centerX2 = region.minX + region.maxX
+        let centerY2 = region.minY + region.maxY
+        let dx = try checkedAbsolute(centroidX2 - centerX2)
+        let dy = try checkedAbsolute(centroidY2 - centerY2)
+        let normalizedX = try checkedMultiply(dx, 65_536) / max(1, (region.maxX - region.minX) * 2)
+        let normalizedY = try checkedMultiply(dy, 65_536) / max(1, (region.maxY - region.minY) * 2)
+        totalDistanceQ16 = try checkedAdd(totalDistanceQ16, try checkedAdd(normalizedX, normalizedY))
+    }
+    return -totalDistanceQ16
+}
+
+private func innerBrowHeadGap(
+    _ image: CanonicalImage, regions: [RasterizedRegion]
+) throws -> Int64 {
+    guard regions.count == 2 else { throw SemanticContractError.admission }
+    let centroids = try regions.map { region -> Int64 in
+        let moment = try darknessMoment(image, regions: [region])
+        return try normalizedCentroidQ16(
+            weightedCoordinate: moment.weightedX, weight: moment.weight, extent: image.width
+        )
+    }.sorted()
+    return centroids[1] - centroids[0]
+}
+
+private func bridgeDefinitionGain(
+    _ image: CanonicalImage, regions: [RasterizedRegion]
+) throws -> Int64 {
+    guard regions.count == 1 else { throw SemanticContractError.admission }
+    let region = regions[0]
+    let width = region.maxX - region.minX
+    guard width >= 3 else { throw SemanticContractError.admission }
+    let centerMin = region.minX + width / 3
+    let centerMax = region.minX + width * 2 / 3
+    var centerDarkness: Int64 = 0
+    var centerCount: Int64 = 0
+    var outerDarkness: Int64 = 0
+    var outerCount: Int64 = 0
+    for y in Int(region.minY)..<Int(region.maxY) {
+        for x in Int(region.minX)..<Int(region.maxX) {
+            let darkness = max(0, Int64(255 * 256) - lumaQ8(image, x: x, y: y))
+            if Int64(x) >= centerMin && Int64(x) < centerMax {
+                centerDarkness = try checkedAdd(centerDarkness, darkness)
+                centerCount = try checkedAdd(centerCount, 1)
+            } else {
+                outerDarkness = try checkedAdd(outerDarkness, darkness)
+                outerCount = try checkedAdd(outerCount, 1)
+            }
+        }
+    }
+    guard centerCount > 0, outerCount > 0 else { throw SemanticContractError.admission }
+    return centerDarkness / centerCount - outerDarkness / outerCount
+}
+
+private func darkHalfCentroidSpanQ16(
+    _ image: CanonicalImage, region: RasterizedRegion
+) throws -> Int64 {
+    let split = (region.minX + region.maxX) / 2
+    guard region.minX < split, split < region.maxX else { throw SemanticContractError.admission }
+    let halves = [
+        RasterizedRegion(minX: region.minX, maxX: split, minY: region.minY, maxY: region.maxY),
+        RasterizedRegion(minX: split, maxX: region.maxX, minY: region.minY, maxY: region.maxY)
+    ]
+    let centroids = try halves.map { half -> Int64 in
+        let moment = try darknessMoment(image, regions: [half])
+        return try normalizedCentroidQ16(
+            weightedCoordinate: moment.weightedX, weight: moment.weight, extent: image.width
+        )
+    }
+    return centroids[1] - centroids[0]
+}
+
+private func rootWidthContraction(
+    _ image: CanonicalImage, regions: [RasterizedRegion]
+) throws -> Int64 {
+    guard regions.count == 1 else { throw SemanticContractError.admission }
+    return -(try darkHalfCentroidSpanQ16(image, region: regions[0]))
+}
+
+private func mouthWidthContraction(
+    _ image: CanonicalImage, regions: [RasterizedRegion]
+) throws -> Int64 {
+    guard regions.count == 2 else { throw SemanticContractError.admission }
+    let centroids = try regions.map { region -> Int64 in
+        let moment = try darknessMoment(image, regions: [region])
+        return try normalizedCentroidQ16(
+            weightedCoordinate: moment.weightedX, weight: moment.weight, extent: image.width
+        )
+    }.sorted()
+    return centroids[1] - centroids[0]
+}
+
+private func semanticMetricValue(
+    kind: SemanticMetricKind,
+    image: CanonicalImage,
+    regions: [RasterizedRegion]
+) throws -> Int64 {
+    switch kind {
+    case .contourContinuityGain: return try contourContinuityGain(image, regions: regions)
+    case .centerlineTaper: return try centerlineTaper(image, regions: regions)
+    case .pupilToOwnEyeCenter: return try pupilToOwnEyeCenter(image, regions: regions)
+    case .innerBrowHeadGap: return try innerBrowHeadGap(image, regions: regions)
+    case .bridgeDefinitionGain: return try bridgeDefinitionGain(image, regions: regions)
+    case .rootWidthContraction: return try rootWidthContraction(image, regions: regions)
+    case .mouthWidthContraction: return try mouthWidthContraction(image, regions: regions)
+    }
+}
+
+private func regionSignal(
+    _ lhs: CanonicalImage,
+    _ rhs: CanonicalImage,
+    include: (Int64, Int64) -> Bool,
+    watermarkRows: Int,
+    tolerance: Int = 2
+) throws -> RegionSignal {
+    try validateCanonicalPair(lhs, rhs)
+    let comparableRows = max(0, lhs.height - watermarkRows)
+    var result = RegionSignal(comparedPixels: 0, changedPixels: 0, absoluteRGBDelta: 0)
+    for y in 0..<comparableRows {
+        for x in 0..<lhs.width where include(Int64(x), Int64(y)) {
+            let index = (y * lhs.width + x) * 4
+            let red = Swift.abs(Int(lhs.rgba[index]) - Int(rhs.rgba[index]))
+            let green = Swift.abs(Int(lhs.rgba[index + 1]) - Int(rhs.rgba[index + 1]))
+            let blue = Swift.abs(Int(lhs.rgba[index + 2]) - Int(rhs.rgba[index + 2]))
+            result = RegionSignal(
+                comparedPixels: try checkedAdd(result.comparedPixels, 1),
+                changedPixels: try checkedAdd(result.changedPixels, max(red, green, blue) > tolerance ? 1 : 0),
+                absoluteRGBDelta: try checkedAdd(result.absoluteRGBDelta, Int64(red + green + blue))
+            )
+        }
+    }
+    guard result.comparedPixels > 0 else { throw SemanticContractError.admission }
+    return result
+}
+
+private func conservativeSignal(_ lhs: RegionSignal, _ rhs: RegionSignal) -> RegionSignal {
+    RegionSignal(
+        comparedPixels: min(lhs.comparedPixels, rhs.comparedPixels),
+        changedPixels: max(lhs.changedPixels, rhs.changedPixels),
+        absoluteRGBDelta: max(lhs.absoluteRGBDelta, rhs.absoluteRGBDelta)
+    )
+}
+
+private func semanticMeasurement(
+    contract: SemanticContract,
+    source: CanonicalImage,
+    neutral: CanonicalImage,
+    candidate: CanonicalImage,
+    siblings: [CanonicalImage],
+    watermarkRows: Int
+) throws -> SemanticMeasurement {
+    try validateCanonicalPair(source, neutral)
+    try validateCanonicalPair(source, candidate)
+    guard siblings.count == contract.comparisonCaseIDs.count - 2 else {
+        throw SemanticContractError.admission
+    }
+    for sibling in siblings { try validateCanonicalPair(source, sibling) }
+    let target = try watermarkSafeRegions(contract.targetRegions, image: source, excludedRows: watermarkRows)
+    let sourceTarget = try regionSignal(source, candidate, include: { contains(target, x: $0, y: $1) }, watermarkRows: watermarkRows)
+    let neutralTarget = try regionSignal(neutral, candidate, include: { contains(target, x: $0, y: $1) }, watermarkRows: watermarkRows)
+    let sourceValue = try semanticMetricValue(kind: contract.metric, image: source, regions: target)
+    let neutralValue = try semanticMetricValue(kind: contract.metric, image: neutral, regions: target)
+    let candidateValue = try semanticMetricValue(kind: contract.metric, image: candidate, regions: target)
+    let sourceMargin = try checkedAdd(candidateValue, -sourceValue)
+    let neutralMargin = try checkedAdd(candidateValue, -neutralValue)
+    let signedMargin = contract.expectedSign == .positive
+        ? min(sourceMargin, neutralMargin)
+        : max(sourceMargin, neutralMargin)
+
+    var siblingMargin = Int64.max
+    for sibling in siblings {
+        let siblingValue = try semanticMetricValue(kind: contract.metric, image: sibling, regions: target)
+        siblingMargin = min(siblingMargin, try checkedAbsolute(try checkedAdd(candidateValue, -siblingValue)))
+    }
+    guard siblingMargin != Int64.max else { throw SemanticContractError.admission }
+
+    let sourceOutside = try regionSignal(source, candidate, include: { !contains(target, x: $0, y: $1) }, watermarkRows: watermarkRows)
+    let neutralOutside = try regionSignal(neutral, candidate, include: { !contains(target, x: $0, y: $1) }, watermarkRows: watermarkRows)
+    let outside = conservativeSignal(sourceOutside, neutralOutside)
+
+    var protectedRows: [ProtectedMeasurement] = []
+    for protection in contract.protectedRegions {
+        let regions = try watermarkSafeRegions(
+            protection.regions, image: source, excludedRows: watermarkRows, allowEmpty: true
+        )
+        if regions.isEmpty {
+            protectedRows.append(.init(id: protection.id, changedPixels: 0, absoluteRGBDelta: 0))
+        } else {
+            let sourceProtected = try regionSignal(source, candidate, include: { contains(regions, x: $0, y: $1) }, watermarkRows: watermarkRows)
+            let neutralProtected = try regionSignal(neutral, candidate, include: { contains(regions, x: $0, y: $1) }, watermarkRows: watermarkRows)
+            let value = conservativeSignal(sourceProtected, neutralProtected)
+            protectedRows.append(.init(id: protection.id, changedPixels: value.changedPixels, absoluteRGBDelta: value.absoluteRGBDelta))
+        }
+    }
+
+    let thresholds = contract.thresholds
+    var reasons: [SemanticFailureReason] = []
+    if sourceTarget.changedPixels < thresholds.minimumChangedPixels || sourceTarget.absoluteRGBDelta < thresholds.minimumAbsoluteRGBDelta {
+        reasons.append(.sourceTargetSignal)
+    }
+    if neutralTarget.changedPixels < thresholds.minimumChangedPixels || neutralTarget.absoluteRGBDelta < thresholds.minimumAbsoluteRGBDelta {
+        reasons.append(.neutralTargetSignal)
+    }
+    let floor = Int64(thresholds.minimumSignedMarginQ16)
+    if contract.expectedSign == .positive {
+        if sourceMargin < floor { reasons.append(.sourceDirection) }
+        if neutralMargin < floor { reasons.append(.neutralDirection) }
+    } else {
+        if sourceMargin > -floor { reasons.append(.sourceDirection) }
+        if neutralMargin > -floor { reasons.append(.neutralDirection) }
+    }
+    if outside.changedPixels > thresholds.maximumOutsideChangedPixels || outside.absoluteRGBDelta > thresholds.maximumOutsideAbsoluteRGBDelta {
+        reasons.append(.outsideLocality)
+    }
+    if zip(protectedRows, contract.protectedRegions).contains(where: {
+        $0.0.changedPixels > $0.1.maximumChangedPixels || $0.0.absoluteRGBDelta > $0.1.maximumAbsoluteRGBDelta
+    }) {
+        reasons.append(.protectedRegion)
+    }
+    if siblingMargin < floor { reasons.append(.siblingAlias) }
+
+    return SemanticMeasurement(
+        sourceTarget: sourceTarget, neutralTarget: neutralTarget,
+        sourceSignedMarginQ16: sourceMargin, neutralSignedMarginQ16: neutralMargin,
+        signedMarginQ16: signedMargin, siblingDistinctMarginQ16: siblingMargin,
+        outsideChangedPixels: outside.changedPixels,
+        outsideAbsoluteRGBDelta: outside.absoluteRGBDelta,
+        protected: protectedRows,
+        failureReasons: reasons
+    )
+}
+
 private struct SemanticObservation: Equatable {
     let fixtureCount: Int64
     let changedPixels: Int64
@@ -685,6 +1111,194 @@ private func replacing(
         protectedChangedPixels: protectedChangedPixels ?? observation.protectedChangedPixels,
         protectedAbsoluteRGBDelta: protectedAbsoluteRGBDelta ?? observation.protectedAbsoluteRGBDelta
     )
+}
+
+private func generatedImage(
+    width: Int = 80,
+    height: Int = 80,
+    rectangles: [(Int, Int, Int, Int)]
+) -> CanonicalImage {
+    var rgba = Array(repeating: UInt8(255), count: width * height * 4)
+    for pixel in 0..<(width * height) { rgba[pixel * 4 + 3] = 255 }
+    for rectangle in rectangles {
+        for y in max(0, rectangle.1)..<min(height, rectangle.3) {
+            for x in max(0, rectangle.0)..<min(width, rectangle.2) {
+                let index = (y * width + x) * 4
+                rgba[index] = 0
+                rgba[index + 1] = 0
+                rgba[index + 2] = 0
+            }
+        }
+    }
+    return CanonicalImage(width: width, height: height, rgba: rgba)
+}
+
+private func runDirectionMetricSelfTests(contracts: [SemanticContract]) throws -> Int {
+    guard Set(contracts.map(\ .metric)) == Set(SemanticMetricKind.allCases) else {
+        throw SemanticContractError.verdict
+    }
+    var probes = 0
+    func expectIncrease(_ source: Int64, _ candidate: Int64) throws {
+        guard candidate > source else { throw SemanticContractError.verdict }
+        probes += 1
+    }
+    func expectDecrease(_ source: Int64, _ candidate: Int64) throws {
+        guard candidate < source else { throw SemanticContractError.verdict }
+        probes += 1
+    }
+
+    let contourRegions = [
+        RasterizedRegion(minX: 4, maxX: 24, minY: 8, maxY: 40),
+        RasterizedRegion(minX: 56, maxX: 76, minY: 8, maxY: 40)
+    ]
+    var jagged: [(Int, Int, Int, Int)] = []
+    var smooth: [(Int, Int, Int, Int)] = []
+    for y in 8..<40 {
+        let offset = y.isMultiple(of: 2) ? 4 : 12
+        jagged.append((offset, y, offset + 2, y + 1))
+        jagged.append((80 - offset - 2, y, 80 - offset, y + 1))
+        smooth.append((8, y, 10, y + 1))
+        smooth.append((70, y, 72, y + 1))
+    }
+    try expectIncrease(
+        try contourContinuityGain(generatedImage(rectangles: jagged), regions: contourRegions),
+        try contourContinuityGain(generatedImage(rectangles: smooth), regions: contourRegions)
+    )
+
+    let chinRegion = [RasterizedRegion(minX: 20, maxX: 60, minY: 45, maxY: 60)]
+    let wideChin = generatedImage(rectangles: [(22, 48, 28, 56), (52, 48, 58, 56)])
+    let taperedChin = generatedImage(rectangles: [(31, 48, 37, 56), (43, 48, 49, 56)])
+    try expectIncrease(try centerlineTaper(wideChin, regions: chinRegion), try centerlineTaper(taperedChin, regions: chinRegion))
+
+    let eyeRegions = [
+        RasterizedRegion(minX: 8, maxX: 32, minY: 20, maxY: 40),
+        RasterizedRegion(minX: 48, maxX: 72, minY: 20, maxY: 40)
+    ]
+    let offCenterPupils = generatedImage(rectangles: [(9, 21, 12, 24), (49, 21, 52, 24)])
+    let centeredPupils = generatedImage(rectangles: [(18, 28, 22, 32), (58, 28, 62, 32)])
+    try expectIncrease(
+        try pupilToOwnEyeCenter(offCenterPupils, regions: eyeRegions),
+        try pupilToOwnEyeCenter(centeredPupils, regions: eyeRegions)
+    )
+    do {
+        _ = try pupilToOwnEyeCenter(generatedImage(rectangles: [(18, 28, 22, 32)]), regions: eyeRegions)
+        throw SemanticContractError.verdict
+    } catch SemanticContractError.admission {
+        probes += 1 // A supported peer eye cannot lend its core to a missing eye.
+    }
+
+    let browRegions = [
+        RasterizedRegion(minX: 24, maxX: 40, minY: 12, maxY: 24),
+        RasterizedRegion(minX: 40, maxX: 56, minY: 12, maxY: 24)
+    ]
+    let browNarrow = generatedImage(rectangles: [(35, 15, 39, 20), (41, 15, 45, 20)])
+    let browWide = generatedImage(rectangles: [(27, 15, 31, 20), (49, 15, 53, 20)])
+    try expectIncrease(try innerBrowHeadGap(browNarrow, regions: browRegions), try innerBrowHeadGap(browWide, regions: browRegions))
+    try expectDecrease(try innerBrowHeadGap(browWide, regions: browRegions), try innerBrowHeadGap(browNarrow, regions: browRegions))
+
+    let bridgeRegion = [RasterizedRegion(minX: 28, maxX: 52, minY: 24, maxY: 48)]
+    let flatBridge = generatedImage(rectangles: [(28, 24, 52, 48)])
+    let definedBridge = generatedImage(rectangles: [(36, 24, 44, 48)])
+    try expectIncrease(
+        try bridgeDefinitionGain(flatBridge, regions: bridgeRegion),
+        try bridgeDefinitionGain(definedBridge, regions: bridgeRegion)
+    )
+
+    let rootRegion = [RasterizedRegion(minX: 24, maxX: 56, minY: 8, maxY: 24)]
+    let wideRoot = generatedImage(rectangles: [(25, 12, 29, 20), (51, 12, 55, 20)])
+    let narrowRoot = generatedImage(rectangles: [(33, 12, 37, 20), (43, 12, 47, 20)])
+    try expectIncrease(try rootWidthContraction(wideRoot, regions: rootRegion), try rootWidthContraction(narrowRoot, regions: rootRegion))
+
+    let mouthRegions = [
+        RasterizedRegion(minX: 8, maxX: 32, minY: 52, maxY: 70),
+        RasterizedRegion(minX: 48, maxX: 72, minY: 52, maxY: 70)
+    ]
+    let wideMouth = generatedImage(rectangles: [(10, 58, 16, 64), (64, 58, 70, 64)])
+    let narrowMouth = generatedImage(rectangles: [(24, 58, 30, 64), (50, 58, 56, 64)])
+    try expectDecrease(try mouthWidthContraction(wideMouth, regions: mouthRegions), try mouthWidthContraction(narrowMouth, regions: mouthRegions))
+
+    // Arbitrary uniform target change has no bridge-definition polarity.
+    let white = generatedImage(rectangles: [])
+    var gray = white.rgba
+    for y in 24..<48 {
+        for x in 28..<52 {
+            let index = (y * white.width + x) * 4
+            gray[index] = 128; gray[index + 1] = 128; gray[index + 2] = 128
+        }
+    }
+    let uniformTargetChange = CanonicalImage(width: white.width, height: white.height, rgba: gray)
+    guard try bridgeDefinitionGain(white, regions: bridgeRegion) == bridgeDefinitionGain(uniformTargetChange, regions: bridgeRegion) else {
+        throw SemanticContractError.verdict
+    }
+    probes += 1
+
+    // Bottom watermark rows are excluded from every region iterator.
+    var watermarkBytes = white.rgba
+    for y in 70..<80 {
+        for x in 0..<80 { watermarkBytes[(y * 80 + x) * 4] = 0 }
+    }
+    let watermarkOnly = CanonicalImage(width: 80, height: 80, rgba: watermarkBytes)
+    let excluded = try regionSignal(white, watermarkOnly, include: { _, _ in true }, watermarkRows: 10, tolerance: 0)
+    guard excluded.changedPixels == 0, excluded.absoluteRGBDelta == 0 else {
+        throw SemanticContractError.verdict
+    }
+    probes += 1
+
+    let generatedContract = SemanticContract(
+        caseID: "generatedBridge",
+        metric: .bridgeDefinitionGain,
+        expectedSign: .positive,
+        comparisonCaseIDs: ["source", "geometryBaseline_noop", "generatedSibling"],
+        targetRegions: [NormalizedRegion(
+            id: "bridge", minXPPM: 350_000, maxXPPM: 650_000,
+            minYPPM: 300_000, maxYPPM: 600_000
+        )],
+        thresholds: SemanticThresholds(
+            minimumChangedPixels: 10, minimumAbsoluteRGBDelta: 10,
+            minimumSignedMarginQ16: 16, maximumOutsideChangedPixels: 0,
+            maximumOutsideAbsoluteRGBDelta: 0
+        ),
+        protectedRegions: [ProtectedRegionContract(
+            id: "upper", regions: [NormalizedRegion(
+                id: nil, minXPPM: 0, maxXPPM: 1_000_000,
+                minYPPM: 0, maxYPPM: 200_000
+            )], maximumChangedPixels: 0, maximumAbsoluteRGBDelta: 0
+        )]
+    )
+    let complete = try semanticMeasurement(
+        contract: generatedContract,
+        source: flatBridge, neutral: flatBridge, candidate: definedBridge,
+        siblings: [white], watermarkRows: 0
+    )
+    guard complete.semanticPass,
+          complete.sourceTarget.changedPixels >= 10,
+          complete.neutralTarget.changedPixels >= 10,
+          complete.sourceSignedMarginQ16 >= 16,
+          complete.neutralSignedMarginQ16 >= 16 else {
+        throw SemanticContractError.verdict
+    }
+    probes += 1
+    let reversed = try semanticMeasurement(
+        contract: generatedContract,
+        source: definedBridge, neutral: definedBridge, candidate: flatBridge,
+        siblings: [white], watermarkRows: 0
+    )
+    guard reversed.failureReasons.contains(.sourceDirection),
+          reversed.failureReasons.contains(.neutralDirection) else {
+        throw SemanticContractError.verdict
+    }
+    probes += 1
+    let aliased = try semanticMeasurement(
+        contract: generatedContract,
+        source: flatBridge, neutral: flatBridge, candidate: definedBridge,
+        siblings: [definedBridge], watermarkRows: 0
+    )
+    guard aliased.failureReasons.contains(.siblingAlias) else {
+        throw SemanticContractError.verdict
+    }
+    probes += 1
+
+    return probes
 }
 
 func runSemanticSelfTests() throws -> Int {
