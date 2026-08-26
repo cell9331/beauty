@@ -265,6 +265,19 @@ private let expectedSemanticContracts: [ExpectedSemanticContract] = [
           comparisons: ["source", "geometryBaseline_noop", "mouthWidth_plus0p35", "mouthSize_plus0p35", "mouthSize_minus0p35"])
 ]
 
+// Independent authority for every value in the eight semantic contracts. The
+// digest is over the compact, sorted-key JSON encoding of semanticContracts,
+// so manifest edits cannot redefine the regions or acceptance boundaries that
+// the executable and its generated probes enforce.
+private let expectedSemanticContractsDigest = "7da6662ec2d13c4caf1d9f74b23fae186b8330aa545bead503700d061e4a8298"
+
+private func semanticContractsDigest(_ contracts: [SemanticContract]) throws -> String {
+    let encoded = try JSONEncoder().encode(contracts)
+    let object = try JSONSerialization.jsonObject(with: encoded)
+    let canonical = try JSONSerialization.data(withJSONObject: object, options: [.sortedKeys])
+    return sha256Hex(canonical)
+}
+
 private struct RasterizedRegion: Equatable {
     let minX: Int64
     let maxX: Int64
@@ -358,7 +371,6 @@ private func validateManifest(_ manifest: BatchManifest) throws {
     guard contracts.map({ $0.caseID }) == expectedSemanticContracts.map({ $0.caseID }) else {
         throw SemanticContractError.order
     }
-
     let caseSet = Set(allCases)
     for (contract, expected) in zip(contracts, expectedSemanticContracts) {
         guard isStableIdentifier(contract.caseID), caseSet.contains(contract.caseID),
@@ -409,6 +421,9 @@ private func validateManifest(_ manifest: BatchManifest) throws {
                 throw SemanticContractError.threshold
             }
         }
+    }
+    guard try semanticContractsDigest(contracts) == expectedSemanticContractsDigest else {
+        throw SemanticContractError.contracts
     }
 }
 
@@ -2031,6 +2046,17 @@ func runSemanticSelfTests() throws -> Int {
         }
         throw SemanticContractError.verdict
     }
+    func expectContractRejection(_ body: () throws -> Void) throws {
+        do {
+            try body()
+        } catch is SemanticContractError {
+            mutationCount += 1
+            return
+        } catch {
+            throw SemanticContractError.verdict
+        }
+        throw SemanticContractError.verdict
+    }
     func expectIneffective(_ observation: SemanticObservation, _ contract: SemanticContract) throws {
         guard try !semanticEffective(observation, for: contract) else {
             throw SemanticContractError.verdict
@@ -2181,6 +2207,144 @@ func runSemanticSelfTests() throws -> Int {
     ))
     try expectCategory(.threshold) {
         try validateManifest(replacing(manifest, semanticContracts: negativeThreshold))
+    }
+
+    // The manifest cannot redefine any frozen scalar, region edge, membership,
+    // or ordering and then teach the generated boundary probes the weaker value.
+    for contractIndex in contracts.indices {
+        let contract = contracts[contractIndex]
+        let thresholdMutations = [
+            SemanticThresholds(
+                minimumChangedPixels: contract.thresholds.minimumChangedPixels + 1,
+                minimumAbsoluteRGBDelta: contract.thresholds.minimumAbsoluteRGBDelta,
+                minimumSignedMarginQ16: contract.thresholds.minimumSignedMarginQ16,
+                maximumOutsideChangedPixels: contract.thresholds.maximumOutsideChangedPixels,
+                maximumOutsideAbsoluteRGBDelta: contract.thresholds.maximumOutsideAbsoluteRGBDelta
+            ),
+            SemanticThresholds(
+                minimumChangedPixels: contract.thresholds.minimumChangedPixels,
+                minimumAbsoluteRGBDelta: contract.thresholds.minimumAbsoluteRGBDelta + 1,
+                minimumSignedMarginQ16: contract.thresholds.minimumSignedMarginQ16,
+                maximumOutsideChangedPixels: contract.thresholds.maximumOutsideChangedPixels,
+                maximumOutsideAbsoluteRGBDelta: contract.thresholds.maximumOutsideAbsoluteRGBDelta
+            ),
+            SemanticThresholds(
+                minimumChangedPixels: contract.thresholds.minimumChangedPixels,
+                minimumAbsoluteRGBDelta: contract.thresholds.minimumAbsoluteRGBDelta,
+                minimumSignedMarginQ16: contract.thresholds.minimumSignedMarginQ16 + 1,
+                maximumOutsideChangedPixels: contract.thresholds.maximumOutsideChangedPixels,
+                maximumOutsideAbsoluteRGBDelta: contract.thresholds.maximumOutsideAbsoluteRGBDelta
+            ),
+            SemanticThresholds(
+                minimumChangedPixels: contract.thresholds.minimumChangedPixels,
+                minimumAbsoluteRGBDelta: contract.thresholds.minimumAbsoluteRGBDelta,
+                minimumSignedMarginQ16: contract.thresholds.minimumSignedMarginQ16,
+                maximumOutsideChangedPixels: contract.thresholds.maximumOutsideChangedPixels + 1,
+                maximumOutsideAbsoluteRGBDelta: contract.thresholds.maximumOutsideAbsoluteRGBDelta
+            ),
+            SemanticThresholds(
+                minimumChangedPixels: contract.thresholds.minimumChangedPixels,
+                minimumAbsoluteRGBDelta: contract.thresholds.minimumAbsoluteRGBDelta,
+                minimumSignedMarginQ16: contract.thresholds.minimumSignedMarginQ16,
+                maximumOutsideChangedPixels: contract.thresholds.maximumOutsideChangedPixels,
+                maximumOutsideAbsoluteRGBDelta: contract.thresholds.maximumOutsideAbsoluteRGBDelta + 1
+            )
+        ]
+        for thresholds in thresholdMutations {
+            var mutated = contracts
+            mutated[contractIndex] = replacing(contract, thresholds: thresholds)
+            try expectContractRejection {
+                try validateManifest(replacing(manifest, semanticContracts: mutated))
+            }
+        }
+
+        for regionIndex in contract.targetRegions.indices {
+            let region = contract.targetRegions[regionIndex]
+            let edgeMutations = [
+                NormalizedRegion(id: region.id, minXPPM: region.minXPPM + 1, maxXPPM: region.maxXPPM, minYPPM: region.minYPPM, maxYPPM: region.maxYPPM),
+                NormalizedRegion(id: region.id, minXPPM: region.minXPPM, maxXPPM: region.maxXPPM + 1, minYPPM: region.minYPPM, maxYPPM: region.maxYPPM),
+                NormalizedRegion(id: region.id, minXPPM: region.minXPPM, maxXPPM: region.maxXPPM, minYPPM: region.minYPPM + 1, maxYPPM: region.maxYPPM),
+                NormalizedRegion(id: region.id, minXPPM: region.minXPPM, maxXPPM: region.maxXPPM, minYPPM: region.minYPPM, maxYPPM: region.maxYPPM + 1)
+            ]
+            for mutatedRegion in edgeMutations {
+                var targets = contract.targetRegions
+                targets[regionIndex] = mutatedRegion
+                var mutated = contracts
+                mutated[contractIndex] = replacing(contract, targetRegions: targets)
+                try expectContractRejection {
+                    try validateManifest(replacing(manifest, semanticContracts: mutated))
+                }
+            }
+        }
+        if contract.targetRegions.count > 1 {
+            var mutated = contracts
+            mutated[contractIndex] = replacing(contract, targetRegions: Array(contract.targetRegions.reversed()))
+            try expectContractRejection {
+                try validateManifest(replacing(manifest, semanticContracts: mutated))
+            }
+        }
+
+        for protectionIndex in contract.protectedRegions.indices {
+            let protection = contract.protectedRegions[protectionIndex]
+            for ceiling in 0..<2 {
+                var protections = contract.protectedRegions
+                protections[protectionIndex] = ProtectedRegionContract(
+                    id: protection.id,
+                    regions: protection.regions,
+                    maximumChangedPixels: protection.maximumChangedPixels + (ceiling == 0 ? 1 : 0),
+                    maximumAbsoluteRGBDelta: protection.maximumAbsoluteRGBDelta + (ceiling == 1 ? 1 : 0)
+                )
+                var mutated = contracts
+                mutated[contractIndex] = replacing(contract, protectedRegions: protections)
+                try expectContractRejection {
+                    try validateManifest(replacing(manifest, semanticContracts: mutated))
+                }
+            }
+            for regionIndex in protection.regions.indices {
+                let region = protection.regions[regionIndex]
+                let edgeMutations = [
+                    NormalizedRegion(id: region.id, minXPPM: region.minXPPM + 1, maxXPPM: region.maxXPPM, minYPPM: region.minYPPM, maxYPPM: region.maxYPPM),
+                    NormalizedRegion(id: region.id, minXPPM: region.minXPPM, maxXPPM: region.maxXPPM + 1, minYPPM: region.minYPPM, maxYPPM: region.maxYPPM),
+                    NormalizedRegion(id: region.id, minXPPM: region.minXPPM, maxXPPM: region.maxXPPM, minYPPM: region.minYPPM + 1, maxYPPM: region.maxYPPM),
+                    NormalizedRegion(id: region.id, minXPPM: region.minXPPM, maxXPPM: region.maxXPPM, minYPPM: region.minYPPM, maxYPPM: region.maxYPPM + 1)
+                ]
+                for mutatedRegion in edgeMutations {
+                    var regions = protection.regions
+                    regions[regionIndex] = mutatedRegion
+                    var protections = contract.protectedRegions
+                    protections[protectionIndex] = ProtectedRegionContract(
+                        id: protection.id, regions: regions,
+                        maximumChangedPixels: protection.maximumChangedPixels,
+                        maximumAbsoluteRGBDelta: protection.maximumAbsoluteRGBDelta
+                    )
+                    var mutated = contracts
+                    mutated[contractIndex] = replacing(contract, protectedRegions: protections)
+                    try expectContractRejection {
+                        try validateManifest(replacing(manifest, semanticContracts: mutated))
+                    }
+                }
+            }
+            if protection.regions.count > 1 {
+                var protections = contract.protectedRegions
+                protections[protectionIndex] = ProtectedRegionContract(
+                    id: protection.id, regions: Array(protection.regions.reversed()),
+                    maximumChangedPixels: protection.maximumChangedPixels,
+                    maximumAbsoluteRGBDelta: protection.maximumAbsoluteRGBDelta
+                )
+                var mutated = contracts
+                mutated[contractIndex] = replacing(contract, protectedRegions: protections)
+                try expectContractRejection {
+                    try validateManifest(replacing(manifest, semanticContracts: mutated))
+                }
+            }
+        }
+        if contract.protectedRegions.count > 1 {
+            var mutated = contracts
+            mutated[contractIndex] = replacing(contract, protectedRegions: Array(contract.protectedRegions.reversed()))
+            try expectContractRejection {
+                try validateManifest(replacing(manifest, semanticContracts: mutated))
+            }
+        }
     }
 
     let jsonObject = try JSONSerialization.jsonObject(with: manifestData)
