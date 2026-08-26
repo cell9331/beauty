@@ -1096,7 +1096,7 @@ private func admittedFixtureURLs(in inputRoot: URL) throws -> [URL] {
     guard let enumerator = FileManager.default.enumerator(
         at: portraitRoot,
         includingPropertiesForKeys: [.isRegularFileKey, .isDirectoryKey, .isSymbolicLinkKey],
-        options: [.skipsHiddenFiles]
+        options: []
     ) else {
         throw SemanticContractError.admission
     }
@@ -1161,13 +1161,24 @@ private func admitRunInventory(
     }
     let expected = expectedRunOutputs(manifest: manifest, fixtures: fixtures, runRoot: runRoot)
     let expectedPaths = Set(expected.map { $0.standardizedFileURL.path })
+    var expectedDirectoryPaths: Set<String> = []
+    for output in expected {
+        var parent = output.deletingLastPathComponent().standardizedFileURL
+        while parent.path != runRoot.standardizedFileURL.path {
+            guard pathIsWithin(parent, root: runRoot) else {
+                throw SemanticContractError.admission
+            }
+            expectedDirectoryPaths.insert(parent.path)
+            parent.deleteLastPathComponent()
+        }
+    }
     guard let enumerator = FileManager.default.enumerator(
         at: runRoot,
         includingPropertiesForKeys: [
             .isRegularFileKey, .isDirectoryKey, .isSymbolicLinkKey,
             .contentModificationDateKey, .creationDateKey
         ],
-        options: [.skipsHiddenFiles]
+        options: []
     ) else {
         throw SemanticContractError.admission
     }
@@ -1180,7 +1191,12 @@ private func admitRunInventory(
             .contentModificationDateKey
         ])
         guard values.isSymbolicLink != true else { throw SemanticContractError.admission }
-        if values.isDirectory == true { continue }
+        if values.isDirectory == true {
+            guard expectedDirectoryPaths.contains(url.standardizedFileURL.path) else {
+                throw SemanticContractError.admission
+            }
+            continue
+        }
         guard values.isRegularFile == true else { throw SemanticContractError.admission }
         try requireAdmittedRegularFile(url, beneath: runRoot)
         let path = url.standardizedFileURL.path
@@ -1975,6 +1991,30 @@ private func runSemanticReportSelfTests(manifest: BatchManifest) throws -> Int {
     }
     try FileManager.default.removeItem(at: linkedOutput)
     try pngHeader.write(to: linkedOutput)
+    let hiddenFile = runRoot.appendingPathComponent(".hidden.png")
+    try pngHeader.write(to: hiddenFile)
+    try expect(.admission) {
+        _ = try admitRunInventory(manifest: manifest, fixtures: admitted, runRoot: runRoot, attemptID: "attempt_001")
+    }
+    try FileManager.default.removeItem(at: hiddenFile)
+    let hiddenDirectory = runRoot.appendingPathComponent(".hidden-directory", isDirectory: true)
+    try FileManager.default.createDirectory(at: hiddenDirectory, withIntermediateDirectories: false)
+    try expect(.admission) {
+        _ = try admitRunInventory(manifest: manifest, fixtures: admitted, runRoot: runRoot, attemptID: "attempt_001")
+    }
+    try FileManager.default.removeItem(at: hiddenDirectory)
+    let hiddenSymlink = runRoot.appendingPathComponent(".hidden-link")
+    try FileManager.default.createSymbolicLink(at: hiddenSymlink, withDestinationURL: expectedOutputs[0])
+    try expect(.admission) {
+        _ = try admitRunInventory(manifest: manifest, fixtures: admitted, runRoot: runRoot, attemptID: "attempt_001")
+    }
+    try FileManager.default.removeItem(at: hiddenSymlink)
+    let hiddenRendererReport = runRoot.appendingPathComponent(".beauty-example-renderer-report.json")
+    try Data("{}".utf8).write(to: hiddenRendererReport)
+    try expect(.admission) {
+        _ = try admitRunInventory(manifest: manifest, fixtures: admitted, runRoot: runRoot, attemptID: "attempt_001")
+    }
+    try FileManager.default.removeItem(at: hiddenRendererReport)
     try expect(.admission) {
         _ = try admitRunInventory(manifest: manifest, fixtures: admitted, runRoot: runRoot, attemptID: "different_attempt")
     }
@@ -2478,6 +2518,30 @@ if commandArguments == ["--self-test"] {
     } catch {
         fputs("semantic contract self-test failed: \(error)\n", stderr)
         exit(1)
+    }
+}
+
+if commandArguments.contains("--verify-run-inventory") {
+    do {
+        let inputURL = URL(
+            fileURLWithPath: try argument("--input", in: commandArguments), isDirectory: true
+        )
+        let runRoot = URL(
+            fileURLWithPath: try argument("--run-root", in: commandArguments), isDirectory: true
+        )
+        let manifestURL = URL(fileURLWithPath: try argument("--manifest", in: commandArguments))
+        let attemptID = try argument("--attempt-id", in: commandArguments)
+        try requireAdmittedRegularFile(manifestURL, beneath: manifestURL.deletingLastPathComponent())
+        let manifest = try validateManifestData(Data(contentsOf: manifestURL))
+        let fixtures = try admittedFixtureURLs(in: inputURL)
+        _ = try admitRunInventory(
+            manifest: manifest, fixtures: fixtures, runRoot: runRoot, attemptID: attemptID
+        )
+        print("run_inventory=PASS outputs=\(expectedRunOutputs(manifest: manifest, fixtures: fixtures, runRoot: runRoot).count)")
+        exit(0)
+    } catch {
+        fputs("run_inventory=infrastructure_failure\n", stderr)
+        exit(SemanticExitCode.infrastructureFailure.rawValue)
     }
 }
 

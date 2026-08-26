@@ -534,6 +534,15 @@ with open(destination, "w", encoding="utf-8") as handle:
 PY
 
 failure_reason="publication_failure"
+if ! swift "$comparator" \
+  --verify-run-inventory \
+  --input "$input_dir" \
+  --run-root "$retained_root" \
+  --manifest "$manifest" \
+  --attempt-id "$(basename "$retained_root")" \
+  >/dev/null 2>&1; then
+  exit 2
+fi
 admit_paths
 mv -f -- "$publication_temp" "$report_path"
 publication_temp=""
