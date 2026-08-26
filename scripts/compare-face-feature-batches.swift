@@ -981,6 +981,8 @@ func runSemanticSelfTests() throws -> Int {
     }
     mutationCount += 1
 
+    mutationCount += try runDirectionMetricSelfTests(contracts: contracts)
+
     return mutationCount
 }
 
