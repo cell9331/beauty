@@ -4,11 +4,14 @@ set -euo pipefail
 readonly repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
 readonly manifest="${repo_root}/scripts/face-feature-batch-manifest.json"
 readonly comparator="${repo_root}/scripts/compare-face-feature-batches.swift"
+readonly path_helper="${repo_root}/scripts/face-feature-path-helper.py"
+readonly boundary_test="${repo_root}/scripts/test-face-feature-batch-boundaries.py"
 input_dir="${repo_root}/example-images/input"
 output_root="${repo_root}/example-images/output/face-feature-batches"
 report_path="${repo_root}/example-images/local-test-records/face-feature-batch-report.json"
 preflight_only=0
 self_test_cleanup=0
+self_test_boundaries=0
 
 usage() {
   cat <<'EOF'
@@ -24,6 +27,7 @@ Options:
   --report <file>   Local aggregate record (default: example-images/local-test-records/face-feature-batch-report.json)
   --preflight-only  Validate paths and exact 75/65/8 inventories without rendering
   --self-test-cleanup  Exercise fail-closed cleanup ownership without rendering
+  --self-test-boundaries  Exercise stale-report and path-alias failure handling
   --help            Show this message
 EOF
 }
@@ -53,6 +57,10 @@ while (($# > 0)); do
       self_test_cleanup=1
       shift
       ;;
+    --self-test-boundaries)
+      self_test_boundaries=1
+      shift
+      ;;
     --help)
       usage
       exit 0
@@ -63,6 +71,75 @@ while (($# > 0)); do
       ;;
   esac
 done
+
+admit_report_destination() {
+  local admitted_report
+  if ! admitted_report="$(python3 - "$repo_root" "$input_dir" "$output_root" "$report_path" <<'PY'
+import os
+import stat
+import sys
+
+repo, input_raw, output_raw, report_raw = sys.argv[1:]
+
+def absolute(raw):
+    if not raw or any(ch in raw for ch in ("\n", "\r", "\0")):
+        raise ValueError
+    if ".." in raw.replace("\\", "/").split("/"):
+        raise ValueError
+    return os.path.normpath(os.path.abspath(raw))
+
+def contains(parent, child):
+    try:
+        return os.path.commonpath((parent, child)) == parent
+    except ValueError:
+        return False
+
+def no_symlink_components(path):
+    current = os.path.sep
+    for component in path.split(os.path.sep)[1:]:
+        current = os.path.join(current, component)
+        if os.path.lexists(current) and stat.S_ISLNK(os.lstat(current).st_mode):
+            raise ValueError
+
+def require_creatable_parent(path):
+    no_symlink_components(path)
+    ancestor = path
+    while not os.path.exists(ancestor):
+        parent = os.path.dirname(ancestor)
+        if parent == ancestor:
+            raise ValueError
+        ancestor = parent
+    metadata = os.lstat(ancestor)
+    if not stat.S_ISDIR(metadata.st_mode) or not os.access(ancestor, os.W_OK | os.X_OK):
+        raise ValueError
+
+repo = absolute(repo)
+input_path = absolute(input_raw)
+output_path = absolute(output_raw)
+report = absolute(report_raw)
+report_parent = os.path.dirname(report)
+require_creatable_parent(report_parent)
+no_symlink_components(report)
+if os.path.lexists(report) and not stat.S_ISREG(os.lstat(report).st_mode):
+    raise ValueError
+if contains(input_path, report) or contains(output_path, report):
+    raise ValueError
+if contains(report_parent, input_path) or contains(report_parent, output_path):
+    raise ValueError
+print(report)
+PY
+)"; then
+    echo "report_path_admission_failed" >&2
+    return 1
+  fi
+  [[ -n "$admitted_report" ]] || return 1
+  if [[ "$admitted_report" == "$repo_root"/* ]] &&
+      ! git -C "$repo_root" check-ignore -q --no-index "$admitted_report"; then
+    echo "report_not_owner_local" >&2
+    return 1
+  fi
+  report_path="$admitted_report"
+}
 
 admit_paths() {
   local admitted
@@ -199,8 +276,29 @@ publication_temp=""
 paths_admitted=0
 inventory_admitted=0
 report_finalized=0
+report_destination_admitted=0
 retain_first_attempt=0
 failure_reason="preflight_failure"
+
+path_operation() {
+  python3 "$path_helper" "$@"
+}
+
+ensure_directory() {
+  path_operation ensure-directory "$1" >/dev/null
+}
+
+make_temporary_file() {
+  path_operation temp-file "$1" "$2" "$3"
+}
+
+make_temporary_directory() {
+  path_operation temp-directory "$1" "$2"
+}
+
+atomic_write_stdin() {
+  path_operation atomic-write-stdin "$1"
+}
 
 verify_direct_child_parent() {
   local candidate="$1"
@@ -253,29 +351,13 @@ safe_remove_attempt() {
   local parent="$2"
   local prefix="$3"
   [[ -z "$candidate" ]] && return 0
-  [[ -n "$candidate" && -n "$parent" && "$candidate" == "$parent"/* ]] || return 1
-  [[ "$(basename "$candidate")" == "$prefix"* ]] || return 1
-  if [[ ! -e "$candidate" && ! -L "$candidate" ]]; then
-    verify_direct_child_parent "$candidate" "$parent" absent
-    return
-  fi
-  verify_direct_child_parent "$candidate" "$parent" directory || return 1
-  rm -rf -- "$candidate"
-  verify_direct_child_parent "$candidate" "$parent" absent
+  path_operation remove-tree "$candidate" "$parent" "$prefix"
 }
 
 safe_remove_temporary_file() {
   local candidate="$1"
   [[ -n "$candidate" ]] || return 0
-  local parent
-  parent="$(dirname "$candidate")"
-  if [[ ! -e "$candidate" && ! -L "$candidate" ]]; then
-    verify_direct_child_parent "$candidate" "$parent" absent
-    return
-  fi
-  verify_direct_child_parent "$candidate" "$parent" file || return 1
-  rm -f -- "$candidate"
-  verify_direct_child_parent "$candidate" "$parent" absent
+  path_operation remove-file "$candidate"
 }
 
 cleanup_before_publication() {
@@ -317,10 +399,11 @@ cleanup_temporary_files() {
 }
 
 if ((self_test_cleanup == 1)); then
-  cleanup_test_root="$(mktemp -d "${TMPDIR:-/tmp}/beauty_cleanup_self_test_XXXXXXXX")"
-  cleanup_test_root="$(cd "$cleanup_test_root" && pwd -P)"
-  repeat_root="$(mktemp "${cleanup_test_root}/not_a_directory_XXXXXXXX")"
-  if cleanup_before_publication; then
+  python3 "$path_helper" --self-test
+  temporary_parent="$(python3 -c 'import os,tempfile; print(os.path.realpath(tempfile.gettempdir()))')"
+  cleanup_test_root="$(make_temporary_directory "$temporary_parent" "beauty_cleanup_self_test_")"
+  repeat_root="$(make_temporary_file "$cleanup_test_root" "not_a_directory_" "")"
+  if cleanup_before_publication 2>/dev/null; then
     echo "cleanup_self_test=FAIL unexpected_success" >&2
     exit 1
   fi
@@ -328,25 +411,17 @@ if ((self_test_cleanup == 1)); then
     echo "cleanup_self_test=FAIL publication_not_blocked" >&2
     exit 1
   }
-  rm -f -- "$repeat_root"
+  safe_remove_temporary_file "$repeat_root"
   repeat_root=""
-  trusted_parent="${cleanup_test_root}/trusted"
-  moved_parent="${cleanup_test_root}/moved"
-  mkdir -- "$trusted_parent"
-  mkdir -- "${trusted_parent}/child"
-  verify_direct_child_parent "${trusted_parent}/child" "$trusted_parent" directory
-  mv -- "$trusted_parent" "$moved_parent"
-  ln -s -- "$moved_parent" "$trusted_parent"
-  if verify_direct_child_parent "${trusted_parent}/child" "$trusted_parent" directory; then
-    echo "cleanup_self_test=FAIL parent_swap_admitted" >&2
-    exit 1
-  fi
-  rm -- "$trusted_parent"
-  rmdir -- "${moved_parent}/child"
-  rmdir -- "$moved_parent"
-  rmdir -- "$cleanup_test_root"
-  echo "cleanup_self_test=PASS forced_failure=1 publication_blocked=1 parent_swap_rejected=1"
+  safe_remove_attempt "$cleanup_test_root" "$temporary_parent" "beauty_cleanup_self_test_"
+  echo "cleanup_self_test=PASS forced_failure=1 publication_blocked=1 parent_swap_timing=1 outside_preserved=1"
   exit 0
+fi
+
+if ((self_test_boundaries == 1)); then
+  [[ -f "$boundary_test" && ! -L "$boundary_test" ]] || exit 1
+  python3 "$boundary_test"
+  exit
 fi
 
 publish_failure_envelope() {
@@ -360,17 +435,13 @@ publish_failure_envelope() {
     admitted_selected=65
     admitted_semantic=8
   }
-  admit_paths >/dev/null
-  mkdir -p -- "$(dirname "$report_path")"
-  admit_paths >/dev/null
-  publication_temp="$(mktemp "${report_path}.tmp.XXXXXXXX")"
-  verify_direct_child_parent "$publication_temp" "$(dirname "$report_path")" file
-  python3 - "$publication_temp" "$reason" "$admitted_live" "$admitted_selected" "$admitted_semantic" <<'PY'
+  admit_report_destination >/dev/null
+  ensure_directory "$(dirname "$report_path")"
+  if ! python3 - "$reason" "$admitted_live" "$admitted_selected" "$admitted_semantic" <<'PY' |
 import json
-import os
 import sys
 
-destination, reason, live, selected, semantic = sys.argv[1:]
+reason, live, selected, semantic = sys.argv[1:]
 allowed = {
     "preflight_failure", "build_failure", "render_failure", "compare_failure",
     "report_failure", "determinism_failure", "cleanup_failure", "publication_failure"
@@ -387,15 +458,13 @@ document = {
     "schemaVersion": "beauty.face-feature-batch-runner.failure.1",
     "status": "infrastructure_failure",
 }
-with open(destination, "w", encoding="utf-8") as handle:
-    json.dump(document, handle, ensure_ascii=True, indent=2, sort_keys=True)
-    handle.write("\n")
+json.dump(document, sys.stdout, ensure_ascii=True, indent=2, sort_keys=True)
+sys.stdout.write("\n")
 PY
-  admit_paths >/dev/null
-  verify_direct_child_parent "$publication_temp" "$(dirname "$report_path")" file
-  mv -f -- "$publication_temp" "$report_path"
-  publication_temp=""
-  admit_paths >/dev/null
+    atomic_write_stdin "$report_path"; then
+    return 1
+  fi
+  admit_report_destination >/dev/null
   verify_direct_child_parent "$report_path" "$(dirname "$report_path")" file
   report_finalized=1
   if [[ "$quiet" != "quiet" ]]; then
@@ -411,8 +480,13 @@ on_exit() {
     failure_reason="cleanup_failure"
     report_finalized=0
   fi
-  if ((status != 0 && report_finalized == 0 && preflight_only == 0 && paths_admitted == 1)); then
+  if ((status != 0 && report_finalized == 0 && preflight_only == 0 &&
+        report_destination_admitted == 1)); then
     publish_failure_envelope "$failure_reason" || true
+    exit 2
+  fi
+  if ((status != 0 && preflight_only == 0 &&
+        (status != 3 || report_finalized != 1))); then
     exit 2
   fi
   exit "$status"
@@ -426,10 +500,11 @@ validate_inventory() {
     return 1
   fi
 
-  live_cases_path="$(mktemp "${TMPDIR:-/tmp}/beauty-live-cases.XXXXXXXX.json")"
-  live_cases_path="$(cd "$(dirname "$live_cases_path")" && pwd -P)/$(basename "$live_cases_path")"
+  local temporary_parent
+  temporary_parent="$(python3 -c 'import os,tempfile; print(os.path.realpath(tempfile.gettempdir()))')"
+  live_cases_path="$(make_temporary_file "$temporary_parent" "beauty-live-cases." ".json")"
   verify_direct_child_parent "$live_cases_path" "$(dirname "$live_cases_path")" file
-  if ! "$renderer" --list-cases >"$live_cases_path" 2>/dev/null; then
+  if ! "$renderer" --list-cases 2>/dev/null | atomic_write_stdin "$live_cases_path"; then
     echo "renderer_inventory_failed" >&2
     return 1
   fi
@@ -482,7 +557,17 @@ PY
   fi
 }
 
-admit_paths
+[[ -f "$path_helper" && ! -L "$path_helper" ]] || {
+  echo "path_helper_admission_failed" >&2
+  exit 2
+}
+if ! admit_report_destination; then
+  exit 2
+fi
+report_destination_admitted=1
+if ! admit_paths; then
+  exit 2
+fi
 paths_admitted=1
 [[ -f "$manifest" && ! -L "$manifest" && -f "$comparator" && ! -L "$comparator" ]] || {
   echo "validation_source_admission_failed" >&2
@@ -507,20 +592,18 @@ failure_reason="render_failure"
 publish_failure_envelope "render_failure" "quiet"
 report_finalized=0
 admit_paths
-mkdir -p -- "$output_root"
+ensure_directory "$output_root"
 admit_paths
-retained_root="$(mktemp -d "${output_root}/attempt_XXXXXXXX")"
-retained_root="$(cd "$retained_root" && pwd -P)"
+retained_root="$(make_temporary_directory "$output_root" "attempt_")"
 verify_direct_child_parent "$retained_root" "$output_root" directory
-temporary_workspace="$(mktemp -d "${TMPDIR:-/tmp}/beauty_batch_workspace_XXXXXXXX")"
-temporary_workspace="$(cd "$temporary_workspace" && pwd -P)"
+temporary_parent="$(python3 -c 'import os,tempfile; print(os.path.realpath(tempfile.gettempdir()))')"
+temporary_workspace="$(make_temporary_directory "$temporary_parent" "beauty_batch_workspace_")"
 verify_direct_child_parent "$temporary_workspace" "$(dirname "$temporary_workspace")" directory
-repeat_root="$(mktemp -d "${TMPDIR:-/tmp}/beauty_repeat_attempt_XXXXXXXX")"
-repeat_root="$(cd "$repeat_root" && pwd -P)"
+repeat_root="$(make_temporary_directory "$temporary_parent" "beauty_repeat_attempt_")"
 verify_direct_child_parent "$repeat_root" "$(dirname "$repeat_root")" directory
 [[ "$repeat_root" != "$repo_root" && "$repeat_root" != "$repo_root"/* ]] || exit 2
-first_report="$(mktemp "${temporary_workspace}/first_XXXXXXXX.json")"
-repeat_report="$(mktemp "${temporary_workspace}/repeat_XXXXXXXX.json")"
+first_report="$(make_temporary_file "$temporary_workspace" "first_" ".json")"
+repeat_report="$(make_temporary_file "$temporary_workspace" "repeat_" ".json")"
 verify_direct_child_parent "$first_report" "$temporary_workspace" file
 verify_direct_child_parent "$repeat_report" "$temporary_workspace" file
 
@@ -547,9 +630,9 @@ render_attempt() {
     local batch_root="${attempt_root}/${batch_id}"
     local case_root="${batch_root}/${case_id}"
     verify_direct_child_parent "$attempt_root" "$(dirname "$attempt_root")" directory
-    mkdir -p -- "$batch_root"
+    ensure_directory "$batch_root"
     verify_direct_child_parent "$batch_root" "$attempt_root" directory
-    mkdir -p -- "$case_root"
+    ensure_directory "$case_root"
     verify_direct_child_parent "$case_root" "$batch_root" directory
     if "$renderer" \
         --input "${input_dir}/portraits" \
@@ -638,16 +721,12 @@ repeat_class="$compare_class"
 failure_reason="determinism_failure"
 [[ "$first_class" == "$repeat_class" ]] || exit 2
 admit_paths
-mkdir -p -- "$(dirname "$report_path")"
-admit_paths
-publication_temp="$(mktemp "${report_path}.tmp.XXXXXXXX")"
-verify_direct_child_parent "$publication_temp" "$(dirname "$report_path")" file
-python3 - "$first_report" "$repeat_report" "$first_class" "$publication_temp" <<'PY'
+publication_document="$(python3 - "$first_report" "$repeat_report" "$first_class" <<'PY'
 import hashlib
 import json
 import sys
 
-first_path, repeat_path, status, destination = sys.argv[1:]
+first_path, repeat_path, status = sys.argv[1:]
 with open(first_path, encoding="utf-8") as handle:
     first = json.load(handle)
 with open(repeat_path, encoding="utf-8") as handle:
@@ -679,9 +758,9 @@ folded = encoded.lower()
 for forbidden in ("/users/", "file://", "../", ".jpg", ".jpeg", ".png", "transcript"):
     if forbidden in folded:
         raise SystemExit(1)
-with open(destination, "w", encoding="utf-8") as handle:
-    handle.write(encoded)
+sys.stdout.write(encoded)
 PY
+)"
 
 failure_reason="compare_failure"
 if ! swift "$comparator" \
@@ -696,11 +775,9 @@ fi
 failure_reason="cleanup_failure"
 cleanup_before_publication || exit 2
 failure_reason="publication_failure"
-admit_paths
-verify_direct_child_parent "$publication_temp" "$(dirname "$report_path")" file
-mv -f -- "$publication_temp" "$report_path"
-publication_temp=""
-admit_paths
+printf '%s' "$publication_document" | atomic_write_stdin "$report_path"
+unset publication_document
+admit_report_destination
 verify_direct_child_parent "$report_path" "$(dirname "$report_path")" file
 report_finalized=1
 retain_first_attempt=1
