@@ -17,12 +17,13 @@ renderer directions remain weak or inert: `faceContourSmooth`, `chinTaper`,
 
 ### Validation baseline
 
-- [ ] **VAL-01**: One SDK-owned command processes authorized owner-local
+- [x] **VAL-01**: One SDK-owned command processes authorized owner-local
   portrait inputs through the live five-batch, 65-case renderer inventory,
   writes parameter-watermarked output images, and writes a machine-readable
   aggregate report that compares output with both source and neutral output
   while excluding watermark pixels from effect measurements.
-- [ ] **VAL-02**: Every in-scope repair direction has deterministic semantic
+
+- [x] **VAL-02**: Every in-scope repair direction has deterministic semantic
   ROI, polarity/locality, minimum-signal, and protected-region assertions
   derived from the documented effect contract; an arbitrary pixel difference
   or a threshold weakened only to make a case pass is not acceptance evidence.
@@ -34,6 +35,7 @@ renderer directions remain weak or inert: `faceContourSmooth`, `chinTaper`,
   semantically distinct from `faceSlim`, `faceSmall`, `faceVShape`, and
   `jawSlim`, and keeps the eyes, nose, mouth, and background within bounded
   protected-region tolerances.
+
 - [ ] **FACE-02**: Positive `chinTaper` produces a detectable,
   centerline-gated chin taper on eligible input, remains distinct from
   `chinLength`, `faceVShape`, and `jawSlim`, and preserves the established exact
@@ -59,6 +61,7 @@ renderer directions remain weak or inert: `faceContourSmooth`, `chinTaper`,
   effect in the bridge semantic ROI on eligible input, remains independent from
   `noseRootNarrowing`, `noseSlim`, and tip controls, and preserves non-bridge
   protected regions within bounded tolerance.
+
 - [ ] **NOSE-02**: Positive `noseRootNarrowing` produces detectable narrowing in
   the root semantic ROI on eligible input, never aliases `noseBridge`, preserves
   bridge/tip/non-nose protected regions, and retains its exact safety cap and
@@ -78,10 +81,12 @@ renderer directions remain weak or inert: `faceContourSmooth`, `chinTaper`,
   extent/orientation/color-space/alpha preservation, exact safety caps,
   protected regions, privacy-safe diagnostics, and recovery after rejected
   input; no control may use another control's semantic support as a proxy.
+
 - [ ] **COMPAT-01**: Repairs preserve the public `BeautyParameters` Codable and
   default contract, five presets, 62 parameter fields, 75 renderer cases,
   public still-image facade signatures, CPU/GPU backend contract, SDK-only
   target boundary, and existing non-target control behavior.
+
 - [ ] **CLOSE-01**: A clean authorized-portrait rerun completes all 65 outputs
   and marks all eight in-scope directions effective against neutral through
   their semantic and protection gates; focused tests, full SwiftPM tests,
@@ -94,9 +99,11 @@ renderer directions remain weak or inert: `faceContourSmooth`, `chinTaper`,
   `scleraRednessReduction`, and `upperEyelidFullnessReduction` only in a
   separately authorized local-retouch milestone with its model/license,
   privacy, fixture, and adversarial-safety gates.
+
 - **FUTURE-02**: Expand portrait diversity, population calibration, subjective
   naturalness review, and owner-device feedback only as separately authorized
   evidence; these do not replace deterministic semantic pixel gates.
+
 - **FUTURE-03**: Realtime/video, device performance, packaging, commercialization,
   release readiness, and external distribution remain separately scoped or
   prohibited under the current owner-local boundary.
@@ -119,8 +126,8 @@ renderer directions remain weak or inert: `faceContourSmooth`, `chinTaper`,
 
 | Requirement | Phase | Status |
 | --- | --- | --- |
-| VAL-01 | Phase 89 | Pending |
-| VAL-02 | Phase 89 | Pending |
+| VAL-01 | Phase 89 | Complete |
+| VAL-02 | Phase 89 | Complete |
 | FACE-01 | Phase 90 | Pending |
 | FACE-02 | Phase 90 | Pending |
 | EYE-01 | Phase 91 | Pending |

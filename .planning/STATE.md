@@ -3,17 +3,17 @@ gsd_state_version: 1.0
 milestone: v1.22
 milestone_name: Non-Local Facial Effect Repairs
 current_phase: 89
-current_phase_name: first of 7 milestone phases
+current_phase_name: Semantic Validation Baseline
 status: executing
-stopped_at: v1.22 roadmap created; Phase 89 is ready for planning
-last_updated: "2026-08-26T02:12:35.783Z"
+stopped_at: Completed 89-01-PLAN.md
+last_updated: "2026-08-26T02:29:34.547Z"
 last_activity: 2026-08-26
-last_activity_desc: v1.22 roadmap created with 12/12 requirements mapped
+last_activity_desc: Phase 89 execution started
 progress:
   total_phases: 7
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  total_plans: 4
+  completed_plans: 1
   percent: 0
 ---
 
@@ -30,12 +30,12 @@ without distributing the SDK, model, or weights.
 
 ## Current Position
 
-Phase: 89 of 95 (first of 7 milestone phases)
-Plan: Not planned
+Phase: 89 (Semantic Validation Baseline) — EXECUTING
+Plan: 2 of 4
 Status: Ready to execute
-Last activity: 2026-08-26 — v1.22 roadmap created with 12/12 requirements mapped
+Last activity: 2026-08-26 — Phase 89 execution started
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [███░░░░░░░] 25%
 
 ## Performance Metrics
 
@@ -47,6 +47,11 @@ Progress: [░░░░░░░░░░] 0%
 
 Historical milestone metrics remain in `.planning/MILESTONES.md` and archived
 roadmaps.
+**Per-Plan Metrics:**
+
+| Plan | Duration | Tasks | Files |
+|------|----------|-------|-------|
+| Phase 89 P01 | 13min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -70,6 +75,9 @@ roadmaps.
   realtime/video, model/data/network, device/commercial, packaging, shipping,
   launch, release, and distribution work are outside v1.22.
 
+- [Phase 89]: Semantic acceptance freezes source, neutral, and documented sibling comparisons before live portrait evaluation. — Prevents live outcomes from selecting their own comparator.
+- [Phase 89]: Semantic regions and verdict boundaries use checked integer PPM/Q16 arithmetic with byte-exact background and watermark protection. — Makes equality and one-unit boundary behavior deterministic and privacy-safe.
+
 ### Pending Todos
 
 None found under `.planning/todos/pending/`.
@@ -89,6 +97,6 @@ durable evidence must stay aggregate and privacy-safe.
 
 ## Session Continuity
 
-Last session: 2026-08-26
-Stopped at: v1.22 roadmap created; Phase 89 is ready for planning
+Last session: 2026-08-26T02:29:34.541Z
+Stopped at: Completed 89-01-PLAN.md
 Resume file: None
