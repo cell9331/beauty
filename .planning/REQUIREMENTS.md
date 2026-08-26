@@ -119,20 +119,20 @@ renderer directions remain weak or inert: `faceContourSmooth`, `chinTaper`,
 
 | Requirement | Phase | Status |
 | --- | --- | --- |
-| VAL-01 | Pending roadmap | Pending |
-| VAL-02 | Pending roadmap | Pending |
-| FACE-01 | Pending roadmap | Pending |
-| FACE-02 | Pending roadmap | Pending |
-| EYE-01 | Pending roadmap | Pending |
-| BROW-01 | Pending roadmap | Pending |
-| NOSE-01 | Pending roadmap | Pending |
-| NOSE-02 | Pending roadmap | Pending |
-| MOUTH-01 | Pending roadmap | Pending |
-| SAFE-01 | Pending roadmap | Pending |
-| COMPAT-01 | Pending roadmap | Pending |
-| CLOSE-01 | Pending roadmap | Pending |
+| VAL-01 | Phase 89 | Pending |
+| VAL-02 | Phase 89 | Pending |
+| FACE-01 | Phase 90 | Pending |
+| FACE-02 | Phase 90 | Pending |
+| EYE-01 | Phase 91 | Pending |
+| BROW-01 | Phase 92 | Pending |
+| NOSE-01 | Phase 93 | Pending |
+| NOSE-02 | Phase 93 | Pending |
+| MOUTH-01 | Phase 94 | Pending |
+| SAFE-01 | Phase 95 | Pending |
+| COMPAT-01 | Phase 95 | Pending |
+| CLOSE-01 | Phase 95 | Pending |
 
-**Coverage:** 12 total, 0 mapped, 0 complete, 12 pending roadmap.
+**Coverage:** 12 total, 12 mapped exactly once, 0 complete, 12 pending.
 
 ---
-*Last updated: 2026-08-26 for v1.22 requirements definition*
+*Last updated: 2026-08-26 for v1.22 roadmap traceability*

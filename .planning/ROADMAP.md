@@ -1,58 +1,154 @@
-# Roadmap: Beauty v1.21 Provisional Upper-Eyelid Public Activation
+# Roadmap: Beauty v1.22 Non-Local Facial Effect Repairs
+
+## Overview
+
+v1.22 first makes the existing owner-local 65-case portrait screen a semantic
+measurement gate, then repairs each affected facial-control family as a
+complete public-facade behavior. The milestone closes only when all eight weak
+or inert directions pass their own ROI, polarity, locality, protection, and
+degradation contracts without changing the SDK's public inventory or boundary.
 
 ## Milestone Goal
 
-Keep the existing upper-eyelid API surface and make it callable from the
-owner-controlled public Swift facade using the retained bounded v4 mechanics.
-Record the owner's acceptance that manual inspection is treated as passed for
-milestone purposes while the visual result remains weak and future work.
+The project owner can use every in-scope non-local facial control through the
+existing still-image SDK facade and observe its documented, bounded effect,
+with deterministic evidence that protected regions and compatibility remain
+intact.
 
 ## Boundary
 
-- Owner-local, opaque still-image SDK use only.
-- No new algorithm, training, dataset, model, weight, download, Core ML
-  resource, Metal pass, retained shader change, UI/Demo, or pixel-buffer route.
-- Do not rewrite the immutable v1.18/v1.19 failure and cancellation records.
-- Owner acceptance is a supplied product decision, not evidence that this work
-  ran a new blinded review or established commercial visual quality.
-- No package, binary, source, model, fixture, output, or derived-data
-  distribution.
+- Owner-local, opaque still-image `BeautySDK` and SDK-owned command-line
+  validation only; Swift `public` does not imply third-party distribution.
+- Repair only `faceContourSmooth`, `chinTaper`, `gazeCorrection`, both signs of
+  `eyebrowHeadSpacing`, `noseBridge`, `noseRootNarrowing`, and negative
+  `mouthWidth`.
+- Preserve 62 public parameter fields, five presets, 75 renderer cases, both
+  still-image facade signatures, and the existing CPU/GPU backend contract.
+- Do not change `teethWhitening`, `scleraRednessReduction`, or
+  `upperEyelidFullnessReduction`; add no UI/Demo, realtime/video route, model,
+  weight, dataset, network path, parameter, preset, filter, or feature family.
+- Automated package-host evidence makes no device, population, commercial
+  quality, packaging, shipping, launch, release-readiness, or distribution
+  claim. Authorized portraits and outputs remain owner-controlled and outside
+  durable repository evidence.
 
-## Phase 88: Provisional Upper-Eyelid Public Activation
+## Phases
 
-**Goal:** The owner's local host can call `去脂` through a stable public scalar,
-receive bounded deterministic still-image output, and retain source-exact
-failure behavior.
+- [ ] **Phase 89: Semantic Validation Baseline** - Turn the live 65-case owner-local portrait command into the deterministic acceptance gate for all eight repair directions.
+- [ ] **Phase 90: Face Contour and Chin Repairs** - Make contour smoothing and chin taper visibly effective, distinct, and protected.
+- [ ] **Phase 91: Independent Gaze Correction** - Move each supported pupil toward its own eye center without changing eye shape or borrowing peer-eye support.
+- [ ] **Phase 92: Signed Eyebrow-Head Spacing** - Make both inner-eyebrow-head directions effective without moving outer anchors or aliasing whole-brow spacing.
+- [ ] **Phase 93: Distinct Nose Bridge and Root Repairs** - Restore independently measurable bridge definition and root narrowing.
+- [ ] **Phase 94: Negative Mouth-Width Repair** - Restore mouth contraction while retaining the existing positive direction and surrounding anatomy.
+- [ ] **Phase 95: Compatibility and SDK-Only Closeout** - Prove fail-closed safety, exact compatibility, all eight portrait outcomes, and the complete no-skip SDK gate.
 
-**Requirements:** API-01, OUT-01, ACCEPT-01, CLOSE-01
+## Phase Details
 
-**Success Criteria:**
+### Phase 89: Semantic Validation Baseline
+**Goal**: The owner can run one repeatable SDK-owned portrait command and receive trustworthy semantic pass/fail evidence for every in-scope repair direction.
+**Depends on**: Phase 88 (v1.21 complete)
+**Requirements**: VAL-01, VAL-02
+**Success Criteria** (what must be TRUE):
+  1. The owner can run one command over authorized local portraits and receive all live five-batch, 65-case parameter-watermarked outputs plus a machine-readable aggregate report.
+  2. Each in-scope direction is compared with both its source and neutral output using its documented semantic ROI, polarity/locality, minimum-signal, and protected-region rules, with watermark pixels excluded.
+  3. Repeating the same admitted run produces the same measurements and verdicts, and a mere arbitrary pixel difference cannot be reported as an effective repair.
+**Plans**: TBD
 
-1. `BeautyParameters.upperEyelidFullnessReduction` is a trailing positive-only
-   default-zero Codable field and participates in normalization/admission.
-2. Both still-image facade entries reuse one canonical/detection/context/
-   immutable-source composition/render transaction and prove actual bounded
-   pixel output plus deterministic no-face/neutral degradation.
-3. Taxonomy and owner docs mark `去脂` implemented with a provisional weak-
-   quality caveat and keep all model/device/commercial/distribution nonclaims.
-4. Current inventories are 62 fields, five presets, and 75 renderer cases; the
-   archive/boundary/historical-binding/full no-skip gates pass.
+### Phase 90: Face Contour and Chin Repairs
+**Goal**: The owner can observe the documented contour-smoothing and chin-taper effects without sibling-control aliasing or protected-region drift.
+**Depends on**: Phase 89
+**Requirements**: FACE-01, FACE-02
+**Success Criteria** (what must be TRUE):
+  1. Positive `faceContourSmooth` produces a detectable continuity correction confined to eligible observed face contours while eyes, nose, mouth, and background remain within their protection bounds.
+  2. Positive `chinTaper` produces a detectable centerline-gated chin taper on eligible input while retaining its exact safety cap, neutral identity, and source-safe degradation.
+  3. The two repaired outputs remain measurably distinct from each other and from the documented `faceSlim`, `faceSmall`, `faceVShape`, `jawSlim`, and `chinLength` behaviors.
+**Plans**: TBD
+
+### Phase 91: Independent Gaze Correction
+**Goal**: The owner can correct supported gaze independently per eye while preserving the surrounding eye and face anatomy.
+**Depends on**: Phase 89
+**Requirements**: EYE-01
+**Success Criteria** (what must be TRUE):
+  1. Positive `gazeCorrection` measurably reduces each supported pupil's displacement from that eye's own center in the documented direction.
+  2. Correcting one supported eye does not borrow geometry or eligibility from the other eye and does not alter eye aperture, eye contour, eyebrows, or background beyond their bounds.
+  3. Missing or implausible support for one eye leaves that eye source-safe without preventing an independently valid peer eye from being corrected.
+**Plans**: TBD
+
+### Phase 92: Signed Eyebrow-Head Spacing
+**Goal**: The owner can move only the inner eyebrow heads in both documented directions while keeping whole-brow geometry stable.
+**Depends on**: Phase 89
+**Requirements**: BROW-01
+**Success Criteria** (what must be TRUE):
+  1. Positive and negative `eyebrowHeadSpacing` move the two inner eyebrow heads in opposite documented directions with measurable signed displacement.
+  2. Both directions keep the outer eyebrow anchors and non-brow protected regions within their established tolerances.
+  3. The signed inner-head behavior remains measurably distinct from whole-brow `eyebrowSpacing` rather than reproducing its output.
+**Plans**: TBD
+
+### Phase 93: Distinct Nose Bridge and Root Repairs
+**Goal**: The owner can independently apply visible bridge definition and root narrowing in their own semantic regions.
+**Depends on**: Phase 89
+**Requirements**: NOSE-01, NOSE-02
+**Success Criteria** (what must be TRUE):
+  1. Positive `noseBridge` produces a detectable bridge-definition effect inside the eligible bridge ROI while non-bridge regions remain protected.
+  2. Positive `noseRootNarrowing` detectably narrows the eligible root ROI while preserving bridge, tip, and non-nose regions and retaining its exact safety cap and fail-closed behavior.
+  3. The two repaired controls produce distinct semantic evidence and do not alias each other, `noseSlim`, or any nose-tip control.
+**Plans**: TBD
+
+### Phase 94: Negative Mouth-Width Repair
+**Goal**: The owner can contract mouth width through the existing signed control without disturbing the working expansion direction or mouth height.
+**Depends on**: Phase 89
+**Requirements**: MOUTH-01
+**Success Criteria** (what must be TRUE):
+  1. Negative `mouthWidth` measurably contracts an eligible mouth in the documented direction.
+  2. Positive `mouthWidth` retains its existing measurable expansion behavior, and the two directions remain distinct from whole-mouth `mouthSize`.
+  3. Both signed outputs preserve mouth height, surrounding face, and background within their established protection bounds.
+**Plans**: TBD
+
+### Phase 95: Compatibility and SDK-Only Closeout
+**Goal**: The owner can rely on every repaired control as deterministic, fail-closed, compatibility-preserving behavior within the unchanged owner-local SDK boundary.
+**Depends on**: Phases 90, 91, 92, 93, and 94
+**Requirements**: SAFE-01, COMPAT-01, CLOSE-01
+**Success Criteria** (what must be TRUE):
+  1. Every repaired control proves neutral identity; deterministic recovery; source-safe no-face and missing, malformed, or stale support handling; exact caps; protected regions; output extent, orientation, color space, and alpha preservation; and privacy-safe diagnostics without proxy support.
+  2. Existing owner-local integrations retain the same Codable/default behavior, five presets, 62 parameter fields, 75 renderer cases, still-image facade signatures, CPU/GPU contract, SDK-only target boundary, and non-target behavior.
+  3. A clean authorized-portrait rerun completes 65/65 outputs and reports all eight in-scope directions effective against neutral through their semantic and protection gates.
+  4. Focused tests, full SwiftPM tests, archive-first boundary checks, and the zero-failure/zero-skip closeout gate pass, and every changed behavior contract agrees with its current owner document.
+**Plans**: TBD
 
 ## Requirement Coverage
 
-| Phase | Requirement Count | Requirement IDs |
-| --- | ---: | --- |
-| 88 | 4 | API-01, OUT-01, ACCEPT-01, CLOSE-01 |
+| Requirement | Phase |
+| --- | --- |
+| VAL-01 | Phase 89 |
+| VAL-02 | Phase 89 |
+| FACE-01 | Phase 90 |
+| FACE-02 | Phase 90 |
+| EYE-01 | Phase 91 |
+| BROW-01 | Phase 92 |
+| NOSE-01 | Phase 93 |
+| NOSE-02 | Phase 93 |
+| MOUTH-01 | Phase 94 |
+| SAFE-01 | Phase 95 |
+| COMPAT-01 | Phase 95 |
+| CLOSE-01 | Phase 95 |
 
-**Coverage:** 4/4 v1.21 requirements mapped exactly once.
+**Coverage:** 12/12 v1.22 requirements mapped exactly once; no orphaned or duplicated requirements.
 
 ## Progress
 
-- [x] Phase 88: Provisional Upper-Eyelid Public Activation
+**Execution Order:** Phase 89 establishes the shared acceptance gate; feature
+repair phases then execute in numeric order; Phase 95 closes only after all five
+repair phases are complete.
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 | --- | --- | --- | --- | --- |
-| 88. Provisional Upper-Eyelid Public Activation | v1.21 | 1/1 | Complete | 2026-08-25 |
+| 89. Semantic Validation Baseline | v1.22 | 0/TBD | Not started | - |
+| 90. Face Contour and Chin Repairs | v1.22 | 0/TBD | Not started | - |
+| 91. Independent Gaze Correction | v1.22 | 0/TBD | Not started | - |
+| 92. Signed Eyebrow-Head Spacing | v1.22 | 0/TBD | Not started | - |
+| 93. Distinct Nose Bridge and Root Repairs | v1.22 | 0/TBD | Not started | - |
+| 94. Negative Mouth-Width Repair | v1.22 | 0/TBD | Not started | - |
+| 95. Compatibility and SDK-Only Closeout | v1.22 | 0/TBD | Not started | - |
 
 ---
-*Last updated: 2026-08-25 for v1.21 closeout*
+*Last updated: 2026-08-26 for v1.22 roadmap creation*
