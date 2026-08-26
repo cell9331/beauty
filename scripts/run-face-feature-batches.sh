@@ -202,6 +202,52 @@ report_finalized=0
 retain_first_attempt=0
 failure_reason="preflight_failure"
 
+verify_direct_child_parent() {
+  local candidate="$1"
+  local parent="$2"
+  local expected_kind="$3"
+  python3 - "$candidate" "$parent" "$expected_kind" <<'PY'
+import os
+import stat
+import sys
+
+candidate = os.path.normpath(os.path.abspath(sys.argv[1]))
+parent = os.path.normpath(os.path.abspath(sys.argv[2]))
+expected_kind = sys.argv[3]
+if os.path.dirname(candidate) != parent:
+    raise SystemExit(1)
+
+current = os.path.sep
+for component in parent.split(os.path.sep)[1:]:
+    current = os.path.join(current, component)
+    metadata = os.lstat(current)
+    if stat.S_ISLNK(metadata.st_mode):
+        raise SystemExit(1)
+before = os.stat(parent, follow_symlinks=False)
+if not stat.S_ISDIR(before.st_mode):
+    raise SystemExit(1)
+
+exists = os.path.lexists(candidate)
+if expected_kind == "absent":
+    if exists:
+        raise SystemExit(1)
+elif not exists:
+    raise SystemExit(1)
+else:
+    child = os.lstat(candidate)
+    if stat.S_ISLNK(child.st_mode):
+        raise SystemExit(1)
+    if expected_kind == "directory" and not stat.S_ISDIR(child.st_mode):
+        raise SystemExit(1)
+    if expected_kind == "file" and not stat.S_ISREG(child.st_mode):
+        raise SystemExit(1)
+
+after = os.stat(parent, follow_symlinks=False)
+if (before.st_dev, before.st_ino) != (after.st_dev, after.st_ino):
+    raise SystemExit(1)
+PY
+}
+
 safe_remove_attempt() {
   local candidate="$1"
   local parent="$2"
@@ -209,19 +255,27 @@ safe_remove_attempt() {
   [[ -z "$candidate" ]] && return 0
   [[ -n "$candidate" && -n "$parent" && "$candidate" == "$parent"/* ]] || return 1
   [[ "$(basename "$candidate")" == "$prefix"* ]] || return 1
-  [[ ! -e "$candidate" && ! -L "$candidate" ]] && return 0
-  [[ -d "$candidate" && ! -L "$candidate" ]] || return 1
+  if [[ ! -e "$candidate" && ! -L "$candidate" ]]; then
+    verify_direct_child_parent "$candidate" "$parent" absent
+    return
+  fi
+  verify_direct_child_parent "$candidate" "$parent" directory || return 1
   rm -rf -- "$candidate"
-  [[ ! -e "$candidate" && ! -L "$candidate" ]]
+  verify_direct_child_parent "$candidate" "$parent" absent
 }
 
 safe_remove_temporary_file() {
   local candidate="$1"
   [[ -n "$candidate" ]] || return 0
-  [[ ! -e "$candidate" && ! -L "$candidate" ]] && return 0
-  [[ -f "$candidate" && ! -L "$candidate" ]] || return 1
+  local parent
+  parent="$(dirname "$candidate")"
+  if [[ ! -e "$candidate" && ! -L "$candidate" ]]; then
+    verify_direct_child_parent "$candidate" "$parent" absent
+    return
+  fi
+  verify_direct_child_parent "$candidate" "$parent" file || return 1
   rm -f -- "$candidate"
-  [[ ! -e "$candidate" && ! -L "$candidate" ]]
+  verify_direct_child_parent "$candidate" "$parent" absent
 }
 
 cleanup_before_publication() {
@@ -264,6 +318,7 @@ cleanup_temporary_files() {
 
 if ((self_test_cleanup == 1)); then
   cleanup_test_root="$(mktemp -d "${TMPDIR:-/tmp}/beauty_cleanup_self_test_XXXXXXXX")"
+  cleanup_test_root="$(cd "$cleanup_test_root" && pwd -P)"
   repeat_root="$(mktemp "${cleanup_test_root}/not_a_directory_XXXXXXXX")"
   if cleanup_before_publication; then
     echo "cleanup_self_test=FAIL unexpected_success" >&2
@@ -275,8 +330,22 @@ if ((self_test_cleanup == 1)); then
   }
   rm -f -- "$repeat_root"
   repeat_root=""
+  trusted_parent="${cleanup_test_root}/trusted"
+  moved_parent="${cleanup_test_root}/moved"
+  mkdir -- "$trusted_parent"
+  mkdir -- "${trusted_parent}/child"
+  verify_direct_child_parent "${trusted_parent}/child" "$trusted_parent" directory
+  mv -- "$trusted_parent" "$moved_parent"
+  ln -s -- "$moved_parent" "$trusted_parent"
+  if verify_direct_child_parent "${trusted_parent}/child" "$trusted_parent" directory; then
+    echo "cleanup_self_test=FAIL parent_swap_admitted" >&2
+    exit 1
+  fi
+  rm -- "$trusted_parent"
+  rmdir -- "${moved_parent}/child"
+  rmdir -- "$moved_parent"
   rmdir -- "$cleanup_test_root"
-  echo "cleanup_self_test=PASS forced_failure=1 publication_blocked=1"
+  echo "cleanup_self_test=PASS forced_failure=1 publication_blocked=1 parent_swap_rejected=1"
   exit 0
 fi
 
@@ -291,9 +360,11 @@ publish_failure_envelope() {
     admitted_selected=65
     admitted_semantic=8
   }
+  admit_paths >/dev/null
   mkdir -p -- "$(dirname "$report_path")"
   admit_paths >/dev/null
   publication_temp="$(mktemp "${report_path}.tmp.XXXXXXXX")"
+  verify_direct_child_parent "$publication_temp" "$(dirname "$report_path")" file
   python3 - "$publication_temp" "$reason" "$admitted_live" "$admitted_selected" "$admitted_semantic" <<'PY'
 import json
 import os
@@ -320,8 +391,12 @@ with open(destination, "w", encoding="utf-8") as handle:
     json.dump(document, handle, ensure_ascii=True, indent=2, sort_keys=True)
     handle.write("\n")
 PY
+  admit_paths >/dev/null
+  verify_direct_child_parent "$publication_temp" "$(dirname "$report_path")" file
   mv -f -- "$publication_temp" "$report_path"
   publication_temp=""
+  admit_paths >/dev/null
+  verify_direct_child_parent "$report_path" "$(dirname "$report_path")" file
   report_finalized=1
   if [[ "$quiet" != "quiet" ]]; then
     echo "semantic_report=infrastructure_failure reason=${reason}" >&2
@@ -352,6 +427,8 @@ validate_inventory() {
   fi
 
   live_cases_path="$(mktemp "${TMPDIR:-/tmp}/beauty-live-cases.XXXXXXXX.json")"
+  live_cases_path="$(cd "$(dirname "$live_cases_path")" && pwd -P)/$(basename "$live_cases_path")"
+  verify_direct_child_parent "$live_cases_path" "$(dirname "$live_cases_path")" file
   if ! "$renderer" --list-cases >"$live_cases_path" 2>/dev/null; then
     echo "renderer_inventory_failed" >&2
     return 1
@@ -429,17 +506,23 @@ fi
 failure_reason="render_failure"
 publish_failure_envelope "render_failure" "quiet"
 report_finalized=0
+admit_paths
 mkdir -p -- "$output_root"
 admit_paths
 retained_root="$(mktemp -d "${output_root}/attempt_XXXXXXXX")"
 retained_root="$(cd "$retained_root" && pwd -P)"
+verify_direct_child_parent "$retained_root" "$output_root" directory
 temporary_workspace="$(mktemp -d "${TMPDIR:-/tmp}/beauty_batch_workspace_XXXXXXXX")"
 temporary_workspace="$(cd "$temporary_workspace" && pwd -P)"
+verify_direct_child_parent "$temporary_workspace" "$(dirname "$temporary_workspace")" directory
 repeat_root="$(mktemp -d "${TMPDIR:-/tmp}/beauty_repeat_attempt_XXXXXXXX")"
 repeat_root="$(cd "$repeat_root" && pwd -P)"
+verify_direct_child_parent "$repeat_root" "$(dirname "$repeat_root")" directory
 [[ "$repeat_root" != "$repo_root" && "$repeat_root" != "$repo_root"/* ]] || exit 2
 first_report="$(mktemp "${temporary_workspace}/first_XXXXXXXX.json")"
 repeat_report="$(mktemp "${temporary_workspace}/repeat_XXXXXXXX.json")"
+verify_direct_child_parent "$first_report" "$temporary_workspace" file
+verify_direct_child_parent "$repeat_report" "$temporary_workspace" file
 
 manifest_rows() {
   python3 - "$manifest" <<'PY'
@@ -461,8 +544,13 @@ render_attempt() {
   render_one() {
     local batch_id="$1"
     local case_id="$2"
-    local case_root="${attempt_root}/${batch_id}/${case_id}"
+    local batch_root="${attempt_root}/${batch_id}"
+    local case_root="${batch_root}/${case_id}"
+    verify_direct_child_parent "$attempt_root" "$(dirname "$attempt_root")" directory
+    mkdir -p -- "$batch_root"
+    verify_direct_child_parent "$batch_root" "$attempt_root" directory
     mkdir -p -- "$case_root"
+    verify_direct_child_parent "$case_root" "$batch_root" directory
     if "$renderer" \
         --input "${input_dir}/portraits" \
         --output "$case_root" \
@@ -474,7 +562,7 @@ render_attempt() {
       render_failures=$((render_failures + 1))
       echo "render_failed ${batch_id}/${case_id}" >&2
     fi
-    rm -f -- "${case_root}/beauty-example-renderer-report.json"
+    safe_remove_temporary_file "${case_root}/beauty-example-renderer-report.json"
   }
 
   render_one control "geometryBaseline_noop"
@@ -549,8 +637,11 @@ repeat_class="$compare_class"
 
 failure_reason="determinism_failure"
 [[ "$first_class" == "$repeat_class" ]] || exit 2
+admit_paths
 mkdir -p -- "$(dirname "$report_path")"
+admit_paths
 publication_temp="$(mktemp "${report_path}.tmp.XXXXXXXX")"
+verify_direct_child_parent "$publication_temp" "$(dirname "$report_path")" file
 python3 - "$first_report" "$repeat_report" "$first_class" "$publication_temp" <<'PY'
 import hashlib
 import json
@@ -606,8 +697,11 @@ failure_reason="cleanup_failure"
 cleanup_before_publication || exit 2
 failure_reason="publication_failure"
 admit_paths
+verify_direct_child_parent "$publication_temp" "$(dirname "$report_path")" file
 mv -f -- "$publication_temp" "$report_path"
 publication_temp=""
+admit_paths
+verify_direct_child_parent "$report_path" "$(dirname "$report_path")" file
 report_finalized=1
 retain_first_attempt=1
 
