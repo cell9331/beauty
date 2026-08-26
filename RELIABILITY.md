@@ -77,6 +77,7 @@ false alpha/extent flags and still-image extent-origin drift.
 | R15 | Image-producing milestone evidence validates actual output pixels and metadata against deterministic exact/bounded oracles; process completion without output checks is failure. |
 | R16 | Physical-device access or user feedback is not required for SDK milestone progress; a reproducible post-SDK finding gains an automated regression where possible, while device/product claims remain withheld without separate evidence. |
 | R17 | Upper-eyelid intent performs at most one canonicalization, one detection/mapping request, one request context, one immutable-source composition, and one render; no-face or per-eye rejection cannot contaminate siblings or later requests. |
+| R18 | Phase 89 credits semantic evidence only after two fresh exact 75/65/8 attempts have identical completion class, canonical `stableSemanticPayload` bytes, and digests; stale or infrastructure-failed output is never evidence. |
 
 The automated image oracle applies contract-specific checks rather than one
 global visual heuristic: dimensions/extent, orientation/mirroring, color space,
@@ -302,6 +303,37 @@ bash scripts/run-no-skip-swiftpm.sh
 Passing these commands establishes bounded SDK-core correctness and recovery only.
 Commercial approval, packaging, shipping, launch, and release readiness remain
 separate future scopes.
+
+## Phase 89 Semantic Batch Reliability Contract
+
+The runner binds the exact live/selected/semantic inventory `75/65/8` and
+report schema `beauty.face-feature-batch-report.semantic.1`. Preflight admits
+only regular non-symlink input/output/report descendants with no unsafe overlap,
+then validates exact manifest, renderer, and comparator inventory before any
+mutation. Every full invocation creates two fresh, never-reused attempt roots;
+each must reconcile 65/65 outputs, five batches, eight direction rows, zero
+missing output, source and neutral evidence, watermark exclusion, and complete
+aggregate metrics.
+
+The two attempts must have identical completion class, canonical
+`stableSemanticPayload` bytes, comparator digest, and reconciliation digest.
+Only after equality does the runner atomically replace the current aggregate
+report. Exit `0` is reserved for complete 8/8 `semantic_pass`. Exit 3 is a
+complete deterministic `semantic_fail` with an aggregate report: it is a
+trustworthy completed measurement, not infrastructure success and not repair
+acceptance. Admission, rendering, output, report, stale-state, or determinism
+faults use the separate exit `2` `infrastructure_failure`; that class is not
+creditable evidence and atomically replaces a prior report with a sanitized
+current envelope.
+
+On semantic completion, the first attempt is retained under the ignored
+owner-local output root with watermarked PNGs only; the repeat attempt is
+removed. On every status, temporary renderer/comparator reports, workspaces,
+repeat media, and child transcripts are removed, and a partial attempt is not
+published. Recovery never relies on, appends to, or leaves a prior report or
+raw transcript. These rules preserve the 62/5/75 public surface, both
+still-image facades, CPU reference and selectable-GPU/typed-unavailable policy,
+and every device/population/commercial/release/distribution nonclaim.
 
 ## Phase 72 Feature-Pass Reliability
 

@@ -273,6 +273,41 @@ completion also does not wait for physical-iPhone access or post-SDK user
 feedback; that evidence is supplemental unless a later user decision explicitly
 creates a device-focused scope.
 
+## Phase 89 Semantic Validation Trust Boundary
+
+The semantic manifest and every `--input`, `--output`, and `--report` value are
+untrusted. Before mutation, the runner requires the exact live/selected/semantic
+inventory `75/65/8`, schema `beauty.face-feature-batch-report.semantic.1`, and
+regular non-symlink descendant paths with no input/output/report overlap.
+Unknown or duplicate inventory, unsafe path components, stale destinations,
+decode/dimension failures, or incomplete renderer output fail closed without
+borrowing a prior result.
+
+Decoded pixels and target, sibling, outside, ROI/support, protection, and
+watermark geometry are request-local. The durable allowlist contains only the
+aggregate `stableSemanticPayload`, fixed schema/contract and CPU identifiers,
+opaque fixture IDs/counts, fixed case/direction identities and reasons, bounded
+source/neutral/target/outside/protected metrics, verdicts, and digests. Source
+paths or locators, raw media or pixels, masks, landmarks, pupil/anatomy values,
+private geometry or metadata, raw framework errors, and child transcripts are
+forbidden. Parameter watermarks remain only in ignored first-attempt PNGs and
+are excluded from measurement.
+
+Two fresh attempts must complete the same 75/65/8 contract and reconcile the
+same completion class, canonical `stableSemanticPayload` bytes, and digests
+before atomic publication. The retained first attempt contains only ignored
+watermarked PNGs; repeat media, renderer/comparator reports, workspaces, and
+transcripts are removed on every exit. Complete deterministic failure is
+`semantic_fail` at exit 3 and remains trustworthy aggregate measurement. Any
+admission, render, output, report, stale-state, or determinism fault is the
+separate exit `2` `infrastructure_failure`; atomic replacement publishes a
+sanitized current envelope so no stale prior report remains creditable.
+
+This owner-local boundary preserves the current 62/5/75 public inventory,
+still-image facades, CPU/GPU policy, and local-retouch exclusions. It grants no
+device, population, naturalness, commercial, packaging, shipping, launch,
+release-readiness, or distribution authority.
+
 ## 10. Phase 70 Backend Privacy Contract
 
 `BeautyBackendRequest` is an internal, non-Codable trust boundary. Selected

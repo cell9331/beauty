@@ -71,6 +71,64 @@ as current-input claims.
 swift run --package-path BeautySDK BeautyExampleRenderer --input example-images/input --output example-images/output
 ```
 
+## Face-feature batch validation
+
+The SDK-owned semantic harness discovers the exact live 75-case renderer and
+selects 65 cases in five logical batches (face shape, eyes, eyebrows, nose, and
+mouth/teeth). Eight signed repair directions have frozen target, sibling,
+outside, and protected-region contracts. Every selected case is rendered from
+the authorized owner-local portrait input with the existing parameter
+watermark. Measurement excludes the watermark rows and compares each semantic
+direction against both immutable source and the neutral
+`geometryBaseline_noop` control.
+
+```bash
+bash scripts/run-face-feature-batches.sh
+```
+
+The command accepts `--input`, `--output`, and `--report`, plus `--help`. Use
+`--preflight-only` to validate paths, the exact 75/65/8 inventory, manifest,
+renderer discovery, and comparator self-test without rendering or mutating the
+output/report. Defaults are the ignored `example-images/input`,
+`example-images/output/face-feature-batches`, and
+`example-images/local-test-records/face-feature-batch-report.json` locations.
+Input, output, and report paths must be admitted regular, non-symlink
+descendants with no unsafe overlap.
+
+Each full invocation creates two fresh independent CPU attempts. It requires
+65/65 complete selected outputs in each attempt and reconciles completion
+class, canonical `stableSemanticPayload` bytes, comparator digest, and the
+runner reconciliation digest. Only the first complete attempt is retained in
+the ignored output tree; it contains parameter-watermarked PNGs only. Repeat
+media, temporary comparator and renderer reports, workspaces, and child
+transcripts are removed on every exit. The ignored aggregate report uses
+schema `beauty.face-feature-batch-report.semantic.1` inside a volatile runner
+envelope; timestamps and attempt IDs do not enter `stableSemanticPayload`.
+
+Semantic acceptance is the conjunction of source and neutral target signal,
+signed metric/polarity, fixed minimum signal, outside-target locality,
+documented sibling distinction, and every protected-region ceiling. Arbitrary
+pixel difference, the parameter watermark, or weakened pass-only thresholds
+cannot accept a direction. Exit `0` means a complete deterministic 8/8
+`semantic_pass`; exit 3 means a complete deterministic `semantic_fail` with
+an honest aggregate report. Exit 3 is trustworthy completed measurement, not
+infrastructure success and not evidence that the failing controls are repaired.
+Admission, rendering, output, report, stale-state, or determinism faults return
+the separate exit `2` `infrastructure_failure` class and replace any prior
+report with a sanitized current envelope.
+
+The report allowlist is aggregate only: exact schema/contract identifiers, CPU
+token, fixed batch/case/direction identities, opaque fixture IDs and counts,
+bounded source/neutral/target/outside/protected metrics, fixed reason codes,
+verdicts, and digests. Source paths or locators, raw media or pixels, masks,
+landmarks, ROI/support geometry, private metadata, and transcripts must never
+be persisted. This owner-local still-image validation is not naturalness,
+physical-device or population evidence and does not authorize commercial use,
+packaging, shipping, launch, release readiness, or distribution. It does not
+change the 62 public parameter fields, five presets, 75 renderer cases, either
+public still-image facade signature, or the CPU-reference/selectable-GPU
+contract; local-retouch effects remain outside this repair scope.
+
 ## Generate Gallery
 
 ```bash

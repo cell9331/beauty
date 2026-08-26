@@ -56,6 +56,36 @@ collision-to-source, and determinism. These generated tests qualify mechanics
 only. Genuine efficacy/naturalness and any public promotion remain pending the
 fresh candidate-v2 contract and private review.
 
+## Phase 89 Semantic Validation Quality Evidence
+
+Phase 89 completes the shared validation machinery, not the five downstream
+repairs. The generated comparator self-test passes `180` mutations; runner
+preflight admits the exact live `75` renderer cases, selected five-batch/`65`
+mechanical cases, and eight frozen semantic directions. The owner-local live
+baseline completed two fresh CPU attempts with all `65/65` selected outputs,
+identical canonical `stableSemanticPayload` bytes and digests, and the honest
+aggregate result `1/8 semantic_pass`, `7/8 semantic_fail`. Measurement excludes
+`202` parameter-watermark rows and grounds every verdict in both source and
+neutral comparisons. Locality passed `3/8` directions and all protected-region
+ceilings passed `6/8`; these observed failures remain repair input for Phases
+90–94 rather than thresholds to weaken.
+
+Semantic acceptance requires direction-specific target signal, polarity,
+minimum signal, outside locality, documented sibling distinction, and every
+protected-region ceiling. Arbitrary pixel change and pass-only threshold tuning
+cannot earn acceptance. The report and retained first attempt remain ignored
+owner-local artifacts; repeat media, temporary reports, and transcripts are
+removed, while durable records retain only aggregate counts and fixed reasons.
+
+This evidence preserves exactly 62 public parameter fields, five presets, and
+75 renderer cases; both public still-image facade signatures and the CPU
+reference/public `.cpu`/`.gpu` selection with terminal
+`.metalUnavailable` remain unchanged. Teeth, sclera, and upper-eyelid
+local-retouch are outside v1.22 repairs. Physical-device evaluation remains
+optional and non-blocking, and this owner-local validation establishes no
+naturalness, population, performance, commercial, packaging, shipping, launch,
+release-readiness, or distribution claim.
+
 ## 1. Score Scale
 
 | Score | Meaning |
