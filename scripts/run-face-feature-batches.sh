@@ -8,6 +8,7 @@ input_dir="${repo_root}/example-images/input"
 output_root="${repo_root}/example-images/output/face-feature-batches"
 report_path="${repo_root}/example-images/local-test-records/face-feature-batch-report.json"
 preflight_only=0
+self_test_cleanup=0
 
 usage() {
   cat <<'EOF'
@@ -22,6 +23,7 @@ Options:
   --output <dir>    Ignored output root (default: example-images/output/face-feature-batches)
   --report <file>   Local aggregate record (default: example-images/local-test-records/face-feature-batch-report.json)
   --preflight-only  Validate paths and exact 75/65/8 inventories without rendering
+  --self-test-cleanup  Exercise fail-closed cleanup ownership without rendering
   --help            Show this message
 EOF
 }
@@ -45,6 +47,10 @@ while (($# > 0)); do
       ;;
     --preflight-only)
       preflight_only=1
+      shift
+      ;;
+    --self-test-cleanup)
+      self_test_cleanup=1
       shift
       ;;
     --help)
@@ -200,29 +206,79 @@ safe_remove_attempt() {
   local candidate="$1"
   local parent="$2"
   local prefix="$3"
+  [[ -z "$candidate" ]] && return 0
   [[ -n "$candidate" && -n "$parent" && "$candidate" == "$parent"/* ]] || return 1
   [[ "$(basename "$candidate")" == "$prefix"* ]] || return 1
-  [[ -d "$candidate" && ! -L "$candidate" ]] || return 0
+  [[ ! -e "$candidate" && ! -L "$candidate" ]] && return 0
+  [[ -d "$candidate" && ! -L "$candidate" ]] || return 1
   rm -rf -- "$candidate"
+  [[ ! -e "$candidate" && ! -L "$candidate" ]]
+}
+
+safe_remove_temporary_file() {
+  local candidate="$1"
+  [[ -n "$candidate" ]] || return 0
+  [[ ! -e "$candidate" && ! -L "$candidate" ]] && return 0
+  [[ -f "$candidate" && ! -L "$candidate" ]] || return 1
+  rm -f -- "$candidate"
+  [[ ! -e "$candidate" && ! -L "$candidate" ]]
+}
+
+cleanup_before_publication() {
+  local failed=0
+  if safe_remove_temporary_file "$live_cases_path"; then
+    live_cases_path=""
+  else
+    failed=1
+  fi
+  if safe_remove_attempt "$repeat_root" "$(dirname "${repeat_root:-/}")" "beauty_repeat_attempt_"; then
+    repeat_root=""
+  else
+    failed=1
+  fi
+  if safe_remove_attempt "$temporary_workspace" "$(dirname "${temporary_workspace:-/}")" "beauty_batch_workspace_"; then
+    temporary_workspace=""
+  else
+    failed=1
+  fi
+  return "$failed"
 }
 
 cleanup_temporary_files() {
-  if [[ -n "$live_cases_path" && -f "$live_cases_path" ]]; then
-    rm -f -- "$live_cases_path"
-  fi
-  if [[ -n "$publication_temp" && -f "$publication_temp" ]]; then
-    rm -f -- "$publication_temp"
-  fi
-  if [[ -n "$repeat_root" ]]; then
-    safe_remove_attempt "$repeat_root" "$(dirname "$repeat_root")" "beauty_repeat_attempt_" || true
-  fi
-  if [[ -n "$temporary_workspace" ]]; then
-    safe_remove_attempt "$temporary_workspace" "$(dirname "$temporary_workspace")" "beauty_batch_workspace_" || true
+  local failed=0
+  cleanup_before_publication || failed=1
+  if safe_remove_temporary_file "$publication_temp"; then
+    publication_temp=""
+  else
+    failed=1
   fi
   if ((retain_first_attempt == 0)) && [[ -n "$retained_root" ]]; then
-    safe_remove_attempt "$retained_root" "$output_root" "attempt_" || true
+    if safe_remove_attempt "$retained_root" "$output_root" "attempt_"; then
+      retained_root=""
+    else
+      failed=1
+    fi
   fi
+  return "$failed"
 }
+
+if ((self_test_cleanup == 1)); then
+  cleanup_test_root="$(mktemp -d "${TMPDIR:-/tmp}/beauty_cleanup_self_test_XXXXXXXX")"
+  repeat_root="$(mktemp "${cleanup_test_root}/not_a_directory_XXXXXXXX")"
+  if cleanup_before_publication; then
+    echo "cleanup_self_test=FAIL unexpected_success" >&2
+    exit 1
+  fi
+  [[ -f "$repeat_root" && "$report_finalized" == 0 && "$retain_first_attempt" == 0 ]] || {
+    echo "cleanup_self_test=FAIL publication_not_blocked" >&2
+    exit 1
+  }
+  rm -f -- "$repeat_root"
+  repeat_root=""
+  rmdir -- "$cleanup_test_root"
+  echo "cleanup_self_test=PASS forced_failure=1 publication_blocked=1"
+  exit 0
+fi
 
 publish_failure_envelope() {
   local reason="$1"
@@ -246,7 +302,7 @@ import sys
 destination, reason, live, selected, semantic = sys.argv[1:]
 allowed = {
     "preflight_failure", "build_failure", "render_failure", "compare_failure",
-    "report_failure", "determinism_failure", "publication_failure"
+    "report_failure", "determinism_failure", "cleanup_failure", "publication_failure"
 }
 if reason not in allowed:
     reason = "publication_failure"
@@ -275,12 +331,15 @@ PY
 on_exit() {
   local status=$?
   trap - EXIT HUP INT TERM
+  if ! cleanup_temporary_files; then
+    status=2
+    failure_reason="cleanup_failure"
+    report_finalized=0
+  fi
   if ((status != 0 && report_finalized == 0 && preflight_only == 0 && paths_admitted == 1)); then
     publish_failure_envelope "$failure_reason" || true
-    cleanup_temporary_files
     exit 2
   fi
-  cleanup_temporary_files
   exit "$status"
 }
 trap on_exit EXIT
@@ -533,7 +592,7 @@ with open(destination, "w", encoding="utf-8") as handle:
     handle.write(encoded)
 PY
 
-failure_reason="publication_failure"
+failure_reason="compare_failure"
 if ! swift "$comparator" \
   --verify-run-inventory \
   --input "$input_dir" \
@@ -543,6 +602,9 @@ if ! swift "$comparator" \
   >/dev/null 2>&1; then
   exit 2
 fi
+failure_reason="cleanup_failure"
+cleanup_before_publication || exit 2
+failure_reason="publication_failure"
 admit_paths
 mv -f -- "$publication_temp" "$report_path"
 publication_temp=""
