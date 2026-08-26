@@ -505,6 +505,10 @@ trap on_exit EXIT
 trap 'exit 130' HUP INT TERM
 
 validate_inventory() {
+  if [[ "${BEAUTY_FACE_FEATURE_PREFLIGHT_SELF_TEST_FAULT:-}" == "comparator" ]]; then
+    echo "semantic_contract_admission_failed" >&2
+    return 1
+  fi
   if ! swift "$comparator" --self-test >/dev/null 2>&1; then
     echo "semantic_contract_admission_failed" >&2
     return 1
@@ -514,11 +518,19 @@ validate_inventory() {
   temporary_parent="$(python3 -c 'import os,tempfile; print(os.path.realpath(tempfile.gettempdir()))')"
   live_cases_path="$(make_temporary_file "$temporary_parent" "beauty-live-cases." ".json")"
   verify_direct_child_parent "$live_cases_path" "$(dirname "$live_cases_path")" file
+  if [[ "${BEAUTY_FACE_FEATURE_PREFLIGHT_SELF_TEST_FAULT:-}" == "renderer" ]]; then
+    echo "renderer_inventory_failed" >&2
+    return 1
+  fi
   if ! "$renderer" --list-cases 2>/dev/null | atomic_write_stdin "$live_cases_path"; then
     echo "renderer_inventory_failed" >&2
     return 1
   fi
 
+  if [[ "${BEAUTY_FACE_FEATURE_PREFLIGHT_SELF_TEST_FAULT:-}" == "manifest" ]]; then
+    echo "inventory_admission_failed" >&2
+    return 1
+  fi
   if ! python3 - "$manifest" "$live_cases_path" <<'PY'
 import json
 import sys
@@ -590,7 +602,9 @@ if ! swift build --package-path "${repo_root}/BeautySDK" --product BeautyExample
 fi
 readonly renderer="${repo_root}/BeautySDK/.build/debug/BeautyExampleRenderer"
 [[ -x "$renderer" && ! -L "$renderer" ]] || { echo "renderer_admission_failed" >&2; exit 2; }
-validate_inventory
+if ! validate_inventory; then
+  exit 2
+fi
 inventory_admitted=1
 
 if ((preflight_only == 1)); then

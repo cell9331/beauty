@@ -61,6 +61,24 @@ def invoke(input_path, output_path, report_path):
     ).returncode
 
 
+def invoke_preflight_fault(input_path, output_path, report_path, fault):
+    environment = os.environ.copy()
+    environment["BEAUTY_FACE_FEATURE_PREFLIGHT_SELF_TEST_FAULT"] = fault
+    return subprocess.run(
+        [
+            "bash", RUNNER,
+            "--input", input_path,
+            "--output", output_path,
+            "--report", report_path,
+            "--preflight-only",
+        ],
+        env=environment,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        check=False,
+    ).returncode
+
+
 def require_failure_envelope(path):
     with open(path, encoding="utf-8") as handle:
         report = json.load(handle)
@@ -146,6 +164,31 @@ def main():
         fixture = os.path.join(portraits, "Portrait_A.jpg")
         fixture_bytes = bytes([0xFF, 0xD8, 0xFF, 0xD9])
         atomic_write(fixture, fixture_bytes)
+
+        preflight_output = os.path.join(root, "preflight-output")
+        ensure_directory(preflight_output)
+        output_marker = os.path.join(preflight_output, "marker")
+        marker_bytes = b"owner-local-output"
+        report_bytes = b'{"status":"semantic_pass"}'
+        atomic_write(output_marker, marker_bytes)
+        atomic_write(safe_report, report_bytes)
+        for fault in ("comparator", "manifest", "renderer"):
+            if invoke_preflight_fault(
+                input_root,
+                preflight_output,
+                safe_report,
+                fault,
+            ) != 2:
+                raise BoundaryTestError()
+            with open(output_marker, "rb") as handle:
+                if handle.read() != marker_bytes:
+                    raise BoundaryTestError()
+            if os.listdir(preflight_output) != ["marker"]:
+                raise BoundaryTestError()
+            with open(safe_report, "rb") as handle:
+                if handle.read() != report_bytes:
+                    raise BoundaryTestError()
+
         if invoke(input_root, output, fixture) != 2:
             raise BoundaryTestError()
         with open(fixture, "rb") as handle:
@@ -177,7 +220,8 @@ def main():
         print(
             "runner_boundary_self_test=PASS stale_pass=1 stale_fail=1 "
             "alias_preserved=1 symlink_parent_preserved=1 invalid_report=1 "
-            "spaces=1 unicode=1 component_bytes=120,121,255 docs=5"
+            "spaces=1 unicode=1 component_bytes=120,121,255 "
+            "preflight_faults=3 preflight_unchanged=1 docs=5"
         )
     finally:
         helper(
