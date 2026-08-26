@@ -447,7 +447,6 @@ private enum SemanticFailureReason: String, Codable, CaseIterable {
     case outsideLocality = "outside_locality"
     case protectedRegion = "protected_region"
     case siblingAlias = "sibling_alias"
-    case metricAdmission = "metric_admission"
 }
 
 private struct SemanticMeasurement: Equatable {
@@ -1464,34 +1463,30 @@ private func semanticDirectionSummary(
     var failures: Set<SemanticFailureReason> = []
 
     for index in sources.indices {
-        do {
-            let measurement = try semanticMeasurement(
-                contract: contract,
-                source: sources[index], neutral: neutrals[index], candidate: candidates[index],
-                siblings: siblingImages.map { $0[index] },
-                watermarkRows: watermarkExcludedRows(width: sources[index].width)
+        let measurement = try semanticMeasurement(
+            contract: contract,
+            source: sources[index], neutral: neutrals[index], candidate: candidates[index],
+            siblings: siblingImages.map { $0[index] },
+            watermarkRows: watermarkExcludedRows(width: sources[index].width)
+        )
+        sourceChanged = try checkedAdd(sourceChanged, measurement.sourceTarget.changedPixels)
+        sourceDelta = try checkedAdd(sourceDelta, measurement.sourceTarget.absoluteRGBDelta)
+        neutralChanged = try checkedAdd(neutralChanged, measurement.neutralTarget.changedPixels)
+        neutralDelta = try checkedAdd(neutralDelta, measurement.neutralTarget.absoluteRGBDelta)
+        sourceMargin = try checkedAdd(sourceMargin, measurement.sourceSignedMarginQ16)
+        neutralMargin = try checkedAdd(neutralMargin, measurement.neutralSignedMarginQ16)
+        signedMargin = try checkedAdd(signedMargin, measurement.signedMarginQ16)
+        siblingMargin = min(siblingMargin, measurement.siblingDistinctMarginQ16)
+        outsideChanged = try checkedAdd(outsideChanged, measurement.outsideChangedPixels)
+        outsideDelta = try checkedAdd(outsideDelta, measurement.outsideAbsoluteRGBDelta)
+        failures.formUnion(measurement.failureReasons)
+        for row in measurement.protected {
+            guard let existing = protected[row.id] else { throw SemanticContractError.verdict }
+            protected[row.id] = ProtectedRegionSummary(
+                id: row.id,
+                changedPixels: try checkedAdd(existing.changedPixels, row.changedPixels),
+                absoluteRGBDelta: try checkedAdd(existing.absoluteRGBDelta, row.absoluteRGBDelta)
             )
-            sourceChanged = try checkedAdd(sourceChanged, measurement.sourceTarget.changedPixels)
-            sourceDelta = try checkedAdd(sourceDelta, measurement.sourceTarget.absoluteRGBDelta)
-            neutralChanged = try checkedAdd(neutralChanged, measurement.neutralTarget.changedPixels)
-            neutralDelta = try checkedAdd(neutralDelta, measurement.neutralTarget.absoluteRGBDelta)
-            sourceMargin = try checkedAdd(sourceMargin, measurement.sourceSignedMarginQ16)
-            neutralMargin = try checkedAdd(neutralMargin, measurement.neutralSignedMarginQ16)
-            signedMargin = try checkedAdd(signedMargin, measurement.signedMarginQ16)
-            siblingMargin = min(siblingMargin, measurement.siblingDistinctMarginQ16)
-            outsideChanged = try checkedAdd(outsideChanged, measurement.outsideChangedPixels)
-            outsideDelta = try checkedAdd(outsideDelta, measurement.outsideAbsoluteRGBDelta)
-            failures.formUnion(measurement.failureReasons)
-            for row in measurement.protected {
-                guard let existing = protected[row.id] else { throw SemanticContractError.verdict }
-                protected[row.id] = ProtectedRegionSummary(
-                    id: row.id,
-                    changedPixels: try checkedAdd(existing.changedPixels, row.changedPixels),
-                    absoluteRGBDelta: try checkedAdd(existing.absoluteRGBDelta, row.absoluteRGBDelta)
-                )
-            }
-        } catch SemanticContractError.admission {
-            failures.insert(.metricAdmission)
         }
     }
     if siblingMargin == Int64.max { siblingMargin = 0 }
@@ -1664,6 +1659,21 @@ private func runDirectionMetricSelfTests(contracts: [SemanticContract]) throws -
         throw SemanticContractError.verdict
     } catch SemanticContractError.admission {
         probes += 1 // A supported peer eye cannot lend its core to a missing eye.
+    }
+    guard let gazeContract = contracts.first(where: { $0.metric == .pupilToOwnEyeCenter }) else {
+        throw SemanticContractError.contracts
+    }
+    let admittedGaze = generatedImage(rectangles: [(27, 47, 31, 51), (49, 47, 53, 51)])
+    let abstainedGaze = generatedImage(rectangles: [(27, 47, 31, 51)])
+    do {
+        _ = try semanticDirectionSummary(
+            contract: gazeContract,
+            sources: [admittedGaze], neutrals: [admittedGaze], candidates: [abstainedGaze],
+            siblingImages: Array(repeating: [admittedGaze], count: gazeContract.comparisonCaseIDs.count - 2)
+        )
+        throw SemanticContractError.verdict
+    } catch SemanticContractError.admission {
+        probes += 1 // No incomplete direction can be published as a measured semantic failure.
     }
 
     let browRegions = [
