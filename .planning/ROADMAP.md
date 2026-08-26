@@ -38,7 +38,7 @@ intact.
 
 ## Phases
 
-- [ ] **Phase 89: Semantic Validation Baseline** - Turn the live 65-case owner-local portrait command into the deterministic acceptance gate for all eight repair directions.
+- [x] **Phase 89: Semantic Validation Baseline** - Turn the live 65-case owner-local portrait command into the deterministic acceptance gate for all eight repair directions. (completed 2026-08-26)
 - [ ] **Phase 90: Face Contour and Chin Repairs** - Make contour smoothing and chin taper visibly effective, distinct, and protected.
 - [ ] **Phase 91: Independent Gaze Correction** - Move each supported pupil toward its own eye center without changing eye shape or borrowing peer-eye support.
 - [ ] **Phase 92: Signed Eyebrow-Head Spacing** - Make both inner-eyebrow-head directions effective without moving outer anchors or aliasing whole-brow spacing.
@@ -59,7 +59,7 @@ intact.
   2. Each in-scope direction is compared with both its source and neutral output using its documented semantic ROI, polarity/locality, minimum-signal, and protected-region rules, with watermark pixels excluded.
   3. Repeating the same admitted run produces the same measurements and verdicts, and a mere arbitrary pixel difference cannot be reported as an effective repair.
 
-**Plans:** 3/4 plans executed
+**Plans:** 4/4 plans complete
 
 Plans:
 **Wave 1**
@@ -76,7 +76,7 @@ Plans:
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
-- [ ] 89-04-PLAN.md — Synchronize command, quality, and planning evidence while preserving compatibility and scope.
+- [x] 89-04-PLAN.md — Synchronize command, quality, and planning evidence while preserving compatibility and scope.
 
 ### Phase 90: Face Contour and Chin Repairs
 
@@ -184,7 +184,7 @@ repair phases are complete.
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 | --- | --- | --- | --- | --- |
-| 89. Semantic Validation Baseline | v1.22 | 3/4 | In Progress|  |
+| 89. Semantic Validation Baseline | v1.22 | 4/4 | Complete   | 2026-08-26 |
 | 90. Face Contour and Chin Repairs | v1.22 | 0/TBD | Not started | - |
 | 91. Independent Gaze Correction | v1.22 | 0/TBD | Not started | - |
 | 92. Signed Eyebrow-Head Spacing | v1.22 | 0/TBD | Not started | - |
