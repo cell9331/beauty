@@ -1,0 +1,238 @@
+{
+  "schemaVersion": "beauty.face-feature-batch-manifest.semantic.1",
+  "control": {
+    "id": "geometryBaseline_noop",
+    "label": "neutral geometry control"
+  },
+  "batches": [
+    {
+      "id": "face-shape",
+      "label": "脸型",
+      "cases": [
+        "faceShapeCombo_0p35",
+        "faceSlim_0p35",
+        "faceSmall_0p35",
+        "chinLength_plus0p30",
+        "chinLength_minus0p30",
+        "faceVShape_0p35",
+        "jawSlim_0p35",
+        "faceContourSmooth_0p25",
+        "templeFullness_0p25",
+        "cheekboneSlim_0p25",
+        "chinTaper_0p25"
+      ]
+    },
+    {
+      "id": "eyes",
+      "label": "眼睛",
+      "cases": [
+        "eyeSize_0p35",
+        "eyeDistance_plus0p25",
+        "eyeDistance_minus0p25",
+        "eyeYPosition_plus0p20",
+        "eyeYPosition_minus0p20",
+        "eyeTailLift_0p25",
+        "eyeHeight_0p25",
+        "eyeLength_0p25",
+        "upperEyelidLift_0p25",
+        "pupilSize_0p25",
+        "gazeCorrection_0p25",
+        "lowerEyelidDrop_0p25",
+        "eyeTilt_plus0p25",
+        "eyeTilt_minus0p25",
+        "innerCornerOpen_0p25",
+        "outerCornerOpen_0p25",
+        "eyeSymmetry_0p25",
+        "scleraRednessReduction_1p00",
+        "upperEyelidFullnessReduction_1p00"
+      ]
+    },
+    {
+      "id": "eyebrows",
+      "label": "眉毛",
+      "cases": [
+        "eyebrowYPosition_plus0p25",
+        "eyebrowYPosition_minus0p25",
+        "eyebrowThickness_plus0p25",
+        "eyebrowThickness_minus0p25",
+        "eyebrowLength_plus0p25",
+        "eyebrowLength_minus0p25",
+        "eyebrowSpacing_plus0p25",
+        "eyebrowSpacing_minus0p25",
+        "eyebrowHeadSpacing_plus0p25",
+        "eyebrowHeadSpacing_minus0p25",
+        "eyebrowTilt_plus0p25",
+        "eyebrowTilt_minus0p25",
+        "eyebrowPeakDefinition_0p25"
+      ]
+    },
+    {
+      "id": "nose",
+      "label": "鼻子",
+      "cases": [
+        "noseSlim_0p35",
+        "noseWingSlim_0p35",
+        "noseTipSize_plus0p30",
+        "noseTipSize_minus0p30",
+        "noseBridge_0p30",
+        "noseRootNarrowing_0p25",
+        "noseTipLift_0p25"
+      ]
+    },
+    {
+      "id": "mouth",
+      "label": "嘴唇/牙齿",
+      "cases": [
+        "mouthSize_plus0p35",
+        "mouthSize_minus0p35",
+        "mouthWidth_plus0p35",
+        "mouthWidth_minus0p35",
+        "smile_0p50",
+        "lipColor_0p50",
+        "mouthYPosition_plus0p25",
+        "mouthYPosition_minus0p25",
+        "mouthTilt_plus0p25",
+        "mouthTilt_minus0p25",
+        "mouthXPosition_plus0p25",
+        "mouthXPosition_minus0p25",
+        "lipPeakDefinition_0p25",
+        "lipPlump_0p25",
+        "teethWhitening_1p00"
+      ]
+    }
+  ],
+  "semanticContracts": [
+    {
+      "caseID": "faceContourSmooth_0p25",
+      "metric": "contourContinuityGain",
+      "expectedSign": "positive",
+      "comparisonCaseIDs": ["source", "geometryBaseline_noop", "faceSmall_0p35", "faceSlim_0p35"],
+      "targetRegions": [
+        {"id": "leftContour", "minXPPM": 100000, "maxXPPM": 240000, "minYPPM": 280000, "maxYPPM": 820000},
+        {"id": "rightContour", "minXPPM": 760000, "maxXPPM": 920000, "minYPPM": 280000, "maxYPPM": 820000}
+      ],
+      "thresholds": {"minimumChangedPixels": 1000, "minimumAbsoluteRGBDelta": 3000, "minimumSignedMarginQ16": 16, "maximumOutsideChangedPixels": 500, "maximumOutsideAbsoluteRGBDelta": 1500},
+      "protectedRegions": [
+        {"id": "centralAnatomy", "regions": [{"minXPPM": 250000, "maxXPPM": 750000, "minYPPM": 280000, "maxYPPM": 820000}], "maximumChangedPixels": 128, "maximumAbsoluteRGBDelta": 512},
+        {"id": "background", "regions": [{"minXPPM": 0, "maxXPPM": 90000, "minYPPM": 80000, "maxYPPM": 820000}, {"minXPPM": 930000, "maxXPPM": 1000000, "minYPPM": 80000, "maxYPPM": 820000}], "maximumChangedPixels": 0, "maximumAbsoluteRGBDelta": 0},
+        {"id": "watermark", "regions": [{"minXPPM": 820000, "maxXPPM": 980000, "minYPPM": 920000, "maxYPPM": 985000}], "maximumChangedPixels": 0, "maximumAbsoluteRGBDelta": 0}
+      ]
+    },
+    {
+      "caseID": "chinTaper_0p25",
+      "metric": "centerlineTaper",
+      "expectedSign": "positive",
+      "comparisonCaseIDs": ["source", "geometryBaseline_noop", "chinLength_plus0p30", "chinLength_minus0p30", "faceVShape_0p35", "jawSlim_0p35"],
+      "targetRegions": [
+        {"id": "chinCenter", "minXPPM": 330000, "maxXPPM": 700000, "minYPPM": 520000, "maxYPPM": 620000}
+      ],
+      "thresholds": {"minimumChangedPixels": 500, "minimumAbsoluteRGBDelta": 1500, "minimumSignedMarginQ16": 16, "maximumOutsideChangedPixels": 256, "maximumOutsideAbsoluteRGBDelta": 1024},
+      "protectedRegions": [
+        {"id": "upperFace", "regions": [{"minXPPM": 250000, "maxXPPM": 750000, "minYPPM": 240000, "maxYPPM": 400000}], "maximumChangedPixels": 64, "maximumAbsoluteRGBDelta": 256},
+        {"id": "mouth", "regions": [{"minXPPM": 350000, "maxXPPM": 650000, "minYPPM": 400000, "maxYPPM": 520000}], "maximumChangedPixels": 64, "maximumAbsoluteRGBDelta": 256},
+        {"id": "background", "regions": [{"minXPPM": 0, "maxXPPM": 200000, "minYPPM": 80000, "maxYPPM": 820000}, {"minXPPM": 800000, "maxXPPM": 1000000, "minYPPM": 80000, "maxYPPM": 820000}], "maximumChangedPixels": 0, "maximumAbsoluteRGBDelta": 0},
+        {"id": "watermark", "regions": [{"minXPPM": 820000, "maxXPPM": 980000, "minYPPM": 920000, "maxYPPM": 985000}], "maximumChangedPixels": 0, "maximumAbsoluteRGBDelta": 0}
+      ]
+    },
+    {
+      "caseID": "gazeCorrection_0p25",
+      "metric": "pupilToOwnEyeCenter",
+      "expectedSign": "positive",
+      "comparisonCaseIDs": ["source", "geometryBaseline_noop", "pupilSize_0p25", "eyeSize_0p35", "eyeDistance_plus0p25"],
+      "targetRegions": [
+        {"id": "leftOwnEye", "minXPPM": 300000, "maxXPPM": 480000, "minYPPM": 550000, "maxYPPM": 700000},
+        {"id": "rightOwnEye", "minXPPM": 520000, "maxXPPM": 700000, "minYPPM": 550000, "maxYPPM": 700000}
+      ],
+      "thresholds": {"minimumChangedPixels": 256, "minimumAbsoluteRGBDelta": 768, "minimumSignedMarginQ16": 16, "maximumOutsideChangedPixels": 128, "maximumOutsideAbsoluteRGBDelta": 512},
+      "protectedRegions": [
+        {"id": "eyeContours", "regions": [{"minXPPM": 100000, "maxXPPM": 300000, "minYPPM": 550000, "maxYPPM": 700000}, {"minXPPM": 700000, "maxXPPM": 900000, "minYPPM": 550000, "maxYPPM": 700000}], "maximumChangedPixels": 64, "maximumAbsoluteRGBDelta": 256},
+        {"id": "eyebrows", "regions": [{"minXPPM": 240000, "maxXPPM": 760000, "minYPPM": 400000, "maxYPPM": 540000}], "maximumChangedPixels": 32, "maximumAbsoluteRGBDelta": 128},
+        {"id": "background", "regions": [{"minXPPM": 0, "maxXPPM": 90000, "minYPPM": 80000, "maxYPPM": 820000}, {"minXPPM": 910000, "maxXPPM": 1000000, "minYPPM": 80000, "maxYPPM": 820000}], "maximumChangedPixels": 0, "maximumAbsoluteRGBDelta": 0},
+        {"id": "watermark", "regions": [{"minXPPM": 820000, "maxXPPM": 980000, "minYPPM": 920000, "maxYPPM": 985000}], "maximumChangedPixels": 0, "maximumAbsoluteRGBDelta": 0}
+      ]
+    },
+    {
+      "caseID": "eyebrowHeadSpacing_plus0p25",
+      "metric": "innerBrowHeadGap",
+      "expectedSign": "positive",
+      "comparisonCaseIDs": ["source", "geometryBaseline_noop", "eyebrowHeadSpacing_minus0p25", "eyebrowSpacing_plus0p25", "eyebrowSpacing_minus0p25"],
+      "targetRegions": [
+        {"id": "leftInnerHead", "minXPPM": 400000, "maxXPPM": 500000, "minYPPM": 240000, "maxYPPM": 430000},
+        {"id": "rightInnerHead", "minXPPM": 500000, "maxXPPM": 600000, "minYPPM": 240000, "maxYPPM": 430000}
+      ],
+      "thresholds": {"minimumChangedPixels": 500, "minimumAbsoluteRGBDelta": 2000, "minimumSignedMarginQ16": 16, "maximumOutsideChangedPixels": 128, "maximumOutsideAbsoluteRGBDelta": 512},
+      "protectedRegions": [
+        {"id": "outerAnchors", "regions": [{"minXPPM": 240000, "maxXPPM": 400000, "minYPPM": 240000, "maxYPPM": 430000}, {"minXPPM": 600000, "maxXPPM": 760000, "minYPPM": 240000, "maxYPPM": 430000}], "maximumChangedPixels": 64, "maximumAbsoluteRGBDelta": 256},
+        {"id": "eyes", "regions": [{"minXPPM": 250000, "maxXPPM": 750000, "minYPPM": 430000, "maxYPPM": 500000}], "maximumChangedPixels": 64, "maximumAbsoluteRGBDelta": 256},
+        {"id": "background", "regions": [{"minXPPM": 0, "maxXPPM": 140000, "minYPPM": 80000, "maxYPPM": 820000}, {"minXPPM": 860000, "maxXPPM": 1000000, "minYPPM": 80000, "maxYPPM": 820000}], "maximumChangedPixels": 0, "maximumAbsoluteRGBDelta": 0},
+        {"id": "watermark", "regions": [{"minXPPM": 820000, "maxXPPM": 980000, "minYPPM": 920000, "maxYPPM": 985000}], "maximumChangedPixels": 0, "maximumAbsoluteRGBDelta": 0}
+      ]
+    },
+    {
+      "caseID": "eyebrowHeadSpacing_minus0p25",
+      "metric": "innerBrowHeadGap",
+      "expectedSign": "negative",
+      "comparisonCaseIDs": ["source", "geometryBaseline_noop", "eyebrowHeadSpacing_plus0p25", "eyebrowSpacing_plus0p25", "eyebrowSpacing_minus0p25"],
+      "targetRegions": [
+        {"id": "leftInnerHead", "minXPPM": 400000, "maxXPPM": 500000, "minYPPM": 240000, "maxYPPM": 430000},
+        {"id": "rightInnerHead", "minXPPM": 500000, "maxXPPM": 600000, "minYPPM": 240000, "maxYPPM": 430000}
+      ],
+      "thresholds": {"minimumChangedPixels": 500, "minimumAbsoluteRGBDelta": 2000, "minimumSignedMarginQ16": 16, "maximumOutsideChangedPixels": 128, "maximumOutsideAbsoluteRGBDelta": 512},
+      "protectedRegions": [
+        {"id": "outerAnchors", "regions": [{"minXPPM": 240000, "maxXPPM": 400000, "minYPPM": 240000, "maxYPPM": 430000}, {"minXPPM": 600000, "maxXPPM": 760000, "minYPPM": 240000, "maxYPPM": 430000}], "maximumChangedPixels": 64, "maximumAbsoluteRGBDelta": 256},
+        {"id": "eyes", "regions": [{"minXPPM": 250000, "maxXPPM": 750000, "minYPPM": 430000, "maxYPPM": 500000}], "maximumChangedPixels": 64, "maximumAbsoluteRGBDelta": 256},
+        {"id": "background", "regions": [{"minXPPM": 0, "maxXPPM": 140000, "minYPPM": 80000, "maxYPPM": 820000}, {"minXPPM": 860000, "maxXPPM": 1000000, "minYPPM": 80000, "maxYPPM": 820000}], "maximumChangedPixels": 0, "maximumAbsoluteRGBDelta": 0},
+        {"id": "watermark", "regions": [{"minXPPM": 820000, "maxXPPM": 980000, "minYPPM": 920000, "maxYPPM": 985000}], "maximumChangedPixels": 0, "maximumAbsoluteRGBDelta": 0}
+      ]
+    },
+    {
+      "caseID": "noseBridge_0p30",
+      "metric": "bridgeDefinitionGain",
+      "expectedSign": "positive",
+      "comparisonCaseIDs": ["source", "geometryBaseline_noop", "noseRootNarrowing_0p25", "noseSlim_0p35", "noseTipSize_plus0p30", "noseTipSize_minus0p30"],
+      "targetRegions": [
+        {"id": "bridge", "minXPPM": 420000, "maxXPPM": 580000, "minYPPM": 360000, "maxYPPM": 550000}
+      ],
+      "thresholds": {"minimumChangedPixels": 500, "minimumAbsoluteRGBDelta": 2000, "minimumSignedMarginQ16": 16, "maximumOutsideChangedPixels": 128, "maximumOutsideAbsoluteRGBDelta": 512},
+      "protectedRegions": [
+        {"id": "root", "regions": [{"minXPPM": 400000, "maxXPPM": 600000, "minYPPM": 200000, "maxYPPM": 360000}], "maximumChangedPixels": 64, "maximumAbsoluteRGBDelta": 256},
+        {"id": "tip", "regions": [{"minXPPM": 350000, "maxXPPM": 650000, "minYPPM": 550000, "maxYPPM": 700000}], "maximumChangedPixels": 64, "maximumAbsoluteRGBDelta": 256},
+        {"id": "background", "regions": [{"minXPPM": 0, "maxXPPM": 240000, "minYPPM": 80000, "maxYPPM": 820000}, {"minXPPM": 760000, "maxXPPM": 1000000, "minYPPM": 80000, "maxYPPM": 820000}], "maximumChangedPixels": 0, "maximumAbsoluteRGBDelta": 0},
+        {"id": "watermark", "regions": [{"minXPPM": 820000, "maxXPPM": 980000, "minYPPM": 920000, "maxYPPM": 985000}], "maximumChangedPixels": 0, "maximumAbsoluteRGBDelta": 0}
+      ]
+    },
+    {
+      "caseID": "noseRootNarrowing_0p25",
+      "metric": "rootWidthContraction",
+      "expectedSign": "positive",
+      "comparisonCaseIDs": ["source", "geometryBaseline_noop", "noseBridge_0p30", "noseSlim_0p35", "noseTipLift_0p25"],
+      "targetRegions": [
+        {"id": "root", "minXPPM": 400000, "maxXPPM": 600000, "minYPPM": 200000, "maxYPPM": 360000}
+      ],
+      "thresholds": {"minimumChangedPixels": 500, "minimumAbsoluteRGBDelta": 2000, "minimumSignedMarginQ16": 16, "maximumOutsideChangedPixels": 128, "maximumOutsideAbsoluteRGBDelta": 512},
+      "protectedRegions": [
+        {"id": "bridge", "regions": [{"minXPPM": 420000, "maxXPPM": 580000, "minYPPM": 360000, "maxYPPM": 550000}], "maximumChangedPixels": 64, "maximumAbsoluteRGBDelta": 256},
+        {"id": "tip", "regions": [{"minXPPM": 350000, "maxXPPM": 650000, "minYPPM": 550000, "maxYPPM": 700000}], "maximumChangedPixels": 64, "maximumAbsoluteRGBDelta": 256},
+        {"id": "background", "regions": [{"minXPPM": 0, "maxXPPM": 240000, "minYPPM": 80000, "maxYPPM": 820000}, {"minXPPM": 760000, "maxXPPM": 1000000, "minYPPM": 80000, "maxYPPM": 820000}], "maximumChangedPixels": 0, "maximumAbsoluteRGBDelta": 0},
+        {"id": "watermark", "regions": [{"minXPPM": 820000, "maxXPPM": 980000, "minYPPM": 920000, "maxYPPM": 985000}], "maximumChangedPixels": 0, "maximumAbsoluteRGBDelta": 0}
+      ]
+    },
+    {
+      "caseID": "mouthWidth_minus0p35",
+      "metric": "mouthWidthContraction",
+      "expectedSign": "negative",
+      "comparisonCaseIDs": ["source", "geometryBaseline_noop", "mouthWidth_plus0p35", "mouthSize_plus0p35", "mouthSize_minus0p35"],
+      "targetRegions": [
+        {"id": "leftCorner", "minXPPM": 200000, "maxXPPM": 400000, "minYPPM": 600000, "maxYPPM": 760000},
+        {"id": "rightCorner", "minXPPM": 600000, "maxXPPM": 800000, "minYPPM": 600000, "maxYPPM": 760000}
+      ],
+      "thresholds": {"minimumChangedPixels": 500, "minimumAbsoluteRGBDelta": 2000, "minimumSignedMarginQ16": 16, "maximumOutsideChangedPixels": 128, "maximumOutsideAbsoluteRGBDelta": 512},
+      "protectedRegions": [
+        {"id": "mouthHeight", "regions": [{"minXPPM": 400000, "maxXPPM": 600000, "minYPPM": 580000, "maxYPPM": 780000}], "maximumChangedPixels": 64, "maximumAbsoluteRGBDelta": 256},
+        {"id": "surroundingFace", "regions": [{"minXPPM": 100000, "maxXPPM": 900000, "minYPPM": 400000, "maxYPPM": 580000}, {"minXPPM": 100000, "maxXPPM": 900000, "minYPPM": 780000, "maxYPPM": 820000}], "maximumChangedPixels": 64, "maximumAbsoluteRGBDelta": 256},
+        {"id": "background", "regions": [{"minXPPM": 0, "maxXPPM": 90000, "minYPPM": 80000, "maxYPPM": 820000}, {"minXPPM": 910000, "maxXPPM": 1000000, "minYPPM": 80000, "maxYPPM": 820000}], "maximumChangedPixels": 0, "maximumAbsoluteRGBDelta": 0},
+        {"id": "watermark", "regions": [{"minXPPM": 820000, "maxXPPM": 980000, "minYPPM": 920000, "maxYPPM": 985000}], "maximumChangedPixels": 0, "maximumAbsoluteRGBDelta": 0}
+      ]
+    }
+  ]
+}
