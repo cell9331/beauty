@@ -515,7 +515,7 @@ Exact ordered Phase 64 task authority is: `64-01-01`, `64-01-02`,
 | --- | --- |
 | Status | `completed` |
 | Scope | Close VAL-01/VAL-02 at the shared validation-gate level: exact 75-case live renderer discovery, five-batch/65-case execution, and eight frozen direction-specific semantic contracts. Phases 90–94 still own the actual repairs. |
-| Generated Gate | `swift scripts/compare-face-feature-batches.swift --self-test` passed 180 generated mutations across metric, boundary, ownership, admission, ordering, arithmetic, report, privacy, and verdict categories. |
+| Generated Gate | Post-review `swift scripts/compare-face-feature-batches.swift --self-test` passes 542 generated mutations across metric, boundary, ownership, admission, ordering, arithmetic, report, privacy, and verdict categories. |
 | Preflight | `bash scripts/run-face-feature-batches.sh --preflight-only` passed exact `75/65/8` admission without rendering or mutating output/report. |
 | Live Baseline | Historical pre-review execution completed two 65/65 attempts and reported `1/8 semantic_pass`, `7/8 semantic_fail`, but code review revoked that aggregate as creditable evidence because gaze lacked independent pupil/own-eye anatomy. Current execution fails closed as sanitized exit-2 `infrastructure_failure`; no eight-direction result is published. |
 | Measurement | Each direction is grounded in source plus neutral comparisons and requires target signal, signed polarity, minimum signal, outside locality, sibling distinction, and every protection ceiling. The 202 parameter-watermark rows are retained visually but excluded from measurement. |
@@ -527,10 +527,10 @@ Checklist:
 
 | Step | Status | Evidence |
 | --- | --- | --- |
-| Freeze and mutation-test semantic contracts | `completed` | Plans 89-01/02 bind the five batches, 65 mechanical cases, eight semantic directions, source/neutral/sibling comparators, integer regions, fixed thresholds, privacy-safe schema `beauty.face-feature-batch-report.semantic.1`, and 180 generated mutations. |
-| Reconcile owner-local portrait execution | `completed` | Plan 89-03 ran two never-reused CPU attempts, completed 65 outputs per attempt, reconciled stable payload bytes/digests, published current `semantic_fail` at exit 3, and independently proved sanitized `infrastructure_failure` replacement at exit 2. |
+| Freeze and mutation-test semantic contracts | `completed` | Plans 89-01/02 bind the five batches, 65 mechanical cases, eight semantic directions, source/neutral/sibling comparators, integer regions, fixed thresholds, privacy-safe schema `beauty.face-feature-batch-report.semantic.1`, and 542 post-review generated mutations. |
+| Reconcile owner-local portrait execution | `completed-bounded` | Plan 89-03 historically ran two never-reused CPU attempts and reconciled stable payload bytes/digests. Review invalidated its gaze measurement; current execution publishes only sanitized exit-2 `infrastructure_failure` until independent anatomy exists. |
 | Synchronize command, quality, trust, and recovery owners | `completed` | `example-images/README.md`, `QUALITY_SCORE.md`, `SECURITY.md`, and `RELIABILITY.md` agree on 75/65/8, two-attempt equality, report allowlist, ignored retention, cleanup, atomic publication, and distinct semantic/infrastructure statuses. |
-| Re-run focused closeout | `completed` | Comparator self-test 180; preflight 75/65/8; compatibility 107/0/0; both legacy archives verified; post-archive SDK-only boundary passed; `git diff --check` passed. |
+| Re-run focused closeout | `completed` | Post-review comparator self-test 542; cleanup/parent-swap self-test passed; preflight 75/65/8 passed with the owner-local ignored input; renderer build, Swift type-check, shell syntax, and `git diff --check` passed. |
 
 Phase 89 closes the predecessor record below only at the semantic-contract and
 repeatable-validation level. Every observed failing direction remains honest
