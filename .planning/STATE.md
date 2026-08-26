@@ -2,9 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.22
 milestone_name: Non-Local Facial Effect Repairs
-status: planning
-last_updated: "2026-08-26"
+current_phase: 89
+current_phase_name: first of 7 milestone phases
+status: executing
+stopped_at: v1.22 roadmap created; Phase 89 is ready for planning
+last_updated: "2026-08-26T02:12:35.783Z"
 last_activity: 2026-08-26
+last_activity_desc: v1.22 roadmap created with 12/12 requirements mapped
 progress:
   total_phases: 7
   completed_phases: 0
@@ -28,7 +32,7 @@ without distributing the SDK, model, or weights.
 
 Phase: 89 of 95 (first of 7 milestone phases)
 Plan: Not planned
-Status: Ready to plan
+Status: Ready to execute
 Last activity: 2026-08-26 — v1.22 roadmap created with 12/12 requirements mapped
 
 Progress: [░░░░░░░░░░] 0%
@@ -51,13 +55,17 @@ roadmaps.
 - [v1.22]: Phase 89 owns the shared 65-case semantic acceptance baseline;
   Phases 90–94 repair the five natural control families; Phase 95 owns safety,
   compatibility, and milestone closeout.
+
 - [v1.22]: Acceptance requires direction-specific ROI, polarity, locality,
   minimum-signal, and protected-region evidence; arbitrary pixel differences
   and threshold-only pass tuning are insufficient.
+
 - [v1.22]: Repairs preserve exactly 62 parameter fields, five presets, 75
   renderer cases, the public still-image facades, and the CPU/GPU contract.
+
 - [Project]: Swift `public` remains owner-local access only. No SDK, model,
   weight, fixture, output, or derived-data distribution is authorized.
+
 - [Project]: Teeth, sclera, and upper-eyelid local retouch plus UI/Demo,
   realtime/video, model/data/network, device/commercial, packaging, shipping,
   launch, release, and distribution work are outside v1.22.
