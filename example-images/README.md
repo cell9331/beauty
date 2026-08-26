@@ -99,9 +99,13 @@ Each full invocation creates two fresh independent CPU attempts. It requires
 65/65 complete selected outputs in each attempt and reconciles completion
 class, canonical `stableSemanticPayload` bytes, comparator digest, and the
 runner reconciliation digest. Only the first complete attempt is retained in
-the ignored output tree; it contains parameter-watermarked PNGs only. Repeat
-media, temporary comparator and renderer reports, workspaces, and child
-transcripts are removed on every exit. The ignored aggregate report uses
+the ignored output tree; it contains parameter-watermarked PNGs only.
+Successful semantic publication requires verified removal of repeat media,
+temporary comparator and renderer reports, workspaces, and child transcripts.
+If cleanup cannot be verified, the run returns exit 2 with
+`cleanup_failure`, publishes no creditable semantic result, and requires
+owner-local containment and removal of any remaining artifacts. The ignored
+aggregate report uses
 schema `beauty.face-feature-batch-report.semantic.1` inside a volatile runner
 envelope; timestamps and attempt IDs do not enter `stableSemanticPayload`.
 
@@ -114,8 +118,11 @@ cannot accept a direction. Exit `0` means a complete deterministic 8/8
 an honest aggregate report. Exit 3 is trustworthy completed measurement, not
 infrastructure success and not evidence that the failing controls are repaired.
 Admission, rendering, output, report, stale-state, or determinism faults return
-the separate exit `2` `infrastructure_failure` class and replace any prior
-report with a sanitized current envelope.
+the separate exit `2` `infrastructure_failure` class. A structurally safe,
+distinct report destination is atomically replaced with a sanitized current
+envelope, including when input admission fails. If the report path itself is
+unsafe, aliased, or cannot be admitted, it is not mutated; exit 2 is then the
+only current result and consumers must reject every pre-existing report.
 
 The current frozen gaze row has no independently admitted request-local pupil
 and own-eye contour geometry. Its former dark-pixel/rectangle-center proxy is

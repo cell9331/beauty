@@ -323,8 +323,12 @@ complete deterministic `semantic_fail` with an aggregate report: it is a
 trustworthy completed measurement, not infrastructure success and not repair
 acceptance. Admission, rendering, output, report, stale-state, or determinism
 faults use the separate exit `2` `infrastructure_failure`; that class is not
-creditable evidence and atomically replaces a prior report with a sanitized
-current envelope.
+creditable evidence. The runner independently admits a distinct report
+destination, so a missing or rejected input/output path still atomically
+replaces a prior safe report with a sanitized current envelope. If the report
+destination itself is unsafe or aliased, the runner preserves the referenced
+bytes, returns exit 2, and requires consumers to reject any pre-existing
+report.
 
 Every direction must measure every admitted fixture. Metric admission is never
 converted into a stable `semantic_fail` reason or reported with an unearned full
@@ -335,10 +339,13 @@ failure rather than publishing the superseded pre-review aggregate.
 
 On semantic completion, the first attempt is retained under the ignored
 owner-local output root with watermarked PNGs only; the repeat attempt is
-removed. On every status, temporary renderer/comparator reports, workspaces,
-repeat media, and child transcripts are removed, and a partial attempt is not
-published. Recovery never relies on, appends to, or leaves a prior report or
-raw transcript. These rules preserve the 62/5/75 public surface, both
+removed. Successful semantic publication requires verified removal of
+temporary renderer/comparator reports, workspaces, repeat media, and child
+transcripts; a partial attempt is never published. `cleanup_failure` means
+removal could not be verified, blocks semantic publication, and requires
+owner-local containment and remediation of any remaining artifacts. Recovery
+never relies on or appends to a prior report or raw transcript. These rules
+preserve the 62/5/75 public surface, both
 still-image facades, CPU reference and selectable-GPU/typed-unavailable policy,
 and every device/population/commercial/release/distribution nonclaim.
 

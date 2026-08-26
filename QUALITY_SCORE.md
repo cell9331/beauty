@@ -76,8 +76,11 @@ Semantic acceptance requires direction-specific target signal, polarity,
 minimum signal, outside locality, documented sibling distinction, and every
 protected-region ceiling. Arbitrary pixel change and pass-only threshold tuning
 cannot earn acceptance. The report and retained first attempt remain ignored
-owner-local artifacts; repeat media, temporary reports, and transcripts are
-removed, while durable records retain only aggregate counts and fixed reasons.
+owner-local artifacts. Successful semantic publication requires verified
+repeat-media, temporary-report, workspace, and transcript cleanup. A
+`cleanup_failure` earns no credit and requires owner-local
+containment/remediation because physical deletion could not be verified.
+Durable records retain only aggregate counts and fixed reasons.
 
 This evidence preserves exactly 62 public parameter fields, five presets, and
 75 renderer cases; both public still-image facade signatures and the CPU

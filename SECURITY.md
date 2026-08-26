@@ -296,12 +296,19 @@ are excluded from measurement.
 Two fresh attempts must complete the same 75/65/8 contract and reconcile the
 same completion class, canonical `stableSemanticPayload` bytes, and digests
 before atomic publication. The retained first attempt contains only ignored
-watermarked PNGs; repeat media, renderer/comparator reports, workspaces, and
-transcripts are removed on every exit. Complete deterministic failure is
+watermarked PNGs. Successful semantic publication requires verified cleanup
+of repeat media, renderer/comparator reports, workspaces, and transcripts. A
+`cleanup_failure` publishes no creditable semantic result and means removal
+could not be verified; the owner must contain and remove any remaining
+artifacts locally. Complete deterministic failure is
 `semantic_fail` at exit 3 and remains trustworthy aggregate measurement. Any
 admission, render, output, report, stale-state, or determinism fault is the
-separate exit `2` `infrastructure_failure`; atomic replacement publishes a
-sanitized current envelope so no stale prior report remains creditable.
+separate exit `2` `infrastructure_failure`. The report destination is
+admitted independently before input/output admission: when it is structurally
+safe and distinct, descriptor-relative atomic replacement publishes a
+sanitized current envelope so no stale prior report remains creditable. An
+unsafe or aliased report path is never mutated; exit 2 then invalidates any
+pre-existing document for the invocation.
 
 Metric admission is all-or-nothing. A source, neutral, candidate, or sibling
 metric failure cannot be serialized as a completed direction with the original
