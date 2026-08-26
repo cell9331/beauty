@@ -59,7 +59,7 @@ intact.
   2. Each in-scope direction is compared with both its source and neutral output using its documented semantic ROI, polarity/locality, minimum-signal, and protected-region rules, with watermark pixels excluded.
   3. Repeating the same admitted run produces the same measurements and verdicts, and a mere arbitrary pixel difference cannot be reported as an effective repair.
 
-**Plans:** 1/4 plans executed
+**Plans:** 2/4 plans executed
 
 Plans:
 **Wave 1**
@@ -68,7 +68,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 89-02-PLAN.md — Implement direction-specific semantic metrics and deterministic aggregate reporting.
+- [x] 89-02-PLAN.md — Implement direction-specific semantic metrics and deterministic aggregate reporting.
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
@@ -184,7 +184,7 @@ repair phases are complete.
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 | --- | --- | --- | --- | --- |
-| 89. Semantic Validation Baseline | v1.22 | 1/4 | In Progress|  |
+| 89. Semantic Validation Baseline | v1.22 | 2/4 | In Progress|  |
 | 90. Face Contour and Chin Repairs | v1.22 | 0/TBD | Not started | - |
 | 91. Independent Gaze Correction | v1.22 | 0/TBD | Not started | - |
 | 92. Signed Eyebrow-Head Spacing | v1.22 | 0/TBD | Not started | - |

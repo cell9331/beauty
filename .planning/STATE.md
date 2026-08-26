@@ -5,15 +5,15 @@ milestone_name: Non-Local Facial Effect Repairs
 current_phase: 89
 current_phase_name: Semantic Validation Baseline
 status: executing
-stopped_at: Completed 89-01-PLAN.md
-last_updated: "2026-08-26T02:29:34.547Z"
+stopped_at: Completed 89-02-PLAN.md
+last_updated: "2026-08-26T02:53:07.194Z"
 last_activity: 2026-08-26
 last_activity_desc: Phase 89 execution started
 progress:
   total_phases: 7
   completed_phases: 0
   total_plans: 4
-  completed_plans: 1
+  completed_plans: 2
   percent: 0
 ---
 
@@ -31,11 +31,11 @@ without distributing the SDK, model, or weights.
 ## Current Position
 
 Phase: 89 (Semantic Validation Baseline) — EXECUTING
-Plan: 2 of 4
+Plan: 3 of 4
 Status: Ready to execute
 Last activity: 2026-08-26 — Phase 89 execution started
 
-Progress: [███░░░░░░░] 25%
+Progress: [█████░░░░░] 50%
 
 ## Performance Metrics
 
@@ -52,6 +52,7 @@ roadmaps.
 | Plan | Duration | Tasks | Files |
 |------|----------|-------|-------|
 | Phase 89 P01 | 13min | 2 tasks | 2 files |
+| Phase 89 P02 | 19min | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -77,6 +78,8 @@ roadmaps.
 
 - [Phase 89]: Semantic acceptance freezes source, neutral, and documented sibling comparisons before live portrait evaluation. — Prevents live outcomes from selecting their own comparator.
 - [Phase 89]: Semantic regions and verdict boundaries use checked integer PPM/Q16 arithmetic with byte-exact background and watermark protection. — Makes equality and one-unit boundary behavior deterministic and privacy-safe.
+- [Phase 89]: Semantic verdicts require one conjunction of source signal, neutral signal, signed direction, locality, sibling distinction, and every protected-region ceiling. — Mechanical changed-pixel summaries remain descriptive and cannot accept a direction.
+- [Phase 89]: Canonical semantic payloads exclude volatile timestamps and attempt IDs from their stable digest. — Equivalent admitted inputs remain byte-identical while reports retain run metadata outside the compared payload.
 
 ### Pending Todos
 
@@ -97,6 +100,6 @@ durable evidence must stay aggregate and privacy-safe.
 
 ## Session Continuity
 
-Last session: 2026-08-26T02:29:34.541Z
-Stopped at: Completed 89-01-PLAN.md
+Last session: 2026-08-26T02:53:07.116Z
+Stopped at: Completed 89-02-PLAN.md
 Resume file: None
