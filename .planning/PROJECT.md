@@ -521,9 +521,6 @@ For any future semantic-masking milestone, a bundled Core ML resource must be lo
 
 ### Active in v1.22
 
-- [ ] Preserve the repeatable five-batch public-facade portrait screen and bind
-  its current 65-case inventory, parameter watermarks, neutral control, aggregate
-  pixel metrics, ignored media boundary, and privacy-safe local report.
 - [ ] Repair `faceContourSmooth` and `chinTaper` so each produces independently
   detectable, bounded, semantically distinct output on eligible portrait input.
 - [ ] Repair `gazeCorrection` so it reduces the pupil-to-own-eye-center error on
@@ -538,6 +535,15 @@ For any future semantic-masking milestone, a bundled Core ML resource must be lo
 - [ ] Close every repaired control with exact-cap, neutral/no-face, missing/stale-
   support, locality, polarity, determinism, privacy, compatibility, renderer,
   batch-report, SDK-only boundary, and no-skip SwiftPM evidence.
+
+### Validated in v1.22
+
+- [x] Phase 89 freezes the five-batch/65-case/eight-direction semantic
+  validation contract, parameter-watermarked owner-local output boundary,
+  source-plus-neutral comparison, deterministic two-attempt reconciliation,
+  aggregate-only report, and fail-closed path/privacy behavior. Independent
+  gaze anatomy remains Phase 91 work and the final complete eight-direction
+  publication remains a Phase 95 closeout gate.
 
 ### Deferred from v1.19 (not active)
 
@@ -851,6 +857,7 @@ Current visual reference contracts:
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
+| Freeze the Phase 89 semantic contract and reject non-anatomical gaze proxies. | A lash/shadow/dark-pixel proxy could make deterministic reports look trustworthy while measuring the wrong effect. | Verified 2026-08-26: all current machinery and runnable gates pass; independent pupil-to-own-eye support is deferred to Phase 91 and the final 65/65 eight-direction publication to Phase 95. |
 | Start v1.22 with only the non-local-retouch weak/inert controls from the five-batch portrait screen. | The owner explicitly deferred repairs for white teeth, sclera redness, and upper-eyelid fullness while authorizing planning for the remaining findings. | Active: seven existing parameters/eight renderer directions are in scope; the three local-retouch controls are a hard scope fence. |
 | Start v1.20 with owner-local acceptance of `白牙` and `祛红血丝` only. | The owner canceled `去脂`; the two retained retouches already have public still-image routes and deterministic evidence, so the next useful step is direct-use documentation and authorized local validation rather than new algorithm work. | Completed 2026-08-25: Phases 85–87 closed API contract, temporary portrait batch validation, and SDK-only closeout. |
 | Cancel v1.19 and defer `去脂`, retaining current experimental code. | The owner chose not to continue the data/target/training burden for this effect. Retaining the quarantined mechanics preserves research value without presenting a failed heuristic or absent model as a usable SDK capability. | Effective 2026-08-25: Plans 80-21/22 and Phases 81-84 are canceled unexecuted; no public field/resource/route exists; `去脂` stays future and existing teeth/sclera controls are unchanged. |
@@ -895,4 +902,4 @@ Current visual reference contracts:
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-08-25 for v1.22 milestone initialization*
+*Last updated: 2026-08-26 after Phase 89*

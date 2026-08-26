@@ -139,7 +139,7 @@ renderer directions remain weak or inert: `faceContourSmooth`, `chinTaper`,
 | COMPAT-01 | Phase 95 | Pending |
 | CLOSE-01 | Phase 95 | Pending |
 
-**Coverage:** 12 total, 12 mapped exactly once, 0 complete, 12 pending.
+**Coverage:** 12 total, 12 mapped exactly once, 2 complete, 10 pending.
 
 ---
-*Last updated: 2026-08-26 for v1.22 roadmap traceability*
+*Last updated: 2026-08-26 after Phase 89 verification*

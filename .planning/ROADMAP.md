@@ -184,7 +184,7 @@ repair phases are complete.
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 | --- | --- | --- | --- | --- |
-| 89. Semantic Validation Baseline | v1.22 | 4/4 | Complete   | 2026-08-26 |
+| 89. Semantic Validation Baseline | v1.22 | 4/4 | Complete    | 2026-08-26 |
 | 90. Face Contour and Chin Repairs | v1.22 | 0/TBD | Not started | - |
 | 91. Independent Gaze Correction | v1.22 | 0/TBD | Not started | - |
 | 92. Signed Eyebrow-Head Spacing | v1.22 | 0/TBD | Not started | - |

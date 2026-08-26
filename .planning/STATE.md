@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.22
 milestone_name: Non-Local Facial Effect Repairs
-current_phase: 89
-current_phase_name: Semantic Validation Baseline
-status: verifying
-stopped_at: Completed 89-04-PLAN.md
-last_updated: "2026-08-26T03:28:55.905Z"
+current_phase: 90
+current_phase_name: Face Contour and Chin Repairs
+status: planning
+stopped_at: Phase 89 complete, ready to plan Phase 90
+last_updated: "2026-08-26T05:01:10.743Z"
 last_activity: 2026-08-26
-last_activity_desc: Completed 89-04-PLAN.md
+last_activity_desc: Phase 89 complete, transitioned to Phase 90
 progress:
   total_phases: 7
   completed_phases: 1
@@ -21,19 +21,19 @@ progress:
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (updated 2026-08-25)
+See: `.planning/PROJECT.md` (updated 2026-08-26)
 
 **Core value:** The project owner's local iOS host can integrate `BeautySDK`
 and get natural, controllable real-time and still-image beauty processing
 without distributing the SDK, model, or weights.
-**Current focus:** Phase 89 — Semantic Validation Baseline
+**Current focus:** Phase 90 — Face Contour and Chin Repairs
 
 ## Current Position
 
-Phase: 89 (Semantic Validation Baseline) — COMPLETE
-Plan: 4 of 4
-Status: Phase complete — ready for verification
-Last activity: 2026-08-26 — Completed 89-04-PLAN.md
+Phase: 90 — Face Contour and Chin Repairs
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-08-26 — Phase 89 complete, transitioned to Phase 90
 
 Progress: [█░░░░░░░░░] 14%
 
@@ -94,8 +94,12 @@ None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-None. Authorized portrait media and detailed outputs remain local and ignored;
-durable evidence must stay aggregate and privacy-safe.
+- [Phase 89] Independent pupil-to-own-eye support is intentionally absent and
+  must be implemented in Phase 91 before gaze can receive semantic credit.
+- [Phase 89] Phase 95 must complete the clean 65/65, eight-direction rerun;
+  current unsupported gaze correctly publishes only a sanitized exit-2 envelope.
+- Authorized portrait media and detailed outputs remain local and ignored;
+  durable evidence must stay aggregate and privacy-safe.
 
 ## Deferred Items
 
@@ -107,6 +111,6 @@ durable evidence must stay aggregate and privacy-safe.
 
 ## Session Continuity
 
-Last session: 2026-08-26T03:28:55.901Z
-Stopped at: Completed 89-04-PLAN.md
+Last session: 2026-08-26T13:02:00+08:00
+Stopped at: Phase 89 complete, ready to plan Phase 90
 Resume file: None
