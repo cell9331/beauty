@@ -509,6 +509,58 @@ Exact ordered Phase 64 task authority is: `64-01-01`, `64-01-02`,
 
 ## 4. Completed
 
+### C-2026-08-26-phase-89-semantic-validation-baseline
+
+| Field | Value |
+| --- | --- |
+| Status | `completed` |
+| Scope | Close VAL-01/VAL-02 at the shared validation-gate level: exact 75-case live renderer discovery, five-batch/65-case execution, and eight frozen direction-specific semantic contracts. Phases 90–94 still own the actual repairs. |
+| Generated Gate | `swift scripts/compare-face-feature-batches.swift --self-test` passed 180 generated mutations across metric, boundary, ownership, admission, ordering, arithmetic, report, privacy, and verdict categories. |
+| Preflight | `bash scripts/run-face-feature-batches.sh --preflight-only` passed exact `75/65/8` admission without rendering or mutating output/report. |
+| Live Baseline | Two fresh CPU attempts each completed 65/65 selected outputs and reconciled identical completion class, canonical `stableSemanticPayload` bytes, comparator digest, and runner digest. The honest aggregate is `1/8 semantic_pass`, `7/8 semantic_fail`; locality passed 3/8 and every protected-region ceiling passed 6/8. |
+| Measurement | Each direction is grounded in source plus neutral comparisons and requires target signal, signed polarity, minimum signal, outside locality, sibling distinction, and every protection ceiling. The 202 parameter-watermark rows are retained visually but excluded from measurement. |
+| Privacy | The ignored report is `example-images/local-test-records/face-feature-batch-report.json`; the retained first attempt is an ignored unique child of `example-images/output/face-feature-batches/` with 66 watermarked PNGs only. Repeat media, temporary renderer/comparator reports, workspaces, and child transcripts are removed. Durable evidence contains aggregate counts/fixed reasons only—no source identity or path, report row, raw media/pixel, mask, landmark, support/ROI geometry, or child output. |
+| Compatibility | The focused 107-test selection passed 107/0/0 and preserves exactly 62 public parameter fields, five presets, 75 renderer cases, the `process`/`processResult` still-image facades, CPU authority, public `.cpu`/`.gpu` selection, and terminal `.metalUnavailable` without fallback. Archive verification passed before the post-archive SDK-only boundary scanner. |
+
+Checklist:
+
+| Step | Status | Evidence |
+| --- | --- | --- |
+| Freeze and mutation-test semantic contracts | `completed` | Plans 89-01/02 bind the five batches, 65 mechanical cases, eight semantic directions, source/neutral/sibling comparators, integer regions, fixed thresholds, privacy-safe schema `beauty.face-feature-batch-report.semantic.1`, and 180 generated mutations. |
+| Reconcile owner-local portrait execution | `completed` | Plan 89-03 ran two never-reused CPU attempts, completed 65 outputs per attempt, reconciled stable payload bytes/digests, published current `semantic_fail` at exit 3, and independently proved sanitized `infrastructure_failure` replacement at exit 2. |
+| Synchronize command, quality, trust, and recovery owners | `completed` | `example-images/README.md`, `QUALITY_SCORE.md`, `SECURITY.md`, and `RELIABILITY.md` agree on 75/65/8, two-attempt equality, report allowlist, ignored retention, cleanup, atomic publication, and distinct semantic/infrastructure statuses. |
+| Re-run focused closeout | `completed` | Comparator self-test 180; preflight 75/65/8; compatibility 107/0/0; both legacy archives verified; post-archive SDK-only boundary passed; `git diff --check` passed. |
+
+Phase 89 closes the predecessor record below only at the semantic-contract and
+repeatable-validation level. Every observed failing direction remains honest
+input to its assigned Phase 90–94 repair; arbitrary pixel differences or
+weakened pass-only thresholds cannot promote it. A passing validator does not
+establish naturalness, physical-device or population quality, performance,
+commercial use, packaging, shipping, launch, release readiness, or
+distribution. Teeth, sclera, and upper-eyelid local retouch remain excluded.
+
+### C-2026-08-25-face-feature-batch-pixel-validation
+
+| Field | Value |
+| --- | --- |
+| Status | `completed` |
+| Scope | Run the live public-facade facial-feature cases in five deterministic batches, render parameter watermarks, compare output against the authorized portrait input and neutral control, and persist only aggregate local metrics. |
+| Batches | `face-shape`, `eyes`, `eyebrows`, `nose`, `mouth` |
+| Privacy | The comparator persists opaque fixture IDs and aggregate pixel metrics only; source paths, raw pixels, masks, landmarks, and per-feature private geometry are not written to the report. Generated PNGs/logs remain ignored owner-local artifacts. |
+| Interpretation | `changed_vs_neutral` is mechanical pixel-change evidence, not semantic correctness, naturalness, device parity, commercial quality, or release readiness. |
+
+Checklist:
+
+| Step | Status | Evidence |
+| --- | --- | --- |
+| Freeze batch inventory | `completed` | `scripts/face-feature-batch-manifest.json` binds 65 live renderer cases plus `geometryBaseline_noop` control. |
+| Render watermarked outputs | `completed` | `bash scripts/run-face-feature-batches.sh` produced 65/65 cases for the one authorized portrait; each case also rendered the existing no-face safety fixture. |
+| Compare input and neutral control | `completed` | `scripts/compare-face-feature-batches.swift` decodes sRGB pixels, excludes the watermark band, checks dimensions, and records changed-pixel/mean/max RGB deltas with tolerance 2. |
+| Record local result | `completed` | `example-images/local-test-records/face-feature-batch-report.json` reports 65/65 complete, 0 missing outputs, neutral control input delta 0, and batch effect detections: face-shape 9/11, eyes 16/19, eyebrows 11/13, nose 5/7, mouth 13/15. |
+| Document rerun path | `completed` | `example-images/README.md` documents the command, inventory, ignored artifact locations, and evidence boundary. |
+
+Known follow-up: cases with `no_detectable_change` require semantic/ROI-specific review before any claim that the feature is ineffective; this batch is an automated mechanical screen, not a product-quality gate.
+
 ### P-2026-08-18-v1-17-manual-contract-resolution
 
 | Field | Value |
