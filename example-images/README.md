@@ -117,6 +117,14 @@ Admission, rendering, output, report, stale-state, or determinism faults return
 the separate exit `2` `infrastructure_failure` class and replace any prior
 report with a sanitized current envelope.
 
+The current frozen gaze row has no independently admitted request-local pupil
+and own-eye contour geometry. Its former dark-pixel/rectangle-center proxy is
+retired: lashes, shadows, makeup, or a foreign dark patch cannot earn gaze
+credit. Until bounded anatomical support is authorized in a later milestone,
+the comparator classifies `pupilToOwnEyeCenter` as transient
+`unsupported_metric`, and the complete runner returns sanitized exit 2 instead
+of publishing an eight-direction semantic result.
+
 The report allowlist is aggregate only: exact schema/contract identifiers, CPU
 token, fixed batch/case/direction identities, opaque fixture IDs and counts,
 bounded source/neutral/target/outside/protected metrics, fixed reason codes,

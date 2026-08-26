@@ -326,6 +326,13 @@ faults use the separate exit `2` `infrastructure_failure`; that class is not
 creditable evidence and atomically replaces a prior report with a sanitized
 current envelope.
 
+Every direction must measure every admitted fixture. Metric admission is never
+converted into a stable `semantic_fail` reason or reported with an unearned full
+fixture count. The current gaze direction is deliberately `unsupported_metric`
+until an independently validated request-local pupil/eye-contour owner exists;
+therefore a full eight-direction invocation terminates as exit-2 infrastructure
+failure rather than publishing the superseded pre-review aggregate.
+
 On semantic completion, the first attempt is retained under the ignored
 owner-local output root with watermarked PNGs only; the repeat attempt is
 removed. On every status, temporary renderer/comparator reports, workspaces,

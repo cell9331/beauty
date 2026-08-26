@@ -193,6 +193,7 @@ enum SemanticContractError: String, Error, CustomStringConvertible {
     case overlap = "overlap"
     case threshold = "threshold"
     case admission = "admission"
+    case unsupportedMetric = "unsupported_metric"
     case arithmetic = "arithmetic"
     case verdict = "verdict"
 
@@ -532,17 +533,14 @@ private func lumaQ8(_ image: CanonicalImage, x: Int, y: Int) -> Int64 {
 
 private func darknessMoment(
     _ image: CanonicalImage,
-    regions: [RasterizedRegion],
-    darkCoreOnly: Bool = false
+    regions: [RasterizedRegion]
 ) throws -> WeightedMoment {
     var result = WeightedMoment()
-    let darkCoreLimit = Int64(80 * 256)
     for region in regions {
         for y in Int(region.minY)..<Int(region.maxY) {
             for x in Int(region.minX)..<Int(region.maxX) {
                 let luma = lumaQ8(image, x: x, y: y)
-                if darkCoreOnly && luma > darkCoreLimit { continue }
-                let weight = darkCoreOnly ? Int64(1) : max(0, Int64(255 * 256) - luma)
+                let weight = max(0, Int64(255 * 256) - luma)
                 if weight == 0 { continue }
                 result.weight = try checkedAdd(result.weight, weight)
                 result.weightedX = try checkedAdd(result.weightedX, try checkedMultiply(weight, Int64(x) * 2 + 1))
@@ -606,30 +604,6 @@ private func centerlineTaper(
     }
     let denominator = try checkedMultiply(moment.weight, Int64(image.width))
     return -(try checkedMultiply(weightedDistance, 65_536) / denominator)
-}
-
-private func pupilToOwnEyeCenter(
-    _ image: CanonicalImage, regions: [RasterizedRegion]
-) throws -> Int64 {
-    guard regions.count == 2 else { throw SemanticContractError.admission }
-    var totalDistanceQ16: Int64 = 0
-    for region in regions {
-        let moment = try darknessMoment(image, regions: [region], darkCoreOnly: true)
-        let area = try checkedMultiply(region.maxX - region.minX, region.maxY - region.minY)
-        guard moment.pixelCount >= 4, moment.pixelCount * 3 < area else {
-            throw SemanticContractError.admission
-        }
-        let centroidX2 = moment.weightedX / moment.weight
-        let centroidY2 = moment.weightedY / moment.weight
-        let centerX2 = region.minX + region.maxX
-        let centerY2 = region.minY + region.maxY
-        let dx = try checkedAbsolute(centroidX2 - centerX2)
-        let dy = try checkedAbsolute(centroidY2 - centerY2)
-        let normalizedX = try checkedMultiply(dx, 65_536) / max(1, (region.maxX - region.minX) * 2)
-        let normalizedY = try checkedMultiply(dy, 65_536) / max(1, (region.maxY - region.minY) * 2)
-        totalDistanceQ16 = try checkedAdd(totalDistanceQ16, try checkedAdd(normalizedX, normalizedY))
-    }
-    return -totalDistanceQ16
 }
 
 private func innerBrowHeadGap(
@@ -720,7 +694,11 @@ private func semanticMetricValue(
     switch kind {
     case .contourContinuityGain: return try contourContinuityGain(image, regions: regions)
     case .centerlineTaper: return try centerlineTaper(image, regions: regions)
-    case .pupilToOwnEyeCenter: return try pupilToOwnEyeCenter(image, regions: regions)
+    case .pupilToOwnEyeCenter:
+        // A target-box dark-pixel centroid is not anatomical pupil/eye support.
+        // No approved request-local anatomy source exists in this milestone, so
+        // the direction is non-creditable instead of falling back to a proxy.
+        throw SemanticContractError.unsupportedMetric
     case .innerBrowHeadGap: return try innerBrowHeadGap(image, regions: regions)
     case .bridgeDefinitionGain: return try bridgeDefinitionGain(image, regions: regions)
     case .rootWidthContraction: return try rootWidthContraction(image, regions: regions)
@@ -1648,23 +1626,32 @@ private func runDirectionMetricSelfTests(contracts: [SemanticContract]) throws -
         RasterizedRegion(minX: 8, maxX: 32, minY: 20, maxY: 40),
         RasterizedRegion(minX: 48, maxX: 72, minY: 20, maxY: 40)
     ]
-    let offCenterPupils = generatedImage(rectangles: [(9, 21, 12, 24), (49, 21, 52, 24)])
-    let centeredPupils = generatedImage(rectangles: [(18, 28, 22, 32), (58, 28, 62, 32)])
-    try expectIncrease(
-        try pupilToOwnEyeCenter(offCenterPupils, regions: eyeRegions),
-        try pupilToOwnEyeCenter(centeredPupils, regions: eyeRegions)
-    )
-    do {
-        _ = try pupilToOwnEyeCenter(generatedImage(rectangles: [(18, 28, 22, 32)]), regions: eyeRegions)
-        throw SemanticContractError.verdict
-    } catch SemanticContractError.admission {
-        probes += 1 // A supported peer eye cannot lend its core to a missing eye.
+    let gazeAdversaries = [
+        generatedImage(rectangles: [(9, 21, 12, 24), (49, 21, 52, 24)]),
+        generatedImage(rectangles: [(18, 28, 22, 32), (58, 28, 62, 32)]),
+        generatedImage(rectangles: [(8, 20, 32, 22), (48, 20, 72, 22)]), // lash/shadow change
+        generatedImage(rectangles: [(10, 35, 18, 39), (62, 35, 70, 39)]) // foreign dark patches
+    ]
+    for adversary in gazeAdversaries {
+        do {
+            _ = try semanticMetricValue(
+                kind: .pupilToOwnEyeCenter, image: adversary, regions: eyeRegions
+            )
+            throw SemanticContractError.verdict
+        } catch SemanticContractError.unsupportedMetric {
+            probes += 1
+        }
     }
     guard let gazeContract = contracts.first(where: { $0.metric == .pupilToOwnEyeCenter }) else {
         throw SemanticContractError.contracts
     }
-    let admittedGaze = generatedImage(rectangles: [(27, 47, 31, 51), (49, 47, 53, 51)])
-    let abstainedGaze = generatedImage(rectangles: [(27, 47, 31, 51)])
+    let admittedGaze = generatedImage(
+        width: 80, height: 300,
+        rectangles: [(27, 170, 31, 174), (49, 170, 53, 174)]
+    )
+    let abstainedGaze = generatedImage(
+        width: 80, height: 300, rectangles: [(27, 170, 31, 174)]
+    )
     do {
         _ = try semanticDirectionSummary(
             contract: gazeContract,
@@ -1672,7 +1659,7 @@ private func runDirectionMetricSelfTests(contracts: [SemanticContract]) throws -
             siblingImages: Array(repeating: [admittedGaze], count: gazeContract.comparisonCaseIDs.count - 2)
         )
         throw SemanticContractError.verdict
-    } catch SemanticContractError.admission {
+    } catch SemanticContractError.unsupportedMetric {
         probes += 1 // No incomplete direction can be published as a measured semantic failure.
     }
 

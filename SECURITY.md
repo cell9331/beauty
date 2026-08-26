@@ -303,6 +303,14 @@ admission, render, output, report, stale-state, or determinism fault is the
 separate exit `2` `infrastructure_failure`; atomic replacement publishes a
 sanitized current envelope so no stale prior report remains creditable.
 
+Metric admission is all-or-nothing. A source, neutral, candidate, or sibling
+metric failure cannot be serialized as a completed direction with the original
+fixture count. In particular, gaze remains non-creditable because this
+milestone has no independently admitted request-local pupil/own-eye anatomy;
+dark pixels, lashes, shadows, and foreign patches are forbidden proxies. The
+fixed `unsupported_metric` category stays transient and reaches only the
+sanitized infrastructure envelope—no anatomy or abstained-row detail persists.
+
 This owner-local boundary preserves the current 62/5/75 public inventory,
 still-image facades, CPU/GPU policy, and local-retouch exclusions. It grants no
 device, population, naturalness, commercial, packaging, shipping, launch,

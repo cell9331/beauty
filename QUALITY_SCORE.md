@@ -58,17 +58,19 @@ fresh candidate-v2 contract and private review.
 
 ## Phase 89 Semantic Validation Quality Evidence
 
-Phase 89 completes the shared validation machinery, not the five downstream
-repairs. The generated comparator self-test passes `180` mutations; runner
-preflight admits the exact live `75` renderer cases, selected five-batch/`65`
-mechanical cases, and eight frozen semantic directions. The owner-local live
-baseline completed two fresh CPU attempts with all `65/65` selected outputs,
-identical canonical `stableSemanticPayload` bytes and digests, and the honest
-aggregate result `1/8 semantic_pass`, `7/8 semantic_fail`. Measurement excludes
-`202` parameter-watermark rows and grounds every verdict in both source and
-neutral comparisons. Locality passed `3/8` directions and all protected-region
-ceilings passed `6/8`; these observed failures remain repair input for Phases
-90–94 rather than thresholds to weaken.
+Phase 89 completes shared validation machinery, not the five downstream
+repairs. Code-review remediation independently pins every value in the eight
+contracts and mutation-tests each threshold, ceiling, region edge, membership,
+and order. Runner preflight still admits the exact live `75` renderer cases,
+selected five-batch/`65` mechanical cases, and eight frozen directions.
+
+The earlier owner-local `1/8 semantic_pass`, `7/8 semantic_fail` aggregate is
+revoked as creditable evidence: `pupilToOwnEyeCenter` used target-box dark-pixel
+centroids without independently admitted pupil and eye-contour anatomy. The
+comparator now rejects that metric as `unsupported_metric`; the runner publishes
+only a sanitized exit-2 `infrastructure_failure`. Generated lash/shadow, foreign
+dark-patch, centered-pupil, and off-center-pupil probes all prove the proxy cannot
+earn semantic credit. No new model, data, network, UI, or public API is added.
 
 Semantic acceptance requires direction-specific target signal, polarity,
 minimum signal, outside locality, documented sibling distinction, and every
