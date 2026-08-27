@@ -89,7 +89,21 @@ Plans:
   2. Positive `chinTaper` produces a detectable centerline-gated chin taper on eligible input while retaining its exact safety cap, neutral identity, and source-safe degradation.
   3. The two repaired outputs remain measurably distinct from each other and from the documented `faceSlim`, `faceSmall`, `faceVShape`, `jawSlim`, and `chinLength` behaviors.
 
-**Plans**: TBD
+**Plans:** 4 plans
+
+Plans:
+**Wave 1**
+
+- [ ] 90-01-PLAN.md — Verify and harden `faceContourSmooth` with generated provider, CPU-pixel, and public-facade semantic evidence.
+- [ ] 90-02-PLAN.md — Repair `chinTaper` at its provider seam and prove centerline-local output and fail-closed behavior.
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 90-03-PLAN.md — Synchronize design, product, and taxonomy owners with the proven repairs.
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 90-04-PLAN.md — Close security, reliability, quality, compatibility, and planning evidence.
 
 ### Phase 91: Independent Gaze Correction
 
