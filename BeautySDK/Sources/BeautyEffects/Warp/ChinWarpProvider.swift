@@ -125,13 +125,15 @@ struct ChinWarpProvider: WarpControlPointProvider {
             return []
         }
 
-        // The original two-point field is retained when its immediate flanks
-        // have enough geometric leverage. Quantization-hostile flanks close to
-        // the centerline expand to the narrowest three paired contour samples
-        // around the same observed apex. No legacy or sibling geometry enters
-        // this request-local centerline-owned band.
+        // Sub-cap fields retain the original two points when their immediate
+        // flanks have enough leverage. Exact-cap requests and quantization-
+        // hostile flanks expand to the narrowest three paired contour samples
+        // around the same observed apex so the validated chin ROI receives a
+        // raster-visible field. No legacy or sibling geometry enters this
+        // request-local centerline-owned band.
         let immediateFieldIsQuantizationHostile = immediateDistance < maximumDisplacement * 0.5
-        let pairCount = immediateFieldIsQuantizationHostile ? 3 : 1
+        let exactCapNeedsValidatedBand = strength == BeautySafetyCaps.chinTaper
+        let pairCount = immediateFieldIsQuantizationHostile || exactCapNeedsValidatedBand ? 3 : 1
         guard apexIndex - pairCount >= support.contour.startIndex,
               apexIndex + pairCount < support.contour.endIndex
         else {
