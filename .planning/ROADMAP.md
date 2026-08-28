@@ -89,13 +89,13 @@ Plans:
   2. Positive `chinTaper` produces a detectable centerline-gated chin taper on eligible input while retaining its exact safety cap, neutral identity, and source-safe degradation.
   3. The two repaired outputs remain measurably distinct from each other and from the documented `faceSlim`, `faceSmall`, `faceVShape`, `jawSlim`, and `chinLength` behaviors.
 
-**Plans:** 4 plans
+**Plans:** 1/4 plans executed
 
 Plans:
 **Wave 1**
 
 - [ ] 90-01-PLAN.md — Verify and harden `faceContourSmooth` with generated provider, CPU-pixel, and public-facade semantic evidence.
-- [ ] 90-02-PLAN.md — Repair `chinTaper` at its provider seam and prove centerline-local output and fail-closed behavior.
+- [x] 90-02-PLAN.md — Repair `chinTaper` at its provider seam and prove centerline-local output and fail-closed behavior.
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -199,7 +199,7 @@ repair phases are complete.
 | Phase | Milestone | Plans Complete | Status | Completed |
 | --- | --- | --- | --- | --- |
 | 89. Semantic Validation Baseline | v1.22 | 4/4 | Complete    | 2026-08-26 |
-| 90. Face Contour and Chin Repairs | v1.22 | 0/TBD | Not started | - |
+| 90. Face Contour and Chin Repairs | v1.22 | 1/4 | In Progress|  |
 | 91. Independent Gaze Correction | v1.22 | 0/TBD | Not started | - |
 | 92. Signed Eyebrow-Head Spacing | v1.22 | 0/TBD | Not started | - |
 | 93. Distinct Nose Bridge and Root Repairs | v1.22 | 0/TBD | Not started | - |

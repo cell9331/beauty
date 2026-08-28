@@ -36,7 +36,7 @@ renderer directions remain weak or inert: `faceContourSmooth`, `chinTaper`,
   `jawSlim`, and keeps the eyes, nose, mouth, and background within bounded
   protected-region tolerances.
 
-- [ ] **FACE-02**: Positive `chinTaper` produces a detectable,
+- [x] **FACE-02**: Positive `chinTaper` produces a detectable,
   centerline-gated chin taper on eligible input, remains distinct from
   `chinLength`, `faceVShape`, and `jawSlim`, and preserves the established exact
   safety cap, neutral identity, and fail-closed behavior.
@@ -129,7 +129,7 @@ renderer directions remain weak or inert: `faceContourSmooth`, `chinTaper`,
 | VAL-01 | Phase 89 | Complete |
 | VAL-02 | Phase 89 | Complete |
 | FACE-01 | Phase 90 | Pending |
-| FACE-02 | Phase 90 | Pending |
+| FACE-02 | Phase 90 | Complete |
 | EYE-01 | Phase 91 | Pending |
 | BROW-01 | Phase 92 | Pending |
 | NOSE-01 | Phase 93 | Pending |
@@ -139,7 +139,7 @@ renderer directions remain weak or inert: `faceContourSmooth`, `chinTaper`,
 | COMPAT-01 | Phase 95 | Pending |
 | CLOSE-01 | Phase 95 | Pending |
 
-**Coverage:** 12 total, 12 mapped exactly once, 2 complete, 10 pending.
+**Coverage:** 12 total, 12 mapped exactly once, 3 complete, 9 pending.
 
 ---
-*Last updated: 2026-08-26 after Phase 89 verification*
+*Last updated: 2026-08-28 after Phase 90 Plan 02*

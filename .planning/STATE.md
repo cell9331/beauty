@@ -4,16 +4,16 @@ milestone: v1.22
 milestone_name: Non-Local Facial Effect Repairs
 current_phase: 90
 current_phase_name: Face Contour and Chin Repairs
-status: planning
-stopped_at: Phase 89 complete, ready to plan Phase 90
-last_updated: "2026-08-26T05:01:10.743Z"
-last_activity: 2026-08-26
-last_activity_desc: Phase 89 complete, transitioned to Phase 90
+status: executing
+stopped_at: Completed 90-02-PLAN.md; 90-01 requires evidence-driven replanning
+last_updated: "2026-08-28T07:02:56.354Z"
+last_activity: 2026-08-28
+last_activity_desc: Completed 90-02-PLAN.md; FACE-01 characterization disconfirmed current behavior
 progress:
   total_phases: 7
   completed_phases: 1
-  total_plans: 4
-  completed_plans: 4
+  total_plans: 8
+  completed_plans: 5
   percent: 14
 ---
 
@@ -31,9 +31,9 @@ without distributing the SDK, model, or weights.
 ## Current Position
 
 Phase: 90 — Face Contour and Chin Repairs
-Plan: Not started
-Status: Ready to plan
-Last activity: 2026-08-26 — Phase 89 complete, transitioned to Phase 90
+Plan: 1 of 4 complete
+Status: Executing — Plan 90-01 requires evidence-driven replanning
+Last activity: 2026-08-28 — Completed 90-02; retained FACE-01 disconfirmation oracle
 
 Progress: [█░░░░░░░░░] 14%
 
@@ -41,9 +41,9 @@ Progress: [█░░░░░░░░░] 14%
 
 **Current milestone:**
 
-- Total plans completed: 4
-- Average duration: 15 min
-- Total execution time: 59 min
+- Total plans completed: 5
+- Average duration: 14 min
+- Total execution time: 72 min
 
 Historical milestone metrics remain in `.planning/MILESTONES.md` and archived
 roadmaps.
@@ -55,6 +55,7 @@ roadmaps.
 | Phase 89 P02 | 19min | 2 tasks | 1 files |
 | Phase 89 P03 | 21min | 2 tasks | 1 files |
 | Phase 89 P04 | 6min | 2 tasks | 6 files |
+| Phase 90 P02 | 13min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -87,6 +88,9 @@ roadmaps.
 - [Phase 89]: Retained attempts contain only parameter-watermarked portrait PNGs; renderer reports, repeat media, comparator reports, and transcripts are removed.
 - [Phase 89]: Phase 89 completion certifies the shared semantic validation machinery; seven failing directions remain owned by Phases 90–94. — Preserves honest repair ownership and prevents validation completion from promoting behavior.
 - [Phase 89]: Exit 3 is creditable complete semantic measurement, not infrastructure success or repaired-control acceptance. — Keeps complete semantic failure distinct from uncreditable runner faults.
+- [Phase 90]: `chinTaper` exact-cap output uses three request-local bilateral
+  contour pairs while compatible sub-cap requests retain the two-point topology.
+  — Makes the frozen centerline target visible without borrowing sibling geometry.
 
 ### Pending Todos
 
@@ -94,10 +98,17 @@ None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
+- [Phase 90] The retained generated FACE-01 oracle disproved the current
+  `faceContourSmooth` implementation against signed, sibling-distinction,
+  outside, and central-protection bounds; Plan 90-01 must be replanned before
+  any production edit or requirement completion.
+
 - [Phase 89] Independent pupil-to-own-eye support is intentionally absent and
   must be implemented in Phase 91 before gaze can receive semantic credit.
+
 - [Phase 89] Phase 95 must complete the clean 65/65, eight-direction rerun;
   current unsupported gaze correctly publishes only a sanitized exit-2 envelope.
+
 - Authorized portrait media and detailed outputs remain local and ignored;
   durable evidence must stay aggregate and privacy-safe.
 
@@ -111,6 +122,6 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-26T13:02:00+08:00
-Stopped at: Phase 89 complete, ready to plan Phase 90
+Last session: 2026-08-28T15:10:00+08:00
+Stopped at: Completed 90-02-PLAN.md; 90-01 requires evidence-driven replanning
 Resume file: None
