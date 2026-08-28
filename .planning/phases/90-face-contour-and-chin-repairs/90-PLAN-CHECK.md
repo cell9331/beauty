@@ -1,90 +1,77 @@
 # Phase 90 Plan Check
 
-**Phase:** Face Contour and Chin Repairs  
-**Plans verified:** 4  
-**Status:** VERIFICATION PASSED  
-**Revision gate:** iteration 2 of 3  
+**Phase:** Face Contour and Chin Repairs
+**Plans verified:** 4
+**Status:** VERIFICATION PASSED
+**Revision gate:** iteration 3 of 3
 **Issues:** 0 blockers, 0 warnings
 
 ## Goal-backward verdict
 
-The revised plan set will deliver FACE-01 and FACE-02 through executable,
-independent generated provider/CPU-pixel/public-facade evidence, then serialize
-the resulting facts into the required behavior, product, taxonomy, security,
-reliability, quality, and planning owners. The plans preserve the frozen Phase
-89 semantic contracts and exact 62-parameter/five-preset/75-renderer-case
-surface without adding a public/SPI/backend/shader/model/data/network/UI seam.
+The Phase 90 plan set is executable after the Plan 90-01 evidence-driven
+replan. Plan 90-02 is already complete. Revised Plan 90-01 retains the valid
+generated RED, repairs only the provider-local contour field, proves the exact
+frozen Phase 89 contract in the Effects target, and uses a fixture-aligned
+public-facade corroboration without making production position-dependent.
 
-The previous revision-gate findings are closed. FACE-01 is now an honest
-characterization/hardening plan with no fabricated RED or forced production
-edit; FACE-02 retains a concrete two-neighbor-to-narrowest-paired-band repair
-path if its exact generated oracle demonstrates the expected RED. Stale,
-reused, provider-empty, and recovery assertions are explicitly assigned to
-existing named resolver/provider lifecycle tests because the public fixture
-enum does not expose those states.
+The dedicated typed checker wrote its initial iteration-3 blockers but its
+retry was unavailable because of a platform usage limit. A focused,
+code-grounded oracle auditor then reviewed each correction against the actual
+comparator, provider, CPU warp, SPI fixture topology, and test helpers. The
+final fallback verdict is PASS.
 
-## Prior finding resolution
+## Execution-time disconfirmation and resolution
 
-| Prior finding | Resolution | Status |
-|---|---|---|
-| Nonexistent `SDKTestingFaceDetectionProvider(.usableFace)` initializer | Both facade tasks now require the real array initializer `SDKTestingFaceDetectionProvider([.usableFace])` and array-backed request sequences. | RESOLVED |
-| Public stale-support behavior had no executable SPI fixture | Facade truths are narrowed to existing `.noFace`, missing, and malformed fixtures; named existing `MissingLandmarkDegradationTests` own stale/reused/provider-empty/recovery coverage. The referenced test methods exist. | RESOLVED |
-| FACE-01 GREEN action merely repeated current production code | `90-01` removes the provider from `files_modified`, prohibits production edits, records current green characterization, adds only exact independent oracles, and stops for replanning if a frozen assertion actually fails. | RESOLVED |
-| Documentation checks were global substring probes | `90-03` and `90-04` now create exact section headings, extract only those sections, assert required and forbidden claims within them, preserve `ARCHITECTURE.md`, and retain diff hygiene. | RESOLVED |
+The retained generated oracle reported:
+
+- source and neutral signed continuity margin `12 < 16`;
+- frozen sibling margins `faceSmall = 16` and `faceSlim = 3 < 16`;
+- outside signal `2724/284565 > 500/1500`;
+- central-anatomy signal `909/138177 > 128/512`;
+- target floors passed and background/watermark remained byte-exact.
+
+Independent audit confirmed these failures were not caused by coordinate
+orientation, PPM rasterization, target/complement math, RGB tolerance, metric
+sign, or neutral handling. It also separated the frozen sibling set
+(`faceSmall`, `faceSlim`) from the Phase 90 strengthening comparisons
+(`faceVShape`, `jawSlim`, repaired `chinTaper`).
+
+The revised implementation path removes the actual causes:
+
+- face-relative outer-30%-width contiguous runs supply original-adjacency
+  anchors while outer-20%-width corridors own emissions and influence;
+- endpoints, contour-global horizontal extrema, central transitions, and
+  out-of-corridor anchors do not emit;
+- branch-local raw deltas are centered once across the combined bilateral set
+  and use one representable scale, with separate left/right/whole roughness
+  guards;
+- radii use the exact `min(0.015 * width, 0.8 * minimumEdgeDistance)` rule,
+  remain finite and `0 < radius < 0.04`, and preserve strict source/target
+  corridor containment without changing sibling validators;
+- Task 1 remains the exact Phase 89 ROI/threshold authority, while Task 2 uses
+  a predeclared `.usableFace`-aligned envelope as public-route corroboration.
 
 ## Coverage summary
 
 | Requirement | Plans | Executable evidence | Status |
-|---|---|---|---|
-| FACE-01 | 90-01, 90-03, 90-04 | Exact frozen contour metric/protection constants in generated Effects and public-facade pixels; sibling distinction; invalid facade fixtures; named lifecycle tests; owner and closeout gates | COVERED |
-| FACE-02 | 90-02, 90-03, 90-04 | Exact frozen centerline metric/protection constants in generated Effects and public-facade pixels; concrete bounded provider repair; sibling distinction; invalid facade fixtures; named lifecycle tests; owner and closeout gates | COVERED |
-
-## Plan summary
-
-| Plan | Tasks | Files | Wave | Depends on | Status |
-|---|---:|---:|---:|---|---|
-| 90-01 | 2 | 2 | 1 | — | Valid |
-| 90-02 | 2 | 3 | 1 | — | Valid |
-| 90-03 | 2 | 3 | 2 | 90-01, 90-02 | Valid |
-| 90-04 | 2 | 4 | 3 | 90-03 | Valid |
+| --- | --- | --- | --- |
+| FACE-01 | 90-01, 90-03, 90-04 | Retained RED, exact generated Effects oracle, provider topology/boundary matrix, fixture-aligned public pixels, lifecycle and owner gates | COVERED |
+| FACE-02 | 90-02, 90-03, 90-04 | Executed provider, exact generated/public pixels, sibling distinction, lifecycle and owner gates | COVERED |
 
 ## Dimension results
 
 | Dimension | Result |
-|---|---|
-| Requirement Coverage | PASS — FACE-01 and FACE-02 have specific task-level semantic, locality, protection, distinction, degradation, and facade coverage |
-| Task Completeness | PASS — every task has concrete files, action, automated verification, measurable acceptance, and done criteria |
-| Dependency Correctness | PASS — wave-1 ownership is disjoint; waves 2 and 3 serialize summaries and owner updates; no missing references or cycles |
-| Key Links Planned | PASS — provider→resolver→single CPU warp→public facade and tests→frozen semantic contracts are explicit |
-| Scope Sanity | PASS — two tasks and 2–4 files per plan; the two hardest independent controls remain separate wave-1 plans |
-| Verification Derivation | PASS — exact pixel metrics and protected regions back user-observable truths; documentation gates are section-bounded |
-| Context Compliance | PASS — exact caps, 62/5/75, both facades, CPU/GPU contract, privacy, source-safe degradation, and no-proxy decisions are preserved |
-| Scope Reduction Detection | PASS — no user decision is weakened; FACE-01's verification-only path reflects inspected current code and fails closed for replanning on disconfirmation |
-| Architectural Tier Compliance | SKIPPED — no Phase 90 RESEARCH.md responsibility map |
-| Nyquist Compliance | SKIPPED — no Phase 90 RESEARCH.md Validation Architecture |
-| Cross-Plan Data Contracts | PASS — 90-01/02 summaries are required inputs to 90-03/04 and no shared mutable implementation file crosses same-wave plans |
-| AGENTS.md Compliance | PASS — generated/in-memory deterministic pixels, aggregate-only durable evidence, owner-document updates, archive-first boundary validation, and optional-device/nonrelease policy are explicit |
-| Research Resolution | SKIPPED — no Phase 90 RESEARCH.md |
-| Pattern Compliance | PASS — each new/modified file follows the mapped provider, resolver, CPU-raster, facade, lifecycle-test, and owner-document analogs |
-
-## Adversarial rescan
-
-- Existing API names and paths referenced by the revision were checked. The
-  three named `MissingLandmarkDegradationTests`, the current FACE-01 provider
-  characterization, the geometry facade test, and the array-backed testing
-  provider initializer all exist.
-- The frozen manifest constants quoted by both implementation plans match the
-  current `faceContourSmooth_0p25` and `chinTaper_0p25` records.
-- `90-01` and `90-02` do not modify the same file in wave 1. Documentation and
-  ledger files are modified only in later dependent waves.
-- Generated fixtures are expressly mechanics evidence only; no private media,
-  raw pixels/geometry, device qualification, subjective quality, commercial,
-  release, or distribution claim is planned.
-- Gaze and the full 65/65 eight-direction publication remain owned by Phases 91
-  and 95. No full live aggregate or no-skip milestone closeout is falsely
-  required in Phase 90.
-- No unresolved placeholder, invented production seam, future dependency, or
-  cross-plan transform incompatibility remains.
+| --- | --- |
+| Requirement Coverage | PASS — FACE-01 and FACE-02 have semantic, locality, protection, distinction, degradation, and public evidence |
+| Task Completeness | PASS — branch ranges, anchors, emissions, extrema, containment, scale, radii, roughness sets, and failure rules are explicit |
+| Dependency Correctness | PASS — completed 90-02 and revised 90-01 converge before serialized owner updates |
+| Key Links Planned | PASS — face-relative provider output reaches the existing CPU and `.usableFace` public route |
+| Scope Sanity | PASS — production change remains in one provider; no API, backend, shader, renderer, model, data, or UI expansion |
+| Verification Derivation | PASS — frozen exact proof and public-route corroboration are explicitly separated |
+| Context Compliance | PASS — 62/5/75, exact caps, request-local ownership, privacy, Phase 91/95, and nonrelease boundaries remain intact |
+| Cross-Plan Data Contracts | PASS — Plan 90-02 evidence is preserved and both summaries feed Plans 90-03/04 |
+| AGENTS.md Compliance | PASS — generated/in-memory evidence is primary and no private portrait detail persists |
+| Pattern Compliance | PASS — provider-local named emissions, unified CPU warp, field-local degradation, and owner documents follow existing analogs |
 
 ## Structured issues
 
@@ -94,4 +81,5 @@ issues: []
 
 ## Recommendation
 
-Plans verified. Phase 90 may proceed to wave-based execution.
+Revised Plan 90-01 may resume from its retained RED. Plans 90-03 and 90-04
+remain blocked until both Wave 1 summaries exist.
