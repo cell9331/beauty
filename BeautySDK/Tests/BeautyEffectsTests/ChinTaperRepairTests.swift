@@ -102,9 +102,18 @@ final class ChinTaperRepairTests: XCTestCase {
             let face = Self.replacingSupport(in: valid, with: support)
             XCTAssertTrue(emission(face: face, strength: 0.25).isEmpty)
         }
-        for invalidStrength in [Float.zero, -0.25, .nan, .infinity, -.infinity] {
+        for invalidStrength in [
+            Float.zero, -0.25, Float.ulpOfOne, Float.ulpOfOne.nextDown,
+            .leastNonzeroMagnitude, .nan, .infinity, -.infinity,
+        ] {
             XCTAssertTrue(emission(face: valid, strength: invalidStrength).isEmpty)
         }
+
+        XCTAssertEqual(
+            emission(face: valid, strength: 1),
+            emission(face: valid, strength: BeautySafetyCaps.chinTaper),
+            "Provider-local callers cannot bypass the exact 0.25 cap."
+        )
 
         var combined = BeautyEffectiveStrengths()
         combined.chinLength = -BeautySafetyCaps.chinLength
@@ -117,6 +126,65 @@ final class ChinTaperRepairTests: XCTestCase {
             emissions.chinLength.allSatisfy { $0.source != taper.source }
         })
         XCTAssertEqual(provider.fieldEmissions(face: valid, strengths: combined), emissions)
+    }
+
+    func testFACE02NarrowAndWideLowerChinBandsRemainPairedBoundedAndTraversalStable() throws {
+        for scale: Float in [0.35, 1, 1.35] {
+            let face = Self.face(bandScale: scale)
+            let points = emission(face: face, strength: BeautySafetyCaps.chinTaper)
+            let support = try XCTUnwrap(face.observedFaceSupport)
+
+            XCTAssertEqual(points.count, 6, "band scale \(scale)")
+            XCTAssertEqual(Set(points.map(\.source)).count, points.count, "band scale \(scale)")
+            XCTAssertTrue(points.allSatisfy { point in
+                guard let axis = Self.medianX(at: point.source.y, line: support.medianLine!) else {
+                    return false
+                }
+                return point.source.y == point.target.y &&
+                    abs(point.target.x - axis) < abs(point.source.x - axis) &&
+                    abs(point.target.x - point.source.x) <= 0.016 * face.bounds.width + 0.000_001
+            }, "band scale \(scale)")
+
+            let reversed = Self.face(reversingContour: true, bandScale: scale)
+            XCTAssertEqual(Set(emission(face: reversed, strength: 0.25).map(\.source)), Set(points.map(\.source)))
+        }
+    }
+
+    func testFACE02QuantizationHostileBandFailsClosedWhenPairOwnershipIsIncomplete() {
+        let valid = Self.face()
+        let contour = valid.observedFaceSupport!.contour
+        let apex = valid.observedFaceSupport!.apexIndex!
+
+        var oneSided = contour
+        oneSided[apex + 2].x = 0.49
+        let oneSidedSupport = BeautyFaceSemanticSupport(
+            contour: oneSided,
+            medianLine: valid.observedFaceSupport!.medianLine,
+            apexIndex: apex
+        )
+        XCTAssertTrue(emission(face: Self.replacingSupport(in: valid, with: oneSidedSupport), strength: 0.25).isEmpty)
+
+        let uncoveredMedian = BeautyFaceSemanticSupport(
+            contour: contour,
+            medianLine: [.init(0.50, 0.50), .init(0.50, 0.58)],
+            apexIndex: apex
+        )
+        XCTAssertTrue(emission(face: Self.replacingSupport(in: valid, with: uncoveredMedian), strength: 0.25).isEmpty)
+
+        let shortContour = Array(contour[(apex - 2)...(apex + 2)])
+        let shortSupport = BeautyFaceSemanticSupport(
+            contour: shortContour,
+            medianLine: valid.observedFaceSupport!.medianLine,
+            apexIndex: 2
+        )
+        XCTAssertTrue(emission(face: Self.replacingSupport(in: valid, with: shortSupport), strength: 0.25).isEmpty)
+
+        let contourOnly = FaceGeometry(
+            bounds: valid.bounds,
+            faceContour: contour,
+            observedFaceSupport: nil
+        )
+        XCTAssertTrue(emission(face: contourOnly, strength: 0.25).isEmpty)
     }
 
     private func emission(face: FaceGeometry, strength: Float) -> [WarpControlPoint] {
@@ -204,12 +272,22 @@ final class ChinTaperRepairTests: XCTestCase {
         }
     }
 
-    private static func face(reversingContour: Bool = false) -> FaceGeometry {
+    private static func face(
+        reversingContour: Bool = false,
+        bandScale: Float = 1
+    ) -> FaceGeometry {
         var contour: [SIMD2<Float>] = [
-            .init(0.28, 0.42), .init(0.32, 0.50), .init(0.36, 0.57),
-            .init(0.40, 0.585), .init(0.499_88, 0.600), .init(0.50, 0.620),
-            .init(0.500_12, 0.600), .init(0.60, 0.585), .init(0.64, 0.57),
-            .init(0.68, 0.50), .init(0.72, 0.42),
+            .init(0.50 - 0.22 * bandScale, 0.42),
+            .init(0.50 - 0.18 * bandScale, 0.50),
+            .init(0.50 - 0.14 * bandScale, 0.57),
+            .init(0.50 - 0.10 * bandScale, 0.585),
+            .init(0.499_88, 0.600),
+            .init(0.50, 0.620),
+            .init(0.500_12, 0.600),
+            .init(0.50 + 0.10 * bandScale, 0.585),
+            .init(0.50 + 0.14 * bandScale, 0.57),
+            .init(0.50 + 0.18 * bandScale, 0.50),
+            .init(0.50 + 0.22 * bandScale, 0.42),
         ]
         if reversingContour { contour.reverse() }
         let apexIndex = contour.firstIndex(of: .init(0.50, 0.620))!
@@ -249,7 +327,7 @@ final class ChinTaperRepairTests: XCTestCase {
     }
 
     private static func fixtureBytes(width: Int, height: Int) -> [UInt8] {
-        var bytes = [UInt8](repeating: 220, count: width * height * 4)
+        var bytes = [UInt8](repeating: 255, count: width * height * 4)
         for y in 0..<height {
             for x in 0..<width {
                 let offset = (y * width + x) * 4
@@ -263,9 +341,9 @@ final class ChinTaperRepairTests: XCTestCase {
                     bytes[offset + 1] = 68 + spatial
                     bytes[offset + 2] = 82 + spatial
                 } else {
-                    bytes[offset] = 220
-                    bytes[offset + 1] = 220
-                    bytes[offset + 2] = 220
+                    bytes[offset] = 255
+                    bytes[offset + 1] = 255
+                    bytes[offset + 2] = 255
                 }
                 bytes[offset + 3] = 255
             }

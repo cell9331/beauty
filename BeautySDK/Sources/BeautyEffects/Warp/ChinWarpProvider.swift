@@ -70,10 +70,10 @@ struct ChinWarpProvider: WarpControlPointProvider {
 
     private func chinTaperPoints(
         face: FaceGeometry,
-        strength: Float
+        strength requestedStrength: Float
     ) -> [WarpControlPoint] {
-        guard strength.isFinite,
-              strength > 0,
+        guard requestedStrength.isFinite,
+              requestedStrength > Float.ulpOfOne,
               face.bounds.width.isFinite,
               face.bounds.width > 0,
               let support = face.observedFaceSupport,
@@ -89,12 +89,17 @@ struct ChinWarpProvider: WarpControlPointProvider {
             return []
         }
 
-        let sourceIndices = [apexIndex - 1, apexIndex + 1]
+        let strength = min(requestedStrength, BeautySafetyCaps.chinTaper)
+        let normalizedStrength = strength / BeautySafetyCaps.chinTaper
         let maximumDisplacement =
-            0.016 * face.bounds.width * strength / BeautySafetyCaps.chinTaper
+            0.016 * face.bounds.width * normalizedStrength
         let radius = face.bounds.width * 0.12
         let falloff: Float = 2
-        guard maximumDisplacement.isFinite,
+        guard strength.isFinite,
+              strength > 0,
+              normalizedStrength.isFinite,
+              normalizedStrength > 0,
+              maximumDisplacement.isFinite,
               maximumDisplacement > 0,
               radius.isFinite,
               radius > 0,
@@ -104,8 +109,9 @@ struct ChinWarpProvider: WarpControlPointProvider {
             return []
         }
 
-        var points: [WarpControlPoint] = []
-        for index in sourceIndices {
+        let immediateIndices = [apexIndex - 1, apexIndex + 1]
+        var immediateDistance: Float = 0
+        for index in immediateIndices {
             let source = support.contour[index]
             guard let axisX = medianX(at: source.y, medianLine: medianLine),
                   axisX.isFinite,
@@ -113,31 +119,74 @@ struct ChinWarpProvider: WarpControlPointProvider {
             else {
                 return []
             }
-            let distanceToAxis = abs(source.x - axisX)
-            let displacement = min(maximumDisplacement, distanceToAxis)
-            guard distanceToAxis.isFinite,
-                  distanceToAxis > 0,
-                  displacement.isFinite,
-                  displacement > 0
-            else {
-                return []
-            }
+            immediateDistance += abs(source.x - axisX)
+        }
+        guard immediateDistance.isFinite, immediateDistance > 0 else {
+            return []
+        }
 
-            let signedDisplacement = source.x < axisX ? displacement : -displacement
-            let target = SIMD2<Float>(source.x + signedDisplacement, source.y)
-            guard isFiniteUnitPoint(target),
-                  abs(target.x - axisX) < distanceToAxis,
-                  let point = validatedPoint(
-                      source: source,
-                      target: target,
-                      radius: radius,
-                      strength: strength,
-                      falloff: falloff
-                  )
+        // The original two-point field is retained when its immediate flanks
+        // have enough geometric leverage. Quantization-hostile flanks close to
+        // the centerline expand to the narrowest three paired contour samples
+        // around the same observed apex. No legacy or sibling geometry enters
+        // this request-local centerline-owned band.
+        let immediateFieldIsQuantizationHostile = immediateDistance < maximumDisplacement * 0.5
+        let pairCount = immediateFieldIsQuantizationHostile ? 3 : 1
+        guard apexIndex - pairCount >= support.contour.startIndex,
+              apexIndex + pairCount < support.contour.endIndex
+        else {
+            return []
+        }
+
+        var points: [WarpControlPoint] = []
+        for offset in 1...pairCount {
+            let pair = [apexIndex - offset, apexIndex + offset]
+            var pairSides: [Float] = []
+            for index in pair {
+                let source = support.contour[index]
+                guard let axisX = medianX(at: source.y, medianLine: medianLine),
+                      axisX.isFinite,
+                      (0...1).contains(axisX)
+                else {
+                    return []
+                }
+                let signedDistance = source.x - axisX
+                let distanceToAxis = abs(signedDistance)
+                let displacement = min(
+                    maximumDisplacement,
+                    distanceToAxis * normalizedStrength
+                )
+                guard signedDistance.isFinite,
+                      signedDistance != 0,
+                      distanceToAxis.isFinite,
+                      displacement.isFinite,
+                      displacement > 0
+                else {
+                    return []
+                }
+
+                let signedDisplacement = signedDistance < 0 ? displacement : -displacement
+                let target = SIMD2<Float>(source.x + signedDisplacement, source.y)
+                guard isFiniteUnitPoint(target),
+                      abs(target.x - axisX) < distanceToAxis,
+                      let point = validatedPoint(
+                          source: source,
+                          target: target,
+                          radius: radius,
+                          strength: strength,
+                          falloff: falloff
+                      )
+                else {
+                    return []
+                }
+                pairSides.append(signedDistance)
+                points.append(point)
+            }
+            guard pairSides.count == 2,
+                  pairSides[0] * pairSides[1] < 0
             else {
                 return []
             }
-            points.append(point)
         }
         return points
     }
