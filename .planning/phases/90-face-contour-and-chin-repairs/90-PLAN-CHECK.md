@@ -97,6 +97,12 @@ global maximum for every possible accepted topology.
 issues: []
 ```
 
+Plans 90-03/04 were synchronized with revision 4: owner documents must name
+the bounded sampled ribbon and canonical 60/256 regression without making a
+global topology claim, and closeout must record the retained RED, sparse
+disconfirmation, actual bounded-ribbon GREEN, and Metal boundary test rather
+than the superseded characterization-only narrative.
+
 ## Recommendation
 
 Plan 90-01 may resume from its retained RED and uncommitted sparse diagnostic;
