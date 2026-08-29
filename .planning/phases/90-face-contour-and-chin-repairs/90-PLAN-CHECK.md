@@ -3,7 +3,7 @@
 **Phase:** Face Contour and Chin Repairs
 **Plans verified:** 4
 **Status:** VERIFICATION PASSED
-**Revision gate:** evidence-driven architecture revision 4
+**Revision gate:** evidence-driven architecture revision 5
 **Issues:** 0 blockers, 0 warnings
 
 ## Goal-backward verdict
@@ -14,8 +14,13 @@ provider-local replan. Architecture revision 4 replaces only that sparse
 topology with a bounded provider-derived sampled ribbon, adds the missing
 256-point Metal payload proof, and preserves the fixture-aligned public-facade
 corroboration without making production position-dependent. A focused,
-code-grounded checker confirmed the construction order, density, locality, and
-canonical point-budget claims are executable.
+code-grounded checker confirmed the revision-4 construction order, density,
+locality, and canonical point-budget claims were executable. Exact execution
+then exposed a renderer-specific inverse-map folding defect, so revision 5 adds
+a corrected target curve and explicit monotonicity guard before execution may
+resume. The focused revision-5 review passed after envelope-preserving
+centering removed nonzero endpoint coefficients and horizontal extrema were
+clarified as non-emitting reference knots that may receive composite influence.
 
 ## Execution-time disconfirmation and resolution
 
@@ -69,6 +74,18 @@ fields, so the actual canonical combined regression stays at no more than 255
 and is tested against the backend's hard 256-point limit without claiming a
 global maximum for every possible accepted topology.
 
+Exact revision-4 execution still failed the semantic oracle: 60 points produced
+`11763/2512008` target signal and exact-zero protected/outside signal, but only
+`-51 -> -50` (`+1 Q16`) continuity and frozen sibling margins `[5, 8]`. The
+maximum coefficient/radius ratio was about `0.667`, beyond the falloff-2
+inverse-map monotonicity boundary, while the amplitude-only probe remained
+green. The curve also pinned the highest-leverage horizontal extrema to zero.
+Revision 5 replaces the interpolated neighbor-knot curve with a compactly
+tapered side-chord residual, bounds each coefficient to `0.40r`, and adds finite
+same-row Jacobian probes requiring inverse derivative above `0.05`. The 60/256,
+17.5%-corridor, source-only-radius, exact scaling, and no-pipeline-change
+boundaries remain unchanged.
+
 ## Coverage summary
 
 | Requirement | Plans | Executable evidence | Status |
@@ -81,7 +98,7 @@ global maximum for every possible accepted topology.
 | Dimension | Result |
 | --- | --- |
 | Requirement Coverage | PASS — FACE-01 and FACE-02 have semantic, locality, protection, distinction, degradation, and public evidence |
-| Task Completeness | PASS — source sampling, source-only radii, normalization, cap scaling, requested-strength scaling, containment, probe, and failure order are explicit |
+| Task Completeness | PASS — revision-5 chord residual, envelope-preserving centering, coefficient bound, analytic Jacobian probe, and failure order are explicit |
 | Dependency Correctness | PASS — completed 90-02 and revised 90-01 converge before serialized owner updates |
 | Key Links Planned | PASS — face-relative provider output reaches the existing CPU and `.usableFace` public route |
 | Scope Sanity | PASS — production change remains in one provider; no API, backend, shader, renderer, model, data, or UI expansion |
@@ -105,7 +122,6 @@ than the superseded characterization-only narrative.
 
 ## Recommendation
 
-Plan 90-01 may resume from its retained RED and uncommitted sparse diagnostic;
-the executor must replace the sparse implementation rather than preserve it as
-final behavior. Plans 90-03 and 90-04 remain blocked until both Wave 1
-summaries exist.
+Plan 90-01 may resume from the retained RED. The executor must replace the
+uncommitted revision-4 diagnostic rather than preserve it as final behavior.
+Plans 90-03 and 90-04 remain blocked until both Wave 1 summaries exist.
