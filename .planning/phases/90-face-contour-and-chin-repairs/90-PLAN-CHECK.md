@@ -3,7 +3,7 @@
 **Phase:** Face Contour and Chin Repairs
 **Plans verified:** 4
 **Status:** VERIFICATION PASSED
-**Revision gate:** evidence-driven architecture revision 5
+**Revision gate:** evidence-driven architecture revision 6
 **Issues:** 0 blockers, 0 warnings
 
 ## Goal-backward verdict
@@ -86,6 +86,16 @@ same-row Jacobian probes requiring inverse derivative above `0.05`. The 60/256,
 17.5%-corridor, source-only-radius, exact scaling, and no-pipeline-change
 boundaries remain unchanged.
 
+Exact revision-5 execution still yielded only `+1 Q16`; provider probes showed
+that the approximate overlap-normalized coefficients delivered only
+`0.0001...0.0030` displacement at observed knots despite `0.0088136` maximum
+field displacement elsewhere. Extending the samples over the complete anchor
+run improved the frozen metric to `+5`, proving direction but not fit. Revision
+6 replaces the local normalization with a deterministic bounded compact-RBF
+QP against the exact target-centred CPU basis, with 118 geometry-relative
+observations, 60 variables, five equalities, source/target containment boxes,
+fixed-point convergence, fit/roughness/Jacobian gates, and exact request scaling.
+
 ## Coverage summary
 
 | Requirement | Plans | Executable evidence | Status |
@@ -98,7 +108,7 @@ boundaries remain unchanged.
 | Dimension | Result |
 | --- | --- |
 | Requirement Coverage | PASS — FACE-01 and FACE-02 have semantic, locality, protection, distinction, degradation, and public evidence |
-| Task Completeness | PASS — revision-5 chord residual, envelope-preserving centering, coefficient bound, analytic Jacobian probe, and failure order are explicit |
+| Task Completeness | PASS — revision-6 QP/KKT, fixed-point initialization/convergence, fit, midpoint quantization, scaling, and failure rules are explicit |
 | Dependency Correctness | PASS — completed 90-02 and revised 90-01 converge before serialized owner updates |
 | Key Links Planned | PASS — face-relative provider output reaches the existing CPU and `.usableFace` public route |
 | Scope Sanity | PASS — production change remains in one provider; no API, backend, shader, renderer, model, data, or UI expansion |
@@ -122,6 +132,9 @@ than the superseded characterization-only narrative.
 
 ## Recommendation
 
-Plan 90-01 may resume from the retained RED. The executor must replace the
-uncommitted revision-4 diagnostic rather than preserve it as final behavior.
-Plans 90-03 and 90-04 remain blocked until both Wave 1 summaries exist.
+Plan 90-01 may resume from the retained RED. The focused revision-6 checker
+confirmed the compact-RBF QP, deterministic KKT solver, undamped initialization,
+target-centre fixed point, per-point midpoint quantization, pair correction,
+and complete post-materialization gates are internally consistent. The executor
+must replace the current uncommitted diagnostic rather than preserve it as final
+behavior. Plans 90-03 and 90-04 remain blocked until both Wave 1 summaries exist.
