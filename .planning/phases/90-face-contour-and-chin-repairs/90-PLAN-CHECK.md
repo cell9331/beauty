@@ -3,22 +3,19 @@
 **Phase:** Face Contour and Chin Repairs
 **Plans verified:** 4
 **Status:** VERIFICATION PASSED
-**Revision gate:** iteration 3 of 3
+**Revision gate:** evidence-driven architecture revision 4
 **Issues:** 0 blockers, 0 warnings
 
 ## Goal-backward verdict
 
-The Phase 90 plan set is executable after the Plan 90-01 evidence-driven
-replan. Plan 90-02 is already complete. Revised Plan 90-01 retains the valid
-generated RED, repairs only the provider-local contour field, proves the exact
-frozen Phase 89 contract in the Effects target, and uses a fixture-aligned
-public-facade corroboration without making production position-dependent.
-
-The dedicated typed checker wrote its initial iteration-3 blockers but its
-retry was unavailable because of a platform usage limit. A focused,
-code-grounded oracle auditor then reviewed each correction against the actual
-comparator, provider, CPU warp, SPI fixture topology, and test helpers. The
-final fallback verdict is PASS.
+Plan 90-02 is already complete. Plan 90-01 retains the valid generated RED and
+the exact frozen Phase 89 contract, but execution disconfirmed the first sparse
+provider-local replan. Architecture revision 4 replaces only that sparse
+topology with a bounded provider-derived sampled ribbon, adds the missing
+256-point Metal payload proof, and preserves the fixture-aligned public-facade
+corroboration without making production position-dependent. A focused,
+code-grounded checker confirmed the construction order, density, locality, and
+canonical point-budget claims are executable.
 
 ## Execution-time disconfirmation and resolution
 
@@ -36,20 +33,41 @@ sign, or neutral handling. It also separated the frozen sibling set
 (`faceSmall`, `faceSlim`) from the Phase 90 strengthening comparisons
 (`faceVShape`, `jawSlim`, repaired `chinTaper`).
 
-The revised implementation path removes the actual causes:
+The first revised implementation path attempted to remove the actual causes:
 
 - face-relative outer-30%-width contiguous runs supply original-adjacency
-  anchors while outer-20%-width corridors own emissions and influence;
+  anchors while outer-20%-width corridors owned emissions and influence;
 - endpoints, contour-global horizontal extrema, central transitions, and
   out-of-corridor anchors do not emit;
 - branch-local raw deltas are centered once across the combined bilateral set
   and use one representable scale, with separate left/right/whole roughness
   guards;
-- radii use the exact `min(0.015 * width, 0.8 * minimumEdgeDistance)` rule,
-  remain finite and `0 < radius < 0.04`, and preserve strict source/target
-  corridor containment without changing sibling validators;
+- radii used the exact `min(0.015 * width, 0.8 * minimumEdgeDistance)` rule and
+  preserved strict source/target corridor containment without changing sibling
+  validators;
 - Task 1 remains the exact Phase 89 ROI/threshold authority, while Task 2 uses
   a predeclared `.usableFace`-aligned envelope as public-route corroboration.
+
+That sparse path was implemented exactly and then disconfirmed:
+
+- eight local points achieved `2609/357081` target signal and exact `0/0`
+  outside/central signal;
+- source/neutral continuity improved only `+1 Q16`, frozen siblings were
+  `[5, 8]`, and strengthening siblings were `[15, 11, 1]`;
+- a diagnostic radius near `0.039` improved continuity only to `+2 Q16`.
+
+Revision 4 therefore derives a dense-but-bounded continuous ribbon from the
+same observed branches and remains in the ordinary `WarpControlPoint`
+abstraction. The outer-17.5%-width owning corridors map exactly to the Task 1
+frozen inner X boundaries. Accepted topology uses exactly 30 equal-arc samples
+per side between first and last eligible knots; source-only radii break the
+radius/displacement cycle; source-Euclidean overlap normalization, one
+cap-strength mean/scale, and request-strength multiplication preserve exact
+reused scaling. A finite, explicitly defined composite-field probe guards the
+stored result. A diagnostic all-44 count measured 195 points from the other 43
+fields, so the actual canonical combined regression stays at no more than 255
+and is tested against the backend's hard 256-point limit without claiming a
+global maximum for every possible accepted topology.
 
 ## Coverage summary
 
@@ -63,11 +81,11 @@ The revised implementation path removes the actual causes:
 | Dimension | Result |
 | --- | --- |
 | Requirement Coverage | PASS — FACE-01 and FACE-02 have semantic, locality, protection, distinction, degradation, and public evidence |
-| Task Completeness | PASS — branch ranges, anchors, emissions, extrema, containment, scale, radii, roughness sets, and failure rules are explicit |
+| Task Completeness | PASS — source sampling, source-only radii, normalization, cap scaling, requested-strength scaling, containment, probe, and failure order are explicit |
 | Dependency Correctness | PASS — completed 90-02 and revised 90-01 converge before serialized owner updates |
 | Key Links Planned | PASS — face-relative provider output reaches the existing CPU and `.usableFace` public route |
 | Scope Sanity | PASS — production change remains in one provider; no API, backend, shader, renderer, model, data, or UI expansion |
-| Verification Derivation | PASS — frozen exact proof and public-route corroboration are explicitly separated |
+| Verification Derivation | PASS — frozen exact proof, public-route corroboration, and combined point-budget proof are explicitly separated |
 | Context Compliance | PASS — 62/5/75, exact caps, request-local ownership, privacy, Phase 91/95, and nonrelease boundaries remain intact |
 | Cross-Plan Data Contracts | PASS — Plan 90-02 evidence is preserved and both summaries feed Plans 90-03/04 |
 | AGENTS.md Compliance | PASS — generated/in-memory evidence is primary and no private portrait detail persists |
@@ -81,5 +99,7 @@ issues: []
 
 ## Recommendation
 
-Revised Plan 90-01 may resume from its retained RED. Plans 90-03 and 90-04
-remain blocked until both Wave 1 summaries exist.
+Plan 90-01 may resume from its retained RED and uncommitted sparse diagnostic;
+the executor must replace the sparse implementation rather than preserve it as
+final behavior. Plans 90-03 and 90-04 remain blocked until both Wave 1
+summaries exist.
