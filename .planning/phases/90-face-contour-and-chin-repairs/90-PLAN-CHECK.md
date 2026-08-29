@@ -2,9 +2,15 @@
 
 **Phase:** Face Contour and Chin Repairs
 **Plans verified:** 4
-**Status:** VERIFICATION PASSED
-**Revision gate:** evidence-driven architecture revision 6
-**Issues:** 0 blockers, 0 warnings
+**Status:** EXECUTION STOP CONDITION REACHED
+**Revision gate:** revision 7 bounded fallback executed and disconfirmed
+**Issues:** 1 implementation blocker, 0 warnings
+
+> Execution addendum (2026-08-29): the revision-6 plan check below is retained
+> as planning history. Revision 6 was disconfirmed for cost and incorrect
+> inverse-map modeling; revision 7 then exhausted its finite safe candidates.
+> See `90-01-ATTEMPT.md`. This file no longer authorizes execution to resume
+> without an explicit blocker decision.
 
 ## Goal-backward verdict
 
@@ -100,14 +106,14 @@ fixed-point convergence, fit/roughness/Jacobian gates, and exact request scaling
 
 | Requirement | Plans | Executable evidence | Status |
 | --- | --- | --- | --- |
-| FACE-01 | 90-01, 90-03, 90-04 | Retained RED, exact generated Effects oracle, provider topology/boundary matrix, fixture-aligned public pixels, lifecycle and owner gates | COVERED |
+| FACE-01 | 90-01, 90-03, 90-04 | Retained RED and aggregate terminal-attempt evidence; no compliant GREEN | BLOCKED |
 | FACE-02 | 90-02, 90-03, 90-04 | Executed provider, exact generated/public pixels, sibling distinction, lifecycle and owner gates | COVERED |
 
 ## Dimension results
 
 | Dimension | Result |
 | --- | --- |
-| Requirement Coverage | PASS — FACE-01 and FACE-02 have semantic, locality, protection, distinction, degradation, and public evidence |
+| Requirement Coverage | BLOCKED — FACE-02 is green; FACE-01 has a valid RED but no compliant implementation |
 | Task Completeness | PASS — revision-6 QP/KKT, fixed-point initialization/convergence, fit, midpoint quantization, scaling, and failure rules are explicit |
 | Dependency Correctness | PASS — completed 90-02 and revised 90-01 converge before serialized owner updates |
 | Key Links Planned | PASS — face-relative provider output reaches the existing CPU and `.usableFace` public route |
@@ -121,7 +127,15 @@ fixed-point convergence, fit/roughness/Jacobian gates, and exact request scaling
 ## Structured issues
 
 ```yaml
-issues: []
+issues:
+  - severity: blocker
+    requirement: FACE-01
+    description: >-
+      No executed provider-only candidate satisfies the frozen +16 Q16,
+      sibling-distinction, locality, protection, point-budget, exact-scaling,
+      and inverse-map safety contract together.
+    evidence: 90-01-ATTEMPT.md
+    next_step: explicit autonomous blocker decision
 ```
 
 Plans 90-03/04 were synchronized with revision 4: owner documents must name
@@ -132,9 +146,7 @@ than the superseded characterization-only narrative.
 
 ## Recommendation
 
-Plan 90-01 may resume from the retained RED. The focused revision-6 checker
-confirmed the compact-RBF QP, deterministic KKT solver, undamped initialization,
-target-centre fixed point, per-point midpoint quantization, pair correction,
-and complete post-materialization gates are internally consistent. The executor
-must replace the current uncommitted diagnostic rather than preserve it as final
-behavior. Plans 90-03 and 90-04 remain blocked until both Wave 1 summaries exist.
+Do not resume Plan 90-01 automatically. Preserve the retained RED and unchanged
+production provider, keep Plans 90-03 and 90-04 blocked, and route through the
+autonomous blocker decision. A retry requires a newly authorized bounded replan;
+skipping leaves FACE-01 explicitly unresolved and cannot promote Phase 90.

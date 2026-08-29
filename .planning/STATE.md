@@ -4,11 +4,11 @@ milestone: v1.22
 milestone_name: Non-Local Facial Effect Repairs
 current_phase: 90
 current_phase_name: Face Contour and Chin Repairs
-status: executing
-stopped_at: Completed 90-02-PLAN.md; 90-01 requires evidence-driven replanning
-last_updated: "2026-08-28T07:02:56.354Z"
-last_activity: 2026-08-28
-last_activity_desc: Completed 90-02-PLAN.md; FACE-01 characterization disconfirmed current behavior
+status: blocked
+stopped_at: FACE-01 finite safe candidates exhausted; autonomous blocker decision required
+last_updated: "2026-08-29T15:09:33Z"
+last_activity: 2026-08-29
+last_activity_desc: Recorded terminal Plan 90-01 attempt; production diagnostics removed and retained RED preserved
 progress:
   total_phases: 7
   completed_phases: 1
@@ -32,8 +32,8 @@ without distributing the SDK, model, or weights.
 
 Phase: 90 — Face Contour and Chin Repairs
 Plan: 1 of 4 complete
-Status: Executing — Plan 90-01 requires evidence-driven replanning
-Last activity: 2026-08-28 — Completed 90-02; retained FACE-01 disconfirmation oracle
+Status: Blocked — Plan 90-01 reached its explicit finite-candidate stop condition
+Last activity: 2026-08-29 — Recorded FACE-01 blocker and removed failed production experiments
 
 Progress: [█░░░░░░░░░] 14%
 
@@ -92,16 +92,24 @@ roadmaps.
   contour pairs while compatible sub-cap requests retain the two-point topology.
   — Makes the frozen centerline target visible without borrowing sibling geometry.
 
+- [Phase 90]: FACE-01 keeps the frozen `+16 Q16`, sibling, locality, and
+  protection contract after all bounded provider-only candidates failed to
+  satisfy it together. — Prevents a threshold reduction, unsafe inverse map,
+  wider support leak, or another retained solver from masquerading as GREEN.
+
 ### Pending Todos
 
 None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-- [Phase 90] The retained generated FACE-01 oracle disproved the current
-  `faceContourSmooth` implementation against signed, sibling-distinction,
-  outside, and central-protection bounds; Plan 90-01 must be replanned before
-  any production edit or requirement completion.
+- [Phase 90] Plan 90-01 reached its explicit stop rule. Sparse, sampled-ribbon,
+  tapered, QP, O(n) carrier, and target-centred diagnostic paths produced at
+  most `+5 Q16` while safe/local; wider support reached `+9 Q16` but violated
+  outside protection. Stronger local candidates failed displacement/radius or
+  inverse-Jacobian gates. See `90-01-ATTEMPT.md`. Production experiments were
+  removed; FACE-01 remains unresolved and Plans 90-03/04 remain blocked pending
+  a user choice to authorize a new bounded replan, skip, or stop.
 
 - [Phase 89] Independent pupil-to-own-eye support is intentionally absent and
   must be implemented in Phase 91 before gaze can receive semantic credit.
@@ -122,6 +130,6 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-28T15:10:00+08:00
-Stopped at: Completed 90-02-PLAN.md; 90-01 requires evidence-driven replanning
-Resume file: None
+Last session: 2026-08-29T23:09:33+08:00
+Stopped at: FACE-01 finite safe candidates exhausted; autonomous blocker decision required
+Resume file: `.planning/phases/90-face-contour-and-chin-repairs/90-01-ATTEMPT.md`
