@@ -30,13 +30,13 @@
 
 | Field | Value |
 | --- | --- |
-| Status | `blocked` |
+| Status | `active` |
 | Scope | Complete FACE-01 under the frozen Phase 89 semantic, sibling, locality, protection, point-budget, and inverse-map safety contract without changing public inventory, renderer, backend, or fixtures. |
 | Completed sibling | Phase 90 Plan 90-02 repaired FACE-02 `chinTaper`; its production and test commits remain complete. |
-| Current blocker | Plan 90-01 exhausted its finite safe provider-only candidates. The best local and monotone result was `+5 Q16` versus the frozen `+16`; wider support reached `+9` but violated outside protection. |
+| Prior blocker | Plan 90-01 exhausted its earlier finite safe provider-only candidates. The best local and monotone result was `+5 Q16` versus the frozen `+16`; wider support reached `+9` but violated outside protection. |
 | Preserved state | Failed production experiments and temporary diagnostics were removed. The committed generated RED and pre-attempt provider behavior remain. |
 | Evidence | `.planning/phases/90-face-contour-and-chin-repairs/90-01-ATTEMPT.md` contains aggregate-only results and the exact stop rationale. |
-| Next step | User must choose the autonomous blocker route: authorize a new bounded replan, skip Phase 90 with FACE-01 unresolved, or stop autonomous mode. |
+| Next step | Execute independently verified Plan 90-01 revision 8 without changing the frozen contract or reviving disconfirmed solvers. |
 
 Checklist:
 
@@ -45,7 +45,8 @@ Checklist:
 | Freeze FACE-01 RED | `completed` | Exact generated CPU oracle retains Phase 89 regions, signs, siblings, thresholds, and protection bounds. |
 | Explore bounded provider-local candidates | `completed-blocked` | Six topology/solver families were disconfirmed without weakening the oracle or safety gates. |
 | Remove failed production diagnostics | `completed` | Production/test worktree restored to the committed state; only planning evidence remains modified. |
-| Complete FACE-01 | `blocked` | No compliant GREEN exists under the executed Plan 90-01 design space. |
+| Replan FACE-01 | `completed` | Independent plan review passed the bounded seven-candidate, full-strength safety design. |
+| Complete FACE-01 | `active` | Revision 8 is authorized for execution; no compliant GREEN exists yet. |
 | Continue Phase 90 Wave 2/3 | `blocked` | Plans 90-03/04 require both Wave 1 summaries and cannot close FACE-01 by documentation. |
 
 The v1.21 entry below is complete and retained for session continuity.

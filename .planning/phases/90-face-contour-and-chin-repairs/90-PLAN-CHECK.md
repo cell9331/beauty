@@ -2,15 +2,41 @@
 
 **Phase:** Face Contour and Chin Repairs
 **Plans verified:** 4
-**Status:** EXECUTION STOP CONDITION REACHED
-**Revision gate:** revision 7 bounded fallback executed and disconfirmed
-**Issues:** 1 implementation blocker, 0 warnings
+**Status:** EXECUTION AUTHORIZED
+**Revision gate:** revision 8 independently verified after owner-selected fix and retry
+**Issues:** 0 blockers, 0 warnings
 
-> Execution addendum (2026-08-29): the revision-6 plan check below is retained
-> as planning history. Revision 6 was disconfirmed for cost and incorrect
-> inverse-map modeling; revision 7 then exhausted its finite safe candidates.
-> See `90-01-ATTEMPT.md`. This file no longer authorizes execution to resume
-> without an explicit blocker decision.
+> Revision 8 addendum (2026-08-30): the owner selected `Fix and retry`. The
+> historical revision-7 stop record below remains evidence of the disconfirmed
+> design space, but no longer controls execution. The rewritten 90-01 plan and
+> synchronized 90-03/04 contracts passed independent goal-backward review.
+
+## Revision 8 verification verdict
+
+Execution may resume. The rewritten plan preserves the byte-frozen FACE-01
+oracle and its original SHA-256, bounds selection to seven predeclared
+two-dimensional provider-local candidates, and keeps the public inventory,
+renderer, backend, shader, model/data, UI, privacy, and owner-local boundaries
+unchanged.
+
+The actual CPU map is certified with its renderer-effective radius and moving
+target centres for every accepted strength from identity through `0.25`.
+Strict continuous swept-support separation, expanded-disk containment, and a
+cap-max analytical Lipschitz bound establish the global `0.05` lower-distance
+and injectivity contract; cap/half and finite Jacobian probes are supplemental.
+
+The retry also owns a retained read-only stop verifier with a literal command
+contract. A seven-candidate miss must restore the provider and frozen test
+bytes, preserve the oracle hash and exact RED aggregate, append one
+aggregate-only attempt section, prove later artifacts absent/restored, and
+exit with `FACE01_STOP_VERIFIED` before returning a typed blocker. Every
+repository write, candidate switch, append, and rollback uses `apply_patch`.
+
+Plans 90-03/04 now consume only a completed 90-01 summary for the selected
+family, measured count, renderer-effective certificate, and canonical payload
+evidence. They no longer carry the disconfirmed sampled-ribbon/60-point claim.
+
+## Historical revision 7 record
 
 ## Goal-backward verdict
 
@@ -144,7 +170,7 @@ global topology claim, and closeout must record the retained RED, sparse
 disconfirmation, actual bounded-ribbon GREEN, and Metal boundary test rather
 than the superseded characterization-only narrative.
 
-## Recommendation
+## Historical revision 7 recommendation
 
 Do not resume Plan 90-01 automatically. Preserve the retained RED and unchanged
 production provider, keep Plans 90-03 and 90-04 blocked, and route through the

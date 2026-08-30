@@ -4,11 +4,11 @@ milestone: v1.22
 milestone_name: Non-Local Facial Effect Repairs
 current_phase: 90
 current_phase_name: Face Contour and Chin Repairs
-status: blocked
-stopped_at: FACE-01 finite safe candidates exhausted; autonomous blocker decision required
-last_updated: "2026-08-29T15:09:33Z"
-last_activity: 2026-08-29
-last_activity_desc: Recorded terminal Plan 90-01 attempt; production diagnostics removed and retained RED preserved
+status: executing
+stopped_at: Revision 8 FACE-01 plan independently verified; ready for execution
+last_updated: "2026-08-30T01:54:42Z"
+last_activity: 2026-08-30
+last_activity_desc: Independently verified the bounded full-strength FACE-01 retry plan
 progress:
   total_phases: 7
   completed_phases: 1
@@ -32,8 +32,8 @@ without distributing the SDK, model, or weights.
 
 Phase: 90 — Face Contour and Chin Repairs
 Plan: 1 of 4 complete
-Status: Blocked — Plan 90-01 reached its explicit finite-candidate stop condition
-Last activity: 2026-08-29 — Recorded FACE-01 blocker and removed failed production experiments
+Status: Executing — verified Plan 90-01 revision 8 ready for implementation
+Last activity: 2026-08-30 — Independent plan checker passed the bounded full-strength retry
 
 Progress: [█░░░░░░░░░] 14%
 
@@ -97,6 +97,15 @@ roadmaps.
   satisfy it together. — Prevents a threshold reduction, unsafe inverse map,
   wider support leak, or another retained solver from masquerading as GREEN.
 
+- [Phase 90]: On the autonomous blocker prompt, the owner selected
+  `Fix and retry`; the retry may redesign FACE-01 internals but does not relax
+  the frozen semantic/safety contract or current product boundary.
+
+- [Phase 90]: Revision 8 uses a bounded seven-candidate two-dimensional
+  provider-local search, renderer-effective full-strength swept-support and
+  global injectivity certificates, an immutable frozen-oracle hash, and a
+  retained read-only stop verifier. Independent plan review passed.
+
 ### Pending Todos
 
 None found under `.planning/todos/pending/`.
@@ -108,8 +117,8 @@ None found under `.planning/todos/pending/`.
   most `+5 Q16` while safe/local; wider support reached `+9 Q16` but violated
   outside protection. Stronger local candidates failed displacement/radius or
   inverse-Jacobian gates. See `90-01-ATTEMPT.md`. Production experiments were
-  removed; FACE-01 remains unresolved and Plans 90-03/04 remain blocked pending
-  a user choice to authorize a new bounded replan, skip, or stop.
+  removed; FACE-01 remains unresolved while verified revision 8 executes, and
+  Plans 90-03/04 remain blocked until a compliant GREEN exists.
 
 - [Phase 89] Independent pupil-to-own-eye support is intentionally absent and
   must be implemented in Phase 91 before gaze can receive semantic credit.
@@ -130,6 +139,6 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-29T23:09:33+08:00
-Stopped at: FACE-01 finite safe candidates exhausted; autonomous blocker decision required
-Resume file: `.planning/phases/90-face-contour-and-chin-repairs/90-01-ATTEMPT.md`
+Last session: 2026-08-30T09:54:42+08:00
+Stopped at: Revision 8 FACE-01 plan independently verified; ready for execution
+Resume file: `.planning/phases/90-face-contour-and-chin-repairs/90-01-PLAN.md`
