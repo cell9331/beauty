@@ -72,3 +72,12 @@ blocked because they require both Wave 1 summaries.
 User direction is required to choose one of the autonomous blocker routes:
 authorize a new bounded replan, skip Phase 90 with FACE-01 unresolved, or stop
 the autonomous run.
+
+## 2026-08-30 FACE-01 bounded-2D retry stop
+
+- candidates: A1,A2,A3,A4,B1,B2,B3 in the frozen order; all seven completed
+- gate_bitmasks: bits oracle-hash=0x01,safety=0x02,frozen-oracle=0x04; A1=0x01,A2=0x01,A3=0x01,A4=0x01,B1=0x01,B2=0x01,B3=0x01
+- q16_signal_counts: every candidate source=0,neutral=0,frozen-siblings=[4,9],strengthening-siblings=[16,12,0]
+- point_counts: A1=0,A2=0,A3=0,A4=0,B1=0,B2=0,B3=0 after renderer-effective analytical admission
+- oracle_sha256: 7fa653475f4a13831ec0a75c263cfaf717c48b3d6094c2ff3e95ecb64076981d
+- rollback_status: provider and complete repair test restored byte-exact; later-task artifacts restored or absent; FACE01_STOP_VERIFIED

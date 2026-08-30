@@ -30,13 +30,13 @@
 
 | Field | Value |
 | --- | --- |
-| Status | `active` |
+| Status | `blocked` |
 | Scope | Complete FACE-01 under the frozen Phase 89 semantic, sibling, locality, protection, point-budget, and inverse-map safety contract without changing public inventory, renderer, backend, or fixtures. |
 | Completed sibling | Phase 90 Plan 90-02 repaired FACE-02 `chinTaper`; its production and test commits remain complete. |
 | Prior blocker | Plan 90-01 exhausted its earlier finite safe provider-only candidates. The best local and monotone result was `+5 Q16` versus the frozen `+16`; wider support reached `+9` but violated outside protection. |
 | Preserved state | Failed production experiments and temporary diagnostics were removed. The committed generated RED and pre-attempt provider behavior remain. |
-| Evidence | `.planning/phases/90-face-contour-and-chin-repairs/90-01-ATTEMPT.md` contains aggregate-only results and the exact stop rationale. |
-| Next step | Execute independently verified Plan 90-01 revision 8 without changing the frozen contract or reviving disconfirmed solvers. |
+| Evidence | `.planning/phases/90-face-contour-and-chin-repairs/90-01-ATTEMPT.md` retains both aggregate-only stop records; the revision-8 bounded-2D retry restored production/test bytes and passed the retained `FACE01_STOP_VERIFIED` rollback verifier. |
+| Next step | FACE-01 is implementation-blocked after all seven revision-8 candidates failed analytical admission and the frozen oracle. Do not enter Plans 90-03/04 without a new owner decision and a newly authorized plan. |
 
 Checklist:
 
@@ -46,7 +46,7 @@ Checklist:
 | Explore bounded provider-local candidates | `completed-blocked` | Six topology/solver families were disconfirmed without weakening the oracle or safety gates. |
 | Remove failed production diagnostics | `completed` | Production/test worktree restored to the committed state; only planning evidence remains modified. |
 | Replan FACE-01 | `completed` | Independent plan review passed the bounded seven-candidate, full-strength safety design. |
-| Complete FACE-01 | `active` | Revision 8 is authorized for execution; no compliant GREEN exists yet. |
+| Complete FACE-01 | `blocked` | A1–A4 and B1–B3 emitted zero admissible points under the renderer-effective analytical gates; the frozen oracle remained RED and exact rollback was verified. |
 | Continue Phase 90 Wave 2/3 | `blocked` | Plans 90-03/04 require both Wave 1 summaries and cannot close FACE-01 by documentation. |
 
 The v1.21 entry below is complete and retained for session continuity.

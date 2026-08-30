@@ -4,15 +4,15 @@ milestone: v1.22
 milestone_name: Non-Local Facial Effect Repairs
 current_phase: 90
 current_phase_name: Face Contour and Chin Repairs
-status: executing
-stopped_at: Revision 8 FACE-01 plan independently verified; ready for execution
-last_updated: "2026-08-30T01:54:42Z"
+status: blocked
+stopped_at: FACE-01 bounded-2D retry exhausted; typed implementation blocker
+last_updated: "2026-08-30T02:13:30.000Z"
 last_activity: 2026-08-30
-last_activity_desc: Independently verified the bounded full-strength FACE-01 retry plan
+last_activity_desc: FACE-01 revision-8 retry stopped after seven candidate misses
 progress:
   total_phases: 7
   completed_phases: 1
-  total_plans: 8
+  total_plans: 9
   completed_plans: 5
   percent: 14
 ---
@@ -30,10 +30,10 @@ without distributing the SDK, model, or weights.
 
 ## Current Position
 
-Phase: 90 — Face Contour and Chin Repairs
-Plan: 1 of 4 complete
-Status: Executing — verified Plan 90-01 revision 8 ready for implementation
-Last activity: 2026-08-30 — Independent plan checker passed the bounded full-strength retry
+Phase: 90 (Face Contour and Chin Repairs) — BLOCKED
+Plan: 1 of 4
+Status: Blocked on FACE-01 implementation
+Last activity: 2026-08-30 — Revision-8 A1–A4/B1–B3 retry exhausted and rollback verified
 
 Progress: [█░░░░░░░░░] 14%
 
@@ -106,19 +106,24 @@ roadmaps.
   global injectivity certificates, an immutable frozen-oracle hash, and a
   retained read-only stop verifier. Independent plan review passed.
 
+- [Phase 90]: Revision 8 execution exhausted A1–A4 and B1–B3 without one
+  renderer-effective analytically admissible field; every candidate emitted
+  zero admitted points and the frozen oracle stayed RED. Provider/test bytes
+  were restored exactly and the retained verifier returned
+  `FACE01_STOP_VERIFIED`; Tasks 90-01-02/03 and Plans 90-03/04 did not run.
+
 ### Pending Todos
 
 None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-- [Phase 90] Plan 90-01 reached its explicit stop rule. Sparse, sampled-ribbon,
-  tapered, QP, O(n) carrier, and target-centred diagnostic paths produced at
-  most `+5 Q16` while safe/local; wider support reached `+9 Q16` but violated
-  outside protection. Stronger local candidates failed displacement/radius or
-  inverse-Jacobian gates. See `90-01-ATTEMPT.md`. Production experiments were
-  removed; FACE-01 remains unresolved while verified revision 8 executes, and
-  Plans 90-03/04 remain blocked until a compliant GREEN exists.
+- [Phase 90] FACE-01 is implementation-blocked after revision 8. All seven
+  frozen bounded-2D candidates failed renderer-effective analytical admission,
+  emitted zero points, and left the frozen method at its original hash with
+  source/neutral Q16 `0/0`. Exact rollback plus the append-only aggregate stop
+  record passed `FACE01_STOP_VERIFIED`; no success summary exists and Tasks
+  90-01-02/03 plus Plans 90-03/04 remain blocked.
 
 - [Phase 89] Independent pupil-to-own-eye support is intentionally absent and
   must be implemented in Phase 91 before gaze can receive semantic credit.
@@ -139,6 +144,6 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-30T09:54:42+08:00
-Stopped at: Revision 8 FACE-01 plan independently verified; ready for execution
+Last session: 2026-08-30T10:13:30+08:00
+Stopped at: FACE-01 bounded-2D retry exhausted; typed implementation blocker
 Resume file: `.planning/phases/90-face-contour-and-chin-repairs/90-01-PLAN.md`
