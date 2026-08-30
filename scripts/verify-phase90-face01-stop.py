@@ -108,6 +108,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--summary-path")
     parser.add_argument("--expect-summary", choices=["absent", "present"])
     parser.add_argument("--verifier-sha256")
+    parser.add_argument("--preserved-preexisting-path", action="append", default=[])
     parser.add_argument("--allowed-diff-path", action="append", default=[])
     parser.add_argument("--expect-status")
     return parser.parse_args()
@@ -205,9 +206,24 @@ def main() -> None:
         if " -> " in path:
             path = path.split(" -> ", 1)[1]
         changed.add(path)
-    # STATE.md was already modified by the sole-writer phase-start transition
-    # before this plan began; it is deliberately excluded from task ownership.
-    changed.discard(".planning/STATE.md")
+    preserved: set[str] = set()
+    for declaration in args.preserved_preexisting_path:
+        if "=sha256:" not in declaration:
+            fail("preserved_preexisting_declaration")
+        relative, digest = declaration.split("=sha256:", 1)
+        relative_path = Path(relative)
+        if (
+            not relative
+            or not digest
+            or relative_path.is_absolute()
+            or ".." in relative_path.parts
+            or relative in preserved
+        ):
+            fail("preserved_preexisting_declaration")
+        if sha256(read_bytes(root, relative)) != digest:
+            fail("preserved_preexisting_hash")
+        preserved.add(relative)
+    changed.difference_update(preserved)
     if changed != set(args.allowed_diff_path):
         fail("diff_allowlist")
 

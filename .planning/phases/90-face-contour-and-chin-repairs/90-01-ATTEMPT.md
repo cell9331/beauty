@@ -81,3 +81,14 @@ the autonomous run.
 - point_counts: A1=0,A2=0,A3=0,A4=0,B1=0,B2=0,B3=0 after renderer-effective analytical admission
 - oracle_sha256: 7fa653475f4a13831ec0a75c263cfaf717c48b3d6094c2ff3e95ecb64076981d
 - rollback_status: provider and complete repair test restored byte-exact; later-task artifacts restored or absent; FACE01_STOP_VERIFIED
+
+## 2026-08-30 FACE-01 budget-first revision-9 retry stop
+
+- candidates: C1,C2 in the frozen order; both completed
+- gate_bitmasks: bits oracle-hash=0x01,canonical-support=0x02,budget-lattice-global-safety=0x04,frozen-oracle=0x08; C1=0x01,C2=0x01
+- first_failures: C1=canonical-branch-count,C2=canonical-branch-count
+- q16_signal_counts: every candidate source=0,neutral=0,frozen-siblings=[4,9],strengthening-siblings=[16,12,0]
+- admitted_point_counts: C1=0,C2=0
+- lattice_rejection_counts: C1=0,C2=0 because the shared canonical support gate failed first
+- oracle_sha256: 7fa653475f4a13831ec0a75c263cfaf717c48b3d6094c2ff3e95ecb64076981d
+- rollback_status: provider and complete repair test restored byte-exact; later-task artifacts restored or absent; STATE.md and PLANS.md preserved byte-exact; FACE01_STOP_VERIFIED

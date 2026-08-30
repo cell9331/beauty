@@ -30,13 +30,13 @@
 
 | Field | Value |
 | --- | --- |
-| Status | `active` |
+| Status | `blocked` |
 | Scope | Complete FACE-01 under the frozen Phase 89 semantic, sibling, locality, protection, point-budget, and inverse-map safety contract without changing public inventory, renderer, backend, or fixtures. |
 | Completed sibling | Phase 90 Plan 90-02 repaired FACE-02 `chinTaper`; its production and test commits remain complete. |
 | Prior blocker | Plan 90-01 exhausted its earlier finite safe provider-only candidates. The best local and monotone result was `+5 Q16` versus the frozen `+16`; wider support reached `+9` but violated outside protection. |
 | Preserved state | Failed production experiments and temporary diagnostics were removed. The committed generated RED and pre-attempt provider behavior remain. |
-| Evidence | `.planning/phases/90-face-contour-and-chin-repairs/90-01-ATTEMPT.md` retains both aggregate-only stop records; the revision-8 bounded-2D retry restored production/test bytes and passed the retained `FACE01_STOP_VERIFIED` rollback verifier. |
-| Next step | Execute independently verified revision 9: C1 clipped-secant residuals, then C2 centroid-neighbor baselines; do not enter Plans 90-03/04 without a compliant GREEN. |
+| Evidence | `.planning/phases/90-face-contour-and-chin-repairs/90-01-ATTEMPT.md` retains all three aggregate-only stop records. Revision 9 tried C1 then C2; both failed the shared strict-corridor branch-count gate before displacement or lattice admission, production/test bytes were restored, and the retained verifier exited 0 with `FACE01_STOP_VERIFIED`. |
+| Next step | Await an explicit owner decision: authorize another bounded replan, skip Phase 90 with FACE-01 unresolved, or stop. Do not enter Plans 90-03/04 without a compliant GREEN summary. |
 
 Checklist:
 
@@ -48,7 +48,8 @@ Checklist:
 | Replan FACE-01 | `completed` | Independent plan review passed the bounded seven-candidate, full-strength safety design. |
 | Diagnose revision-8 stop | `completed` | Six candidates first failed single-field Lipschitz admission; B1 first failed exact cap/half Float representability. Radius clamping and corridor containment were not first blockers. |
 | Replan FACE-01 revision 9 | `completed` | Independent review passed the exact L1, paired cell, half-first lattice, energy, global injectivity, and stop-verifier contracts. |
-| Complete FACE-01 | `active` | Revision 9 is authorized for execution; revision-8 production/test state remains the clean starting point. |
+| Execute FACE-01 revision 9 | `completed-blocked` | C1 and C2 each admitted zero points after the frozen contour produced seven points per strict corridor branch against the required minimum of eight; oracle hash remained pinned and sanitized Q16 aggregates were identical. |
+| Complete FACE-01 | `blocked` | Exact rollback preserved provider/test/later-artifact bytes; the retained stop verifier returned `FACE01_STOP_VERIFIED`; no 90-01 summary exists. |
 | Continue Phase 90 Wave 2/3 | `blocked` | Plans 90-03/04 require both Wave 1 summaries and cannot close FACE-01 by documentation. |
 
 The v1.21 entry below is complete and retained for session continuity.

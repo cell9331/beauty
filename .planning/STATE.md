@@ -4,11 +4,11 @@ milestone: v1.22
 milestone_name: Non-Local Facial Effect Repairs
 current_phase: 90
 current_phase_name: Face Contour and Chin Repairs
-status: executing
-stopped_at: Revision 9 FACE-01 plan independently verified; ready for execution
-last_updated: "2026-08-30T03:24:33Z"
+status: blocked
+stopped_at: Revision 9 FACE-01 C1/C2 exhausted; implementation blocker retained
+last_updated: "2026-08-30T03:44:36Z"
 last_activity: 2026-08-30
-last_activity_desc: Independently verified the paired clearance-cell revision-9 plan
+last_activity_desc: Executed revision-9 C1/C2 and retained verified rollback evidence
 progress:
   total_phases: 7
   completed_phases: 1
@@ -30,10 +30,10 @@ without distributing the SDK, model, or weights.
 
 ## Current Position
 
-Phase: 90 (Face Contour and Chin Repairs) — EXECUTING
+Phase: 90 (Face Contour and Chin Repairs) — BLOCKED
 Plan: 1 of 4
-Status: Executing independently verified FACE-01 revision 9
-Last activity: 2026-08-30 — Revision-9 plan checker passed with zero issues
+Status: Blocked after revision-9 FACE-01 C1/C2 exhaustion
+Last activity: 2026-08-30 — Both candidates failed the shared canonical branch-count gate; rollback verification passed
 
 Progress: [█░░░░░░░░░] 14%
 
@@ -118,10 +118,10 @@ roadmaps.
   containment were not the first blockers. Revision 9 must allocate safety and
   representability budgets before displacement construction.
 
-- [Phase 90]: Revision 9 replaces the A4-derived family with two paired
-  clearance-cell integrated candidates, allocates renderer L1/Float/safety
-  budgets before target construction, preserves paired upper/middle/lower
-  ownership after local omission, and independently passed plan review.
+- [Phase 90]: Revision 9 execution tried C1 then C2 exactly. Both failed the
+  shared canonical support gate: the frozen contour supplies seven, not eight,
+  points per strict corridor branch. No displacement/lattice state was admitted;
+  exact rollback and retained `FACE01_STOP_VERIFIED` evidence passed.
 
 ### Pending Todos
 
@@ -129,9 +129,9 @@ None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-- [Phase 90] FACE-01 remains unresolved while independently verified revision 9
-  executes. Plans 90-03/04 remain blocked until a compliant 90-01 GREEN summary
-  exists.
+- [Phase 90] FACE-01 remains unresolved after revision 9 exhausted C1 and C2 at
+  the shared canonical branch-count gate. Plans 90-03/04 remain blocked until
+  a compliant 90-01 GREEN summary exists.
 
 - [Phase 89] Independent pupil-to-own-eye support is intentionally absent and
   must be implemented in Phase 91 before gaze can receive semantic credit.
@@ -152,6 +152,6 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-30T11:24:33+08:00
-Stopped at: Revision 9 FACE-01 plan independently verified; ready for execution
+Last session: 2026-08-30T11:44:36+08:00
+Stopped at: Revision 9 FACE-01 C1/C2 exhausted; implementation blocker retained
 Resume file: `.planning/phases/90-face-contour-and-chin-repairs/90-01-PLAN.md`
