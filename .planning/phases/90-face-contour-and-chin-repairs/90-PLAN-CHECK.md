@@ -3,7 +3,7 @@
 **Phase:** Face Contour and Chin Repairs
 **Plans verified:** 4
 **Status:** EXECUTION AUTHORIZED
-**Revision gate:** revision 8 independently verified after owner-selected fix and retry
+**Revision gate:** revision 9 independently verified after the second owner-selected fix and retry
 **Issues:** 0 blockers, 0 warnings
 
 > Revision 8 addendum (2026-08-30): the owner selected `Fix and retry`. The
@@ -11,7 +11,29 @@
 > design space, but no longer controls execution. The rewritten 90-01 plan and
 > synchronized 90-03/04 contracts passed independent goal-backward review.
 
-## Revision 8 verification verdict
+## Revision 9 verification verdict
+
+The owner selected `Fix and retry` again after revision 8 safely stopped. The
+new plan is execution-ready and passed an independent checker with no issues.
+It replaces the A4-derived candidate family with two materially distinct,
+paired clearance-cell integrations: clipped-secant residuals and
+centroid-neighbor baselines.
+
+The plan now defines canonical branch ordering, arc progress, exact
+piecewise-linear integration, outward normals, source-class tie-breaking,
+half-first 25-state Float construction, exact renderer L1 admission, checked
+bilateral fairing energy, paired local omission without promotion, and exact
+upper/middle/lower final-set invariants. Renderer-effective radius,
+fixed-cell containment, falloff-1 Lipschitz `0.90`, and the resulting global
+inverse lower-distance `0.10` are certified before output.
+
+The revision-9 stop path preserves both prior attempt sections byte-exact,
+exports every captured hash/RED/verifier value into one command environment,
+and permits a third aggregate-only suffix only after provider/test rollback and
+`FACE01_STOP_VERIFIED`. Plans 90-03/04 consume only a GREEN summary and remain
+blocked on a miss.
+
+## Historical revision 8 verification verdict
 
 Execution may resume. The rewritten plan preserves the byte-frozen FACE-01
 oracle and its original SHA-256, bounds selection to seven predeclared
