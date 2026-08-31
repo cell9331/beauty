@@ -4,11 +4,11 @@ milestone: v1.22
 milestone_name: Non-Local Facial Effect Repairs
 current_phase: 90
 current_phase_name: Face Contour and Chin Repairs
-status: blocked
-stopped_at: Revision 10 FACE-01 C1 miss verified and rolled back byte-exact
-last_updated: "2026-08-31T05:49:00Z"
+status: executing
+stopped_at: Revision 11 D1 plan independently verified; ready for bounded execution
+last_updated: "2026-08-31T07:42:01Z"
 last_activity: 2026-08-31
-last_activity_desc: Executed revision-10 C1 once, verified the frozen-oracle miss, and rolled back byte-exact
+last_activity_desc: Revision 11 extremum-inclusive overlap-path D1 plan passed independent review
 progress:
   total_phases: 7
   completed_phases: 1
@@ -30,10 +30,10 @@ without distributing the SDK, model, or weights.
 
 ## Current Position
 
-Phase: 90 (Face Contour and Chin Repairs) — BLOCKED
+Phase: 90 (Face Contour and Chin Repairs) — EXECUTING
 Plan: 1 of 4
-Status: Revision-10 C1 disconfirmed; awaiting owner direction
-Last activity: 2026-08-31 — Exact rollback and retained `FACE01_STOP_VERIFIED` passed
+Status: Revision 11 D1 ready for bounded execution
+Last activity: 2026-08-31 — Independent revision-11 plan check passed with zero issues
 
 Progress: [█░░░░░░░░░] 14%
 
@@ -142,15 +142,21 @@ roadmaps.
   strengthening margins `[15,11,1]`. Provider/test bytes were restored exactly
   and the retained verifier emitted `FACE01_STOP_VERIFIED`.
 
+- [Phase 90]: The owner selected `Fix and retry` after revision 10 proved C1
+  safe but semantically weak. Revision 11 must change the controllable degrees
+  of freedom—such as certified extremum participation or overlap-aware support—
+  rather than retune C1/C2 constants or weaken the frozen oracle.
+
 ### Pending Todos
 
 None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-- [Phase 90] FACE-01 remains unresolved after revision 10 missed the frozen
-  semantic contract. Plans 90-03/04 remain blocked until a compliant 90-01
-  GREEN summary exists; owner direction is required for retry, skip, or stop.
+- [Phase 90] FACE-01 remains unresolved while the independently verified,
+  owner-authorized revision 11 D1 extremum-inclusive overlap-path field awaits
+  bounded execution. Plans 90-03/04 remain blocked until a compliant GREEN
+  summary exists.
 
 - [Phase 89] Independent pupil-to-own-eye support is intentionally absent and
   must be implemented in Phase 91 before gaze can receive semantic credit.
@@ -171,6 +177,6 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-31T13:49:00+08:00
-Stopped at: Revision 10 FACE-01 C1 miss verified and rolled back byte-exact
+Last session: 2026-08-31T15:42:01+08:00
+Stopped at: Revision 11 D1 plan independently verified; ready for bounded execution
 Resume file: `.planning/phases/90-face-contour-and-chin-repairs/90-01-PLAN.md`

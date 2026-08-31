@@ -3,13 +3,50 @@
 **Phase:** Face Contour and Chin Repairs
 **Plans verified:** 4
 **Status:** EXECUTION AUTHORIZED
-**Revision gate:** revision 10 independently verified after the third owner-selected fix and retry
+**Revision gate:** revision 11 independently verified after the fourth owner-selected fix and retry
 **Issues:** 0 blockers, 0 warnings
 
 > Revision 8 addendum (2026-08-30): the owner selected `Fix and retry`. The
 > historical revision-7 stop record below remains evidence of the disconfirmed
 > design space, but no longer controls execution. The rewritten 90-01 plan and
 > synchronized 90-03/04 contracts passed independent goal-backward review.
+
+## Revision 11 verification verdict
+
+Revision 10 proved that the frozen seven-point-per-side support can satisfy the
+exact Float, locality, containment, and inverse-map gates, but its four-pair C1
+field improved source/neutral continuity by only `+1/+1 Q16`. The owner selected
+`Fix and retry` again. Two read-only architecture audits identified the highest
+leverage degree of freedom that earlier families had pinned to zero: the unique
+interior horizontal extremum on each branch. They also found and removed an
+infeasible medial-carrier formula before execution.
+
+Revision 11 passed independent goal-backward review with no blockers or
+warnings. D1 is the sole finite construction. The left unique interior
+actual-Float-X argmin and right argmax must occupy the same paired class; their
+original immediately preceding shoulder class is fixed before output. The
+cap-target anchors use the fixed `0.80/0.20` blend, direct class-secant
+horizontal residuals, cap-target-first exact-half Float lattice, and original
+six-class adjacency. No rendered result can choose a class, carrier, constant,
+radius, overlap edge, fallback, or second candidate.
+
+The plan derives `H/C/G/R/B` from actual Float cap targets, requires one fixed
+adjacent overlap per side, strictly separates all forbidden swept target disks,
+prevents omission from creating bridge adjacency, and proves at most two active
+supports. The actual emitted field has a global Lipschitz bound at most `0.40`
+and inverse lower-distance bound at least `0.60`; `0.96H` containment, positive
+representative support, a predeclared provider-side field-energy proxy decrease,
+exact renderer L1 admission, and every positive-strength final-set gate are
+checked before the unchanged frozen oracle runs once.
+
+The unique extremum emission changes only an internal provider structural
+contract. The frozen oracle, public API/product meaning, cap, renderer/backend,
+`Warp.metal`, privacy boundary, exact 62/5/75 inventory, and point limits remain
+unchanged. Structural provider tests and `DESIGN.md` change only after GREEN.
+On a miss, source/test bytes are restored, the complete current four-record
+attempt prefix remains byte-exact, one revision-11 aggregate-only suffix is
+appended, `FACE01_STOP_VERIFIED` must pass, no summary is created, and Plans
+90-03/04 remain blocked.
 
 ## Revision 10 verification verdict
 
