@@ -4,11 +4,11 @@ milestone: v1.22
 milestone_name: Non-Local Facial Effect Repairs
 current_phase: 90
 current_phase_name: Face Contour and Chin Repairs
-status: blocked
-stopped_at: Revision 9 FACE-01 C1/C2 exhausted; implementation blocker retained
-last_updated: "2026-08-30T03:44:36Z"
-last_activity: 2026-08-30
-last_activity_desc: Executed revision-9 C1/C2 and retained verified rollback evidence
+status: executing
+stopped_at: Revision 10 FACE-01 plan independently verified; ready for execution
+last_updated: "2026-08-31T05:34:37Z"
+last_activity: 2026-08-31
+last_activity_desc: Independently verified the support-corrected C1-only revision-10 plan
 progress:
   total_phases: 7
   completed_phases: 1
@@ -30,10 +30,10 @@ without distributing the SDK, model, or weights.
 
 ## Current Position
 
-Phase: 90 (Face Contour and Chin Repairs) — BLOCKED
+Phase: 90 (Face Contour and Chin Repairs) — EXECUTING
 Plan: 1 of 4
-Status: Blocked after revision-9 FACE-01 C1/C2 exhaustion
-Last activity: 2026-08-30 — Both candidates failed the shared canonical branch-count gate; rollback verification passed
+Status: Executing independently verified FACE-01 revision 10
+Last activity: 2026-08-31 — Revision-10 plan checker passed with zero issues
 
 Progress: [█░░░░░░░░░] 14%
 
@@ -123,15 +123,26 @@ roadmaps.
   points per strict corridor branch. No displacement/lattice state was admitted;
   exact rollback and retained `FACE01_STOP_VERIFIED` evidence passed.
 
+- [Phase 90]: The revision-10 support audit confirmed seven canonical points,
+  three distinct non-emitting anchor roles, and four eligible knots per side.
+  C1's four-pair three-zone invariant is reachable; C2's five-pair invariant is
+  arithmetically impossible. The next retry must retain C1 only and must not
+  emit anchors, reuse sources, expand corridors, or tune rendered output.
+
+- [Phase 90]: Revision 10 retains only the reachable C1 clipped-secant field,
+  requires seven points, three distinct anchors, and four paired eligible
+  classes across all zones, and independently passed plan review without
+  changing any semantic or safety gate.
+
 ### Pending Todos
 
 None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-- [Phase 90] FACE-01 remains unresolved after revision 9 exhausted C1 and C2 at
-  the shared canonical branch-count gate. Plans 90-03/04 remain blocked until
-  a compliant 90-01 GREEN summary exists.
+- [Phase 90] FACE-01 remains unresolved while independently verified revision
+  10 executes. Plans 90-03/04 remain blocked until a compliant 90-01 GREEN
+  summary exists.
 
 - [Phase 89] Independent pupil-to-own-eye support is intentionally absent and
   must be implemented in Phase 91 before gaze can receive semantic credit.
@@ -152,6 +163,6 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-30T11:44:36+08:00
-Stopped at: Revision 9 FACE-01 C1/C2 exhausted; implementation blocker retained
+Last session: 2026-08-31T13:34:37+08:00
+Stopped at: Revision 10 FACE-01 plan independently verified; ready for execution
 Resume file: `.planning/phases/90-face-contour-and-chin-repairs/90-01-PLAN.md`

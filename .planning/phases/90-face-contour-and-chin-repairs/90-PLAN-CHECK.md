@@ -3,7 +3,7 @@
 **Phase:** Face Contour and Chin Repairs
 **Plans verified:** 4
 **Status:** EXECUTION AUTHORIZED
-**Revision gate:** revision 9 independently verified after the second owner-selected fix and retry
+**Revision gate:** revision 10 independently verified after the third owner-selected fix and retry
 **Issues:** 0 blockers, 0 warnings
 
 > Revision 8 addendum (2026-08-30): the owner selected `Fix and retry`. The
@@ -11,7 +11,30 @@
 > design space, but no longer controls execution. The rewritten 90-01 plan and
 > synchronized 90-03/04 contracts passed independent goal-backward review.
 
-## Revision 9 verification verdict
+## Revision 10 verification verdict
+
+Revision 9 stopped before algorithm execution because the frozen strict
+corridor branches contain seven points per side while the plan required eight.
+The owner selected `Fix and retry`; a read-only support audit confirmed three
+distinct non-emitting anchors and four eligible knots per side. C1 can retain
+four corresponding pairs with upper/middle/lower reachability `1/1/2`, while
+C2's five-pair minimum is arithmetically impossible.
+
+Revision 10 passed independent review with no issues. It corrects the minimum
+to seven, requires the three anchor roles to remain distinct, retains only C1
+with its previously verified formulas/classes/constants, and removes C2 rather
+than weakening its topology or emitting/reusing protected sources. The frozen
+four-pair topology fails on any pair miss; only richer generated contours may
+continue after paired omission while at least four balanced pairs and all
+three zones survive.
+
+The exact renderer L1 predicate, half-first Float lattice, bilateral energy,
+fixed-cell containment, global `0.90` Lipschitz / `0.10` inverse-distance
+proof, frozen oracle, point budgets, and SDK-only boundaries remain unchanged.
+The revision-10 stop path preserves the complete three-section attempt prefix
+and may append only one singular-C1 aggregate section after verified rollback.
+
+## Historical revision 9 verification verdict
 
 The owner selected `Fix and retry` again after revision 8 safely stopped. The
 new plan is execution-ready and passed an independent checker with no issues.

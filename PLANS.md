@@ -30,13 +30,13 @@
 
 | Field | Value |
 | --- | --- |
-| Status | `blocked` |
+| Status | `active` |
 | Scope | Complete FACE-01 under the frozen Phase 89 semantic, sibling, locality, protection, point-budget, and inverse-map safety contract without changing public inventory, renderer, backend, or fixtures. |
 | Completed sibling | Phase 90 Plan 90-02 repaired FACE-02 `chinTaper`; its production and test commits remain complete. |
 | Prior blocker | Plan 90-01 exhausted its earlier finite safe provider-only candidates. The best local and monotone result was `+5 Q16` versus the frozen `+16`; wider support reached `+9` but violated outside protection. |
 | Preserved state | Failed production experiments and temporary diagnostics were removed. The committed generated RED and pre-attempt provider behavior remain. |
 | Evidence | `.planning/phases/90-face-contour-and-chin-repairs/90-01-ATTEMPT.md` retains all three aggregate-only stop records. Revision 9 tried C1 then C2; both failed the shared strict-corridor branch-count gate before displacement or lattice admission, production/test bytes were restored, and the retained verifier exited 0 with `FACE01_STOP_VERIFIED`. |
-| Next step | Await an explicit owner decision: authorize another bounded replan, skip Phase 90 with FACE-01 unresolved, or stop. Do not enter Plans 90-03/04 without a compliant GREEN summary. |
+| Next step | Execute independently verified revision 10 with the audited seven-point/three-anchor/four-pair C1 support; do not enter Plans 90-03/04 without a compliant GREEN summary. |
 
 Checklist:
 
@@ -49,7 +49,9 @@ Checklist:
 | Diagnose revision-8 stop | `completed` | Six candidates first failed single-field Lipschitz admission; B1 first failed exact cap/half Float representability. Radius clamping and corridor containment were not first blockers. |
 | Replan FACE-01 revision 9 | `completed` | Independent review passed the exact L1, paired cell, half-first lattice, energy, global injectivity, and stop-verifier contracts. |
 | Execute FACE-01 revision 9 | `completed-blocked` | C1 and C2 each admitted zero points after the frozen contour produced seven points per strict corridor branch against the required minimum of eight; oracle hash remained pinned and sanitized Q16 aggregates were identical. |
-| Complete FACE-01 | `blocked` | Exact rollback preserved provider/test/later-artifact bytes; the retained stop verifier returned `FACE01_STOP_VERIFIED`; no 90-01 summary exists. |
+| Audit revision-9 support | `completed` | Each side has seven canonical points, three distinct anchor roles, four eligible knots; C1 can retain four pairs across all zones, while C2's five-pair minimum is impossible. |
+| Replan FACE-01 revision 10 | `completed` | Independent review passed the corrected seven-point, three-anchor, four-pair C1-only plan and revision-10 rollback contract. |
+| Complete FACE-01 | `active` | Revision 10 is authorized for execution; revision-9 rollback remains the clean production/test starting point. |
 | Continue Phase 90 Wave 2/3 | `blocked` | Plans 90-03/04 require both Wave 1 summaries and cannot close FACE-01 by documentation. |
 
 The v1.21 entry below is complete and retained for session continuity.
