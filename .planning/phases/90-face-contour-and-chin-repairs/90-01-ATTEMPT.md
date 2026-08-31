@@ -129,3 +129,23 @@ the autonomous run.
 - lattice_rejection_count: 5 at the first mandatory shoulder carrier; every fixed neighbor failed both required exact Float subtraction identities
 - oracle_sha256: 7fa653475f4a13831ec0a75c263cfaf717c48b3d6094c2ff3e95ecb64076981d
 - rollback_status: provider and complete repair test restored byte-exact; later-task artifacts unchanged or absent; STATE.md and PLANS.md preserved byte-exact; FACE01_STOP_VERIFIED
+
+## 2026-08-31 FACE-01 complete-chain D1-v12 revision-12 retry stop
+
+- implementation: D1-v12 complete bilateral twelve-slot chain only; executed once with actual-Float slot/extremum construction and no fallback, tuning, solver, fit, or output selection
+- gate_bitmask: bits oracle-hash=0x01,canonical-branches=0x02,slot-extremum-zones=0x04,exact-float-lattice=0x08,geometry-overlap-safety=0x10,branch-chain-proxy=0x20,frozen-oracle=0x40; D1-v12=0x07
+- first_failure: cap-target-first-lattice-exact-identities
+- canonical_branch_counts: left=7,right=7
+- slot_counts: left=12,right=12
+- extremum_slot_indices: left=4,right=4
+- zone_slot_counts: left=[4,4,4],right=[4,4,4]
+- adjacent_overlap_counts: not evaluated because the first mandatory lattice pair was not admitted
+- forbidden_swept_disks: not evaluated because the first mandatory lattice pair was not admitted
+- max_lipschitz_q16: 0 because no field was admitted
+- inverse_lower_bound_q16: 0 because no field was admitted
+- branch_chain_proxy_delta_q16: 0 because no field was admitted
+- q16_signal_counts: source=0,neutral=0,frozen-siblings=[16,3],strengthening-siblings=[4,0,12]; candidate oracle not invoked after the pre-render lattice stop
+- admitted_point_count: 0
+- lattice_rejection_count: 25 at the first mandatory left shoulder slot; every fixed 5x5 neighbor failed the exact cap/half source-target identities
+- oracle_sha256: 7fa653475f4a13831ec0a75c263cfaf717c48b3d6094c2ff3e95ecb64076981d
+- rollback_status: provider and complete repair test restored byte-exact; later-task artifacts unchanged or absent; STATE.md and PLANS.md preserved byte-exact; FACE01_STOP_VERIFIED
