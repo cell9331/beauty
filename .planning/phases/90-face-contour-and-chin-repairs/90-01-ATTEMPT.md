@@ -109,3 +109,23 @@ the autonomous run.
 - lattice_rejection_count: 0
 - oracle_sha256: 7fa653475f4a13831ec0a75c263cfaf717c48b3d6094c2ff3e95ecb64076981d
 - rollback_status: provider and complete repair test restored byte-exact; later-task artifacts restored or absent; STATE.md and PLANS.md preserved byte-exact
+
+## 2026-08-31 FACE-01 extremum-overlap revision-11 retry stop
+
+- implementation: D1 extremum-inclusive direct-secant field only; executed once without retuning, fallback, interval search, or rendered-output selection
+- gate_bitmask: bits oracle-hash=0x01,canonical-support=0x02,extremum-pair-topology=0x04,direct-secant-owner=0x08,cap-target-first-lattice=0x10,analytical-safety-energy=0x20,frozen-oracle=0x40; D1=0x0f
+- first_failure: cap-target-first-lattice-exact-subtraction-identity
+- canonical_branch_counts: left=7,right=7
+- extremum_class_pair: left=1,right=1
+- preselected_pair_count: 5
+- reachable_zone_counts: upper=2,middle=1,lower=2
+- emitted_pair_count: 0
+- adjacent_overlap_counts: not evaluated because the first mandatory lattice pair was not admitted
+- forbidden_swept_disks: not evaluated because the first mandatory lattice pair was not admitted
+- max_lipschitz_q16: 0 because no field was admitted
+- field_energy_proxy_delta_q16: 0 because no field was admitted
+- q16_signal_counts: source=0,neutral=0,frozen-siblings=[4,9],strengthening-siblings=[16,12,0]; candidate oracle not invoked after the pre-render lattice stop
+- admitted_point_count: 0
+- lattice_rejection_count: 5 at the first mandatory shoulder carrier; every fixed neighbor failed both required exact Float subtraction identities
+- oracle_sha256: 7fa653475f4a13831ec0a75c263cfaf717c48b3d6094c2ff3e95ecb64076981d
+- rollback_status: provider and complete repair test restored byte-exact; later-task artifacts unchanged or absent; STATE.md and PLANS.md preserved byte-exact; FACE01_STOP_VERIFIED

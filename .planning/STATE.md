@@ -4,11 +4,11 @@ milestone: v1.22
 milestone_name: Non-Local Facial Effect Repairs
 current_phase: 90
 current_phase_name: Face Contour and Chin Repairs
-status: executing
-stopped_at: Revision 11 D1 plan independently verified; ready for bounded execution
-last_updated: "2026-08-31T07:42:01Z"
+status: blocked
+stopped_at: Revision 11 D1 stopped at exact Float lattice; awaiting owner route
+last_updated: "2026-08-31T08:02:32Z"
 last_activity: 2026-08-31
-last_activity_desc: Revision 11 extremum-inclusive overlap-path D1 plan passed independent review
+last_activity_desc: Revision 11 D1 failed the first mandatory exact Float lattice and rolled back with FACE01_STOP_VERIFIED
 progress:
   total_phases: 7
   completed_phases: 1
@@ -30,10 +30,10 @@ without distributing the SDK, model, or weights.
 
 ## Current Position
 
-Phase: 90 (Face Contour and Chin Repairs) — EXECUTING
+Phase: 90 (Face Contour and Chin Repairs) — BLOCKED
 Plan: 1 of 4
-Status: Revision 11 D1 ready for bounded execution
-Last activity: 2026-08-31 — Independent revision-11 plan check passed with zero issues
+Status: Revision 11 D1 stopped before render; owner direction required
+Last activity: 2026-08-31 — Exact rollback and retained stop verification passed
 
 Progress: [█░░░░░░░░░] 14%
 
@@ -147,16 +147,23 @@ roadmaps.
   of freedom—such as certified extremum participation or overlap-aware support—
   rather than retune C1/C2 constants or weaken the frozen oracle.
 
+- [Phase 90]: Revision 11 executed only the fixed D1 extremum-overlap design.
+  Its 7/7 canonical branches, common extremum class, five paired classes, and
+  three-zone support passed, but all five Float states for the first mandatory
+  shoulder carrier failed the exact cap/half subtraction identities. No field
+  or rendered candidate was admitted; provider/test bytes were restored and
+  the retained verifier emitted `FACE01_STOP_VERIFIED`.
+
 ### Pending Todos
 
 None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-- [Phase 90] FACE-01 remains unresolved while the independently verified,
-  owner-authorized revision 11 D1 extremum-inclusive overlap-path field awaits
-  bounded execution. Plans 90-03/04 remain blocked until a compliant GREEN
-  summary exists.
+- [Phase 90] FACE-01 remains unresolved after revision 11 D1 stopped at the
+  first mandatory cap-target-first Float lattice. No rendered output was used,
+  the frozen contract is unchanged, and Plans 90-03/04 remain blocked until a
+  compliant GREEN summary exists or the owner chooses another route.
 
 - [Phase 89] Independent pupil-to-own-eye support is intentionally absent and
   must be implemented in Phase 91 before gaze can receive semantic credit.
@@ -177,6 +184,6 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-31T15:42:01+08:00
-Stopped at: Revision 11 D1 plan independently verified; ready for bounded execution
+Last session: 2026-08-31T16:02:32+08:00
+Stopped at: Revision 11 D1 stopped at exact Float lattice; awaiting owner route
 Resume file: `.planning/phases/90-face-contour-and-chin-repairs/90-01-PLAN.md`
