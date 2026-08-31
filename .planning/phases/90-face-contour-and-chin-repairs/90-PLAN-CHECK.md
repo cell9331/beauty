@@ -3,13 +3,55 @@
 **Phase:** Face Contour and Chin Repairs
 **Plans verified:** 4
 **Status:** EXECUTION AUTHORIZED
-**Revision gate:** revision 11 independently verified after the fourth owner-selected fix and retry
+**Revision gate:** revision 12 independently verified after the fifth owner-selected fix and retry
 **Issues:** 0 blockers, 0 warnings
 
 > Revision 8 addendum (2026-08-30): the owner selected `Fix and retry`. The
 > historical revision-7 stop record below remains evidence of the disconfirmed
 > design space, but no longer controls execution. The rewritten 90-01 plan and
 > synchronized 90-03/04 contracts passed independent goal-backward review.
+
+## Revision 12 verification verdict
+
+Revision 11 stopped before rendering because its D1 cap-target-first
+subtraction identities were not constructible from arbitrary Float anchors.
+The owner selected `Fix and retry`. A Float audit proved that a shared dyadic
+`g = Float(1.0 / 16_777_216.0)` lattice with `g.bitPattern == 0x33800000`
+constructs all cap/half additions and subtractions exactly; however, a second
+audit found that merely repairing D1 would still fail actual containment on
+three of ten carriers and made the complete-row proxy worse. D1 was therefore
+retired before another execution.
+
+Revision 12 passed independent goal-backward review with no blockers or
+warnings. It is one materially distinct D1-v12 construction: a complete
+bilateral chain of twelve fixed normalized arc slots per strict branch, with
+the unique interior actual-Float-X extremum inserted into its nearest slot,
+endpoints non-emitting, local `Delta=1/13` second-difference residuals, and
+`d0=0.18*v`. Every source anchor is derived from the actual Float slot by
+Binary64 ties-to-even integer indexing; every target, cap displacement, and
+half displacement is materialized through the fixed `g` lattice with checked
+Int64 ranges, fixed 5x5 offsets, and all exact identities asserted. Analytical
+slots are distinguished from retained emitters; the frozen chain retains all
+24 points, while only richer inputs may omit complete bilateral nonmandatory
+pairs without bridging adjacency.
+
+The plan uses `k=2`, strict corridor × endpoint-Y owners, actual `H/R/B/adjB`
+with positive `0.94H` slack, adjacent-only overlaps/no triples, forbidden
+swept-disk separation, single normalized derivative at most `0.20`, adjacent
+sum at most `0.40`, global Lipschitz at most `0.40`, inverse lower bound at
+least `0.60`, and a strict positive-slack branch-chain proxy before rendering.
+The proxy is explicitly not an exact forward-image location; the unchanged
+frozen rendered oracle is the semantic authority. Zone occupancy is computed
+from actual normalized slot progress under the fixed four/four/four chain
+zones, eliminating the obsolete `2/1/2` aggregate discrepancy.
+
+The frozen oracle/hash, all semantic/locality/protection/sibling thresholds,
+public/product/API/backend/Warp.metal boundaries, privacy rules, exact 62/5/75
+inventory, and 30/256 point budgets remain unchanged. Structural provider tests
+and `DESIGN.md` change only after GREEN. On a miss, the provider/test bytes
+are restored, the current five-section attempt prefix remains byte-exact, one
+revision-12 aggregate-only suffix is appended, `FACE01_STOP_VERIFIED` must
+pass, no summary is created, and Plans 90-03/04 remain blocked.
 
 ## Revision 11 verification verdict
 
