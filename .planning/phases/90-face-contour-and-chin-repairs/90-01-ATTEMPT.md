@@ -92,3 +92,20 @@ the autonomous run.
 - lattice_rejection_counts: C1=0,C2=0 because the shared canonical support gate failed first
 - oracle_sha256: 7fa653475f4a13831ec0a75c263cfaf717c48b3d6094c2ff3e95ecb64076981d
 - rollback_status: provider and complete repair test restored byte-exact; later-task artifacts restored or absent; STATE.md and PLANS.md preserved byte-exact; FACE01_STOP_VERIFIED
+
+## 2026-08-31 FACE-01 support-corrected revision-10 retry stop
+
+- implementation: C1 clipped-secant integrated-residual only; completed once with no selector or fallback family
+- gate_bitmask: bits oracle-hash=0x01,canonical-support=0x02,budget-lattice-global-safety=0x04,frozen-oracle=0x08; C1=0x07
+- first_failure: frozen-oracle-semantic-margin
+- canonical_branch_counts: left=7,right=7
+- anchor_role_counts: left=3,right=3
+- eligible_knot_counts: left=4,right=4
+- class_occupancy: left=[1,0,0,1,1,1],right=[1,0,0,1,1,1]
+- preselected_pair_count: 4
+- reachable_zone_counts: upper=1,middle=1,lower=2
+- q16_signal_counts: source=1,neutral=1,frozen-siblings=[5,8],strengthening-siblings=[15,11,1]
+- admitted_point_count: 8
+- lattice_rejection_count: 0
+- oracle_sha256: 7fa653475f4a13831ec0a75c263cfaf717c48b3d6094c2ff3e95ecb64076981d
+- rollback_status: provider and complete repair test restored byte-exact; later-task artifacts restored or absent; STATE.md and PLANS.md preserved byte-exact

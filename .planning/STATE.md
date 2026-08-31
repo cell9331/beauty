@@ -4,11 +4,11 @@ milestone: v1.22
 milestone_name: Non-Local Facial Effect Repairs
 current_phase: 90
 current_phase_name: Face Contour and Chin Repairs
-status: executing
-stopped_at: Revision 10 FACE-01 plan independently verified; ready for execution
-last_updated: "2026-08-31T05:34:37Z"
+status: blocked
+stopped_at: Revision 10 FACE-01 C1 miss verified and rolled back byte-exact
+last_updated: "2026-08-31T05:49:00Z"
 last_activity: 2026-08-31
-last_activity_desc: Independently verified the support-corrected C1-only revision-10 plan
+last_activity_desc: Executed revision-10 C1 once, verified the frozen-oracle miss, and rolled back byte-exact
 progress:
   total_phases: 7
   completed_phases: 1
@@ -30,10 +30,10 @@ without distributing the SDK, model, or weights.
 
 ## Current Position
 
-Phase: 90 (Face Contour and Chin Repairs) — EXECUTING
+Phase: 90 (Face Contour and Chin Repairs) — BLOCKED
 Plan: 1 of 4
-Status: Executing independently verified FACE-01 revision 10
-Last activity: 2026-08-31 — Revision-10 plan checker passed with zero issues
+Status: Revision-10 C1 disconfirmed; awaiting owner direction
+Last activity: 2026-08-31 — Exact rollback and retained `FACE01_STOP_VERIFIED` passed
 
 Progress: [█░░░░░░░░░] 14%
 
@@ -134,15 +134,23 @@ roadmaps.
   classes across all zones, and independently passed plan review without
   changing any semantic or safety gate.
 
+- [Phase 90]: Revision 10 executed the singular C1 path after proving 7/7
+  branches, 3/3 distinct anchors, 4/4 eligible knots, per-side occupancy
+  `[1,0,0,1,1,1]`, four corresponding pairs, and zone reachability `1/1/2`.
+  Eight points passed budget/lattice/global-safety admission, but the unchanged
+  oracle measured only `+1/+1 Q16` with frozen sibling margins `[5,8]` and
+  strengthening margins `[15,11,1]`. Provider/test bytes were restored exactly
+  and the retained verifier emitted `FACE01_STOP_VERIFIED`.
+
 ### Pending Todos
 
 None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-- [Phase 90] FACE-01 remains unresolved while independently verified revision
-  10 executes. Plans 90-03/04 remain blocked until a compliant 90-01 GREEN
-  summary exists.
+- [Phase 90] FACE-01 remains unresolved after revision 10 missed the frozen
+  semantic contract. Plans 90-03/04 remain blocked until a compliant 90-01
+  GREEN summary exists; owner direction is required for retry, skip, or stop.
 
 - [Phase 89] Independent pupil-to-own-eye support is intentionally absent and
   must be implemented in Phase 91 before gaze can receive semantic credit.
@@ -163,6 +171,6 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-31T13:34:37+08:00
-Stopped at: Revision 10 FACE-01 plan independently verified; ready for execution
+Last session: 2026-08-31T13:49:00+08:00
+Stopped at: Revision 10 FACE-01 C1 miss verified and rolled back byte-exact
 Resume file: `.planning/phases/90-face-contour-and-chin-repairs/90-01-PLAN.md`
