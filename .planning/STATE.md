@@ -5,10 +5,10 @@ milestone_name: Non-Local Facial Effect Repairs
 current_phase: 90
 current_phase_name: Face Contour and Chin Repairs
 status: executing
-stopped_at: Revision 15 D1-v15 plan independently verified; ready for bounded execution
-last_updated: "2026-09-01T02:13:03Z"
+stopped_at: Revision 15 D1-v15 execution stopped at measured owner-slack geometry failure; revision-16 research required
+last_updated: "2026-09-01T02:28:00Z"
 last_activity: 2026-08-31
-last_activity_desc: Revision 15 D1-v15 plan passed independent review after owner-gate implementation correction
+last_activity_desc: Revision 15 actual Float owner gate passed membership/containment but failed fixed positive-slack ratio on both branches; exact rollback verified
 progress:
   total_phases: 7
   completed_phases: 1
@@ -32,8 +32,8 @@ without distributing the SDK, model, or weights.
 
 Phase: 90 (Face Contour and Chin Repairs) — EXECUTING
 Plan: 1 of 4
-Status: Revision 15 D1-v15 ready for bounded execution
-Last activity: 2026-09-01 — Independent revision-15 plan check passed with zero issues
+Status: Revision 15 D1-v15 stopped; revision-16 owner-balanced construction research active
+Last activity: 2026-09-01 — Revision-15 execution measured owner-positive-slack failure at retained slot 4 on both sides; `FACE01_STOP_VERIFIED`
 
 Progress: [█░░░░░░░░░] 14%
 
@@ -188,15 +188,33 @@ roadmaps.
   gate and first-failure evidence, with every residual, lattice, geometry,
   safety, proxy, oracle, and frozen threshold contract unchanged.
 
+- [Phase 90]: Revision 15 measured the actual Float owner gate: strict
+  owner/unit membership and expanded-support containment passed on both
+  branches, but the fixed positive-slack condition failed for five retained
+  slots per side, first at zero-based slot 4. With `R=.75H` and `B=.08R`,
+  the condition is equivalent to each original-adjacent retained clearance
+  satisfying `H_neighbor/H_i <= 7/6`; the current contour violates that ratio.
+  Nonzero mandatory pairs cannot be omitted, and `m_s` scaling occurs after
+  admission, so no legal v15 implementation correction exists. Provider/test
+  bytes were restored, the eighth aggregate suffix and `FACE01_STOP_VERIFIED`
+  were verified, and no frozen oracle candidate was invoked.
+
+- [Phase 90]: Revision 16 research is limited to a predeclared
+  owner-balanced slot/carrier construction that proves the `7/6` clearance
+  ratio before execution while preserving every v15 residual, exact Float
+  lattice, geometry/safety, proxy, frozen-oracle, threshold, public, and
+  privacy contract. No threshold tuning, mandatory-pair omission, or
+  output-guided selection is permitted.
+
 ### Pending Todos
 
 None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-- [Phase 90] FACE-01 remains unresolved while the independently verified
-  revision-15 D1-v15 chain awaits bounded execution. The frozen contract is
-  unchanged and Plans 90-03/04 remain blocked until a compliant GREEN summary
+- [Phase 90] FACE-01 remains unresolved after the verified revision-15
+  geometric stop. A revision-16 plan must be independently checked before any
+  source edit; Plans 90-03/04 remain blocked until a compliant GREEN summary
   exists.
 
 - [Phase 89] Independent pupil-to-own-eye support is intentionally absent and
@@ -218,6 +236,6 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-09-01T10:13:03+08:00
-Stopped at: Revision 15 D1-v15 plan independently verified; ready for bounded execution
+Last session: 2026-09-01T10:28:00+08:00
+Stopped at: Revision 15 D1-v15 execution stopped at measured owner-slack geometry failure; revision-16 research required
 Resume file: `.planning/phases/90-face-contour-and-chin-repairs/90-01-PLAN.md`
