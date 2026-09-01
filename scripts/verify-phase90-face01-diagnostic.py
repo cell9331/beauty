@@ -540,6 +540,64 @@ def parse_attempt(
     return fields
 
 
+def verify_rev21_compile_forms(provider: str, test: str) -> None:
+    if re.search(r"\bSequence\b", provider + test):
+        reject("revision21_compile_form_violation")
+    if re.search(r"\bsuffix\s*[({]", provider + test):
+        reject("revision21_compile_form_violation")
+    if re.search(r"(?<!\.)\b(?:floor|round)\s*\(", provider + test):
+        reject("revision21_compile_form_violation")
+    if re.search(r"^\s*import\s+", provider + test, re.MULTILINE):
+        reject("revision21_compile_form_violation")
+
+    ordered_positions(
+        provider,
+        (
+            "activeItems.count >= 2",
+            "let lastIndex = activeItems.index(before: activeItems.endIndex)",
+            "let penultimateIndex = activeItems.index(before: lastIndex)",
+            "activeItems[penultimateIndex]",
+            "activeItems[lastIndex]",
+        ),
+        "revision21_compile_form_violation",
+    )
+    ordered_positions(
+        provider,
+        (
+            "let qLimitReal = Double(branchSourceClearance) / (64 * Double(g))",
+            "qLimitReal.isFinite",
+            "qLimitReal >= 0",
+            "let qLimitRounded = qLimitReal.rounded(.down)",
+            "qLimitRounded.isFinite",
+            "let qLimit = Int(exactly: qLimitRounded)",
+        ),
+        "revision21_compile_form_violation",
+    )
+    provider_ms = (
+        "let scaledQ18 = 2 * alpha * Float(item.q18)",
+        "scaledQ18.isFinite",
+        "let roundedQ18 = scaledQ18.rounded(.toNearestOrAwayFromZero)",
+        "roundedQ18.isFinite",
+        "let mS = Int(exactly: roundedQ18)",
+    )
+    reference_ms = (
+        "let scaledQ18 = 2 * alpha * Float(item.q18)",
+        "scaledQ18.isFinite",
+        "let roundedQ18 = scaledQ18.rounded(.toNearestOrAwayFromZero)",
+        "roundedQ18.isFinite",
+        "let mS = Int(exactly: roundedQ18)",
+    )
+    ordered_positions(provider, provider_ms, "revision21_compile_form_violation")
+    ordered_positions(test, reference_ms, "revision21_compile_form_violation")
+
+    trapping_conversions = (
+        r"\bInt\s*\(\s*qLimitRounded\s*\)",
+        r"\bInt\s*\(\s*roundedQ18\s*\)",
+    )
+    if any(re.search(pattern, provider + test) for pattern in trapping_conversions):
+        reject("revision21_compile_form_violation")
+
+
 def verify_static_sources(provider_text: str, test_text: str) -> None:
     provider = extract_region(
         provider_text, "// D1V19_DIAGNOSTIC_BEGIN", "// D1V19_DIAGNOSTIC_END"
@@ -568,6 +626,7 @@ def verify_static_sources(provider_text: str, test_text: str) -> None:
         reject("diagnostic_harness_violation")
     if re.search(r"\bstatic\s+var\b|\bclass\s+var\b", provider + test):
         reject("diagnostic_harness_violation")
+    verify_rev21_compile_forms(provider, test)
     ordered_positions(
         provider,
         tuple(f'case {case_name} = "{value}"' for case_name, value in GATE_PAIRS),
@@ -601,7 +660,6 @@ def verify_static_sources(provider_text: str, test_text: str) -> None:
     if any(token not in provider for token in required_contract_tokens):
         reject("revision18_contract_deviation")
     required_reference_tokens = (
-        "round(2 * alpha * Float(item.q18))",
         "referenceFinalizeD1V18Template",
         "classifyD1V19",
         "FACE01_D19_DIAGNOSTIC",
@@ -763,10 +821,29 @@ func d1V19DiagnosticConstruction() {}
 func d1V18Template() {}
 func finalizedD1V18Points() {}
 func d1FieldPassesSafety() {}
+let activeItems = [1, 2, 3]
+if activeItems.count >= 2 {
+  let lastIndex = activeItems.index(before: activeItems.endIndex)
+  let penultimateIndex = activeItems.index(before: lastIndex)
+  _ = activeItems[penultimateIndex]
+  _ = activeItems[lastIndex]
+}
 let g = Float(1.0 / 16_777_216.0)
 let bits = 0x33800000
 for index in 1...12 { _ = Float(index) / 13; _ = Float(index - 1) / 13; _ = Float(index + 1) / 13 }
-_ = 64 * Double(g); _ = 4 * Float(q18) * g; _ = 2 * Float(q18) * g
+let branchSourceClearance = Float(1)
+let qLimitReal = Double(branchSourceClearance) / (64 * Double(g))
+guard qLimitReal.isFinite, qLimitReal >= 0 else { return }
+let qLimitRounded = qLimitReal.rounded(.down)
+guard qLimitRounded.isFinite, let qLimit = Int(exactly: qLimitRounded) else { return }
+_ = qLimit
+let alpha = Float(1)
+let item = (q18: 1)
+let scaledQ18 = 2 * alpha * Float(item.q18)
+guard scaledQ18.isFinite else { return }
+let roundedQ18 = scaledQ18.rounded(.toNearestOrAwayFromZero)
+guard roundedQ18.isFinite, let mS = Int(exactly: roundedQ18) else { return }
+_ = mS; _ = 4 * Float(q18) * g; _ = 2 * Float(q18) * g
 _ = 0.75 * branchClearance; _ = 0.08 * radius
 _ = 8.0 / 45.0; _ = 16.0 / 45.0; _ = 29.0 / 45.0
 _ = 13107; _ = 26214; _ = 39322; _ = 1678
@@ -774,7 +851,13 @@ _ = 13107; _ = 26214; _ = 39322; _ = 1678
     good_test = """// D1V19_DIAGNOSTIC_BEGIN
 enum D1V19Outcome {}
 struct D1V19ReferenceCounts {}
-func referenceFinalizeD1V18Template() { _ = round(2 * alpha * Float(item.q18)) }
+func referenceFinalizeD1V18Template() {
+  let scaledQ18 = 2 * alpha * Float(item.q18)
+  guard scaledQ18.isFinite else { return }
+  let roundedQ18 = scaledQ18.rounded(.toNearestOrAwayFromZero)
+  guard roundedQ18.isFinite, let mS = Int(exactly: roundedQ18) else { return }
+  _ = mS
+}
 func classifyD1V19() {}
 func testFACE01D1V19DiagnosticOnlyClassification() {
   _ = d1V19DiagnosticConstruction(face: face)
@@ -951,6 +1034,76 @@ def rev20_policy_self_test() -> None:
     print("FACE01_DIAGNOSTIC_REV20_POLICY_SELF_TESTED")
 
 
+def rev21_compile_forms_self_test() -> None:
+    good_provider = """let activeItems = [1, 2, 3]
+guard activeItems.count >= 2 else { return }
+let lastIndex = activeItems.index(before: activeItems.endIndex)
+let penultimateIndex = activeItems.index(before: lastIndex)
+_ = activeItems[penultimateIndex]
+_ = activeItems[lastIndex]
+let g = Float(1.0 / 16_777_216.0)
+let branchSourceClearance = Float(1)
+let qLimitReal = Double(branchSourceClearance) / (64 * Double(g))
+guard qLimitReal.isFinite, qLimitReal >= 0 else { return }
+let qLimitRounded = qLimitReal.rounded(.down)
+guard qLimitRounded.isFinite, let qLimit = Int(exactly: qLimitRounded) else { return }
+let alpha = Float(1)
+let item = (q18: 1)
+let scaledQ18 = 2 * alpha * Float(item.q18)
+guard scaledQ18.isFinite else { return }
+let roundedQ18 = scaledQ18.rounded(.toNearestOrAwayFromZero)
+guard roundedQ18.isFinite, let mS = Int(exactly: roundedQ18) else { return }
+"""
+    good_test = """let alpha = Float(1)
+let item = (q18: 1)
+let scaledQ18 = 2 * alpha * Float(item.q18)
+guard scaledQ18.isFinite else { return }
+let roundedQ18 = scaledQ18.rounded(.toNearestOrAwayFromZero)
+guard roundedQ18.isFinite, let mS = Int(exactly: roundedQ18) else { return }
+"""
+    verify_rev21_compile_forms(good_provider, good_test)
+    mutations = (
+        (good_provider.replace("let lastIndex = activeItems.index(before: activeItems.endIndex)", "let lastIndex = activeItems.suffix { _ in true }"), good_test),
+        (good_provider.replace("let penultimateIndex = activeItems.index(before: lastIndex)", "let penultimateIndex = activeItems.index(before: activeItems.endIndex)"), good_test),
+        (good_provider.replace("guard activeItems.count >= 2 else { return }\n", ""), good_test),
+        (good_provider.replace("64 * Double(g)", "63 * Double(g)"), good_test),
+        (good_provider.replace("rounded(.down)", "rounded(.up)"), good_test),
+        (good_provider.replace("Double(branchSourceClearance)", "Double(Float(branchSourceClearance))"), good_test),
+        (good_provider.replace("64 * Double(g)", "Double(64 * g)"), good_test),
+        (good_provider.replace("2 * alpha * Float(item.q18)", "Double(2 * alpha * Float(item.q18))"), good_test),
+        (good_provider.replace("2 * alpha * Float(item.q18)", "alpha * 2 * Float(item.q18)"), good_test),
+        (good_provider.replace("2 * alpha * Float(item.q18)", "3 * alpha * Float(item.q18)"), good_test),
+        (good_provider.replace("rounded(.toNearestOrAwayFromZero)", "rounded(.toNearestOrEven)"), good_test),
+        (good_provider, good_test.replace("2 * alpha * Float(item.q18)", "Double(2 * alpha * Float(item.q18))")),
+        (good_provider, good_test.replace("2 * alpha * Float(item.q18)", "alpha * 2 * Float(item.q18)")),
+        (good_provider, good_test.replace("2 * alpha * Float(item.q18)", "3 * alpha * Float(item.q18)")),
+        (good_provider, good_test.replace("rounded(.toNearestOrAwayFromZero)", "rounded(.toNearestOrEven)")),
+        (good_provider.replace("guard qLimitReal.isFinite, qLimitReal >= 0 else { return }\n", "guard qLimitReal >= 0 else { return }\n"), good_test),
+        (good_provider.replace("guard qLimitRounded.isFinite, let qLimit = Int(exactly: qLimitRounded) else { return }", "guard let qLimit = Int(exactly: qLimitRounded) else { return }"), good_test),
+        (good_provider.replace("guard scaledQ18.isFinite else { return }\n", ""), good_test),
+        (good_provider, good_test.replace("guard scaledQ18.isFinite else { return }\n", "")),
+        (good_provider.replace("guard roundedQ18.isFinite, let mS = Int(exactly: roundedQ18) else { return }", "guard let mS = Int(exactly: roundedQ18) else { return }"), good_test),
+        (good_provider, good_test.replace("guard roundedQ18.isFinite, let mS = Int(exactly: roundedQ18) else { return }", "guard let mS = Int(exactly: roundedQ18) else { return }")),
+        (good_provider.replace("Int(exactly: qLimitRounded)", "Int(qLimitRounded)"), good_test),
+        (good_provider.replace("Int(exactly: roundedQ18)", "Int(roundedQ18)"), good_test),
+        (good_provider, good_test.replace("Int(exactly: roundedQ18)", "Int(roundedQ18)")),
+    )
+    for provider, test in mutations:
+        must_reject(
+            lambda provider=provider, test=test: verify_rev21_compile_forms(provider, test),
+            "revision21_compile_form_violation",
+        )
+    print("FACE01_DIAGNOSTIC_REV21_COMPILE_FORMS_SELF_TESTED")
+
+
+def rev21_compile_forms_check() -> None:
+    root = Path(".").resolve()
+    provider = read_regular(root, PROVIDER_PATH).decode("utf-8")
+    test = read_regular(root, TEST_PATH).decode("utf-8")
+    verify_static_sources(provider, test)
+    print("FACE01_DIAGNOSTIC_REV21_COMPILE_FORMS_VERIFIED")
+
+
 def add_common_arguments(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--status-stdin", action="store_true")
     parser.add_argument("--oracle-status", required=True)
@@ -982,6 +1135,14 @@ def parse_args() -> argparse.Namespace:
         "rev20-policy-self-test",
         help="Run in-memory revision-20 status-policy mutation tests.",
     )
+    subparsers.add_parser(
+        "rev21-compile-forms-self-test",
+        help="Run in-memory revision-21 compile-form mutation tests.",
+    )
+    subparsers.add_parser(
+        "rev21-compile-forms-check",
+        help="Verify revision-21 compile forms in the fixed provider and test paths.",
+    )
     add_common_arguments(subparsers.add_parser("preflight", help="Verify the temporary diagnostic statically."))
     add_common_arguments(subparsers.add_parser("rollback", help="Verify rollback and optional evidence statically."))
     green = subparsers.add_parser("green-summary", help="Verify a later GREEN FACE-01 activation summary.")
@@ -997,6 +1158,10 @@ def main() -> None:
         self_test()
     elif args.mode == "rev20-policy-self-test":
         rev20_policy_self_test()
+    elif args.mode == "rev21-compile-forms-self-test":
+        rev21_compile_forms_self_test()
+    elif args.mode == "rev21-compile-forms-check":
+        rev21_compile_forms_check()
     elif args.mode == "preflight":
         run_preflight(args)
     elif args.mode == "rollback":
