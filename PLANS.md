@@ -36,7 +36,7 @@
 | Prior blocker | Plan 90-01 exhausted its earlier finite safe provider-only candidates. The best local and monotone result was `+5 Q16` versus the frozen `+16`; wider support reached `+9` but violated outside protection. |
 | Preserved state | Failed production experiments and temporary diagnostics were removed. The committed generated RED and pre-attempt provider behavior remain. |
 | Evidence | `.planning/phases/90-face-contour-and-chin-repairs/90-01-ATTEMPT.md` retains five aggregate-only stop records. Revision 11 proved 7/7 branches, a common interior extremum class, five paired classes, and `2/1/2` zone reachability, then stopped before render because all five fixed Float states for the first mandatory shoulder carrier failed the required exact subtraction identities. Provider/test bytes were restored byte-exact and the retained verifier exited 0 with `FACE01_STOP_VERIFIED`. |
-| Next step | Execute the independently verified revision-13 D1-v13 complete-chain field exactly once. On any structural, Float, safety, proxy, or frozen-oracle miss, restore source/test bytes, append aggregate-only stop evidence, and keep Plans 90-03/04 blocked. |
+| Next step | Execute the independently verified revision-14 D1-v14 complete-chain field exactly once. On any structural, Float, safety, proxy, or frozen-oracle miss, restore source/test bytes, append aggregate-only stop evidence, and keep Plans 90-03/04 blocked. |
 
 Checklist:
 
@@ -59,8 +59,11 @@ Checklist:
 | Independently check FACE-01 revision 12 | `completed` | The complete-chain D1-v12 plan passed with zero blockers and warnings after explicit source anchoring, target linkage, exact Float order/types, analytical-vs-retained slot semantics, and compile-valid `g` construction. |
 | Research FACE-01 revision 13 | `completed` | Diagnosed revision-12's implementation-only residual-neighbor indexing defect; revision 13 changes only that block and adds a scaffold diff guard. |
 | Independently check FACE-01 revision 13 | `completed` | Plan review passed with zero blockers and warnings, including endpoint-inclusive `Q(0)`/`Q(1)` residual mapping and five-section prefix accounting. |
-| Execute FACE-01 revision 13 | `active` | Run only D1-v13 under the unchanged frozen contract; no fallback, retuning, or output-guided selection. |
-| Complete FACE-01 | `blocked-on-execution` | The frozen semantic/safety contract and pre-retry production/test bytes remain unchanged while the bounded revision-13 execution runs. |
+| Execute FACE-01 revision 13 | `completed-blocked` | Endpoint-inclusive indexing passed; execution stopped at a valid zero-curvature slot with no field admitted, exact rollback and `FACE01_STOP_VERIFIED` passed. |
+| Research FACE-01 revision 14 | `completed` | Confirmed finite zero local residual is valid reference geometry; bounded paired omission is the only new degree of freedom, with mandatory extrema/neighbor slots and all safety/oracle gates unchanged. |
+| Independently check FACE-01 revision 14 | `completed` | Plan review passed with zero blockers and warnings, including zero-residual admission, six-section prefix accounting, and no-bridging final-set rules. |
+| Execute FACE-01 revision 14 | `active` | Run only D1-v14 under the unchanged frozen contract; no fallback, retuning, or output-guided selection. |
+| Complete FACE-01 | `blocked-on-execution` | The frozen semantic/safety contract and pre-retry production/test bytes remain unchanged while the bounded revision-14 execution runs. |
 | Continue Phase 90 Wave 2/3 | `blocked` | Plans 90-03/04 require both Wave 1 summaries and cannot close FACE-01 by documentation. |
 
 The v1.21 entry below is complete and retained for session continuity.

@@ -3,13 +3,37 @@
 **Phase:** Face Contour and Chin Repairs
 **Plans verified:** 4
 **Status:** EXECUTION AUTHORIZED
-**Revision gate:** revision 12 independently verified after the fifth owner-selected fix and retry
+**Revision gate:** revision 14 independently verified after the seventh owner-selected fix and retry
 **Issues:** 0 blockers, 0 warnings
 
 > Revision 8 addendum (2026-08-30): the owner selected `Fix and retry`. The
 > historical revision-7 stop record below remains evidence of the disconfirmed
 > design space, but no longer controls execution. The rewritten 90-01 plan and
 > synchronized 90-03/04 contracts passed independent goal-backward review.
+
+## Revision 14 verification verdict
+
+Revision 13 proved the endpoint-inclusive residual indexing and stopped at the
+first genuine zero-curvature slot. The slot was valid reference geometry, not
+malformed support: a piecewise-linear branch can have an exactly zero local
+second difference. The owner selected `Fix and retry` again. Revision 14 keeps
+the complete D1-v13 chain, exact lattice, geometry, safety, proxy, and frozen
+oracle unchanged, and changes only zero-residual admission.
+
+Revision 14 passed independent goal-backward review with no blockers or
+warnings. It retains twelve analytical slots per branch, treats finite zero
+residual slots as reference-only, and permits only complete bilateral omission
+of nonmandatory zero pairs before lattice admission. The extrema-containing
+slot and both original slot neighbors remain mandatory and must be nonzero;
+after omission, original-index adjacency is recomputed without bridging,
+minimum pair/all-zone coverage and every actual Float/overlap/no-triple,
+containment, Lipschitz/inverse, branch-chain proxy, and frozen-output gate
+remain mandatory.
+
+The current attempt ledger contains exactly six aggregate retry sections
+(bounded-2D and revisions 9–13); a miss appends exactly one seventh revision
+14 section after that byte-exact prefix. No source/test or oracle threshold is
+relaxed, and Plans 90-03/04 consume only a future GREEN D1-v14 summary.
 
 ## Revision 12 verification verdict
 
