@@ -21,7 +21,7 @@ created: 2026-09-01
 |----------|-------|
 | **Framework** | Swift Testing/XCTest through SwiftPM, plus SDK-owned Python, Swift, and Bash gates |
 | **Config file** | `BeautySDK/Package.swift` |
-| **Quick run command** | `python3 scripts/verify-phase90-face01-diagnostic.py self-test` plus the Plan 90-01 read-only revision-20 status-policy mutation harness, both verifier help commands, and `git diff --check` |
+| **Quick run command** | Task D20-A: direct fixed-output `self-test` and pure `rev20-policy-self-test`, both verifier help commands, Python syntax parse, and `git diff --check`; Task D20-B: rerun both fixed-output self-tests before baseline capture |
 | **Diagnostic build command** | `swift build --package-path BeautySDK --target BeautyEffects` |
 | **Single diagnostic test command** | `swift test --package-path BeautySDK --filter 'FaceContourSmoothRepairTests/testFACE01D1V19DiagnosticOnlyClassification'` — retained D1V19 implementation vocabulary under revision-20 execution authorization; at most once, only after the sole static preflight |
 | **Estimated runtime** | static verifier sampling: no more than 5 seconds; target build and the one uniquely filtered diagnostic test: no more than 30 seconds each on the warm incremental workspace |
@@ -33,7 +33,9 @@ created: 2026-09-01
 - **During every task, after each meaningful edit:** Run the task's immediate smoke command from the table below; target latency is no more than 30 seconds.
 - **Before every task commit:** Run that task's exact `<automated>` completion command. This may be longer than the immediate sampling command and does not replace it.
 - **After revision-20 Wave 1:** Revision 20 is separately authorized after
-  revision 19 stopped before XCTest. It is dispatched only with
+  revision 19 stopped before XCTest. Task D20-A first commits only the pure
+  verifier policy extension without Swift; Task D20-B recaptures all baselines
+  after that commit. The plan is dispatched only with
   `$gsd-execute-phase 90 --wave 1`; completed 90-02 is skipped, so only 90-01
   runs. Stop after zero-diff Swift rollback, the optional ATTEMPT-only final
   rollback, and `git diff --check`; do not run phase-wide execution or
@@ -48,7 +50,8 @@ created: 2026-09-01
 
 | Task | Immediate smoke command (warm incremental workspace) | Target |
 | --- | --- | --- |
-| 90-01-D20 | Retained verifier self-test plus read-only status-policy mutations; after temporary Swift edits, exactly one `preflight` with provider and complete repair-test as the only allowed paths and ATTEMPT forbidden | <=5s static sampling; then one target build and at most one uniquely filtered diagnostic XCTest |
+| 90-01-D20-A | Direct fixed-output verifier `self-test` plus pure `rev20-policy-self-test`; both help commands, syntax parse, and `git diff --check`; no Swift | <=5s static sampling, then verifier-only commit |
+| 90-01-D20-B | After the D20-A commit, rerun both fixed-output self-tests and recapture every baseline; after temporary Swift edits, exactly one stage-bound `preflight` with provider and complete repair-test as the only allowed paths and ATTEMPT forbidden | <=5s pre-Swift sampling; then one target build and at most one uniquely filtered diagnostic XCTest |
 | 90-02-01 / 90-02-02 | already GREEN; rerun the narrow named ChinTaper test method being edited if reopened | <=30s |
 | 90-03-01 / 90-03-02 | first require `FACE01_GREEN_SUMMARY_VERIFIED`, then run the task's exact-section Python assertion | <=5s; current revision-20 diagnostic state fails closed before edits |
 | 90-04-01 | first require `FACE01_GREEN_SUMMARY_VERIFIED` for 90-01/02/03 summaries, then run the SECURITY/RELIABILITY assertion | <=5s; current revision-20 diagnostic state fails closed before edits |
@@ -60,7 +63,8 @@ created: 2026-09-01
 
 | Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|------------|-----------------|-----------|-------------------|-------------|--------|
-| 90-01-D20 | 01 | 1 | FACE-01 | T-90-D20-01 through T-90-D20-06 | The retained verifier self-tests before Swift; one shared request-local documented reconstruction yields one four-way aggregate classification; preflight allows exactly the two temporary Swift paths, the first rollback allows no diff, and only a valid started-XCTest marker permits ATTEMPT as the sole final diff | retained Python self/mutation tests + one target build + at most one preflight + at most one narrow diagnostic XCTest + two-stage static rollback | Plan 90-01 Task D20 exact status-policy mutation matrix, captured-hash preflight, unique XCTest filter, zero-diff rollback, and conditional ATTEMPT-only rollback | ✅ verifier retained; temporary Swift symbols absent until execution | ⬜ pending |
+| 90-01-D20-A | 01 | 1 | FACE-01 | T-90-D20-05 / T-90-SC | The retained no-subprocess/no-write verifier gains a pure stage-policy function that accepts only the exact preflight, first-rollback, and final-rollback states and emits one fixed self-test marker after all negative mutations fail closed | Python self-test + pure policy mutation test + help + syntax parse; no Swift | Directly require `FACE01_DIAGNOSTIC_SELF_TESTED` and `FACE01_DIAGNOSTIC_REV20_POLICY_SELF_TESTED`, then commit the verifier-only change | ✅ retained verifier exists; policy extension pending | ⬜ pending |
+| 90-01-D20-B | 01 | 1 | FACE-01 | T-90-D20-01 through T-90-D20-06 | Post-D20-A baselines bind one shared request-local documented reconstruction; live preflight permits exactly the two Swift paths, first rollback permits no diff, and only a valid started-XCTest marker permits ATTEMPT as the sole final diff | fixed-output Python self-tests + one target build + at most one preflight + at most one narrow diagnostic XCTest + branch-aware rollback | Directly invoke and require `FACE01_DIAGNOSTIC_REV20_FIRST_ROLLBACK_VERIFIED` on the no-suffix branch or `FACE01_DIAGNOSTIC_REV20_FINAL_ROLLBACK_VERIFIED` after the mandatory first rollback on the suffix branch | ✅ temporary Swift symbols absent until execution | ⬜ pending |
 | 90-02-01 | 02 | 1 | FACE-02 | T-90-08 | Centerline-owned chin field passes provider and exact cap/neutral/fail-closed contracts | unit + generated CPU integration | `swift test --package-path BeautySDK --filter 'ChinTaperRepairTests|FaceShapeWarpProviderTests'` | ✅ | ✅ green |
 | 90-02-02 | 02 | 1 | FACE-02 | T-90-08 / T-90-09 | Public facade retains chin locality, sibling distinction, recovery, and source safety | generated integration | Plan 90-02 Task 02 exact facade/degradation filter | ✅ | ✅ green |
 | 90-03-01 | 03 | 2 | FACE-01 / FACE-02 | T-90-10 through T-90-13 | Static preflight rejects diagnostic/stopped evidence before DESIGN/taxonomy consume GREEN summaries | GREEN-summary preflight + deterministic document contract | Plan 90-03 Task 01 `green-summary` gate, exact-section Python check, and `git diff --check` | ✅ | ⬜ pending |
@@ -97,11 +101,13 @@ created: 2026-09-01
   classification, counts, or ATTEMPT suffix. Provider/test bytes were restored
   byte-exact with apply_patch, `FACE01_DIAGNOSTIC_ROLLBACK_VERIFIED` passed,
   render/oracle counts remained zero, and the final worktree was clean.
-- The static verifier is retained in commits `f3cf3b2` and `03bfada`; revision
-  20 self-tests it without recreating Wave 0. The separately authorized retry
-  changes only status policy: preflight accepts the two temporary Swift paths,
-  the first rollback accepts no diff, and only a started XCTest with one valid
-  marker permits ATTEMPT as the sole final diff.
+- The static verifier is retained in commits `f3cf3b2` and `03bfada`; Task
+  D20-A extends it only with a pure revision-20 stage-policy self-test and live
+  enforcement, commits that verifier-only change without Swift, and does not
+  recreate Wave 0. Task D20-B recaptures every baseline after that commit.
+  Live preflight accepts the two temporary Swift paths, first rollback accepts
+  no diff, and only a started XCTest with one valid marker permits ATTEMPT as
+  the sole final diff.
 - `90-01-SUMMARY.md`, `90-03-SUMMARY.md`, and `90-04-SUMMARY.md` remain absent.
   Plans 90-03/04 stay machine-blocked by `FACE01_GREEN_SUMMARY_VERIFIED`.
 
@@ -112,16 +118,18 @@ created: 2026-09-01
 - [x] `scripts/verify-phase90-face01-diagnostic.py` — retained static verifier
   with `self-test`, `preflight`, `rollback`, and fail-closed `green-summary`
   modes plus deterministic mutation coverage; commits `f3cf3b2` and `03bfada`
-  own it. Revision 20 reads and self-tests it but does not modify or recreate it.
+  completed Wave 0. Task D20-A's pending pure revision-20 policy extension is
+  checker remediation, not Wave-0 recreation.
 - [ ] `FaceContourSmoothRepairTests.testFACE01D1V19DiagnosticOnlyClassification`
   and provider `D1V19*`/`d1V19*` symbols — retained implementation vocabulary,
-  temporary only for Task `90-01-D20`; remove byte-exact after the single run.
+  temporary only for Task `90-01-D20-B`; remove byte-exact after the single run.
 - [ ] Immediately capture provider, complete repair-test, frozen-oracle,
   verifier, ATTEMPT ten-heading prefix, later-artifact, PLANS, STATE, and
   ROADMAP hashes/states before temporary Swift edits.
-- [ ] Before Swift, mutation-test the exact provider+repair-test preflight,
-  zero-diff rollback, omission, ATTEMPT inclusion, extra, alias, duplicate, and
-  post-rollback temporary-diff status cases against the retained verifier.
+- [ ] Before Swift, Task D20-B directly reruns both fixed-output self-tests, then
+  recaptures all hashes/states after the D20-A commit. The pure policy suite
+  rejects missing, extra, ATTEMPT, alias, duplicate, stale-Swift, invalid final
+  allowlist, wrong suffix-count, and unknown-stage cases.
 - [x] Confirm `scripts/verify-phase90-face01-stop.py --help`; normal execution
   is prohibited because it launches the frozen oracle.
 
@@ -131,9 +139,13 @@ UI, renderer, backend, or `Warp.metal` work is required.
 ## Phase Completion Gate
 
 Revision 20 has no Phase Completion Gate and must run only through the Wave 1
-filter. It terminates after classification, byte-exact Swift rollback, the
-mandatory zero-diff rollback, the optional aggregate-only revision-20 suffix,
-the conditional ATTEMPT-only final rollback, and `git diff --check`. The Plan 90-04 completion gate
+filter. It terminates after classification and byte-exact Swift rollback. The
+no-suffix branch requires suffix count zero, unchanged ATTEMPT, and direct
+`FACE01_DIAGNOSTIC_REV20_FIRST_ROLLBACK_VERIFIED` without invoking or requiring
+the final marker. Only a started XCTest with exactly one valid marker may append
+the aggregate-only suffix, after which ATTEMPT-only final rollback must directly
+emit `FACE01_DIAGNOSTIC_REV20_FINAL_ROLLBACK_VERIFIED`; both branches end with
+`git diff --check`. The Plan 90-04 completion gate
 remains machine-blocked by `green-summary` because no GREEN
 `90-01-SUMMARY.md` exists.
 
