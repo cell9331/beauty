@@ -5,10 +5,10 @@ milestone_name: Non-Local Facial Effect Repairs
 current_phase: 90
 current_phase_name: Face Contour and Chin Repairs
 status: executing
-stopped_at: Revision 16 feasibility audit found no legal construction under the frozen FACE-01 contract
-last_updated: "2026-09-01T02:34:00Z"
+stopped_at: Owner authorized revision-17 branch-balanced radius contract; planning active
+last_updated: "2026-09-01T02:45:00Z"
 last_activity: 2026-08-31
-last_activity_desc: Revision 16 read-only audit found no provable legal owner-balanced construction; no plan or source change permitted
+last_activity_desc: Owner authorized a bounded FACE-01 branch-balanced-radius contract after the revision-16 terminal audit
 progress:
   total_phases: 7
   completed_phases: 1
@@ -32,8 +32,8 @@ without distributing the SDK, model, or weights.
 
 Phase: 90 (Face Contour and Chin Repairs) — EXECUTING
 Plan: 1 of 4
-Status: FACE-01 terminally blocked under the frozen contract after revision-16 feasibility audit
-Last activity: 2026-09-01 — Revision-16 feasibility audit found no legal construction without changing frozen definitions, thresholds, mandatory retention, lattice linkage, or oracle boundaries
+Status: Revision 17 branch-balanced-radius planning active under unchanged public and safety boundaries
+Last activity: 2026-09-01 — Owner instructed autonomous continuation and authorized one internal branch-balanced-radius contract change; public/API/backend/oracle/safety boundaries remain fixed
 
 Progress: [█░░░░░░░░░] 14%
 
@@ -214,16 +214,26 @@ roadmaps.
   verified terminal stop pending an explicit owner-authorized new contract or
   new evidence that enables a compliant construction.
 
+- [Phase 90]: The owner then instructed the autonomous workflow to continue,
+  authorizing revision 17 as one bounded internal contract change. For each
+  branch, compute `H_branch` as the minimum actual-target owner clearance over
+  retained slots and use the same fixed coefficients for every retained point:
+  `R=.75H_branch`, `B=.08R`. With equal branch-local B, the existing positive
+  slack left side is `.93H_branch`, strictly below `.94H_i` for every retained
+  point. This changes no public API, inventory, renderer/backend/Warp.metal,
+  frozen pixel oracle, safety threshold, privacy, SDK-only, or distribution
+  boundary. All remaining actual Float overlap, no-triple, inverse, proxy,
+  semantic, protection, and rollback gates remain mandatory.
+
 ### Pending Todos
 
 None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-- [Phase 90] FACE-01 remains unresolved after the verified revision-15
-  geometric stop and revision-16 feasibility audit. Plans 90-03/04 remain
-  blocked until a compliant GREEN summary exists or the owner explicitly
-  authorizes a new contract/milestone.
+- [Phase 90] FACE-01 remains unresolved while revision 17 is planned and
+  independently checked. Plans 90-03/04 remain blocked until a compliant
+  GREEN summary exists.
 
 - [Phase 89] Independent pupil-to-own-eye support is intentionally absent and
   must be implemented in Phase 91 before gaze can receive semantic credit.
@@ -244,6 +254,6 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-09-01T10:34:00+08:00
-Stopped at: Revision 16 feasibility audit found no legal construction under the frozen FACE-01 contract
+Last session: 2026-09-01T10:45:00+08:00
+Stopped at: Owner authorized revision-17 branch-balanced radius contract; planning active
 Resume file: `.planning/phases/90-face-contour-and-chin-repairs/90-01-PLAN.md`
