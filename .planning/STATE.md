@@ -5,10 +5,10 @@ milestone_name: Non-Local Facial Effect Repairs
 current_phase: 90
 current_phase_name: Face Contour and Chin Repairs
 status: executing
-stopped_at: Owner authorized revision-18 displacement-target contract; feasibility research active
-last_updated: "2026-09-01T04:25:00Z"
+stopped_at: Revision-18 Hsrc-over-16 construction proved pre-output feasible; planning active
+last_updated: "2026-09-01T05:05:00Z"
 last_activity: 2026-09-01
-last_activity_desc: Owner authorized revision 18 to redesign only internal displacement-target construction under unchanged safety thresholds
+last_activity_desc: Revision 18 research proved one source-clearance-clipped exact-lattice construction pre-output feasible
 progress:
   total_phases: 7
   completed_phases: 1
@@ -32,8 +32,8 @@ without distributing the SDK, model, or weights.
 
 Phase: 90 (Face Contour and Chin Repairs) — EXECUTING
 Plan: 1 of 4
-Status: Revision 18 displacement-target feasibility research active under unchanged safety, public, backend, and oracle boundaries
-Last activity: 2026-09-01 — Owner instructed continuation after the revision-17 report, authorizing only an internal displacement/target construction change while preserving the radius/owner system and safety thresholds
+Status: Revision 18 sole `Hsrc/16` displacement construction proved pre-output feasible; independent planning active
+Last activity: 2026-09-01 — Deterministic binary32 research passed unchanged owner, overlap, single/adjacent/Lipschitz/inverse, exact-linkage, and proxy gates without invoking the frozen oracle
 
 Progress: [█░░░░░░░░░] 14%
 
@@ -266,15 +266,25 @@ roadmaps.
   relaxation, or execution is authorized before a deterministic construction
   is proved feasible and independently planned.
 
+- [Phase 90]: Revision 18 research found one sole pre-output-feasible
+  construction. Retain each revision-17 raw exact-lattice coefficient only as
+  sign/reference, compute branch-minimum actual-Float source clearance, clip
+  the emitted integer coefficient by `floor(Hsrc_branch/(64g))`, and rebuild
+  cap/half/target from the same `g=2^-24` lattice. The construction proves
+  single `<=8/45`, adjacent/global Lipschitz `<=16/45`, and inverse
+  `>=29/45`; deterministic binary32 checks also retained required overlap,
+  positive forbidden separation and owner slack, exact linkage, and strict
+  proxy decrease. The frozen rendered oracle remains uninvoked and unknown.
+
 ### Pending Todos
 
 None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-- [Phase 90] FACE-01 revision 18 is limited to displacement/target feasibility
-  research. Plans 90-03/04 and execution remain blocked until one deterministic
-  construction is proved feasible and independently checked.
+- [Phase 90] FACE-01 revision 18 execution remains blocked while the sole
+  `Hsrc/16` construction is planned and independently checked. Plans 90-03/04
+  still require a compliant GREEN summary.
 
 - [Phase 89] Independent pupil-to-own-eye support is intentionally absent and
   must be implemented in Phase 91 before gaze can receive semantic credit.
@@ -295,6 +305,6 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-09-01T12:25:00+08:00
-Stopped at: Owner authorized revision-18 displacement-target contract; feasibility research active
+Last session: 2026-09-01T13:05:00+08:00
+Stopped at: Revision-18 Hsrc-over-16 construction proved pre-output feasible; planning active
 Resume file: `.planning/phases/90-face-contour-and-chin-repairs/90-01-PLAN.md`
