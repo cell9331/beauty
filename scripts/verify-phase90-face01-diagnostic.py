@@ -139,10 +139,11 @@ BANNED_DIAGNOSTIC_TOKENS = (
     "FileManager",
     "ProcessInfo",
     "URLSession",
-    "print(",
     "NSLog",
     "public ",
 )
+
+AUTHORIZED_MARKER_EMISSION = 'Swift.print("FACE01_D19_DIAGNOSTIC \\(marker)")'
 
 RAW_EVIDENCE_WORDS = (
     "coordinate",
@@ -518,6 +519,15 @@ def verify_static_sources(provider_text: str, test_text: str) -> None:
         reject("diagnostic_harness_violation")
     if any(token in provider for token in BANNED_DIAGNOSTIC_TOKENS):
         reject("diagnostic_harness_violation")
+    combined = provider + test
+    if combined.count("print(") != 1:
+        reject("diagnostic_harness_violation")
+    if provider.count(AUTHORIZED_MARKER_EMISSION) != 0:
+        reject("diagnostic_harness_violation")
+    if test.count(AUTHORIZED_MARKER_EMISSION) != 1:
+        reject("diagnostic_harness_violation")
+    if any(test.count(f'"{field}=') != 1 for field in SUFFIX_FIELDS):
+        reject("diagnostic_harness_violation")
     if re.search(r"\bstatic\s+var\b|\bclass\s+var\b", provider + test):
         reject("diagnostic_harness_violation")
     ordered_positions(
@@ -725,13 +735,20 @@ func referenceFinalizeD1V18Template() { _ = round(2 * alpha * Float(item.q18)) }
 func classifyD1V19() {}
 func testFACE01D1V19DiagnosticOnlyClassification() {
   _ = d1V19DiagnosticConstruction(face: face)
-  _ = "FACE01_D19_DIAGNOSTIC"
+  let marker = [
+""" + "\n".join(f'    "{field}=value",' for field in SUFFIX_FIELDS) + """
+  ].joined(separator: "|")
+  Swift.print("FACE01_D19_DIAGNOSTIC \\(marker)")
 }
 // D1V19_DIAGNOSTIC_END"""
     verify_static_sources(good_provider, good_test)
     must_reject(lambda: verify_static_sources(good_provider, good_test.replace("}\n", "  _ = d1V19DiagnosticConstruction(face: face)\n}\n", 1)))
     for token in BANNED_DIAGNOSTIC_TOKENS:
         must_reject(lambda token=token: verify_static_sources(good_provider, good_test.replace("func classifyD1V19() {}", f"func classifyD1V19() {{ _ = {token!r} }}")))
+    must_reject(lambda: verify_static_sources(good_provider, good_test.replace(AUTHORIZED_MARKER_EMISSION, "")))
+    must_reject(lambda: verify_static_sources(good_provider, good_test.replace(AUTHORIZED_MARKER_EMISSION, AUTHORIZED_MARKER_EMISSION + "\n  " + AUTHORIZED_MARKER_EMISSION)))
+    must_reject(lambda: verify_static_sources(good_provider, good_test.replace(AUTHORIZED_MARKER_EMISSION, 'print("FACE01_D19_DIAGNOSTIC \\(marker)")')))
+    must_reject(lambda: verify_static_sources(good_provider, good_test.replace('"classification=value",', '"classification_changed=value",')))
     must_reject(lambda: verify_static_sources(good_provider.replace("struct D1V19Template {}", "static var D1V19Template = 0"), good_test))
     first_case = f'case {GATE_PAIRS[0][0]} = "{GATE_PAIRS[0][1]}"'
     second_case = f'case {GATE_PAIRS[1][0]} = "{GATE_PAIRS[1][1]}"'
