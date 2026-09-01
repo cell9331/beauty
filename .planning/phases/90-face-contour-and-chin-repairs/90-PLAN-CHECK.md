@@ -3,13 +3,45 @@
 **Phase:** Face Contour and Chin Repairs
 **Plans verified:** 4
 **Status:** EXECUTION AUTHORIZED
-**Revision gate:** revision 15 independently verified after the eighth owner-selected fix and retry
+**Revision gate:** revision 17 independently verified after the owner-authorized branch-balanced-radius contract change
 **Issues:** 0 blockers, 0 warnings
 
 > Revision 8 addendum (2026-08-30): the owner selected `Fix and retry`. The
 > historical revision-7 stop record below remains evidence of the disconfirmed
 > design space, but no longer controls execution. The rewritten 90-01 plan and
 > synchronized 90-03/04 contracts passed independent goal-backward review.
+
+## Revision 17 verification verdict
+
+Revision 15 measured valid actual Float owner/unit membership and expanded
+containment but failed the fixed positive-slack gate for five retained slots
+per branch. Revision 16 found no legal construction while the per-point radius
+definition remained frozen. The owner then instructed autonomous continuation
+and authorized one internal contract change: derive a uniform radius from the
+minimum actual-target clearance on each final retained branch.
+
+Revision 17 passed independent goal-backward review after three downstream
+documentation blockers were corrected. The sole changed definition is:
+compute actual Float `H_i` after final retention, set
+`H_branch=min(H_i)`, use uniform branch `R=.75H_branch` and `B=.08R`,
+and set `adjB=B` only for a retained original-index neighbor (otherwise zero).
+The analytical proof is
+`R+2B+adjB<=1.24*.75H_branch=.93H_branch<=.93H_i<.94H_i`;
+execution must separately recompute and require the actual Float inequality,
+strict owner/unit/expanded containment, overlap/no-triple, `0.20/0.40`,
+Lipschitz/inverse, proxy, strength, budget, and frozen rendered oracle gates.
+No alternate radius, threshold tuning, nonzero mandatory omission, or
+rendered-output selection is permitted.
+
+The attempt ledger contains exactly eight aggregate retry sections
+(bounded-2D and revisions 9–15). A miss may append exactly one ninth
+revision-17 schema suffix after that byte-exact prefix, must restore provider
+and tests, emit `FACE01_STOP_VERIFIED`, create no summary, and keep downstream
+plans blocked. Plans 90-03/04 consume only a GREEN D1-v17 summary, require the
+exact branch-minimum formula/proof and actual Float evidence, and mark D1-v15
+and revision 16 historical. Public/API/backend/Warp.metal, 62/5/75, safety
+threshold, frozen oracle, privacy, SDK-only, and non-distribution boundaries
+remain unchanged.
 
 ## Revision 15 verification verdict
 
@@ -342,7 +374,8 @@ than the superseded characterization-only narrative.
 
 ## Historical revision 7 recommendation
 
-Do not resume Plan 90-01 automatically. Preserve the retained RED and unchanged
+Historical only: at revision 7, the recommendation was not to resume Plan
+90-01 automatically. Preserve the retained RED and unchanged
 production provider, keep Plans 90-03 and 90-04 blocked, and route through the
-autonomous blocker decision. A retry requires a newly authorized bounded replan;
-skipping leaves FACE-01 explicitly unresolved and cannot promote Phase 90.
+autonomous blocker decision. That recommendation was superseded by later
+owner-selected retries and does not control revision-17 execution.

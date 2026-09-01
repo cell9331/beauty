@@ -35,8 +35,8 @@
 | Completed sibling | Phase 90 Plan 90-02 repaired FACE-02 `chinTaper`; its production and test commits remain complete. |
 | Prior blocker | Plan 90-01 exhausted its earlier finite safe provider-only candidates. The best local and monotone result was `+5 Q16` versus the frozen `+16`; wider support reached `+9` but violated outside protection. |
 | Preserved state | Failed production experiments and temporary diagnostics were removed. The committed generated RED and pre-attempt provider behavior remain. |
-| Evidence | `.planning/phases/90-face-contour-and-chin-repairs/90-01-ATTEMPT.md` retains five aggregate-only stop records. Revision 11 proved 7/7 branches, a common interior extremum class, five paired classes, and `2/1/2` zone reachability, then stopped before render because all five fixed Float states for the first mandatory shoulder carrier failed the required exact subtraction identities. Provider/test bytes were restored byte-exact and the retained verifier exited 0 with `FACE01_STOP_VERIFIED`. |
-| Next step | Plan and independently review one owner-authorized revision-17 branch-balanced-radius retry: preserve the v15 carrier/residual/lattice/oracle contracts, but derive every retained radius on a branch from that branch's minimum actual target clearance so positive owner slack is proven analytically before execution. |
+| Evidence | `.planning/phases/90-face-contour-and-chin-repairs/90-01-ATTEMPT.md` retains exactly eight aggregate-only stop records. Revision 15 passed strict owner/unit membership and expanded-support containment, then failed positive owner slack for five retained slots per side, first at zero-based slot 4. Provider/test bytes were restored byte-exact, no frozen-oracle candidate was invoked, and the retained verifier exited 0 with `FACE01_STOP_VERIFIED`. |
+| Next step | Execute the independently verified owner-authorized revision-17 branch-balanced-radius retry exactly once under Plan 90-01. |
 
 Checklist:
 
@@ -70,10 +70,10 @@ Checklist:
 | Independently check FACE-01 revision 16 | `blocked` | No concrete revision-16 plan exists to review; a checker cannot approve an unproved construction. |
 | Execute FACE-01 revision 16 | `blocked` | Not authorized without a concrete independently checked plan; v15 provider/test state and frozen oracle remain unchanged. |
 | Authorize FACE-01 revision 17 contract | `completed` | After the terminal v16 report, the owner instructed the autonomous workflow to continue. Scope is limited to an internal branch-balanced radius construction; public API, 62/5/75 inventories, renderer/backend/Warp.metal, safety thresholds, frozen oracle, privacy, SDK-only, and non-distribution boundaries remain unchanged. |
-| Research and plan FACE-01 revision 17 | `active` | Use one deterministic branch-global minimum-clearance radius: `H_branch=min(retained actual-target H_i)`, `R_i=.75H_branch`, `B_i=.08R_i`; this proves owner slack because `R+2B+adjB=.93H_branch<.94H_i`. No alternative radius candidate or rendered-output selection is allowed. |
-| Independently check FACE-01 revision 17 | `planned` | Require goal-backward review of the analytical owner proof, actual Float recomputation, overlap/no-triple/inverse/proxy gates, exact retry evidence, rollback, and unchanged product boundary before execution. |
-| Execute FACE-01 revision 17 | `planned` | Execute exactly once only after the plan passes; on any pre-render or frozen-oracle miss restore source/test bytes and append one aggregate-only revision-17 suffix. |
-| Complete FACE-01 | `blocked-on-planning` | Plans 90-03/04 remain blocked until revision 17 either produces a compliant GREEN summary or a verified stop. |
+| Research and plan FACE-01 revision 17 | `completed` | The executable plan uses one deterministic branch-global minimum-clearance radius: `H_branch=min(retained actual-target H_i)`, `R_i=.75H_branch`, `B_i=.08R_i`; this proves owner slack because `R+2B+adjB=.93H_branch<.94H_i`. No alternative radius candidate or rendered-output selection is allowed. |
+| Independently check FACE-01 revision 17 | `completed` | Goal-backward review passed with zero blockers and zero warnings after exact-section verification was added for the analytical owner proof, actual Float gates, downstream contracts, eight-prefix/ninth-suffix evidence, and unchanged product boundary. |
+| Execute FACE-01 revision 17 | `active` | Execute exactly once; on any pre-render or frozen-oracle miss restore source/test bytes and append one aggregate-only revision-17 suffix. |
+| Complete FACE-01 | `blocked-on-execution` | Plans 90-03/04 remain blocked until revision 17 either produces a compliant GREEN summary or a verified stop. |
 | Continue Phase 90 Wave 2/3 | `blocked` | Plans 90-03/04 require both Wave 1 summaries and cannot close FACE-01 by documentation. |
 
 The v1.21 entry below is complete and retained for session continuity.

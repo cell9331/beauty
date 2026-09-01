@@ -5,10 +5,10 @@ milestone_name: Non-Local Facial Effect Repairs
 current_phase: 90
 current_phase_name: Face Contour and Chin Repairs
 status: executing
-stopped_at: Owner authorized revision-17 branch-balanced radius contract; planning active
-last_updated: "2026-09-01T02:45:00Z"
-last_activity: 2026-08-31
-last_activity_desc: Owner authorized a bounded FACE-01 branch-balanced-radius contract after the revision-16 terminal audit
+stopped_at: Revision 17 branch-balanced-radius plan independently verified; ready for bounded execution
+last_updated: "2026-09-01T03:20:00Z"
+last_activity: 2026-09-01
+last_activity_desc: Revision 17 plan passed independent review with zero blockers and zero warnings
 progress:
   total_phases: 7
   completed_phases: 1
@@ -32,8 +32,8 @@ without distributing the SDK, model, or weights.
 
 Phase: 90 (Face Contour and Chin Repairs) — EXECUTING
 Plan: 1 of 4
-Status: Revision 17 branch-balanced-radius planning active under unchanged public and safety boundaries
-Last activity: 2026-09-01 — Owner instructed autonomous continuation and authorized one internal branch-balanced-radius contract change; public/API/backend/oracle/safety boundaries remain fixed
+Status: Revision 17 branch-balanced-radius plan independently verified; bounded execution active under unchanged public and safety boundaries
+Last activity: 2026-09-01 — Independent plan review passed with zero blockers and zero warnings after exact-section contract and retry-ledger verification
 
 Progress: [█░░░░░░░░░] 14%
 
@@ -225,15 +225,23 @@ roadmaps.
   boundary. All remaining actual Float overlap, no-triple, inverse, proxy,
   semantic, protection, and rollback gates remain mandatory.
 
+- [Phase 90]: Revision 17 planning passed independent goal-backward review
+  with zero blockers and zero warnings. The executable contract verifies the
+  branch-minimum radius relations in their exact owner-document sections,
+  requires the existing eight retry headings as an immutable prefix, and
+  permits exactly one ninth aggregate-only suffix on rollback. The bounded
+  execution may now run once; no alternative candidate, tuning, or
+  rendered-output selection is authorized.
+
 ### Pending Todos
 
 None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-- [Phase 90] FACE-01 remains unresolved while revision 17 is planned and
-  independently checked. Plans 90-03/04 remain blocked until a compliant
-  GREEN summary exists.
+- [Phase 90] FACE-01 remains unresolved while the independently verified
+  revision-17 retry awaits bounded execution. Plans 90-03/04 remain blocked
+  until a compliant GREEN summary exists.
 
 - [Phase 89] Independent pupil-to-own-eye support is intentionally absent and
   must be implemented in Phase 91 before gaze can receive semantic credit.
@@ -254,6 +262,6 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-09-01T10:45:00+08:00
-Stopped at: Owner authorized revision-17 branch-balanced radius contract; planning active
+Last session: 2026-09-01T11:20:00+08:00
+Stopped at: Revision 17 branch-balanced-radius plan independently verified; ready for bounded execution
 Resume file: `.planning/phases/90-face-contour-and-chin-repairs/90-01-PLAN.md`
