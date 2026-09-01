@@ -286,3 +286,26 @@ the autonomous run.
 - lattice_rejection_count: not certified because the provider failed closed before aggregate admission
 - oracle_sha256: 7fa653475f4a13831ec0a75c263cfaf717c48b3d6094c2ff3e95ecb64076981d
 - rollback_status: provider and complete repair test restored byte-exact with apply_patch; later-task artifacts restored or absent; STATE.md and PLANS.md preserved byte-exact
+
+
+## 2026-09-01 FACE-01 revision-22 execution of D1-v19 diagnostic-only classification
+
+- diagnostic_contract: documented-d1-v18-reconstruction-not-byte-identical
+- classification: prior_stop_not_reproduced
+- first_failure: none
+- construction_invocation_count: 1
+- canonical_branch_counts: left=7,right=7,total=14
+- analytical_slot_counts: left=12,right=12,total=24
+- retained_branch_counts: left=10,right=10,total=20
+- clipped_branch_counts: left=10,right=10,total=20
+- cap_template_count: 20
+- provider_cap_admitted_count: 20
+- provider_half_admitted_count: 20
+- reference_cap_admitted_count: 20
+- reference_half_admitted_count: 20
+- final_point_count: 20
+- first_failure_margin: not_needed
+- render_invocation_count: 0
+- oracle_invocation_count: 0
+- rollback_status: provider_and_complete_test_byte_exact;temporary_swift_symbols_absent
+- static_verifier_status: FACE01_DIAGNOSTIC_ROLLBACK_VERIFIED
