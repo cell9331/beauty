@@ -3,13 +3,46 @@
 **Phase:** Face Contour and Chin Repairs
 **Plans verified:** 4
 **Status:** EXECUTION AUTHORIZED
-**Revision gate:** revision 17 independently verified after the owner-authorized branch-balanced-radius contract change
+**Revision gate:** revision 18 independently verified after the owner-authorized displacement/target contract change
 **Issues:** 0 blockers, 0 warnings
 
 > Revision 8 addendum (2026-08-30): the owner selected `Fix and retry`. The
 > historical revision-7 stop record below remains evidence of the disconfirmed
 > design space, but no longer controls execution. The rewritten 90-01 plan and
 > synchronized 90-03/04 contracts passed independent goal-backward review.
+
+## Revision 18 verification verdict
+
+Revision 17 resolved owner slack but stopped at the unchanged single normalized
+displacement bound. The owner then authorized one internal displacement/target
+contract change while freezing retained topology, the actual-target
+branch-minimum radius/owner law, `0.20/0.40`, Lipschitz/inverse, public/API,
+renderer/backend/Warp.metal, frozen oracle, privacy, SDK-only, and
+non-distribution boundaries.
+
+Revision 18 research and plans passed independent goal-backward review with
+zero blockers and zero warnings after two Nyquist/research-resolution blockers
+and one task-latency warning were repaired. The sole construction retains raw
+revision-17 `q17` only as sign/reference, computes actual-Float final-source
+`Hsrc_branch`, fixes `qLimit=floor(Hsrc_branch/(64g))`, emits
+`q18=sign(q17)*min(abs(q17),qLimit)`, and rebuilds exact cap/half/target linkage
+on `g=2^-24`. The analytical proof is `D<=Hsrc/16`,
+`H_branch>=15Hsrc/16`, single `<=8/45`, adjacent/global Lipschitz `<=16/45`,
+and inverse `>=29/45`; execution must separately recertify every final actual
+Float linkage, owner/unit/slack/containment, topology, safety, proxy, strength,
+budget, and frozen rendered semantic gate.
+
+The attempt ledger contains exactly nine retry headings (bounded-2D,
+revisions 9–15, and revision 17; no revision 16). A miss may append exactly
+one tenth revision-18 schema suffix after that byte-exact prefix, must restore
+provider/tests, emit `FACE01_STOP_VERIFIED`, create no summary, and leave
+Plans 90-03/04 blocked. The candidate oracle runs exactly once only after all
+pre-render gates; a retained-verifier RED rerun is permitted only after
+rollback as evidence, never as candidate selection. `90-VALIDATION.md` maps
+every Phase 90 task, keeps task-level feedback at or below 30 seconds, and
+retains the complete focused/compatibility/archive/boundary chain as a
+mandatory Phase Completion Gate. Plans 90-03/04 consume only a GREEN D1-v18
+summary and verify their exact owner-document sections.
 
 ## Revision 17 verification verdict
 
@@ -378,4 +411,4 @@ Historical only: at revision 7, the recommendation was not to resume Plan
 90-01 automatically. Preserve the retained RED and unchanged
 production provider, keep Plans 90-03 and 90-04 blocked, and route through the
 autonomous blocker decision. That recommendation was superseded by later
-owner-selected retries and does not control revision-17 execution.
+owner-selected retries and does not control revision-18 execution.

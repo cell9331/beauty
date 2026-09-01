@@ -5,10 +5,10 @@ milestone_name: Non-Local Facial Effect Repairs
 current_phase: 90
 current_phase_name: Face Contour and Chin Repairs
 status: executing
-stopped_at: Revision-18 Hsrc-over-16 construction proved pre-output feasible; planning active
-last_updated: "2026-09-01T05:05:00Z"
+stopped_at: Revision-18 Hsrc-over-16 plan independently verified; ready for bounded execution
+last_updated: "2026-09-01T05:45:00Z"
 last_activity: 2026-09-01
-last_activity_desc: Revision 18 research proved one source-clearance-clipped exact-lattice construction pre-output feasible
+last_activity_desc: Revision 18 plan passed independent review with zero blockers and zero warnings
 progress:
   total_phases: 7
   completed_phases: 1
@@ -32,8 +32,8 @@ without distributing the SDK, model, or weights.
 
 Phase: 90 (Face Contour and Chin Repairs) — EXECUTING
 Plan: 1 of 4
-Status: Revision 18 sole `Hsrc/16` displacement construction proved pre-output feasible; independent planning active
-Last activity: 2026-09-01 — Deterministic binary32 research passed unchanged owner, overlap, single/adjacent/Lipschitz/inverse, exact-linkage, and proxy gates without invoking the frozen oracle
+Status: Revision 18 sole `Hsrc/16` displacement construction independently verified; bounded execution active
+Last activity: 2026-09-01 — Independent plan review passed with zero blockers and zero warnings after research-resolution and Nyquist sampling gates were completed
 
 Progress: [█░░░░░░░░░] 14%
 
@@ -276,15 +276,24 @@ roadmaps.
   positive forbidden separation and owner slack, exact linkage, and strict
   proxy decrease. The frozen rendered oracle remains uninvoked and unknown.
 
+- [Phase 90]: Revision 18 planning passed independent goal-backward review
+  with zero blockers and zero warnings. The plan binds execution to the sole
+  `Hsrc/16` construction, exactly one candidate-oracle invocation after every
+  pre-render gate, and exact nine-prefix/tenth-suffix rollback. Research open
+  questions are explicitly resolved; `90-VALIDATION.md` covers all nine Phase
+  90 tasks with <=30-second task sampling while retaining the long focused,
+  compatibility, comparator, archive, and SDK-boundary chain as a mandatory
+  phase completion gate.
+
 ### Pending Todos
 
 None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-- [Phase 90] FACE-01 revision 18 execution remains blocked while the sole
-  `Hsrc/16` construction is planned and independently checked. Plans 90-03/04
-  still require a compliant GREEN summary.
+- [Phase 90] FACE-01 revision 18 awaits its one bounded execution. Plans
+  90-03/04 still require a compliant GREEN summary and remain blocked until
+  that execution finishes.
 
 - [Phase 89] Independent pupil-to-own-eye support is intentionally absent and
   must be implemented in Phase 91 before gaze can receive semantic credit.
@@ -305,6 +314,6 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-09-01T13:05:00+08:00
-Stopped at: Revision-18 Hsrc-over-16 construction proved pre-output feasible; planning active
+Last session: 2026-09-01T13:45:00+08:00
+Stopped at: Revision-18 Hsrc-over-16 plan independently verified; ready for bounded execution
 Resume file: `.planning/phases/90-face-contour-and-chin-repairs/90-01-PLAN.md`

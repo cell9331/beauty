@@ -306,14 +306,14 @@ On GREEN, create the normal summary only after the frozen oracle and public/comp
 
 No external package, dependency, service, model, or network path is introduced; therefore no package legitimacy audit is required. [VERIFIED: construction inventory]
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **Will the frozen rendered oracle pass?**
+1. **RESOLVED — Will the frozen rendered oracle pass?**
    - Known: every pre-output gate has a positive frozen-geometry margin. [VERIFIED: binary32 audit]
    - Unknown: whether the clipped field reaches the unchanged semantic floor and sibling margins while preserving all protections. [VERIFIED: oracle intentionally not invoked]
    - Recommendation: answer only through one independently planned execution after all pre-output tests pass. [VERIFIED: research boundary]
 
-2. **How should “arbitrary positive strength” be read?**
+2. **RESOLVED — How should “arbitrary positive strength” be read?**
    - Known: revision 17 allows a non-cap/non-half positive strength to fail closed, and the renderer has a fixed displacement floor. [CITED: .planning/phases/90-face-contour-and-chin-repairs/90-01-PLAN.md; BeautyGeometryEffectPipeline.swift]
    - Recommendation: preserve that existing meaning. If nonzero emission for every positive Float is newly mandatory, record terminal impossibility instead of changing the renderer or neutral contract. [VERIFIED: scope analysis]
 
