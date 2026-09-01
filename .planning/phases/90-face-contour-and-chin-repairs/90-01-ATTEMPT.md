@@ -250,3 +250,39 @@ the autonomous run.
 - lattice_rejection_count: 0
 - oracle_sha256: 7fa653475f4a13831ec0a75c263cfaf717c48b3d6094c2ff3e95ecb64076981d
 - rollback_status: provider and complete repair test restored byte-exact; later-task artifacts unchanged or absent; STATE.md and PLANS.md preserved byte-exact; FACE01_STOP_VERIFIED
+
+## 2026-09-01 FACE-01 source-clearance-clipped D1-v18 revision-18 retry stop
+
+- implementation: sole D1-v18 source-clearance-clipped exact-lattice construction; no alternative, tuning, sweep, fallback, mandatory-pair omission, or rendered-output selection
+- gate_bitmask: bits immutable-baseline=0x01,normalized-revision-17-scaffold=0x02,compiled-D1-v18=0x04,focused-pre-render=0x08,frozen-oracle=0x10; D1-v18=0x07
+- first_failure: focused-pre-render-D1-v18-whole-field-empty-before-candidate-oracle
+- canonical_branch_counts: frozen input left=7,right=7; emitted branch counts not certified after whole-field pre-render abstention
+- slot_counts: analytical left=12,right=12 by construction; retained emitted counts not certified after whole-field pre-render abstention
+- extremum_slot_indices: planned frozen left=4,right=4; emitted extremum topology not certified
+- zone_slot_counts: analytical left=[4,4,4],right=[4,4,4]; emitted zone topology not certified
+- residual_progress_pairs: planned endpoint-inclusive 12-of-12 bilateral; no retained aggregate certified after the pre-render miss
+- residual_boundary_assertions: slot1-minus-Q0 and slot12-plus-Q1 implemented; no retained aggregate certified after the pre-render miss
+- residual_indexing_status: endpoint-inclusive Q((i-1)/13)-Q((i+1)/13) scaffold hash matched; emitted field failed closed
+- residual_zero_counts: not certified because no field passed focused pre-render admission
+- omitted_pair_counts: not certified; no nonzero mandatory omission or reselection was attempted
+- raw_lattice_status: fixed g=2^-24 and raw-q17 sign/reference scaffold compiled; no emitted raw-lattice aggregate certified
+- source_clearance_clip_status: sole Hsrc_branch/(64g) q18 block compiled; provider returned the whole field empty at the focused pre-render gate
+- clipped_coefficient_counts: not certified because no field passed focused pre-render admission
+- exact_linkage_failure_counts: not certified because no field passed focused pre-render admission
+- branch_min_source_clearance_status: not certified because the whole D1-v18 field abstained before pre-render acceptance
+- branch_min_target_clearance_status: not certified because the whole D1-v18 field abstained before pre-render acceptance
+- owner_slack_proof_status: analytical 8/45,16/45,29/45 and .93H_branch<.94H_i scaffold retained; actual emitted proof not certified
+- actual_float_gate_counts: not certified because the focused pre-render field was empty
+- adjacent_overlap_counts: not evaluated after whole-field pre-render abstention
+- forbidden_swept_disks: not evaluated after whole-field pre-render abstention
+- max_single_q16: not certified because no field was admitted
+- max_adjacent_q16: not certified because no field was admitted
+- max_lipschitz_q16: not certified because no field was admitted
+- inverse_lower_bound_q16: not certified because no field was admitted
+- branch_chain_proxy_delta_q40: not evaluated because the focused pre-render field was empty
+- strength_finalization_status: exact cap and half both emitted zero points at the focused pre-render gate; no partial topology emitted
+- q16_signal_counts: source=0,neutral=0,frozen-siblings=[16,3],strengthening-siblings=[4,0,12]; candidate oracle was not invoked
+- admitted_point_count: 0
+- lattice_rejection_count: not certified because the provider failed closed before aggregate admission
+- oracle_sha256: 7fa653475f4a13831ec0a75c263cfaf717c48b3d6094c2ff3e95ecb64076981d
+- rollback_status: provider and complete repair test restored byte-exact with apply_patch; later-task artifacts restored or absent; STATE.md and PLANS.md preserved byte-exact
