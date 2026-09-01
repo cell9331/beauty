@@ -222,3 +222,31 @@ the autonomous run.
 - lattice_rejection_count: 0
 - oracle_sha256: 7fa653475f4a13831ec0a75c263cfaf717c48b3d6094c2ff3e95ecb64076981d
 - rollback_status: provider and complete repair test restored byte-exact; later-task artifacts unchanged or absent; STATE.md and PLANS.md preserved byte-exact; FACE01_STOP_VERIFIED
+
+## 2026-09-01 FACE-01 branch-balanced-radius D1-v17 revision-17 retry stop
+
+- implementation: D1-v17 complete bilateral twelve-slot branch-balanced-radius chain only; executed once with no alternate radius, tuning, mandatory-pair omission, fallback, solver, fit, interval experiment, or rendered-output selection
+- gate_bitmask: bits oracle-hash=0x01,canonical-branches=0x02,slot-extremum-zones=0x04,residual-indexing=0x08,zero-pair-omission=0x10,exact-float-lattice=0x20,branch-min-owner-slack-expanded=0x40,overlap-no-triple=0x80,single-adjacent-lipschitz-inverse=0x100,branch-chain-proxy=0x200,frozen-oracle=0x400; D1-v17=0xff
+- first_failure: single-normalized-displacement-radius-bound-before-global-lipschitz-and-inverse
+- canonical_branch_counts: left=7,right=7
+- slot_counts: left=12,right=12
+- extremum_slot_indices: left=4,right=4
+- zone_slot_counts: left=[4,4,4],right=[4,4,4]
+- residual_progress_pairs: evaluated=12-of-12-on-left-and-right; ordered endpoint-inclusive pairs
+- residual_boundary_assertions: slot1-minus-Q0=passed,slot12-plus-Q1=passed
+- residual_indexing_status: endpoint-inclusive-Q((i-1)/13)-Q((i+1)/13); no shifted neighbor
+- residual_zero_counts: left=2,right=2
+- omitted_pair_counts: left=2,right=2; complete bilateral zero pairs only; no unilateral or nonzero mandatory omission
+- branch_min_clearance_status: actual Float H_i materialized after final retention; independent left/right H_branch minima finite-positive; uniform branch R=.75H_branch and B=.08R assigned
+- owner_slack_proof_status: analytical .93H_branch<=.93H_i<.94H_i passed; actual Float inequality passed for every retained point
+- actual_float_gate_counts: owner-failures=[0,0],unit-failures=[0,0],slack-failures=[0,0],expanded-containment-failures=[0,0]
+- adjacent_overlap_counts: passed with at least one original-index adjacent overlap on each branch before the single-bound stop
+- forbidden_swept_disks: zero forbidden same-side non-adjacent or opposite-side overlaps; no triple admitted
+- max_lipschitz_q16: not certified because the first actual single 2*norm(d)/R exceeded 13107 Q16
+- inverse_lower_bound_q16: not certified because the single normalized bound failed before global Lip(F)
+- branch_chain_proxy_delta_q16: not evaluated because the single normalized bound failed first
+- q16_signal_counts: source=0,neutral=0,frozen-siblings=[4,9],strengthening-siblings=[16,12,0]; candidate oracle not invoked after pre-render safety stop
+- admitted_point_count: 0
+- lattice_rejection_count: 0
+- oracle_sha256: 7fa653475f4a13831ec0a75c263cfaf717c48b3d6094c2ff3e95ecb64076981d
+- rollback_status: provider and complete repair test restored byte-exact; later-task artifacts unchanged or absent; STATE.md and PLANS.md preserved byte-exact; FACE01_STOP_VERIFIED
