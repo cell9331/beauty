@@ -5,10 +5,10 @@ milestone_name: Non-Local Facial Effect Repairs
 current_phase: 90
 current_phase_name: Face Contour and Chin Repairs
 status: executing
-stopped_at: FACE-01 revision 17 verified terminal stop at fixed single normalized-displacement safety bound
-last_updated: "2026-09-01T04:05:00Z"
+stopped_at: Owner authorized revision-18 displacement-target contract; feasibility research active
+last_updated: "2026-09-01T04:25:00Z"
 last_activity: 2026-09-01
-last_activity_desc: Revision 17 resolved owner slack but stopped before render at the fixed single normalized-displacement safety gate
+last_activity_desc: Owner authorized revision 18 to redesign only internal displacement-target construction under unchanged safety thresholds
 progress:
   total_phases: 7
   completed_phases: 1
@@ -32,8 +32,8 @@ without distributing the SDK, model, or weights.
 
 Phase: 90 (Face Contour and Chin Repairs) — EXECUTING
 Plan: 1 of 4
-Status: FACE-01 revision 17 verified terminal stop; no further contract change is authorized
-Last activity: 2026-09-01 — Revision 17 passed branch-minimum owner/slack gates, then failed the fixed `2*norm(d)/R <= 0.20` pre-render safety gate; rollback and retained stop verification passed
+Status: Revision 18 displacement-target feasibility research active under unchanged safety, public, backend, and oracle boundaries
+Last activity: 2026-09-01 — Owner instructed continuation after the revision-17 report, authorizing only an internal displacement/target construction change while preserving the radius/owner system and safety thresholds
 
 Progress: [█░░░░░░░░░] 14%
 
@@ -255,16 +255,26 @@ roadmaps.
   safety family—and still has no evidence that proxy or frozen-oracle gates
   would pass.
 
+- [Phase 90]: The owner then instructed the autonomous workflow to continue,
+  authorizing revision 18 to reopen only the internal displacement/target
+  construction. Research may replace the fixed `d0=.18v`, its exact lattice
+  linkage, or cap-target construction, but must preserve revision-17 retained
+  topology and radius/owner clearance, the `0.20/0.40`, `Lip<=0.40`, and
+  inverse `>=0.60` safety family, the frozen rendered oracle, all public/API,
+  renderer/backend/Warp.metal, privacy, SDK-only, and non-distribution
+  boundaries. No output-guided selection, oracle invocation, threshold
+  relaxation, or execution is authorized before a deterministic construction
+  is proved feasible and independently planned.
+
 ### Pending Todos
 
 None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-- [Phase 90] FACE-01 is a verified terminal revision-17 stop at the fixed
-  single normalized-displacement safety bound. Plans 90-03/04 remain blocked;
-  any revision 18 would require an explicit owner-authorized internal contract
-  change and cannot be inferred from the current authorization.
+- [Phase 90] FACE-01 revision 18 is limited to displacement/target feasibility
+  research. Plans 90-03/04 and execution remain blocked until one deterministic
+  construction is proved feasible and independently checked.
 
 - [Phase 89] Independent pupil-to-own-eye support is intentionally absent and
   must be implemented in Phase 91 before gaze can receive semantic credit.
@@ -285,6 +295,6 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-09-01T12:05:00+08:00
-Stopped at: FACE-01 revision 17 verified terminal stop at fixed single normalized-displacement safety bound
+Last session: 2026-09-01T12:25:00+08:00
+Stopped at: Owner authorized revision-18 displacement-target contract; feasibility research active
 Resume file: `.planning/phases/90-face-contour-and-chin-repairs/90-01-PLAN.md`
