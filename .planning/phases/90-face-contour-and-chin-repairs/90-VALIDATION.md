@@ -21,9 +21,10 @@ created: 2026-09-01
 |----------|-------|
 | **Framework** | Swift Testing/XCTest through SwiftPM, plus SDK-owned Python, Swift, and Bash gates |
 | **Config file** | `BeautySDK/Package.swift` |
-| **Quick run command** | `python3 scripts/verify-phase90-face01-stop.py --help && git diff --check` |
-| **Full focused command** | `swift test --package-path BeautySDK --filter 'FaceContourSmoothRepairTests|ChinTaperRepairTests|BeautyEngineFaceContourSmoothRepairTests|BeautyEngineChinTaperRepairTests|FaceShapeWarpProviderTests|BeautyEffectResolverTests|GeometryConflictResolverTests|CombinedEffectSafetyTests|BeautyMetalGeometryPassTests|MissingLandmarkDegradationTests'` |
-| **Estimated runtime** | immediate smoke commands below: no more than 30 seconds on the warm incremental workspace; full focused/archive closeout: approximately 180 seconds |
+| **Quick run command** | `python3 scripts/verify-phase90-face01-diagnostic.py self-test && python3 scripts/verify-phase90-face01-stop.py --help && git diff --check` |
+| **Diagnostic build command** | `swift build --package-path BeautySDK --target BeautyEffects` |
+| **Single diagnostic test command** | `swift test --package-path BeautySDK --filter 'FaceContourSmoothRepairTests/testFACE01D1V19DiagnosticOnlyClassification'` — at most once, only after static preflight |
+| **Estimated runtime** | static verifier sampling: no more than 5 seconds; target build and the one uniquely filtered diagnostic test: no more than 30 seconds each on the warm incremental workspace |
 
 ---
 
@@ -31,22 +32,24 @@ created: 2026-09-01
 
 - **During every task, after each meaningful edit:** Run the task's immediate smoke command from the table below; target latency is no more than 30 seconds.
 - **Before every task commit:** Run that task's exact `<automated>` completion command. This may be longer than the immediate sampling command and does not replace it.
-- **After Wave 1:** Run both FACE-01 and FACE-02 focused provider/CPU/facade filters.
+- **After revision-19 Wave 1:** Stop after static rollback verification and
+  `git diff --check`; do not run FACE-01/FACE-02 provider/CPU/facade filters.
 - **After Wave 2:** Run the exact-section DESIGN, taxonomy, and product checks from Plan 90-03.
-- **After Wave 3 / before phase verification:** Run Plan 90-04's focused repair, compatibility, comparator self-test/preflight, archive, SDK-only boundary, and exact-section commands.
-- **Max immediate feedback latency:** 30 seconds. The one-shot frozen FACE-01 candidate oracle and the complete compatibility/archive closeout are completion or wave gates, not edit-loop sampling.
+- **After Wave 3 / before phase verification:** Not reachable from revision 19;
+  Plans 90-03/04 remain blocked without a GREEN `90-01-SUMMARY.md`.
+- **Max immediate feedback latency:** 30 seconds. Revision 19 has no render,
+  candidate-oracle, full-suite, archive, or milestone closeout gate.
 
 ### Immediate Task Smoke Map
 
 | Task | Immediate smoke command (warm incremental workspace) | Target |
 | --- | --- | --- |
-| 90-01-01 | `swift test --package-path BeautySDK --filter 'FaceContourSmoothRepairTests/testFACE01D1V18'` | <=30s; pre-render D1-v18 methods only, never the frozen candidate oracle |
-| 90-01-02 | `swift test --package-path BeautySDK --filter 'FaceShapeWarpProviderTests/testFACE01'` | <=30s |
-| 90-01-03 | `swift test --package-path BeautySDK --filter 'BeautyEngineFaceContourSmoothRepairTests/testFACE01'` | <=30s |
+| 90-01-W0 | `python3 scripts/verify-phase90-face01-diagnostic.py self-test` | <=5s; static/read-only, no child process or Swift |
+| 90-01-D19 | `git status --porcelain --untracked-files=all \| python3 scripts/verify-phase90-face01-diagnostic.py preflight --oracle-status not-invoked ...captured live hashes/states...` | <=5s; then exactly one uniquely filtered diagnostic XCTest |
 | 90-02-01 / 90-02-02 | already GREEN; rerun the narrow named ChinTaper test method being edited if reopened | <=30s |
 | 90-03-01 / 90-03-02 | run the task's exact-section Python assertion without the trailing wave command | <=5s |
 | 90-04-01 | run the task's SECURITY/RELIABILITY exact-section Python assertion without the trailing wave command | <=5s |
-| 90-04-02 | `python3 scripts/verify-phase90-face01-stop.py --help && git diff --check` after evidence edits | <=5s; the long focused/compatibility/archive chain remains the Wave 3 completion gate |
+| 90-04-02 | blocked until a separately authorized GREEN FACE-01 repair creates `90-01-SUMMARY.md` | not executable during revision 19 |
 
 ---
 
@@ -54,9 +57,8 @@ created: 2026-09-01
 
 | Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|------------|-----------------|-----------|-------------------|-------------|--------|
-| 90-01-01 | 01 | 1 | FACE-01 | T-90-01 through T-90-06 | Sole D1-v18 construction passes all pre-render gates before exactly one candidate oracle, or rolls back byte-exact with a tenth aggregate suffix | focused unit + generated CPU integration + rollback verifier | Plan 90-01 Task 01 exact two-stage Swift filter; on a miss, its retained verifier invocation | ✅ | ❌ red |
-| 90-01-02 | 01 | 1 | FACE-01 | T-90-02 through T-90-05 | Source clip, exact linkage, topology, inverse, proxy, strength, and budget adversaries fail FACE-01 closed | unit / mutation | `swift test --package-path BeautySDK --filter 'FaceContourSmoothRepairTests|FaceShapeWarpProviderTests|CombinedEffectSafetyTests|BeautyMetalGeometryPassTests'` | ✅ | ⬜ pending |
-| 90-01-03 | 01 | 1 | FACE-01 | T-90-06 / T-90-07 | Generated owner-local facade proves bounded pixels/metadata/recovery/privacy without public or backend expansion | generated integration + compatibility | Plan 90-01 Task 03 exact repair and compatibility filters | ❌ W0 | ⬜ pending |
+| 90-01-W0 | 01 | 0 | FACE-01 | T-90-D19-02 through T-90-D19-05 | Retained verifier is static/read-only, mutation-tested, and unable to invoke Swift/render/oracle/network or write repository data | Python in-memory mutation/self-test | `python3 scripts/verify-phase90-face01-diagnostic.py self-test && python3 scripts/verify-phase90-face01-diagnostic.py --help && python3 scripts/verify-phase90-face01-stop.py --help && git diff --check` | ❌ W0 | ⬜ pending |
+| 90-01-D19 | 01 | 1 | FACE-01 | T-90-D19-01 through T-90-D19-06 | One shared request-local documented reconstruction yields one four-way aggregate classification, then provider/test rollback and ten-prefix/optional-eleventh evidence are static-verified | target build + one narrow diagnostic XCTest + static rollback | Plan 90-01 Task D19 captured-hash preflight, exactly one unique XCTest filter, and final rollback command | ❌ W0 temporary | ⬜ pending |
 | 90-02-01 | 02 | 1 | FACE-02 | T-90-08 | Centerline-owned chin field passes provider and exact cap/neutral/fail-closed contracts | unit + generated CPU integration | `swift test --package-path BeautySDK --filter 'ChinTaperRepairTests|FaceShapeWarpProviderTests'` | ✅ | ✅ green |
 | 90-02-02 | 02 | 1 | FACE-02 | T-90-08 / T-90-09 | Public facade retains chin locality, sibling distinction, recovery, and source safety | generated integration | Plan 90-02 Task 02 exact facade/degradation filter | ✅ | ✅ green |
 | 90-03-01 | 03 | 2 | FACE-01 / FACE-02 | T-90-10 through T-90-13 | Exact DESIGN and taxonomy sections consume GREEN summaries only | deterministic document contract | Plan 90-03 Task 01 exact-section Python check plus `git diff --check` | ✅ | ⬜ pending |
@@ -78,29 +80,42 @@ created: 2026-09-01
   `FACE01_STOP_VERIFIED`.
 - Commit `36d2ec5` records the sanitized stop. The cause remains indeterminate
   because the retained evidence does not identify the earliest internal
-  fail-closed gate; no diagnostic-only revision 19 is authorized by this
-  validation record.
+  fail-closed gate. The owner subsequently authorized diagnostic-only revision
+  19; the replacement Plan 90-01 may classify that gate once but cannot repair,
+  render, invoke the oracle, create a summary, or unblock downstream plans.
 
 ---
 
 ## Wave 0 Requirements
 
-- [ ] `BeautySDK/Tests/BeautyCoreTests/BeautyEngineFaceContourSmoothRepairTests.swift` — generated public-facade coverage created only after Task 90-01-01 is GREEN; Task 90-01-03 owns it.
-- [ ] Add the new D1-v18 focused method names to existing `FaceContourSmoothRepairTests.swift` before Task 90-01-01's pre-render filter runs.
-- [ ] Confirm `scripts/verify-phase90-face01-stop.py --help` before the first edit; the retained verifier itself already exists and remains read-only.
+- [ ] `scripts/verify-phase90-face01-diagnostic.py` — retained static verifier
+  with `self-test`, `preflight`, and `rollback` modes plus deterministic mutation
+  coverage; Task `90-01-W0` owns it before any provider/test edit.
+- [ ] `FaceContourSmoothRepairTests.testFACE01D1V19DiagnosticOnlyClassification`
+  and provider `D1V19*`/`d1V19*` symbols — temporary only for Task
+  `90-01-D19`; remove byte-exact after the single run.
+- [ ] Immediately capture provider, complete repair-test, frozen-oracle,
+  verifier, ATTEMPT ten-heading prefix, later-artifact, PLANS, STATE, and
+  ROADMAP hashes/states before temporary Swift edits.
+- [ ] Confirm `scripts/verify-phase90-face01-stop.py --help`; normal execution
+  is prohibited because it launches the frozen oracle.
 
 No framework installation, dependency, private fixture, model, weight, network,
 UI, renderer, backend, or `Warp.metal` work is required.
 
 ## Phase Completion Gate
 
-After Wave 3 tasks pass their <=30-second task-level `<automated>` checks, run
-the complete mandatory command declared in Plan 90-04 `<verification>`. It
-includes focused FACE-01/FACE-02 and compatibility suites, Phase 89 comparator
-self-test/preflight, archive verification, SDK-only boundary enforcement,
-exact-section evidence checks, and diff hygiene. Its approximately 180-second
-runtime is a phase completion gate, not task-level sampling; Phase 90 cannot
-complete without it.
+Revision 19 has no Phase Completion Gate. It terminates after classification,
+byte-exact Swift rollback, the optional aggregate-only eleventh suffix, static
+rollback verification, and `git diff --check`. The Plan 90-04 completion gate
+remains blocked because no GREEN `90-01-SUMMARY.md` exists.
+
+During revision 19 do not run
+`testFACE01GeneratedCPUFixturePassesFrozenSemanticAndProtectionContract`, the
+normal `scripts/verify-phase90-face01-stop.py`,
+`scripts/check-cpu-reference-oracles.sh`, unfiltered/full `swift test`,
+`scripts/run-no-skip-swiftpm.sh`, any renderer command, Tasks 90-01-02/03, or
+Plans 90-03/04.
 
 ---
 
