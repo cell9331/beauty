@@ -273,8 +273,8 @@ def verify_preservation(root: Path, args: argparse.Namespace, rollback: bool) ->
             reject("preserved_state_violation")
 
 
-def parse_status(raw: str) -> set[str]:
-    changed: set[str] = set()
+def parse_status(raw: str) -> tuple[str, ...]:
+    changed: list[str] = []
     for line in raw.splitlines():
         if len(line) < 4 or line[2] != " ":
             reject("status_shape_violation")
@@ -283,19 +283,57 @@ def parse_status(raw: str) -> set[str]:
             relative = relative.split(" -> ", 1)[1]
         if relative.startswith('"') or not valid_relative_path(relative):
             reject("status_shape_violation")
-        changed.add(relative)
-    return changed
+        if relative in changed:
+            reject("status_shape_violation")
+        changed.append(relative)
+    return tuple(changed)
+
+
+def verify_rev20_status_policy(
+    stage: str,
+    raw_status: str,
+    allowed_diff_paths: list[str] | tuple[str, ...],
+    expected_suffix_sections: int,
+) -> tuple[str, ...]:
+    policies = {
+        "preflight": ((PROVIDER_PATH, TEST_PATH), 0),
+        "first-rollback": ((), 0),
+        "final-rollback": ((ATTEMPT_PATH,), 1),
+    }
+    if stage not in policies:
+        reject("rev20_status_policy_violation")
+    expected_paths, expected_sections = policies[stage]
+    caller_paths = tuple(allowed_diff_paths)
+    if len(set(caller_paths)) != len(caller_paths) or any(
+        not valid_relative_path(path) for path in caller_paths
+    ):
+        reject("rev20_status_policy_violation")
+    if set(caller_paths) != set(expected_paths) or len(caller_paths) != len(expected_paths):
+        reject("rev20_status_policy_violation")
+    if expected_suffix_sections != expected_sections:
+        reject("rev20_status_policy_violation")
+    observed = parse_status(raw_status)
+    if set(observed) != set(expected_paths) or len(observed) != len(expected_paths):
+        reject("rev20_status_policy_violation")
+    return observed
 
 
 def verify_status(args: argparse.Namespace) -> None:
     if not args.status_stdin:
         reject("status_shape_violation")
+    raw_status = sys.stdin.read()
+    observed = verify_rev20_status_policy(
+        args.rev20_status_stage,
+        raw_status,
+        args.allowed_diff_path,
+        args.expected_suffix_sections,
+    )
     expected = set(args.allowed_diff_path)
     if len(expected) != len(args.allowed_diff_path) or any(
         not valid_relative_path(path) for path in expected
     ):
         reject("status_shape_violation")
-    if parse_status(sys.stdin.read()) != expected:
+    if set(observed) != expected:
         reject("status_allowlist_violation")
 
 
@@ -623,7 +661,12 @@ def run_rollback(args: argparse.Namespace) -> None:
     for symbol in PROVIDER_TEMPORARY_SYMBOLS + TEST_TEMPORARY_SYMBOLS:
         if symbol in provider or symbol in test:
             reject("temporary_symbol_violation")
-    print("FACE01_DIAGNOSTIC_ROLLBACK_VERIFIED")
+    if args.rev20_status_stage == "first-rollback":
+        print("FACE01_DIAGNOSTIC_REV20_FIRST_ROLLBACK_VERIFIED")
+    elif args.rev20_status_stage == "final-rollback":
+        print("FACE01_DIAGNOSTIC_REV20_FINAL_ROLLBACK_VERIFIED")
+    else:
+        reject("rev20_status_policy_violation")
 
 
 def parse_frontmatter(text: str) -> dict[str, str]:
@@ -843,6 +886,71 @@ frozen_oracle_status=passed
     print("FACE01_DIAGNOSTIC_SELF_TESTED")
 
 
+def rev20_policy_self_test() -> None:
+    provider_status = f" M {PROVIDER_PATH}\n"
+    test_status = f" M {TEST_PATH}\n"
+    attempt_status = f" M {ATTEMPT_PATH}\n"
+    preflight_paths = [PROVIDER_PATH, TEST_PATH]
+
+    verify_rev20_status_policy("preflight", provider_status + test_status, preflight_paths, 0)
+    verify_rev20_status_policy("first-rollback", "", [], 0)
+    verify_rev20_status_policy("final-rollback", attempt_status, [ATTEMPT_PATH], 1)
+
+    mutations = (
+        lambda: verify_rev20_status_policy("preflight", test_status, preflight_paths, 0),
+        lambda: verify_rev20_status_policy("preflight", provider_status, preflight_paths, 0),
+        lambda: verify_rev20_status_policy(
+            "preflight", provider_status + provider_status + test_status, preflight_paths, 0
+        ),
+        lambda: verify_rev20_status_policy(
+            "preflight", provider_status + test_status, preflight_paths + [PROVIDER_PATH], 0
+        ),
+        lambda: verify_rev20_status_policy(
+            "preflight", f" M ./{PROVIDER_PATH}\n" + test_status, preflight_paths, 0
+        ),
+        lambda: verify_rev20_status_policy(
+            "preflight", f" M owner/../{PROVIDER_PATH}\n" + test_status, preflight_paths, 0
+        ),
+        lambda: verify_rev20_status_policy(
+            "preflight", provider_status + test_status, [f"./{PROVIDER_PATH}", TEST_PATH], 0
+        ),
+        lambda: verify_rev20_status_policy(
+            "preflight", provider_status + test_status, [f"owner/../{PROVIDER_PATH}", TEST_PATH], 0
+        ),
+        lambda: verify_rev20_status_policy(
+            "preflight", provider_status + test_status + attempt_status, preflight_paths, 0
+        ),
+        lambda: verify_rev20_status_policy(
+            "preflight", provider_status + test_status, preflight_paths + [ATTEMPT_PATH], 0
+        ),
+        lambda: verify_rev20_status_policy(
+            "preflight", provider_status + test_status + " M extra\n", preflight_paths, 0
+        ),
+        lambda: verify_rev20_status_policy("first-rollback", provider_status, [], 0),
+        lambda: verify_rev20_status_policy("first-rollback", "", [PROVIDER_PATH], 0),
+        lambda: verify_rev20_status_policy("final-rollback", attempt_status, [], 1),
+        lambda: verify_rev20_status_policy(
+            "final-rollback", provider_status + test_status, [PROVIDER_PATH, TEST_PATH], 1
+        ),
+        lambda: verify_rev20_status_policy(
+            "final-rollback", attempt_status + provider_status, [ATTEMPT_PATH, PROVIDER_PATH], 1
+        ),
+        lambda: verify_rev20_status_policy(
+            "final-rollback", attempt_status, [ATTEMPT_PATH, ATTEMPT_PATH], 1
+        ),
+        lambda: verify_rev20_status_policy(
+            "final-rollback", f" M ./{ATTEMPT_PATH}\n", [f"./{ATTEMPT_PATH}"], 1
+        ),
+        lambda: verify_rev20_status_policy("preflight", provider_status + test_status, preflight_paths, 1),
+        lambda: verify_rev20_status_policy("first-rollback", "", [], 1),
+        lambda: verify_rev20_status_policy("final-rollback", attempt_status, [ATTEMPT_PATH], 0),
+        lambda: verify_rev20_status_policy("unknown", "", [], 0),
+    )
+    for mutation in mutations:
+        must_reject(mutation)
+    print("FACE01_DIAGNOSTIC_REV20_POLICY_SELF_TESTED")
+
+
 def add_common_arguments(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--status-stdin", action="store_true")
     parser.add_argument("--oracle-status", required=True)
@@ -859,12 +967,21 @@ def add_common_arguments(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--expected-suffix-sections", type=int, required=True)
     parser.add_argument("--expected-suffix-fields", required=True)
     parser.add_argument("--allowed-diff-path", action="append", default=[])
+    parser.add_argument(
+        "--rev20-status-stage",
+        choices=("preflight", "first-rollback", "final-rollback"),
+        required=True,
+    )
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     subparsers = parser.add_subparsers(dest="mode", required=True)
     subparsers.add_parser("self-test", help="Run in-memory mutation tests.")
+    subparsers.add_parser(
+        "rev20-policy-self-test",
+        help="Run in-memory revision-20 status-policy mutation tests.",
+    )
     add_common_arguments(subparsers.add_parser("preflight", help="Verify the temporary diagnostic statically."))
     add_common_arguments(subparsers.add_parser("rollback", help="Verify rollback and optional evidence statically."))
     green = subparsers.add_parser("green-summary", help="Verify a later GREEN FACE-01 activation summary.")
@@ -878,6 +995,8 @@ def main() -> None:
     args = parse_args()
     if args.mode == "self-test":
         self_test()
+    elif args.mode == "rev20-policy-self-test":
+        rev20_policy_self_test()
     elif args.mode == "preflight":
         run_preflight(args)
     elif args.mode == "rollback":
