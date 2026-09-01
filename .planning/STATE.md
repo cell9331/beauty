@@ -4,11 +4,11 @@ milestone: v1.22
 milestone_name: Non-Local Facial Effect Repairs
 current_phase: 90
 current_phase_name: Face Contour and Chin Repairs
-status: blocked
-stopped_at: Revision-18 terminal pre-render stop; diagnostic-only revision 19 requires explicit owner authorization
-last_updated: "2026-09-01T07:45:42Z"
+status: planning
+stopped_at: Revision-19 diagnostic research complete; bounded diagnostic-only planning is next
+last_updated: "2026-09-01T08:07:17Z"
 last_activity: 2026-09-01
-last_activity_desc: Revision 18 returned an empty whole field before the frozen oracle; exact rollback and FACE01_STOP_VERIFIED passed
+last_activity_desc: Owner authorized diagnostic-only revision 19; research fixed the one-result earliest-gate classification and static rollback contract
 progress:
   total_phases: 7
   completed_phases: 1
@@ -30,10 +30,10 @@ without distributing the SDK, model, or weights.
 
 ## Current Position
 
-Phase: 90 (Face Contour and Chin Repairs) — BLOCKED
+Phase: 90 (Face Contour and Chin Repairs) — PLANNING
 Plan: 1 of 4
-Status: Revision 18 reached a terminal verified pre-render stop; revision 19 is not authorized
-Last activity: 2026-09-01 — D1-v18 returned an empty whole field at cap and half before the frozen candidate oracle; provider/tests were restored byte-exact and `FACE01_STOP_VERIFIED` passed
+Status: Diagnostic-only revision 19 is authorized and researched; implementation planning is next
+Last activity: 2026-09-01 — revision-19 research fixed one shared request-local construction result, independent provider/reference cap-and-half classification, a static no-oracle verifier, and exact rollback/evidence rules
 
 Progress: [█░░░░░░░░░] 14%
 
@@ -303,18 +303,32 @@ roadmaps.
   necessary. It may persist no coordinates, geometry, pixels, private paths,
   or transcripts, and may not invoke the frozen oracle.
 
+- [Phase 90]: The owner then instructed the `--auto` workflow to continue and
+  complete the milestone, explicitly crossing the previously declared
+  diagnostic authorization boundary for revision 19 only. Revision 19 may
+  reconstruct the frozen revision-18 provider path solely to collect one
+  request-local sanitized earliest-gate result and aggregate template,
+  retained-branch, cap, and half counts. It must independently compare provider
+  and reference finalization from the same in-memory template; return exactly
+  `implementation_defect`, `genuine_construction_miss`,
+  `prior_stop_not_reproduced`, or `diagnostic_invalid`; use a new static
+  verifier because the existing stop verifier invokes the frozen RED oracle in
+  normal mode; restore provider/tests byte-exact; preserve the exact ten-heading
+  ATTEMPT prefix with at most one aggregate-only eleventh suffix; and stop
+  without rendering, oracle invocation, construction/threshold change, or
+  downstream execution.
+
 ### Pending Todos
 
 None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-- [Phase 90] FACE-01 is at the terminal revision-18 pre-render stop. The root
-  cause remains indeterminate because the first failing internal gate was not
-  instrumented. Plans 90-03/04 remain blocked because no GREEN
-  `90-01-SUMMARY.md` exists. Diagnostic-only revision 19 requires explicit
-  owner authorization; ordinary autonomous continuation does not authorize a
-  new construction, threshold change, or frozen-oracle attempt.
+- [Phase 90] FACE-01 remains blocked at the revision-18 pre-render stop while
+  diagnostic-only revision 19 moves through planning. The owner has authorized
+  only the bounded diagnosis, not a repair, new construction, threshold change,
+  or frozen-oracle attempt. Plans 90-03/04 remain blocked because no GREEN
+  `90-01-SUMMARY.md` exists.
 
 - [Phase 89] Independent pupil-to-own-eye support is intentionally absent and
   must be implemented in Phase 91 before gaze can receive semantic credit.
@@ -335,6 +349,6 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-09-01T15:45:42+08:00
-Stopped at: Revision-18 terminal pre-render stop; diagnostic-only revision 19 requires explicit owner authorization
-Resume file: `.planning/phases/90-face-contour-and-chin-repairs/90-01-ATTEMPT.md`
+Last session: 2026-09-01T16:07:17+08:00
+Stopped at: Revision-19 diagnostic research complete; bounded diagnostic-only planning is next
+Resume file: `.planning/phases/90-face-contour-and-chin-repairs/90-01-REV19-DIAGNOSTIC-RESEARCH.md`
