@@ -3,13 +3,35 @@
 **Phase:** Face Contour and Chin Repairs
 **Plans verified:** 4
 **Status:** EXECUTION AUTHORIZED
-**Revision gate:** revision 14 independently verified after the seventh owner-selected fix and retry
+**Revision gate:** revision 15 independently verified after the eighth owner-selected fix and retry
 **Issues:** 0 blockers, 0 warnings
 
 > Revision 8 addendum (2026-08-30): the owner selected `Fix and retry`. The
 > historical revision-7 stop record below remains evidence of the disconfirmed
 > design space, but no longer controls execution. The rewritten 90-01 plan and
 > synchronized 90-03/04 contracts passed independent goal-backward review.
+
+## Revision 15 verification verdict
+
+Revision 14 stopped because its temporary execution scaffold returned an
+owner-slack failure without calculating owner geometry. The owner selected
+`Fix and retry`; read-only diagnosis classified this as an evidence
+implementation defect, not a measured geometric miss. Revision 15 keeps all
+v14 residual, zero-pair, slot, lattice, geometry, safety, proxy, and oracle
+contracts unchanged and adds only the missing owner-gate computation.
+
+Revision 15 passed independent goal-backward review with no blockers or
+warnings. Execution must materialize actual Float source/target values, check
+strict owner/unit membership, compute target clearance `H` to all four owner
+boundaries, set fixed `R=.75H` and `B=.08R`, derive original-index `adjB` (or
+zero), require `R+2B+adjB<=.94H` with positive slack, and verify expanded
+support containment before overlap/proxy/oracle gates. It must record the first
+actual aggregate failure rather than a placeholder.
+
+The current attempt ledger contains exactly seven aggregate retry sections
+(bounded-2D and revisions 9–14); a miss appends exactly one eighth revision-15
+section after that byte-exact prefix. No threshold, public/API/backend,
+privacy, or later-plan boundary changes.
 
 ## Revision 14 verification verdict
 

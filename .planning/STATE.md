@@ -5,10 +5,10 @@ milestone_name: Non-Local Facial Effect Repairs
 current_phase: 90
 current_phase_name: Face Contour and Chin Repairs
 status: executing
-stopped_at: Revision 14 D1-v14 plan independently verified; ready for bounded execution
-last_updated: "2026-09-01T01:39:52Z"
+stopped_at: Revision 15 D1-v15 plan independently verified; ready for bounded execution
+last_updated: "2026-09-01T02:13:03Z"
 last_activity: 2026-08-31
-last_activity_desc: Revision 14 D1-v14 plan passed independent review after zero-residual admission correction
+last_activity_desc: Revision 15 D1-v15 plan passed independent review after owner-gate implementation correction
 progress:
   total_phases: 7
   completed_phases: 1
@@ -32,8 +32,8 @@ without distributing the SDK, model, or weights.
 
 Phase: 90 (Face Contour and Chin Repairs) — EXECUTING
 Plan: 1 of 4
-Status: Revision 14 D1-v14 ready for bounded execution
-Last activity: 2026-09-01 — Independent revision-14 plan check passed with zero issues
+Status: Revision 15 D1-v15 ready for bounded execution
+Last activity: 2026-09-01 — Independent revision-15 plan check passed with zero issues
 
 Progress: [█░░░░░░░░░] 14%
 
@@ -182,6 +182,12 @@ roadmaps.
   original non-bridging adjacency, coverage, all safety gates, and the frozen
   oracle remain unchanged.
 
+- [Phase 90]: Revision 14 reached the zero-residual omission path, then its
+  temporary scaffold returned an owner-slack placeholder without evaluating
+  `H/R/B/adjB` or containment. Revision 15 adds only that actual Float owner
+  gate and first-failure evidence, with every residual, lattice, geometry,
+  safety, proxy, oracle, and frozen threshold contract unchanged.
+
 ### Pending Todos
 
 None found under `.planning/todos/pending/`.
@@ -189,7 +195,7 @@ None found under `.planning/todos/pending/`.
 ### Blockers/Concerns
 
 - [Phase 90] FACE-01 remains unresolved while the independently verified
-  revision-14 D1-v14 chain awaits bounded execution. The frozen contract is
+  revision-15 D1-v15 chain awaits bounded execution. The frozen contract is
   unchanged and Plans 90-03/04 remain blocked until a compliant GREEN summary
   exists.
 
@@ -212,6 +218,6 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-09-01T09:39:52+08:00
-Stopped at: Revision 14 D1-v14 plan independently verified; ready for bounded execution
+Last session: 2026-09-01T10:13:03+08:00
+Stopped at: Revision 15 D1-v15 plan independently verified; ready for bounded execution
 Resume file: `.planning/phases/90-face-contour-and-chin-repairs/90-01-PLAN.md`
