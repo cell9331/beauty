@@ -5,10 +5,10 @@ milestone_name: Non-Local Facial Effect Repairs
 current_phase: 90
 current_phase_name: Face Contour and Chin Repairs
 status: executing
-stopped_at: Revision 15 D1-v15 execution stopped at measured owner-slack geometry failure; revision-16 research required
-last_updated: "2026-09-01T02:28:00Z"
+stopped_at: Revision 16 feasibility audit found no legal construction under the frozen FACE-01 contract
+last_updated: "2026-09-01T02:34:00Z"
 last_activity: 2026-08-31
-last_activity_desc: Revision 15 actual Float owner gate passed membership/containment but failed fixed positive-slack ratio on both branches; exact rollback verified
+last_activity_desc: Revision 16 read-only audit found no provable legal owner-balanced construction; no plan or source change permitted
 progress:
   total_phases: 7
   completed_phases: 1
@@ -32,8 +32,8 @@ without distributing the SDK, model, or weights.
 
 Phase: 90 (Face Contour and Chin Repairs) — EXECUTING
 Plan: 1 of 4
-Status: Revision 15 D1-v15 stopped; revision-16 owner-balanced construction research active
-Last activity: 2026-09-01 — Revision-15 execution measured owner-positive-slack failure at retained slot 4 on both sides; `FACE01_STOP_VERIFIED`
+Status: FACE-01 terminally blocked under the frozen contract after revision-16 feasibility audit
+Last activity: 2026-09-01 — Revision-16 feasibility audit found no legal construction without changing frozen definitions, thresholds, mandatory retention, lattice linkage, or oracle boundaries
 
 Progress: [█░░░░░░░░░] 14%
 
@@ -206,6 +206,14 @@ roadmaps.
   privacy contract. No threshold tuning, mandatory-pair omission, or
   output-guided selection is permitted.
 
+- [Phase 90]: Revision-16 feasibility audit found no provable construction
+  within that contract. The source is rolled back and no revision-16 plan was
+  written: changing owner clearance definitions or thresholds, omitting
+  nonzero mandatory pairs, changing residual/lattice linkage, or selecting by
+  rendered output would all be contract changes. FACE-01 therefore remains a
+  verified terminal stop pending an explicit owner-authorized new contract or
+  new evidence that enables a compliant construction.
+
 ### Pending Todos
 
 None found under `.planning/todos/pending/`.
@@ -213,9 +221,9 @@ None found under `.planning/todos/pending/`.
 ### Blockers/Concerns
 
 - [Phase 90] FACE-01 remains unresolved after the verified revision-15
-  geometric stop. A revision-16 plan must be independently checked before any
-  source edit; Plans 90-03/04 remain blocked until a compliant GREEN summary
-  exists.
+  geometric stop and revision-16 feasibility audit. Plans 90-03/04 remain
+  blocked until a compliant GREEN summary exists or the owner explicitly
+  authorizes a new contract/milestone.
 
 - [Phase 89] Independent pupil-to-own-eye support is intentionally absent and
   must be implemented in Phase 91 before gaze can receive semantic credit.
@@ -236,6 +244,6 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-09-01T10:28:00+08:00
-Stopped at: Revision 15 D1-v15 execution stopped at measured owner-slack geometry failure; revision-16 research required
+Last session: 2026-09-01T10:34:00+08:00
+Stopped at: Revision 16 feasibility audit found no legal construction under the frozen FACE-01 contract
 Resume file: `.planning/phases/90-face-contour-and-chin-repairs/90-01-PLAN.md`

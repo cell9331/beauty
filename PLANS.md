@@ -66,10 +66,10 @@ Checklist:
 | Research FACE-01 revision 15 | `completed` | Isolated the v14 implementation/evidence defect and constrained v15 to actual Float source/target owner/unit membership, H/R/B/adjB positive 0.94H slack, expanded-support containment, and first-failure recording; every other v14 contract is frozen. |
 | Independently check FACE-01 revision 15 | `completed` | Plan review passed with zero blockers and warnings, including eighth-section prefix accounting and no tuning, fallback, or oracle weakening. |
 | Execute FACE-01 revision 15 | `completed-blocked` | Actual Float owner/unit and expanded-support membership passed, but the fixed positive-slack gate failed at retained zero-based slot 4 on both sides (5/5); exact rollback, aggregate-only suffix, and `FACE01_STOP_VERIFIED` passed, with no oracle invocation or summary. |
-| Research FACE-01 revision 16 | `active` | v15 geometry is infeasible under the fixed owner-slack formula; research only a predeclared owner-balanced slot/carrier construction, with no threshold change, omission of nonzero mandatory pairs, or output-guided selection. |
-| Independently check FACE-01 revision 16 | `planned` | Require goal-backward proof that every retained original-adjacent pair satisfies `H_neighbor/H_i <= 7/6` before execution, while all v15 contracts and exact aggregate accounting remain unchanged. |
-| Execute FACE-01 revision 16 | `planned` | Execute once only after independent plan review; on any miss restore bytes and append one aggregate-only revision-16 suffix. |
-| Complete FACE-01 | `blocked-on-planning` | FACE-01 remains unresolved; v15 is a verified geometric stop and Plans 90-03/04 remain blocked until a compliant GREEN summary exists. |
+| Research FACE-01 revision 16 | `completed-blocked` | Read-only feasibility audit found no provable legal owner-balanced slot/carrier construction: the fixed v15 contour violates `H_neighbor/H_i <= 7/6`, while every apparent escape changes a frozen threshold/definition, omits a nonzero mandatory pair, changes lattice linkage, or uses output-guided selection. No plan files or source were changed. |
+| Independently check FACE-01 revision 16 | `blocked` | No concrete revision-16 plan exists to review; a checker cannot approve an unproved construction. |
+| Execute FACE-01 revision 16 | `blocked` | Not authorized without a concrete independently checked plan; v15 provider/test state and frozen oracle remain unchanged. |
+| Complete FACE-01 | `blocked` | FACE-01 is a verified terminal stop under the current contract. Plans 90-03/04 remain blocked until the owner explicitly authorizes a new contract/milestone or supplies evidence enabling a compliant construction. |
 | Continue Phase 90 Wave 2/3 | `blocked` | Plans 90-03/04 require both Wave 1 summaries and cannot close FACE-01 by documentation. |
 
 The v1.21 entry below is complete and retained for session continuity.
