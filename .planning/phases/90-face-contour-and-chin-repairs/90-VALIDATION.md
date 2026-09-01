@@ -54,7 +54,7 @@ created: 2026-09-01
 
 | Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|------------|-----------------|-----------|-------------------|-------------|--------|
-| 90-01-01 | 01 | 1 | FACE-01 | T-90-01 through T-90-06 | Sole D1-v18 construction passes all pre-render gates before exactly one candidate oracle, or rolls back byte-exact with a tenth aggregate suffix | focused unit + generated CPU integration + rollback verifier | Plan 90-01 Task 01 exact two-stage Swift filter; on a miss, its retained verifier invocation | ✅ | ⬜ pending |
+| 90-01-01 | 01 | 1 | FACE-01 | T-90-01 through T-90-06 | Sole D1-v18 construction passes all pre-render gates before exactly one candidate oracle, or rolls back byte-exact with a tenth aggregate suffix | focused unit + generated CPU integration + rollback verifier | Plan 90-01 Task 01 exact two-stage Swift filter; on a miss, its retained verifier invocation | ✅ | ❌ red |
 | 90-01-02 | 01 | 1 | FACE-01 | T-90-02 through T-90-05 | Source clip, exact linkage, topology, inverse, proxy, strength, and budget adversaries fail FACE-01 closed | unit / mutation | `swift test --package-path BeautySDK --filter 'FaceContourSmoothRepairTests|FaceShapeWarpProviderTests|CombinedEffectSafetyTests|BeautyMetalGeometryPassTests'` | ✅ | ⬜ pending |
 | 90-01-03 | 01 | 1 | FACE-01 | T-90-06 / T-90-07 | Generated owner-local facade proves bounded pixels/metadata/recovery/privacy without public or backend expansion | generated integration + compatibility | Plan 90-01 Task 03 exact repair and compatibility filters | ❌ W0 | ⬜ pending |
 | 90-02-01 | 02 | 1 | FACE-02 | T-90-08 | Centerline-owned chin field passes provider and exact cap/neutral/fail-closed contracts | unit + generated CPU integration | `swift test --package-path BeautySDK --filter 'ChinTaperRepairTests|FaceShapeWarpProviderTests'` | ✅ | ✅ green |
@@ -65,6 +65,21 @@ created: 2026-09-01
 | 90-04-02 | 04 | 3 | FACE-01 / FACE-02 | T-90-17 through T-90-20 | Evidence sections are complete and schema-safe before the mandatory phase closeout | deterministic document/verifier smoke | Plan 90-04 Task 02 exact-section/verifier-help command | ✅ | ⬜ pending |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
+
+### Revision 18 Execution Reconciliation
+
+- Task `90-01-01` is RED. The temporary D1-v18 provider compiled, but the
+  focused pre-render check observed zero emitted points at both cap and half
+  (`0/20`) and stopped at
+  `focused-pre-render-D1-v18-whole-field-empty-before-candidate-oracle`.
+- The frozen candidate oracle was not invoked. Provider and repair-test bytes
+  were restored exactly, the tenth aggregate-only stop record was retained,
+  and `python3 scripts/verify-phase90-face01-stop.py` returned
+  `FACE01_STOP_VERIFIED`.
+- Commit `36d2ec5` records the sanitized stop. The cause remains indeterminate
+  because the retained evidence does not identify the earliest internal
+  fail-closed gate; no diagnostic-only revision 19 is authorized by this
+  validation record.
 
 ---
 

@@ -4,11 +4,11 @@ milestone: v1.22
 milestone_name: Non-Local Facial Effect Repairs
 current_phase: 90
 current_phase_name: Face Contour and Chin Repairs
-status: executing
-stopped_at: Revision-18 Hsrc-over-16 plan independently verified; ready for bounded execution
-last_updated: "2026-09-01T05:45:00Z"
+status: blocked
+stopped_at: Revision-18 terminal pre-render stop; diagnostic-only revision 19 requires explicit owner authorization
+last_updated: "2026-09-01T07:45:42Z"
 last_activity: 2026-09-01
-last_activity_desc: Revision 18 plan passed independent review with zero blockers and zero warnings
+last_activity_desc: Revision 18 returned an empty whole field before the frozen oracle; exact rollback and FACE01_STOP_VERIFIED passed
 progress:
   total_phases: 7
   completed_phases: 1
@@ -30,10 +30,10 @@ without distributing the SDK, model, or weights.
 
 ## Current Position
 
-Phase: 90 (Face Contour and Chin Repairs) — EXECUTING
+Phase: 90 (Face Contour and Chin Repairs) — BLOCKED
 Plan: 1 of 4
-Status: Revision 18 sole `Hsrc/16` displacement construction independently verified; bounded execution active
-Last activity: 2026-09-01 — Independent plan review passed with zero blockers and zero warnings after research-resolution and Nyquist sampling gates were completed
+Status: Revision 18 reached a terminal verified pre-render stop; revision 19 is not authorized
+Last activity: 2026-09-01 — D1-v18 returned an empty whole field at cap and half before the frozen candidate oracle; provider/tests were restored byte-exact and `FACE01_STOP_VERIFIED` passed
 
 Progress: [█░░░░░░░░░] 14%
 
@@ -285,15 +285,36 @@ roadmaps.
   compatibility, comparator, archive, and SDK-boundary chain as a mandatory
   phase completion gate.
 
+- [Phase 90]: Revision 18 executed exactly once. The temporary provider
+  compiled, but the focused pre-render check observed an empty whole FACE-01
+  field at both cap and half (`0/20`). The frozen candidate oracle was never
+  invoked. Provider and repair-test bytes were restored exactly; the tenth
+  aggregate-only suffix and retained `FACE01_STOP_VERIFIED` evidence were
+  committed in `36d2ec5`. No `90-01-SUMMARY.md` or downstream execution
+  exists.
+
+- [Phase 90]: Read-only post-stop diagnosis classifies the revision-18 cause
+  as indeterminate due to insufficient instrumentation. The durable evidence
+  proves only the final whole-field abstention, not the earliest internal
+  guard. Any future revision 19 must first receive explicit owner
+  authorization and remain diagnostic-only: request-local sanitized
+  first-failure categories plus aggregate template, retained-branch, and
+  cap/half admission counts, with fixed-point aggregate margins only if
+  necessary. It may persist no coordinates, geometry, pixels, private paths,
+  or transcripts, and may not invoke the frozen oracle.
+
 ### Pending Todos
 
 None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-- [Phase 90] FACE-01 revision 18 awaits its one bounded execution. Plans
-  90-03/04 still require a compliant GREEN summary and remain blocked until
-  that execution finishes.
+- [Phase 90] FACE-01 is at the terminal revision-18 pre-render stop. The root
+  cause remains indeterminate because the first failing internal gate was not
+  instrumented. Plans 90-03/04 remain blocked because no GREEN
+  `90-01-SUMMARY.md` exists. Diagnostic-only revision 19 requires explicit
+  owner authorization; ordinary autonomous continuation does not authorize a
+  new construction, threshold change, or frozen-oracle attempt.
 
 - [Phase 89] Independent pupil-to-own-eye support is intentionally absent and
   must be implemented in Phase 91 before gaze can receive semantic credit.
@@ -314,6 +335,6 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-09-01T13:45:00+08:00
-Stopped at: Revision-18 Hsrc-over-16 plan independently verified; ready for bounded execution
-Resume file: `.planning/phases/90-face-contour-and-chin-repairs/90-01-PLAN.md`
+Last session: 2026-09-01T15:45:42+08:00
+Stopped at: Revision-18 terminal pre-render stop; diagnostic-only revision 19 requires explicit owner authorization
+Resume file: `.planning/phases/90-face-contour-and-chin-repairs/90-01-ATTEMPT.md`
