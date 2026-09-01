@@ -172,3 +172,28 @@ the autonomous run.
 - lattice_rejection_count: 0 because residual validity failed before lattice admission
 - oracle_sha256: 7fa653475f4a13831ec0a75c263cfaf717c48b3d6094c2ff3e95ecb64076981d
 - rollback_status: provider and complete repair test restored byte-exact; later-task artifacts unchanged or absent; STATE.md and PLANS.md preserved byte-exact; FACE01_STOP_VERIFIED
+
+## 2026-09-01 FACE-01 complete-chain D1-v14 revision-14 retry stop
+
+- implementation: D1-v14 complete bilateral twelve-slot chain with finite-zero reference-only complete-pair omission; executed once with no fallback, tuning, solver, fit, or output selection
+- gate_bitmask: bits oracle-hash=0x01,canonical-branches=0x02,slot-extremum-zones=0x04,residual-indexing=0x08,residual-validity=0x10,zero-pair-omission=0x20,exact-float-lattice=0x40,geometry-overlap-safety=0x80,branch-chain-proxy=0x100,frozen-oracle=0x200; D1-v14=0x07
+- first_failure: owner-positive-slack-after-complete-bilateral-zero-residual-omission
+- canonical_branch_counts: left=7,right=7
+- slot_counts: left=12,right=12
+- extremum_slot_indices: left=4,right=4
+- zone_slot_counts: left=[4,4,4],right=[4,4,4]
+- residual_progress_pairs: evaluated=12-of-12-on-left-and-right; ordered endpoint-inclusive pairs
+- residual_boundary_assertions: slot1-minus-Q0=passed,slot12-plus-Q1=passed
+- residual_indexing_status: endpoint-inclusive-Q((i-1)/13)-Q((i+1)/13); no shifted neighbor
+- residual_zero_counts: left=2,right=2
+- omitted_pair_counts: left=2,right=2; complete bilateral pairs only; no unilateral omission
+- adjacent_overlap_counts: not evaluated because owner positive slack failed first
+- forbidden_swept_disks: not evaluated because owner positive slack failed first
+- max_lipschitz_q16: 0 because no field was admitted
+- inverse_lower_bound_q16: 0 because no field was admitted
+- branch_chain_proxy_delta_q16: 0 because no field was admitted
+- q16_signal_counts: source=0,neutral=0,frozen-siblings=[16,3],strengthening-siblings=[4,0,12]; candidate oracle not invoked after pre-render owner stop
+- admitted_point_count: 0
+- lattice_rejection_count: 0
+- oracle_sha256: 7fa653475f4a13831ec0a75c263cfaf717c48b3d6094c2ff3e95ecb64076981d
+- rollback_status: provider and complete repair test restored byte-exact; later-task artifacts unchanged or absent; STATE.md and PLANS.md preserved byte-exact; FACE01_STOP_VERIFIED
