@@ -244,6 +244,17 @@ roadmaps.
   and `FACE01_STOP_VERIFIED` were committed in `48fc3de`. No summary or
   downstream execution exists.
 
+- [Phase 90]: Read-only post-stop feasibility diagnosis found no
+  implementation-only correction under the frozen revision-17 contract. The
+  maximum actual `2*norm(d)/R` was approximately `0.421763` against `0.20`;
+  the maximum original-adjacent normalized sum was approximately `0.48149`
+  against `0.40`, implying an inverse lower bound of approximately `0.51851`
+  against the required `0.60`. A future retry must explicitly reopen at least
+  one coupled contract dimension—displacement construction, radius/owner
+  clearance, retained mandatory topology, or the `0.20/0.40` Lipschitz/inverse
+  safety family—and still has no evidence that proxy or frozen-oracle gates
+  would pass.
+
 ### Pending Todos
 
 None found under `.planning/todos/pending/`.
