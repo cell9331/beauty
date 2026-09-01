@@ -5,10 +5,10 @@ milestone_name: Non-Local Facial Effect Repairs
 current_phase: 90
 current_phase_name: Face Contour and Chin Repairs
 status: executing
-stopped_at: Revision 12 D1-v12 plan independently verified; ready for bounded execution
-last_updated: "2026-08-31T12:31:01Z"
+stopped_at: Revision 13 D1-v13 plan independently verified; ready for bounded execution
+last_updated: "2026-09-01T01:17:23Z"
 last_activity: 2026-08-31
-last_activity_desc: Revision 12 D1-v12 complete-chain plan passed independent review
+last_activity_desc: Revision 13 D1-v13 plan passed independent review after residual-index correction
 progress:
   total_phases: 7
   completed_phases: 1
@@ -32,8 +32,8 @@ without distributing the SDK, model, or weights.
 
 Phase: 90 (Face Contour and Chin Repairs) — EXECUTING
 Plan: 1 of 4
-Status: Revision 12 D1-v12 ready for bounded execution
-Last activity: 2026-08-31 — Independent revision-12 plan check passed with zero issues
+Status: Revision 13 D1-v13 ready for bounded execution
+Last activity: 2026-09-01 — Independent revision-13 plan check passed with zero issues
 
 Progress: [█░░░░░░░░░] 14%
 
@@ -168,6 +168,13 @@ roadmaps.
   positive containment slack, adjacent-only overlap, and a pre-render chain
   proxy; its independent review passed with zero issues.
 
+- [Phase 90]: Revision 12 execution exposed an implementation-only residual
+  indexing defect: slot 1 used selected-slot neighbors instead of `Q(0)` and
+  `Q(2/13)`, forcing all 25 exact-lattice states below the half-L1 floor.
+  Revision 13 changes only this indexing block, adds a normalized v12 scaffold
+  diff guard, preserves the exact five-section aggregate prefix, and keeps all
+  geometry, safety, Float, oracle, and product contracts unchanged.
+
 ### Pending Todos
 
 None found under `.planning/todos/pending/`.
@@ -175,7 +182,7 @@ None found under `.planning/todos/pending/`.
 ### Blockers/Concerns
 
 - [Phase 90] FACE-01 remains unresolved while the independently verified
-  revision-12 D1-v12 chain awaits bounded execution. The frozen contract is
+  revision-13 D1-v13 chain awaits bounded execution. The frozen contract is
   unchanged and Plans 90-03/04 remain blocked until a compliant GREEN summary
   exists.
 
@@ -198,6 +205,6 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-08-31T20:31:01+08:00
-Stopped at: Revision 12 D1-v12 plan independently verified; ready for bounded execution
+Last session: 2026-09-01T09:17:23+08:00
+Stopped at: Revision 13 D1-v13 plan independently verified; ready for bounded execution
 Resume file: `.planning/phases/90-face-contour-and-chin-repairs/90-01-PLAN.md`

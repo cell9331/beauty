@@ -36,7 +36,7 @@
 | Prior blocker | Plan 90-01 exhausted its earlier finite safe provider-only candidates. The best local and monotone result was `+5 Q16` versus the frozen `+16`; wider support reached `+9` but violated outside protection. |
 | Preserved state | Failed production experiments and temporary diagnostics were removed. The committed generated RED and pre-attempt provider behavior remain. |
 | Evidence | `.planning/phases/90-face-contour-and-chin-repairs/90-01-ATTEMPT.md` retains five aggregate-only stop records. Revision 11 proved 7/7 branches, a common interior extremum class, five paired classes, and `2/1/2` zone reachability, then stopped before render because all five fixed Float states for the first mandatory shoulder carrier failed the required exact subtraction identities. Provider/test bytes were restored byte-exact and the retained verifier exited 0 with `FACE01_STOP_VERIFIED`. |
-| Next step | Execute the independently verified revision-12 D1-v12 complete-chain field exactly once. On any structural, Float, safety, proxy, or frozen-oracle miss, restore source/test bytes, append aggregate-only stop evidence, and keep Plans 90-03/04 blocked. |
+| Next step | Execute the independently verified revision-13 D1-v13 complete-chain field exactly once. On any structural, Float, safety, proxy, or frozen-oracle miss, restore source/test bytes, append aggregate-only stop evidence, and keep Plans 90-03/04 blocked. |
 
 Checklist:
 
@@ -55,10 +55,12 @@ Checklist:
 | Research FACE-01 revision 11 | `completed` | Two read-only audits selected a single fixed extremum-inclusive direct-secant field with one predetermined adjacent overlap per side; an infeasible medial-carrier draft was rejected before execution. |
 | Independently check FACE-01 revision 11 | `completed` | Goal-backward review passed with zero blockers and zero warnings after deterministic extremum, empty-neighbor containment, arbitrary-strength Float scaling, and honest proxy-energy wording were made executable. |
 | Execute FACE-01 revision 11 | `completed-blocked` | D1 stopped at the first mandatory cap-target-first Float lattice: five fixed states failed exact target/source and half/source subtraction identities; no field or oracle candidate was admitted, exact rollback and `FACE01_STOP_VERIFIED` passed, and no summary exists. |
-| Research FACE-01 revision 12 | `active` | Prove a construction-level exact Float lattice and independently audit the fixed D1 geometry beyond the revision-11 stop; do not use rendered output or tune geometry during research. |
+| Research FACE-01 revision 12 | `completed` | Proved the exact dyadic Float lattice and found that the failed D1 geometry also had independent containment and row-proxy defects; no rendered output was used for selection. |
 | Independently check FACE-01 revision 12 | `completed` | The complete-chain D1-v12 plan passed with zero blockers and warnings after explicit source anchoring, target linkage, exact Float order/types, analytical-vs-retained slot semantics, and compile-valid `g` construction. |
-| Execute FACE-01 revision 12 | `active` | Run only D1-v12 under the unchanged frozen contract; no fallback, retuning, or output-guided selection. |
-| Complete FACE-01 | `blocked-on-execution` | The frozen semantic/safety contract and pre-retry production/test bytes remain unchanged while the bounded revision-12 execution runs. |
+| Research FACE-01 revision 13 | `completed` | Diagnosed revision-12's implementation-only residual-neighbor indexing defect; revision 13 changes only that block and adds a scaffold diff guard. |
+| Independently check FACE-01 revision 13 | `completed` | Plan review passed with zero blockers and warnings, including endpoint-inclusive `Q(0)`/`Q(1)` residual mapping and five-section prefix accounting. |
+| Execute FACE-01 revision 13 | `active` | Run only D1-v13 under the unchanged frozen contract; no fallback, retuning, or output-guided selection. |
+| Complete FACE-01 | `blocked-on-execution` | The frozen semantic/safety contract and pre-retry production/test bytes remain unchanged while the bounded revision-13 execution runs. |
 | Continue Phase 90 Wave 2/3 | `blocked` | Plans 90-03/04 require both Wave 1 summaries and cannot close FACE-01 by documentation. |
 
 The v1.21 entry below is complete and retained for session continuity.
