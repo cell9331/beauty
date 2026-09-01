@@ -5,10 +5,10 @@ milestone_name: Non-Local Facial Effect Repairs
 current_phase: 90
 current_phase_name: Face Contour and Chin Repairs
 status: executing
-stopped_at: Revision 17 branch-balanced-radius plan independently verified; ready for bounded execution
-last_updated: "2026-09-01T03:20:00Z"
+stopped_at: FACE-01 revision 17 verified terminal stop at fixed single normalized-displacement safety bound
+last_updated: "2026-09-01T04:05:00Z"
 last_activity: 2026-09-01
-last_activity_desc: Revision 17 plan passed independent review with zero blockers and zero warnings
+last_activity_desc: Revision 17 resolved owner slack but stopped before render at the fixed single normalized-displacement safety gate
 progress:
   total_phases: 7
   completed_phases: 1
@@ -32,8 +32,8 @@ without distributing the SDK, model, or weights.
 
 Phase: 90 (Face Contour and Chin Repairs) — EXECUTING
 Plan: 1 of 4
-Status: Revision 17 branch-balanced-radius plan independently verified; bounded execution active under unchanged public and safety boundaries
-Last activity: 2026-09-01 — Independent plan review passed with zero blockers and zero warnings after exact-section contract and retry-ledger verification
+Status: FACE-01 revision 17 verified terminal stop; no further contract change is authorized
+Last activity: 2026-09-01 — Revision 17 passed branch-minimum owner/slack gates, then failed the fixed `2*norm(d)/R <= 0.20` pre-render safety gate; rollback and retained stop verification passed
 
 Progress: [█░░░░░░░░░] 14%
 
@@ -233,15 +233,27 @@ roadmaps.
   execution may now run once; no alternative candidate, tuning, or
   rendered-output selection is authorized.
 
+- [Phase 90]: Revision 17 executed exactly once. Canonical branches, all
+  twelve analytical slots, extrema/zones, endpoint-inclusive residuals,
+  paired zero omissions, exact lattice, branch-minimum owner proof,
+  owner/unit/slack/expanded containment, forbidden-overlap checks, and
+  bilateral adjacent-overlap presence passed. The first actual failure was
+  the unchanged single-point `2*norm(d)/R <= 0.20` gate, so global
+  Lipschitz/inverse/proxy and the frozen oracle were not reached. Provider and
+  repair-test bytes were restored exactly; the ninth aggregate-only suffix
+  and `FACE01_STOP_VERIFIED` were committed in `48fc3de`. No summary or
+  downstream execution exists.
+
 ### Pending Todos
 
 None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-- [Phase 90] FACE-01 remains unresolved while the independently verified
-  revision-17 retry awaits bounded execution. Plans 90-03/04 remain blocked
-  until a compliant GREEN summary exists.
+- [Phase 90] FACE-01 is a verified terminal revision-17 stop at the fixed
+  single normalized-displacement safety bound. Plans 90-03/04 remain blocked;
+  any revision 18 would require an explicit owner-authorized internal contract
+  change and cannot be inferred from the current authorization.
 
 - [Phase 89] Independent pupil-to-own-eye support is intentionally absent and
   must be implemented in Phase 91 before gaze can receive semantic credit.
@@ -262,6 +274,6 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-09-01T11:20:00+08:00
-Stopped at: Revision 17 branch-balanced-radius plan independently verified; ready for bounded execution
+Last session: 2026-09-01T12:05:00+08:00
+Stopped at: FACE-01 revision 17 verified terminal stop at fixed single normalized-displacement safety bound
 Resume file: `.planning/phases/90-face-contour-and-chin-repairs/90-01-PLAN.md`
