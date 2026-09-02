@@ -1,204 +1,196 @@
 ---
 phase: 90
 slug: face-contour-and-chin-repairs
-status: draft
-nyquist_compliant: false
+status: validated
+nyquist_compliant: true
 wave_0_complete: true
 created: 2026-09-01
+updated: 2026-09-02
 ---
 
 # Phase 90 — Validation Strategy
 
-> Per-phase Nyquist contract for the independently gated FACE-01 and FACE-02
-> repairs. This draft is an execution sampling plan, not a claim that Phase 90
-> has passed.
+> Nyquist contract for the owner-approved Phase 90 contraction: FACE-02
+> `chinTaper` is the sole active requirement; FACE-01 `faceContourSmooth` is a
+> post-decision `completed-deferred`, non-GREEN artifact routed to FUTURE-04.
 
 ---
+
+## Requirement and Evidence Authority
+
+| Item | Phase 90 disposition | Validation authority |
+| --- | --- | --- |
+| FACE-02 | Sole active requirement; completed by Plan 90-02 and carried through Plans 90-03/04 | `90-02-SUMMARY.md`, focused chin tests, compatibility tests, Phase 89 preflight, archive verification, and SDK-only boundary scan |
+| FACE-01 | Post-decision `completed-deferred`; never a completed Phase 90 requirement and never GREEN | `90-01-SUMMARY.md` must remain `status: completed-deferred`, `promotion_eligible: false`, and `requirements-completed: []`; further repair is FUTURE-04 |
+
+The current contour implementation may be sampled only through these two
+safe/current-behavior methods:
+
+- `FaceContourSmoothRepairTests/testFACE01ExistingProviderEmitsOneCenteredObservedContourCorrection`
+- `FaceContourSmoothRepairTests/testFACE01ProviderFailsOnlyNamedFieldClosedForInvalidSupportAndInputs`
+
+They prove only present callable/fail-closed behavior. They do not prove the
+deferred effectiveness contract. Phase 90 must not run
+`FaceContourSmoothRepairTests/testFACE01GeneratedCPUFixturePassesFrozenSemanticAndProtectionContract`.
 
 ## Test Infrastructure
 
 | Property | Value |
-|----------|-------|
-| **Framework** | Swift Testing/XCTest through SwiftPM, plus SDK-owned Python, Swift, and Bash gates |
-| **Config file** | `BeautySDK/Package.swift` |
-| **Quick run command** | Task D22: assert immutable verifier SHA-256; directly consume all three fixed self-tests; run one composite source gate whose in-process live-slice checks pin both bindings and the exact recovered three-call/two-`&&` predicate order, reject declaration/raw-subscript/predicate/decoy mutations, and combine with immutable `rev21-compile-forms-check` in one exact output assertion before the sole build |
-| **Diagnostic build command** | `swift build --package-path BeautySDK --target BeautyEffects` |
-| **Single diagnostic test command** | `swift test --package-path BeautySDK --filter 'FaceContourSmoothRepairTests/testFACE01D1V19DiagnosticOnlyClassification'` — retained D1V19 implementation vocabulary under revision-22 execution authorization; at most once, only after the sole live preflight |
-| **Estimated runtime** | static verifier sampling: no more than 5 seconds; target build and the one uniquely filtered diagnostic test: no more than 30 seconds each on the warm incremental workspace |
+| --- | --- |
+| Framework | Swift Testing/XCTest through SwiftPM plus SDK-owned Python, Swift, and Bash gates |
+| Config file | `BeautySDK/Package.swift` |
+| Immediate feedback | Deterministic summary/document assertions and diff checks, each targeted at no more than 30 seconds |
+| Phase-completion evidence | The single bounded Plan 90-04 focused/compatibility/preflight/archive/boundary chain below |
+| Persistent evidence | Aggregate command results only; no raw pixels, masks, landmarks, private paths, fixture locators, or child-process transcripts |
 
----
+No new test scaffold, framework, package, dependency, fixture, model, weight,
+network path, renderer case, backend, shader, UI/Demo, or device step is needed.
 
-## Sampling Rate
+## Wave and Sampling Order
 
-- **During every task, after each meaningful edit:** Run the task's immediate smoke command from the table below; target latency is no more than 30 seconds.
-- **Before every task commit:** Run that task's exact `<automated>` completion command. This may be longer than the immediate sampling command and does not replace it.
-- **After revision-22 Wave 1:** Revision 22 is separately authorized after
-  revision 21 stopped at its sole source gate. The complete verifier at
-  `c8c34b6` remains byte-immutable; D22 recaptures all V22 baselines after the
-  planning commit. Dispatch only with
-  `$gsd-execute-phase 90 --wave 1`; completed 90-02 is skipped, so only 90-01
-  runs. Stop after zero-diff Swift rollback, the optional ATTEMPT-only final
-  rollback, and `git diff --check`; do not run phase-wide execution or
-  FACE-01/FACE-02 provider/CPU/facade filters.
-- **After Wave 2:** Run the exact-section DESIGN, taxonomy, and product checks from Plan 90-03.
-- **After Wave 3 / before phase verification:** Not reachable from revision 22;
-  Plans 90-03/04 remain blocked without a GREEN `90-01-SUMMARY.md`.
-- **Max immediate feedback latency:** 30 seconds. Revision 22 has no render,
-  candidate-oracle, full-suite, archive, or milestone closeout gate.
+| Order | Task | Wave | Dependency | Immediate sampling |
+| --- | --- | --- | --- | --- |
+| 1 | `90-03-01` | 2 | Valid `90-01-SUMMARY.md` and completed `90-02-SUMMARY.md` | Run the terminal-summary assertion before edits; run the task's full automated command before commit |
+| 2 | `90-03-02` | 2 | `90-03-01` owner-contract edits | Run its exact-section assertion after edits; run the task's full automated command before commit |
+| 3 | `90-04-01` | 3 | `90-03-SUMMARY.md` with `requirements-completed: [FACE-02]` | Run the predecessor-summary assertion and source/script diff check; defer the long test/archive chain to the Phase Completion Gate |
+| 4 | `90-04-02` | 3 | Task `90-04-01` quality evidence | Run the completed-ledger assertion after edits; run the task's full automated command before commit |
 
-### Immediate Task Smoke Map
-
-| Task | Immediate smoke command (warm incremental workspace) | Target |
-| --- | --- | --- |
-| 90-01-D22 | After the planning commit, assert immutable verifier SHA, recapture every V22 baseline, then run one direct composite live-slice binding/predicate mutation plus immutable-source check, exactly one build, exactly one exact-two-path live preflight, and at most one filtered XCTest | <=5s pre-Swift sampling; then one target build/preflight and at most one XCTest |
-| 90-02-01 / 90-02-02 | already GREEN; rerun the narrow named ChinTaper test method being edited if reopened | <=30s |
-| 90-03-01 / 90-03-02 | first require `FACE01_GREEN_SUMMARY_VERIFIED`, then run the task's exact-section Python assertion | <=5s; revision-22 diagnostic cannot satisfy this gate |
-| 90-04-01 | first require `FACE01_GREEN_SUMMARY_VERIFIED` for 90-01/02/03 summaries, then run the SECURITY/RELIABILITY assertion | <=5s; revision-22 diagnostic cannot satisfy this gate |
-| 90-04-02 | blocked until a separately authorized GREEN FACE-01 repair creates `90-01-SUMMARY.md` | not executable during revision 22 |
-
----
+All available edit-loop checks target at most 30 seconds. The focused Swift
+filters, compatibility filter, comparator self-test, `--preflight-only`, archive
+verification, and post-archive SDK-only scan run once at phase completion; they
+are not repeated as per-edit sampling.
 
 ## Per-Task Verification Map
 
-| Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
-|---------|------|------|-------------|------------|-----------------|-----------|-------------------|-------------|--------|
-| 90-01-D22 | 01 | 1 | FACE-01 | T-90-D22-01 through T-90-D22-06 / T-90-SC | Immutable-verifier and V22 baselines bind one shared reconstruction; the direct composite gate proves exactly-once bindings, exact predicate operands/operators/order, no decoy bound-name uses, and unchanged compile forms before one build; fixed live policy enforces one exact-two-path preflight and branch-aware rollback | in-process binding/predicate mutations + immutable source check + one build + one live preflight + at most one XCTest + rollback | Direct two-marker composite output; then direct first rollback or, only after a valid suffix, direct final rollback marker | ✅ verifier committed at `c8c34b6`; temporary Swift symbols absent until execution | ⬜ pending |
-| 90-02-01 | 02 | 1 | FACE-02 | T-90-08 | Centerline-owned chin field passes provider and exact cap/neutral/fail-closed contracts | unit + generated CPU integration | `swift test --package-path BeautySDK --filter 'ChinTaperRepairTests|FaceShapeWarpProviderTests'` | ✅ | ✅ green |
-| 90-02-02 | 02 | 1 | FACE-02 | T-90-08 / T-90-09 | Public facade retains chin locality, sibling distinction, recovery, and source safety | generated integration | Plan 90-02 Task 02 exact facade/degradation filter | ✅ | ✅ green |
-| 90-03-01 | 03 | 2 | FACE-01 / FACE-02 | T-90-10 through T-90-13 | Static preflight rejects diagnostic/stopped evidence before DESIGN/taxonomy consume GREEN summaries | GREEN-summary preflight + deterministic document contract | Plan 90-03 Task 01 `green-summary` gate, exact-section Python check, and `git diff --check` | ✅ | ⬜ pending |
-| 90-03-02 | 03 | 2 | FACE-01 / FACE-02 | T-90-10 through T-90-13 | Static preflight rejects diagnostic/stopped evidence before owner-journey edits | GREEN-summary preflight + deterministic document contract | Plan 90-03 Task 02 `green-summary` gate, exact-section Python check, and `git diff --check` | ✅ | ⬜ pending |
-| 90-04-01 | 04 | 3 | FACE-01 / FACE-02 | T-90-16 through T-90-20 | Static preflight requires GREEN 90-01 plus completed 90-02/03 before trust-owner edits | GREEN-summary preflight + deterministic owner-contract check | Plan 90-04 Task 01 `green-summary` gate, exact-section Python check, and `git diff --check` | ✅ | ⬜ pending |
-| 90-04-02 | 04 | 3 | FACE-01 / FACE-02 | T-90-17 through T-90-20 | Static preflight requires GREEN 90-01 plus completed 90-02/03 before evidence/closeout commands | GREEN-summary preflight + deterministic document/verifier smoke | Plan 90-04 Task 02 `green-summary` gate and exact-section/verifier-help command | ✅ | ⬜ pending |
+### Task `90-03-01` — Wave 2
 
-*Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
+**Requirement:** FACE-02. FACE-01 is consumed only as a completed-deferred
+predecessor record.
 
-### Revision 18 Execution Reconciliation
+**Exact automated command:**
 
-- Task `90-01-01` is RED. The temporary D1-v18 provider compiled, but the
-  focused pre-render check observed zero emitted points at both cap and half
-  (`0/20`) and stopped at
-  `focused-pre-render-D1-v18-whole-field-empty-before-candidate-oracle`.
-- The frozen candidate oracle was not invoked. Provider and repair-test bytes
-  were restored exactly, the tenth aggregate-only stop record was retained,
-  and `python3 scripts/verify-phase90-face01-stop.py` returned
-  `FACE01_STOP_VERIFIED`.
-- Commit `36d2ec5` records the sanitized stop. The cause remains indeterminate
-  because the retained evidence does not identify the earliest internal
-  fail-closed gate. The owner subsequently authorized diagnostic-only revision
-  19; the replacement Plan 90-01 may classify that gate once but cannot repair,
-  render, invoke the oracle, create a summary, or unblock downstream plans.
+```bash
+python3 -c 'from pathlib import Path; p=Path(".planning/phases/90-face-contour-and-chin-repairs/90-01-SUMMARY.md"); assert p.is_file() and not p.is_symlink(); s=p.read_text(); fm=s.split("---",2)[1]; low=s.lower(); assert "status: completed-deferred" in fm and "promotion_eligible: false" in fm and "requirements-completed: []" in fm; assert "prior_stop_not_reproduced" in low and "zero render/oracle invocations" in low and "revision 23" in low and "not a green" in low; assert "face01_semantic_status=green" not in low; print("FACE01_DEFERRED_SUMMARY_VERIFIED")' && python3 -c 'from pathlib import Path; extract=lambda p,h:Path(p).read_text().split(h,1)[1].split("\n## ",1)[0].lower(); d=extract("DESIGN.md","## Phase 90 Chin Repair and Contour Deferral Design Contract"); t=extract("docs/SDK_EFFECT_TAXONOMY.md","## Phase 90 Chin Repair and Contour Deferral"); assert all(x in d for x in ("facecontoursmooth","partial","future-04","prior_stop_not_reproduced","zero render","chintaper","0.25","0.016","float.ulpofone","phase 95")); assert all(x in t for x in ("facecontoursmooth","partial","future-04","chintaper","implemented","62","five","75")); print("phase90_design_taxonomy=deferred-plus-proven")' && git diff --quiet -- BeautySDK scripts && git diff --check
+```
 
-### Revision 19 Harness Reconciliation
+**Nyquist result:** The command validates the terminal FACE-01 disposition,
+the FACE-02 design/taxonomy contract, and zero production/test/script drift.
 
-- The target-only `BeautyEffects` build passed. The sole revision-19 preflight
-  then failed before XCTest with
-  `FACE01_DIAGNOSTIC_ERROR:status_allowlist_violation`: Git status contained
-  exactly the temporary provider and complete repair-test paths while the
-  caller allowed ATTEMPT alone.
-- XCTest did not start, so revision 19 produced no diagnostic marker,
-  classification, counts, or ATTEMPT suffix. Provider/test bytes were restored
-  byte-exact with apply_patch, `FACE01_DIAGNOSTIC_ROLLBACK_VERIFIED` passed,
-  render/oracle counts remained zero, and the final worktree was clean.
-- The static verifier was retained in `f3cf3b2`/`03bfada`; D20-A subsequently
-  committed only revision-20 stage policy at `a4f9688` without recreating Wave
-  0. Its exact-two-path preflight, empty first rollback, ATTEMPT-only final
-  rollback, and branch markers remain the immutable live policy for revisions
-  21 and 22.
-- `90-01-SUMMARY.md`, `90-03-SUMMARY.md`, and `90-04-SUMMARY.md` remain absent.
-  Plans 90-03/04 stay machine-blocked by `FACE01_GREEN_SUMMARY_VERIFIED`.
+### Task `90-03-02` — Wave 2
 
-### Revision 20 Compile Reconciliation
+**Requirement:** FACE-02, with FACE-01 preserved only as deferred context.
 
-- D20-A's verifier policy extension is committed at `a4f9688` and both direct
-  fixed-output self-tests pass. D20-B captured the clean complete baseline.
-- Exactly one authorized `BeautyEffects` target build started and failed
-  compilation: temporary diagnostic Swift used `Sequence.suffix` as a
-  predicate and bare `floor`/`round` were unavailable. Live preflight and
-  XCTest did not start, so no marker, classification, counts, or suffix exists.
-- Provider/test were restored byte-exact with apply_patch; direct
-  `FACE01_DIAGNOSTIC_REV20_FIRST_ROLLBACK_VERIFIED` passed; render/oracle are
-  zero; ATTEMPT remains ten headings; summaries remain absent; worktree clean.
-  This is compile-only `diagnostic_invalid`, not D1-v18 gate evidence.
+**Exact automated command:**
 
-### Revision 21 Source-Gate Reconciliation
+```bash
+python3 -c 'from pathlib import Path; extract=lambda p,h:Path(p).read_text().split(h,1)[1].split("\n## ",1)[0].lower(); p=extract("PRODUCT_SENSE.md","## Phase 90 Chin Repair and Contour Deferral Owner Journey"); s=extract("SECURITY.md","## Phase 90 Chin Repair and Contour Deferral Trust Boundary"); r=extract("RELIABILITY.md","## Phase 90 Chin Repair and Contour Deferral Reliability Contract"); assert all(x in p for x in ("facecontoursmooth","partial","chintaper","62","five","75","phase 95","owner-local")); assert all(x in s for x in ("prior_stop_not_reproduced","request-local","aggregate","zero render","phase 95")); assert all(x in r for x in ("completed-deferred","chintaper","neutral","0.25","fail closed","phase 95","one-step")); joined=p+s+r; assert not any(x in joined for x in ("release ready","commercially ready","device qualified","face-01 is green")); print("phase90_owner_contracts=deferred-plus-proven")' && git diff --quiet -- BeautySDK scripts && git diff --check
+```
 
-- D21-A committed the complete compile-form verifier at `c8c34b6`; `self-test`,
-  `rev20-policy-self-test`, `rev21-compile-forms-self-test`, and all seven
-  status-policy hashes passed.
-- D21-B captured a clean complete baseline. Its sole
-  `rev21-compile-forms-check` then failed before build because
-  `ordered_positions` requires each pinned raw-subscript token exactly once,
-  while `activeItems[penultimateIndex]` and `activeItems[lastIndex]` each
-  appeared twice.
-- No build, live preflight, XCTest, render, oracle, marker, classification,
-  count, or suffix occurred. Provider/test restored byte-exact via apply_patch;
-  direct `FACE01_DIAGNOSTIC_REV20_FIRST_ROLLBACK_VERIFIED` passed; ATTEMPT
-  remains ten headings; summaries remain absent; worktree clean. This is
-  source-gate-only `diagnostic_invalid`, not D1-v18 gate evidence.
+**Nyquist result:** The command checks the product, security, and reliability
+owners against the same FACE-02-complete/FACE-01-deferred contract.
 
----
+### Task `90-04-01` — Wave 3
 
-## Wave 0 Requirements
+**Requirement:** FACE-02. The two allowlisted contour methods are current-safety
+sampling only.
 
-- [x] `scripts/verify-phase90-face01-diagnostic.py` — retained static verifier
-  with `self-test`, `preflight`, `rollback`, and fail-closed `green-summary`
-  modes plus deterministic mutation coverage; commits `f3cf3b2` and `03bfada`
-  completed Wave 0. D20-A's policy extension is committed at `a4f9688`; the
-  complete revision-21 verifier is committed at `c8c34b6` and remains
-  immutable in revision 22.
-- [ ] `FaceContourSmoothRepairTests.testFACE01D1V19DiagnosticOnlyClassification`
-  and provider `D1V19*`/`d1V19*` symbols — retained implementation vocabulary,
-  temporary only for Task `90-01-D22`; remove byte-exact after the single run.
-- [ ] Immediately capture provider, complete repair-test, frozen-oracle,
-  verifier, ATTEMPT ten-heading prefix, later-artifact, PLANS, STATE, and
-  ROADMAP hashes/states before temporary Swift edits.
-- [ ] D22 asserts the complete verifier SHA, recaptures V22 baselines, and
-  directly proves live-slice binding mutations plus the immutable actual-source
-  check in one composite gate before the sole build.
-- [x] Confirm `scripts/verify-phase90-face01-stop.py --help`; normal execution
-  is prohibited because it launches the frozen oracle.
+**Exact automated command:** This is the long bounded evidence chain and is
+scheduled only as the Phase Completion Gate below, not as an edit-loop sample.
 
-No framework installation, dependency, private fixture, model, weight, network,
-UI, renderer, backend, or `Warp.metal` work is required.
+```bash
+swift test --package-path BeautySDK --filter 'ChinTaperRepairTests|BeautyEngineChinTaperRepairTests|FaceContourSmoothRepairTests/testFACE01ExistingProviderEmitsOneCenteredObservedContourCorrection|FaceContourSmoothRepairTests/testFACE01ProviderFailsOnlyNamedFieldClosedForInvalidSupportAndInputs|FaceShapeWarpProviderTests|BeautyEffectResolverTests|GeometryConflictResolverTests|CombinedEffectSafetyTests|BeautyMetalGeometryPassTests|MissingLandmarkDegradationTests' && swift test --package-path BeautySDK --filter 'BeautyParametersTests|BeautyResourceCatalogTests|BeautyRendererOutputRegressionTests|BeautyEngineTests|BeautyEngineGeometryFacadeTests|BeautyEngineMetadataCompatibilityTests|BeautyBackendContractTests|BeautyEngineBackendRoutingTests|BeautyBackendSelectionConcurrencyTests' && swift scripts/compare-face-feature-batches.swift --self-test && bash scripts/run-face-feature-batches.sh --preflight-only && python3 scripts/archive-legacy-ui.py verify --output archives/legacy-ui && bash scripts/check-sdk-only-boundary.sh --post-archive && python3 -c 'from pathlib import Path; q=Path("QUALITY_SCORE.md").read_text().split("## Phase 90 Chin Repair and Contour Deferral Evidence",1)[1].split("\n## ",1)[0].lower(); required=("face-01","completed-deferred","face-02","chintaper","partial","62","five","75","75/65/8","float.ulpofone.nextup","nextdown","quantization","tie","phase 95","preflight-only","no-skip"); assert all(x in q for x in required); assert not any(x in q for x in ("face-01 is green","65/65 semantic_pass","release ready","commercially ready","device qualified")); print("phase90_quality=bounded-closeout")' && git diff --quiet -- BeautySDK scripts && git diff --check
+```
+
+**Nyquist result:** The command produces bounded package-host evidence for
+FACE-02, samples only the two permitted contour safety methods, and keeps live
+portrait and final no-skip ownership outside Phase 90.
+
+### Task `90-04-02` — Wave 3
+
+**Requirement:** FACE-02 closeout and deterministic Phase 91/95 handoff.
+
+**Exact automated command:**
+
+```bash
+python3 -c 'from pathlib import Path; p=Path("PLANS.md").read_text(); heading="### C-2026-09-02-phase-90-chin-repair-and-contour-deferral"; assert heading in p; s=p.split(heading,1)[1].split("\n### ",1)[0].lower(); required=("completed","face-01","completed-deferred","future-04","prior_stop_not_reproduced","face-02","chintaper","62","five","75","75/65/8","phase 91","one research","two implementation attempts","phase 95","seven","no-skip","one-step","tie"); assert all(x in s for x in required); assert not any(x in s for x in ("face-01 is green","65/65 semantic_pass","release ready","commercially ready","device qualified")); active=p.split("## 3. Active",1)[1].split("## 4. Completed",1)[0]; assert "P-2026-08-29-phase-90-face-contour-smooth" not in active; print("phase90_ledger=completed-deferred-plus-face02")' && git diff --quiet -- BeautySDK scripts && git diff --check
+```
+
+**Nyquist result:** The command proves the ledger completes FACE-02 only,
+records FACE-01 as FUTURE-04/completed-deferred, and preserves source/script
+immutability.
+
+## Chin Precision Residual Owned by Phase 95
+
+Phase 90 records, but does not add tests for, these direct-test residuals:
+
+- `Float.ulpOfOne.nextUp` at the strict neutral threshold.
+- `BeautySafetyCaps.chinTaper.nextDown` and
+  `BeautySafetyCaps.chinTaper.nextUp` around the cap.
+- The representable values immediately below, equal to, and immediately above
+  the quantization threshold.
+- Strict-comparison tie behavior, including the exact equality branch for
+  `immediateDistance == maximumDisplacement * 0.5` and the source's strict
+  `<` selection behavior.
+
+Direct Phase 90 evidence already covers exact `Float.ulpOfOne` rejection,
+`Float.ulpOfOne.nextDown` rejection, least-nonzero rejection, half strength
+`0.125`, exact cap `0.25`, and request `1` clamping to the cap. Source-defined
+behavior is not mislabeled as directly executed evidence.
 
 ## Phase Completion Gate
 
-Revision 22 has no Phase Completion Gate and must run only through the Wave 1
-filter. It terminates after classification and byte-exact Swift rollback. The
-no-suffix branch requires suffix count zero, unchanged ATTEMPT, and direct
-`FACE01_DIAGNOSTIC_REV20_FIRST_ROLLBACK_VERIFIED` without invoking or requiring
-the final marker. Only a started XCTest with exactly one valid marker may append
-the revision-22 aggregate-only suffix, after which ATTEMPT-only final rollback must directly
-emit `FACE01_DIAGNOSTIC_REV20_FINAL_ROLLBACK_VERIFIED`; both branches end with
-`git diff --check`. The Plan 90-04 completion gate
-remains machine-blocked by `green-summary` because no GREEN
-`90-01-SUMMARY.md` exists.
+Run the following bounded Plan 90-04 gate once after Tasks `90-03-01`,
+`90-03-02`, `90-04-01`, and `90-04-02` complete in wave order:
 
-During revision 22 do not run
-`testFACE01GeneratedCPUFixturePassesFrozenSemanticAndProtectionContract`, the
-normal `scripts/verify-phase90-face01-stop.py`,
-`scripts/check-cpu-reference-oracles.sh`, unfiltered/full `swift test`,
-`scripts/run-no-skip-swiftpm.sh`, any renderer command, Tasks 90-01-02/03, or
-Plans 90-03/04.
+```bash
+python3 -c 'from pathlib import Path; paths=[(".planning/phases/90-face-contour-and-chin-repairs/90-01-SUMMARY.md","01"),(".planning/phases/90-face-contour-and-chin-repairs/90-02-SUMMARY.md","02"),(".planning/phases/90-face-contour-and-chin-repairs/90-03-SUMMARY.md","03")]; docs={k:Path(p).read_text() for p,k in paths}; f1=docs["01"].split("---",2)[1]; f2=docs["02"].split("---",2)[1]; f3=docs["03"].split("---",2)[1]; completed=lambda f:next(line.strip() for line in f.splitlines() if line.strip().startswith("requirements-completed:")); assert "status: completed-deferred" in f1 and "promotion_eligible: false" in f1 and completed(f1)=="requirements-completed: []"; assert completed(f2)=="requirements-completed: [FACE-02]" and completed(f3)=="requirements-completed: [FACE-02]"; print("PHASE90_PREDECESSORS_VERIFIED")' && swift test --package-path BeautySDK --filter 'ChinTaperRepairTests|BeautyEngineChinTaperRepairTests|FaceContourSmoothRepairTests/testFACE01ExistingProviderEmitsOneCenteredObservedContourCorrection|FaceContourSmoothRepairTests/testFACE01ProviderFailsOnlyNamedFieldClosedForInvalidSupportAndInputs|FaceShapeWarpProviderTests|BeautyEffectResolverTests|GeometryConflictResolverTests|CombinedEffectSafetyTests|BeautyMetalGeometryPassTests|MissingLandmarkDegradationTests' && swift test --package-path BeautySDK --filter 'BeautyParametersTests|BeautyResourceCatalogTests|BeautyRendererOutputRegressionTests|BeautyEngineTests|BeautyEngineGeometryFacadeTests|BeautyEngineMetadataCompatibilityTests|BeautyBackendContractTests|BeautyEngineBackendRoutingTests|BeautyBackendSelectionConcurrencyTests' && swift scripts/compare-face-feature-batches.swift --self-test && bash scripts/run-face-feature-batches.sh --preflight-only && python3 scripts/archive-legacy-ui.py verify --output archives/legacy-ui && bash scripts/check-sdk-only-boundary.sh --post-archive && git diff --quiet -- BeautySDK scripts && git diff --check
+```
 
----
+All commands must pass, no HIGH threat may remain open, the Task 90-04-01
+QUALITY_SCORE assertion and Task 90-04-02 PLANS assertion must pass, and
+`git diff --quiet -- BeautySDK scripts` must confirm no production, test, or
+script drift.
 
-## Manual-Only Verifications
+## Prohibited Phase 90 Execution
 
-All Phase 90 milestone gates are automated. Optional real-device observation
-is owner feedback after SDK completion and is not a Phase 90 completion gate.
+Phase 90 must not run:
 
----
+- `FaceContourSmoothRepairTests/testFACE01GeneratedCPUFixturePassesFrozenSemanticAndProtectionContract`.
+- Live portrait execution through `scripts/run-face-feature-batches.sh`; only
+  `--preflight-only` is permitted.
+- `scripts/run-no-skip-swiftpm.sh`.
+- Any device, commercial, release-readiness, packaging, launch, shipping, or
+  external-distribution qualification.
+
+Phase 95 owns the clean 65-output run, seven effective directions plus the one
+explicitly deferred contour direction, the precision residual above, and the
+complete all-opt-ins no-skip closeout.
+
+## Privacy and Product Boundary
+
+- Persist aggregate-only command outcomes; never persist raw pixels, masks,
+  landmarks, anatomy, private fixture locators, local paths, or child output.
+- Keep the repository SDK-only and owner-local. Do not restore UI/Demo source.
+- Package-host evidence is not real-device evidence and grants no commercial,
+  release, packaging, launch, shipping, or distribution authority.
+- Archive verification must precede the post-archive SDK-only boundary scan.
 
 ## Validation Sign-Off
 
-- [x] Every planned task has an `<automated>` command or an explicit Wave 0 dependency.
-- [x] Sampling continuity has no three consecutive tasks without automated verification.
-- [x] Wave 0 names every missing test artifact or method owned by the plans.
-- [x] No command uses watch mode.
-- [x] Immediate edit-loop feedback latency target is at most 30 seconds; longer completion/wave gates remain mandatory.
-- [x] Wave 0 remains complete; revision 22 consumes immutable verifier `c8c34b6` and does not recreate it.
-- [ ] Every pending task is green.
-- [ ] `status: validated` and `nyquist_compliant: true` set after implementation reconciliation.
+- [x] FACE-02 is the only active Phase 90 requirement in the task map.
+- [x] FACE-01 is a completed-deferred, promotion-ineligible, zero-requirement
+  artifact routed to FUTURE-04 and is never represented as GREEN.
+- [x] All four pending tasks have exact automated commands and explicit wave
+  order.
+- [x] Immediate task sampling targets no more than 30 seconds where available;
+  the long evidence chain is phase-completion only.
+- [x] The contour test allowlist contains exactly the two current-safety methods.
+- [x] Live portrait, frozen FACE-01 effectiveness, and complete no-skip commands
+  are excluded from Phase 90.
+- [x] Phase 95 retains all named direct precision/tie residuals.
+- [x] Phase completion requires zero `BeautySDK`/`scripts` diff.
+- [x] Aggregate-only privacy, SDK-only, owner-local, and non-device/commercial/
+  release/distribution boundaries are explicit.
 
-**Approval:** pending execution and post-implementation validation
+**Approval:** validation contract reconciled to the owner-approved contraction;
+execution evidence remains produced by Plans 90-03/04.

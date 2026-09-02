@@ -3,10 +3,11 @@
 ## Overview
 
 v1.22 first makes the existing owner-local 65-case portrait screen a semantic
-measurement gate, then repairs each affected facial-control family as a
-complete public-facade behavior. The milestone closes only when all eight weak
-or inert directions pass their own ROI, polarity, locality, protection, and
-degradation contracts without changing the SDK's public inventory or boundary.
+measurement gate, then repairs each active facial-control family as a complete
+public-facade behavior. The original screen found eight weak or inert
+directions; after the 2026-09-02 owner-approved contraction, seven remain active
+and `faceContourSmooth` is an explicit deferred/partial direction. The
+milestone closes without changing the SDK's public inventory or boundary.
 
 ## Milestone Goal
 
@@ -20,9 +21,10 @@ intact.
 - Owner-local, opaque still-image `BeautySDK` and SDK-owned command-line
   validation only; Swift `public` does not imply third-party distribution.
 
-- Repair only `faceContourSmooth`, `chinTaper`, `gazeCorrection`, both signs of
+- Repair only `chinTaper`, `gazeCorrection`, both signs of
   `eyebrowHeadSpacing`, `noseBridge`, `noseRootNarrowing`, and negative
-  `mouthWidth`.
+  `mouthWidth`. Preserve the existing `faceContourSmooth` public field and safe
+  implementation unchanged while recording it as deferred/partial.
 
 - Preserve 62 public parameter fields, five presets, 75 renderer cases, both
   still-image facade signatures, and the existing CPU/GPU backend contract.
@@ -38,13 +40,13 @@ intact.
 
 ## Phases
 
-- [x] **Phase 89: Semantic Validation Baseline** - Turn the live 65-case owner-local portrait command into the deterministic acceptance gate for all eight repair directions. (completed 2026-08-26)
-- [ ] **Phase 90: Face Contour and Chin Repairs** - Make contour smoothing and chin taper visibly effective, distinct, and protected.
+- [x] **Phase 89: Semantic Validation Baseline** - Turn the live 65-case owner-local portrait command into the deterministic acceptance gate for the original eight repair directions. (completed 2026-08-26)
+- [ ] **Phase 90: Chin Repair and Contour Deferral** - Retain the proven chin-taper repair and close the bounded contour attempt honestly as deferred/partial.
 - [ ] **Phase 91: Independent Gaze Correction** - Move each supported pupil toward its own eye center without changing eye shape or borrowing peer-eye support.
 - [ ] **Phase 92: Signed Eyebrow-Head Spacing** - Make both inner-eyebrow-head directions effective without moving outer anchors or aliasing whole-brow spacing.
 - [ ] **Phase 93: Distinct Nose Bridge and Root Repairs** - Restore independently measurable bridge definition and root narrowing.
 - [ ] **Phase 94: Negative Mouth-Width Repair** - Restore mouth contraction while retaining the existing positive direction and surrounding anatomy.
-- [ ] **Phase 95: Compatibility and SDK-Only Closeout** - Prove fail-closed safety, exact compatibility, all eight portrait outcomes, and the complete no-skip SDK gate.
+- [ ] **Phase 95: Compatibility and SDK-Only Closeout** - Prove fail-closed safety, exact compatibility, seven effective directions plus one explicit deferred/partial direction, and the complete no-skip SDK gate.
 
 ## Phase Details
 
@@ -78,32 +80,32 @@ Plans:
 
 - [x] 89-04-PLAN.md — Synchronize command, quality, and planning evidence while preserving compatibility and scope.
 
-### Phase 90: Face Contour and Chin Repairs
+### Phase 90: Chin Repair and Contour Deferral
 
-**Goal**: The owner can observe the documented contour-smoothing and chin-taper effects without sibling-control aliasing or protected-region drift.
+**Goal**: The owner can rely on the proven chin-taper repair while the bounded `faceContourSmooth` attempt is closed honestly as deferred/partial without a false GREEN claim.
 **Depends on**: Phase 89
-**Requirements**: FACE-01, FACE-02
+**Requirements**: FACE-02
 **Success Criteria** (what must be TRUE):
 
-  1. Positive `faceContourSmooth` produces a detectable continuity correction confined to eligible observed face contours while eyes, nose, mouth, and background remain within their protection bounds.
-  2. Positive `chinTaper` produces a detectable centerline-gated chin taper on eligible input while retaining its exact safety cap, neutral identity, and source-safe degradation.
-  3. The two repaired outputs remain measurably distinct from each other and from the documented `faceSlim`, `faceSmall`, `faceVShape`, `jawSlim`, and `chinLength` behaviors.
+  1. Positive `chinTaper` produces a detectable centerline-gated chin taper on eligible input, remains distinct from `chinLength`, `faceVShape`, and `jawSlim`, and retains its exact safety cap, neutral identity, and source-safe degradation.
+  2. The FACE-01 revision series ends at revision 22 with no new retry, threshold change, source change, public/backend change, or GREEN claim; `faceContourSmooth` remains callable, safe, unchanged, and classified `partial` for a future separately authorized milestone.
+  3. Requirements, roadmap, project/state ledgers, taxonomy, owner contracts, and terminal summaries agree on one completed FACE-02 repair and one explicit FACE-01 deferral, and focused compatibility/boundary gates pass.
 
-**Plans:** 1/4 plans executed
+**Plans:** 2/4 plan artifacts complete (one completed repair, one completed-deferred terminal record)
 
 Plans:
 **Wave 1**
 
-- [ ] 90-01-PLAN.md — Verify and harden `faceContourSmooth` with generated provider, CPU-pixel, and public-facade semantic evidence.
+- [x] 90-01-PLAN.md — Bounded FACE-01 implementation stopped; the owner-approved terminal summary records `completed-deferred` without GREEN repair evidence.
 - [x] 90-02-PLAN.md — Repair `chinTaper` at its provider seam and prove centerline-local output and fail-closed behavior.
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 90-03-PLAN.md — Synchronize design, product, and taxonomy owners with the proven repairs.
+- [ ] 90-03-PLAN.md — Synchronize design, product, taxonomy, security, and reliability owners with the proven chin repair and explicit contour deferral.
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 90-04-PLAN.md — Close security, reliability, quality, compatibility, and planning evidence.
+- [ ] 90-04-PLAN.md — Run bounded compatibility/boundary evidence and close Phase 90 without claiming FACE-01 effectiveness.
 
 ### Phase 91: Independent Gaze Correction
 
@@ -166,7 +168,7 @@ Plans:
 
   1. Every repaired control proves neutral identity; deterministic recovery; source-safe no-face and missing, malformed, or stale support handling; exact caps; protected regions; output extent, orientation, color space, and alpha preservation; and privacy-safe diagnostics without proxy support.
   2. Existing owner-local integrations retain the same Codable/default behavior, five presets, 62 parameter fields, 75 renderer cases, still-image facade signatures, CPU/GPU contract, SDK-only target boundary, and non-target behavior.
-  3. A clean authorized-portrait rerun completes 65/65 outputs and reports all eight in-scope directions effective against neutral through their semantic and protection gates.
+  3. A clean authorized-portrait rerun completes 65/65 outputs, reports all seven active directions effective against neutral through their semantic and protection gates, and reports `faceContourSmooth` as deferred/partial without promoting it.
   4. Focused tests, full SwiftPM tests, archive-first boundary checks, and the zero-failure/zero-skip closeout gate pass, and every changed behavior contract agrees with its current owner document.
 
 **Plans**: TBD
@@ -177,7 +179,6 @@ Plans:
 | --- | --- |
 | VAL-01 | Phase 89 |
 | VAL-02 | Phase 89 |
-| FACE-01 | Phase 90 |
 | FACE-02 | Phase 90 |
 | EYE-01 | Phase 91 |
 | BROW-01 | Phase 92 |
@@ -188,18 +189,22 @@ Plans:
 | COMPAT-01 | Phase 95 |
 | CLOSE-01 | Phase 95 |
 
-**Coverage:** 12/12 v1.22 requirements mapped exactly once; no orphaned or duplicated requirements.
+**Coverage:** 11/11 active v1.22 requirements mapped exactly once; no orphaned
+or duplicated active requirement. Deferred `faceContourSmooth` work is recorded
+as FUTURE-04 in REQUIREMENTS.md and is not an active Phase 90/95 gate.
 
 ## Progress
 
 **Execution Order:** Phase 89 establishes the shared acceptance gate; feature
 repair phases then execute in numeric order; Phase 95 closes only after all five
-repair phases are complete.
+repair phases are complete. For Phases 91–94, each direction is limited to one
+research pass, one independently checked plan, and at most two implementation
+attempts before an explicit owner decision to repair, defer, or stop.
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 | --- | --- | --- | --- | --- |
 | 89. Semantic Validation Baseline | v1.22 | 4/4 | Complete    | 2026-08-26 |
-| 90. Face Contour and Chin Repairs | v1.22 | 1/4 | In Progress|  |
+| 90. Chin Repair and Contour Deferral | v1.22 | 1/4 | In Progress|  |
 | 91. Independent Gaze Correction | v1.22 | 0/TBD | Not started | - |
 | 92. Signed Eyebrow-Head Spacing | v1.22 | 0/TBD | Not started | - |
 | 93. Distinct Nose Bridge and Root Repairs | v1.22 | 0/TBD | Not started | - |
@@ -207,4 +212,4 @@ repair phases are complete.
 | 95. Compatibility and SDK-Only Closeout | v1.22 | 0/TBD | Not started | - |
 
 ---
-*Last updated: 2026-08-26 for v1.22 roadmap creation*
+*Last updated: 2026-09-02 after owner-approved v1.22 scope contraction*

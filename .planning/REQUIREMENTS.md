@@ -11,7 +11,10 @@ behavior and protected image regions.
 outputs. After excluding the three owner-deferred local-retouch controls, eight
 renderer directions remain weak or inert: `faceContourSmooth`, `chinTaper`,
 `gazeCorrection`, both signs of `eyebrowHeadSpacing`, `noseBridge`,
-`noseRootNarrowing`, and negative `mouthWidth`.
+`noseRootNarrowing`, and negative `mouthWidth`. On 2026-09-02 the owner narrowed
+v1.22 to seven active repair directions and explicitly deferred
+`faceContourSmooth`; its current public field and fail-closed implementation
+remain unchanged and are not accepted as an effective repair.
 
 ## v1 Requirements
 
@@ -29,12 +32,6 @@ renderer directions remain weak or inert: `faceContourSmooth`, `chinTaper`,
   or a threshold weakened only to make a case pass is not acceptance evidence.
 
 ### Face shape
-
-- [ ] **FACE-01**: Positive `faceContourSmooth` produces a detectable,
-  contour-local continuity correction on eligible observed contours, remains
-  semantically distinct from `faceSlim`, `faceSmall`, `faceVShape`, and
-  `jawSlim`, and keeps the eyes, nose, mouth, and background within bounded
-  protected-region tolerances.
 
 - [x] **FACE-02**: Positive `chinTaper` produces a detectable,
   centerline-gated chin taper on eligible input, remains distinct from
@@ -87,11 +84,13 @@ renderer directions remain weak or inert: `faceContourSmooth`, `chinTaper`,
   public still-image facade signatures, CPU/GPU backend contract, SDK-only
   target boundary, and existing non-target control behavior.
 
-- [ ] **CLOSE-01**: A clean authorized-portrait rerun completes all 65 outputs
-  and marks all eight in-scope directions effective against neutral through
-  their semantic and protection gates; focused tests, full SwiftPM tests,
-  archive-first SDK-only checks, and the zero-skip closeout gate all pass, with
-  changed behavior contracts synchronized to their owner documents.
+- [ ] **CLOSE-01**: A clean authorized-portrait rerun completes all 65 outputs,
+  marks the seven active repair directions effective against neutral through
+  their semantic and protection gates, and reports `faceContourSmooth` as the
+  one explicit deferred/partial direction without promoting it; focused tests,
+  full SwiftPM tests, archive-first SDK-only checks, and the zero-skip closeout
+  gate all pass, with changed behavior contracts synchronized to their owner
+  documents.
 
 ## Future Requirements
 
@@ -108,6 +107,12 @@ renderer directions remain weak or inert: `faceContourSmooth`, `chinTaper`,
   release readiness, and external distribution remain separately scoped or
   prohibited under the current owner-local boundary.
 
+- **FUTURE-04**: Repair or further redesign `faceContourSmooth` only in a
+  separately authorized milestone. The current owner-local public field,
+  compatibility shape, frozen `+16 Q16` semantic/protection contract, and
+  fail-closed implementation remain unchanged; Phase 90 revision 22 is
+  diagnostic evidence, not repair or effectiveness evidence.
+
 ## Out of Scope
 
 | Feature | Reason |
@@ -115,11 +120,12 @@ renderer directions remain weak or inert: `faceContourSmooth`, `chinTaper`,
 | Repairing `teethWhitening` (white teeth) | Explicitly deferred by the owner. |
 | Repairing `scleraRednessReduction` (sclera redness) | Explicitly deferred by the owner. |
 | Repairing `upperEyelidFullnessReduction` (`去脂`) | Explicitly deferred by the owner; the v1.21 provisional behavior remains unchanged. |
+| Further `faceContourSmooth` repair | Explicitly deferred by the owner after the bounded Phase 90 attempt series; the existing public field remains unchanged and `partial`. |
 | New public parameters, presets, filters, renderer cases, or facade methods | v1.22 repairs the existing 62-field/5-preset/75-case contract only. |
 | Counting the watermark or unrelated pixel changes as proof | Acceptance requires semantic ROI, direction, locality, and protected-region evidence. |
 | Threshold-only changes that hide an inert or wrong-direction effect | Thresholds describe the contract; they cannot substitute for a functional repair. |
 | New UI/Demo, application lifecycle, realtime/video pipeline, model, dataset, weights, or network path | The active product surface remains the owner-local SDK and SDK-owned still-image validation. |
-| Hairline, double-chin, facial proportion, or 3D additions | These remain future taxonomy rows and are not repairs of the eight observed directions. |
+| Hairline, double-chin, facial proportion, or 3D additions | These remain future taxonomy rows and are not repairs of the observed directions. |
 | Device, commercial quality, packaging, shipping, launch, release, or external distribution claims | Automated owner-local evidence does not establish those claims. |
 
 ## Traceability
@@ -128,7 +134,6 @@ renderer directions remain weak or inert: `faceContourSmooth`, `chinTaper`,
 | --- | --- | --- |
 | VAL-01 | Phase 89 | Complete |
 | VAL-02 | Phase 89 | Complete |
-| FACE-01 | Phase 90 | Pending |
 | FACE-02 | Phase 90 | Complete |
 | EYE-01 | Phase 91 | Pending |
 | BROW-01 | Phase 92 | Pending |
@@ -138,8 +143,11 @@ renderer directions remain weak or inert: `faceContourSmooth`, `chinTaper`,
 | SAFE-01 | Phase 95 | Pending |
 | COMPAT-01 | Phase 95 | Pending |
 | CLOSE-01 | Phase 95 | Pending |
+| FUTURE-04 | Future milestone | Deferred |
 
-**Coverage:** 12 total, 12 mapped exactly once, 3 complete, 9 pending.
+**Coverage:** 11 active v1.22 requirements mapped exactly once: 3 complete and
+8 pending. `FUTURE-04` records the explicitly deferred FACE-01 intent outside
+the active milestone.
 
 ---
-*Last updated: 2026-08-28 after Phase 90 Plan 02*
+*Last updated: 2026-09-02 after owner-approved v1.22 scope contraction*

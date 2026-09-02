@@ -96,7 +96,7 @@ names and visual organization are intentionally omitted from the active contract
 | 比例 | 短脸 | future | — | No current neutral parameter. |
 | 脸型 | 脸宽 | implemented | `faceSlim` | Bounded contour narrowing. |
 | 脸型 | 小脸 | implemented | `faceSmall` | Bounded small-face geometry. |
-| 脸型 | 面部流畅 | implemented | `faceContourSmooth` | Observed-contour continuity only. |
+| 脸型 | 面部流畅 | partial | `faceContourSmooth` | Owner-local public field and current fail-closed observed-contour path remain available, but the bounded v1.22 Phase 90 attempt series did not meet the frozen effectiveness gate; further repair is deferred to a separately authorized milestone. |
 | 脸型 | 太阳穴 | implemented | `templeFullness` | Upper-lateral contour geometry. |
 | 脸型 | 颧骨 | implemented | `cheekboneSlim` | Mid-lateral contour geometry. |
 | 脸型 | 下巴长短 | implemented | `chinLength` | Signed chin-length geometry. |

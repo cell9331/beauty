@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.22
 milestone_name: Non-Local Facial Effect Repairs
 current_phase: 90
-current_phase_name: Face Contour and Chin Repairs
-status: blocked
-stopped_at: Revision-22 diagnostic already executed exactly once; FACE-01 remains terminally blocked without a GREEN summary
-last_updated: "2026-09-02T02:11:11Z"
+current_phase_name: Chin Repair and Contour Deferral
+status: ready_to_execute
+stopped_at: Phase 90 bounded closeout plans independently verified; Wave 2 is ready to execute
+last_updated: "2026-09-02T03:30:00Z"
 last_activity: 2026-09-02
-last_activity_desc: Reconciled committed revision-22 prior_stop_not_reproduced evidence and stopped duplicate execution
+last_activity_desc: Independently verified the FACE-02-only Phase 90 bounded closeout plan and Nyquist contract
 progress:
   total_phases: 7
   completed_phases: 1
@@ -26,14 +26,14 @@ See: `.planning/PROJECT.md` (updated 2026-08-26)
 **Core value:** The project owner's local iOS host can integrate `BeautySDK`
 and get natural, controllable real-time and still-image beauty processing
 without distributing the SDK, model, or weights.
-**Current focus:** Phase 90 — Face Contour and Chin Repairs
+**Current focus:** Phase 90 — Chin Repair and Contour Deferral
 
 ## Current Position
 
-Phase: 90 (Face Contour and Chin Repairs) — BLOCKED
-Plan: 1 of 4
-Status: Revision 22 is consumed; FACE-01 remains non-GREEN and Plans 90-03/04 cannot start
-Last activity: 2026-09-02 — stopped a duplicate revision-22 dispatch after confirming committed aggregate-only execution evidence
+Phase: 90 (Chin Repair and Contour Deferral) — READY TO EXECUTE
+Plan: 2 of 4 artifacts complete; 90-03/04 ready
+Status: FACE-01 is explicitly completed-deferred/partial; independently checked Wave 2/3 closeout plans are executable
+Last activity: 2026-09-02 — plan-checker passed the revised 90-03/04 plans and validated Nyquist contract on iteration 2/3
 
 Progress: [█░░░░░░░░░] 14%
 
@@ -60,6 +60,17 @@ roadmaps.
 ## Accumulated Context
 
 ### Decisions
+
+- [v1.22]: On 2026-09-02 the owner approved a bounded scope contraction: no
+  FACE-01 revision 23; `faceContourSmooth` moves out of active v1.22
+  requirements to FUTURE-04, remains unchanged and `partial`, and Phase 90
+  closes as the completed FACE-02 chin repair plus evidence-backed FACE-01
+  deferral. Phase 95 requires seven effective directions plus one explicit
+  deferred/partial direction across the unchanged 65-output inventory.
+
+- [v1.22]: Phases 91–94 are timeboxed to one research pass, one independently
+  checked plan, and at most two implementation attempts before an explicit
+  owner decision to repair, defer, or stop.
 
 - [v1.22]: Phase 89 owns the shared 65-case semantic acceptance baseline;
   Phases 90–94 repair the five natural control families; Phase 95 owns safety,
@@ -325,8 +336,9 @@ roadmaps.
   Render and oracle invocation counts remained zero; provider/test returned
   byte-exact, temporary diagnostic symbols were absent, and the retained
   rollback verifier passed. This diagnostic result consumes revision 22 but
-  does not repair FACE-01, create `90-01-SUMMARY.md`, or unblock downstream
-  plans.
+  does not repair FACE-01 or create GREEN evidence. The later owner scope
+  decision authorizes only a terminal deferred summary and bounded closeout;
+  it does not reinterpret revision 22 as a repair.
 
 ### Pending Todos
 
@@ -334,16 +346,16 @@ None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-- [Phase 90] FACE-01 remains blocked at the revision-18 construction stop.
-  Revision 22 is already consumed and only showed that the documented
-  reconstruction did not reproduce the prior empty-field stop; it authorized
-  no repair, new construction, threshold change, or frozen-oracle attempt.
-  Plans 90-03/04 remain blocked because no GREEN `90-01-SUMMARY.md` exists.
+- [Phase 90] The former FACE-01 implementation blocker is resolved by scope,
+  not by repair: revision 22 remains consumed diagnostic evidence and no GREEN
+  claim is permitted. The only remaining Phase 90 work is terminal deferral
+  recording, owner synchronization, and bounded compatibility/boundary checks.
 
 - [Phase 89] Independent pupil-to-own-eye support is intentionally absent and
   must be implemented in Phase 91 before gaze can receive semantic credit.
 
-- [Phase 89] Phase 95 must complete the clean 65/65, eight-direction rerun;
+- [Phase 89] Phase 95 must complete the clean 65/65 rerun with seven active
+  directions effective and `faceContourSmooth` explicitly deferred/partial;
   current unsupported gaze correctly publishes only a sanitized exit-2 envelope.
 
 - Authorized portrait media and detailed outputs remain local and ignored;
@@ -353,12 +365,13 @@ None found under `.planning/todos/pending/`.
 
 | Category | Item | Status | Deferred At |
 | --- | --- | --- | --- |
+| Face geometry | Further `faceContourSmooth` repair | Future separate milestone; current public field remains unchanged/partial | v1.22 Phase 90 contraction |
 | Local retouch | Further teeth, sclera, and upper-eyelid optimization | Future separate milestone | v1.22 scope |
 | Runtime/input breadth | Realtime/video, transparent/HDR, and device performance | Future | v1.22 scope |
 | External use | Commercialization, packaging, shipping, launch, release readiness, and distribution | Prohibited until explicitly reopened | owner-local contract |
 
 ## Session Continuity
 
-Last session: 2026-09-02T10:11:11+08:00
-Stopped at: Revision-22 evidence reconciled; duplicate execution refused and FACE-01 remains terminally blocked
-Resume file: `.planning/phases/90-face-contour-and-chin-repairs/90-01-ATTEMPT.md`
+Last session: 2026-09-02T11:30:00+08:00
+Stopped at: Phase 90 bounded closeout plan verified; ready to execute Wave 2
+Resume file: `.planning/phases/90-face-contour-and-chin-repairs/90-03-PLAN.md`
