@@ -1463,3 +1463,54 @@ exact zero alpha/flow/tone, displacement magnitude `<= 2%` of the smaller image
 dimension, adjacent flow delta `<= 0.75` source pixel, tone magnitude `<= 0.08`,
 adjacent tone delta `<= 0.04`, and local Jacobian determinant `>= 0.25`. Invalid
 or absent inference produces an aggregate per-eye rejection and no proposal.
+
+## Phase 90 Chin Repair and Contour Deferral Design Contract
+
+Phase 90 has one implemented repair and one explicit deferral. `chinTaper` is
+the completed FACE-02 behavior. At the exact `0.25` cap it uses three
+request-local bilateral lower-chin contour pairs; compatible sub-cap requests
+retain the two-point topology when their immediate field is not
+quantization-hostile. Each admitted target moves only X toward the interpolated
+request-local median, preserves Y, excludes the apex, and is bounded by
+`0.016 * face.bounds.width * normalizedStrength`. The field uses radius
+`0.12 * face.bounds.width`, falloff `2`, bilateral ownership, and named-field
+fail-closed behavior for invalid, one-sided, uncovered, no-face, missing,
+malformed, reused/stale, or provider-empty support.
+
+The generated and public-facade evidence records exact cap `0.25`, half
+strength `0.125`, deterministic repeat and neutral behavior, aggregate target
+signal `1001` changed pixels / `48557` absolute RGB delta, signed centerline
+direction `+60 Q16`, outside signal `0/0`, protected upper-face and mouth
+bounds, byte-exact background and watermark, sibling distinction, metadata
+preservation, redacted diagnostics, and valid-invalid-valid recovery. These
+are the measured FACE-02 facts; they do not authorize any broader device,
+population, visual-quality, release, or distribution claim.
+
+The current source contract rejects unless
+`requestedStrength > Float.ulpOfOne`, caps through
+`min(requestedStrength, BeautySafetyCaps.chinTaper)`, treats only
+`immediateDistance < maximumDisplacement * 0.5` as quantization-hostile, and
+selects the exact-cap band only when
+`strength == BeautySafetyCaps.chinTaper`. Existing tests directly cover exact
+`Float.ulpOfOne`, its step below, least-nonzero input, `0.125`, exact `0.25`,
+and an over-cap request. Phase 95 owns direct tests for one-step-above-neutral,
+both cap-adjacent values, exact and adjacent quantization-threshold values, and
+strict-comparison tie behavior. Source-defined comparisons are not presented
+as already executed evidence.
+
+`faceContourSmooth` remains an owner-local callable field with its current
+source-unchanged, fail-closed behavior and taxonomy status `partial`. The
+revision-22 `prior_stop_not_reproduced` classification came from one
+request-local diagnostic reconstruction with zero render/oracle invocations;
+it is not semantic, repair, effectiveness, or GREEN authority. No revision 23
+is authorized. Further repair is FUTURE-04 and requires a separately authorized
+milestone.
+
+This contract changes none of the 62 stored parameter fields, five presets,
+75 renderer cases, `BeautyEngine.processResult(image:metadata:parameters:)` or
+`BeautyEngine.process(image:orientation:parameters:)`. CPU remains the
+reference; explicit selectable GPU either succeeds through the retained
+`Warp.metal` policy or terminates as typed `.metalUnavailable` without CPU
+fallback. Privacy, SDK-only owner-local use, and non-distribution boundaries
+remain unchanged. Phase 95 owns the clean 65-output, seven-effective-plus-one-
+deferred publication and the complete no-skip closeout.

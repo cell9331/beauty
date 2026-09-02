@@ -175,3 +175,29 @@ five-preset, 74-case absence at its historical close. The current owner-accepted
 surface is 62 fields, five presets, and 75 renderer cases.
 `implemented` is an owner-local engineering status only and never authorizes
 external distribution or commercial release.
+
+## Phase 90 Chin Repair and Contour Deferral
+
+Phase 90 preserves the taxonomy distinction between one proven repair and one
+deferred field:
+
+- `chinTaper` / `尖下巴` remains `implemented`. Its evidence is the measured
+  request-local, centerline-owned paired lower-chin behavior recorded by Plan
+  90-02, including exact `0.25` cap, neutral/deterministic behavior, locality,
+  protected regions, and field-local recovery through the existing owner-local
+  still-image facades.
+- `faceContourSmooth` / `面部流畅` remains `partial`. The public field stays
+  owner-local and callable with its current source-unchanged, fail-closed
+  behavior. Revision 22 classified only `prior_stop_not_reproduced` with zero
+  render/oracle invocations; it is diagnostic-only and supplies no semantic,
+  repair, effectiveness, or GREEN authority. No revision 23 is authorized.
+  Further repair is FUTURE-04 under a separately authorized milestone.
+
+The current inventory remains exactly 62 stored fields, five presets, and 75
+renderer cases. Both public still-image facades, the CPU-reference/selectable-
+GPU policy, retained `Warp.metal`, request-local privacy, SDK-only owner use,
+and non-distribution boundary remain unchanged. Phase 95 owns the direct chin
+precision/tie residual, the clean 65-output seven-effective-plus-one-deferred
+publication, and the complete no-skip closeout; Phase 90 provides no device,
+commercial-quality, packaging, shipping, launch, release, or distribution
+qualification.
