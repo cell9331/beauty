@@ -91,7 +91,7 @@ Plans:
   2. The FACE-01 revision series ends at revision 22 with no new retry, threshold change, source change, public/backend change, or GREEN claim; `faceContourSmooth` remains callable, safe, unchanged, and classified `partial` for a future separately authorized milestone.
   3. Requirements, roadmap, project/state ledgers, taxonomy, owner contracts, and terminal summaries agree on one completed FACE-02 repair and one explicit FACE-01 deferral, and focused compatibility/boundary gates pass.
 
-**Plans:** 2/4 plan artifacts complete (one completed repair, one completed-deferred terminal record)
+**Plans:** 3/4 plans executed
 
 Plans:
 **Wave 1**
@@ -101,7 +101,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 90-03-PLAN.md — Synchronize design, product, taxonomy, security, and reliability owners with the proven chin repair and explicit contour deferral.
+- [x] 90-03-PLAN.md — Synchronize design, product, taxonomy, security, and reliability owners with the proven chin repair and explicit contour deferral.
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
@@ -204,7 +204,7 @@ attempts before an explicit owner decision to repair, defer, or stop.
 | Phase | Milestone | Plans Complete | Status | Completed |
 | --- | --- | --- | --- | --- |
 | 89. Semantic Validation Baseline | v1.22 | 4/4 | Complete    | 2026-08-26 |
-| 90. Chin Repair and Contour Deferral | v1.22 | 1/4 | In Progress|  |
+| 90. Chin Repair and Contour Deferral | v1.22 | 3/4 | In Progress|  |
 | 91. Independent Gaze Correction | v1.22 | 0/TBD | Not started | - |
 | 92. Signed Eyebrow-Head Spacing | v1.22 | 0/TBD | Not started | - |
 | 93. Distinct Nose Bridge and Root Repairs | v1.22 | 0/TBD | Not started | - |

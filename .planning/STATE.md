@@ -1,19 +1,16 @@
 ---
 gsd_state_version: 1.0
 milestone: v1.22
-milestone_name: Non-Local Facial Effect Repairs
-current_phase: 90
-current_phase_name: Chin Repair and Contour Deferral
-status: ready_to_execute
-stopped_at: Phase 90 bounded closeout plans independently verified; Wave 2 is ready to execute
-last_updated: "2026-09-02T03:30:00Z"
+milestone_name: milestone
+status: executing
+stopped_at: Completed 90-03-PLAN.md
+last_updated: "2026-09-02T08:10:56.602Z"
 last_activity: 2026-09-02
-last_activity_desc: Independently verified the FACE-02-only Phase 90 bounded closeout plan and Nyquist contract
 progress:
   total_phases: 7
   completed_phases: 1
   total_plans: 9
-  completed_plans: 5
+  completed_plans: 7
   percent: 14
 ---
 
@@ -30,10 +27,10 @@ without distributing the SDK, model, or weights.
 
 ## Current Position
 
-Phase: 90 (Chin Repair and Contour Deferral) — READY TO EXECUTE
-Plan: 2 of 4 artifacts complete; 90-03/04 ready
-Status: FACE-01 is explicitly completed-deferred/partial; independently checked Wave 2/3 closeout plans are executable
-Last activity: 2026-09-02 — plan-checker passed the revised 90-03/04 plans and validated Nyquist contract on iteration 2/3
+Phase: 90 (Chin Repair and Contour Deferral) — EXECUTING
+Plan: 4 of 4
+Status: Ready to execute Plan 90-04
+Last activity: 2026-09-02
 
 Progress: [█░░░░░░░░░] 14%
 
@@ -56,6 +53,7 @@ roadmaps.
 | Phase 89 P03 | 21min | 2 tasks | 1 files |
 | Phase 89 P04 | 6min | 2 tasks | 6 files |
 | Phase 90 P02 | 13min | 2 tasks | 3 files |
+| Phase 90 P03 | 6min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -340,6 +338,9 @@ roadmaps.
   decision authorizes only a terminal deferred summary and bounded closeout;
   it does not reinterpret revision 22 as a repair.
 
+- [Phase 90]: Only measured Plan 90-02 facts are implemented FACE-02 evidence; source-defined one-step, cap-adjacent, quantization-adjacent, and tie cases remain Phase 95 direct-test residuals.
+- [Phase 90]: FACE-01 remains callable, source-unchanged, fail-closed, partial, and non-GREEN; revision 22 is diagnostic-only and future repair requires separately authorized FUTURE-04.
+
 ### Pending Todos
 
 None found under `.planning/todos/pending/`.
@@ -372,6 +373,6 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-09-02T11:30:00+08:00
-Stopped at: Phase 90 bounded closeout plan verified; ready to execute Wave 2
-Resume file: `.planning/phases/90-face-contour-and-chin-repairs/90-03-PLAN.md`
+Last session: 2026-09-02T08:08:26.424Z
+Stopped at: Completed 90-03-PLAN.md
+Resume file: .planning/phases/90-face-contour-and-chin-repairs/90-04-PLAN.md
