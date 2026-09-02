@@ -387,3 +387,36 @@ GPU selection or typed `.metalUnavailable`, and the archive-first no-skip gate.
 It does not establish genuine efficacy, naturalness, device performance,
 thermal/battery behavior, commercial visual approval, packaging, shipping,
 launch, or release readiness.
+
+## Phase 90 Chin Repair and Contour Deferral Owner Journey
+
+The owner can rely on the measured `chinTaper` repair through the existing
+still-image `BeautyEngine.processResult(image:metadata:parameters:)` and
+`BeautyEngine.process(image:orientation:parameters:)` facades. At the exact
+`0.25` cap the request-local paired lower-chin band produces the recorded
+centerline contraction while preserving neutral identity, deterministic repeat
+output, protected regions, metadata, and field-local valid-invalid-valid
+recovery. That owner-observable FACE-02 result is implemented behavior, not a
+claim about other images, devices, or populations.
+
+The owner can still call `faceContourSmooth`, but only under its current
+source-unchanged, fail-closed, owner-local contract and `partial` taxonomy
+status. Revision 22's `prior_stop_not_reproduced` result used a diagnostic
+reconstruction with zero render/oracle invocations; it is not visual success,
+repair evidence, effectiveness evidence, or FACE-01 GREEN authority. No
+revision 23 is authorized, and FUTURE-04 requires a separately authorized
+milestone.
+
+Phase 90 changes none of the 62 stored parameter fields, five presets, 75
+renderer cases, either public still-image facade, the CPU-reference/selectable-
+GPU policy, or retained `Warp.metal`. Explicit GPU remains success on that
+backend or terminal typed `.metalUnavailable`, never silent CPU fallback.
+Phase 95 owns direct tests for the exact one-step-above-neutral input, both
+cap-adjacent values, the exact and adjacent quantization-threshold values, and
+strict-comparison tie behavior. It also owns the clean 65-output seven-
+effective-plus-one-deferred publication and complete no-skip closeout.
+
+All of this remains SDK-only and owner-local. Automated package-host evidence
+does not qualify physical devices, performance, thermals, battery, endurance,
+population behavior, commercial visual quality, packaging, shipping, launch,
+release readiness, or distribution.

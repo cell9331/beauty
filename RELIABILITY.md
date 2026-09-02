@@ -572,3 +572,38 @@ mismatch, missing/malformed samples, non-zero boundary flow, excessive flow or
 tone, discontinuity, local fold-over, inference failure, and independent-peer
 recovery. The plain full package passes `813/0/8`; the eight existing opt-ins
 remain disabled in a plain development run and this is not final closeout.
+
+## Phase 90 Chin Repair and Contour Deferral Reliability Contract
+
+Existing generated provider, CPU-raster, and public-facade tests bind
+`chinTaper` to source-exact neutral behavior, deterministic repeat output,
+half-strength behavior, exact `0.25` cap and over-cap clamping, bounded X-only
+movement, protected-region stability, and metadata preservation. No-face,
+missing, malformed, one-sided, uncovered, provider-empty, reused/stale, and
+invalid support fail closed for the named field. Valid siblings continue, and
+the valid-invalid-valid sequence recomputes request-local state without
+carrying a prior contour, median, point, pixel, or failure into the next
+request.
+
+FACE-01 terminates as `completed-deferred`, not repaired. The callable
+`faceContourSmooth` field remains source-unchanged, fail-closed, and `partial`;
+revision 22's `prior_stop_not_reproduced` classification and zero render/oracle
+invocations supply no runtime success or GREEN evidence. No retry, fallback,
+threshold relaxation, or revision 23 is part of this reliability contract.
+
+Phase 95 owns direct coverage for the exact one-step-above-neutral input, both
+cap-adjacent values, the exact and adjacent quantization threshold, and
+strict-comparison tie behavior. It also owns the clean 65-output seven-
+effective-plus-one-deferred publication and the complete archive-first no-skip
+closeout. Until those direct residuals run, the current comparisons are
+source-defined behavior rather than newly measured Phase 90 evidence.
+
+The compatibility surface remains 62 stored parameter fields, five presets,
+75 renderer cases, `BeautyEngine.processResult(image:metadata:parameters:)`,
+and `BeautyEngine.process(image:orientation:parameters:)`. CPU stays the
+reference; selectable GPU either succeeds through unchanged retained
+`Warp.metal` or returns terminal typed `.metalUnavailable` without silent CPU
+fallback. Request-local aggregate evidence remains redacted and SDK-only.
+Automated completion makes no device, population, performance, thermal,
+battery, endurance, commercial-quality, packaging, shipping, launch, release-
+readiness, or distribution claim.

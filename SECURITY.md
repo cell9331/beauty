@@ -518,3 +518,38 @@ The owner canceled the remaining `去脂` data/model path on 2026-08-25. No
 portrait corpus, target, checkpoint, compiled weight, or model resource is to
 be admitted under v1.19; retained experimental source does not reopen any
 privacy or resource boundary. A future retry requires a new explicit audit.
+
+## Phase 90 Chin Repair and Contour Deferral Trust Boundary
+
+Promotion from the terminal FACE-01 summary into durable owner documents is an
+untrusted claim boundary. Before synchronization, the summary must be a regular
+non-symlink file with `status: completed-deferred`,
+`promotion_eligible: false`, and no completed requirement. Revision 22 may
+contribute only the aggregate diagnostic classification
+`prior_stop_not_reproduced`, its single request-local reconstruction, matching
+admission/final counts, zero render/oracle invocations, byte-exact rollback,
+temporary-symbol absence, and rollback-verifier result. None may be promoted
+to semantic, repair, effectiveness, or GREEN authority.
+
+FACE-02 consumes contours, the interpolated median, control points, and source
+pixels only within the current request. Bilateral ownership, X-only bounded
+movement, protected pixels, failure isolation, and immutable input ownership
+remain enforced by the existing provider and public-facade tests. Durable
+evidence is aggregate only. Raw anatomy, contours, medians, coordinates,
+landmarks, masks, pixels, private fixture locators, generated media, and child
+transcripts must not enter owner documents, summaries, diagnostics, or logs.
+
+The trust surface remains exactly 62 stored parameter fields, five presets, 75
+renderer cases, `BeautyEngine.processResult(image:metadata:parameters:)`, and
+`BeautyEngine.process(image:orientation:parameters:)`. CPU remains the
+reference; selectable GPU either succeeds through retained `Warp.metal` or
+terminates with typed `.metalUnavailable` without fallback. Phase 95 owns the
+direct one-step-above-neutral, cap-adjacent, quantization-threshold-adjacent,
+and tie tests, plus the clean 65-output seven-effective-plus-one-deferred
+publication and complete no-skip closeout.
+
+Package-host automation remains owner-local and SDK-only. It authorizes no
+device or population qualification, commercial quality, packaging, shipping,
+launch, release readiness, or distribution. Any future FACE-01 work belongs to
+separately authorized FUTURE-04 and cannot inherit revision-22 diagnostic
+credit.
