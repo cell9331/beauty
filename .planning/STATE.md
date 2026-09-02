@@ -4,11 +4,11 @@ milestone: v1.22
 milestone_name: Non-Local Facial Effect Repairs
 current_phase: 90
 current_phase_name: Face Contour and Chin Repairs
-status: planning
-stopped_at: Revision-19 diagnostic research complete; bounded diagnostic-only planning is next
-last_updated: "2026-09-01T08:07:17Z"
-last_activity: 2026-09-01
-last_activity_desc: Owner authorized diagnostic-only revision 19; research fixed the one-result earliest-gate classification and static rollback contract
+status: blocked
+stopped_at: Revision-22 diagnostic already executed exactly once; FACE-01 remains terminally blocked without a GREEN summary
+last_updated: "2026-09-02T02:11:11Z"
+last_activity: 2026-09-02
+last_activity_desc: Reconciled committed revision-22 prior_stop_not_reproduced evidence and stopped duplicate execution
 progress:
   total_phases: 7
   completed_phases: 1
@@ -30,10 +30,10 @@ without distributing the SDK, model, or weights.
 
 ## Current Position
 
-Phase: 90 (Face Contour and Chin Repairs) — PLANNING
+Phase: 90 (Face Contour and Chin Repairs) — BLOCKED
 Plan: 1 of 4
-Status: Diagnostic-only revision 19 is authorized and researched; implementation planning is next
-Last activity: 2026-09-01 — revision-19 research fixed one shared request-local construction result, independent provider/reference cap-and-half classification, a static no-oracle verifier, and exact rollback/evidence rules
+Status: Revision 22 is consumed; FACE-01 remains non-GREEN and Plans 90-03/04 cannot start
+Last activity: 2026-09-02 — stopped a duplicate revision-22 dispatch after confirming committed aggregate-only execution evidence
 
 Progress: [█░░░░░░░░░] 14%
 
@@ -318,17 +318,27 @@ roadmaps.
   without rendering, oracle invocation, construction/threshold change, or
   downstream execution.
 
+- [Phase 90]: Revision 22 executed exactly once before this session and was
+  committed in `fe2e8c2`. Its sole sanitized classification was
+  `prior_stop_not_reproduced`: one request-local construction produced equal
+  provider/reference cap and half admissions of 20/20 with 20 final points.
+  Render and oracle invocation counts remained zero; provider/test returned
+  byte-exact, temporary diagnostic symbols were absent, and the retained
+  rollback verifier passed. This diagnostic result consumes revision 22 but
+  does not repair FACE-01, create `90-01-SUMMARY.md`, or unblock downstream
+  plans.
+
 ### Pending Todos
 
 None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-- [Phase 90] FACE-01 remains blocked at the revision-18 pre-render stop while
-  diagnostic-only revision 19 moves through planning. The owner has authorized
-  only the bounded diagnosis, not a repair, new construction, threshold change,
-  or frozen-oracle attempt. Plans 90-03/04 remain blocked because no GREEN
-  `90-01-SUMMARY.md` exists.
+- [Phase 90] FACE-01 remains blocked at the revision-18 construction stop.
+  Revision 22 is already consumed and only showed that the documented
+  reconstruction did not reproduce the prior empty-field stop; it authorized
+  no repair, new construction, threshold change, or frozen-oracle attempt.
+  Plans 90-03/04 remain blocked because no GREEN `90-01-SUMMARY.md` exists.
 
 - [Phase 89] Independent pupil-to-own-eye support is intentionally absent and
   must be implemented in Phase 91 before gaze can receive semantic credit.
@@ -349,6 +359,6 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-09-01T16:07:17+08:00
-Stopped at: Revision-19 diagnostic research complete; bounded diagnostic-only planning is next
-Resume file: `.planning/phases/90-face-contour-and-chin-repairs/90-01-REV19-DIAGNOSTIC-RESEARCH.md`
+Last session: 2026-09-02T10:11:11+08:00
+Stopped at: Revision-22 evidence reconciled; duplicate execution refused and FACE-01 remains terminally blocked
+Resume file: `.planning/phases/90-face-contour-and-chin-repairs/90-01-ATTEMPT.md`
