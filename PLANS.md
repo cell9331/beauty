@@ -30,15 +30,15 @@
 
 | Field | Value |
 | --- | --- |
-| Status | `active` |
+| Status | `blocked` |
 | Scope | Close Phase 90 as the completed FACE-02 `chinTaper` repair plus an evidence-backed FACE-01 `faceContourSmooth` deferral; do not change production source, public inventory, renderer, backend, fixtures, frozen thresholds, or the meaning of prior diagnostic evidence. |
 | Completed sibling | Phase 90 Plan 90-02 repaired FACE-02 `chinTaper`; its production and test commits remain complete. |
 | Prior blocker | Plan 90-01 exhausted its earlier finite safe provider-only candidates. The best local and monotone result was `+5 Q16` versus the frozen `+16`; wider support reached `+9` but violated outside protection. |
 | Preserved state | Failed production experiments and temporary diagnostics were removed. The committed generated RED and pre-attempt provider behavior remain. |
-| Evidence | `.planning/phases/90-face-contour-and-chin-repairs/90-01-ATTEMPT.md` retains exactly eleven aggregate-only stop records. Revision 18 compiled and stopped with an empty cap/half field before oracle. Revisions 19-21 ended at bounded harness/source gates without a marker or suffix. Revision 22 then executed exactly once and committed its sole suffix at `fe2e8c2`: `prior_stop_not_reproduced`, one construction, `20/20` provider and reference cap/half admissions, 20 final points, zero render/oracle invocations, byte-exact provider/test rollback, temporary symbols absent, and `FACE01_DIAGNOSTIC_ROLLBACK_VERIFIED`. The post-decision `90-01-SUMMARY.md` is a `completed-deferred`, promotion-ineligible terminal record with no completed requirement; 90-03/04 summaries do not yet exist. |
+| Evidence | `.planning/phases/90-face-contour-and-chin-repairs/90-01-ATTEMPT.md` retains exactly eleven aggregate-only stop records. Revision 18 compiled and stopped with an empty cap/half field before oracle. Revisions 19-21 ended at bounded harness/source gates without a marker or suffix. Revision 22 then executed exactly once and committed its sole suffix at `fe2e8c2`: `prior_stop_not_reproduced`, one construction, `20/20` provider and reference cap/half admissions, 20 final points, zero render/oracle invocations, byte-exact provider/test rollback, temporary symbols absent, and `FACE01_DIAGNOSTIC_ROLLBACK_VERIFIED`. The post-decision `90-01-SUMMARY.md` is a `completed-deferred`, promotion-ineligible terminal record with no completed requirement. Plan 90-03 completed owner synchronization in `236e0c6`, `5bd52af`, and `2b04302`; 90-04 has no summary or task commit. |
 | Owner decision | On 2026-09-02 the owner prohibited revision 23, removed FACE-01 from active v1.22 requirements, retained the existing public field/current safe implementation unchanged, and required taxonomy status `partial`. |
 | Remaining milestone budget | Phases 91–94 receive one research pass, one independently checked plan, and at most two implementation attempts before an explicit owner repair/defer/stop decision. |
-| Next step | Create a terminal deferred `90-01-SUMMARY.md` that explicitly is not GREEN, replace 90-03/04 with bounded owner-sync and compatibility closeout plans, independently check them, then execute the Phase 90 closeout. |
+| Next step | Owner decision required: authorize the minimal `scripts/check-sdk-only-boundary.sh` expectation synchronization from `faceContourSmooth = implemented` to `partial`, or revise the 90-04 gate contract explicitly. After that decision, re-run Plan 90-04 from a clean worktree. Do not waive the failed gate or credit Phase 90 as complete under the current contradictory contract. |
 
 Checklist:
 
@@ -92,7 +92,7 @@ Checklist:
 | Complete FACE-01 | `completed-deferred` | Revision 18 remains the terminal verified construction stop and revision 22 remains diagnostic-only. The owner moved the effectiveness requirement to FUTURE-04; no revision 23, production change, threshold change, oracle retry, or GREEN claim is authorized. |
 | Reconcile terminal FACE-01 artifact | `completed` | `90-01-SUMMARY.md` records the owner-approved completed-deferred/non-GREEN disposition with `promotion_eligible: false` and no completed requirement. |
 | Replan and independently check Phase 90 Wave 2/3 | `completed` | Rewritten 90-03/04 close one completed FACE-02 repair plus one deferred/partial field; the independent checker passed on iteration 2/3 after `90-VALIDATION.md` was reconciled to FACE-02-only scope. |
-| Execute Phase 90 Wave 2/3 | `planned` | Run 90-03 owner-contract synchronization, then 90-04 bounded compatibility/boundary closeout; do not run revision 23, the frozen FACE-01 effectiveness method, live portrait execution, or the full no-skip wrapper. |
+| Execute Phase 90 Wave 2/3 | `blocked` | 90-03 completed. The 90-04 bounded run passed predecessors; focused `142/0/0`; compatibility `154/0/1` with one existing Vision opt-in skip; comparator self-test with 554 mutations and `5/65/8`; preflight `75/65/8`; and both archive verifications. The required post-archive boundary scan then failed because `scripts/check-sdk-only-boundary.sh:60` still expects `faceContourSmooth` to be `implemented` while the owner-mandated taxonomy is `partial`. Plan 90-04 prohibits script edits, so no task/summary commit was created and an owner contract decision is required. |
 
 The v1.21 entry below is complete and retained for session continuity.
 

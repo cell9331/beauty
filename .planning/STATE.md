@@ -2,10 +2,11 @@
 gsd_state_version: 1.0
 milestone: v1.22
 milestone_name: milestone
-status: executing
-stopped_at: Completed 90-03-PLAN.md
-last_updated: "2026-09-02T08:10:56.602Z"
-last_activity: 2026-09-02
+status: blocked
+stopped_at: Plan 90-04 boundary gate contradicts the owner-mandated partial taxonomy and the plan prohibition on script changes
+last_updated: "2026-09-03T09:27:47+08:00"
+last_activity: 2026-09-03
+last_activity_desc: Phase 90 Plan 90-04 stopped at the SDK-only boundary contract mismatch
 progress:
   total_phases: 7
   completed_phases: 1
@@ -27,10 +28,10 @@ without distributing the SDK, model, or weights.
 
 ## Current Position
 
-Phase: 90 (Chin Repair and Contour Deferral) — EXECUTING
+Phase: 90 (Chin Repair and Contour Deferral) — BLOCKED
 Plan: 4 of 4
-Status: Ready to execute Plan 90-04
-Last activity: 2026-09-02
+Status: Plan 90-04 cannot pass while the boundary checker expects `faceContourSmooth = implemented` and the owner taxonomy requires `partial`; script changes are prohibited by the current plan
+Last activity: 2026-09-03 — bounded tests/preflight/archive passed, post-archive SDK-only boundary failed before any 90-04 task commit
 
 Progress: [█░░░░░░░░░] 14%
 
