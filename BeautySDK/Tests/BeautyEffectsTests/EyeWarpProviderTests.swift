@@ -1,6 +1,7 @@
 import XCTest
 import BeautyCore
 import BeautyDetection
+import simd
 @testable import BeautyEffects
 
 final class EyeWarpProviderTests: XCTestCase {
@@ -339,10 +340,18 @@ final class EyeWarpProviderTests: XCTestCase {
         XCTAssertGreaterThan(distance(half.source), distance(half.target))
         XCTAssertLessThan(distance(half.source), distance(pupil) + 0.0001)
 
-        let aggregate = provider.gazeCorrectionEvidence(face: face, strength: BeautySafetyCaps.gazeCorrection)
+        let admitted = provider.fieldEmissions(face: face, strengths: fullGaze).gazeCorrection
+        let aggregate = provider.gazeCorrectionEvidence(
+            face: face,
+            strength: BeautySafetyCaps.gazeCorrection,
+            admittedPoints: admitted
+        )
         XCTAssertEqual(aggregate.eligibleEyeCount, 2)
-        XCTAssertGreaterThan(aggregate.baselineOffset, aggregate.correctedOffset)
-        XCTAssertTrue(aggregate.provesReduction)
+        XCTAssertEqual(aggregate.correctedEyeCount, 2)
+        XCTAssertEqual(aggregate.rejectedEyeCount, 0)
+        XCTAssertTrue(aggregate.allReduced)
+        XCTAssertFalse(aggregate.abstained)
+        XCTAssertGreaterThan(aggregate.minimumReductionQ16, 0)
 
         // A contour-only asymmetry (tilt) is deliberately irrelevant to this
         // evidence: the scalar is tied to pupil-to-own-center offsets, not a
@@ -355,7 +364,11 @@ final class EyeWarpProviderTests: XCTestCase {
             rightEyeSupport: semanticSupport(side: .right, contour: right.contour, pupil: SIMD2<Float>(0.575, 0.385), tilt: -0.9)
         )
         XCTAssertEqual(
-            provider.gazeCorrectionEvidence(face: tiltedFace, strength: BeautySafetyCaps.gazeCorrection),
+            provider.gazeCorrectionEvidence(
+                face: tiltedFace,
+                strength: BeautySafetyCaps.gazeCorrection,
+                admittedPoints: provider.fieldEmissions(face: tiltedFace, strengths: fullGaze).gazeCorrection
+            ),
             aggregate
         )
 
@@ -368,9 +381,17 @@ final class EyeWarpProviderTests: XCTestCase {
             leftEyeSupport: neutral, rightEyeSupport: neutralRight
         )
         XCTAssertTrue(provider.fieldEmissions(face: neutralFace, strengths: fullGaze).gazeCorrection.isEmpty)
-        let neutralEvidence = provider.gazeCorrectionEvidence(face: neutralFace, strength: BeautySafetyCaps.gazeCorrection)
+        let neutralEvidence = provider.gazeCorrectionEvidence(
+            face: neutralFace,
+            strength: BeautySafetyCaps.gazeCorrection,
+            admittedPoints: []
+        )
         XCTAssertEqual(neutralEvidence.eligibleEyeCount, 0)
-        XCTAssertFalse(neutralEvidence.provesReduction)
+        XCTAssertEqual(neutralEvidence.correctedEyeCount, 0)
+        XCTAssertEqual(neutralEvidence.rejectedEyeCount, 0)
+        XCTAssertFalse(neutralEvidence.allReduced)
+        XCTAssertTrue(neutralEvidence.abstained)
+        XCTAssertEqual(neutralEvidence.minimumReductionQ16, 0)
     }
 
     func testEYE19GazeDeadZoneAndMaximumCorrectionFractionAreExact() throws {
@@ -380,17 +401,23 @@ final class EyeWarpProviderTests: XCTestCase {
         requested.gazeCorrection = BeautySafetyCaps.gazeCorrection
         let provider = EyeWarpProvider()
 
-        for offset in [Float(0), 0.001, 0.001_999] {
+        for offset in [Float(0), 0.001, 0.001_999, 0.002] {
             let face = eyeFace(
                 left: semanticSupport(side: .left, contour: leftBase.contour, pupil: leftBase.center + SIMD2<Float>(offset, 0)),
                 right: semanticSupport(side: .right, contour: rightBase.contour, pupil: rightBase.center - SIMD2<Float>(offset, 0))
             )
             let emissions = provider.fieldEmissions(face: face, strengths: requested).gazeCorrection
             XCTAssertTrue(emissions.isEmpty, "offset \(offset) must remain at or below the 0.002 dead zone")
-            XCTAssertFalse(provider.gazeCorrectionEvidence(face: face, strength: requested.gazeCorrection).provesReduction)
+            let evidence = provider.gazeCorrectionEvidence(
+                face: face,
+                strength: requested.gazeCorrection,
+                admittedPoints: []
+            )
+            XCTAssertEqual(evidence.eligibleEyeCount, 0)
+            XCTAssertTrue(evidence.abstained)
         }
 
-        let above = Float(0.002_001)
+        let above = Float(0.002).nextUp
         let left = semanticSupport(side: .left, contour: leftBase.contour, pupil: leftBase.center + SIMD2<Float>(above, 0))
         let right = semanticSupport(side: .right, contour: rightBase.contour, pupil: rightBase.center - SIMD2<Float>(above, 0))
         let face = eyeFace(left: left, right: right)
@@ -407,9 +434,209 @@ final class EyeWarpProviderTests: XCTestCase {
         let correction = leftPoint.target - leftPoint.source
         XCTAssertEqual(abs(correction.x / baseline.x), 0.35, accuracy: 0.000_01)
         XCTAssertEqual(correction.y, 0, accuracy: 0.000_001)
-        let evidence = provider.gazeCorrectionEvidence(face: face, strength: requested.gazeCorrection)
+        let evidence = provider.gazeCorrectionEvidence(
+            face: face,
+            strength: requested.gazeCorrection,
+            admittedPoints: points
+        )
         XCTAssertEqual(evidence.eligibleEyeCount, 2)
-        XCTAssertTrue(evidence.provesReduction)
+        XCTAssertEqual(evidence.correctedEyeCount, 2)
+        XCTAssertTrue(evidence.allReduced)
+        XCTAssertFalse(evidence.abstained)
+        XCTAssertGreaterThan(evidence.minimumReductionQ16, 0)
+    }
+
+    func testPhase91GazeSelectsZeroOneOrTwoIndependentObservedSidesWithoutLegacyFallback() throws {
+        let left = semanticSupport(
+            side: .left,
+            contour: apertureContour(center: SIMD2<Float>(0.38, 0.42)),
+            pupil: nil,
+            gazePupil: SIMD2<Float>(0.36, 0.42)
+        )
+        let right = semanticSupport(
+            side: .right,
+            contour: apertureContour(center: SIMD2<Float>(0.62, 0.42)),
+            pupil: nil,
+            gazePupil: SIMD2<Float>(0.65, 0.42)
+        )
+        var requested = BeautyEffectiveStrengths()
+        requested.gazeCorrection = BeautySafetyCaps.gazeCorrection
+        let provider = EyeWarpProvider()
+
+        XCTAssertTrue(provider.fieldEmissions(face: eyeFace(left: nil, right: nil), strengths: requested).gazeCorrection.isEmpty)
+        let leftOnly = provider.fieldEmissions(face: eyeFace(left: left, right: nil), strengths: requested).gazeCorrection
+        let rightOnly = provider.fieldEmissions(face: eyeFace(left: nil, right: right), strengths: requested).gazeCorrection
+        let bilateral = provider.fieldEmissions(face: eyeFace(left: left, right: right), strengths: requested).gazeCorrection
+
+        XCTAssertEqual(leftOnly.count, 1)
+        XCTAssertEqual(try XCTUnwrap(leftOnly.first).source, left.gazePupil)
+        XCTAssertEqual(rightOnly.count, 1)
+        XCTAssertEqual(try XCTUnwrap(rightOnly.first).source, right.gazePupil)
+        XCTAssertEqual(bilateral.count, 2)
+        XCTAssertEqual(bilateral.map(\.source), [try XCTUnwrap(left.gazePupil), try XCTUnwrap(right.gazePupil)])
+
+        // Synthetic compatibility eyes have no observed pupil ownership and
+        // therefore cannot authorize gaze correction.
+        XCTAssertTrue(provider.fieldEmissions(face: .fixture, strengths: requested).gazeCorrection.isEmpty)
+    }
+
+    func testPhase91GazeCapHalfStrengthAndOverCapShareTheFrozenOwnCenterLaw() throws {
+        let left = semanticSupport(
+            side: .left,
+            contour: apertureContour(center: SIMD2<Float>(0.38, 0.42)),
+            pupil: SIMD2<Float>(0.34, 0.42)
+        )
+        let face = eyeFace(left: left, right: nil)
+        let provider = EyeWarpProvider()
+        func point(strength: Float) throws -> WarpControlPoint {
+            var requested = BeautyEffectiveStrengths()
+            requested.gazeCorrection = strength
+            return try XCTUnwrap(provider.fieldEmissions(face: face, strengths: requested).gazeCorrection.first)
+        }
+
+        let half = try point(strength: BeautySafetyCaps.gazeCorrection * 0.5)
+        let cap = try point(strength: BeautySafetyCaps.gazeCorrection)
+        let overCap = try point(strength: BeautySafetyCaps.gazeCorrection * 2)
+        let available = left.center.x - cap.source.x
+        XCTAssertEqual((cap.target.x - cap.source.x) / available, 0.35, accuracy: 0.000_001)
+        XCTAssertEqual(half.target.x - half.source.x, (cap.target.x - cap.source.x) * 0.5, accuracy: 0.000_001)
+        XCTAssertEqual(overCap.target, cap.target)
+        XCTAssertLessThan(abs(left.center.x - cap.target.x), abs(left.center.x - half.target.x))
+    }
+
+    func testPhase91GazeRadiusIsStrictlyApertureBoundedAndInvalidPeerFailsLocally() throws {
+        let leftContour = apertureContour(center: SIMD2<Float>(0.38, 0.42))
+        let rightContour = apertureContour(center: SIMD2<Float>(0.62, 0.42))
+        let left = semanticSupport(side: .left, contour: leftContour, pupil: SIMD2<Float>(0.35, 0.42))
+        let right = semanticSupport(side: .right, contour: rightContour, pupil: SIMD2<Float>(0.65, 0.42))
+        var requested = BeautyEffectiveStrengths()
+        requested.gazeCorrection = BeautySafetyCaps.gazeCorrection
+        let provider = EyeWarpProvider()
+        let valid = provider.fieldEmissions(face: eyeFace(left: left, right: right), strengths: requested).gazeCorrection
+
+        XCTAssertEqual(valid.count, 2)
+        for point in valid {
+            let contour = point.source.x < 0.5 ? leftContour : rightContour
+            let sourceClearance = minimumClosedSegmentDistance(point.source, contour: contour)
+            let targetClearance = minimumClosedSegmentDistance(point.target, contour: contour)
+            XCTAssertGreaterThan(point.radius, 0)
+            XCTAssertLessThanOrEqual(point.radius, sourceClearance * 0.5 + 0.000_001)
+            XCTAssertLessThanOrEqual(point.radius, targetClearance * 0.5 + 0.000_001)
+            XCTAssertLessThanOrEqual(point.radius, FaceGeometry.fixture.bounds.width * 0.05 + 0.000_001)
+        }
+
+        let bowTie = [
+            SIMD2<Float>(0.56, 0.38), SIMD2<Float>(0.68, 0.46),
+            SIMD2<Float>(0.56, 0.46), SIMD2<Float>(0.68, 0.38),
+        ]
+        let invalid = semanticSupport(
+            side: .right,
+            contour: bowTie,
+            pupil: SIMD2<Float>(0.61, 0.42),
+            center: SIMD2<Float>(0.62, 0.42)
+        )
+        let localFailure = provider.fieldEmissions(
+            face: eyeFace(left: left, right: invalid),
+            strengths: requested
+        ).gazeCorrection
+        XCTAssertEqual(localFailure.count, 1)
+        XCTAssertEqual(localFailure.first?.source, left.gazePupil)
+
+        let boundaryOwned = semanticSupport(
+            side: .left,
+            contour: leftContour,
+            pupil: leftContour[0],
+            center: SIMD2<Float>(0.38, 0.42)
+        )
+        XCTAssertTrue(
+            provider.fieldEmissions(
+                face: eyeFace(left: boundaryOwned, right: nil),
+                strengths: requested
+            ).gazeCorrection.isEmpty
+        )
+
+        let outsideTarget = semanticSupport(
+            side: .left,
+            contour: leftContour,
+            pupil: SIMD2<Float>(0.35, 0.42),
+            center: SIMD2<Float>(0.05, 0.42)
+        )
+        XCTAssertTrue(
+            provider.fieldEmissions(
+                face: eyeFace(left: outsideTarget, right: nil),
+                strengths: requested
+            ).gazeCorrection.isEmpty
+        )
+    }
+
+    func testPhase91AggregateCountsOnlyExactFinalAdmissionsAndCannotHideRejectedPeer() {
+        let left = semanticSupport(
+            side: .left,
+            contour: apertureContour(center: SIMD2<Float>(0.38, 0.42)),
+            pupil: SIMD2<Float>(0.35, 0.42)
+        )
+        let right = semanticSupport(
+            side: .right,
+            contour: apertureContour(center: SIMD2<Float>(0.62, 0.42)),
+            pupil: SIMD2<Float>(0.65, 0.42)
+        )
+        let face = eyeFace(left: left, right: right)
+        let provider = EyeWarpProvider()
+        var requested = BeautyEffectiveStrengths()
+        requested.gazeCorrection = BeautySafetyCaps.gazeCorrection
+        let points = provider.fieldEmissions(face: face, strengths: requested).gazeCorrection
+
+        let complete = provider.gazeCorrectionEvidence(
+            face: face,
+            strength: requested.gazeCorrection,
+            admittedPoints: points
+        )
+        XCTAssertEqual(complete.eligibleEyeCount, 2)
+        XCTAssertEqual(complete.correctedEyeCount, 2)
+        XCTAssertEqual(complete.rejectedEyeCount, 0)
+        XCTAssertTrue(complete.allReduced)
+        XCTAssertFalse(complete.abstained)
+        XCTAssertTrue((1...65_536).contains(complete.minimumReductionQ16))
+
+        let missingPeer = provider.gazeCorrectionEvidence(
+            face: face,
+            strength: requested.gazeCorrection,
+            admittedPoints: Array(points.prefix(1))
+        )
+        XCTAssertEqual(missingPeer.eligibleEyeCount, 2)
+        XCTAssertEqual(missingPeer.correctedEyeCount, 1)
+        XCTAssertEqual(missingPeer.rejectedEyeCount, 1)
+        XCTAssertFalse(missingPeer.allReduced)
+        XCTAssertFalse(missingPeer.abstained)
+        XCTAssertEqual(missingPeer.minimumReductionQ16, 0)
+
+        let wrongTarget = points.map {
+            WarpControlPoint(
+                source: $0.source,
+                target: $0.source,
+                radius: $0.radius,
+                strength: $0.strength,
+                falloff: $0.falloff
+            )
+        }
+        let rejected = provider.gazeCorrectionEvidence(
+            face: face,
+            strength: requested.gazeCorrection,
+            admittedPoints: wrongTarget
+        )
+        XCTAssertEqual(rejected.correctedEyeCount, 0)
+        XCTAssertEqual(rejected.rejectedEyeCount, 2)
+        XCTAssertFalse(rejected.allReduced)
+        XCTAssertTrue(rejected.abstained)
+        XCTAssertEqual(rejected.minimumReductionQ16, 0)
+
+        XCTAssertEqual(
+            Mirror(reflecting: complete).children.compactMap(\.label),
+            [
+                "eligibleEyeCount", "correctedEyeCount", "rejectedEyeCount",
+                "allReduced", "abstained", "minimumReductionQ16",
+            ]
+        )
     }
 
     func testEYE19SymmetryDeadZoneAndMaximumMidpointBlendAreExact() throws {
@@ -617,12 +844,12 @@ final class EyeWarpProviderTests: XCTestCase {
         min(max(value, -cap), cap)
     }
 
-    private func eyeFace(left: BeautyEyeSemanticSupport, right: BeautyEyeSemanticSupport) -> FaceGeometry {
+    private func eyeFace(left: BeautyEyeSemanticSupport?, right: BeautyEyeSemanticSupport?) -> FaceGeometry {
         FaceGeometry(
             bounds: FaceGeometry.fixture.bounds,
             faceContour: FaceGeometry.fixture.faceContour,
-            leftEye: left.contour,
-            rightEye: right.contour,
+            leftEye: left?.contour ?? [],
+            rightEye: right?.contour ?? [],
             nose: FaceGeometry.fixture.nose,
             noseRoot: FaceGeometry.fixture.noseRoot,
             noseTip: FaceGeometry.fixture.noseTip,
@@ -639,18 +866,52 @@ final class EyeWarpProviderTests: XCTestCase {
         side: BeautyObservedEyeSide,
         contour: [SIMD2<Float>],
         pupil: SIMD2<Float>? = nil,
+        gazePupil: SIMD2<Float>? = nil,
+        center explicitCenter: SIMD2<Float>? = nil,
         tilt: Float = 0,
         span: SIMD2<Float>? = nil
     ) -> BeautyEyeSemanticSupport {
-        let center = LandmarkGeometryHelper.center(of: contour)!
+        let center = explicitCenter ?? LandmarkGeometryHelper.center(of: contour)!
         let upper = contour.filter { $0.y <= center.y }
         let lower = contour.filter { $0.y >= center.y }
         let outer = side == .left ? contour.min { $0.x < $1.x }! : contour.max { $0.x < $1.x }!
         let inner = side == .left ? contour.max { $0.x < $1.x }! : contour.min { $0.x < $1.x }!
+        if let gazePupil {
+            return BeautyEyeSemanticSupport(
+                side: side, contour: contour, upper: upper, lower: lower, inner: [inner], outer: [outer],
+                corners: [outer, inner], center: center, pupil: pupil, gazePupil: gazePupil,
+                span: span ?? SIMD2<Float>(contour.map(\.x).max()! - contour.map(\.x).min()!, contour.map(\.y).max()! - contour.map(\.y).min()!), tilt: tilt
+            )
+        }
         return BeautyEyeSemanticSupport(
             side: side, contour: contour, upper: upper, lower: lower, inner: [inner], outer: [outer],
             corners: [outer, inner], center: center, pupil: pupil,
             span: span ?? SIMD2<Float>(contour.map(\.x).max()! - contour.map(\.x).min()!, contour.map(\.y).max()! - contour.map(\.y).min()!), tilt: tilt
         )
+    }
+
+    private func apertureContour(center: SIMD2<Float>) -> [SIMD2<Float>] {
+        [
+            SIMD2<Float>(center.x - 0.07, center.y),
+            SIMD2<Float>(center.x - 0.04, center.y - 0.035),
+            SIMD2<Float>(center.x + 0.04, center.y - 0.035),
+            SIMD2<Float>(center.x + 0.07, center.y),
+            SIMD2<Float>(center.x + 0.04, center.y + 0.035),
+            SIMD2<Float>(center.x - 0.04, center.y + 0.035),
+        ]
+    }
+
+    private func minimumClosedSegmentDistance(
+        _ point: SIMD2<Float>,
+        contour: [SIMD2<Float>]
+    ) -> Float {
+        contour.indices.map { index in
+            let start = contour[index]
+            let end = contour[(index + 1) % contour.count]
+            let segment = end - start
+            let lengthSquared = simd_dot(segment, segment)
+            let t = min(max(simd_dot(point - start, segment) / lengthSquared, 0), 1)
+            return simd_length(point - (start + segment * t))
+        }.min()!
     }
 }
