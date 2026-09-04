@@ -143,6 +143,56 @@ private let provisionalUpperEyelidObservedEyes = [
     ),
 ]
 
+private func phase91GazeEye(
+    side: BeautyObservedEyeSide,
+    centerX: Double,
+    pupilX: Double?,
+    radiusX: Double = 0.10,
+    radiusY: Double = 0.065,
+    malformedContour: Bool = false
+) -> BeautyObservedEyeSupport {
+    var contour = (0..<16).map { index in
+        let angle = Double(index) * 2 * .pi / 16
+        return CoordinatePoint(
+            x: centerX + radiusX * cos(angle),
+            y: 0.38 + radiusY * sin(angle)
+        )
+    }
+    if malformedContour {
+        contour[3] = CoordinatePoint(x: .nan, y: .nan)
+    }
+    return BeautyObservedEyeSupport(
+        side: side,
+        contour: contour,
+        pupil: pupilX.map { [CoordinatePoint(x: $0, y: 0.38)] }
+    )
+}
+
+private let phase91GazeLeft = phase91GazeEye(
+    side: .left,
+    centerX: 0.40,
+    pupilX: 0.43
+)
+
+private let phase91GazeRight = phase91GazeEye(
+    side: .right,
+    centerX: 0.60,
+    pupilX: 0.57
+)
+
+private func phase91GazeObservation(
+    _ eyes: [BeautyObservedEyeSupport]
+) -> VisionDetectionObservation {
+    VisionDetectionObservation(
+        stableID: "phase-91-gaze-fixture",
+        confidence: 0.96,
+        normalizedArea: 1,
+        visionBounds: CoordinateRect(x: 0, y: 0, width: 1, height: 1),
+        landmarks: .complete,
+        observedEyeSupport: eyes
+    )
+}
+
 @_spi(Testing) public enum SDKTestingFaceDetectionFixture: Sendable {
     case usableFace
     case missingObservedFaceContour
@@ -152,6 +202,16 @@ private let provisionalUpperEyelidObservedEyes = [
     case rightOnlyObservedEyebrow
     case missingObservedEyebrows
     case malformedObservedEyebrows
+    case gazeBilateralOffCenter
+    case gazeLeftOnly
+    case gazeRightOnly
+    case gazeLeftValidRightMissing
+    case gazeLeftValidRightMalformed
+    case gazePairRatioImplausible
+    case gazeCentered
+    case gazeInvalidPupil
+    case gazeDeadZoneEdge
+    case gazeJustAboveDeadZone
     case noFace
     case lowConfidence
     case missingLandmarks
@@ -283,6 +343,52 @@ private let provisionalUpperEyelidObservedEyes = [
                         )
                     )
                 ]
+            case .gazeBilateralOffCenter:
+                return [phase91GazeObservation([phase91GazeLeft, phase91GazeRight])]
+            case .gazeLeftOnly, .gazeLeftValidRightMissing:
+                return [phase91GazeObservation([phase91GazeLeft])]
+            case .gazeRightOnly:
+                return [phase91GazeObservation([phase91GazeRight])]
+            case .gazeLeftValidRightMalformed:
+                return [phase91GazeObservation([
+                    phase91GazeLeft,
+                    phase91GazeEye(
+                        side: .right,
+                        centerX: 0.60,
+                        pupilX: 0.57,
+                        malformedContour: true
+                    ),
+                ])]
+            case .gazePairRatioImplausible:
+                return [phase91GazeObservation([
+                    phase91GazeLeft,
+                    phase91GazeEye(
+                        side: .right,
+                        centerX: 0.60,
+                        pupilX: 0.57,
+                        radiusX: 0.045,
+                        radiusY: 0.04
+                    ),
+                ])]
+            case .gazeCentered:
+                return [phase91GazeObservation([
+                    phase91GazeEye(side: .left, centerX: 0.40, pupilX: 0.40),
+                    phase91GazeEye(side: .right, centerX: 0.60, pupilX: 0.60),
+                ])]
+            case .gazeInvalidPupil:
+                return [phase91GazeObservation([
+                    phase91GazeEye(side: .left, centerX: 0.40, pupilX: 0.49),
+                ])]
+            case .gazeDeadZoneEdge:
+                return [phase91GazeObservation([
+                    phase91GazeEye(side: .left, centerX: 0.40, pupilX: 0.401_999),
+                    phase91GazeEye(side: .right, centerX: 0.60, pupilX: 0.598_001),
+                ])]
+            case .gazeJustAboveDeadZone:
+                return [phase91GazeObservation([
+                    phase91GazeEye(side: .left, centerX: 0.40, pupilX: 0.402_001),
+                    phase91GazeEye(side: .right, centerX: 0.60, pupilX: 0.597_999),
+                ])]
             case .noFace:
                 return []
             case .lowConfidence:
