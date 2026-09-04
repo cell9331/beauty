@@ -21,7 +21,12 @@ struct BeautyEyeSemanticSupport: Equatable, Sendable {
     let outer: [SIMD2<Float>]
     let corners: [SIMD2<Float>]
     let center: SIMD2<Float>
+    /// Pair-compatible pupil value retained for the existing `pupilSize`
+    /// contract. Pair-ratio validation may clear this value.
     let pupil: SIMD2<Float>?
+    /// Independently validated pupil owned by this observed side for gaze
+    /// correction only. It remains request-local and target-internal.
+    let gazePupil: SIMD2<Float>?
     /// Image-normalized bounding span `(width, height)` derived from the
     /// canonical contour. This is semantic evidence, not a visual cap.
     let span: SIMD2<Float>
@@ -31,7 +36,69 @@ struct BeautyEyeSemanticSupport: Equatable, Sendable {
     var contourEligible: Bool { !contour.isEmpty }
     var pupilEligible: Bool { pupil != nil }
     var pupilSizeEligible: Bool { pupilEligible }
-    var gazeCorrectionEligible: Bool { pupilEligible }
+    var gazeCorrectionEligible: Bool { gazePupil != nil }
+
+    /// Compatibility initializer for existing target-internal callers. Direct
+    /// constructions historically supplied one pupil meaning, so that value
+    /// remains eligible for both pupil-size and gaze semantics.
+    init(
+        side: BeautyObservedEyeSide,
+        contour: [SIMD2<Float>],
+        upper: [SIMD2<Float>],
+        lower: [SIMD2<Float>],
+        inner: [SIMD2<Float>],
+        outer: [SIMD2<Float>],
+        corners: [SIMD2<Float>],
+        center: SIMD2<Float>,
+        pupil: SIMD2<Float>?,
+        span: SIMD2<Float>,
+        tilt: Float
+    ) {
+        self.init(
+            side: side,
+            contour: contour,
+            upper: upper,
+            lower: lower,
+            inner: inner,
+            outer: outer,
+            corners: corners,
+            center: center,
+            pupil: pupil,
+            gazePupil: pupil,
+            span: span,
+            tilt: tilt
+        )
+    }
+
+    /// Adapter-owned initializer that keeps paired pupil-size compatibility
+    /// separate from this side's independently validated gaze pupil.
+    init(
+        side: BeautyObservedEyeSide,
+        contour: [SIMD2<Float>],
+        upper: [SIMD2<Float>],
+        lower: [SIMD2<Float>],
+        inner: [SIMD2<Float>],
+        outer: [SIMD2<Float>],
+        corners: [SIMD2<Float>],
+        center: SIMD2<Float>,
+        pupil: SIMD2<Float>?,
+        gazePupil: SIMD2<Float>?,
+        span: SIMD2<Float>,
+        tilt: Float
+    ) {
+        self.side = side
+        self.contour = contour
+        self.upper = upper
+        self.lower = lower
+        self.inner = inner
+        self.outer = outer
+        self.corners = corners
+        self.center = center
+        self.pupil = pupil
+        self.gazePupil = gazePupil
+        self.span = span
+        self.tilt = tilt
+    }
 
     // Semantic aliases keep downstream field naming explicit without exposing
     // additional storage or changing the request-scoped representation.

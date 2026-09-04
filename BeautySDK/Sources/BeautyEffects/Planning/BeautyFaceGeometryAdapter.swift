@@ -175,6 +175,7 @@ enum BeautyFaceGeometryAdapter {
                 corners: corners,
                 center: center,
                 pupil: pupil,
+                gazePupil: self.pupil,
                 span: span,
                 tilt: tilt
             )
