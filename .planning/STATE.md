@@ -5,16 +5,16 @@ milestone_name: Non-Local Facial Effect Repairs
 current_phase: 91
 current_phase_name: Independent Gaze Correction
 status: executing
-stopped_at: Completed 91-01-PLAN.md
-last_updated: "2026-09-04T22:49:01Z"
+stopped_at: Completed 91-02-PLAN.md
+last_updated: "2026-09-04T23:08:52.877Z"
 last_activity: 2026-09-05
-last_activity_desc: Phase 91 Plan 01 complete; advancing to Plan 02
-state_head: 9653248d1f8f2d57c639b603b01682f2bd43e39b
+last_activity_desc: Phase 91 Plan 02 complete; advancing to Plan 03
+state_head: d2ba88d478385c58d2fe84544d8a89d64122e231
 progress:
   total_phases: 7
   completed_phases: 2
   total_plans: 12
-  completed_plans: 9
+  completed_plans: 10
   percent: 29
 ---
 
@@ -32,19 +32,19 @@ without distributing the SDK, model, or weights.
 ## Current Position
 
 Phase: 91 (Independent Gaze Correction) — EXECUTING
-Plan: 2 of 4
+Plan: 3 of 4
 Status: Executing Phase 91
-Last activity: 2026-09-05 — Plan 91-01 complete; advancing to Plan 91-02
+Last activity: 2026-09-05 — Plan 91-02 complete; advancing to Plan 91-03
 
-Progress: [███████████████░░░░░] 9/12 plans (75%)
+Progress: [█████████████████░░░] 10/12 plans (83%)
 
 ## Performance Metrics
 
 **Current milestone:**
 
-- Total plans completed: 9
-- Average documented duration: 12 min across 8 timed summaries
-- Total documented execution time: 94 min plus the untimed FACE-01 terminal record
+- Total plans completed: 10
+- Average documented duration: 12 min across 9 timed summaries
+- Total documented execution time: 110 min plus the untimed FACE-01 terminal record
 
 Historical milestone metrics remain in `.planning/MILESTONES.md` and archived
 roadmaps.
@@ -59,6 +59,7 @@ roadmaps.
 | Phase 90 P02 | 13min | 2 tasks | 3 files |
 | Phase 90 P03 | 6min | 2 tasks | 5 files |
 | Phase 91 P01 | 10min | 2 tasks | 5 files |
+| Phase 91 P02 | 16min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -354,6 +355,9 @@ roadmaps.
 - [Phase 91]: Preserve the existing paired pupil-size channel while retaining a separate request-local per-eye gaze pupil. — A peer ratio failure remains compatible for pupilSize without suppressing valid gaze anatomy.
 - [Phase 91]: Require strict simple-aperture source and target containment with radius bounded by half the smaller clearance. — The generic minimum-radius clamp can exceed a small eye aperture.
 - [Phase 91]: Count only exact final admitted gaze points in the six-field aggregate. — One-eye improvement or duplicate evidence cannot hide a rejected peer.
+- [Phase 91]: Attach gaze evidence only after conflict convergence and final eye-emission recomputation, using the exact effective strength and exact final points. — Pre-conflict intent or summed improvement cannot earn credit.
+- [Phase 91]: Collapse any inconsistent or out-of-range six-key gaze aggregate to the fixed abstaining form. — Partial field repair cannot manufacture semantic credit.
+- [Phase 91]: Prove gaze direction with independently declared chromatic marker identities and own-center plus peer-center checks. — Darkness and production-owned anatomy cannot serve as a circular oracle.
 
 ### Pending Todos
 
@@ -387,6 +391,6 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-09-04T22:46:37.428Z
-Stopped at: Completed 91-01-PLAN.md
+Last session: 2026-09-04T23:08:52.869Z
+Stopped at: Completed 91-02-PLAN.md
 Resume file: None
