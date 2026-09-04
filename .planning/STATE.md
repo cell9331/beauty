@@ -6,7 +6,7 @@ current_phase: 91
 current_phase_name: Independent Gaze Correction
 status: planning
 stopped_at: Phase 90 complete, ready to plan Phase 91
-last_updated: "2026-09-04T07:50:21.237Z"
+last_updated: "2026-09-04T15:52:32+08:00"
 last_activity: 2026-09-04
 last_activity_desc: Phase 90 complete, transitioned to Phase 91
 state_head: 9bdc6333a1a5bfc7ce3d6e5197bba289d50d30be
@@ -22,12 +22,12 @@ progress:
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (updated 2026-08-26)
+See: `.planning/PROJECT.md` (updated 2026-09-04)
 
 **Core value:** The project owner's local iOS host can integrate `BeautySDK`
 and get natural, controllable real-time and still-image beauty processing
 without distributing the SDK, model, or weights.
-**Current focus:** Phase 90 — Chin Repair and Contour Deferral
+**Current focus:** Phase 91 — Independent Gaze Correction
 
 ## Current Position
 
@@ -36,15 +36,15 @@ Plan: Not started
 Status: Ready to plan
 Last activity: 2026-09-04 — Phase 90 complete, transitioned to Phase 91
 
-Progress: [█░░░░░░░░░] 14%
+Progress: [████████████████████] 8/8 plans (100%)
 
 ## Performance Metrics
 
 **Current milestone:**
 
-- Total plans completed: 5
-- Average duration: 14 min
-- Total execution time: 72 min
+- Total plans completed: 8
+- Average documented duration: 12 min across 7 timed summaries
+- Total documented execution time: 84 min plus the untimed FACE-01 terminal record
 
 Historical milestone metrics remain in `.planning/MILESTONES.md` and archived
 roadmaps.
@@ -62,6 +62,12 @@ roadmaps.
 ## Accumulated Context
 
 ### Decisions
+
+- [Phase 90]: Goal verification passed 25/25 after fresh focused `142/0/0`,
+  compatibility `154/0/1`, comparator 554-mutation, preflight `75/65/8`,
+  archive, boundary, and Phase 88/89 regression gates. FACE-02 is the sole
+  completed requirement; FACE-01 remains `completed-deferred`, partial, and
+  non-GREEN under FUTURE-04.
 
 - [v1.22]: On 2026-09-02 the owner approved a bounded scope contraction: no
   FACE-01 revision 23; `faceContourSmooth` moves out of active v1.22
@@ -353,8 +359,8 @@ None found under `.planning/todos/pending/`.
 
 - [Phase 90] The former FACE-01 implementation blocker is resolved by scope,
   not by repair: revision 22 remains consumed diagnostic evidence and no GREEN
-  claim is permitted. The only remaining Phase 90 work is terminal deferral
-  recording, owner synchronization, and bounded compatibility/boundary checks.
+  claim is permitted. Further repair requires a separately authorized
+  FUTURE-04 milestone.
 
 - [Phase 89] Independent pupil-to-own-eye support is intentionally absent and
   must be implemented in Phase 91 before gaze can receive semantic credit.
@@ -377,6 +383,6 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-09-02T08:08:26.424Z
+Last session: 2026-09-04T15:52:32+08:00
 Stopped at: Phase 90 complete, ready to plan Phase 91
-Resume file: .planning/phases/90-face-contour-and-chin-repairs/90-04-PLAN.md
+Resume file: None

@@ -163,16 +163,16 @@ It is not a device, commercial, shipping, launch, or release-readiness claim.
 v1.18 remains immutable historical qualification evidence and v1.19 remains
 canceled as a learned/data effort.
 **Latest historical UI milestone:** v1.1 Meitu UI on 2026-06-24, retained only as archived evidence.
-**Current work:** v1.22 retains seven active non-local-retouch repair
-directions from the eight signed renderer cases found inert or weak by the
-authorized portrait batch screen. `faceContourSmooth` is explicitly
-deferred/partial with its owner-local public field and current safe
-implementation unchanged. White teeth, sclera redness reduction, and
-upper-eyelid fullness reduction are also excluded. Dataset admission,
-exact-target authoring, training, Core ML conversion, learned qualification,
-and all external/device/commercial work remain inactive.
+**Current work:** Phase 90 is complete: `chinTaper` is repaired and
+`faceContourSmooth` is explicitly deferred/partial with its owner-local public
+field and current safe implementation unchanged. Phase 91 now owns independent
+per-eye `gazeCorrection`; Phases 92–94 retain the remaining eyebrow, nose, and
+negative mouth-width repairs. White teeth, sclera redness reduction, and
+upper-eyelid fullness reduction are excluded. Dataset admission, exact-target
+authoring, training, Core ML conversion, learned qualification, and all
+external/device/commercial work remain inactive.
 
-**Implementation state:** v1.16 froze the CPU reference and SDK-only consumer; v1.17 added bounded Metal execution and public backend policy; v1.18 added package-only per-eye semantic support and bounded relief mechanics at historical 61/5/74 absence; v1.20 documented and exercised teeth/sclera; v1.21 adds the trailing public scalar, existing-mechanics facade route, and 75th renderer case without a model or new algorithm. Historical application taxonomy remains archive-only.
+**Implementation state:** v1.16 froze the CPU reference and SDK-only consumer; v1.17 added bounded Metal execution and public backend policy; v1.18 added package-only per-eye semantic support and bounded relief mechanics at historical 61/5/74 absence; v1.20 documented and exercised teeth/sclera; v1.21 added the trailing public scalar, existing-mechanics facade route, and 75th renderer case without a model or new algorithm. v1.22 Phase 90 retains the provider-local `chinTaper` repair and synchronizes `faceContourSmooth = partial` across taxonomy and the SDK-only boundary checker without changing the public inventory or retained shader. Historical application taxonomy remains archive-only.
 
 **Verification state:** The immutable v1.18 archive-first gate passed XCTest
 `797/0/0`. The post-archive remediation gate passes `800/0/0`, all eight
@@ -183,7 +183,13 @@ terminal typed outcome with no CPU fallback or parity credit. Phase-79 live
 closeout passes and rejects 8/8 decision/surface/backend/metadata mutations.
 The current v1.21 archive-first no-skip closeout passes `817/0/0`, all eight
 opt-ins exactly once, and zero skips; its v1.18 binding check is explicitly
-historical while the current public inventory is 62/5/75.
+historical while the current public inventory is 62/5/75. Phase 90 goal
+verification passes `25/25`: fresh focused `142/0/0`, compatibility `154/0/1`
+with one existing Vision opt-in skip, comparator self-test `PASS` with 554
+mutations, preflight-only `75/65/8`, both archive hashes, and the post-archive
+SDK-only boundary gate. Phase 88/89 regression checks also pass; the Phase 90
+contract intentionally excludes live portrait publication and the complete
+no-skip wrapper, which remain Phase 95 work.
 
 **Current audit boundary:** CPU remains the reference and `.cpu`/`.gpu` selection remains public. Local-retouch bytes are CPU-owned original-pixel/Q16 composition transported through an identity Metal pass, with no masks/proposals/support crossing into Metal. `.gpu` still images require exact-opaque bounded non-extended RGB before detection and emit named-sRGB output. `BeautyEngine` is intentionally non-`Sendable`; callers serialize one instance. `去脂` is owner-local opaque still-image only and fails closed per eye. Transparent input, end-to-end GPU local-retouch composition, shared-instance parallel safety, new learned/model/network work, UI/Demo, simulator/device, population/commercial, packaging, shipping, launch, release readiness, and distribution remain unsupported, future, or prohibited.
 
@@ -206,11 +212,12 @@ source/test lines. The active v1.21 SDK-only tree contains 76 Swift source files
 5. **v1.21 Provisional Upper-Eyelid Public Activation** — completed 2026-08-25;
    exposes retained bounded v4 mechanics as owner-local `去脂`, records weak
    visual quality, and preserves all model/device/distribution nonclaims.
-6. **v1.22 Non-Local Facial Effect Repairs** — active; retains the completed
-   chin repair, defers `faceContourSmooth` as partial, and repairs only the
-   remaining gaze, eyebrow-head, nose, and negative mouth-width directions
-   flagged by the repeatable portrait screen, with bounded
-   semantic/locality/degradation evidence.
+6. **v1.22 Non-Local Facial Effect Repairs** — active; Phase 90 completed the
+   chin repair plus explicit `faceContourSmooth` deferral, and Phase 91 is next
+   for independent per-eye gaze correction. Later phases retain only the
+   eyebrow-head, nose, and negative mouth-width directions flagged by the
+   repeatable portrait screen, with bounded semantic/locality/degradation
+   evidence.
 
 The backend choice is configuration/execution policy and must not change the public beauty-parameter or preset schema. Detection/support semantics remain shared. No backend may borrow success from the other: CPU and GPU each run the same SDK-owned input/output contract, and comparison evidence separately verifies their parity.
 
@@ -878,7 +885,7 @@ Current visual reference contracts:
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Contract v1.22 after the bounded FACE-01 attempt series. | Twenty-two bounded construction/diagnostic revisions did not establish the frozen `faceContourSmooth` effectiveness gate; continuing the loop no longer justified blocking the proven chin repair and remaining independent directions. | Approved 2026-09-02: no revision 23; FACE-01 moves to FUTURE-04, taxonomy becomes `partial`, Phase 90 closes as chin repair plus contour deferral, and Phase 95 requires seven effective directions plus one explicit deferred/partial result. |
+| Contract v1.22 after the bounded FACE-01 attempt series. | Twenty-two bounded construction/diagnostic revisions did not establish the frozen `faceContourSmooth` effectiveness gate; continuing the loop no longer justified blocking the proven chin repair and remaining independent directions. | Verified 2026-09-04: no revision 23; FACE-01 is FUTURE-04/`partial` without GREEN credit, FACE-02 is complete, the exact boundary expectation is synchronized, Phase 90 passes 25/25 goal verification, and Phase 95 retains seven effective directions plus one explicit deferred/partial result. |
 | Timebox the remaining repair phases. | The milestone needs a deterministic decision boundary instead of another unbounded candidate loop. | Active for Phases 91–94: one research pass, one independently checked plan, and at most two implementation attempts before an explicit owner repair/defer/stop decision. |
 | Freeze the Phase 89 semantic contract and reject non-anatomical gaze proxies. | A lash/shadow/dark-pixel proxy could make deterministic reports look trustworthy while measuring the wrong effect. | Verified 2026-08-26: all current machinery and runnable gates pass; independent pupil-to-own-eye support is deferred to Phase 91 and the final seven-active-plus-one-deferred publication to Phase 95. |
 | Start v1.22 with only the non-local-retouch weak/inert controls from the five-batch portrait screen. | The owner explicitly deferred repairs for white teeth, sclera redness, and upper-eyelid fullness while authorizing planning for the remaining findings. | Amended 2026-09-02: seven renderer directions remain active; `faceContourSmooth` plus the three local-retouch controls are explicit scope fences. |
@@ -925,4 +932,4 @@ Current visual reference contracts:
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-08-26 after Phase 89*
+*Last updated: 2026-09-04 after Phase 90*
