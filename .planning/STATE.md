@@ -5,16 +5,16 @@ milestone_name: Non-Local Facial Effect Repairs
 current_phase: 91
 current_phase_name: Independent Gaze Correction
 status: executing
-stopped_at: Phase 91 context gathered
-last_updated: "2026-09-04T22:32:58.602Z"
-last_activity: 2026-09-04
-last_activity_desc: Phase 90 complete, transitioned to Phase 91
-state_head: 014c1ec1de3cb3dc229b1d1d914d0c4e365f5ce1
+stopped_at: Completed 91-01-PLAN.md
+last_updated: "2026-09-04T22:49:01Z"
+last_activity: 2026-09-05
+last_activity_desc: Phase 91 Plan 01 complete; advancing to Plan 02
+state_head: 9653248d1f8f2d57c639b603b01682f2bd43e39b
 progress:
   total_phases: 7
   completed_phases: 2
   total_plans: 12
-  completed_plans: 8
+  completed_plans: 9
   percent: 29
 ---
 
@@ -31,20 +31,20 @@ without distributing the SDK, model, or weights.
 
 ## Current Position
 
-Phase: 91 (Independent Gaze Correction) — READY TO EXECUTE
-Plan: Not started
-Status: Ready to execute
-Last activity: 2026-09-04 — Phase 90 complete, transitioned to Phase 91
+Phase: 91 (Independent Gaze Correction) — EXECUTING
+Plan: 2 of 4
+Status: Executing Phase 91
+Last activity: 2026-09-05 — Plan 91-01 complete; advancing to Plan 91-02
 
-Progress: [████████████████████] 8/8 plans (100%)
+Progress: [███████████████░░░░░] 9/12 plans (75%)
 
 ## Performance Metrics
 
 **Current milestone:**
 
-- Total plans completed: 8
-- Average documented duration: 12 min across 7 timed summaries
-- Total documented execution time: 84 min plus the untimed FACE-01 terminal record
+- Total plans completed: 9
+- Average documented duration: 12 min across 8 timed summaries
+- Total documented execution time: 94 min plus the untimed FACE-01 terminal record
 
 Historical milestone metrics remain in `.planning/MILESTONES.md` and archived
 roadmaps.
@@ -58,6 +58,7 @@ roadmaps.
 | Phase 89 P04 | 6min | 2 tasks | 6 files |
 | Phase 90 P02 | 13min | 2 tasks | 3 files |
 | Phase 90 P03 | 6min | 2 tasks | 5 files |
+| Phase 91 P01 | 10min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -350,6 +351,9 @@ roadmaps.
 
 - [Phase 90]: Only measured Plan 90-02 facts are implemented FACE-02 evidence; source-defined one-step, cap-adjacent, quantization-adjacent, and tie cases remain Phase 95 direct-test residuals.
 - [Phase 90]: FACE-01 remains callable, source-unchanged, fail-closed, partial, and non-GREEN; revision 22 is diagnostic-only and future repair requires separately authorized FUTURE-04.
+- [Phase 91]: Preserve the existing paired pupil-size channel while retaining a separate request-local per-eye gaze pupil. — A peer ratio failure remains compatible for pupilSize without suppressing valid gaze anatomy.
+- [Phase 91]: Require strict simple-aperture source and target containment with radius bounded by half the smaller clearance. — The generic minimum-radius clamp can exceed a small eye aperture.
+- [Phase 91]: Count only exact final admitted gaze points in the six-field aggregate. — One-eye improvement or duplicate evidence cannot hide a rejected peer.
 
 ### Pending Todos
 
@@ -383,6 +387,6 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-09-04T08:04:42.074Z
-Stopped at: Phase 91 context gathered
-Resume file: .planning/phases/91-independent-gaze-correction/91-CONTEXT.md
+Last session: 2026-09-04T22:46:37.428Z
+Stopped at: Completed 91-01-PLAN.md
+Resume file: None

@@ -16,7 +16,7 @@
     {
       "number": "91",
       "name": "Independent Gaze Correction",
-      "status": "pending"
+      "status": "in_progress"
     },
     {
       "number": "92",
@@ -44,5 +44,5 @@
     "label": "Advance to the next step",
     "reason": "Phase 91 of 7 · 29% · executing"
   },
-  "updated_at": "2026-09-04T22:32:58.623Z"
+  "updated_at": "2026-09-04T22:49:01Z"
 }

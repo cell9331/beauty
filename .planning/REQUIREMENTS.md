@@ -40,7 +40,7 @@ remain unchanged and are not accepted as an effective repair.
 
 ### Eyes
 
-- [ ] **EYE-01**: Positive `gazeCorrection` measurably reduces each supported
+- [x] **EYE-01**: Positive `gazeCorrection` measurably reduces each supported
   pupil's displacement from its own eye center without borrowing support from
   the other eye, while preserving eye aperture, eye contour, eyebrows, and
   background; missing or implausible support fails closed per eye.
@@ -135,7 +135,7 @@ remain unchanged and are not accepted as an effective repair.
 | VAL-01 | Phase 89 | Complete |
 | VAL-02 | Phase 89 | Complete |
 | FACE-02 | Phase 90 | Complete |
-| EYE-01 | Phase 91 | Pending |
+| EYE-01 | Phase 91 | Complete |
 | BROW-01 | Phase 92 | Pending |
 | NOSE-01 | Phase 93 | Pending |
 | NOSE-02 | Phase 93 | Pending |

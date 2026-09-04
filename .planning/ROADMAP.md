@@ -205,7 +205,7 @@ attempts before an explicit owner decision to repair, defer, or stop.
 | --- | --- | --- | --- | --- |
 | 89. Semantic Validation Baseline | v1.22 | 4/4 | Complete    | 2026-08-26 |
 | 90. Chin Repair and Contour Deferral | v1.22 | 4/4 | Complete    | 2026-09-04 |
-| 91. Independent Gaze Correction | v1.22 | 0/TBD | Not started | - |
+| 91. Independent Gaze Correction | v1.22 | 1/4 | In Progress | - |
 | 92. Signed Eyebrow-Head Spacing | v1.22 | 0/TBD | Not started | - |
 | 93. Distinct Nose Bridge and Root Repairs | v1.22 | 0/TBD | Not started | - |
 | 94. Negative Mouth-Width Repair | v1.22 | 0/TBD | Not started | - |
