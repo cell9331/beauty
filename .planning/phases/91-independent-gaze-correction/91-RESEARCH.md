@@ -207,21 +207,23 @@ This flow keeps anatomy request-local until it becomes fixed aggregate counts/st
 
 ```text
 BeautySDK/Sources/BeautyEffects/
-├── Planning/BeautyFaceGeometryAdapter.swift       # preserve independent gaze pupil beside paired result
+├── Planning/
+│   ├── BeautyFaceGeometryAdapter.swift            # preserve independent gaze pupil beside paired result
+│   └── BeautyEffectResolver.swift                 # selected post-conflict aggregate attachment seam
 └── Warp/
     ├── WarpControlPoint.swift                     # internal semantic-support representation
-    ├── EyeWarpProvider.swift                      # gaze-only support, bounded radius, aggregate
-    └── GeometryConflictResolver.swift             # final-plan aggregate attachment seam
+    └── EyeWarpProvider.swift                      # gaze-only support, bounded radius, aggregate helper
 BeautySDK/Sources/BeautySDK/
 ├── BeautyEngineGeometryDetection.swift            # existing aggregate merge path
-└── BeautyEngineTestingSupport.swift               # deterministic gaze fixtures only if existing SPI cannot express them
+└── BeautyEngineTestingSupport.swift               # selected minimal deterministic gaze fixture seam
 BeautySDK/Sources/BeautyExampleRenderer/
 ├── RendererCLIContract.swift                      # optional allowlisted per-unit aggregate
 └── RendererExecution.swift                        # copy only fixed aggregate from exact BeautyResult
 BeautySDK/Tests/
 ├── BeautyEffectsTests/BeautyFaceGeometryAdapterTests.swift
 ├── BeautyEffectsTests/EyeWarpProviderTests.swift
-├── BeautyEffectsTests/GeometryConflictResolverTests.swift
+├── BeautyEffectsTests/BeautyEffectResolverTests.swift
+├── BeautyEffectsTests/GeometryConflictResolverTests.swift # unchanged regression coverage
 ├── BeautyCoreTests/BeautyEngineGazeCorrectionRepairTests.swift
 └── BeautyCoreTests/BeautyExampleRendererProcessTests.swift
 scripts/
@@ -499,19 +501,17 @@ Missing or contradictory anatomy aggregate is infrastructure/admission failure, 
 
 All other implementation claims in this research were traced to the repository, locked context, or first-principles constraints. A1 is not a user-facing or compatibility decision and must be frozen by the independently checked plan before output is observed. [VERIFIED: Phase 91 timebox; D-04/D-05]
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Which exact post-conflict function should attach the final aggregate?**
    - What we know: the provider can calculate samples, the resolver owns final field admission, and `BeautyEffectPlan.metrics` already reaches `BeautyResult`. [VERIFIED: `EyeWarpProvider.swift:101-115`; `BeautyEngineGeometryDetection.swift:65-95`; resolver inspection]
-   - What's unclear: the smallest compile-safe implementation may be either a resolver-local aggregate hook or a provider result extension reconciled after conflict resolution. [VERIFIED: seam inspection]
-   - Recommendation: the planner should select the seam that proves a one-to-one relation between corrected count and final emitted gaze points without changing generic provider protocols or public types. [VERIFIED: D-07/D-08]
+   - Resolution: attach the aggregate in the post-conflict `BeautyEffectResolver.resolve` seam after convergence, effective-strength sanitization, and `finalEyeEmissions` recomputation. The resolver calls the package-internal provider helper with the exact final gaze strength and admitted gaze points, then merges only the six fixed fields into `BeautyEffectPlan.metrics`; generic provider protocols, `GeometryConflictResolver`, and public types remain unchanged. [VERIFIED: `BeautyEffectResolver.swift:443-506,612-615,665-715`; D-07/D-08]
 
 2. **Can existing testing SPI express independently valid/invalid left and right eye support?**
    - What we know: current public-facade tests use `SDKTestingFaceDetectionFixture`, while existing generic `.usableFace` does not expose the Phase 91 per-eye matrix. [VERIFIED: `BeautyEngineTestingSupport.swift`; `BeautyEngineChinTaperRepairTests.swift:93-135`]
-   - What's unclear: whether a narrow new testing-only enum case is smaller than a package-internal facade test helper. [VERIFIED: source inspection]
-   - Recommendation: add only deterministic testing support needed to drive actual public-facade bytes; do not expose coordinates or create a production/public seam. [VERIFIED: D-07/D-09]
+   - Resolution: extend the existing package-internal `SDKTestingFaceDetectionFixture` / `BeautyEngineTestingSupport` seam with the minimum fixed gaze-only fixture cases needed by the generated public-facade oracle. The fixture coordinates remain target-internal, non-Codable, in-memory, and inaccessible from the product-public facade; no separate facade helper or production return type is added. [VERIFIED: `BeautyEngineTestingSupport.swift`; D-07/D-09]
 
-Neither question blocks planning; both are explicitly within Agent's Discretion and should be resolved before the first implementation attempt. [VERIFIED: `91-CONTEXT.md` Agent's Discretion]
+Both Agent's Discretion choices are now frozen for the independently checked Phase 91 plan and must be used consistently by Plans 91-02 and 91-03. [VERIFIED: `91-CONTEXT.md` Agent's Discretion]
 
 ## Environment Availability
 
@@ -536,7 +536,7 @@ Neither question blocks planning; both are explicitly within Agent's Discretion 
 |---|---|
 | Framework | XCTest from Swift toolchain plus repository Swift/Bash/Python SDK-owned scripts [VERIFIED: `BeautySDK/Package.swift:40-48`; scripts] |
 | Config file | `BeautySDK/Package.swift`; `scripts/face-feature-batch-manifest.json` for frozen batch semantics [VERIFIED: repository] |
-| Quick run command | `swift test --package-path BeautySDK --filter 'BeautyFaceGeometryAdapterTests|EyeWarpProviderTests|GeometryConflictResolverTests|BeautyEngineGazeCorrectionRepairTests|BeautyExampleRendererProcessTests'` [VERIFIED: existing target/test naming pattern; one proposed test file is a Wave 0 gap] |
+| Quick run command | `swift test --package-path BeautySDK --filter 'BeautyFaceGeometryAdapterTests|EyeWarpProviderTests|BeautyEffectResolverTests|GeometryConflictResolverTests|BeautyEngineGazeCorrectionRepairTests|BeautyExampleRendererProcessTests'` [VERIFIED: existing target/test naming pattern; one proposed test file is a Wave 0 gap] |
 | Comparator mutation command | `swift scripts/compare-face-feature-batches.swift --self-test` [VERIFIED: Phase 89 verification] |
 | Script-boundary command | `python3 scripts/test-face-feature-batch-boundaries.py` [VERIFIED: Phase 89 verification] |
 | Inventory/preflight command | `bash scripts/run-face-feature-batches.sh --preflight-only` [VERIFIED: Phase 89 verification] |
@@ -549,7 +549,7 @@ Neither question blocks planning; both are explicitly within Agent's Discretion 
 |---|---|---|---|
 | Pure validation | `BeautyFaceGeometryAdapterTests` | Valid side survives missing/malformed/ratio-invalid peer for gaze; paired pupil behavior remains unchanged; nonfinite/outside/ellipse-invalid side fails alone. [VERIFIED: D-02/D-03/D-06] | Code defect before render. |
 | Provider geometry | `EyeWarpProviderTests` | One/two-side emissions, own-center vector, dead zone `0.002`, cap `0.25`, max `35%`, no borrowing, radius inside both source/target clearances, deterministic order. [VERIFIED: D-04/D-05] | Code defect before public facade. |
-| Final resolver/metrics | `GeometryConflictResolverTests` or narrow equivalent | Aggregate is based on final admitted work; `eligible`, `corrected`, `rejected`, `allReduced`, `abstained`, and min Q16 are internally consistent; invalid-valid recovery has no stale state. [VERIFIED: D-06 through D-09] | Admission/diagnostic defect. |
+| Final resolver/metrics | `BeautyEffectResolverTests` plus unchanged `GeometryConflictResolverTests` regression coverage | Aggregate attaches at the selected post-conflict `BeautyEffectResolver.resolve` seam, is based on final admitted work, and keeps `eligible`, `corrected`, `rejected`, `allReduced`, `abstained`, and min Q16 internally consistent; invalid-valid recovery has no stale state. [VERIFIED: resolved Open Questions; D-06 through D-09] | Admission/diagnostic defect. |
 | Public actual pixels | proposed `BeautyEngineGazeCorrectionRepairTests` | Generated independent anatomy; each eligible marker centroid closer to own center; rejected side source-exact; target signal, sibling difference, aperture/contour/brows/background, alpha/extent/metadata, neutral identity, determinism. [VERIFIED: D-05/D-07; project image policy] | EYE-01 not complete even if geometry tests pass. |
 | Renderer transport | `BeautyExampleRendererProcessTests` | Exact successful unit carries only allowlisted bounded aggregate for matching gaze case; neutral/sibling/failure units cannot claim correction; schema remains compatible. [VERIFIED: D-08/D-09] | Same-request binding incomplete. |
 | Comparator mutation | comparator self-test | Missing, duplicate, reordered, fractional, nonfinite, negative, overflowed, contradictory, wrong-case/output/input, replayed, proxy-only, or sibling-gaze aggregate fails admission. Lash/shadow/foreign-patch/centered proxy images remain non-creditable. [VERIFIED: D-01/D-08/D-09; existing adversaries] | Infrastructure failure; never semantic pass/fail publication. |
@@ -562,7 +562,7 @@ Neither question blocks planning; both are explicitly within Agent's Discretion 
 |---|---|---|---|---|
 | EYE-01 | Independent valid side survives invalid peer without borrowing | unit | `swift test --package-path BeautySDK --filter BeautyFaceGeometryAdapterTests` | ✅ extend existing [VERIFIED: repository] |
 | EYE-01 | Gaze vector obeys dead zone/cap/35% and aperture radius | unit | `swift test --package-path BeautySDK --filter EyeWarpProviderTests` | ✅ extend existing [VERIFIED: repository] |
-| EYE-01 | Final aggregate proves every eligible side reduced | unit/integration | `swift test --package-path BeautySDK --filter GeometryConflictResolverTests` | ✅ extend existing [VERIFIED: repository] |
+| EYE-01 | Final aggregate proves every eligible side reduced | unit/integration | `swift test --package-path BeautySDK --filter 'BeautyEffectResolverTests|GeometryConflictResolverTests'` | ✅ extend existing [VERIFIED: repository; resolved Open Questions] |
 | EYE-01 | Public pixels move each declared pupil toward own center and preserve protected regions | integration | `swift test --package-path BeautySDK --filter BeautyEngineGazeCorrectionRepairTests` | ❌ Wave 0 [VERIFIED: no current file] |
 | EYE-01 | Renderer binds aggregate to exact output without anatomy leakage | integration | `swift test --package-path BeautySDK --filter BeautyExampleRendererProcessTests` | ✅ extend existing [VERIFIED: repository] |
 | EYE-01 | Comparator admits aggregate and rejects proxies/tampering | mutation | `swift scripts/compare-face-feature-batches.swift --self-test` | ✅ extend existing [VERIFIED: repository] |
@@ -605,7 +605,7 @@ The actual-pixel semantic oracle should threshold only the fixture's unique chro
 ### Wave 0 Gaps
 
 - [ ] `BeautySDK/Tests/BeautyCoreTests/BeautyEngineGazeCorrectionRepairTests.swift` — generated in-memory, independently declared actual-pixel anatomy and metadata oracle for EYE-01. [VERIFIED: missing today; D-07]
-- [ ] Deterministic testing-only per-eye detector fixtures if current `SDKTestingFaceDetectionFixture` cannot express the matrix; keep coordinates target-internal and non-Codable. [VERIFIED: source inspection; D-09]
+- [ ] Minimally extend the existing `SDKTestingFaceDetectionFixture` / `BeautyEngineTestingSupport` seam with deterministic testing-only per-eye fixtures; keep coordinates target-internal, non-Codable, and absent from the product facade. [VERIFIED: resolved Open Questions; D-09]
 - [ ] Renderer aggregate decoding/binding test fixtures for success, neutral, sibling, malformed, and replay cases. [VERIFIED: current renderer report has no metrics]
 - [ ] Comparator aggregate self-test builders and mutations; preserve all existing 554 probes and add new ones rather than replacing adversaries. [VERIFIED: Phase 89 verification; comparator self-test]
 - [ ] Runner boundary cases for retained-until-compare reports and verified cleanup. [VERIFIED: current runner deletes reports before compare]
