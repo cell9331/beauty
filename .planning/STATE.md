@@ -3,10 +3,10 @@ gsd_state_version: 1.0
 milestone: v1.22
 milestone_name: milestone
 status: ready_to_execute
-stopped_at: Owner authorized the one-line Phase 90 boundary expectation synchronization; revised Plan 90-04 requires independent verification
-last_updated: "2026-09-04T09:18:23+08:00"
+stopped_at: Exact boundary tuple-diff and validation guards repaired after independent recheck; amended Plan 90-04 requires final verification
+last_updated: "2026-09-04T09:24:21+08:00"
 last_activity: 2026-09-04
-last_activity_desc: Revised Plan 90-04 after owner authorized faceContourSmooth boundary status partial
+last_activity_desc: Repaired Plan 90-04 exact-diff and validation guards after independent recheck
 progress:
   total_phases: 7
   completed_phases: 1
