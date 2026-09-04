@@ -91,6 +91,64 @@ optional and non-blocking, and this owner-local validation establishes no
 naturalness, population, performance, commercial, packaging, shipping, launch,
 release-readiness, or distribution claim.
 
+## Phase 90 Chin Repair and Contour Deferral Evidence
+
+Phase 90 closes two intentionally different outcomes. FACE-02 `chinTaper` is
+complete; FACE-01 `faceContourSmooth` is `completed-deferred`, non-GREEN, and
+remains `partial` under FUTURE-04. The owner-authorized boundary synchronization
+changes exactly one expected taxonomy tuple in
+`scripts/check-sdk-only-boundary.sh` from `implemented` to `partial`; production
+source, tests, fixtures, thresholds, other scripts, public inventory, renderer,
+backends, and retained `Warp.metal` remain unchanged.
+
+Fresh bounded package-host evidence passed on 2026-09-04:
+
+- The focused FACE-02 plus safe/current FACE-01 and geometry regression filter
+  executed `142` tests with `0` failures and `0` skips. It deliberately omitted
+  the frozen FACE-01 effectiveness method while retaining its two current
+  safety/provider-behavior methods.
+- The compatibility filter executed `154` tests with `0` failures and `1`
+  existing Vision integration opt-in skip. It reconfirmed exactly 62 public
+  fields, five neutral presets, 75 renderer cases, both still-image facades, and
+  the existing CPU/GPU selection and terminal-unavailable policy.
+- Comparator `--self-test` returned `PASS`, `mutations=554`, and inventories
+  `5/65/8`. Runner `--preflight-only` returned `live=75`, `selected=65`, and
+  `semantic=8`, preserving the aggregate `75/65/8` contract without rendering
+  or publishing portrait output.
+- Archive verification passed for `BeautyDemo`
+  (`04c14bbaa201cc6e9100f4c7b272b697670014041e62804dfa2f561faa29db52`)
+  and `meituxiuxiu`
+  (`330e8aa08155eb4ad3a7b2ab84773a8279a8cd3ae87d4737b93e2491232fce9a`),
+  followed by `POST-ARCHIVE SDK BOUNDARY PASSED`.
+
+The focused evidence reconfirmed the completed FACE-02 contract: exact-cap
+`chinTaper` keeps deterministic paired lower-chin ownership, X-only movement,
+apex and Y preservation, request-local failure, protected-region preservation,
+and sibling distinction. Its established generated/public measurement remains
+target `1001/48557`, direction `+60 Q16`, and outside `0/0`. This is not
+FACE-01 semantic credit; that field retains only its current safe/fail-closed
+behavior and has no compliant frozen GREEN result.
+
+Chin precision evidence stays split between direct tests and source-defined
+behavior. Direct tests cover exact `Float.ulpOfOne` rejection,
+`Float.ulpOfOne.nextDown` rejection, least-nonzero rejection, half strength
+`0.125`, exact cap `0.25`, and over-cap request `1` equaling the cap. Source
+defines strict `> Float.ulpOfOne`, `min(requestedStrength, cap)`, strict `<` for
+quantization-hostile selection, and exact `== cap` for the three-pair band.
+Phase 95 owns direct tests for `Float.ulpOfOne.nextUp`,
+`BeautySafetyCaps.chinTaper.nextDown`,
+`BeautySafetyCaps.chinTaper.nextUp`, and exact/one-representable-step values
+around the `immediateDistance == maximumDisplacement * 0.5` quantization tie.
+The strict comparison outcomes are source audit findings, not newly measured
+runtime branches.
+
+No live portrait command and no complete no-skip wrapper ran in Phase 90.
+Phase 95 retains the clean 65-output publication, seven effective directions
+plus one deferred direction, the precision/tie residuals, and the all-opt-ins
+no-skip closeout. This evidence is owner-local SDK validation only and grants
+no device, population, visual-quality, commercialization, packaging, shipping,
+launch, external distribution, or release-readiness authority.
+
 ## 1. Score Scale
 
 | Score | Meaning |

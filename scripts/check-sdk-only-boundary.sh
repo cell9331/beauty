@@ -57,7 +57,7 @@ expected = [
     ("比例", "中庭", "future", "—"), ("比例", "人中", "future", "—"),
     ("比例", "下庭", "future", "—"), ("比例", "短脸", "future", "—"),
     ("脸型", "脸宽", "implemented", "faceSlim"), ("脸型", "小脸", "implemented", "faceSmall"),
-    ("脸型", "面部流畅", "implemented", "faceContourSmooth"),
+    ("脸型", "面部流畅", "partial", "faceContourSmooth"),
     ("脸型", "太阳穴", "implemented", "templeFullness"),
     ("脸型", "颧骨", "implemented", "cheekboneSlim"),
     ("脸型", "下巴长短", "implemented", "chinLength"),
