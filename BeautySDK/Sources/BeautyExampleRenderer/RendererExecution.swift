@@ -230,14 +230,16 @@ enum RendererExecution {
             caseID: String,
             outputID: String,
             status: String,
-            failureCode: RendererDiagnosticCode?
+            failureCode: RendererDiagnosticCode?,
+            gazeAggregate: RendererGazeAggregate?
         ) {
             units.append(RendererOutputUnit(
                 inputID: inputID,
                 caseID: caseID,
                 outputID: outputID,
                 status: status,
-                failureCode: failureCode
+                failureCode: failureCode,
+                gazeAggregate: gazeAggregate
             ))
         }
 
@@ -249,7 +251,8 @@ enum RendererExecution {
                         caseID: caseID,
                         outputID: outputNames[inputIndex * caseIDs.count + caseIndex],
                         status: "skipped",
-                        failureCode: nil
+                        failureCode: nil,
+                        gazeAggregate: nil
                     )
                 }
             }
@@ -277,7 +280,8 @@ enum RendererExecution {
                         caseID: caseID,
                         outputID: outputNames[inputIndex * caseIDs.count + caseIndex],
                         status: "skipped",
-                        failureCode: nil
+                        failureCode: nil,
+                        gazeAggregate: nil
                     )
                 }
             }
@@ -305,7 +309,8 @@ enum RendererExecution {
                         caseID: renderCase.id,
                         outputID: unitURLs[caseIndex].lastPathComponent,
                         status: "failed",
-                        failureCode: .inputDecodeFailed
+                        failureCode: .inputDecodeFailed,
+                        gazeAggregate: nil
                     )
                     recordFailure(RendererDiagnostic(code: .inputDecodeFailed), inputID: inputID, caseID: renderCase.id)
                 }
@@ -321,7 +326,8 @@ enum RendererExecution {
                         caseID: renderCase.id,
                         outputID: outputID,
                         status: "failed",
-                        failureCode: .outputWriteFailed
+                        failureCode: .outputWriteFailed,
+                        gazeAggregate: nil
                     )
                     recordFailure(
                         RendererDiagnostic(code: .outputWriteFailed),
@@ -365,7 +371,10 @@ enum RendererExecution {
                         caseID: renderCase.id,
                         outputID: outputID,
                         status: "succeeded",
-                        failureCode: nil
+                        failureCode: nil,
+                        gazeAggregate: renderCase.id == "gazeCorrection_0p25"
+                            ? validatedGazeAggregate(from: result.metrics)
+                            : nil
                     )
                     stdout += "wrote \(escapedLogIdentity(outputID))\n"
                 } catch let error as RendererExecutionError {
@@ -374,7 +383,8 @@ enum RendererExecution {
                         caseID: renderCase.id,
                         outputID: outputID,
                         status: "failed",
-                        failureCode: error.code
+                        failureCode: error.code,
+                        gazeAggregate: nil
                     )
                     recordFailure(
                         RendererDiagnostic(code: error.code),
@@ -387,7 +397,8 @@ enum RendererExecution {
                         caseID: renderCase.id,
                         outputID: outputID,
                         status: "failed",
-                        failureCode: .outputWriteFailed
+                        failureCode: .outputWriteFailed,
+                        gazeAggregate: nil
                     )
                     recordFailure(
                         RendererDiagnostic(code: .outputWriteFailed),
@@ -447,6 +458,76 @@ enum RendererExecution {
         return RendererExecutionResult(
             stdout: stdout,
             diagnostic: diagnostic ?? RendererDiagnostic(code: .incompleteOutput)
+        )
+    }
+
+    private static func validatedGazeAggregate(
+        from metrics: [String: Double]
+    ) -> RendererGazeAggregate? {
+        let keys = [
+            "beauty.effects.gazeEligibleCount",
+            "beauty.effects.gazeCorrectedCount",
+            "beauty.effects.gazeRejectedCount",
+            "beauty.effects.gazeAllReduced",
+            "beauty.effects.gazeAbstained",
+            "beauty.effects.gazeMinimumReductionQ16",
+        ]
+        let expectedKeys = Set(keys)
+        let actualKeys = Set(metrics.keys.filter { $0.hasPrefix("beauty.effects.gaze") })
+        guard actualKeys == expectedKeys else {
+            return nil
+        }
+
+        func integralValue(_ key: String) -> Int? {
+            guard let value = metrics[key], value.isFinite else {
+                return nil
+            }
+            return Int(exactly: value)
+        }
+
+        guard let eligibleCount = integralValue(keys[0]),
+              let correctedCount = integralValue(keys[1]),
+              let rejectedCount = integralValue(keys[2]),
+              let allReducedValue = integralValue(keys[3]),
+              let abstainedValue = integralValue(keys[4]),
+              let minimumReductionQ16 = integralValue(keys[5]),
+              (0...2).contains(eligibleCount),
+              (0...2).contains(correctedCount),
+              (0...2).contains(rejectedCount),
+              (0...1).contains(allReducedValue),
+              (0...1).contains(abstainedValue),
+              (0...65_536).contains(minimumReductionQ16)
+        else {
+            return nil
+        }
+
+        let allReduced = allReducedValue == 1
+        let abstained = abstainedValue == 1
+        let countsReconcile = correctedCount + rejectedCount == eligibleCount
+        let abstentionReconciles = abstained == (correctedCount == 0)
+        let creditableState = eligibleCount > 0
+            && correctedCount == eligibleCount
+            && rejectedCount == 0
+            && minimumReductionQ16 > 0
+            && !abstained
+        let reductionReconciles = allReduced
+            ? creditableState
+            : minimumReductionQ16 == 0
+        guard countsReconcile,
+              abstentionReconciles,
+              reductionReconciles,
+              allReduced == creditableState
+        else {
+            return nil
+        }
+
+        return RendererGazeAggregate(
+            eligibleCount: eligibleCount,
+            correctedCount: correctedCount,
+            rejectedCount: rejectedCount,
+            allReduced: allReduced,
+            abstained: abstained,
+            minimumReductionQ16: minimumReductionQ16
         )
     }
 

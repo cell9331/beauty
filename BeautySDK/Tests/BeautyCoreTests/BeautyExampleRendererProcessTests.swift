@@ -129,16 +129,6 @@ final class BeautyExampleRendererProcessTests: XCTestCase {
         assertSuccessful(siblingReport)
         XCTAssertNil(siblingReport.outputs.first?.gazeAggregate)
 
-        let failed = try makeFixtureTree(extension: "png")
-        defer { removeTree(failed.root) }
-        let failedRun = try run(
-            executable,
-            arguments: gazeArguments(failed),
-            environment: ["BEAUTY_EXAMPLE_RENDERER_FAILURE": "render"]
-        )
-        assertDiagnostic(failedRun, code: "render_failed")
-        let failedReport = try decodeReport(try Data(contentsOf: Self.reportNameURL(in: failed.output)))
-        XCTAssertNil(failedReport.outputs.first?.gazeAggregate)
     }
 
     func testCompiledRendererRejectsArgumentsSelectionAndDuplicateScalars() throws {
@@ -344,6 +334,7 @@ final class BeautyExampleRendererProcessTests: XCTestCase {
             XCTAssertEqual(report.failed, 1)
             XCTAssertEqual(report.skipped, 0)
             XCTAssertEqual(report.outputs.first?.failureCode, seam == "render" ? "render_failed" : "encode_failed")
+            XCTAssertNil(report.outputs.first?.gazeAggregate)
             assertPrivacySafe(result.stdout + result.stderr + reportData, temporaryRoot: tree.root)
         }
 

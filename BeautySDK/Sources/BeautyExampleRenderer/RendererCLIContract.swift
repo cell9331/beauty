@@ -69,6 +69,16 @@ struct RendererOutputUnit: Codable {
     let outputID: String
     let status: String
     let failureCode: RendererDiagnosticCode?
+    let gazeAggregate: RendererGazeAggregate?
+}
+
+struct RendererGazeAggregate: Codable, Equatable {
+    let eligibleCount: Int
+    let correctedCount: Int
+    let rejectedCount: Int
+    let allReduced: Bool
+    let abstained: Bool
+    let minimumReductionQ16: Int
 }
 
 struct RendererReport: Codable {
