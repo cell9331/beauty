@@ -49,13 +49,11 @@ struct EyeWarpFieldEmissions: Equatable, Sendable {
 /// the public facade or diagnostics.
 struct GazeCorrectionAggregateEvidence: Equatable, Sendable {
     let eligibleEyeCount: Int
-    let baselineOffset: Float
-    let correctedOffset: Float
-
-    var reduction: Float { baselineOffset - correctedOffset }
-    var provesReduction: Bool {
-        eligibleEyeCount > 0 && baselineOffset.isFinite && correctedOffset.isFinite && reduction > 0
-    }
+    let correctedEyeCount: Int
+    let rejectedEyeCount: Int
+    let allReduced: Bool
+    let abstained: Bool
+    let minimumReductionQ16: Int
 }
 
 struct EyeWarpProvider: WarpControlPointProvider {
@@ -75,6 +73,7 @@ struct EyeWarpProvider: WarpControlPointProvider {
 
     func fieldEmissions(face: FaceGeometry, strengths: BeautyEffectiveStrengths) -> EyeWarpFieldEmissions {
         let supports = semanticSupports(in: face)
+        let gazeSupports = gazeSupports(in: face)
         let centers = supports.map(\.center)
         let leftCenter = supports.first(where: { $0.side == .left })?.center
         let rightCenter = supports.first(where: { $0.side == .right })?.center
@@ -89,7 +88,7 @@ struct EyeWarpProvider: WarpControlPointProvider {
             eyeLength: strengths.eyeLength > 0 ? supports.flatMap { lengthPoints(support: $0, face: face, strength: strengths.eyeLength) } : [],
             upperEyelidLift: strengths.upperEyelidLift > 0 ? supports.flatMap { lidPoints(support: $0.upper, center: $0.center, face: face, strength: strengths.upperEyelidLift, upward: true, cap: BeautySafetyCaps.upperEyelidLift) } : [],
             pupilSize: strengths.pupilSize > 0 ? supports.flatMap { pupilSizePoints(support: $0, face: face, strength: strengths.pupilSize) } : [],
-            gazeCorrection: strengths.gazeCorrection > 0 ? supports.flatMap { gazePoints(support: $0, face: face, strength: strengths.gazeCorrection) } : [],
+            gazeCorrection: strengths.gazeCorrection > 0 ? gazeSupports.compactMap { gazeCandidate(support: $0, face: face, strength: strengths.gazeCorrection)?.point } : [],
             lowerEyelidDrop: strengths.lowerEyelidDrop > 0 ? supports.flatMap { lidPoints(support: $0.lower, center: $0.center, face: face, strength: strengths.lowerEyelidDrop, upward: false, cap: BeautySafetyCaps.lowerEyelidDrop) } : [],
             eyeTilt: abs(strengths.eyeTilt) > Float.ulpOfOne ? supports.flatMap { tiltPoints(support: $0, face: face, strength: strengths.eyeTilt) } : [],
             innerCornerOpen: strengths.innerCornerOpen > 0 ? supports.flatMap { cornerPoints(support: $0.innerCorner, center: $0.center, face: face, strength: strengths.innerCornerOpen, cap: BeautySafetyCaps.innerCornerOpen) } : [],
@@ -98,20 +97,66 @@ struct EyeWarpProvider: WarpControlPointProvider {
         )
     }
 
-    /// Returns redacted, aggregate-only evidence for the exact gaze vectors
-    /// emitted at `strength`.  The calculation shares the same sampling path
-    /// as `fieldEmissions`, so unrelated contour span/tilt or paired-eye
-    /// asymmetry cannot manufacture a reduction.
-    func gazeCorrectionEvidence(face: FaceGeometry, strength: Float) -> GazeCorrectionAggregateEvidence {
+    /// Returns aggregate-only evidence reconciled against the exact final gaze
+    /// points admitted after conflict resolution. Geometry and side identity
+    /// remain in memory and never cross this helper's fixed six-field result.
+    func gazeCorrectionEvidence(
+        face: FaceGeometry,
+        strength: Float,
+        admittedPoints: [WarpControlPoint]
+    ) -> GazeCorrectionAggregateEvidence {
         guard strength.isFinite, strength > 0 else {
-            return GazeCorrectionAggregateEvidence(eligibleEyeCount: 0, baselineOffset: 0, correctedOffset: 0)
+            return emptyGazeEvidence
         }
-        let samples = semanticSupports(in: face).compactMap { gazeSample(support: $0, strength: strength) }
+        let candidates = gazeSupports(in: face).compactMap {
+            gazeCandidate(support: $0, face: face, strength: strength)
+        }
+        var unmatched = admittedPoints
+        var reductions = [Float]()
+        for candidate in candidates {
+            guard let index = unmatched.firstIndex(of: candidate.point) else {
+                continue
+            }
+            unmatched.remove(at: index)
+            reductions.append(candidate.sample.baselineOffset - candidate.sample.correctedOffset)
+        }
+        let correctedCount = reductions.filter { $0.isFinite && $0 > 0 }.count
+        let rejectedCount = candidates.count - correctedCount
+        let allReduced = !candidates.isEmpty
+            && correctedCount == candidates.count
+            && rejectedCount == 0
+        let minimumReductionQ16 = allReduced
+            ? checkedGazeReductionQ16(reductions.min() ?? 0)
+            : 0
+        let creditable = allReduced && minimumReductionQ16 > 0
         return GazeCorrectionAggregateEvidence(
-            eligibleEyeCount: samples.count,
-            baselineOffset: samples.reduce(0) { $0 + $1.baselineOffset },
-            correctedOffset: samples.reduce(0) { $0 + $1.correctedOffset }
+            eligibleEyeCount: candidates.count,
+            correctedEyeCount: correctedCount,
+            rejectedEyeCount: rejectedCount,
+            allReduced: creditable,
+            abstained: correctedCount == 0,
+            minimumReductionQ16: creditable ? minimumReductionQ16 : 0
         )
+    }
+
+    private var emptyGazeEvidence: GazeCorrectionAggregateEvidence {
+        GazeCorrectionAggregateEvidence(
+            eligibleEyeCount: 0,
+            correctedEyeCount: 0,
+            rejectedEyeCount: 0,
+            allReduced: false,
+            abstained: true,
+            minimumReductionQ16: 0
+        )
+    }
+
+    private func checkedGazeReductionQ16(_ reduction: Float) -> Int {
+        guard reduction.isFinite, reduction > 0 else { return 0 }
+        let scaled = Double(reduction) * 65_536
+        guard scaled.isFinite, scaled >= 1, scaled <= 65_536 else { return 0 }
+        let rounded = scaled.rounded(.toNearestOrAwayFromZero)
+        guard rounded >= 1, rounded <= 65_536 else { return 0 }
+        return Int(rounded)
     }
 
     private func semanticSupports(in face: FaceGeometry) -> [BeautyEyeSemanticSupport] {
@@ -124,6 +169,15 @@ struct EyeWarpProvider: WarpControlPointProvider {
               let right = legacySupport(face.rightEye, side: .right)
         else { return [] }
         return [left, right]
+    }
+
+    /// Positive gaze correction accepts only independently eligible observed
+    /// sides. Unlike the compatibility selector above, this path never creates
+    /// legacy support and never requires or borrows the peer eye.
+    private func gazeSupports(in face: FaceGeometry) -> [BeautyEyeSemanticSupport] {
+        [face.leftEyeSupport, face.rightEyeSupport]
+            .compactMap { $0 }
+            .filter(\.gazeCorrectionEligible)
     }
 
     private func legacySupport(_ points: [SIMD2<Float>], side: BeautyObservedEyeSide) -> BeautyEyeSemanticSupport? {
@@ -177,11 +231,16 @@ struct EyeWarpProvider: WarpControlPointProvider {
         let correctedOffset: Float
     }
 
+    private struct GazeCandidate {
+        let sample: GazeSample
+        let point: WarpControlPoint
+    }
+
     private func gazeSample(support: BeautyEyeSemanticSupport, strength: Float) -> GazeSample? {
-        guard let pupil = support.pupil, support.contourEligible else { return nil }
+        guard let pupil = support.gazePupil, support.contourEligible else { return nil }
         let delta = support.center - pupil
         let length = sqrt(delta.x * delta.x + delta.y * delta.y)
-        guard length.isFinite, length > 0.002, strength.isFinite, strength > 0 else { return nil }
+        guard Self.gazeDisplacementIsActive(length), strength.isFinite, strength > 0 else { return nil }
         let blend = min(0.35, 0.35 * strength / BeautySafetyCaps.gazeCorrection)
         let target = pupil + delta * blend
         let corrected = sqrt((support.center.x - target.x) * (support.center.x - target.x) +
@@ -190,9 +249,188 @@ struct EyeWarpProvider: WarpControlPointProvider {
         return GazeSample(pupil: pupil, target: target, baselineOffset: length, correctedOffset: corrected)
     }
 
-    private func gazePoints(support: BeautyEyeSemanticSupport, face: FaceGeometry, strength: Float) -> [WarpControlPoint] {
-        guard let sample = gazeSample(support: support, strength: strength) else { return [] }
-        return makePoints(sources: [sample.pupil], targets: [sample.target], face: face, radius: face.bounds.width * 0.05, strength: strength)
+    static func gazeDisplacementIsActive(_ length: Float) -> Bool {
+        length.isFinite && length > 0.002
+    }
+
+    private func gazeCandidate(
+        support: BeautyEyeSemanticSupport,
+        face: FaceGeometry,
+        strength: Float
+    ) -> GazeCandidate? {
+        guard let sample = gazeSample(support: support, strength: strength),
+              apertureIsSimple(support.contour),
+              pointIsStrictlyInside(sample.pupil, contour: support.contour),
+              pointIsStrictlyInside(sample.target, contour: support.contour),
+              let sourceClearance = minimumClosedSegmentDistance(
+                  from: sample.pupil,
+                  contour: support.contour
+              ),
+              let targetClearance = minimumClosedSegmentDistance(
+                  from: sample.target,
+                  contour: support.contour
+              )
+        else { return nil }
+        let radius = min(
+            face.bounds.width * 0.05,
+            min(sourceClearance, targetClearance) * 0.5
+        )
+        guard radius.isFinite, radius > 0,
+              isFinitePoint(sample.pupil), isFinitePoint(sample.target),
+              (0...1).contains(sample.pupil.x), (0...1).contains(sample.pupil.y),
+              (0...1).contains(sample.target.x), (0...1).contains(sample.target.y)
+        else { return nil }
+        let point = WarpControlPoint(
+            source: sample.pupil,
+            target: sample.target,
+            radius: radius,
+            strength: strength,
+            falloff: 2
+        )
+        return GazeCandidate(sample: sample, point: point)
+    }
+
+    private func apertureIsSimple(_ contour: [SIMD2<Float>]) -> Bool {
+        guard contour.count >= 3,
+              contour.allSatisfy({ point in
+                  isFinitePoint(point)
+                      && (0...1).contains(point.x)
+                      && (0...1).contains(point.y)
+              }),
+              Set(contour.map(PointBits.init)).count == contour.count,
+              abs(signedPolygonArea(contour)) > Float.ulpOfOne
+        else { return false }
+
+        for first in contour.indices {
+            let firstNext = (first + 1) % contour.count
+            for second in contour.indices where second > first {
+                let secondNext = (second + 1) % contour.count
+                if firstNext == second || secondNext == first {
+                    continue
+                }
+                if segmentsIntersect(
+                    contour[first], contour[firstNext],
+                    contour[second], contour[secondNext]
+                ) {
+                    return false
+                }
+            }
+        }
+        return true
+    }
+
+    private func signedPolygonArea(_ contour: [SIMD2<Float>]) -> Float {
+        contour.indices.reduce(0) { result, index in
+            let next = contour[(index + 1) % contour.count]
+            return result + contour[index].x * next.y - next.x * contour[index].y
+        } * 0.5
+    }
+
+    private func pointIsStrictlyInside(
+        _ point: SIMD2<Float>,
+        contour: [SIMD2<Float>]
+    ) -> Bool {
+        guard isFinitePoint(point), apertureIsSimple(contour) else { return false }
+        if contour.indices.contains(where: { index in
+            pointLiesOnSegment(
+                point,
+                start: contour[index],
+                end: contour[(index + 1) % contour.count]
+            )
+        }) {
+            return false
+        }
+        var inside = false
+        for index in contour.indices {
+            let start = contour[index]
+            let end = contour[(index + 1) % contour.count]
+            let crosses = (start.y > point.y) != (end.y > point.y)
+            if crosses {
+                let intersectionX = (end.x - start.x) * (point.y - start.y)
+                    / (end.y - start.y) + start.x
+                if point.x < intersectionX {
+                    inside.toggle()
+                }
+            }
+        }
+        return inside
+    }
+
+    private func minimumClosedSegmentDistance(
+        from point: SIMD2<Float>,
+        contour: [SIMD2<Float>]
+    ) -> Float? {
+        guard isFinitePoint(point), apertureIsSimple(contour) else { return nil }
+        var minimum = Float.infinity
+        for index in contour.indices {
+            let start = contour[index]
+            let end = contour[(index + 1) % contour.count]
+            let segment = end - start
+            let lengthSquared = segment.x * segment.x + segment.y * segment.y
+            guard lengthSquared.isFinite, lengthSquared > 0 else { return nil }
+            let offset = point - start
+            let projection = (offset.x * segment.x + offset.y * segment.y) / lengthSquared
+            let t = min(max(projection, 0), 1)
+            let nearest = start + segment * t
+            let delta = point - nearest
+            let distance = sqrt(delta.x * delta.x + delta.y * delta.y)
+            guard distance.isFinite else { return nil }
+            minimum = min(minimum, distance)
+        }
+        return minimum.isFinite ? minimum : nil
+    }
+
+    private func segmentsIntersect(
+        _ firstStart: SIMD2<Float>,
+        _ firstEnd: SIMD2<Float>,
+        _ secondStart: SIMD2<Float>,
+        _ secondEnd: SIMD2<Float>
+    ) -> Bool {
+        let firstStartSide = orientation(firstStart, firstEnd, secondStart)
+        let firstEndSide = orientation(firstStart, firstEnd, secondEnd)
+        let secondStartSide = orientation(secondStart, secondEnd, firstStart)
+        let secondEndSide = orientation(secondStart, secondEnd, firstEnd)
+        if signsAreOpposite(firstStartSide, firstEndSide),
+           signsAreOpposite(secondStartSide, secondEndSide) {
+            return true
+        }
+        return (firstStartSide == 0 && pointLiesOnSegment(secondStart, start: firstStart, end: firstEnd))
+            || (firstEndSide == 0 && pointLiesOnSegment(secondEnd, start: firstStart, end: firstEnd))
+            || (secondStartSide == 0 && pointLiesOnSegment(firstStart, start: secondStart, end: secondEnd))
+            || (secondEndSide == 0 && pointLiesOnSegment(firstEnd, start: secondStart, end: secondEnd))
+    }
+
+    private func orientation(
+        _ start: SIMD2<Float>,
+        _ end: SIMD2<Float>,
+        _ point: SIMD2<Float>
+    ) -> Float {
+        (end.x - start.x) * (point.y - start.y)
+            - (end.y - start.y) * (point.x - start.x)
+    }
+
+    private func signsAreOpposite(_ lhs: Float, _ rhs: Float) -> Bool {
+        (lhs > 0 && rhs < 0) || (lhs < 0 && rhs > 0)
+    }
+
+    private func pointLiesOnSegment(
+        _ point: SIMD2<Float>,
+        start: SIMD2<Float>,
+        end: SIMD2<Float>
+    ) -> Bool {
+        orientation(start, end, point) == 0
+            && (min(start.x, end.x)...max(start.x, end.x)).contains(point.x)
+            && (min(start.y, end.y)...max(start.y, end.y)).contains(point.y)
+    }
+
+    private struct PointBits: Hashable {
+        let x: UInt32
+        let y: UInt32
+
+        init(_ point: SIMD2<Float>) {
+            x = point.x.bitPattern
+            y = point.y.bitPattern
+        }
     }
 
     private func tiltPoints(support: BeautyEyeSemanticSupport, face: FaceGeometry, strength: Float) -> [WarpControlPoint] {

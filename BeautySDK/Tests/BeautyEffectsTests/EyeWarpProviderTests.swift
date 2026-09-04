@@ -401,7 +401,10 @@ final class EyeWarpProviderTests: XCTestCase {
         requested.gazeCorrection = BeautySafetyCaps.gazeCorrection
         let provider = EyeWarpProvider()
 
-        for offset in [Float(0), 0.001, 0.001_999, 0.002] {
+        XCTAssertFalse(EyeWarpProvider.gazeDisplacementIsActive(0.002))
+        XCTAssertTrue(EyeWarpProvider.gazeDisplacementIsActive(Float(0.002).nextUp))
+
+        for offset in [Float(0), 0.001, 0.001_999] {
             let face = eyeFace(
                 left: semanticSupport(side: .left, contour: leftBase.contour, pupil: leftBase.center + SIMD2<Float>(offset, 0)),
                 right: semanticSupport(side: .right, contour: rightBase.contour, pupil: rightBase.center - SIMD2<Float>(offset, 0))
@@ -417,7 +420,7 @@ final class EyeWarpProviderTests: XCTestCase {
             XCTAssertTrue(evidence.abstained)
         }
 
-        let above = Float(0.002).nextUp
+        let above = Float(0.002_001)
         let left = semanticSupport(side: .left, contour: leftBase.contour, pupil: leftBase.center + SIMD2<Float>(above, 0))
         let right = semanticSupport(side: .right, contour: rightBase.contour, pupil: rightBase.center - SIMD2<Float>(above, 0))
         let face = eyeFace(left: left, right: right)
@@ -474,6 +477,20 @@ final class EyeWarpProviderTests: XCTestCase {
         XCTAssertEqual(try XCTUnwrap(rightOnly.first).source, right.gazePupil)
         XCTAssertEqual(bilateral.count, 2)
         XCTAssertEqual(bilateral.map(\.source), [try XCTUnwrap(left.gazePupil), try XCTUnwrap(right.gazePupil)])
+
+        let equalButDistinctSide = semanticSupport(
+            side: .right,
+            contour: left.contour,
+            pupil: nil,
+            gazePupil: try XCTUnwrap(left.gazePupil),
+            center: left.center
+        )
+        let equalGeometry = provider.fieldEmissions(
+            face: eyeFace(left: left, right: equalButDistinctSide),
+            strengths: requested
+        ).gazeCorrection
+        XCTAssertEqual(equalGeometry.count, 2)
+        XCTAssertEqual(equalGeometry[0].source, equalGeometry[1].source)
 
         // Synthetic compatibility eyes have no observed pupil ownership and
         // therefore cannot authorize gaze correction.
@@ -551,6 +568,40 @@ final class EyeWarpProviderTests: XCTestCase {
         XCTAssertTrue(
             provider.fieldEmissions(
                 face: eyeFace(left: boundaryOwned, right: nil),
+                strengths: requested
+            ).gazeCorrection.isEmpty
+        )
+
+        let targetTouchesBoundary = semanticSupport(
+            side: .left,
+            contour: leftContour,
+            pupil: SIMD2<Float>(0.35, 0.42),
+            center: SIMD2<Float>(0.235_714_29, 0.42)
+        )
+        XCTAssertEqual(
+            targetTouchesBoundary.gazePupil! +
+                (targetTouchesBoundary.center - targetTouchesBoundary.gazePupil!) * 0.35,
+            SIMD2<Float>(0.31, 0.42)
+        )
+        XCTAssertTrue(
+            provider.fieldEmissions(
+                face: eyeFace(left: targetTouchesBoundary, right: nil),
+                strengths: requested
+            ).gazeCorrection.isEmpty
+        )
+
+        let degenerate = semanticSupport(
+            side: .right,
+            contour: [
+                SIMD2<Float>(0.56, 0.42), SIMD2<Float>(0.60, 0.42),
+                SIMD2<Float>(0.64, 0.42), SIMD2<Float>(0.68, 0.42),
+            ],
+            pupil: SIMD2<Float>(0.61, 0.42),
+            center: SIMD2<Float>(0.62, 0.42)
+        )
+        XCTAssertTrue(
+            provider.fieldEmissions(
+                face: eyeFace(left: nil, right: degenerate),
                 strengths: requested
             ).gazeCorrection.isEmpty
         )
