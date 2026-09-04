@@ -459,6 +459,31 @@ public enum BeautyEffectResolver {
             mouthProvider.fieldEmissions(face: $0, strengths: strengths)
         }
 
+        // The gaze aggregate is deliberately derived only after provider
+        // sanitization, conflict convergence, and final field recomputation.
+        // A positive request always receives the fixed six-key shape, while
+        // zero/omitted and sibling controls retain their historical metrics.
+        if normalized.gazeCorrection > 0 {
+            let evidence: GazeCorrectionAggregateEvidence
+            if let faceGeometry, !staleGeometry {
+                evidence = eyeProvider.gazeCorrectionEvidence(
+                    face: faceGeometry,
+                    strength: strengths.gazeCorrection,
+                    admittedPoints: finalEyeEmissions?.gazeCorrection ?? []
+                )
+            } else {
+                evidence = GazeCorrectionAggregateEvidence(
+                    eligibleEyeCount: 0,
+                    correctedEyeCount: 0,
+                    rejectedEyeCount: 0,
+                    allReduced: false,
+                    abstained: true,
+                    minimumReductionQ16: 0
+                )
+            }
+            metrics.merge(Self.gazeCorrectionMetrics(from: evidence)) { _, new in new }
+        }
+
         if hadRequestedFaceValues {
             if staleGeometry {
                 skippedDomains.insert(.faceShape)
@@ -638,6 +663,58 @@ public enum BeautyEffectResolver {
         }
         cappedCount += 1
         return cap
+    }
+
+    /// Converts the target-internal evidence carrier to the sole reportable
+    /// gaze shape. Any contradictory or out-of-range state collapses to a
+    /// deterministic abstention so malformed arithmetic cannot claim credit.
+    static func gazeCorrectionMetrics(
+        from evidence: GazeCorrectionAggregateEvidence
+    ) -> [String: Double] {
+        let countsInRange = (0...2).contains(evidence.eligibleEyeCount)
+            && (0...2).contains(evidence.correctedEyeCount)
+            && (0...2).contains(evidence.rejectedEyeCount)
+        let countsReconcile = evidence.correctedEyeCount + evidence.rejectedEyeCount
+            == evidence.eligibleEyeCount
+        let abstentionReconciles = evidence.abstained == (evidence.correctedEyeCount == 0)
+        let reductionInRange = (0...65_536).contains(evidence.minimumReductionQ16)
+        let creditableState = evidence.eligibleEyeCount > 0
+            && evidence.correctedEyeCount == evidence.eligibleEyeCount
+            && evidence.rejectedEyeCount == 0
+            && evidence.minimumReductionQ16 > 0
+            && !evidence.abstained
+        let reductionReconciles = evidence.allReduced
+            ? creditableState
+            : evidence.minimumReductionQ16 == 0
+        guard countsInRange,
+              countsReconcile,
+              abstentionReconciles,
+              reductionInRange,
+              reductionReconciles,
+              evidence.allReduced == creditableState
+        else {
+            return gazeAbstainingMetrics
+        }
+
+        return [
+            "beauty.effects.gazeEligibleCount": Double(evidence.eligibleEyeCount),
+            "beauty.effects.gazeCorrectedCount": Double(evidence.correctedEyeCount),
+            "beauty.effects.gazeRejectedCount": Double(evidence.rejectedEyeCount),
+            "beauty.effects.gazeAllReduced": evidence.allReduced ? 1 : 0,
+            "beauty.effects.gazeAbstained": evidence.abstained ? 1 : 0,
+            "beauty.effects.gazeMinimumReductionQ16": Double(evidence.minimumReductionQ16),
+        ]
+    }
+
+    private static var gazeAbstainingMetrics: [String: Double] {
+        [
+            "beauty.effects.gazeEligibleCount": 0,
+            "beauty.effects.gazeCorrectedCount": 0,
+            "beauty.effects.gazeRejectedCount": 0,
+            "beauty.effects.gazeAllReduced": 0,
+            "beauty.effects.gazeAbstained": 1,
+            "beauty.effects.gazeMinimumReductionQ16": 0,
+        ]
     }
 
     private static func capSigned(_ value: Float, cap: Float, cappedCount: inout Int) -> Float {
