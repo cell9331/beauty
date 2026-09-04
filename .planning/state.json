@@ -1,0 +1,48 @@
+{
+  "contract": "1.0.0",
+  "flavor": "core",
+  "milestone": "v1.22 — Non-Local Facial Effect Repairs",
+  "phases": [
+    {
+      "number": "89",
+      "name": "Semantic Validation Baseline",
+      "status": "complete"
+    },
+    {
+      "number": "90",
+      "name": "Chin Repair and Contour Deferral",
+      "status": "complete"
+    },
+    {
+      "number": "91",
+      "name": "Independent Gaze Correction",
+      "status": "pending"
+    },
+    {
+      "number": "92",
+      "name": "Signed Eyebrow-Head Spacing",
+      "status": "pending"
+    },
+    {
+      "number": "93",
+      "name": "Distinct Nose Bridge and Root Repairs",
+      "status": "pending"
+    },
+    {
+      "number": "94",
+      "name": "Negative Mouth-Width Repair",
+      "status": "pending"
+    },
+    {
+      "number": "95",
+      "name": "Compatibility and SDK-Only Closeout",
+      "status": "pending"
+    }
+  ],
+  "next": {
+    "command": "/gsd:progress --next",
+    "label": "Advance to the next step (plan phase 91)",
+    "reason": "Phase 91 of 7 — needs a plan"
+  },
+  "updated_at": "2026-09-04T07:50:21.249Z"
+}

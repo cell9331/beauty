@@ -1,18 +1,21 @@
 ---
 gsd_state_version: 1.0
 milestone: v1.22
-milestone_name: milestone
-status: ready_to_execute
-stopped_at: Exact boundary tuple-diff and validation guards repaired after independent recheck; amended Plan 90-04 requires final verification
-last_updated: "2026-09-04T09:24:21+08:00"
+milestone_name: Non-Local Facial Effect Repairs
+current_phase: 91
+current_phase_name: Independent Gaze Correction
+status: planning
+stopped_at: Phase 90 complete, ready to plan Phase 91
+last_updated: "2026-09-04T07:50:21.237Z"
 last_activity: 2026-09-04
-last_activity_desc: Repaired Plan 90-04 exact-diff and validation guards after independent recheck
+last_activity_desc: Phase 90 complete, transitioned to Phase 91
+state_head: 9bdc6333a1a5bfc7ce3d6e5197bba289d50d30be
 progress:
   total_phases: 7
-  completed_phases: 1
-  total_plans: 9
-  completed_plans: 7
-  percent: 14
+  completed_phases: 2
+  total_plans: 8
+  completed_plans: 8
+  percent: 29
 ---
 
 # Project State
@@ -28,10 +31,10 @@ without distributing the SDK, model, or weights.
 
 ## Current Position
 
-Phase: 90 (Chin Repair and Contour Deferral) — READY TO EXECUTE
-Plan: 4 of 4
-Status: Owner authorized the exact boundary-checker expectation update to `partial`; independent plan verification is next, then fresh 90-04 execution
-Last activity: 2026-09-04 — revised the closeout contract without waiving the failed boundary gate or expanding script scope
+Phase: 91 — Independent Gaze Correction
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-09-04 — Phase 90 complete, transitioned to Phase 91
 
 Progress: [█░░░░░░░░░] 14%
 
@@ -375,5 +378,5 @@ None found under `.planning/todos/pending/`.
 ## Session Continuity
 
 Last session: 2026-09-02T08:08:26.424Z
-Stopped at: Completed 90-03-PLAN.md
+Stopped at: Phase 90 complete, ready to plan Phase 91
 Resume file: .planning/phases/90-face-contour-and-chin-repairs/90-04-PLAN.md

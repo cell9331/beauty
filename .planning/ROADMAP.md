@@ -41,7 +41,7 @@ intact.
 ## Phases
 
 - [x] **Phase 89: Semantic Validation Baseline** - Turn the live 65-case owner-local portrait command into the deterministic acceptance gate for the original eight repair directions. (completed 2026-08-26)
-- [ ] **Phase 90: Chin Repair and Contour Deferral** - Retain the proven chin-taper repair and close the bounded contour attempt honestly as deferred/partial.
+- [x] **Phase 90: Chin Repair and Contour Deferral** - Retain the proven chin-taper repair and close the bounded contour attempt honestly as deferred/partial. (completed 2026-09-04)
 - [ ] **Phase 91: Independent Gaze Correction** - Move each supported pupil toward its own eye center without changing eye shape or borrowing peer-eye support.
 - [ ] **Phase 92: Signed Eyebrow-Head Spacing** - Make both inner-eyebrow-head directions effective without moving outer anchors or aliasing whole-brow spacing.
 - [ ] **Phase 93: Distinct Nose Bridge and Root Repairs** - Restore independently measurable bridge definition and root narrowing.
@@ -91,7 +91,7 @@ Plans:
   2. The FACE-01 revision series ends at revision 22 with no new retry, threshold change, source change, public/backend change, or GREEN claim; `faceContourSmooth` remains callable, safe, unchanged, and classified `partial` for a future separately authorized milestone.
   3. Requirements, roadmap, project/state ledgers, taxonomy, owner contracts, and terminal summaries agree on one completed FACE-02 repair and one explicit FACE-01 deferral, and focused compatibility/boundary gates pass.
 
-**Plans:** 3/4 plans executed
+**Plans:** 4/4 plans complete
 
 Plans:
 **Wave 1**
@@ -105,7 +105,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 90-04-PLAN.md — Run bounded compatibility/boundary evidence and close Phase 90 without claiming FACE-01 effectiveness.
+- [x] 90-04-PLAN.md — Run bounded compatibility/boundary evidence and close Phase 90 without claiming FACE-01 effectiveness.
 
 ### Phase 91: Independent Gaze Correction
 
@@ -204,7 +204,7 @@ attempts before an explicit owner decision to repair, defer, or stop.
 | Phase | Milestone | Plans Complete | Status | Completed |
 | --- | --- | --- | --- | --- |
 | 89. Semantic Validation Baseline | v1.22 | 4/4 | Complete    | 2026-08-26 |
-| 90. Chin Repair and Contour Deferral | v1.22 | 3/4 | In Progress|  |
+| 90. Chin Repair and Contour Deferral | v1.22 | 4/4 | Complete    | 2026-09-04 |
 | 91. Independent Gaze Correction | v1.22 | 0/TBD | Not started | - |
 | 92. Signed Eyebrow-Head Spacing | v1.22 | 0/TBD | Not started | - |
 | 93. Distinct Nose Bridge and Root Repairs | v1.22 | 0/TBD | Not started | - |
