@@ -257,6 +257,110 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
         XCTAssertTrue(geometry.rightEyeSupport?.contourEligible == true)
         XCTAssertFalse(geometry.leftEyeSupport?.pupilEligible == true)
         XCTAssertFalse(geometry.rightEyeSupport?.pupilEligible == true)
+        XCTAssertTrue(geometry.leftEyeSupport?.gazeCorrectionEligible == true)
+        XCTAssertTrue(geometry.rightEyeSupport?.gazeCorrectionEligible == true)
+    }
+
+    func testIndependentGazePupilSurvivesEveryPeerPupilFailureInBothDirections() {
+        let validLeft = BeautyObservedEyeSupport(
+            side: .left,
+            contour: contour(x: 0.30, y: 0.40),
+            pupil: [CoordinatePoint(x: 0.36, y: 0.44)]
+        )
+        let validRight = BeautyObservedEyeSupport(
+            side: .right,
+            contour: contour(x: 0.58, y: 0.40),
+            pupil: [CoordinatePoint(x: 0.68, y: 0.44)]
+        )
+        let invalidPupils: [[CoordinatePoint]?] = [
+            nil,
+            [],
+            [CoordinatePoint(x: 0.66, y: 0.44), CoordinatePoint(x: 0.67, y: 0.44)],
+            [CoordinatePoint(x: .nan, y: 0.44)],
+            [CoordinatePoint(x: 1.20, y: 0.44)],
+            [CoordinatePoint(x: 0.58, y: 0.40)],
+        ]
+
+        for invalidPupil in invalidPupils {
+            let invalidRight = BeautyObservedEyeSupport(
+                side: .right,
+                contour: contour(x: 0.58, y: 0.40),
+                pupil: invalidPupil
+            )
+            let leftGeometry = BeautyFaceGeometryAdapter.makeGeometry(
+                from: BeautyFaceObservation(
+                    imageBounds: bounds,
+                    landmarks: .complete,
+                    observedEyeSupport: [validLeft, invalidRight],
+                    observedEyeOrder: .canonical
+                )
+            )
+            XCTAssertTrue(leftGeometry.leftEyeSupport?.gazeCorrectionEligible == true)
+            XCTAssertFalse(leftGeometry.rightEyeSupport?.gazeCorrectionEligible == true)
+
+            let invalidLeft = BeautyObservedEyeSupport(
+                side: .left,
+                contour: contour(x: 0.30, y: 0.40),
+                pupil: invalidPupil
+            )
+            let rightGeometry = BeautyFaceGeometryAdapter.makeGeometry(
+                from: BeautyFaceObservation(
+                    imageBounds: bounds,
+                    landmarks: .complete,
+                    observedEyeSupport: [invalidLeft, validRight],
+                    observedEyeOrder: .canonical
+                )
+            )
+            XCTAssertFalse(rightGeometry.leftEyeSupport?.gazeCorrectionEligible == true)
+            XCTAssertTrue(rightGeometry.rightEyeSupport?.gazeCorrectionEligible == true)
+        }
+    }
+
+    func testIndependentGazeEligibilityCardinalityOrderingAndRecoveryAreRequestLocal() {
+        let left = BeautyObservedEyeSupport(
+            side: .left,
+            contour: contour(x: 0.30, y: 0.40),
+            pupil: [CoordinatePoint(x: 0.36, y: 0.44)]
+        )
+        let right = BeautyObservedEyeSupport(
+            side: .right,
+            contour: contour(x: 0.58, y: 0.40),
+            pupil: [CoordinatePoint(x: 0.68, y: 0.44)]
+        )
+        func geometry(_ supports: [BeautyObservedEyeSupport], order: BeautyObservedEyeOrder = .canonical) -> FaceGeometry {
+            BeautyFaceGeometryAdapter.makeGeometry(
+                from: BeautyFaceObservation(
+                    imageBounds: bounds,
+                    landmarks: .complete,
+                    observedEyeSupport: supports,
+                    observedEyeOrder: order
+                )
+            )
+        }
+        func eligibleSides(_ geometry: FaceGeometry) -> [BeautyObservedEyeSide] {
+            [geometry.leftEyeSupport, geometry.rightEyeSupport]
+                .compactMap { $0 }
+                .filter(\.gazeCorrectionEligible)
+                .map(\.side)
+        }
+
+        XCTAssertEqual(eligibleSides(geometry([])), [])
+        XCTAssertEqual(eligibleSides(geometry([left])), [.left])
+        XCTAssertEqual(eligibleSides(geometry([right])), [.right])
+        XCTAssertEqual(eligibleSides(geometry([right, left])), [.left, .right])
+        XCTAssertEqual(eligibleSides(geometry([left, left, right])), [.left, .right])
+        XCTAssertEqual(eligibleSides(geometry([left, right], order: .invalid)), [])
+
+        let valid = geometry([left, right])
+        let invalid = geometry([
+            BeautyObservedEyeSupport(side: .left, contour: [], pupil: left.pupil),
+            BeautyObservedEyeSupport(side: .right, contour: [], pupil: right.pupil),
+        ])
+        let recovered = geometry([left, right])
+        XCTAssertEqual(eligibleSides(valid), [.left, .right])
+        XCTAssertEqual(eligibleSides(invalid), [])
+        XCTAssertEqual(recovered.leftEyeSupport, valid.leftEyeSupport)
+        XCTAssertEqual(recovered.rightEyeSupport, valid.rightEyeSupport)
     }
 
     func testInvalidContoursFailClosedWithoutProxyFallback() {
