@@ -1059,6 +1059,201 @@ final class BeautyEffectResolverTests: XCTestCase {
         assertRedacted(plan)
     }
 
+    func testPhase91FinalGazeAggregateUsesExactFinalAdmittedField() throws {
+        let bilateralFace = phase91GazeFace(
+            leftPupil: SIMD2<Float>(0.35, 0.42),
+            rightPupil: SIMD2<Float>(0.65, 0.42)
+        )
+        let bilateral = BeautyEffectResolver.resolve(
+            parameters: BeautyParameters(gazeCorrection: 1),
+            faceGeometry: bilateralFace
+        )
+        assertPhase91GazeMetrics(
+            bilateral,
+            eligible: 2,
+            corrected: 2,
+            rejected: 0,
+            allReduced: 1,
+            abstained: 0
+        )
+
+        let leftOnly = BeautyEffectResolver.resolve(
+            parameters: BeautyParameters(gazeCorrection: BeautySafetyCaps.gazeCorrection),
+            faceGeometry: phase91GazeFace(
+                leftPupil: SIMD2<Float>(0.35, 0.42),
+                rightPupil: nil
+            )
+        )
+        assertPhase91GazeMetrics(
+            leftOnly,
+            eligible: 1,
+            corrected: 1,
+            rejected: 0,
+            allReduced: 1,
+            abstained: 0
+        )
+
+        let conflicted = BeautyEffectResolver.resolve(
+            parameters: BeautyParameters(
+                faceSlim: 1,
+                eyeSize: 1,
+                gazeCorrection: 1,
+                noseSlim: 1,
+                mouthSize: 1
+            ),
+            faceGeometry: bilateralFace
+        )
+        let finalStrength = conflicted.effectiveStrengths.gazeCorrection
+        let finalPoints = EyeWarpProvider().fieldEmissions(
+            face: bilateralFace,
+            strengths: conflicted.effectiveStrengths
+        ).gazeCorrection
+        let expected = EyeWarpProvider().gazeCorrectionEvidence(
+            face: bilateralFace,
+            strength: finalStrength,
+            admittedPoints: finalPoints
+        )
+        XCTAssertLessThan(finalStrength, BeautySafetyCaps.gazeCorrection)
+        XCTAssertEqual(
+            conflicted.metrics["beauty.effects.gazeMinimumReductionQ16"],
+            Double(expected.minimumReductionQ16)
+        )
+        assertPhase91GazeMetrics(
+            conflicted,
+            eligible: expected.eligibleEyeCount,
+            corrected: expected.correctedEyeCount,
+            rejected: expected.rejectedEyeCount,
+            allReduced: expected.allReduced ? 1 : 0,
+            abstained: expected.abstained ? 1 : 0
+        )
+    }
+
+    func testPhase91RequestedGazeAbstainsForEveryNonCreditableFinalPath() {
+        let parameters = BeautyParameters(gazeCorrection: BeautySafetyCaps.gazeCorrection)
+        let rows: [(String, FaceGeometry?)] = [
+            ("no face", nil),
+            (
+                "centered",
+                phase91GazeFace(
+                    leftPupil: SIMD2<Float>(0.38, 0.42),
+                    rightPupil: SIMD2<Float>(0.62, 0.42)
+                )
+            ),
+            (
+                "invalid pupil",
+                phase91GazeFace(
+                    leftPupil: SIMD2<Float>(0.20, 0.42),
+                    rightPupil: nil
+                )
+            ),
+            (
+                "reused",
+                phase91GazeFace(
+                    leftPupil: SIMD2<Float>(0.35, 0.42),
+                    rightPupil: SIMD2<Float>(0.65, 0.42),
+                    freshness: .reused
+                )
+            ),
+            (
+                "stale",
+                phase91GazeFace(
+                    leftPupil: SIMD2<Float>(0.35, 0.42),
+                    rightPupil: SIMD2<Float>(0.65, 0.42),
+                    freshness: .stale
+                )
+            ),
+        ]
+
+        for (name, face) in rows {
+            let plan = BeautyEffectResolver.resolve(
+                parameters: parameters,
+                faceGeometry: face
+            )
+            assertPhase91GazeMetrics(
+                plan,
+                eligible: 0,
+                corrected: 0,
+                rejected: 0,
+                allReduced: 0,
+                abstained: 1,
+                name: name
+            )
+            XCTAssertEqual(
+                plan.metrics["beauty.effects.gazeMinimumReductionQ16"],
+                0,
+                name
+            )
+        }
+
+        for plan in [
+            BeautyEffectResolver.resolve(
+                parameters: BeautyParameters(),
+                faceGeometry: phase91GazeFace(
+                    leftPupil: SIMD2<Float>(0.35, 0.42),
+                    rightPupil: SIMD2<Float>(0.65, 0.42)
+                )
+            ),
+            BeautyEffectResolver.resolve(
+                parameters: BeautyParameters(eyeSize: 0.2),
+                faceGeometry: .fixture
+            ),
+        ] {
+            XCTAssertTrue(
+                Set(plan.metrics.keys).isDisjoint(with: phase91GazeMetricKeys)
+            )
+        }
+    }
+
+    func testPhase91GazeAggregateRejectsInconsistentEvidenceAndRecoversStatelessly() {
+        let invalidEvidence = GazeCorrectionAggregateEvidence(
+            eligibleEyeCount: 2,
+            correctedEyeCount: 1,
+            rejectedEyeCount: 0,
+            allReduced: true,
+            abstained: false,
+            minimumReductionQ16: 65_537
+        )
+        XCTAssertEqual(
+            BeautyEffectResolver.gazeCorrectionMetrics(from: invalidEvidence),
+            [
+                "beauty.effects.gazeEligibleCount": 0,
+                "beauty.effects.gazeCorrectedCount": 0,
+                "beauty.effects.gazeRejectedCount": 0,
+                "beauty.effects.gazeAllReduced": 0,
+                "beauty.effects.gazeAbstained": 1,
+                "beauty.effects.gazeMinimumReductionQ16": 0,
+            ]
+        )
+
+        let validFace = phase91GazeFace(
+            leftPupil: SIMD2<Float>(0.35, 0.42),
+            rightPupil: SIMD2<Float>(0.65, 0.42)
+        )
+        let validParameters = BeautyParameters(gazeCorrection: 0.25)
+        let first = BeautyEffectResolver.resolve(
+            parameters: validParameters,
+            faceGeometry: validFace
+        )
+        let invalid = BeautyEffectResolver.resolve(
+            parameters: validParameters,
+            faceGeometry: phase91GazeFace(
+                leftPupil: SIMD2<Float>(0.20, 0.42),
+                rightPupil: nil
+            )
+        )
+        let recovered = BeautyEffectResolver.resolve(
+            parameters: validParameters,
+            faceGeometry: validFace
+        )
+
+        XCTAssertEqual(first.metrics, recovered.metrics)
+        XCTAssertNotEqual(first.metrics, invalid.metrics)
+        XCTAssertTrue(Set(first.metrics.keys).isSuperset(of: phase91GazeMetricKeys))
+        assertRedacted(first)
+        assertRedacted(invalid)
+        assertRedacted(recovered)
+    }
+
     private func assertRedacted(_ plan: BeautyEffectPlan, file: StaticString = #filePath, line: UInt = #line) {
         let metadata = (
             plan.warnings.map { "\($0.code) \($0.message)" } +
@@ -1068,6 +1263,113 @@ final class BeautyEffectResolverTests: XCTestCase {
         for forbidden in ["land" + "mark", "control point", "control" + "Point", "bounding", "VNFace" + "Observation", "/private" + "/var", "image" + " bytes", "SI" + "MD", "[0."] {
             XCTAssertFalse(metadata.contains(forbidden), "Unexpected sensitive term: \(forbidden)", file: file, line: line)
         }
+    }
+
+    private var phase91GazeMetricKeys: Set<String> {
+        [
+            "beauty.effects.gazeEligibleCount",
+            "beauty.effects.gazeCorrectedCount",
+            "beauty.effects.gazeRejectedCount",
+            "beauty.effects.gazeAllReduced",
+            "beauty.effects.gazeAbstained",
+            "beauty.effects.gazeMinimumReductionQ16",
+        ]
+    }
+
+    private func assertPhase91GazeMetrics(
+        _ plan: BeautyEffectPlan,
+        eligible: Int,
+        corrected: Int,
+        rejected: Int,
+        allReduced: Int,
+        abstained: Int,
+        name: String = "",
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        XCTAssertEqual(plan.metrics["beauty.effects.gazeEligibleCount"], Double(eligible), name, file: file, line: line)
+        XCTAssertEqual(plan.metrics["beauty.effects.gazeCorrectedCount"], Double(corrected), name, file: file, line: line)
+        XCTAssertEqual(plan.metrics["beauty.effects.gazeRejectedCount"], Double(rejected), name, file: file, line: line)
+        XCTAssertEqual(plan.metrics["beauty.effects.gazeAllReduced"], Double(allReduced), name, file: file, line: line)
+        XCTAssertEqual(plan.metrics["beauty.effects.gazeAbstained"], Double(abstained), name, file: file, line: line)
+        let minimum = plan.metrics["beauty.effects.gazeMinimumReductionQ16"]
+        XCTAssertNotNil(minimum, name, file: file, line: line)
+        XCTAssertEqual(minimum?.rounded(), minimum, name, file: file, line: line)
+        XCTAssertTrue(Set(plan.metrics.keys).isSuperset(of: phase91GazeMetricKeys), name, file: file, line: line)
+        if allReduced == 1 {
+            XCTAssertTrue((1...65_536).contains(Int(minimum ?? 0)), name, file: file, line: line)
+        } else {
+            XCTAssertEqual(minimum, 0, name, file: file, line: line)
+        }
+        XCTAssertEqual(corrected + rejected, eligible, name, file: file, line: line)
+    }
+
+    private func phase91GazeFace(
+        leftPupil: SIMD2<Float>?,
+        rightPupil: SIMD2<Float>?,
+        freshness: LandmarkGeometryFreshness = .fresh
+    ) -> FaceGeometry {
+        func support(
+            side: BeautyObservedEyeSide,
+            center: SIMD2<Float>,
+            pupil: SIMD2<Float>?
+        ) -> BeautyEyeSemanticSupport? {
+            guard let pupil else { return nil }
+            let contour = [
+                SIMD2<Float>(center.x - 0.07, center.y),
+                SIMD2<Float>(center.x - 0.04, center.y - 0.035),
+                SIMD2<Float>(center.x + 0.04, center.y - 0.035),
+                SIMD2<Float>(center.x + 0.07, center.y),
+                SIMD2<Float>(center.x + 0.04, center.y + 0.035),
+                SIMD2<Float>(center.x - 0.04, center.y + 0.035),
+            ]
+            let upper = contour.filter { $0.y <= center.y }
+            let lower = contour.filter { $0.y >= center.y }
+            let outer = side == .left ? contour[0] : contour[3]
+            let inner = side == .left ? contour[3] : contour[0]
+            return BeautyEyeSemanticSupport(
+                side: side,
+                contour: contour,
+                upper: upper,
+                lower: lower,
+                inner: [inner],
+                outer: [outer],
+                corners: [outer, inner],
+                center: center,
+                pupil: nil,
+                gazePupil: pupil,
+                span: SIMD2<Float>(0.14, 0.07),
+                tilt: 0
+            )
+        }
+
+        let left = support(
+            side: .left,
+            center: SIMD2<Float>(0.38, 0.42),
+            pupil: leftPupil
+        )
+        let right = support(
+            side: .right,
+            center: SIMD2<Float>(0.62, 0.42),
+            pupil: rightPupil
+        )
+        let base = FaceGeometry.fixture
+        return FaceGeometry(
+            bounds: base.bounds,
+            faceContour: base.faceContour,
+            leftEye: left?.contour ?? [],
+            rightEye: right?.contour ?? [],
+            nose: base.nose,
+            noseRoot: base.noseRoot,
+            noseTip: base.noseTip,
+            outerLips: base.outerLips,
+            upperLips: base.upperLips,
+            lowerLips: base.lowerLips,
+            innerLips: base.innerLips,
+            leftEyeSupport: left,
+            rightEyeSupport: right,
+            freshness: freshness
+        )
     }
 
     private func eyebrowResolverFace(
