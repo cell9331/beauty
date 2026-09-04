@@ -6,6 +6,38 @@
 **Revision gate:** revision 18 independently verified after the owner-authorized displacement/target contract change
 **Issues:** 0 blockers, 0 warnings
 
+## 2026-09-04 amendment — revised Plan 90-04
+
+**Commit reviewed:** `95e1adc`
+**Status:** ISSUES FOUND — execution is not authorized for the revised 90-04 plan
+**Issues:** 2 blockers, 0 warnings
+
+The owner authorization is correctly narrow: `requirements: [FACE-02]` remains
+unchanged; revision 23, the frozen FACE-01 effectiveness method, live portrait
+execution, the complete no-skip wrapper, production/test changes, threshold or
+gate weakening, other script changes, and FACE-01 GREEN promotion remain
+prohibited. Phase 95 still owns the clean 65-output seven-effective-plus-one-
+deferred publication, the named chin precision/tie residuals, and complete
+no-skip closeout.
+
+```yaml
+issues:
+  - plan: "90-04"
+    dimension: "task_completeness"
+    severity: "blocker"
+    task: "90-04-01"
+    description: "The automated verifier proves that the new tuple exists, the old tuple is absent, and check-sdk-only-boundary.sh is the only changed script, but it does not prove that this tuple replacement is the only content change inside that script. Arbitrary same-file gate, threshold, or boundary drift can pass the current assertions."
+    fix_hint: "Add an executable exact-diff assertion against the pre-task baseline: require one deletion of (\"脸型\", \"面部流畅\", \"implemented\", \"faceContourSmooth\") and one addition of the identical tuple with partial, with no other hunk or line in scripts/check-sdk-only-boundary.sh; carry the same assertion into the phase-completion gate or preserve a pinned pre-change blob/hash across the task commit."
+  - plan: "90-04"
+    dimension: "nyquist_compliance"
+    severity: "blocker"
+    description: "90-VALIDATION.md was not synchronized with the authorized script change. Its Phase Completion Gate and sign-off still require zero BeautySDK/scripts diff and explicitly claim zero script drift, while revised 90-04 authorizes and requires one script-line change. The plan output contract also still says the summary records zero production/test/script changes. These mutually incompatible completion contracts cannot verify the revised scope honestly."
+    fix_hint: "Revise 90-VALIDATION.md and the 90-04 output wording to permit exactly the authorized tuple-only script diff while retaining zero BeautySDK, production, test, and other-script drift; use the exact-diff verifier in both task and phase validation."
+```
+
+The revision gate must return to the planner. Historical verdicts below remain
+unchanged and do not authorize this 2026-09-04 Plan 90-04 amendment.
+
 > Revision 8 addendum (2026-08-30): the owner selected `Fix and retry`. The
 > historical revision-7 stop record below remains evidence of the disconfirmed
 > design space, but no longer controls execution. The rewritten 90-01 plan and
