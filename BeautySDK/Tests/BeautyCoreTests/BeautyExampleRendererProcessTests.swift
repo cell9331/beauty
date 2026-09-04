@@ -81,6 +81,66 @@ final class BeautyExampleRendererProcessTests: XCTestCase {
         assertPrivacySafe(firstRun.stdout + firstRun.stderr + firstReport, temporaryRoot: first.root)
     }
 
+    func testCompiledRendererBindsOnlyExactSuccessfulGazeAggregate() throws {
+        let executable = try rendererExecutable()
+        let first = try makeFixtureTree(extension: "png")
+        defer { removeTree(first.root) }
+        let second = try makeFixtureTree(extension: "png")
+        defer { removeTree(second.root) }
+
+        let gazeArguments = { (tree: FixtureTree) in
+            ["--input", tree.input.path, "--output", tree.output.path,
+             "--case", "gazeCorrection_0p25", "--backend", "cpu", "--no-watermark"]
+        }
+        let firstRun = try run(executable, arguments: gazeArguments(first))
+        let secondRun = try run(executable, arguments: gazeArguments(second))
+        XCTAssertEqual(firstRun.status, 0)
+        XCTAssertEqual(secondRun.status, 0)
+
+        let firstReportData = try Data(contentsOf: Self.reportNameURL(in: first.output))
+        let secondReportData = try Data(contentsOf: Self.reportNameURL(in: second.output))
+        XCTAssertEqual(firstReportData, secondReportData)
+        let report = try decodeReport(firstReportData)
+        assertSuccessful(report)
+        XCTAssertEqual(report.caseIDs, ["gazeCorrection_0p25"])
+        XCTAssertEqual(
+            report.outputs.first?.gazeAggregate,
+            GazeAggregate(
+                eligibleCount: 0,
+                correctedCount: 0,
+                rejectedCount: 0,
+                allReduced: false,
+                abstained: true,
+                minimumReductionQ16: 0
+            )
+        )
+        try assertExactGazeAggregateKeys(firstReportData)
+        assertPrivacySafe(firstRun.stdout + firstRun.stderr + firstReportData, temporaryRoot: first.root)
+
+        let sibling = try makeFixtureTree(extension: "png")
+        defer { removeTree(sibling.root) }
+        let siblingRun = try run(
+            executable,
+            arguments: ["--input", sibling.input.path, "--output", sibling.output.path,
+                        "--case", "pupilSize_0p25", "--backend", "cpu", "--no-watermark"]
+        )
+        XCTAssertEqual(siblingRun.status, 0)
+        let siblingReport = try decodeReport(try Data(contentsOf: Self.reportNameURL(in: sibling.output)))
+        assertSuccessful(siblingReport)
+        XCTAssertNil(siblingReport.outputs.first?.gazeAggregate)
+
+        let failed = try makeFixtureTree(extension: "png")
+        defer { removeTree(failed.root) }
+        let failedRun = try run(
+            executable,
+            arguments: gazeArguments(failed),
+            environment: ["BEAUTY_EXAMPLE_RENDERER_FAILURE": "render"]
+        )
+        assertDiagnostic(failedRun, code: "render_failed")
+        let failedReport = try decodeReport(try Data(contentsOf: Self.reportNameURL(in: failed.output)))
+        XCTAssertNil(failedReport.outputs.first?.gazeAggregate)
+    }
+
     func testCompiledRendererRejectsArgumentsSelectionAndDuplicateScalars() throws {
         let executable = try rendererExecutable()
         let cases: [([String], String)] = [
@@ -434,6 +494,28 @@ final class BeautyExampleRendererProcessTests: XCTestCase {
         try JSONDecoder().decode(Report.self, from: data)
     }
 
+    private func assertExactGazeAggregateKeys(
+        _ data: Data,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) throws {
+        let object = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])
+        let outputs = try XCTUnwrap(object["outputs"] as? [[String: Any]])
+        let aggregate = try XCTUnwrap(outputs.first?["gazeAggregate"] as? [String: Any])
+        XCTAssertEqual(
+            Set(aggregate.keys),
+            Set(["eligibleCount", "correctedCount", "rejectedCount", "allReduced", "abstained", "minimumReductionQ16"]),
+            file: file,
+            line: line
+        )
+        XCTAssertEqual(aggregate["eligibleCount"] as? Int, 0, file: file, line: line)
+        XCTAssertEqual(aggregate["correctedCount"] as? Int, 0, file: file, line: line)
+        XCTAssertEqual(aggregate["rejectedCount"] as? Int, 0, file: file, line: line)
+        XCTAssertEqual(aggregate["allReduced"] as? Bool, false, file: file, line: line)
+        XCTAssertEqual(aggregate["abstained"] as? Bool, true, file: file, line: line)
+        XCTAssertEqual(aggregate["minimumReductionQ16"] as? Int, 0, file: file, line: line)
+    }
+
     private func assertSuccessful(_ report: Report, file: StaticString = #filePath, line: UInt = #line) {
         XCTAssertEqual(report.schemaVersion, "beauty.example-renderer.report.v1", file: file, line: line)
         XCTAssertEqual(report.backend, "cpu", file: file, line: line)
@@ -551,6 +633,16 @@ private struct Output: Codable {
     let outputID: String
     let status: String
     let failureCode: String?
+    let gazeAggregate: GazeAggregate?
+}
+
+private struct GazeAggregate: Codable, Equatable {
+    let eligibleCount: Int
+    let correctedCount: Int
+    let rejectedCount: Int
+    let allReduced: Bool
+    let abstained: Bool
+    let minimumReductionQ16: Int
 }
 
 private enum ProcessTestError: Error, CustomStringConvertible {
