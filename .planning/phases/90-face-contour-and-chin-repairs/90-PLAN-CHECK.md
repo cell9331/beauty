@@ -38,6 +38,38 @@ issues:
 The revision gate must return to the planner. Historical verdicts below remain
 unchanged and do not authorize this 2026-09-04 Plan 90-04 amendment.
 
+## 2026-09-04 amendment — Plan 90-04 iteration 2
+
+**Commits reviewed:** owner authorization `95e1adc`; repair `4c50d1c`
+**Status:** VERIFICATION PASSED — execution authorized for revised Plan 90-04
+**Issues:** 0 blockers, 0 warnings
+
+Both prior blockers are resolved. Task `90-04-01` now compares the working
+script byte-for-byte with `HEAD:scripts/check-sdk-only-boundary.sh` after one
+exact replacement: the baseline must contain exactly one `面部流畅` /
+`faceContourSmooth` `implemented` tuple, contain no corresponding `partial`
+tuple, and the working file must equal that baseline with only that tuple
+changed to `partial`. The pre-edit clean-tree requirement and the script
+name-only guard remain in place, so production/test drift, another script, or
+any additional same-script gate/threshold change cannot pass task verification.
+
+`90-VALIDATION.md`, the phase-completion language, artifacts, and summary output
+now consistently describe the one authorized script-line synchronization and
+zero production/test/other-script drift. FACE-02 remains the sole requirement;
+FACE-01 remains completed-deferred, FUTURE-04, promotion-ineligible, and
+non-GREEN. Revision 23, the frozen FACE-01 effectiveness method, live portrait
+batch, complete no-skip wrapper, threshold/gate weakening, and all other script
+changes remain prohibited. Phase 95 still owns the clean 65-output publication,
+seven effective directions plus one deferred/partial direction, the named chin
+precision/tie residuals, and complete no-skip closeout.
+
+```yaml
+issues: []
+```
+
+Execution is authorized only for the exact revised 90-04 scope above; all
+historical verdicts remain unchanged.
+
 > Revision 8 addendum (2026-08-30): the owner selected `Fix and retry`. The
 > historical revision-7 stop record below remains evidence of the disconfirmed
 > design space, but no longer controls execution. The rewritten 90-01 plan and
