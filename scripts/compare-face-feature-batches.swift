@@ -1763,6 +1763,124 @@ private func generatedImage(
     return CanonicalImage(width: width, height: height, rgba: rgba)
 }
 
+private func runRendererReportAdmissionSelfTests() throws -> Int {
+    var probes = 0
+    let expected = [(inputID: "portrait_001.png", outputID: "portrait_001__gazeCorrection_0p25.png")]
+    let aggregate: [String: Any] = [
+        "eligibleCount": 2,
+        "correctedCount": 2,
+        "rejectedCount": 0,
+        "allReduced": true,
+        "abstained": false,
+        "minimumReductionQ16": 688,
+    ]
+    func report(
+        caseID: String = "gazeCorrection_0p25",
+        inputID: String = "portrait_001.png",
+        outputID: String = "portrait_001__gazeCorrection_0p25.png",
+        backend: String = "cpu",
+        schema: String = "beauty.example-renderer.report.v1",
+        requested: Int = 1,
+        succeeded: Int = 1,
+        failed: Int = 0,
+        skipped: Int = 0,
+        aggregate: Any? = aggregate,
+        duplicateUnit: Bool = false,
+        extraReportKey: Bool = false
+    ) throws -> Data {
+        var unit: [String: Any] = [
+            "inputID": inputID,
+            "caseID": caseID,
+            "outputID": outputID,
+            "status": "succeeded",
+        ]
+        if let aggregate { unit["gazeAggregate"] = aggregate }
+        var outputs: [[String: Any]] = [unit]
+        if duplicateUnit { outputs.append(unit) }
+        var value: [String: Any] = [
+            "schemaVersion": schema,
+            "backend": backend,
+            "requested": requested,
+            "succeeded": succeeded,
+            "failed": failed,
+            "skipped": skipped,
+            "inputIDs": [inputID],
+            "caseIDs": [caseID],
+            "outputs": outputs,
+        ]
+        if extraReportKey { value["sourcePath"] = "forbidden" }
+        return try JSONSerialization.data(withJSONObject: value, options: [.sortedKeys])
+    }
+    func expectAdmissionFailure(_ data: Data, caseID: String = "gazeCorrection_0p25") throws {
+        do {
+            _ = try admitRendererReportData(data, caseID: caseID, expectedUnits: expected)
+        } catch SemanticContractError.admission {
+            probes += 1
+            return
+        }
+        throw SemanticContractError.verdict
+    }
+
+    let admitted = try admitRendererReportData(
+        report(), caseID: "gazeCorrection_0p25", expectedUnits: expected
+    )
+    guard admitted[expected[0].outputID]?.minimumReductionQ16 == 688 else {
+        throw SemanticContractError.verdict
+    }
+    probes += 1
+
+    try expectAdmissionFailure(report(aggregate: nil))
+    var extra = aggregate; extra["leftPupil"] = 1
+    try expectAdmissionFailure(report(aggregate: extra))
+    var fractional = aggregate; fractional["eligibleCount"] = 1.5
+    try expectAdmissionFailure(report(aggregate: fractional))
+    var negative = aggregate; negative["rejectedCount"] = -1
+    try expectAdmissionFailure(report(aggregate: negative))
+    var overflow = aggregate; overflow["minimumReductionQ16"] = 65_537
+    try expectAdmissionFailure(report(aggregate: overflow))
+    var contradictory = aggregate; contradictory["correctedCount"] = 1
+    try expectAdmissionFailure(report(aggregate: contradictory))
+    var hiddenRegression = aggregate
+    hiddenRegression["correctedCount"] = 1
+    hiddenRegression["rejectedCount"] = 1
+    try expectAdmissionFailure(report(aggregate: hiddenRegression))
+    var wrongBoolean = aggregate; wrongBoolean["allReduced"] = 1
+    try expectAdmissionFailure(report(aggregate: wrongBoolean))
+    try expectAdmissionFailure(report(inputID: "portrait_002.png"))
+    try expectAdmissionFailure(report(caseID: "pupilSize_0p25"))
+    try expectAdmissionFailure(report(outputID: "other.png"))
+    try expectAdmissionFailure(report(backend: "gpu"))
+    try expectAdmissionFailure(report(schema: "beauty.example-renderer.report.v2"))
+    try expectAdmissionFailure(report(requested: 2))
+    try expectAdmissionFailure(report(duplicateUnit: true))
+    try expectAdmissionFailure(report(extraReportKey: true))
+
+    let siblingExpected = [(inputID: "portrait_001.png", outputID: "portrait_001__pupilSize_0p25.png")]
+    let sibling = try report(
+        caseID: "pupilSize_0p25",
+        outputID: "portrait_001__pupilSize_0p25.png",
+        aggregate: nil
+    )
+    guard try admitRendererReportData(
+        sibling, caseID: "pupilSize_0p25", expectedUnits: siblingExpected
+    ).isEmpty else {
+        throw SemanticContractError.verdict
+    }
+    probes += 1
+    try expectAdmissionFailure(
+        report(caseID: "pupilSize_0p25", outputID: "portrait_001__pupilSize_0p25.png"),
+        caseID: "pupilSize_0p25"
+    )
+
+    let nonfinite = String(decoding: try report(), as: UTF8.self)
+        .replacingOccurrences(of: "\"minimumReductionQ16\":688", with: "\"minimumReductionQ16\":1e309")
+    try expectAdmissionFailure(Data(nonfinite.utf8))
+    let duplicateKey = String(decoding: try report(), as: UTF8.self)
+        .replacingOccurrences(of: "\"eligibleCount\":2", with: "\"eligibleCount\":2,\"eligibleCount\":2")
+    try expectAdmissionFailure(Data(duplicateKey.utf8))
+    return probes
+}
+
 private func runDirectionMetricSelfTests(contracts: [SemanticContract]) throws -> Int {
     guard Set(contracts.map(\ .metric)) == Set(SemanticMetricKind.allCases) else {
         throw SemanticContractError.verdict
@@ -2814,6 +2932,7 @@ func runSemanticSelfTests() throws -> Int {
     mutationCount += 1
 
     mutationCount += try runDirectionMetricSelfTests(contracts: contracts)
+    mutationCount += try runRendererReportAdmissionSelfTests()
     mutationCount += try runSemanticReportSelfTests(manifest: manifest)
 
     return mutationCount

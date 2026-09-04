@@ -79,6 +79,16 @@ def invoke_preflight_fault(input_path, output_path, report_path, fault):
     ).returncode
 
 
+def invoke_report_cleanup_self_test():
+    return subprocess.run(
+        ["bash", RUNNER, "--self-test-report-cleanup"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.DEVNULL,
+        check=False,
+        text=True,
+    )
+
+
 def require_failure_envelope(path):
     with open(path, encoding="utf-8") as handle:
         report = json.load(handle)
@@ -216,12 +226,23 @@ def main():
         if not os.path.isdir(invalid_report):
             raise BoundaryTestError()
 
+        cleanup_result = invoke_report_cleanup_self_test()
+        if cleanup_result.returncode != 0:
+            raise BoundaryTestError()
+        expected_cleanup = (
+            "report_cleanup_self_test=PASS consumed_before_cleanup=1 "
+            "retained_absent=1 repeat_absent=1 symlink_rejected=1 "
+            "path_mismatch_rejected=1 forced_failure_blocks=1\n"
+        )
+        if cleanup_result.stdout != expected_cleanup:
+            raise BoundaryTestError()
+
         require_documentation_contract()
         print(
             "runner_boundary_self_test=PASS stale_pass=1 stale_fail=1 "
             "alias_preserved=1 symlink_parent_preserved=1 invalid_report=1 "
             "spaces=1 unicode=1 component_bytes=120,121,255 "
-            "preflight_faults=3 preflight_unchanged=1 docs=5"
+            "preflight_faults=3 preflight_unchanged=1 report_cleanup=6 docs=5"
         )
     finally:
         helper(
