@@ -5,11 +5,11 @@ milestone_name: Non-Local Facial Effect Repairs
 current_phase: 91
 current_phase_name: Independent Gaze Correction
 status: planning
-stopped_at: Phase 90 complete, ready to plan Phase 91
-last_updated: "2026-09-04T15:52:32+08:00"
+stopped_at: Phase 91 context gathered
+last_updated: "2026-09-04T08:04:42.252Z"
 last_activity: 2026-09-04
 last_activity_desc: Phase 90 complete, transitioned to Phase 91
-state_head: 9bdc6333a1a5bfc7ce3d6e5197bba289d50d30be
+state_head: 6d33a1097f6cd5a7c888edb3e0f072bd548302e4
 progress:
   total_phases: 7
   completed_phases: 2
@@ -383,6 +383,6 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-09-04T15:52:32+08:00
-Stopped at: Phase 90 complete, ready to plan Phase 91
-Resume file: None
+Last session: 2026-09-04T08:04:42.074Z
+Stopped at: Phase 91 context gathered
+Resume file: .planning/phases/91-independent-gaze-correction/91-CONTEXT.md
