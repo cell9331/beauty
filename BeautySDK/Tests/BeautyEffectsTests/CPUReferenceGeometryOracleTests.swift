@@ -257,8 +257,8 @@ final class CPUReferenceGeometryOracleTests: XCTestCase {
             upperLips: base.upperLips,
             lowerLips: base.lowerLips,
             innerLips: base.innerLips,
-            leftEyeSupport: eyeSupport(side: .left, contour: leftContour, pupil: SIMD2<Float>(0.425, 0.39)),
-            rightEyeSupport: eyeSupport(side: .right, contour: rightContour, pupil: SIMD2<Float>(0.585, 0.39)),
+            leftEyeSupport: eyeSupport(side: .left, contour: leftContour, pupil: SIMD2<Float>(0.42, 0.38)),
+            rightEyeSupport: eyeSupport(side: .right, contour: rightContour, pupil: SIMD2<Float>(0.58, 0.38)),
             freshness: .fresh,
             observedEyebrowSupport: EyebrowSafetyFixtures.pairedSupport
         )

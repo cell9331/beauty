@@ -541,7 +541,7 @@ Both Agent's Discretion choices are now frozen for the independently checked Pha
 | Script-boundary command | `python3 scripts/test-face-feature-batch-boundaries.py` [VERIFIED: Phase 89 verification] |
 | Inventory/preflight command | `bash scripts/run-face-feature-batches.sh --preflight-only` [VERIFIED: Phase 89 verification] |
 | Compatibility command | `swift test --package-path BeautySDK --filter 'BeautyParametersTests|BeautyResourceCatalogTests|BeautyRendererOutputRegressionTests|BeautyEngineMetadataCompatibilityTests|BeautyBackendContractTests|BeautyBackendSelectionConcurrencyTests'` [VERIFIED: Phase 89/90 verification pattern] |
-| Full suite command | `swift test --package-path BeautySDK` [VERIFIED: `AGENTS.md` basic commands] |
+| Current-authority suite command | Prove the frozen FACE-01 effectiveness oracle is discovered once, then run `swift test --package-path BeautySDK --filter '^(?!.*FaceContourSmoothRepairTests/testFACE01GeneratedCPUFixturePassesFrozenSemanticAndProtectionContract).*$'`; Phase 90 explicitly deferred that one oracle to FUTURE-04 and forbids a GREEN claim. [VERIFIED: Phase 90 closeout authority; current 840-test run] |
 
 ### Validation Layers
 
@@ -600,7 +600,7 @@ The actual-pixel semantic oracle should threshold only the fixture's unique chro
 
 - **Per task commit:** run the narrow owner test filter for the edited seam, then `git diff --check`. [VERIFIED: project workflow]
 - **Per implementation wave:** run the quick combined Swift filter, comparator self-test, renderer process tests, and boundary suite. [VERIFIED: Validation Layers]
-- **Phase gate:** run focused tests, full `swift test --package-path BeautySDK`, comparator self-test, boundary suite, runner `--preflight-only`, compatibility filter, archive verification, and post-archive SDK-only boundary. Do not run or claim the final authorized portrait batch; Phase 95 owns it. [VERIFIED: D-08; project commands]
+- **Phase gate:** run focused tests, the exact 840-test current-authority SwiftPM filter while proving the one Phase-90-deferred frozen FACE-01 RED oracle is discovered and solely excluded, comparator self-test, boundary suite, runner `--preflight-only`, compatibility filter, archive verification, and post-archive SDK-only boundary. Do not claim FACE-01 GREEN and do not run or claim the final authorized portrait batch; Phase 95 owns it. [VERIFIED: Phase 90 closeout; D-08; project commands]
 
 ### Wave 0 Gaps
 
