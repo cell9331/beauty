@@ -1,16 +1,16 @@
 ---
 phase: "91"
 slug: "independent-gaze-correction"
-status: draft
-nyquist_compliant: false
-wave_0_complete: false
+status: validated
+nyquist_compliant: true
+wave_0_complete: true
 created: "2026-09-04"
-updated: "2026-09-05"
+updated: "2026-09-06"
 ---
 
 # Phase 91 — Validation Strategy
 
-> Execution-time validation map for the independently checked four-plan set. This file remains draft and non-Nyquist-complete until every missing seam exists and all mapped commands pass.
+> Completed execution-time validation map for the independently checked four-plan set. Every mapped seam exists and every declared command passed under the Phase 91 authority boundary.
 
 ---
 
@@ -75,15 +75,15 @@ Every HIGH threat is mapped to a concrete implementation or closeout task and bl
 
 ## Wave 0 / TDD RED Requirements
 
-- [ ] `BeautySDK/Tests/BeautyCoreTests/BeautyEngineGazeCorrectionRepairTests.swift` must be created before its production/testing-support implementation. It owns deterministic in-memory 512×512 explicit-sRGB RGBA8 actual input/output pixels, independently declared chromatic pupil identities and eye centers, zero/one/two-side correction, rejected-side source identity, frozen target/sibling/locality/protection integers, alpha/extent/metadata, determinism, and valid-invalid-valid recovery.
-- [ ] Extend `BeautyFaceGeometryAdapterTests.swift` and `EyeWarpProviderTests.swift` with the peer-failure, exact boundary, ordering, aperture-clearance, aggregate-hidden-regression, and recovery RED mutations before production edits.
-- [ ] Extend `BeautyEffectResolverTests.swift` before aggregate implementation and use only the resolved post-conflict `BeautyEffectResolver.resolve` seam.
-- [ ] Extend `SDKTestingFaceDetectionFixture` / `BeautyEngineTestingSupport` only after the public actual-pixel RED needs the minimum fixed per-eye matrix; no public/Codable anatomy type.
-- [ ] Extend `BeautyExampleRendererProcessTests.swift` with gaze success/abstention/sibling/failure/malformed/deterministic/privacy report fixtures before renderer changes.
-- [ ] Add comparator aggregate builders and every proxy/replay/identity/algebra/sibling/path mutation while preserving all prior Phase 89 probes.
-- [ ] Add Python runner probes for retained-until-consumed reports, replay/symlink/path mismatch, cleanup fault, and verified absence.
+- [x] `BeautySDK/Tests/BeautyCoreTests/BeautyEngineGazeCorrectionRepairTests.swift` was created before its production/testing-support implementation. It owns deterministic in-memory 512×512 explicit-sRGB RGBA8 actual input/output pixels, independently declared chromatic pupil identities and eye centers, zero/one/two-side correction, rejected-side source identity, frozen target/sibling/locality/protection integers, alpha/extent/metadata, determinism, and valid-invalid-valid recovery.
+- [x] `BeautyFaceGeometryAdapterTests.swift` and `EyeWarpProviderTests.swift` gained the peer-failure, exact boundary, ordering, aperture-clearance, aggregate-hidden-regression, and recovery RED mutations before production edits.
+- [x] `BeautyEffectResolverTests.swift` was extended before aggregate implementation and uses only the resolved post-conflict `BeautyEffectResolver.resolve` seam.
+- [x] `SDKTestingFaceDetectionFixture` / `BeautyEngineTestingSupport` was extended only after the public actual-pixel RED established the minimum fixed per-eye matrix; no public/Codable anatomy type was added.
+- [x] `BeautyExampleRendererProcessTests.swift` gained gaze success/abstention/sibling/failure/malformed/deterministic/privacy report fixtures before renderer changes.
+- [x] Comparator aggregate builders and proxy/replay/identity/algebra/sibling/path mutations preserve every prior Phase 89 probe.
+- [x] Python runner probes cover retained-until-consumed reports, replay/symlink/path mismatch, cleanup fault, and verified absence.
 
-No framework or package installation is required. `wave_0_complete` remains false until these test seams exist; `nyquist_compliant` remains false until they pass.
+No framework or package installation was required. The test seams exist and their mapped commands passed, so `wave_0_complete` and `nyquist_compliant` are true.
 
 ## Frozen Gates and Nonclaims
 
@@ -93,15 +93,15 @@ No framework or package installation is required. `wave_0_complete` remains fals
 
 ## Validation Sign-Off
 
-- [ ] Every listed task exists in 91-01 through 91-04 and uses the exact mapped command.
-- [ ] All Wave 0/TDD RED seams exist.
-- [ ] Every mapped command passes in its declared wave.
-- [ ] Every HIGH threat is mitigated with passing evidence.
-- [ ] All three implementation summaries agree on attempt one or two; no third attempt occurs.
-- [ ] Task 91-04-01 full phase gate passes before any owner synchronization.
-- [ ] Task 91-04-02 behavior/product owner consistency gate passes after synchronization.
-- [ ] Task 91-04-03 trust/evidence/taxonomy consistency and boundary gate passes after synchronization.
-- [ ] Generated image tests assert actual input/output pixels and metadata, not only control points, aggregates, or command success.
-- [ ] `nyquist_compliant: true` and `wave_0_complete: true` are set only after execution supplies all passing evidence.
+- [x] Every listed task exists in 91-01 through 91-04 and uses the exact mapped command.
+- [x] All Wave 0/TDD RED seams exist.
+- [x] Every mapped command passes in its declared wave.
+- [x] Every HIGH threat is mitigated with passing evidence.
+- [x] All three implementation summaries agree on attempt one; no second or third attempt occurred.
+- [x] Task 91-04-01 full phase gate passed before owner synchronization.
+- [x] Task 91-04-02 behavior/product owner consistency gate passed after synchronization.
+- [x] Task 91-04-03 trust/evidence/taxonomy consistency and boundary gate passed after synchronization.
+- [x] Generated image tests assert actual input/output pixels and metadata, not only control points, aggregates, or command success.
+- [x] `nyquist_compliant: true` and `wave_0_complete: true` were set only after execution supplied all passing evidence.
 
-**Approval:** pending execution
+**Approval:** validated 2026-09-06
