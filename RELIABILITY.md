@@ -607,3 +607,34 @@ fallback. Request-local aggregate evidence remains redacted and SDK-only.
 Automated completion makes no device, population, performance, thermal,
 battery, endurance, commercial-quality, packaging, shipping, launch, release-
 readiness, or distribution claim.
+
+## Phase 91 Independent Gaze Correction Reliability Contract
+
+Positive gaze work is recomputed per request and per eye. Exact displacement
+`0.002` is neutral; positive input caps at `0.25`; cap movement is 35% toward
+that eye's own center; and source/destination plus the frozen half-clearance
+radius must remain inside a finite simple aperture. Missing, malformed,
+centered, outside, ellipse-invalid, duplicate, stale, reused, or otherwise
+ineligible support rejects only that eye. A valid peer continues, while paired
+`pupilSize` compatibility and unrelated eye fields remain unchanged.
+
+The resolver attaches aggregate evidence only after conflict convergence and
+final field recomputation. Any count, boolean, Q16, point-admission, or identity
+inconsistency collapses to deterministic abstention. Renderer/report parse,
+schema, replay, path, symlink, alias, or cleanup faults are infrastructure
+failures and cannot be recast as semantic failures or passes. Valid-invalid-
+valid sequences and repeated cap requests reproduce the same bytes and
+aggregate without stale support.
+
+Attempt records are consistent at implementation attempt 1; no second attempt
+was needed. The current-authority SwiftPM suite passed `840/0/8`, focused
+compatibility passed `107/0/0`, comparator self-test passed 576 mutations,
+runner boundaries and exact `75/65/8` preflight passed, and temporary reports
+were verified removed. The sole excluded discovered test remains the Phase-90-
+deferred frozen FACE-01 effectiveness oracle and receives no GREEN claim.
+
+Phase 91 changes no public inventory, facade, backend, shader, or threshold.
+Phase 95 retains portrait publication and the complete no-skip gate. Package-
+host determinism does not establish device performance, endurance, population
+quality, naturalness, commercial suitability, packaging, shipping, launch,
+release readiness, or distribution.

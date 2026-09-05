@@ -115,7 +115,7 @@ names and visual organization are intentionally omitted from the active contract
 | 眼睛 | 去脂 | implemented | `upperEyelidFullnessReduction` | Provisional owner-accepted opaque still-image relief correction; bounded and fail-closed, with known weak visual quality. |
 | 眼睛 | 提肌 | implemented | `upperEyelidLift` | Upper-contour geometry; not `去脂`. |
 | 眼睛 | 眼瞳大小 | implemented | `pupilSize` | Requires plausible request-local pupil support. |
-| 眼睛 | 眼神矫正 | implemented | `gazeCorrection` | Bounded pupil-to-own-center correction. |
+| 眼睛 | 眼神矫正 | implemented | `gazeCorrection` | Per-eye request-local pupil-to-own-center correction with no peer borrowing; strict aperture containment and source-safe local rejection. |
 | 眼睛 | 眼睑下至 | implemented | `lowerEyelidDrop` | Lower-contour geometry. |
 | 眼睛 | 眼尾上扬 | implemented | `eyeTailLift` | Outer-eye lift geometry. |
 | 眼睛 | 倾斜 | implemented | `eyeTilt` | Signed paired-contour rotation. |
@@ -201,3 +201,27 @@ precision/tie residual, the clean 65-output seven-effective-plus-one-deferred
 publication, and the complete no-skip closeout; Phase 90 provides no device,
 commercial-quality, packaging, shipping, launch, release, or distribution
 qualification.
+
+## Phase 91 Independent Gaze Correction
+
+`gazeCorrection` / `眼神矫正` retains `implemented` status after Phase 91.
+Positive gaze uses only independently valid request-local observed support for
+each eye; it never borrows peer geometry or revives a darkness, symmetric, or
+legacy proxy. Exact displacement `0.002` is neutral, the public input caps at
+`0.25`, cap motion is 35% toward that eye's own center, and the influence radius
+is bounded by half the source/target aperture clearances. Invalid or absent
+support fails closed per eye while a valid peer continues.
+
+Generated public-facade pixels prove own-center direction, target signal,
+protected regions, neutral behavior, determinism, and recovery. The final
+six-field aggregate is output-identity-bound and cannot replace the actual-
+pixel target, sibling, locality, or protection gates; temporary reports are
+verified removed before any durable result. This qualification changes no
+taxonomy tuple or public surface: exactly 62 stored fields, five presets, 75
+renderer cases, both still-image facades, CPU/GPU policy, and retained
+`Warp.metal` remain unchanged.
+
+Phase 95 still owns the authorized portrait rerun, final clean 65-output
+publication, and complete no-skip closeout. Phase 91 supplies no device,
+population, naturalness, commercial-quality, packaging, shipping, launch,
+release, or distribution qualification.

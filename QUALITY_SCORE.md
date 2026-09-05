@@ -535,3 +535,47 @@ This supports a provisional score of 3 for `去脂`: implementation and bounded
 automated behavior exist, and the owner accepts use with a known visual-quality
 gap. It does not erase failed genuine automation, claim a new human review,
 qualify a learned model, or establish device/population/commercial quality.
+
+## Phase 91 Independent Gaze Correction Quality Evidence
+
+Phase 91 completed in shared implementation attempt 1 after one research pass
+and one independently checked four-plan set. Generated 512×512 explicit-sRGB
+RGBA8 public-facade evidence measured own-center reductions `201/203 Q16`,
+target signal `1316` changed pixels / `51731` absolute RGB delta, and exact
+`0/0` outside, eye-contour, eyebrow, background, and watermark signal. Neutral,
+bilateral, single-side, missing/malformed peer, ratio-implausible peer, exact
+dead zone, just-above boundary, cap, repeated cap, no-face, and valid-invalid-
+valid paths passed with alpha, extent, metadata, and source-safe rejection.
+
+The final six-field aggregate passed bilateral `2/2/0/1/0/688`, single
+`1/1/0/1/0/688`, and abstaining `0/0/0/0/1/0` algebra. Comparator admission
+keeps direction evidence bound to the exact successful output and still
+requires every frozen actual-pixel target, sibling, locality, and protection
+gate. Its self-test passed 576 mutations with inventories `5/65/8`; the runner
+boundary suite passed with `report_cleanup=6` and `preflight_faults=3`; shell
+syntax and exact preflight `live=75 selected=65 semantic=8` passed.
+
+Fresh package-host closeout evidence is:
+
+- The Phase-90-deferred frozen FACE-01 effectiveness oracle is discovered
+  exactly once and remains intentionally non-GREEN. Every other current test
+  passed `840/0/8`; the eight skips are established explicit opt-ins.
+- Focused parameter/resource/renderer/metadata/backend compatibility passed
+  `107/0/0` and reconfirmed exactly 62 stored fields, five presets, 75 renderer
+  cases, both still-image facades, CPU reference, `.cpu`/`.gpu`, terminal
+  `.metalUnavailable`, and unchanged retained `Warp.metal`.
+- Backend-neutral gates passed 24 focused and 41 CPU-reference tests. The CPU
+  reference inventory's two test-only gaze samples were moved from the aperture
+  boundary to deterministic interior positions; no production behavior or
+  assertion threshold changed.
+- Archive verification passed for `BeautyDemo`
+  (`04c14bbaa201cc6e9100f4c7b272b697670014041e62804dfa2f561faa29db52`)
+  and `meituxiuxiu`
+  (`330e8aa08155eb4ad3a7b2ab84773a8279a8cd3ae87d4737b93e2491232fce9a`),
+  followed by `POST-ARCHIVE SDK BOUNDARY PASSED` and clean diff hygiene.
+
+No live portrait batch, final clean 65-output publication, or
+`scripts/run-no-skip-swiftpm.sh` ran. Phase 95 owns those gates. This evidence
+supports EYE-01 owner-local mechanics and protection only; it establishes no
+device, population, naturalness, performance, commercial, packaging, shipping,
+launch, release-readiness, or external-distribution claim.

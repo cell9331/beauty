@@ -553,3 +553,37 @@ device or population qualification, commercial quality, packaging, shipping,
 launch, release readiness, or distribution. Any future FACE-01 work belongs to
 separately authorized FUTURE-04 and cannot inherit revision-22 diagnostic
 credit.
+
+## Phase 91 Independent Gaze Correction Trust Boundary
+
+Observed eye contours, centers, pupils, clearances, control points, masks, and
+source/output pixels are request-local or test-local values. They are neither
+Codable nor public diagnostics and must not enter summaries, logs, renderer
+status, retained reports, paths, or transcripts. A valid eye cannot borrow the
+peer's support, and observed-but-invalid support never falls back to legacy or
+proxy anatomy.
+
+The durable evidence allowlist is exactly six bounded aggregate meanings:
+eligible, corrected, and rejected counts; all-reduced; abstained; and minimum-
+reduction Q16. The renderer spelling is exactly `eligibleCount`,
+`correctedCount`, `rejectedCount`, `allReduced`, `abstained`, and
+`minimumReductionQ16`. The values are admitted only on the matching successful
+CPU gaze unit after schema, input, case, output, backend, uniqueness, integral
+range, and algebra checks. Missing/extra/duplicate/fractional/nonfinite,
+contradictory, wrong-identity, replayed, stale, aliased, proxy-only, or sibling
+evidence is rejected rather than repaired.
+
+Direction credit remains conjoined with actual-pixel target, sibling, locality,
+contour, brow, background, and watermark gates. Both attempt report trees stay
+under verified no-follow ownership until comparison, then are removed and
+verified absent before publication. The boundary suite passed with
+`report_cleanup=6`; any residue or deletion uncertainty is a sanitized
+infrastructure failure with no semantic credit.
+
+All Plans 91-01 through 91-03 used implementation attempt 1. Comparator
+self-test passed 576 mutations, backend-neutral privacy/inventory gates passed,
+both archive hashes verified, and the post-archive SDK-only boundary passed.
+The 62/5/75 surface, public facades, CPU/GPU policy, and retained `Warp.metal`
+are unchanged. Phase 95 alone owns authorized portraits, clean 65-output
+publication, and the full no-skip closeout; Phase 91 grants no device,
+commercial, release, or distribution authority.
