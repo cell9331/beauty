@@ -12,6 +12,7 @@ report_path="${repo_root}/example-images/local-test-records/face-feature-batch-r
 preflight_only=0
 self_test_cleanup=0
 self_test_boundaries=0
+self_test_report_cleanup=0
 
 usage() {
   cat <<'EOF'
@@ -28,6 +29,7 @@ Options:
   --preflight-only  Validate paths and exact 75/65/8 inventories without rendering
   --self-test-cleanup  Exercise fail-closed cleanup ownership without rendering
   --self-test-boundaries  Exercise stale-report and path-alias failure handling
+  --self-test-report-cleanup  Exercise renderer-report ownership and cleanup
   --help            Show this message
 EOF
 }
@@ -59,6 +61,10 @@ while (($# > 0)); do
       ;;
     --self-test-boundaries)
       self_test_boundaries=1
+      shift
+      ;;
+    --self-test-report-cleanup)
+      self_test_report_cleanup=1
       shift
       ;;
     --help)
@@ -288,6 +294,7 @@ inventory_admitted=0
 report_finalized=0
 report_destination_admitted=0
 retain_first_attempt=0
+renderer_reports_consumed=0
 failure_reason="preflight_failure"
 
 path_operation() {
@@ -370,8 +377,84 @@ safe_remove_temporary_file() {
   path_operation remove-file "$candidate"
 }
 
+renderer_report_rows() {
+  python3 - "$manifest" <<'PY'
+import json
+import sys
+with open(sys.argv[1], encoding="utf-8") as handle:
+    manifest = json.load(handle)
+print(f"control\t{manifest['control']['id']}")
+for batch in manifest["batches"]:
+    for case_id in batch["cases"]:
+        print(f"{batch['id']}\t{case_id}")
+PY
+}
+
+cleanup_renderer_reports() {
+  local attempt_root="$1"
+  [[ -n "$attempt_root" ]] || return 0
+  verify_direct_child_parent "$attempt_root" "$(dirname "$attempt_root")" directory || return 1
+  if [[ "${BEAUTY_FACE_FEATURE_REPORT_CLEANUP_FAULT:-}" == "forced" ]]; then
+    return 1
+  fi
+
+  local discovered
+  if ! discovered="$(python3 - "$attempt_root" "$manifest" <<'PY'
+import json
+import os
+import stat
+import sys
+
+root = os.path.normpath(os.path.abspath(sys.argv[1]))
+with open(sys.argv[2], encoding="utf-8") as handle:
+    manifest = json.load(handle)
+expected = {os.path.join(root, "control", manifest["control"]["id"], "beauty-example-renderer-report.json")}
+for batch in manifest["batches"]:
+    for case_id in batch["cases"]:
+        expected.add(os.path.join(root, batch["id"], case_id, "beauty-example-renderer-report.json"))
+found = set()
+for current, directories, files in os.walk(root, followlinks=False):
+    if stat.S_ISLNK(os.lstat(current).st_mode):
+        raise SystemExit(1)
+    for name in directories:
+        if stat.S_ISLNK(os.lstat(os.path.join(current, name)).st_mode):
+            raise SystemExit(1)
+    for name in files:
+        path = os.path.join(current, name)
+        metadata = os.lstat(path)
+        if name == "beauty-example-renderer-report.json":
+            if not stat.S_ISREG(metadata.st_mode) or path not in expected:
+                raise SystemExit(1)
+            found.add(path)
+if found and found != expected:
+    raise SystemExit(1)
+for path in sorted(found):
+    print(path)
+PY
+)"; then
+    return 1
+  fi
+  report_count="$(printf '%s\n' "$discovered" | sed '/^$/d' | wc -l | tr -d ' ')"
+  [[ "$report_count" == "0" || "$report_count" == "66" ]] || return 1
+  while IFS= read -r report; do
+    [[ -n "$report" ]] || continue
+    verify_direct_child_parent "$report" "$(dirname "$report")" file || return 1
+    safe_remove_temporary_file "$report" || return 1
+    verify_direct_child_parent "$report" "$(dirname "$report")" absent || return 1
+  done <<< "$discovered"
+  if find "$attempt_root" -name beauty-example-renderer-report.json -print -quit | grep -q .; then
+    return 1
+  fi
+}
+
 cleanup_before_publication() {
   local failed=0
+  if [[ -n "$retained_root" ]] && ! cleanup_renderer_reports "$retained_root"; then
+    failed=1
+  fi
+  if [[ -n "$repeat_root" && -d "$repeat_root" ]] && ! cleanup_renderer_reports "$repeat_root"; then
+    failed=1
+  fi
   if safe_remove_temporary_file "$live_cases_path"; then
     live_cases_path=""
   else
@@ -432,6 +515,52 @@ if ((self_test_boundaries == 1)); then
   [[ -f "$boundary_test" && ! -L "$boundary_test" ]] || exit 1
   python3 "$boundary_test"
   exit
+fi
+
+if ((self_test_report_cleanup == 1)); then
+  temporary_parent="$(python3 -c 'import os,tempfile; print(os.path.realpath(tempfile.gettempdir()))')"
+  cleanup_test_root="$(make_temporary_directory "$temporary_parent" "beauty_report_cleanup_test_")"
+  retained_root="$(make_temporary_directory "$cleanup_test_root" "attempt_")"
+  repeat_root="$(make_temporary_directory "$cleanup_test_root" "beauty_repeat_attempt_")"
+  for root in "$retained_root" "$repeat_root"; do
+    while IFS=$'\t' read -r batch_id case_id; do
+      case_root="${root}/${batch_id}/${case_id}"
+      ensure_directory "$case_root"
+      printf '{"consumed":true}\n' | atomic_write_stdin "${case_root}/beauty-example-renderer-report.json"
+      grep -q '"consumed":true' "${case_root}/beauty-example-renderer-report.json"
+    done < <(renderer_report_rows)
+  done
+  renderer_reports_consumed=1
+  cleanup_renderer_reports "$retained_root"
+  cleanup_renderer_reports "$repeat_root"
+  retained_absent=1
+  repeat_absent=1
+
+  fault_root="$(make_temporary_directory "$cleanup_test_root" "attempt_fault_")"
+  while IFS=$'\t' read -r batch_id case_id; do
+    case_root="${fault_root}/${batch_id}/${case_id}"
+    ensure_directory "$case_root"
+    printf '{}\n' | atomic_write_stdin "${case_root}/beauty-example-renderer-report.json"
+  done < <(renderer_report_rows)
+  first_report="${fault_root}/control/geometryBaseline_noop/beauty-example-renderer-report.json"
+  safe_remove_temporary_file "$first_report"
+  ln -s "$manifest" "$first_report"
+  if cleanup_renderer_reports "$fault_root" 2>/dev/null; then exit 1; fi
+  symlink_rejected=1
+  safe_remove_temporary_file "$first_report"
+  printf '{}\n' | atomic_write_stdin "$first_report"
+  printf '{}\n' | atomic_write_stdin "${fault_root}/beauty-example-renderer-report.json"
+  if cleanup_renderer_reports "$fault_root" 2>/dev/null; then exit 1; fi
+  path_mismatch_rejected=1
+  safe_remove_temporary_file "${fault_root}/beauty-example-renderer-report.json"
+  if BEAUTY_FACE_FEATURE_REPORT_CLEANUP_FAULT=forced cleanup_renderer_reports "$fault_root" 2>/dev/null; then exit 1; fi
+  forced_failure_blocks=1
+
+  retained_root=""
+  repeat_root=""
+  safe_remove_attempt "$cleanup_test_root" "$temporary_parent" "beauty_report_cleanup_test_"
+  echo "report_cleanup_self_test=PASS consumed_before_cleanup=1 retained_absent=${retained_absent} repeat_absent=${repeat_absent} symlink_rejected=${symlink_rejected} path_mismatch_rejected=${path_mismatch_rejected} forced_failure_blocks=${forced_failure_blocks}"
+  exit 0
 fi
 
 publish_failure_envelope() {
@@ -669,7 +798,6 @@ render_attempt() {
       render_failures=$((render_failures + 1))
       echo "render_failed ${batch_id}/${case_id}" >&2
     fi
-    safe_remove_temporary_file "${case_root}/beauty-example-renderer-report.json"
   }
 
   render_one control "geometryBaseline_noop"
@@ -796,7 +924,9 @@ if ! swift "$comparator" \
   >/dev/null 2>&1; then
   exit 2
 fi
+renderer_reports_consumed=1
 failure_reason="cleanup_failure"
+((renderer_reports_consumed == 1)) || exit 2
 cleanup_before_publication || exit 2
 failure_reason="publication_failure"
 printf '%s' "$publication_document" | atomic_write_stdin "$report_path"

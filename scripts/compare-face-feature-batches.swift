@@ -143,6 +143,15 @@ struct SemanticReportEnvelope: Codable, Equatable {
     let stablePayload: StableSemanticPayload
 }
 
+private struct RendererGazeAggregate: Equatable {
+    let eligibleCount: Int
+    let correctedCount: Int
+    let rejectedCount: Int
+    let allReduced: Bool
+    let abstained: Bool
+    let minimumReductionQ16: Int
+}
+
 enum SemanticExitCode: Int32 {
     case success = 0
     case semanticFailure = 2
@@ -809,7 +818,8 @@ private func semanticMeasurement(
     neutral: CanonicalImage,
     candidate: CanonicalImage,
     siblings: [CanonicalImage],
-    watermarkRows: Int
+    watermarkRows: Int,
+    gazeAggregate: RendererGazeAggregate? = nil
 ) throws -> SemanticMeasurement {
     try validateCanonicalPair(source, neutral)
     try validateCanonicalPair(source, candidate)
@@ -820,19 +830,55 @@ private func semanticMeasurement(
     let target = try watermarkSafeRegions(contract.targetRegions, image: source, excludedRows: watermarkRows)
     let sourceTarget = try regionSignal(source, candidate, include: { contains(target, x: $0, y: $1) }, watermarkRows: watermarkRows)
     let neutralTarget = try regionSignal(neutral, candidate, include: { contains(target, x: $0, y: $1) }, watermarkRows: watermarkRows)
-    let sourceValue = try semanticMetricValue(kind: contract.metric, image: source, regions: target)
-    let neutralValue = try semanticMetricValue(kind: contract.metric, image: neutral, regions: target)
-    let candidateValue = try semanticMetricValue(kind: contract.metric, image: candidate, regions: target)
-    let sourceMargin = try checkedAdd(candidateValue, -sourceValue)
-    let neutralMargin = try checkedAdd(candidateValue, -neutralValue)
-    let signedMargin = contract.expectedSign == .positive
-        ? min(sourceMargin, neutralMargin)
-        : max(sourceMargin, neutralMargin)
-
+    let sourceMargin: Int64
+    let neutralMargin: Int64
+    let signedMargin: Int64
     var siblingMargin = Int64.max
-    for sibling in siblings {
-        let siblingValue = try semanticMetricValue(kind: contract.metric, image: sibling, regions: target)
-        siblingMargin = min(siblingMargin, try checkedAbsolute(try checkedAdd(candidateValue, -siblingValue)))
+    if contract.metric == .pupilToOwnEyeCenter {
+        guard let gazeAggregate,
+              gazeAggregate.eligibleCount > 0,
+              gazeAggregate.correctedCount == gazeAggregate.eligibleCount,
+              gazeAggregate.rejectedCount == 0,
+              gazeAggregate.allReduced,
+              !gazeAggregate.abstained,
+              gazeAggregate.minimumReductionQ16 > 0,
+              gazeAggregate.minimumReductionQ16 <= 65_536
+        else {
+            throw SemanticContractError.admission
+        }
+        sourceMargin = Int64(gazeAggregate.minimumReductionQ16)
+        neutralMargin = sourceMargin
+        signedMargin = sourceMargin
+        let minimumChanged = Int64(contract.thresholds.minimumChangedPixels)
+        let minimumDelta = Int64(contract.thresholds.minimumAbsoluteRGBDelta)
+        for sibling in siblings {
+            let signal = try regionSignal(
+                candidate, sibling,
+                include: { contains(target, x: $0, y: $1) },
+                watermarkRows: watermarkRows
+            )
+            if signal.changedPixels < minimumChanged || signal.absoluteRGBDelta < minimumDelta {
+                siblingMargin = 0
+            } else if siblingMargin != 0 {
+                siblingMargin = sourceMargin
+            }
+        }
+    } else {
+        let sourceValue = try semanticMetricValue(kind: contract.metric, image: source, regions: target)
+        let neutralValue = try semanticMetricValue(kind: contract.metric, image: neutral, regions: target)
+        let candidateValue = try semanticMetricValue(kind: contract.metric, image: candidate, regions: target)
+        sourceMargin = try checkedAdd(candidateValue, -sourceValue)
+        neutralMargin = try checkedAdd(candidateValue, -neutralValue)
+        signedMargin = contract.expectedSign == .positive
+            ? min(sourceMargin, neutralMargin)
+            : max(sourceMargin, neutralMargin)
+        for sibling in siblings {
+            let siblingValue = try semanticMetricValue(kind: contract.metric, image: sibling, regions: target)
+            siblingMargin = min(
+                siblingMargin,
+                try checkedAbsolute(try checkedAdd(candidateValue, -siblingValue))
+            )
+        }
     }
     guard siblingMargin != Int64.max else { throw SemanticContractError.admission }
 
@@ -1151,6 +1197,137 @@ private func requireAdmittedRegularFile(_ url: URL, beneath root: URL) throws {
     }
 }
 
+private func strictJSONInteger(_ value: Any?) -> Int? {
+    guard let number = value as? NSNumber,
+          CFGetTypeID(number) != CFBooleanGetTypeID(),
+          number.doubleValue.isFinite,
+          number.doubleValue.rounded(.towardZero) == number.doubleValue
+    else {
+        return nil
+    }
+    return Int(exactly: number.doubleValue)
+}
+
+private func strictJSONBoolean(_ value: Any?) -> Bool? {
+    guard let number = value as? NSNumber,
+          CFGetTypeID(number) == CFBooleanGetTypeID()
+    else {
+        return nil
+    }
+    return number.boolValue
+}
+
+private func jsonKeyOccurrenceCount(_ key: String, in data: Data) -> Int {
+    guard let text = String(data: data, encoding: .utf8),
+          let expression = try? NSRegularExpression(
+              pattern: "\\\"\(NSRegularExpression.escapedPattern(for: key))\\\"[[:space:]]*:",
+              options: []
+          )
+    else {
+        return 0
+    }
+    return expression.numberOfMatches(
+        in: text, options: [], range: NSRange(text.startIndex..., in: text)
+    )
+}
+
+private func validatedRendererGazeAggregate(_ value: Any) throws -> RendererGazeAggregate {
+    guard let object = value as? [String: Any],
+          Set(object.keys) == Set([
+              "eligibleCount", "correctedCount", "rejectedCount", "allReduced",
+              "abstained", "minimumReductionQ16",
+          ]),
+          let eligibleCount = strictJSONInteger(object["eligibleCount"]),
+          let correctedCount = strictJSONInteger(object["correctedCount"]),
+          let rejectedCount = strictJSONInteger(object["rejectedCount"]),
+          let allReduced = strictJSONBoolean(object["allReduced"]),
+          let abstained = strictJSONBoolean(object["abstained"]),
+          let minimumReductionQ16 = strictJSONInteger(object["minimumReductionQ16"]),
+          (0...2).contains(eligibleCount),
+          (0...2).contains(correctedCount),
+          (0...2).contains(rejectedCount),
+          (0...65_536).contains(minimumReductionQ16),
+          correctedCount + rejectedCount == eligibleCount,
+          abstained == (correctedCount == 0)
+    else {
+        throw SemanticContractError.admission
+    }
+    let creditable = eligibleCount > 0 && correctedCount == eligibleCount
+        && rejectedCount == 0 && minimumReductionQ16 > 0 && !abstained
+    guard allReduced == creditable,
+          allReduced ? creditable : minimumReductionQ16 == 0
+    else {
+        throw SemanticContractError.admission
+    }
+    return RendererGazeAggregate(
+        eligibleCount: eligibleCount,
+        correctedCount: correctedCount,
+        rejectedCount: rejectedCount,
+        allReduced: allReduced,
+        abstained: abstained,
+        minimumReductionQ16: minimumReductionQ16
+    )
+}
+
+private func admitRendererReportData(
+    _ data: Data,
+    caseID: String,
+    expectedUnits: [(inputID: String, outputID: String)]
+) throws -> [String: RendererGazeAggregate] {
+    guard !data.isEmpty, data.count <= 4 * 1_024 * 1_024,
+          let object = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+          Set(object.keys) == Set([
+              "schemaVersion", "backend", "requested", "succeeded", "failed",
+              "skipped", "inputIDs", "caseIDs", "outputs",
+          ]),
+          object["schemaVersion"] as? String == "beauty.example-renderer.report.v1",
+          object["backend"] as? String == "cpu",
+          strictJSONInteger(object["requested"]) == expectedUnits.count,
+          strictJSONInteger(object["succeeded"]) == expectedUnits.count,
+          strictJSONInteger(object["failed"]) == 0,
+          strictJSONInteger(object["skipped"]) == 0,
+          object["inputIDs"] as? [String] == expectedUnits.map(\.inputID),
+          object["caseIDs"] as? [String] == [caseID],
+          let outputs = object["outputs"] as? [[String: Any]],
+          outputs.count == expectedUnits.count
+    else {
+        throw SemanticContractError.admission
+    }
+
+    var aggregates: [String: RendererGazeAggregate] = [:]
+    var identities = Set<String>()
+    let gazeCase = caseID == "gazeCorrection_0p25"
+    for (unit, expected) in zip(outputs, expectedUnits) {
+        let expectedKeys: Set<String> = gazeCase
+            ? ["inputID", "caseID", "outputID", "status", "gazeAggregate"]
+            : ["inputID", "caseID", "outputID", "status"]
+        guard Set(unit.keys) == expectedKeys,
+              unit["inputID"] as? String == expected.inputID,
+              unit["caseID"] as? String == caseID,
+              unit["outputID"] as? String == expected.outputID,
+              unit["status"] as? String == "succeeded",
+              identities.insert("\(expected.inputID)\u{1f}\(caseID)\u{1f}\(expected.outputID)").inserted
+        else {
+            throw SemanticContractError.admission
+        }
+        if gazeCase {
+            guard let rawAggregate = unit["gazeAggregate"] else {
+                throw SemanticContractError.admission
+            }
+            aggregates[expected.outputID] = try validatedRendererGazeAggregate(rawAggregate)
+        }
+    }
+    if gazeCase {
+        for key in [
+            "eligibleCount", "correctedCount", "rejectedCount", "allReduced",
+            "abstained", "minimumReductionQ16",
+        ] where jsonKeyOccurrenceCount(key, in: data) != expectedUnits.count {
+            throw SemanticContractError.admission
+        }
+    }
+    return aggregates
+}
+
 private func admittedFixtureURLs(in inputRoot: URL) throws -> [URL] {
     try requireAdmittedDirectory(inputRoot)
     let portraitRoot = inputRoot.appendingPathComponent("portraits", isDirectory: true)
@@ -1211,6 +1388,25 @@ private func expectedRunOutputs(
     return outputs
 }
 
+private func expectedRendererReportURLs(
+    manifest: BatchManifest,
+    runRoot: URL
+) -> [(caseID: String, url: URL)] {
+    var values = [(manifest.control.id, runRoot
+        .appendingPathComponent("control", isDirectory: true)
+        .appendingPathComponent(manifest.control.id, isDirectory: true)
+        .appendingPathComponent("beauty-example-renderer-report.json"))]
+    for batch in manifest.batches {
+        for caseID in batch.cases {
+            values.append((caseID, runRoot
+                .appendingPathComponent(batch.id, isDirectory: true)
+                .appendingPathComponent(caseID, isDirectory: true)
+                .appendingPathComponent("beauty-example-renderer-report.json")))
+        }
+    }
+    return values
+}
+
 private func admitRunInventory(
     manifest: BatchManifest,
     fixtures: [URL],
@@ -1222,7 +1418,10 @@ private func admitRunInventory(
         throw SemanticContractError.admission
     }
     let expected = expectedRunOutputs(manifest: manifest, fixtures: fixtures, runRoot: runRoot)
-    let expectedPaths = Set(expected.map { $0.standardizedFileURL.path })
+    let expectedReports = expectedRendererReportURLs(manifest: manifest, runRoot: runRoot)
+    let expectedPNGPaths = Set(expected.map { $0.standardizedFileURL.path })
+    let expectedReportPaths = Set(expectedReports.map { $0.url.standardizedFileURL.path })
+    let expectedPaths = expectedPNGPaths.union(expectedReportPaths)
     var expectedDirectoryPaths: Set<String> = []
     for output in expected {
         var parent = output.deletingLastPathComponent().standardizedFileURL
@@ -1238,7 +1437,7 @@ private func admitRunInventory(
         at: runRoot,
         includingPropertiesForKeys: [
             .isRegularFileKey, .isDirectoryKey, .isSymbolicLinkKey,
-            .contentModificationDateKey, .creationDateKey
+            .contentModificationDateKey, .creationDateKey, .fileSizeKey
         ],
         options: []
     ) else {
@@ -1250,7 +1449,7 @@ private func admitRunInventory(
     for case let url as URL in enumerator {
         let values = try url.resourceValues(forKeys: [
             .isRegularFileKey, .isDirectoryKey, .isSymbolicLinkKey,
-            .contentModificationDateKey
+            .contentModificationDateKey, .fileSizeKey
         ])
         guard values.isSymbolicLink != true else { throw SemanticContractError.admission }
         if values.isDirectory == true {
@@ -1262,14 +1461,24 @@ private func admitRunInventory(
         guard values.isRegularFile == true else { throw SemanticContractError.admission }
         try requireAdmittedRegularFile(url, beneath: runRoot)
         let path = url.standardizedFileURL.path
-        guard expectedPaths.contains(path), url.pathExtension.lowercased() == "png",
-              let modified = values.contentModificationDate,
+        guard expectedPaths.contains(path), let modified = values.contentModificationDate,
               modified >= rootCreated.addingTimeInterval(-1.0) else {
             throw SemanticContractError.admission
         }
-        let signature = try Data(contentsOf: url, options: .mappedIfSafe).prefix(8)
-        guard signature.elementsEqual([137, 80, 78, 71, 13, 10, 26, 10]) else {
-            throw SemanticContractError.admission
+        if expectedPNGPaths.contains(path) {
+            guard url.pathExtension.lowercased() == "png" else {
+                throw SemanticContractError.admission
+            }
+            let signature = try Data(contentsOf: url, options: .mappedIfSafe).prefix(8)
+            guard signature.elementsEqual([137, 80, 78, 71, 13, 10, 26, 10]) else {
+                throw SemanticContractError.admission
+            }
+        } else {
+            guard url.lastPathComponent == "beauty-example-renderer-report.json",
+                  (values.fileSize ?? 0) > 0,
+                  (values.fileSize ?? 0) <= 4 * 1_024 * 1_024 else {
+                throw SemanticContractError.admission
+            }
         }
         guard discovered.insert(path).inserted else { throw SemanticContractError.admission }
     }
@@ -1277,7 +1486,59 @@ private func admitRunInventory(
     return Dictionary(uniqueKeysWithValues: expected.map { ($0.standardizedFileURL.path, $0) })
 }
 
-private struct FileIdentity: Equatable {
+private func rendererInputID(_ fixture: URL, inputRoot: URL) throws -> String {
+    let portraitRoot = inputRoot.appendingPathComponent("portraits", isDirectory: true)
+        .standardizedFileURL
+    let path = fixture.standardizedFileURL.path
+    let prefix = portraitRoot.path.hasSuffix("/") ? portraitRoot.path : portraitRoot.path + "/"
+    guard path.hasPrefix(prefix) else { throw SemanticContractError.admission }
+    return String(path.dropFirst(prefix.count)).replacingOccurrences(of: "\\", with: "/")
+}
+
+private func admitRendererReports(
+    manifest: BatchManifest,
+    fixtures: [URL],
+    inputRoot: URL,
+    runRoot: URL
+) throws -> [String: RendererGazeAggregate] {
+    let inputIDs = try fixtures.map { try rendererInputID($0, inputRoot: inputRoot) }
+    let reports = expectedRendererReportURLs(manifest: manifest, runRoot: runRoot)
+    var identities = Set<FileIdentity>()
+    var gazeAggregates: [String: RendererGazeAggregate] = [:]
+    for report in reports {
+        try requireAdmittedRegularFile(report.url, beneath: runRoot)
+        guard report.url.deletingLastPathComponent().lastPathComponent == report.caseID,
+              let identity = try existingFileIdentity(report.url),
+              identities.insert(identity).inserted
+        else {
+            throw SemanticContractError.admission
+        }
+        let expectedUnits = zip(fixtures, inputIDs).map { fixture, inputID in
+            (
+                inputID: inputID,
+                outputID: "\(fixture.deletingPathExtension().lastPathComponent)__\(report.caseID).png"
+            )
+        }
+        let admitted = try admitRendererReportData(
+            Data(contentsOf: report.url, options: .mappedIfSafe),
+            caseID: report.caseID,
+            expectedUnits: expectedUnits
+        )
+        for (outputID, aggregate) in admitted {
+            let outputPath = report.url.deletingLastPathComponent()
+                .appendingPathComponent(outputID).standardizedFileURL.path
+            guard gazeAggregates.updateValue(aggregate, forKey: outputPath) == nil else {
+                throw SemanticContractError.admission
+            }
+        }
+    }
+    guard gazeAggregates.count == fixtures.count else {
+        throw SemanticContractError.admission
+    }
+    return gazeAggregates
+}
+
+private struct FileIdentity: Equatable, Hashable {
     let device: dev_t
     let inode: ino_t
 }
@@ -1580,11 +1841,15 @@ private func semanticDirectionSummary(
     sources: [CanonicalImage],
     neutrals: [CanonicalImage],
     candidates: [CanonicalImage],
-    siblingImages: [[CanonicalImage]]
+    siblingImages: [[CanonicalImage]],
+    gazeAggregates: [RendererGazeAggregate]? = nil
 ) throws -> SemanticDirectionSummary {
     guard !sources.isEmpty, sources.count == neutrals.count,
           sources.count == candidates.count,
-          siblingImages.allSatisfy({ $0.count == sources.count }) else {
+          siblingImages.allSatisfy({ $0.count == sources.count }),
+          contract.metric == .pupilToOwnEyeCenter
+            ? gazeAggregates?.count == sources.count
+            : gazeAggregates == nil else {
         throw SemanticContractError.admission
     }
     var sourceChanged: Int64 = 0
@@ -1605,7 +1870,8 @@ private func semanticDirectionSummary(
             contract: contract,
             source: sources[index], neutral: neutrals[index], candidate: candidates[index],
             siblings: siblingImages.map { $0[index] },
-            watermarkRows: watermarkExcludedRows(width: sources[index].width)
+            watermarkRows: watermarkExcludedRows(width: sources[index].width),
+            gazeAggregate: gazeAggregates?[index]
         )
         sourceChanged = try checkedAdd(sourceChanged, measurement.sourceTarget.changedPixels)
         sourceDelta = try checkedAdd(sourceDelta, measurement.sourceTarget.absoluteRGBDelta)
@@ -1955,9 +2221,33 @@ private func runDirectionMetricSelfTests(contracts: [SemanticContract]) throws -
             siblingImages: Array(repeating: [admittedGaze], count: gazeContract.comparisonCaseIDs.count - 2)
         )
         throw SemanticContractError.verdict
-    } catch SemanticContractError.unsupportedMetric {
+    } catch SemanticContractError.admission {
         probes += 1 // No incomplete direction can be published as a measured semantic failure.
     }
+
+    let gazeSource = generatedImage(width: 80, height: 300, rectangles: [])
+    let gazeCandidate = generatedImage(
+        width: 80, height: 300,
+        rectangles: [(24, 165, 38, 210), (41, 165, 56, 210)]
+    )
+    let aggregate = RendererGazeAggregate(
+        eligibleCount: 2, correctedCount: 2, rejectedCount: 0,
+        allReduced: true, abstained: false, minimumReductionQ16: 688
+    )
+    let gazeSummary = try semanticDirectionSummary(
+        contract: gazeContract,
+        sources: [gazeSource], neutrals: [gazeSource], candidates: [gazeCandidate],
+        siblingImages: Array(
+            repeating: [gazeSource], count: gazeContract.comparisonCaseIDs.count - 2
+        ),
+        gazeAggregates: [aggregate]
+    )
+    guard gazeSummary.verdict == "semantic_pass",
+          gazeSummary.sourceSignedMarginQ16 == 688,
+          gazeSummary.siblingDistinctMarginQ16 == 688 else {
+        throw SemanticContractError.verdict
+    }
+    probes += 1
 
     let browRegions = [
         RasterizedRegion(minX: 24, maxX: 40, minY: 12, maxY: 24),
@@ -2303,6 +2593,9 @@ private func runSemanticReportSelfTests(manifest: BatchManifest) throws -> Int {
     for output in expectedOutputs {
         try FileManager.default.createDirectory(at: output.deletingLastPathComponent(), withIntermediateDirectories: true)
         try pngHeader.write(to: output)
+    }
+    for report in expectedRendererReportURLs(manifest: manifest, runRoot: runRoot) {
+        try Data("{}".utf8).write(to: report.url)
     }
     _ = try admitRunInventory(manifest: manifest, fixtures: admitted, runRoot: runRoot, attemptID: "attempt_001")
     probes += 1
@@ -2966,6 +3259,9 @@ if commandArguments.contains("--verify-run-inventory") {
         _ = try admitRunInventory(
             manifest: manifest, fixtures: fixtures, runRoot: runRoot, attemptID: attemptID
         )
+        _ = try admitRendererReports(
+            manifest: manifest, fixtures: fixtures, inputRoot: inputURL, runRoot: runRoot
+        )
         print("run_inventory=PASS outputs=\(expectedRunOutputs(manifest: manifest, fixtures: fixtures, runRoot: runRoot).count)")
         exit(0)
     } catch {
@@ -2991,6 +3287,9 @@ do {
     let fixtures = try admittedFixtureURLs(in: inputURL)
     let admittedOutputs = try admitRunInventory(
         manifest: manifest, fixtures: fixtures, runRoot: runRoot, attemptID: attemptID
+    )
+    let admittedGazeAggregates = try admitRendererReports(
+        manifest: manifest, fixtures: fixtures, inputRoot: inputURL, runRoot: runRoot
     )
     try admitReportDestination(
         reportURL, manifestURL: manifestURL, inputRoot: inputURL, runRoot: runRoot,
@@ -3100,9 +3399,23 @@ do {
             guard let images = candidateImages[caseID] else { throw SemanticContractError.inventory }
             return images
         }
+        let gazeAggregates: [RendererGazeAggregate]? = contract.metric == .pupilToOwnEyeCenter
+            ? try fixtures.map { fixture in
+                let path = outputURL(
+                    runRoot: runRoot,
+                    batchID: "eyes",
+                    stem: fixture.deletingPathExtension().lastPathComponent,
+                    caseID: contract.caseID
+                ).standardizedFileURL.path
+                guard let aggregate = admittedGazeAggregates[path] else {
+                    throw SemanticContractError.admission
+                }
+                return aggregate
+            }
+            : nil
         return try semanticDirectionSummary(
             contract: contract, sources: inputImages, neutrals: controlImages,
-            candidates: candidate, siblingImages: siblings
+            candidates: candidate, siblingImages: siblings, gazeAggregates: gazeAggregates
         )
     }
     let overallPass = semanticDirections.allSatisfy { $0.verdict == "semantic_pass" }
