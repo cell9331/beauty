@@ -1514,3 +1514,42 @@ reference; explicit selectable GPU either succeeds through the retained
 fallback. Privacy, SDK-only owner-local use, and non-distribution boundaries
 remain unchanged. Phase 95 owns the clean 65-output, seven-effective-plus-one-
 deferred publication and the complete no-skip closeout.
+
+## Phase 91 Independent Gaze Correction Design Contract
+
+`gazeCorrection` now owns a per-eye request-local pupil channel separate from
+the paired pupil value retained for `pupilSize`. Positive gaze selection is a
+stable left-then-right compact map over independently valid observed supports;
+it never creates legacy support, borrows the peer eye, or changes the common
+support selector used by other eye controls. Missing, malformed, outside,
+ellipse-invalid, duplicate, stale, or otherwise ineligible support disables
+only that eye.
+
+The displacement law is literal: length `0.002` is neutral, positive input is
+capped at `0.25`, and the cap moves the pupil 35% toward its own eye center.
+Source and destination must both lie strictly inside one finite simple closed
+eye aperture. The field radius is
+`min(faceWidth * 0.05, sourceClearance * 0.5, targetClearance * 0.5)` and must
+be finite and positive. This preserves the aperture, contour, brows, and
+surrounding pixels through field-local rejection instead of fallback.
+
+After conflict convergence, effective-strength sanitation, and final eye-field
+recomputation, the resolver reconciles exact admitted gaze points into six
+bounded aggregate values: eligible, corrected, and rejected counts;
+all-reduced; abstained; and minimum-reduction Q16. Counts, booleans, and Q16
+must agree or the whole aggregate collapses to abstention. No per-eye geometry
+or pixels enter that carrier.
+
+Generated public-facade evidence passed with own-center reductions `201/203
+Q16`, target signal `1316/51731`, and exact `0/0` change in every protected
+aggregate. Neutral, cap, dead-zone, bilateral, single-side, invalid-peer,
+ratio-implausible, no-face, repeat, and valid-invalid-valid paths are
+deterministic. The current-authority suite passed `840/0/8` while preserving
+the one discovered Phase-90-deferred frozen FACE-01 RED oracle; focused
+compatibility passed `107/0/0`.
+
+No public parameter, preset, renderer case, facade, backend, or `Warp.metal`
+contract changed. Phase 95 retains authorized portrait publication and the
+complete no-skip closeout; this design establishes no device, population,
+naturalness, commercial, packaging, shipping, launch, release, or distribution
+authority.

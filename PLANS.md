@@ -26,9 +26,24 @@
 
 ## 3. Active
 
-No active plan. Phase 91 is the next feature phase.
+No active plan. Phase 92 is the next feature phase.
 
 ## 4. Completed
+
+### C-2026-09-06-phase-91-independent-gaze-correction
+
+| Field | Value |
+| --- | --- |
+| Status | `completed` |
+| Scope | Repair existing positive `gazeCorrection` so every independently eligible observed pupil moves toward its own eye center without peer borrowing, aperture escape, public-inventory change, or raw-anatomy persistence. |
+| Planning | One bounded research pass produced `91-RESEARCH.md`; one four-plan set was independently checked to zero blockers after its finite revisions. Plans 91-01 through 91-03 and this closeout all share `implementation_attempt: 1`; no second attempt was needed. |
+| Implementation | Plan 91-01 split paired pupil-size compatibility from per-eye gaze eligibility and added simple-aperture/half-clearance admission (`d856b92`, `949d6a5`, `c05e2c1`, `f07845d`). Plan 91-02 attached the final post-conflict six-key aggregate and generated public-facade pixel proof (`56636d0`, `3a38bd9`, `de5a63d`, `7675721`). Plan 91-03 bound the aggregate to the exact renderer output and comparator cleanup lifecycle (`e175cb5`, `51e6d99`, `101c81c`, `f742a54`). |
+| Contract | Exact displacement `0.002` is neutral; positive work caps at `0.25` and moves at most 35% toward that eye's own center. The gaze radius is no greater than the least of 5% face width and half the source/target aperture clearances. Missing, malformed, centered, outside, stale, or otherwise ineligible support fails closed per eye; paired `pupilSize` behavior is unchanged. |
+| Evidence | Generated 512×512 public-facade evidence measured own-center reductions `201/203 Q16`, target signal `1316/51731`, and outside/contour/brow/background/watermark `0/0`. The final aggregate is exactly eligible/corrected/rejected counts, all-reduced, abstained, and minimum-reduction Q16; bilateral/single/abstain rows are `2/2/0/1/0/688`, `1/1/0/1/0/688`, and `0/0/0/0/1/0`. |
+| Closeout | The Phase-90-deferred frozen FACE-01 effectiveness oracle remains discovered exactly once and intentionally non-GREEN; the remaining current-authority SwiftPM suite passed `840/0/8`, and focused compatibility passed `107/0/0`. Comparator self-test passed `576` mutations with `5/65/8`; runner boundaries passed with `report_cleanup=6`; preflight passed exact `75/65/8`; backend-neutral passed `24` focused and `41` CPU-reference tests; both archive hashes and the post-archive SDK-only boundary passed. Task 91-04 moved only the CPU-reference inventory's two target-internal gaze samples from aperture-boundary to deterministic interior positions (`5f4ee81`), without changing assertions or production behavior. |
+| Compatibility | Exactly 62 stored fields, five presets, 75 renderer cases, both still-image facades, CPU reference, selectable `.cpu`/`.gpu`, terminal `.metalUnavailable`, and retained `Warp.metal` remain unchanged. |
+| Privacy and failure boundary | Gaze anatomy, pixels, masks, radii, private locators, temporary reports, paths, and transcripts remain request-local or test-local and absent from durable evidence. Invalid algebra, identity mismatch, replay, proxy-only evidence, report residue, or cleanup failure earns no semantic credit. |
+| Handoff | EYE-01 is complete at owner-local package-host scope. Phase 92 is next. Phase 95 alone owns the authorized portrait rerun, final clean 65-output publication, precision residuals, and `scripts/run-no-skip-swiftpm.sh`; Phase 91 ran none of those and makes no device, population, naturalness, commercial, packaging, shipping, launch, release, or distribution claim. |
 
 ### C-2026-09-02-phase-90-chin-repair-and-contour-deferral
 

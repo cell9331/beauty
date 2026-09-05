@@ -420,3 +420,31 @@ All of this remains SDK-only and owner-local. Automated package-host evidence
 does not qualify physical devices, performance, thermals, battery, endurance,
 population behavior, commercial visual quality, packaging, shipping, launch,
 release readiness, or distribution.
+
+## Phase 91 Independent Gaze Correction Owner Journey
+
+Through either existing still-image facade, the owner can apply positive
+`gazeCorrection` to one or two independently supported eyes. Each eligible
+pupil moves toward its own eye center; a missing, malformed, centered, or
+implausible peer remains source-safe and cannot disable or lend geometry to the
+valid eye. The exact dead zone is `0.002`, input caps at `0.25`, maximum motion
+is 35%, and the influence stays within the eye's own aperture clearance.
+
+The generated owner-observable proof measured own-center reductions `201/203
+Q16`, target signal `1316/51731`, and `0/0` changes for outside, contours,
+brows, background, and watermark. Neutral, repeat, cap, rejection, and
+valid-invalid-valid flows preserve alpha, extent, metadata, deterministic
+output, and request-local recovery. Paired `pupilSize` and every unrelated eye
+control retain their previous behavior.
+
+Renderer/comparator evidence is intentionally narrow: the successful output
+may carry only one consistent six-field aggregate, bound to that exact output,
+while all target, sibling, locality, and protection acceptance still comes from
+actual pixels. Temporary reports are removed before durable publication.
+
+Phase 91 changes none of the 62 stored fields, five presets, 75 renderer cases,
+public facade signatures, backend selection policy, or retained `Warp.metal`.
+It completes EYE-01 for owner-local package-host use only. Phase 95 still owns
+the authorized portrait rerun, clean 65-output publication, and complete
+no-skip closeout; no device, population, naturalness, commercial, packaging,
+shipping, launch, release, or distribution claim follows.

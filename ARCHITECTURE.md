@@ -406,3 +406,28 @@ does not turn the historical matrix into transparent-input, end-to-end GPU
 local-retouch, shared-instance parallel, or release evidence. UI/Demo,
 simulator/device, performance, commercial, packaging, shipping, launch, and
 release-readiness remain excluded.
+
+## Phase 91 Independent Gaze Correction Ownership
+
+The request path remains within existing targets. `BeautyDetection` supplies
+observed per-eye support; `BeautyEffects` maps each valid side into an internal
+gaze-only pupil channel while preserving the paired `pupilSize` channel.
+`EyeWarpProvider` selects zero, one, or two sides independently, proves strict
+simple-aperture containment and half-clearance radius ownership, and emits one
+bounded point per eligible eye. `BeautyEffectResolver` creates the six-field
+aggregate only after final conflict resolution and exact point reconciliation.
+
+`BeautySDK` carries those already-redacted metrics through the existing result
+path. `BeautyExampleRenderer` may place them only on the matching successful
+gaze output unit. The SDK-owned comparator binds schema, input, case, output,
+backend, and aggregate algebra before using minimum Q16 for direction; source
+and neutral target signal, sibling distinction, locality, and protected pixels
+remain image-derived mandatory gates. The runner consumes both temporary
+attempt reports, verifies their deletion, and publishes only aggregate status.
+
+This flow adds no public type, target, dependency, renderer case, model, data,
+network path, UI, realtime route, or GPU behavior. Exactly 62 fields, five
+presets, 75 renderer cases, both still-image facades, CPU reference,
+selectable `.cpu`/`.gpu`, terminal `.metalUnavailable`, and retained
+`Warp.metal` remain the architecture boundary. Phase 95 owns portrait
+publication and the full no-skip milestone gate.
