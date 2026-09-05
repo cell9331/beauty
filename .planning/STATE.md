@@ -4,18 +4,17 @@ milestone: v1.22
 milestone_name: Non-Local Facial Effect Repairs
 current_phase: 91
 current_phase_name: Independent Gaze Correction
-status: executing
-stopped_at: Completed 91-03-PLAN.md
-last_updated: "2026-09-05T15:19:41.972Z"
-last_activity: 2026-09-05
-last_activity_desc: Phase 91 Plan 02 complete; advancing to Plan 03
-state_head: f742a548dabf7d4ddff0861a9696acb06b44dc8e
+status: verifying
+stopped_at: Completed 91-04-PLAN.md
+last_updated: "2026-09-05T16:07:44.243Z"
+last_activity: 2026-09-06
+last_activity_desc: Phase 91 Plan 04 complete; ready for phase verification
 progress:
   total_phases: 7
   completed_phases: 2
-  total_plans: 12
-  completed_plans: 11
-  percent: 29
+  total_plans: 13
+  completed_plans: 12
+  percent: 92
 ---
 
 # Project State
@@ -31,20 +30,20 @@ without distributing the SDK, model, or weights.
 
 ## Current Position
 
-Phase: 91 (Independent Gaze Correction) — EXECUTING
+Phase: 91 (Independent Gaze Correction) — VERIFYING
 Plan: 4 of 4
-Status: Ready to execute
-Last activity: 2026-09-05 — Plan 91-02 complete; advancing to Plan 91-03
+Status: Phase complete — ready for verification
+Last activity: 2026-09-06 — Plan 91-04 complete; ready for phase verification
 
-Progress: [█████████████████░░░] 10/12 plans ([███░░░░░░░] 29%)
+Progress: [██████████████████░░] 12/13 plans ([█████████░] 92%)
 
 ## Performance Metrics
 
 **Current milestone:**
 
-- Total plans completed: 10
-- Average documented duration: 12 min across 9 timed summaries
-- Total documented execution time: 110 min plus the untimed FACE-01 terminal record
+- Total plans completed: 12
+- Average documented duration: 13 min across 11 timed summaries
+- Total documented execution time: 144 min plus the untimed FACE-01 terminal record
 
 Historical milestone metrics remain in `.planning/MILESTONES.md` and archived
 roadmaps.
@@ -58,9 +57,11 @@ roadmaps.
 | Phase 89 P04 | 6min | 2 tasks | 6 files |
 | Phase 90 P02 | 13min | 2 tasks | 3 files |
 | Phase 90 P03 | 6min | 2 tasks | 5 files |
+| Phase 90 P04 | 6min | 2 tasks | 4 files |
 | Phase 91 P01 | 10min | 2 tasks | 5 files |
 | Phase 91 P02 | 16min | 2 tasks | 4 files |
 | Phase 91 P03 | 12 min | 2 tasks | 6 files |
+| Phase 91 P04 | 22min | 3 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -359,6 +360,8 @@ roadmaps.
 - [Phase 91]: Attach gaze evidence only after conflict convergence and final eye-emission recomputation, using the exact effective strength and exact final points. — Pre-conflict intent or summed improvement cannot earn credit.
 - [Phase 91]: Collapse any inconsistent or out-of-range six-key gaze aggregate to the fixed abstaining form. — Partial field repair cannot manufacture semantic credit.
 - [Phase 91]: Prove gaze direction with independently declared chromatic marker identities and own-center plus peer-center checks. — Darkness and production-owned anatomy cannot serve as a circular oracle.
+- [Phase 91]: Close EYE-01 in implementation attempt 1 with exact 840-test current-authority, 107-test compatibility, 576-mutation comparator, 75/65/8 preflight, backend-neutral, archive, and SDK-only evidence. — The single discovered Phase-90-deferred FACE-01 effectiveness oracle remains intentionally RED and receives no GREEN claim.
+- [Phase 91]: Bind gaze semantic direction to the exact successful renderer output while preserving every actual-pixel target, sibling, locality, and protection gate, then verify temporary report cleanup. — Aggregate evidence cannot replace pixels or survive the request lifecycle.
 
 ### Pending Todos
 
@@ -371,12 +374,10 @@ None found under `.planning/todos/pending/`.
   claim is permitted. Further repair requires a separately authorized
   FUTURE-04 milestone.
 
-- [Phase 89] Independent pupil-to-own-eye support is intentionally absent and
-  must be implemented in Phase 91 before gaze can receive semantic credit.
-
 - [Phase 89] Phase 95 must complete the clean 65/65 rerun with seven active
   directions effective and `faceContourSmooth` explicitly deferred/partial;
-  current unsupported gaze correctly publishes only a sanitized exit-2 envelope.
+  Phase 91 now makes gaze creditable, but does not run or publish that final
+  owner-local portrait batch.
 
 - Authorized portrait media and detailed outputs remain local and ignored;
   durable evidence must stay aggregate and privacy-safe.
@@ -392,6 +393,6 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-09-05T15:19:41.721Z
-Stopped at: Completed 91-03-PLAN.md
+Last session: 2026-09-05T16:07:44.236Z
+Stopped at: Completed 91-04-PLAN.md
 Resume file: None
