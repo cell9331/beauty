@@ -120,6 +120,11 @@ Plans:
 
 **Plans**: TBD
 
+- [x] 91-01-PLAN.md
+- [x] 91-02-PLAN.md
+- [x] 91-03-PLAN.md
+- [ ] 91-04-PLAN.md
+
 ### Phase 92: Signed Eyebrow-Head Spacing
 
 **Goal**: The owner can move only the inner eyebrow heads in both documented directions while keeping whole-brow geometry stable.
@@ -205,7 +210,7 @@ attempts before an explicit owner decision to repair, defer, or stop.
 | --- | --- | --- | --- | --- |
 | 89. Semantic Validation Baseline | v1.22 | 4/4 | Complete    | 2026-08-26 |
 | 90. Chin Repair and Contour Deferral | v1.22 | 4/4 | Complete    | 2026-09-04 |
-| 91. Independent Gaze Correction | v1.22 | 2/4 | In Progress | - |
+| 91. Independent Gaze Correction | v1.22 | 3/4 | In Progress|  |
 | 92. Signed Eyebrow-Head Spacing | v1.22 | 0/TBD | Not started | - |
 | 93. Distinct Nose Bridge and Root Repairs | v1.22 | 0/TBD | Not started | - |
 | 94. Negative Mouth-Width Repair | v1.22 | 0/TBD | Not started | - |
