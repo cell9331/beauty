@@ -490,19 +490,17 @@ Security enforcement is enabled at ASVS level 1 in `.planning/config.json`. [VER
 
 These are implementation hypotheses, not locked acceptance facts. The unchanged Phase 89 oracle resolves A1–A4; test compilation resolves A5. [VERIFIED: acceptance design]
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **Will the proposed first-attempt coefficients satisfy all frozen budgets simultaneously?**
+1. **Will the proposed first-attempt coefficients satisfy all frozen budgets simultaneously? — RESOLVED**
    - What is known: current target signal is ample, signed motion is 3.2× too small in the weaker positive case, protected groups are zero, and outside RGB is 3.6–4.2× over budget. [VERIFIED: aggregate report]
-   - What is uncertain: bilinear resampling and overlapping disks are nonlinear, so coefficient arithmetic cannot prove final Q16/locality results. [VERIFIED: renderer algorithm] [ASSUMED: outcome uncertainty]
-   - Recommendation: freeze the formula, execute the focused pixel test and unchanged final oracle once, and use only named aggregate failures to decide whether the one permitted second attempt is justified. [VERIFIED: D-18]
+   - **Resolution (RESOLVED):** the attempt-one formula is the planned hypothesis, and the unchanged frozen actual-pixel oracle adjudicates its adequacy. If it fails, only the named frozen aggregate failures may guide the single permitted second attempt; a second failure requires an explicit owner decision. No threshold, region, sibling, case, or comparator drift is allowed. [VERIFIED: D-10/D-14/D-18]
 
-2. **Is a mixed valid/invalid test-SPI case necessary?**
+2. **Is a mixed valid/invalid test-SPI case necessary? — RESOLVED**
    - What is known: provider tests can construct asymmetric semantic support directly, and facade test support already exposes paired, left-only, right-only, missing, and malformed cases. [VERIFIED: current tests/testing support]
-   - What is uncertain: the cleanest compilation boundary for a public-facade mixed case should be decided during Wave 0. [ASSUMED]
-   - Recommendation: keep it provider-local unless the facade test cannot cover request-local invalid-peer recovery with existing SPI; if needed, add test support only, never a production API. [ASSUMED]
+   - **Resolution (RESOLVED):** keep mixed valid/invalid construction provider-local by default, while public-facade coverage uses the existing paired, left-only, right-only, missing, and malformed testing-SPI cases. Only if compilation demonstrates an actual expressiveness gap may the implementation add the smallest testing-SPI-only case needed; it must never add public production API. [VERIFIED: current tests/testing support and D-03/D-06/D-16]
 
-No open question changes the scope, frozen thresholds, or planning readiness. [VERIFIED: all uncertainties fall under agent discretion]
+Both former questions are resolved for planning without changing the scope, coefficients, frozen thresholds, sources, or conclusions. [VERIFIED: D-06/D-09/D-10/D-18]
 
 ## Sources
 
