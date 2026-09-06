@@ -2,19 +2,20 @@
 gsd_state_version: 1.0
 milestone: v1.22
 milestone_name: Non-Local Facial Effect Repairs
-current_phase: 91
-current_phase_name: Independent Gaze Correction
-status: verifying
-stopped_at: Completed 91-04-PLAN.md
-last_updated: "2026-09-05T16:07:44.243Z"
+current_phase: 92
+current_phase_name: Signed Eyebrow-Head Spacing
+status: planning
+stopped_at: Phase 91 complete, ready to plan Phase 92
+last_updated: "2026-09-06T00:13:17.837Z"
 last_activity: 2026-09-06
-last_activity_desc: Phase 91 Plan 04 complete; ready for phase verification
+last_activity_desc: Phase 91 verified complete, transitioned to Phase 92
+state_head: a66ed93290e1a3c2c9d0a8178e5a54761adbd689
 progress:
   total_phases: 7
-  completed_phases: 2
-  total_plans: 13
+  completed_phases: 3
+  total_plans: 12
   completed_plans: 12
-  percent: 92
+  percent: 43
 ---
 
 # Project State
@@ -26,16 +27,16 @@ See: `.planning/PROJECT.md` (updated 2026-09-04)
 **Core value:** The project owner's local iOS host can integrate `BeautySDK`
 and get natural, controllable real-time and still-image beauty processing
 without distributing the SDK, model, or weights.
-**Current focus:** Phase 91 — Independent Gaze Correction
+**Current focus:** Phase 92 — Signed Eyebrow-Head Spacing
 
 ## Current Position
 
-Phase: 91 (Independent Gaze Correction) — VERIFYING
-Plan: 4 of 4
-Status: Phase complete — ready for verification
-Last activity: 2026-09-06 — Plan 91-04 complete; ready for phase verification
+Phase: 92 — Signed Eyebrow-Head Spacing
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-09-06 — Phase 91 verified complete, transitioned to Phase 92
 
-Progress: [██████████████████░░] 12/13 plans ([█████████░] 92%)
+Progress: [████████████████████] 12/12 planned plans (100%)
 
 ## Performance Metrics
 
