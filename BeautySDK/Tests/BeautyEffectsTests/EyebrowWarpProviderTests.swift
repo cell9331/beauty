@@ -71,7 +71,9 @@ final class EyebrowWarpProviderTests: XCTestCase {
                     point.target.x.isFinite && point.target.y.isFinite &&
                     (0...1).contains(point.source.x) && (0...1).contains(point.source.y) &&
                     (0...1).contains(point.target.x) && (0...1).contains(point.target.y) &&
-                    point.radius == eligibleFace.bounds.width * row.maximumRadiusFraction &&
+                    (row.name == "eyebrowHeadSpacing"
+                        ? point.radius <= eligibleFace.bounds.width * 0.045
+                        : point.radius == eligibleFace.bounds.width * row.maximumRadiusFraction) &&
                     point.strength == row.cap
             }, row.name)
 
@@ -144,6 +146,166 @@ final class EyebrowWarpProviderTests: XCTestCase {
         XCTAssertEqual(leftOnly.eyebrowYPosition.count, validLeft.points.count)
     }
 
+    func testBROW01HeadSpacingUsesOwnAxisInnerHalfMonotoneTaperAndTargetClearance() {
+        let provider = EyebrowWarpProvider()
+        let tolerance: Float = 0.000_01
+
+        for count in [4, 5, 16] {
+            for side: BeautyObservedEyebrowSide in [.left, .right] {
+                let trace = densityTrace(side: side, count: count)
+                let geometry = face(
+                    left: side == .left ? trace : nil,
+                    right: side == .right ? trace : nil
+                )
+                let positive = provider.fieldEmissions(
+                    face: geometry,
+                    strengths: headSpacingStrength(0.25)
+                ).eyebrowHeadSpacing
+                let negative = provider.fieldEmissions(
+                    face: geometry,
+                    strengths: headSpacingStrength(-0.25)
+                ).eyebrowHeadSpacing
+                let progress = cumulativeProgress(trace.points)
+                let expectedIndices = progress.indices.filter { progress[$0] < 0.5 }
+                let expectedSources = expectedIndices.map { trace.points[$0] }
+                let axis = unit(trace.outerEndpoint - trace.innerEndpoint)
+                let cutoff = trace.innerEndpoint + (trace.outerEndpoint - trace.innerEndpoint) * 0.5
+
+                XCTAssertEqual(positive.map(\.source), expectedSources, "\(side) count \(count)")
+                XCTAssertEqual(negative.map(\.source), expectedSources, "\(side) count \(count)")
+                XCTAssertFalse(positive.contains { $0.source == trace.outerEndpoint }, "\(side) count \(count)")
+                XCTAssertEqual(positive.map(\.radius), negative.map(\.radius), "\(side) count \(count)")
+
+                var previousWeight = Float.infinity
+                var previousRadius = Float.infinity
+                let comparableCount = [expectedIndices.count, positive.count, negative.count].min() ?? 0
+                for emissionIndex in 0..<comparableCount {
+                    let traceIndex = expectedIndices[emissionIndex]
+                    let positivePoint = positive[emissionIndex]
+                    let negativePoint = negative[emissionIndex]
+                    let p = progress[traceIndex]
+                    let normalized = p / 0.5
+                    let smoothstep = normalized * normalized * (3 - 2 * normalized)
+                    let weight = 1 - smoothstep
+                    let expectedMagnitude = geometry.bounds.width * 0.065 * weight
+                    let positiveDelta = positivePoint.target - positivePoint.source
+                    let negativeDelta = negativePoint.target - negativePoint.source
+                    let positiveAlongAxis = dot(positiveDelta, axis)
+                    let negativeAlongAxis = dot(negativeDelta, axis)
+                    let positivePlaneClearance = dot(cutoff - positivePoint.target, axis)
+                    let negativePlaneClearance = dot(cutoff - negativePoint.target, axis)
+                    let nominalRadius = geometry.bounds.width * (0.020 + 0.025 * weight)
+
+                    XCTAssertGreaterThan(positiveAlongAxis, 0, "\(side) count \(count) p \(p)")
+                    XCTAssertLessThan(negativeAlongAxis, 0, "\(side) count \(count) p \(p)")
+                    XCTAssertEqual(positiveAlongAxis, expectedMagnitude, accuracy: tolerance, "\(side) count \(count) p \(p)")
+                    XCTAssertEqual(negativeAlongAxis, -expectedMagnitude, accuracy: tolerance, "\(side) count \(count) p \(p)")
+                    XCTAssertEqual(positiveDelta.x, -negativeDelta.x, accuracy: tolerance)
+                    XCTAssertEqual(positiveDelta.y, -negativeDelta.y, accuracy: tolerance)
+                    XCTAssertLessThanOrEqual(weight, previousWeight)
+                    XCTAssertLessThanOrEqual(positivePoint.radius, previousRadius)
+                    XCTAssertTrue(positivePoint.radius.isFinite)
+                    XCTAssertGreaterThan(positivePoint.radius, 0)
+                    XCTAssertLessThanOrEqual(positivePoint.radius, nominalRadius + tolerance)
+                    XCTAssertGreaterThan(positivePlaneClearance, 0)
+                    XCTAssertGreaterThan(negativePlaneClearance, 0)
+                    XCTAssertLessThanOrEqual(positivePoint.radius, positivePlaneClearance * 0.5 + tolerance)
+                    XCTAssertLessThanOrEqual(negativePoint.radius, negativePlaneClearance * 0.5 + tolerance)
+                    XCTAssertTrue(isUnit(positivePoint.source) && isUnit(positivePoint.target))
+                    XCTAssertTrue(isUnit(negativePoint.source) && isUnit(negativePoint.target))
+                    previousWeight = weight
+                    previousRadius = positivePoint.radius
+                }
+            }
+        }
+    }
+
+    func testBROW01HeadSpacingPreservesDeadZoneCapPeerIndependenceAndRequestIsolation() {
+        let provider = EyebrowWarpProvider()
+        let left = densityTrace(side: .left, count: 5)
+        let right = densityTrace(side: .right, count: 5)
+        let valid = face(left: left, right: right)
+
+        for neutral in [Float.zero, Float.ulpOfOne, -Float.ulpOfOne] {
+            XCTAssertTrue(provider.fieldEmissions(
+                face: valid,
+                strengths: headSpacingStrength(neutral)
+            ).eyebrowHeadSpacing.isEmpty, "exact dead zone \(neutral)")
+        }
+        let cap = BeautySafetyCaps.eyebrowHeadSpacing
+        let capPositive = provider.fieldEmissions(face: valid, strengths: headSpacingStrength(cap))
+        let capNegative = provider.fieldEmissions(face: valid, strengths: headSpacingStrength(-cap))
+        XCTAssertFalse(capPositive.eyebrowHeadSpacing.isEmpty)
+        XCTAssertEqual(capPositive.eyebrowHeadSpacing.map(\.source), capNegative.eyebrowHeadSpacing.map(\.source))
+        XCTAssertEqual(capPositive.eyebrowHeadSpacing.map(\.radius), capNegative.eyebrowHeadSpacing.map(\.radius))
+        XCTAssertTrue(provider.fieldEmissions(
+            face: valid,
+            strengths: headSpacingStrength(cap.nextUp)
+        ).eyebrowHeadSpacing.isEmpty)
+        XCTAssertTrue(provider.fieldEmissions(
+            face: valid,
+            strengths: headSpacingStrength(-cap.nextUp)
+        ).eyebrowHeadSpacing.isEmpty)
+
+        var siblingStrengths = BeautyEffectiveStrengths()
+        siblingStrengths.eyebrowYPosition = 0.25
+        siblingStrengths.eyebrowThickness = 0.25
+        siblingStrengths.eyebrowLength = 0.25
+        siblingStrengths.eyebrowSpacing = 0.25
+        siblingStrengths.eyebrowTilt = 0.25
+        siblingStrengths.eyebrowPeakDefinition = 0.25
+        let siblingBaseline = provider.fieldEmissions(face: valid, strengths: siblingStrengths)
+        siblingStrengths.eyebrowHeadSpacing = cap
+        let siblingWithHead = provider.fieldEmissions(face: valid, strengths: siblingStrengths)
+        XCTAssertEqual(siblingWithHead.eyebrowYPosition, siblingBaseline.eyebrowYPosition)
+        XCTAssertEqual(siblingWithHead.eyebrowThickness, siblingBaseline.eyebrowThickness)
+        XCTAssertEqual(siblingWithHead.eyebrowLength, siblingBaseline.eyebrowLength)
+        XCTAssertEqual(siblingWithHead.eyebrowSpacing, siblingBaseline.eyebrowSpacing)
+        XCTAssertEqual(siblingWithHead.eyebrowTilt, siblingBaseline.eyebrowTilt)
+        XCTAssertEqual(siblingWithHead.eyebrowPeakDefinition, siblingBaseline.eyebrowPeakDefinition)
+
+        let malformedLeft = EyebrowSafetyFixtures.validatedTrace(
+            side: .left,
+            points: [.init(0.47, 0.41), .init(0.47, 0.41), .init(0.39, 0.34), .init(0.31, 0.41)],
+            bounds: bounds
+        )
+        let malformedRight = EyebrowSafetyFixtures.validatedTrace(
+            side: .right,
+            points: [.init(0.53, 0.41), .init(0.53, 0.41), .init(0.61, 0.34), .init(0.69, 0.41)],
+            bounds: bounds
+        )
+        XCTAssertNil(malformedLeft)
+        XCTAssertNil(malformedRight)
+
+        let leftOnly = provider.fieldEmissions(
+            face: face(left: left, right: malformedRight),
+            strengths: headSpacingStrength(cap)
+        ).eyebrowHeadSpacing
+        let rightOnly = provider.fieldEmissions(
+            face: face(left: malformedLeft, right: right),
+            strengths: headSpacingStrength(cap)
+        ).eyebrowHeadSpacing
+        XCTAssertEqual(leftOnly.map(\.source), cumulativeProgress(left.points).indices.filter { cumulativeProgress(left.points)[$0] < 0.5 }.map { left.points[$0] })
+        XCTAssertEqual(rightOnly.map(\.source), cumulativeProgress(right.points).indices.filter { cumulativeProgress(right.points)[$0] < 0.5 }.map { right.points[$0] })
+        XCTAssertTrue(leftOnly.allSatisfy { !right.points.contains($0.source) })
+        XCTAssertTrue(rightOnly.allSatisfy { !left.points.contains($0.source) })
+
+        let missing = face()
+        let malformedBoth = face(left: malformedLeft, right: malformedRight)
+        let noFace = FaceGeometry(bounds: .init(x: 0, y: 0, width: 0, height: 0), faceContour: [])
+        for unavailable in [missing, malformedBoth, noFace] {
+            let emissions = provider.fieldEmissions(face: unavailable, strengths: headSpacingStrength(cap))
+            XCTAssertTrue(emissions.eyebrowHeadSpacing.isEmpty)
+            XCTAssertEqual(emissions.sanitizing(headSpacingStrength(cap)).eyebrowHeadSpacing, 0)
+        }
+
+        let sequence = [valid, malformedBoth, valid].map {
+            provider.fieldEmissions(face: $0, strengths: headSpacingStrength(cap)).eyebrowHeadSpacing
+        }
+        XCTAssertEqual(sequence[0], sequence[2])
+        XCTAssertTrue(sequence[1].isEmpty)
+    }
+
     private func boundaryPoints(chord: Float) -> [SIMD2<Float>] {
         [
             .init(0, 0.20),
@@ -152,6 +314,62 @@ final class EyebrowWarpProviderTests: XCTestCase {
             .init(chord * 0.75, 0.20),
             .init(chord, 0.20),
         ]
+    }
+
+    private func densityTrace(
+        side: BeautyObservedEyebrowSide,
+        count: Int,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) -> BeautyEyebrowSemanticTrace {
+        precondition(count >= 4)
+        let innerX: Float = side == .left ? 0.47 : 0.53
+        let direction: Float = side == .left ? -1 : 1
+        let points = (0..<count).map { index -> SIMD2<Float> in
+            let progress = Float(index) / Float(count - 1)
+            return SIMD2<Float>(
+                innerX + direction * 0.16 * progress,
+                0.41 - 0.05 * sin(Float.pi * progress)
+            )
+        }
+        guard let trace = EyebrowSafetyFixtures.validatedTrace(
+            side: side,
+            points: points,
+            bounds: bounds
+        ) else {
+            XCTFail("density trace must pass production adapter", file: file, line: line)
+            return EyebrowSafetyFixtures.trace(side: side, bounds: bounds, file: file, line: line)
+        }
+        return trace
+    }
+
+    private func cumulativeProgress(_ points: [SIMD2<Float>]) -> [Float] {
+        var cumulative = [Float](repeating: 0, count: points.count)
+        for index in points.indices.dropFirst() {
+            cumulative[index] = cumulative[index - 1] + magnitude(points[index] - points[index - 1])
+        }
+        guard let total = cumulative.last, total.isFinite, total > 0 else {
+            return cumulative
+        }
+        return cumulative.map { $0 / total }
+    }
+
+    private func unit(_ vector: SIMD2<Float>) -> SIMD2<Float> {
+        let length = magnitude(vector)
+        return vector / length
+    }
+
+    private func magnitude(_ vector: SIMD2<Float>) -> Float {
+        sqrt(vector.x * vector.x + vector.y * vector.y)
+    }
+
+    private func dot(_ lhs: SIMD2<Float>, _ rhs: SIMD2<Float>) -> Float {
+        lhs.x * rhs.x + lhs.y * rhs.y
+    }
+
+    private func isUnit(_ point: SIMD2<Float>) -> Bool {
+        point.x.isFinite && point.y.isFinite
+            && (0...1).contains(point.x) && (0...1).contains(point.y)
     }
 
     private func face(
