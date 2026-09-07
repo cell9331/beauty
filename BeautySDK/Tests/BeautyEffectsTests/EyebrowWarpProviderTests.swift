@@ -169,7 +169,7 @@ final class EyebrowWarpProviderTests: XCTestCase {
                 let expectedIndices = progress.indices.filter { progress[$0] < 0.5 }
                 let expectedSources = expectedIndices.map { trace.points[$0] }
                 let axis = unit(trace.outerEndpoint - trace.innerEndpoint)
-                let cutoff = trace.innerEndpoint + (trace.outerEndpoint - trace.innerEndpoint) * 0.5
+                let cutoff = trace.innerEndpoint + (trace.outerEndpoint - trace.innerEndpoint) * 0.85
 
                 XCTAssertEqual(positive.map(\.source), expectedSources, "\(side) count \(count)")
                 XCTAssertEqual(negative.map(\.source), expectedSources, "\(side) count \(count)")
@@ -194,7 +194,10 @@ final class EyebrowWarpProviderTests: XCTestCase {
                     let negativeAlongAxis = dot(negativeDelta, axis)
                     let positivePlaneClearance = dot(cutoff - positivePoint.target, axis)
                     let negativePlaneClearance = dot(cutoff - negativePoint.target, axis)
-                    let nominalRadius = geometry.bounds.width * (0.020 + 0.025 * weight)
+                    let nominalRadius = geometry.bounds.width * (0.040 + 0.020 * weight)
+                    let outwardTarget = positivePoint.source + axis * abs(expectedMagnitude)
+                    let supportClearance = dot(cutoff - outwardTarget, axis)
+                    let expectedRadius = min(nominalRadius, supportClearance * 0.5)
 
                     XCTAssertGreaterThan(positiveAlongAxis, 0, "\(side) count \(count) p \(p)")
                     XCTAssertLessThan(negativeAlongAxis, 0, "\(side) count \(count) p \(p)")
@@ -206,7 +209,10 @@ final class EyebrowWarpProviderTests: XCTestCase {
                     XCTAssertLessThanOrEqual(positivePoint.radius, previousRadius)
                     XCTAssertTrue(positivePoint.radius.isFinite)
                     XCTAssertGreaterThan(positivePoint.radius, 0)
+                    XCTAssertEqual(positivePoint.radius, expectedRadius, accuracy: tolerance)
+                    XCTAssertEqual(negativePoint.radius, expectedRadius, accuracy: tolerance)
                     XCTAssertLessThanOrEqual(positivePoint.radius, nominalRadius + tolerance)
+                    XCTAssertGreaterThan(supportClearance, 0)
                     XCTAssertGreaterThan(positivePlaneClearance, 0)
                     XCTAssertGreaterThan(negativePlaneClearance, 0)
                     XCTAssertLessThanOrEqual(positivePoint.radius, positivePlaneClearance * 0.5 + tolerance)

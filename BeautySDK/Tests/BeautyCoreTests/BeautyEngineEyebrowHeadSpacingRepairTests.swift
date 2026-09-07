@@ -21,12 +21,12 @@ final class BeautyEngineEyebrowHeadSpacingRepairTests: XCTestCase {
         let source = fixture.bytes
         let image = fixture.image
 
-        let neutral = try process(image: image, fixture: .pairedObservedEyebrows, parameters: .init())
-        let headPlus = try process(image: image, fixture: .pairedObservedEyebrows, parameters: .init(eyebrowHeadSpacing: 0.25))
-        let repeatedPlus = try process(image: image, fixture: .pairedObservedEyebrows, parameters: .init(eyebrowHeadSpacing: 0.25))
-        let headMinus = try process(image: image, fixture: .pairedObservedEyebrows, parameters: .init(eyebrowHeadSpacing: -0.25))
-        let wholePlus = try process(image: image, fixture: .pairedObservedEyebrows, parameters: .init(eyebrowSpacing: 0.25))
-        let wholeMinus = try process(image: image, fixture: .pairedObservedEyebrows, parameters: .init(eyebrowSpacing: -0.25))
+        let neutral = try process(image: image, fixture: .phase92PairedObservedEyebrows, parameters: .init())
+        let headPlus = try process(image: image, fixture: .phase92PairedObservedEyebrows, parameters: .init(eyebrowHeadSpacing: 0.25))
+        let repeatedPlus = try process(image: image, fixture: .phase92PairedObservedEyebrows, parameters: .init(eyebrowHeadSpacing: 0.25))
+        let headMinus = try process(image: image, fixture: .phase92PairedObservedEyebrows, parameters: .init(eyebrowHeadSpacing: -0.25))
+        let wholePlus = try process(image: image, fixture: .phase92PairedObservedEyebrows, parameters: .init(eyebrowSpacing: 0.25))
+        let wholeMinus = try process(image: image, fixture: .phase92PairedObservedEyebrows, parameters: .init(eyebrowSpacing: -0.25))
 
         XCTAssertEqual(neutral.invocations, 0)
         XCTAssertEqual(neutral.bytes, source)
@@ -49,9 +49,15 @@ final class BeautyEngineEyebrowHeadSpacingRepairTests: XCTestCase {
         let neutralGap = innerBrowHeadGapQ16(neutral.bytes, width: fixture.width, height: fixture.height)
         XCTAssertEqual(neutralGap, sourceGap)
 
-        for (name, rendered) in [("head positive", headPlus), ("head negative", headMinus)] {
-            let sourceSignal = signal(source, rendered.bytes, width: fixture.width, height: fixture.height, regions: regions)
-            let neutralSignal = signal(neutral.bytes, rendered.bytes, width: fixture.width, height: fixture.height, regions: regions)
+        let plusSourceSignal = signal(source, headPlus.bytes, width: fixture.width, height: fixture.height, regions: regions)
+        let plusNeutralSignal = signal(neutral.bytes, headPlus.bytes, width: fixture.width, height: fixture.height, regions: regions)
+        let minusSourceSignal = signal(source, headMinus.bytes, width: fixture.width, height: fixture.height, regions: regions)
+        let minusNeutralSignal = signal(neutral.bytes, headMinus.bytes, width: fixture.width, height: fixture.height, regions: regions)
+
+        for (name, rendered, sourceSignal, neutralSignal) in [
+            ("head positive", headPlus, plusSourceSignal, plusNeutralSignal),
+            ("head negative", headMinus, minusSourceSignal, minusNeutralSignal),
+        ] {
             XCTAssertGreaterThanOrEqual(sourceSignal.changedPixels, 500, name)
             XCTAssertGreaterThanOrEqual(sourceSignal.absoluteRGBDelta, 2_000, name)
             XCTAssertGreaterThanOrEqual(neutralSignal.changedPixels, 500, name)
@@ -70,14 +76,24 @@ final class BeautyEngineEyebrowHeadSpacingRepairTests: XCTestCase {
 
         let wholePlusGap = innerBrowHeadGapQ16(wholePlus.bytes, width: fixture.width, height: fixture.height)
         let wholeMinusGap = innerBrowHeadGapQ16(wholeMinus.bytes, width: fixture.width, height: fixture.height)
-        for (name, difference) in [
+        let siblingDifferences = [
             ("head plus versus whole plus", abs(headPlusGap - wholePlusGap)),
             ("head plus versus whole minus", abs(headPlusGap - wholeMinusGap)),
             ("head minus versus whole plus", abs(headMinusGap - wholePlusGap)),
             ("head minus versus whole minus", abs(headMinusGap - wholeMinusGap)),
-        ] {
+        ]
+        for (name, difference) in siblingDifferences {
             XCTAssertGreaterThanOrEqual(difference, 16, name)
         }
+
+        let protection = fixedProtectionAggregate(
+            baselines: [source, neutral.bytes],
+            candidates: [headPlus.bytes, headMinus.bytes],
+            width: fixture.width,
+            height: fixture.height
+        )
+        print("BROW01_SIGNAL paired_plus_changed=\(plusSourceSignal.changedPixels) paired_minus_changed=\(minusSourceSignal.changedPixels) plus_source_rgb=\(plusSourceSignal.absoluteRGBDelta) minus_source_rgb=\(minusSourceSignal.absoluteRGBDelta) plus_neutral_changed=\(plusNeutralSignal.changedPixels) minus_neutral_changed=\(minusNeutralSignal.changedPixels) plus_neutral_rgb=\(plusNeutralSignal.absoluteRGBDelta) minus_neutral_rgb=\(minusNeutralSignal.absoluteRGBDelta) plus_darkness=\(headPlusGap) minus_darkness=\(headMinusGap) source_darkness=\(sourceGap) neutral_darkness=\(neutralGap)")
+        print("BROW01_FIXED_AGGREGATES plus_source_q16=\(headPlusGap - sourceGap) plus_neutral_q16=\(headPlusGap - neutralGap) minus_source_q16=\(headMinusGap - sourceGap) minus_neutral_q16=\(headMinusGap - neutralGap) opposite_q16=\(abs(headPlusGap - headMinusGap)) head_plus_whole_plus_q16=\(siblingDifferences[0].1) head_plus_whole_minus_q16=\(siblingDifferences[1].1) head_minus_whole_plus_q16=\(siblingDifferences[2].1) head_minus_whole_minus_q16=\(siblingDifferences[3].1) outside_changed_max=\(protection.outside.changedPixels) outside_rgb_max=\(protection.outside.absoluteRGBDelta) outer_changed_max=\(protection.outer.changedPixels) outer_rgb_max=\(protection.outer.absoluteRGBDelta) eye_changed_max=\(protection.eye.changedPixels) eye_rgb_max=\(protection.eye.absoluteRGBDelta) background_changed_max=\(protection.background.changedPixels) background_rgb_max=\(protection.background.absoluteRGBDelta) watermark_changed_max=\(protection.watermark.changedPixels) watermark_rgb_max=\(protection.watermark.absoluteRGBDelta)")
     }
 
     func testBROW01PerSideEligibilityAndProviderEmptyRemainSourceSafe() throws {
@@ -86,12 +102,16 @@ final class BeautyEngineEyebrowHeadSpacingRepairTests: XCTestCase {
         let image = fixture.image
         let parameters = BeautyParameters(eyebrowHeadSpacing: 0.25)
 
-        let leftOnly = try process(image: image, fixture: .leftOnlyObservedEyebrow, parameters: parameters)
-        XCTAssertGreaterThan(signal(source, leftOnly.bytes, width: fixture.width, height: fixture.height, regions: [leftHead]).changedPixels, 0)
+        let leftOnly = try process(image: image, fixture: .phase92LeftOnlyObservedEyebrow, parameters: parameters)
+        let leftSignal = signal(source, leftOnly.bytes, width: fixture.width, height: fixture.height, regions: [leftHead])
+        let leftPeerSignal = signal(source, leftOnly.bytes, width: fixture.width, height: fixture.height, regions: [rightHead])
+        XCTAssertGreaterThan(leftSignal.changedPixels, 0)
         assertSignal(source, leftOnly.bytes, width: fixture.width, height: fixture.height, regions: [rightHead], maxChanged: 0, maxDelta: 0, name: "left-only rejected peer")
 
-        let rightOnly = try process(image: image, fixture: .rightOnlyObservedEyebrow, parameters: parameters)
-        XCTAssertGreaterThan(signal(source, rightOnly.bytes, width: fixture.width, height: fixture.height, regions: [rightHead]).changedPixels, 0)
+        let rightOnly = try process(image: image, fixture: .phase92RightOnlyObservedEyebrow, parameters: parameters)
+        let rightSignal = signal(source, rightOnly.bytes, width: fixture.width, height: fixture.height, regions: [rightHead])
+        let rightPeerSignal = signal(source, rightOnly.bytes, width: fixture.width, height: fixture.height, regions: [leftHead])
+        XCTAssertGreaterThan(rightSignal.changedPixels, 0)
         assertSignal(source, rightOnly.bytes, width: fixture.width, height: fixture.height, regions: [leftHead], maxChanged: 0, maxDelta: 0, name: "right-only rejected peer")
 
         for rendered in [leftOnly, rightOnly] {
@@ -107,19 +127,20 @@ final class BeautyEngineEyebrowHeadSpacingRepairTests: XCTestCase {
             assertRedacted(rendered.result)
         }
 
-        let providerEmpty = try process(image: image, fixture: .pairedObservedEyebrows, parameters: .init())
+        let providerEmpty = try process(image: image, fixture: .phase92PairedObservedEyebrows, parameters: .init())
         XCTAssertEqual(providerEmpty.invocations, 0)
         XCTAssertEqual(providerEmpty.bytes, source)
         XCTAssertEqual(providerEmpty.result.detectionSummary?.availability, .notRun)
         XCTAssertEqual(providerEmpty.result.detectionSummary?.faceCount, 0)
         XCTAssertEqual(providerEmpty.result.detectionSummary?.usedFaceCount, 0)
         assertRedacted(providerEmpty.result)
+        print("BROW01_SIDE_SIGNAL left_changed=\(leftSignal.changedPixels) right_changed=\(rightSignal.changedPixels) left_peer_changed=\(leftPeerSignal.changedPixels) right_peer_changed=\(rightPeerSignal.changedPixels)")
     }
 
     func testBROW01ValidInvalidValidRecoveryIsByteDeterministicAndRedacted() throws {
         let fixture = Self.fixture()
         let provider = SDKTestingFaceDetectionProvider([
-            .pairedObservedEyebrows, .malformedObservedEyebrows, .pairedObservedEyebrows,
+            .phase92PairedObservedEyebrows, .malformedObservedEyebrows, .phase92PairedObservedEyebrows,
         ])
         let engine = try BeautyEngine(faceDetectionProvider: provider)
         let metadata = BeautyInputMetadata(orientation: .up, source: .testFixture)
@@ -142,8 +163,10 @@ final class BeautyEngineEyebrowHeadSpacingRepairTests: XCTestCase {
         XCTAssertEqual(first.detectionSummary?.faceCount, recovered.detectionSummary?.faceCount)
         XCTAssertEqual(first.detectionSummary?.usedFaceCount, recovered.detectionSummary?.usedFaceCount)
         XCTAssertEqual(first.output.extent, recovered.output.extent)
-        XCTAssertGreaterThan(signal(fixture.bytes, firstBytes, width: fixture.width, height: fixture.height, regions: [leftHead, rightHead]).changedPixels, 0)
+        let validSignal = signal(fixture.bytes, firstBytes, width: fixture.width, height: fixture.height, regions: [leftHead, rightHead])
+        XCTAssertGreaterThan(validSignal.changedPixels, 0)
         for result in [first, rejected, recovered] { assertRedacted(result) }
+        print("BROW01_RECOVERY_SIGNAL valid_changed=\(validSignal.changedPixels) recovered_equal=\(firstBytes == recoveredBytes ? 1 : 0) rejected_source_equal=\(rejectedBytes == fixture.bytes ? 1 : 0)")
     }
 
     private func process(
@@ -198,6 +221,26 @@ final class BeautyEngineEyebrowHeadSpacingRepairTests: XCTestCase {
         assertSignal(baseline, candidate, width: width, height: height, regions: [eyes], maxChanged: 64, maxDelta: 256, name: "\(name) eyes", file: file, line: line)
         assertSignal(baseline, candidate, width: width, height: height, regions: backgrounds, maxChanged: 0, maxDelta: 0, name: "\(name) backgrounds", file: file, line: line)
         assertSignal(baseline, candidate, width: width, height: height, regions: [watermark], maxChanged: 0, maxDelta: 0, name: "\(name) watermark", file: file, line: line)
+    }
+
+    private func fixedProtectionAggregate(
+        baselines: [[UInt8]], candidates: [[UInt8]], width: Int, height: Int
+    ) -> ProtectionAggregate {
+        var value = ProtectionAggregate()
+        for baseline in baselines {
+            for candidate in candidates {
+                value.outside.formMaximum(signal(baseline, candidate, width: width, height: height) { x, y in
+                    !self.leftHead.contains(x: x, y: y, width: width, height: height)
+                        && !self.rightHead.contains(x: x, y: y, width: width, height: height)
+                })
+                value.outer.formMaximum(signal(baseline, candidate, width: width, height: height, regions: [leftOuter]))
+                value.outer.formMaximum(signal(baseline, candidate, width: width, height: height, regions: [rightOuter]))
+                value.eye.formMaximum(signal(baseline, candidate, width: width, height: height, regions: [eyes]))
+                value.background.formMaximum(signal(baseline, candidate, width: width, height: height, regions: backgrounds))
+                value.watermark.formMaximum(signal(baseline, candidate, width: width, height: height, regions: [watermark]))
+            }
+        }
+        return value
     }
 
     private func assertSignal(
@@ -298,6 +341,19 @@ final class BeautyEngineEyebrowHeadSpacingRepairTests: XCTestCase {
     private struct Signal {
         var changedPixels = 0
         var absoluteRGBDelta = 0
+
+        mutating func formMaximum(_ other: Signal) {
+            changedPixels = max(changedPixels, other.changedPixels)
+            absoluteRGBDelta = max(absoluteRGBDelta, other.absoluteRGBDelta)
+        }
+    }
+
+    private struct ProtectionAggregate {
+        var outside = Signal()
+        var outer = Signal()
+        var eye = Signal()
+        var background = Signal()
+        var watermark = Signal()
     }
 
     private struct PPMRegion {

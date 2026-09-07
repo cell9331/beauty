@@ -52,6 +52,22 @@ private let phase50ObservedRightEyebrow = [
     CoordinatePoint(x: 0.78, y: 0.34),
 ]
 
+private let phase92ObservedLeftEyebrow = [
+    CoordinatePoint(x: 0.42, y: 0.70),
+    CoordinatePoint(x: 0.37, y: 0.73),
+    CoordinatePoint(x: 0.32, y: 0.76),
+    CoordinatePoint(x: 0.27, y: 0.73),
+    CoordinatePoint(x: 0.22, y: 0.70),
+]
+
+private let phase92ObservedRightEyebrow = [
+    CoordinatePoint(x: 0.58, y: 0.70),
+    CoordinatePoint(x: 0.63, y: 0.73),
+    CoordinatePoint(x: 0.68, y: 0.76),
+    CoordinatePoint(x: 0.73, y: 0.73),
+    CoordinatePoint(x: 0.78, y: 0.70),
+]
+
 private let phase50MalformedObservedEyebrow = [
     CoordinatePoint(x: 0.42, y: 0.34),
     CoordinatePoint(x: 0.37, y: 0.37),
@@ -200,6 +216,9 @@ private func phase91GazeObservation(
     case pairedObservedEyebrows
     case leftOnlyObservedEyebrow
     case rightOnlyObservedEyebrow
+    case phase92PairedObservedEyebrows
+    case phase92LeftOnlyObservedEyebrow
+    case phase92RightOnlyObservedEyebrow
     case missingObservedEyebrows
     case malformedObservedEyebrows
     case gazeBilateralOffCenter
@@ -316,6 +335,46 @@ private func phase91GazeObservation(
                         landmarks: .complete,
                         observedEyebrowSupport: BeautyObservedEyebrowSupport(
                             right: phase50ObservedRightEyebrow
+                        )
+                    )
+                ]
+            case .phase92PairedObservedEyebrows:
+                return [
+                    VisionDetectionObservation(
+                        stableID: "phase-92-fixture-a",
+                        confidence: 0.96,
+                        normalizedArea: 0.24,
+                        visionBounds: CoordinateRect(x: 0.30, y: 0.20, width: 0.40, height: 0.60),
+                        landmarks: .complete,
+                        observedEyebrowSupport: BeautyObservedEyebrowSupport(
+                            left: phase92ObservedLeftEyebrow,
+                            right: phase92ObservedRightEyebrow
+                        )
+                    )
+                ]
+            case .phase92LeftOnlyObservedEyebrow:
+                return [
+                    VisionDetectionObservation(
+                        stableID: "phase-92-fixture-b",
+                        confidence: 0.96,
+                        normalizedArea: 0.24,
+                        visionBounds: CoordinateRect(x: 0.30, y: 0.20, width: 0.40, height: 0.60),
+                        landmarks: .complete,
+                        observedEyebrowSupport: BeautyObservedEyebrowSupport(
+                            left: phase92ObservedLeftEyebrow
+                        )
+                    )
+                ]
+            case .phase92RightOnlyObservedEyebrow:
+                return [
+                    VisionDetectionObservation(
+                        stableID: "phase-92-fixture-c",
+                        confidence: 0.96,
+                        normalizedArea: 0.24,
+                        visionBounds: CoordinateRect(x: 0.30, y: 0.20, width: 0.40, height: 0.60),
+                        landmarks: .complete,
+                        observedEyebrowSupport: BeautyObservedEyebrowSupport(
+                            right: phase92ObservedRightEyebrow
                         )
                     )
                 ]
