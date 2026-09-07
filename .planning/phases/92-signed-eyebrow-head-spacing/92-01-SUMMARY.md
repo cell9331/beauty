@@ -1,7 +1,7 @@
 ---
 phase: 92-signed-eyebrow-head-spacing
 plan: "01"
-implementation_attempt: 1
+implementation_attempt: 2
 subsystem: eyebrow-geometry-contract
 tags: [swift, tdd, red-contract, eyebrow-head-spacing, actual-pixels]
 

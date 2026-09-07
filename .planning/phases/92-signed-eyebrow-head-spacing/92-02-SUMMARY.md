@@ -2,7 +2,7 @@
 phase: 92-signed-eyebrow-head-spacing
 plan: "02"
 status: blocked-attempt-1
-implementation_attempt: 1
+implementation_attempt: 2
 subsystem: eyebrow-geometry-repair
 tags: [swift, eyebrow-head-spacing, actual-pixels, reversible-failure]
 
