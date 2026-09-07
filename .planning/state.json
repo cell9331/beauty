@@ -16,7 +16,7 @@
     {
       "number": "91",
       "name": "Independent Gaze Correction",
-      "status": "in_progress"
+      "status": "complete"
     },
     {
       "number": "92",
@@ -42,7 +42,7 @@
   "next": {
     "command": "/gsd:progress --next",
     "label": "Advance to the next step",
-    "reason": "Phase 91 of 7 · 29% · executing"
+    "reason": "Phase 92 of 7 · 43% · executing"
   },
-  "updated_at": "2026-09-05T15:19:40.444Z"
+  "updated_at": "2026-09-06T07:21:34.684Z"
 }
