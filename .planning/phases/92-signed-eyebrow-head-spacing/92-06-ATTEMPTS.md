@@ -101,3 +101,19 @@ Rejected production commit/revert pairs: R1 2c9b7d8/82e1819,
 R2 c1d177d/ead38e3, R3 a5375e3/4a1bb42. Historical attempts 1–2 remain
 unchanged in 92-01/02/05 evidence. Focused acceptance does not yet imply
 phase closeout or milestone completion.
+
+
+## R5 — dense-trace review correction (cumulative attempt 7)
+
+- Prior R4 sparse semantic PASS is retained; independent review found actual
+  dense-trace folding, so it was not promoted to phase completion.
+- Reviewed fixed candidate: per-side actual sum norm/radius <=0.9, preserving
+  sparse controls and all targets/radii; final Float reconstruction revalidated.
+- RED commit `4a92373`: one test, 12 expected assertions, zero unexpected failures.
+- Accepted fix `470ae0d`: provider18/0/0, public/registration5/0/0;
+  compatibility/freshness217/0/2 (two established portrait opt-ins only).
+- Frozen metrics unchanged: signs +48/-22, opposite70, siblings26/35/96/35;
+  target699/720, RGB61174/45676; all protected maxima0/0; peer0/0;
+  recovery equality1 and rejected-source equality1.
+- Independent implementation review PASS. This is per-side inverse-field safety,
+  not arbitrary combined-field injectivity or live portrait/device evidence.
