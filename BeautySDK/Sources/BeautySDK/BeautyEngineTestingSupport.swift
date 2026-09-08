@@ -52,21 +52,18 @@ private let phase50ObservedRightEyebrow = [
     CoordinatePoint(x: 0.78, y: 0.34),
 ]
 
-private let phase92ObservedLeftEyebrow = [
-    CoordinatePoint(x: 0.42, y: 0.70),
-    CoordinatePoint(x: 0.37, y: 0.73),
-    CoordinatePoint(x: 0.32, y: 0.76),
-    CoordinatePoint(x: 0.27, y: 0.73),
-    CoordinatePoint(x: 0.22, y: 0.70),
-]
+private func phase92ObservedEyebrow(innerColumn: Int, outerX: Double) -> [CoordinatePoint] {
+    // Innermost dark pixel centers in the independently specified 512-pixel
+    // source. Invert the observation's Vision x bounds before detection maps it.
+    let innerX = ((Double(innerColumn) + 0.5) / 512 - 0.30) / 0.40
+    let verticalSamples = [0.70, 0.73, 0.76, 0.73, 0.70]
+    return verticalSamples.enumerated().map { index, y in
+        CoordinatePoint(x: innerX + (outerX - innerX) * Double(index) / 4, y: y)
+    }
+}
 
-private let phase92ObservedRightEyebrow = [
-    CoordinatePoint(x: 0.58, y: 0.70),
-    CoordinatePoint(x: 0.63, y: 0.73),
-    CoordinatePoint(x: 0.68, y: 0.76),
-    CoordinatePoint(x: 0.73, y: 0.73),
-    CoordinatePoint(x: 0.78, y: 0.70),
-]
+private let phase92ObservedLeftEyebrow = phase92ObservedEyebrow(innerColumn: 253, outerX: 0.22)
+private let phase92ObservedRightEyebrow = phase92ObservedEyebrow(innerColumn: 259, outerX: 0.78)
 
 private let phase50MalformedObservedEyebrow = [
     CoordinatePoint(x: 0.42, y: 0.34),

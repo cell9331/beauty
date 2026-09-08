@@ -187,14 +187,17 @@ final class EyebrowWarpProviderTests: XCTestCase {
                     let normalized = p / 0.5
                     let smoothstep = normalized * normalized * (3 - 2 * normalized)
                     let weight = 1 - smoothstep
-                    let expectedMagnitude = geometry.bounds.width * 0.065 * weight
+                    let expectedMagnitude = geometry.bounds.width * 0.020 * weight
                     let positiveDelta = positivePoint.target - positivePoint.source
                     let negativeDelta = negativePoint.target - negativePoint.source
                     let positiveAlongAxis = dot(positiveDelta, axis)
                     let negativeAlongAxis = dot(negativeDelta, axis)
                     let positivePlaneClearance = dot(cutoff - positivePoint.target, axis)
                     let negativePlaneClearance = dot(cutoff - negativePoint.target, axis)
-                    let nominalRadius = geometry.bounds.width * (0.040 + 0.020 * weight)
+                    let nominalRadius = min(
+                        geometry.bounds.width * (0.020 + 0.025 * weight),
+                        geometry.bounds.width * 0.045
+                    )
                     let outwardTarget = positivePoint.source + axis * abs(expectedMagnitude)
                     let supportClearance = dot(cutoff - outwardTarget, axis)
                     let expectedRadius = min(nominalRadius, supportClearance * 0.5)
@@ -212,6 +215,8 @@ final class EyebrowWarpProviderTests: XCTestCase {
                     XCTAssertEqual(positivePoint.radius, expectedRadius, accuracy: tolerance)
                     XCTAssertEqual(negativePoint.radius, expectedRadius, accuracy: tolerance)
                     XCTAssertLessThanOrEqual(positivePoint.radius, nominalRadius + tolerance)
+                    XCTAssertLessThanOrEqual(positivePoint.radius, geometry.bounds.width * 0.045)
+                    XCTAssertLessThanOrEqual(expectedMagnitude, nominalRadius * 0.5)
                     XCTAssertGreaterThan(supportClearance, 0)
                     XCTAssertGreaterThan(positivePlaneClearance, 0)
                     XCTAssertGreaterThan(negativePlaneClearance, 0)
