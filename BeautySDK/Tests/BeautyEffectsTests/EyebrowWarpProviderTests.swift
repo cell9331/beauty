@@ -310,8 +310,15 @@ final class EyebrowWarpProviderTests: XCTestCase {
             face: face(left: malformedLeft, right: right),
             strengths: headSpacingStrength(cap)
         ).eyebrowHeadSpacing
-        XCTAssertEqual(leftOnly.map(\.source), cumulativeProgress(left.points).indices.filter { cumulativeProgress(left.points)[$0] < 0.5 }.map { left.points[$0] })
-        XCTAssertEqual(rightOnly.map(\.source), cumulativeProgress(right.points).indices.filter { cumulativeProgress(right.points)[$0] < 0.5 }.map { right.points[$0] })
+        for (points, trace) in [(leftOnly, left), (rightOnly, right)] {
+            let axis = unit(trace.outerEndpoint - trace.innerEndpoint)
+            let progress = cumulativeProgress(trace.points)
+            let expected = progress.indices.filter { progress[$0] < 0.5 }.map { trace.points[$0] }
+            XCTAssertEqual(points.count, expected.count)
+            for (point, observed) in zip(points, expected) {
+                XCTAssertLessThanOrEqual(magnitude(point.target - axis * (0.4 * point.radius) - observed), 0.000_001)
+            }
+        }
         XCTAssertTrue(leftOnly.allSatisfy { !right.points.contains($0.source) })
         XCTAssertTrue(rightOnly.allSatisfy { !left.points.contains($0.source) })
 
