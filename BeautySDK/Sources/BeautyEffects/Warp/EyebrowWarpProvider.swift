@@ -175,16 +175,83 @@ struct EyebrowWarpProvider: WarpControlPointProvider {
         maximum: Float
     ) -> [WarpControlPoint] {
         guard validFace(face), validTrace(trace), trace.points.count >= 2,
+              maximum.isFinite, maximum > strengthDeadZone,
               let axis = normalized(trace.outerEndpoint - trace.innerEndpoint)
         else { return [] }
-        let displacement = face.bounds.width * 0.020 * strength / maximum
-        guard displacement.isFinite, displacement != 0 else { return [] }
-        let sources = [trace.innerEndpoint, trace.points[1]]
-        let targets = [sources[0] + axis * displacement, sources[1] + axis * displacement * 0.5]
-        return makePoints(
-            sources: sources, targets: targets, radius: face.bounds.width * 0.06,
-            strength: abs(strength), maximumStrength: maximum
-        )
+
+        let chordLength = vectorLength(trace.outerEndpoint - trace.innerEndpoint)
+        let unitStrength = strength / maximum
+        let headLimit = trace.innerEndpoint + axis * (0.85 * chordLength)
+        guard chordLength.isFinite, chordLength > geometryEpsilon,
+              unitStrength.isFinite, abs(unitStrength) > strengthDeadZone,
+              headLimit.x.isFinite, headLimit.y.isFinite
+        else { return [] }
+
+        var cumulativeDistances = [Float](repeating: 0, count: trace.points.count)
+        for index in trace.points.indices.dropFirst() {
+            let segmentLength = vectorLength(trace.points[index] - trace.points[index - 1])
+            guard segmentLength.isFinite else { return [] }
+            cumulativeDistances[index] = cumulativeDistances[index - 1] + segmentLength
+            guard cumulativeDistances[index].isFinite else { return [] }
+        }
+        guard let totalLength = cumulativeDistances.last,
+              totalLength.isFinite, totalLength > geometryEpsilon
+        else { return [] }
+
+        var candidates: [(source: SIMD2<Float>, target: SIMD2<Float>, radius: Float)] = []
+        for index in trace.points.indices {
+            let progress = cumulativeDistances[index] / totalLength
+            guard progress.isFinite, (0...1).contains(progress) else { return [] }
+            guard progress < 0.5 else { continue }
+
+            let normalizedProgress = min(max(progress / 0.5, 0), 1)
+            let smoothstep = normalizedProgress * normalizedProgress * (3 - 2 * normalizedProgress)
+            let weight = 1 - smoothstep
+            // Float rounding can put a sample just inside the half boundary
+            // while its smoothstep has already reached one. It has no work.
+            guard weight > 0 else { continue }
+            let nominalMagnitude = face.bounds.width * 0.020 * abs(unitStrength) * weight
+            let observed = trace.points[index]
+            let carrierClearance = dot(headLimit - observed, axis)
+            let supportClearance = carrierClearance - nominalMagnitude
+            let nominalRadius = min(
+                face.bounds.width * (0.020 + 0.025 * weight),
+                face.bounds.width * 0.045
+            )
+            // Leave conservative Float slack before reconstructing the center;
+            // an exact algebraic boundary can otherwise round just outside it.
+            let radius = min(nominalRadius, 0.5 * supportClearance, carrierClearance / 2.5)
+                * (1 - 8 * Float.ulpOfOne)
+            let magnitude = min(nominalMagnitude, radius * 0.8)
+            let signedMagnitude = unitStrength > 0 ? magnitude : -magnitude
+            let target = observed + axis * (radius * 0.5)
+            let source = target - axis * signedMagnitude
+            let targetClearance = dot(headLimit - target, axis)
+            let sourceClearance = dot(headLimit - source, axis)
+            let actualMagnitude = vectorLength(target - source)
+
+            guard normalizedProgress.isFinite, smoothstep.isFinite,
+                  weight.isFinite, weight > 0,
+                  nominalMagnitude.isFinite, nominalMagnitude > 0,
+                  isUnitPoint(observed), isUnitPoint(source), isUnitPoint(target),
+                  sourceClearance.isFinite, sourceClearance > geometryEpsilon,
+                  actualMagnitude.isFinite, actualMagnitude <= radius * 0.81,
+                  targetClearance.isFinite, targetClearance > geometryEpsilon,
+                  supportClearance.isFinite, supportClearance > geometryEpsilon,
+                  nominalRadius.isFinite, nominalRadius > geometryEpsilon,
+                  radius.isFinite, radius > geometryEpsilon,
+                  radius <= targetClearance * 0.5
+            else { return [] }
+            candidates.append((source: source, target: target, radius: radius))
+        }
+
+        return candidates.compactMap { candidate in
+            guard candidate.source != candidate.target else { return nil }
+            return WarpControlPoint(
+                source: candidate.source, target: candidate.target,
+                radius: candidate.radius, strength: abs(strength), falloff: 1
+            )
+        }
     }
 
     private func tiltPoints(

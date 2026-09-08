@@ -192,7 +192,7 @@ final class EyebrowWarpProviderTests: XCTestCase {
                     let normalized = p / 0.5
                     let smoothstep = normalized * normalized * (3 - 2 * normalized)
                     let weight = 1 - smoothstep
-                    let nominalMagnitude = geometry.bounds.width * 0.025 * weight
+                    let nominalMagnitude = geometry.bounds.width * 0.020 * weight
                     let positiveDelta = positivePoint.target - positivePoint.source
                     let negativeDelta = negativePoint.target - negativePoint.source
                     let positiveAlongAxis = dot(positiveDelta, axis)
