@@ -58,6 +58,15 @@ final class BeautyEyebrowFixtureRegistrationTests: XCTestCase {
                 XCTAssertEqual(peerChanges, 0, "both-sign peer isolation")
                 XCTAssertGreaterThan(ownChanges, 0, "eligible side remains effective")
                 XCTAssertEqual(provider.invocationCount, 1)
+                XCTAssertEqual(result.output.extent, image.extent)
+                XCTAssertTrue(stride(from: 3, to: output.count, by: 4).allSatisfy { output[$0] == 255 })
+                XCTAssertEqual(result.detectionSummary?.availability, .usable)
+                XCTAssertEqual(result.detectionSummary?.usedFaceCount, 1)
+                let diagnostics = (Array(result.metrics.keys)
+                    + result.warnings.map { "\($0.code) \($0.message)" }).joined(separator: " ").lowercased()
+                for forbidden in ["landmark", "coordinate", "mask", "simd", "raw", "pixel", "path", "transcript"] {
+                    XCTAssertFalse(diagnostics.contains(forbidden), "diagnostic redaction")
+                }
             }
         }
     }

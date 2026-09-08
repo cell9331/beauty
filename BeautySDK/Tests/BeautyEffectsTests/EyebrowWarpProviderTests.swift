@@ -192,7 +192,7 @@ final class EyebrowWarpProviderTests: XCTestCase {
                     let normalized = p / 0.5
                     let smoothstep = normalized * normalized * (3 - 2 * normalized)
                     let weight = 1 - smoothstep
-                    let nominalMagnitude = geometry.bounds.width * 0.022 * weight
+                    let nominalMagnitude = geometry.bounds.width * 0.025 * weight
                     let positiveDelta = positivePoint.target - positivePoint.source
                     let negativeDelta = negativePoint.target - negativePoint.source
                     let positiveAlongAxis = dot(positiveDelta, axis)
@@ -207,14 +207,16 @@ final class EyebrowWarpProviderTests: XCTestCase {
                     let outwardTarget = observed + axis * nominalMagnitude
                     let supportClearance = dot(cutoff - outwardTarget, axis)
                     let carrierClearance = dot(cutoff - observed, axis)
-                    let expectedRadius = min(nominalRadius, supportClearance * 0.5, carrierClearance / 2.4)
-                    let expectedMagnitude = min(nominalMagnitude, expectedRadius * 0.49)
-                    let expectedCenter = observed + axis * (expectedRadius * 0.4)
+                    let expectedRadius = min(nominalRadius, supportClearance * 0.5, carrierClearance / 2.5)
+                    let expectedMagnitude = min(nominalMagnitude, expectedRadius * 0.8)
+                    let expectedCenter = observed + axis * (expectedRadius * 0.5)
 
                     XCTAssertLessThanOrEqual(magnitude(positivePoint.target - expectedCenter), tolerance)
                     XCTAssertLessThanOrEqual(magnitude(negativePoint.target - expectedCenter), tolerance)
-                    XCTAssertLessThanOrEqual(magnitude(positiveDelta), positivePoint.radius * 0.5)
-                    XCTAssertLessThanOrEqual(magnitude(negativeDelta), negativePoint.radius * 0.5)
+                    XCTAssertLessThanOrEqual(magnitude(positiveDelta), positivePoint.radius * 0.81)
+                    XCTAssertLessThanOrEqual(magnitude(negativeDelta), negativePoint.radius * 0.81)
+                    XCTAssertEqual(positivePoint.falloff, 1)
+                    XCTAssertEqual(negativePoint.falloff, 1)
 
                     XCTAssertGreaterThan(positiveAlongAxis, 0, "\(side) count \(count) p \(p)")
                     XCTAssertLessThan(negativeAlongAxis, 0, "\(side) count \(count) p \(p)")
@@ -230,7 +232,7 @@ final class EyebrowWarpProviderTests: XCTestCase {
                     XCTAssertEqual(negativePoint.radius, expectedRadius, accuracy: tolerance)
                     XCTAssertLessThanOrEqual(positivePoint.radius, nominalRadius + tolerance)
                     XCTAssertLessThanOrEqual(positivePoint.radius, geometry.bounds.width * 0.045)
-                    XCTAssertLessThanOrEqual(expectedMagnitude, expectedRadius * 0.5)
+                    XCTAssertLessThanOrEqual(expectedMagnitude, expectedRadius * 0.81)
                     XCTAssertGreaterThan(supportClearance, 0)
                     XCTAssertGreaterThan(positivePlaneClearance, 0)
                     XCTAssertGreaterThan(negativePlaneClearance, 0)
@@ -240,6 +242,45 @@ final class EyebrowWarpProviderTests: XCTestCase {
                     XCTAssertTrue(isUnit(negativePoint.source) && isUnit(negativePoint.target))
                     previousWeight = weight
                     previousRadius = positivePoint.radius
+                }
+            }
+        }
+    }
+
+    func testBROW01ShortTraceAndLowStrengthKeepActualSupportBounds() {
+        let provider = EyebrowWarpProvider()
+        for side: BeautyObservedEyebrowSide in [.left, .right] {
+            for chord: Float in [0.065, 0.16] {
+                let innerX: Float = side == .left ? 0.47 : 0.53
+                let direction: Float = side == .left ? -1 : 1
+                let samples = (0..<5).map { index -> SIMD2<Float> in
+                    let p = Float(index) / 4
+                    return .init(innerX + direction * chord * p, 0.41 - 0.02 * sin(Float.pi * p))
+                }
+                guard let trace = EyebrowSafetyFixtures.validatedTrace(side: side, points: samples, bounds: bounds) else {
+                    XCTFail("short trace must pass adapter")
+                    continue
+                }
+                let geometry = face(left: side == .left ? trace : nil, right: side == .right ? trace : nil)
+                let axis = unit(trace.outerEndpoint - trace.innerEndpoint)
+                let cutoff = trace.innerEndpoint + (trace.outerEndpoint - trace.innerEndpoint) * 0.85
+                for strength: Float in [0.000_1, 0.125, 0.25] {
+                    let positive = provider.fieldEmissions(face: geometry, strengths: headSpacingStrength(strength)).eyebrowHeadSpacing
+                    let negative = provider.fieldEmissions(face: geometry, strengths: headSpacingStrength(-strength)).eyebrowHeadSpacing
+                    XCTAssertFalse(positive.isEmpty)
+                    XCTAssertEqual(positive.map(\.target), negative.map(\.target))
+                    XCTAssertEqual(positive.map(\.radius), negative.map(\.radius))
+                    for point in positive + negative {
+                        XCTAssertTrue(isUnit(point.source) && isUnit(point.target))
+                        XCTAssertGreaterThan(dot(cutoff - point.source, axis), 0)
+                        XCTAssertLessThanOrEqual(point.radius, dot(cutoff - point.target, axis) * 0.5)
+                        XCTAssertLessThanOrEqual(point.radius, bounds.width * 0.045)
+                        XCTAssertLessThanOrEqual(magnitude(point.target - point.source), point.radius * 0.81)
+                        XCTAssertEqual(point.falloff, 1)
+                    }
+                    if chord < 0.1, let first = positive.first {
+                        XCTAssertLessThan(first.radius, bounds.width * 0.045, "short-trace clearance cap is active")
+                    }
                 }
             }
         }
@@ -316,7 +357,7 @@ final class EyebrowWarpProviderTests: XCTestCase {
             let expected = progress.indices.filter { progress[$0] < 0.5 }.map { trace.points[$0] }
             XCTAssertEqual(points.count, expected.count)
             for (point, observed) in zip(points, expected) {
-                XCTAssertLessThanOrEqual(magnitude(point.target - axis * (0.4 * point.radius) - observed), 0.000_001)
+                XCTAssertLessThanOrEqual(magnitude(point.target - axis * (0.5 * point.radius) - observed), 0.000_001)
             }
         }
         XCTAssertTrue(leftOnly.allSatisfy { !right.points.contains($0.source) })
