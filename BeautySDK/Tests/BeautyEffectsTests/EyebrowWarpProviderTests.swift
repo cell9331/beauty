@@ -247,6 +247,52 @@ final class EyebrowWarpProviderTests: XCTestCase {
         }
     }
 
+    func testBROW01DenseTraceComposedSamplingMapKeepsPositiveSlope() {
+        let provider = EyebrowWarpProvider()
+        for count in [4, 5, 16] {
+            for side: BeautyObservedEyebrowSide in [.left, .right] {
+                let trace = densityTrace(side: side, count: count)
+                let geometry = face(left: side == .left ? trace : nil, right: side == .right ? trace : nil)
+                let axis = unit(trace.outerEndpoint - trace.innerEndpoint)
+                for strength: Float in [-0.25, -0.125, -0.0001, 0.0001, 0.125, 0.25] {
+                    let points = provider.fieldEmissions(face: geometry, strengths: headSpacingStrength(strength)).eyebrowHeadSpacing
+                    XCTAssertFalse(points.isEmpty)
+                    let budget = points.reduce(0.0) { sum, point in
+                        let delta = point.target - point.source
+                        return sum + hypot(Double(delta.x), Double(delta.y)) / Double(point.radius)
+                    }
+                    XCTAssertLessThanOrEqual(budget, 0.9)
+                    guard count == 16 else { continue }
+                    // Evaluate the consumer's additive linear inverse field using
+                    // actual emitted controls and its point/radius admission.
+                    func sample(_ location: SIMD2<Float>) -> SIMD2<Float> {
+                        var result = location
+                        for point in points {
+                            let delta = point.target - point.source
+                            guard point.radius > 0.0001, abs(delta.x) + abs(delta.y) > 0.0001 else { continue }
+                            let radius = min(max(point.radius, 0.001), 1)
+                            let weight = max(0, 1 - magnitude(location - point.target) / radius)
+                            result -= delta * weight
+                        }
+                        return result
+                    }
+                    let step: Float = 0.0001
+                    var minimumSlope = Float.infinity
+                    for along in -15...75 {
+                        for across in -20...20 {
+                            let normal = SIMD2<Float>(-axis.y, axis.x)
+                            let location = trace.innerEndpoint + axis * (Float(along) * 0.001) + normal * (Float(across) * 0.001)
+                            let slope = dot(sample(location + axis * step) - sample(location - axis * step), axis) / (2 * step)
+                            minimumSlope = min(minimumSlope, slope)
+                        }
+                    }
+                    XCTAssertTrue(minimumSlope.isFinite)
+                    XCTAssertGreaterThan(minimumSlope, 0.09)
+                }
+            }
+        }
+    }
+
     func testBROW01ShortTraceAndLowStrengthKeepActualSupportBounds() {
         let provider = EyebrowWarpProvider()
         for side: BeautyObservedEyebrowSide in [.left, .right] {

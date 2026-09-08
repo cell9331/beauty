@@ -35,7 +35,7 @@
 | Owner decision | On 2026-09-08 the owner explicitly selected `repair` after the two-attempt stop. This reopens Phase 92 implementation beyond the prior ceiling under a newly scoped, independently checked repair plan. The original two failures remain historical failures; this decision does not grant semantic credit or relax safety/acceptance thresholds. |
 | Starting evidence | Attempt two failed the unchanged generic radius ceiling (4.5% face width); its candidate was reverted in `3a4bcb8`. The restored provider is byte-exact and the aligned public-pixel oracle remains controlled RED; `872c9b5` records the terminal evidence. |
 | Repair contract | Reconcile the provider formula with the 4.5% radius ceiling, retain the 0.25 public cap and exact dead zone, per-side eligibility, local support, and all source/neutral/signed/sibling/protection requirements. Record candidate outcomes; revise implementation within this scope based on evidence. |
-| Verification | Pending: independently checked plan, provider invariants, unchanged generated public-facade pixels, relevant compatibility, SDK-owned boundaries, and synchronized owner records. |
+| Verification | R4 passed fresh 22/0/0 focused and 120/0/0 compatibility plus comparator/boundary/preflight/archive gates, but independent review found a dense-trace composed-map fold. R5 is independently reviewed: cap the per-side summed displacement budget at 0.9 while preserving sparse frozen pixels. Owner promotion remains pending its regression, implementation review, and closeout. |
 | Handoff | Plans 92-03/92-04 may resume only after the new repair passes; Phase 95 retains portrait evaluation and the full no-skip closeout. |
 
 Checklist:
