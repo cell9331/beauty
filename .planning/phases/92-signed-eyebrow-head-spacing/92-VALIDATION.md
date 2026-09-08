@@ -1,9 +1,9 @@
 ---
 phase: "92"
 slug: "signed-eyebrow-head-spacing"
-status: draft
-nyquist_compliant: false
-wave_0_complete: false
+status: validated
+nyquist_compliant: true
+wave_0_complete: true
 created: "2026-09-06"
 ---
 
@@ -38,21 +38,26 @@ created: "2026-09-06"
 
 ---
 
-## Per-Task Verification Map
+## Per-Task Verification Map — current R5 acceptance
 
-| Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
-| --- | --- | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 92-01-01 | 01 | 1 | BROW-01 | T-92-01, T-92-02, T-92-03 | Deterministic generated 512×512 explicit-sRGB RGBA8 oracle independently measures both signs, whole-brow siblings, metadata, locality, protected regions, side eligibility, lifecycle, and deterministic bytes. | TDD actual-pixel integration | `swift test --package-path BeautySDK --filter BeautyEngineEyebrowHeadSpacingRepairTests` | ❌ Wave 0 | ⬜ pending |
-| 92-01-02 | 01 | 1 | BROW-01 | T-92-04, T-92-05 | Provider tests freeze own-axis sign, inner-half carrier/taper constraints, exact dead zone, cap, peer-independent eligibility, malformed/no-face/provider-empty behavior, and valid-invalid-valid recovery. | unit/mutation | `swift test --package-path BeautySDK --filter EyebrowWarpProviderTests` | ✅ extends | ⬜ pending |
-| 92-02-01 | 02 | 2 | BROW-01 | T-92-01, T-92-03, T-92-06 | Only `headSpacingPoints` or its private helper changes; the attempt-one progress-normalized tapered field is finite, unit-safe, locally bounded, and distinct from whole-brow spacing. | implementation + focused integration | `swift test --package-path BeautySDK --filter 'EyebrowWarpProviderTests|BeautyEngineEyebrowHeadSpacingRepairTests' && git diff --check` | provider ✅ / repair test ❌ Wave 0 | ⬜ pending |
-| 92-03-01 | 03 | 3 | BROW-01 | T-92-02, T-92-07, T-92-08 | Comparator and manifest remain frozen; their self-test, mutation, inventory, admission, cleanup, and exact preflight contracts still pass. | script boundary/mutation | `swift scripts/compare-face-feature-batches.swift --self-test && python3 scripts/test-face-feature-batch-boundaries.py && bash -n scripts/run-face-feature-batches.sh && bash scripts/run-face-feature-batches.sh --preflight-only` | ✅ | ⬜ pending |
-| 92-03-02 | 03 | 3 | BROW-01 | T-92-01, T-92-02, T-92-03, T-92-07 | Exact signed head-spacing cases pass target signal, `+16`/`-16` Q16 direction, four-sibling distinction, outside `128/512`, outer-anchor/eye `64/256`, and background/watermark `0/0`; only fixed aggregates persist. | package-host actual-pixel semantic | exact focused batch command selected by the plan from the existing runner interface | ✅ runner/manifest | ⬜ pending |
-| 92-04-01 | 04 | 4 | BROW-01 | T-92-09, T-92-10 | Shared attempt count is 1 or 2, focused and compatibility suites pass, no forbidden API/backend/media surface appears, and SDK-only boundary remains green. | phase compatibility/security | exact plan closeout conjunction covering summaries, focused SwiftPM, compatibility, semantic/boundary, archive, SDK-only, privacy, and diff hygiene | pending prior summaries | ⬜ pending |
-| 92-04-02 | 04 | 4 | BROW-01 | T-92-09, T-92-10 | Current-state owner docs record only the verified private geometry, owner-local behavior, recovery/evidence, taxonomy status, attempt, and nonclaims. | documentation | exact owner-section/source-assertion command selected by the plan | existing docs extend | ⬜ pending |
+Historical 92-01/02/05 outcomes remain immutable failures or RED baselines;
+the owner-authorized 92-06 repair supersedes their implementation hypotheses.
+This mapping records current coverage, not retrospective success for failures.
 
-*Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
+| Task | Requirement | Automated evidence | Status |
+| --- | --- | --- | --- |
+| 92-01-01 / 92-06-01 | BROW-01 frozen pixels and independent fixture | Frozen public suite 3/0/0; registration/peer suite 2/0/0 | COVERED |
+| 92-01-02 / 92-02-01 / 92-06-02 | BROW-01 signed local provider and dense safety | Provider suite 18/0/0, includes retained RED-to-GREEN dense regression | COVERED by R5; earlier failures unchanged |
+| 92-06-03 | BROW-01 review and compatibility binding | Clean independent review; current hashes; compatibility/freshness 217/0/2 | COVERED within scope |
+| 92-03-01 | Frozen semantic/filesystem authority | Comparator 576, cleanup 6, preflight 75/65/8, immutable source comparison | COVERED |
+| 92-03-02 | Final pixels and renderer compatibility | Nine BROW methods / 23 focused; CPU/process/output classes included in 120/0/0 | COVERED |
+| 92-04-01 | Evidence provenance and closeout | Accepted attempt 7 hashes, historical identity, backend 24+41, archive and SDK-only checks | COVERED |
+| 92-04-02 | Design, owner journey, recovery | Exact three owner headings and source/evidence consistency checks | COVERED |
+| 92-04-03 | Quality, taxonomy and ledger | Remaining three owners and repeated boundary/preflight/archive/SDK checks | COVERED |
 
----
+Commands are executable in reconciled 92-03/04 plans. All required generated
+focused methods ran without skips. The two adapter portrait-integration methods
+remain Phase 95 work and receive no current execution credit.
 
 ## Threat Coverage Map
 
@@ -66,7 +71,7 @@ created: "2026-09-06"
 | T-92-06 | Moved target-centered support crosses outer anchors or unit bounds. | Target-based cutoff clearance, finite/unit validation, carrier/radius taper assertions, and pixel protection gates. |
 | T-92-07 | Provider intent or self-reported aggregates are mistaken for production output. | Final authority remains package-host rendered pixels and independently declared darkness-centroid regions. |
 | T-92-08 | Generated outputs, raw pixels, geometry, reports, or private paths persist. | Existing aggregate-only admission and cleanup fault-injection gates. |
-| T-92-09 | Repeated tuning silently exceeds the two-attempt policy. | One shared summary field checked across all implementation plans; attempt-two failure halts. |
+| T-92-09 | Repeated tuning silently exceeds the two-attempt policy. | Historical failures stay immutable; explicit owner repair reopening, candidate ledger, accepted cycle 1 / attempt 7 hashes and independent review govern current acceptance. |
 | T-92-10 | Scope expands into public API, shader/backend, UI, live portrait, or release claims. | Tracked-file review, SDK-only boundary, archive verification, owner-doc assertions, and explicit Phase 95 deferral. |
 
 Every HIGH-severity threat blocks completion until its mapped automated evidence passes.
@@ -75,9 +80,9 @@ Every HIGH-severity threat blocks completion until its mapped automated evidence
 
 ## Wave 0 Requirements
 
-- [ ] `BeautySDK/Tests/BeautyCoreTests/BeautyEngineEyebrowHeadSpacingRepairTests.swift` — deterministic public-facade actual-pixel and metadata oracle for both signs, four sibling distinctions, protected regions, side eligibility, lifecycle, and determinism.
-- [ ] `EyebrowWarpProviderTests.swift` additions — own-axis sign, normalized-progress carrier selection, displacement/radius taper, target cutoff, exact dead zone, mixed valid/invalid peer cases, provider-empty behavior, and recovery.
-- [ ] Independent test helpers that mirror the frozen integer darkness-centroid and region-delta definitions without deriving expected positions from provider targets.
+- [x] `BeautySDK/Tests/BeautyCoreTests/BeautyEngineEyebrowHeadSpacingRepairTests.swift` — deterministic public-facade actual-pixel and metadata oracle for both signs, four sibling distinctions, protected regions, side eligibility, lifecycle, and determinism.
+- [x] `EyebrowWarpProviderTests.swift` additions — own-axis sign, normalized-progress carrier selection, displacement/radius taper, target cutoff, exact dead zone, mixed valid/invalid peer cases, provider-empty behavior, and recovery.
+- [x] Independent test helpers that mirror the frozen integer darkness-centroid and region-delta definitions without deriving expected positions from provider targets.
 
 No framework or package installation is required.
 
@@ -104,14 +109,26 @@ All Phase 92 completion behaviors have automated verification. Live owner-contro
 
 ## Validation Sign-Off
 
-- [ ] All plan tasks have an exact runnable `<automated>` command or an explicit Wave 0 dependency.
-- [ ] Every runnable command has a neighboring `<fails_when>` with an observable failure signal.
-- [ ] Sampling continuity has no three consecutive tasks without automated feedback.
-- [ ] Wave 0 covers the repair-specific missing test file and independent metric helpers.
-- [ ] No watch-mode flags or unbounded coefficient-search loops appear.
-- [ ] Both exact Phase 89 cases and every required sibling/protected-region fact pass unchanged.
-- [ ] All implementation summaries agree on attempt `1` or `2`; no third attempt occurs.
-- [ ] Durable evidence contains only fixed aggregates and temporary media/report artifacts are absent after success and failure.
-- [ ] `nyquist_compliant: true` and `wave_0_complete: true` are set only after execution supplies all passing evidence.
+- [x] All plan tasks have an exact runnable `<automated>` command or an explicit Wave 0 dependency.
+- [x] Every runnable command has a neighboring `<fails_when>` with an observable failure signal.
+- [x] Sampling continuity has no three consecutive tasks without automated feedback.
+- [x] Wave 0 covers the repair-specific missing test file and independent metric helpers.
+- [x] No watch-mode flags or unbounded coefficient-search loops appear.
+- [x] Both exact Phase 89 cases and every required sibling/protected-region fact pass unchanged.
+- [x] All implementation summaries agree on attempt `1` or `2`; no third attempt occurs.
+- [x] Durable evidence contains only fixed aggregates and temporary media/report artifacts are absent after success and failure.
+- [x] `nyquist_compliant: true` and `wave_0_complete: true` are set only after execution supplies all passing evidence.
 
 **Approval:** pending
+
+
+## Validation Audit 2026-09-08
+
+One coverage gap was found and resolved: dense same-side additive fields could
+fold despite per-point bounds. Commit 4a92373 reproduced 12 expected assertions;
+470ae0d passed the independent sampling regression without changing frozen
+pixels. No unresolved automated requirement gap or Phase 92 manual-only item
+remains. Exact portrait-dependent skips are
+`testIntegrationLocalAuthorizedPortraitAggregateFitsLockedFaceValidationEnvelope`
+and `testIntegrationLocalAuthorizedPortraitFitsLockedEyebrowValidationEnvelope`.
+These are deferred Phase 95 opt-ins, not missing generated-mechanics coverage.
