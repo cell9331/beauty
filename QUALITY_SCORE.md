@@ -579,3 +579,34 @@ No live portrait batch, final clean 65-output publication, or
 supports EYE-01 owner-local mechanics and protection only; it establishes no
 device, population, naturalness, performance, commercial, packaging, shipping,
 launch, release-readiness, or external-distribution claim.
+
+## Phase 92 Signed Eyebrow-Head Spacing Quality Evidence
+
+Current accepted repair is R 5 `470ae 0d`, repair cycle 1 / cumulative attempt 7.
+Independent review found and resolved R 4 dense inverse-map folding; RED commit
+`4a 92373` reproduced 12 expected assertions in one new regression before the fix.
+Independent R 5 implementation review is clean (`92-REVIEW.md`).
+
+Exact BROW discovery is 9 unique methods; full provider/public/registration
+classes pass 18+3+2=23 with zero failures/skips. Actual pixels retain source and
+neutral signs +48/-22 Q 16, opposite 70, four whole-brow distinctions 26/35/96/35,
+target 699/720 and RGB 61174/45676. All outside/outer/eye/background/watermark
+maxima are 0/0. Unilateral changes 350/349 retain peers 0/0; recovery 699 is
+byte-identical with rejected-source identity. Metadata/extent/alpha/sRGB,
+neutral identity, deterministic bytes, independent registration and redaction pass.
+
+Post-R 5 compatibility/freshness:217 discovered,0 failures,2 established portrait
+opt-in skips; required compatibility 120/0/0 and freshness/resolver/combined 97/0/2.
+The dense regression covers 4/5/16 samples, both sides/signs, low/half/cap
+strengths and independently evaluated additive sampling. Prior chin/gaze/
+upper-eyelid regression 15/0/0 passed before R 5; those implementations are unchanged.
+Comparator 576 mutations/inventories 5/65/8, runner boundary/report_cleanup 6,
+syntax, preflight 75/65/8, backend-neutral 24 plus CPU-reference 41, both archive
+hashes and post-archive SDK-only boundary pass. Frozen source identities and
+diff hygiene pass. Full fixed evidence and archive hashes are in 92-03-SUMMARY.md.
+
+Exactly 62 fields,5 presets,75 renderer cases, both facades, CPU/GPU policy and
+retained Warp.metal remain unchanged. No raw media, geometry, private paths,
+reports or transcripts were retained. Phase 95 alone owns portraits and the full
+no-skip wrapper. No device, naturalness, commercial, launch or distribution
+qualification is inferred from generated package-host evidence.

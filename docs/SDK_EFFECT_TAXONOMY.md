@@ -142,7 +142,7 @@ names and visual organization are intentionally omitted from the active contract
 | 眉毛 | 粗细 | implemented | `eyebrowThickness` | Signed geometry-only trace thickness. |
 | 眉毛 | 长短 | implemented | `eyebrowLength` | Signed outer-endpoint length geometry. |
 | 眉毛 | 间距 | implemented | `eyebrowSpacing` | Signed whole-brow spacing. |
-| 眉毛 | 眉头间距 | implemented | `eyebrowHeadSpacing` | Independent inner-head spacing. |
+| 眉毛 | 眉头间距 | implemented | `eyebrowHeadSpacing` | Signed inner-head-only spacing along each side's canonical axis; per-side fail-closed and distinct from whole-brow spacing. |
 | 眉毛 | 倾斜 | implemented | `eyebrowTilt` | Signed local rotation. |
 | 眉毛 | 眉峰 | implemented | `eyebrowPeakDefinition` | Bounded interior-apex geometry. |
 <!-- SDK_LEGACY_TAXONOMY_END -->
@@ -225,3 +225,15 @@ Phase 95 still owns the authorized portrait rerun, final clean 65-output
 publication, and complete no-skip closeout. Phase 91 supplies no device,
 population, naturalness, commercial-quality, packaging, shipping, launch,
 release, or distribution qualification.
+
+## Phase 92 Signed Eyebrow-Head Spacing
+
+R5 (`470ae0d`) qualifies the existing implemented row with generated owner-local
+package-host evidence for positive/negative inner-head motion. Each side fails
+closed independently; dense same-side overlap is bounded by the final 0.9 sum
+of displacement norm/radius. The unchanged actual-pixel oracle passes signs
++48/-22 Q16, all sibling distinctions and zero protected-region changes.
+Neutral, metadata, unilateral peer protection and deterministic recovery pass.
+The 62 fields/5 presets/75 renderer cases and facades/backends/shader are unchanged.
+Phase 95 retains portrait evaluation and full no-skip closeout. No portrait,
+device, commercial-quality or external-distribution approval is implied.

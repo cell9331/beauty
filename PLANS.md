@@ -26,26 +26,25 @@
 
 ## 3. Active
 
-### A-2026-09-08-phase-92-signed-eyebrow-head-spacing-repair
+Phase 92 closeout is verifying; Phase 93 is next after independent phase verification.
+
+## 4. Completed
+
+### C-2026-09-08-phase-92-signed-eyebrow-head-spacing
 
 | Field | Value |
 | --- | --- |
-| Status | `active` |
-| Scope | Resume BROW-01 inside the existing eyebrow-head provider seam, preserving the frozen public-pixel oracle and unrelated controls. |
-| Owner decision | On 2026-09-08 the owner explicitly selected `repair` after the two-attempt stop. This reopens Phase 92 implementation beyond the prior ceiling under a newly scoped, independently checked repair plan. The original two failures remain historical failures; this decision does not grant semantic credit or relax safety/acceptance thresholds. |
-| Starting evidence | Attempt two failed the unchanged generic radius ceiling (4.5% face width); its candidate was reverted in `3a4bcb8`. The restored provider is byte-exact and the aligned public-pixel oracle remains controlled RED; `872c9b5` records the terminal evidence. |
-| Repair contract | Reconcile the provider formula with the 4.5% radius ceiling, retain the 0.25 public cap and exact dead zone, per-side eligibility, local support, and all source/neutral/signed/sibling/protection requirements. Record candidate outcomes; revise implementation within this scope based on evidence. |
-| Verification | R4 passed fresh 22/0/0 focused and 120/0/0 compatibility plus comparator/boundary/preflight/archive gates, but independent review found a dense-trace composed-map fold. R5 is independently reviewed: cap the per-side summed displacement budget at 0.9 while preserving sparse frozen pixels. Owner promotion remains pending its regression, implementation review, and closeout. |
-| Handoff | Plans 92-03/92-04 may resume only after the new repair passes; Phase 95 retains portrait evaluation and the full no-skip closeout. |
+| Status | `completed` implementation and owner synchronization; independent phase verification pending. |
+| Scope | Existing signed inner-head spacing in the owner-local still-image SDK; independent per-side support, unchanged frozen actual-pixel authority. |
+| Planning | One initial research pass and checked plans; owner explicitly reopened repair on 2026-09-08 beyond the original two-attempt ceiling. Every substantive R1–R5 candidate was independently reviewed. Original failures remain historical failures. |
+| Implementation | R4 `c14719b` passed sparse pixels but independent review found dense same-side folding. RED `4a92373` reproduced it; R5 `470ae0d` resolved it; evidence `af85fdb`, authority/compatibility `4b8f372`, design/journey/reliability `3d3322f`. Repair cycle 1, cumulative attempt 7. |
+| Contract | Per-side cumulative inner-half taper, 0.020 nominal displacement coefficient, fixed target centers, linear falloff, generic 4.5% radius ceiling, source/target clearance, public 0.25 cap and exact dead zone remain. R5 caps each side's actual summed displacement norm/radius at 0.9 with conservative Float reconstruction; no arbitrary combined-field injectivity claim. |
+| Evidence | Nine BROW methods; full focused 23/0/0. Source/neutral signs +48/-22 Q16, opposite 70, siblings 26/35/96/35; target 699/720, RGB 61174/45676; all protected maxima 0/0; peer 0/0; recovery and metadata assertions passed. |
+| Closeout | Post-R5 compatibility/freshness 217/0/2 with only two existing portrait opt-in skips (required compatibility 120/0/0). Comparator 576 mutations/5/65/8, cleanup 6, preflight 75/65/8, backend-neutral 24+41, archive hashes, SDK-only and diff gates passed. Independent implementation review clean. |
+| Compatibility | Exactly 62 fields, five presets, 75 renderer cases, both still-image facades, CPU/GPU policy and retained Warp.metal remain unchanged. |
+| Privacy and failure boundary | Request-local geometry/media remain absent from durable evidence; only counts, hashes, statuses and fixed aggregates persist. Invalid per-side support or reconstructed budget fails closed without peer borrowing. |
+| Handoff | Phase 93 is next after final phase verification. Phase 95 retains portrait evaluation, final 65-output evidence and the full no-skip closeout. No device, naturalness, commercial, launch or external-distribution claim. |
 
-Checklist:
-
-- [x] Record the explicit owner repair authorization and preserve the original failure evidence.
-- [ ] Independently review the renewed repair plan and its safety/oracle feasibility.
-- [ ] Implement and pass provider plus unchanged actual-pixel acceptance.
-- [ ] Complete focused compatibility/boundary verification and synchronize current owners.
-
-## 4. Completed
 
 ### C-2026-09-06-phase-91-independent-gaze-correction
 
