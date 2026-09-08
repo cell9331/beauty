@@ -26,7 +26,7 @@
 
 ## 3. Active
 
-Phase 92 closeout is verifying; Phase 93 is next after independent phase verification.
+Phase 93 is next: distinct nose bridge and root repairs; Phase 92 verification passed 10/10.
 
 ## 4. Completed
 
@@ -34,7 +34,7 @@ Phase 92 closeout is verifying; Phase 93 is next after independent phase verific
 
 | Field | Value |
 | --- | --- |
-| Status | `completed` implementation and owner synchronization; independent phase verification pending. |
+| Status | `completed`; independent phase verification passed 10/10 (`e2768cf`). |
 | Scope | Existing signed inner-head spacing in the owner-local still-image SDK; independent per-side support, unchanged frozen actual-pixel authority. |
 | Planning | One initial research pass and checked plans; owner explicitly reopened repair on 2026-09-08 beyond the original two-attempt ceiling. Every substantive R1–R5 candidate was independently reviewed. Original failures remain historical failures. |
 | Implementation | R4 `c14719b` passed sparse pixels but independent review found dense same-side folding. RED `4a92373` reproduced it; R5 `470ae0d` resolved it; evidence `af85fdb`, authority/compatibility `4b8f372`, design/journey/reliability `3d3322f`. Repair cycle 1, cumulative attempt 7. |
@@ -43,7 +43,7 @@ Phase 92 closeout is verifying; Phase 93 is next after independent phase verific
 | Closeout | Post-R5 compatibility/freshness 217/0/2 with only two existing portrait opt-in skips (required compatibility 120/0/0). Comparator 576 mutations/5/65/8, cleanup 6, preflight 75/65/8, backend-neutral 24+41, archive hashes, SDK-only and diff gates passed. Independent implementation review clean. |
 | Compatibility | Exactly 62 fields, five presets, 75 renderer cases, both still-image facades, CPU/GPU policy and retained Warp.metal remain unchanged. |
 | Privacy and failure boundary | Request-local geometry/media remain absent from durable evidence; only counts, hashes, statuses and fixed aggregates persist. Invalid per-side support or reconstructed budget fails closed without peer borrowing. |
-| Handoff | Phase 93 is next after final phase verification. Phase 95 retains portrait evaluation, final 65-output evidence and the full no-skip closeout. No device, naturalness, commercial, launch or external-distribution claim. |
+| Handoff | Phase 93 is next after passed final phase verification. Phase 95 retains portrait evaluation, final 65-output evidence and the full no-skip closeout. No device, naturalness, commercial, launch or external-distribution claim. |
 
 
 ### C-2026-09-06-phase-91-independent-gaze-correction

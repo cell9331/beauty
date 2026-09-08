@@ -2,47 +2,47 @@
 gsd_state_version: 1.0
 milestone: v1.22
 milestone_name: Non-Local Facial Effect Repairs
-current_phase: 92
-current_phase_name: Signed Eyebrow-Head Spacing
-status: executing
-stopped_at: Phase 92 context gathered
-last_updated: "2026-09-06T07:21:34.653Z"
-last_activity: 2026-09-06
-last_activity_desc: Phase 91 verified complete, transitioned to Phase 92
-state_head: 53c9a70923d0c33fe630f5e8a0132a4104196efc
+current_phase: 93
+current_phase_name: Distinct Nose Bridge and Root Repairs
+status: planning
+stopped_at: Phase 92 complete, ready to plan Phase 93
+last_updated: "2026-09-08T06:48:41.433Z"
+last_activity: 2026-09-08
+last_activity_desc: Phase 92 complete, transitioned to Phase 93
+state_head: e2768cf5bdfc2a314a5ae58ef5226d3d639c488d
 progress:
   total_phases: 7
-  completed_phases: 3
-  total_plans: 16
-  completed_plans: 12
-  percent: 43
+  completed_phases: 4
+  total_plans: 18
+  completed_plans: 18
+  percent: 57
 ---
 
 # Project State
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (updated 2026-09-04)
+See: `.planning/PROJECT.md` (updated 2026-09-08)
 
 **Core value:** The project owner's local iOS host can integrate `BeautySDK`
 and get natural, controllable real-time and still-image beauty processing
 without distributing the SDK, model, or weights.
-**Current focus:** Phase 92 — Signed Eyebrow-Head Spacing
+**Current focus:** Phase 93 — Distinct Nose Bridge and Root Repairs
 
 ## Current Position
 
-Phase: 92 (Signed Eyebrow-Head Spacing) — READY TO EXECUTE
+Phase: 93 — Distinct Nose Bridge and Root Repairs
 Plan: Not started
-Status: Ready to execute
-Last activity: 2026-09-06 — Phase 91 verified complete, transitioned to Phase 92
+Status: Ready to plan
+Last activity: 2026-09-08 — Phase 92 complete, transitioned to Phase 93
 
-Progress: [████████████████████] 12/12 planned plans (100%)
+Progress: 4/7 milestone phases complete (57%); 18/18 currently authored plans have summaries, including historical failed attempts.
 
 ## Performance Metrics
 
 **Current milestone:**
 
-- Total plans completed: 12
+- Authored plans with summaries: 18 (historical failed attempts are not semantic successes)
 - Average documented duration: 13 min across 11 timed summaries
 - Total documented execution time: 144 min plus the untimed FACE-01 terminal record
 
@@ -67,6 +67,8 @@ roadmaps.
 ## Accumulated Context
 
 ### Decisions
+
+- [Phase 92]: R5 passed independent 10/10 goal verification, focused 23/0/0 and frozen +48/-22 Q16 pixels. The per-side 0.9 summed displacement budget resolves dense-trace folding; historical failures remain unchanged. Phase 93 is next; Phase 95 retains portraits/no-skip.
 
 - [Phase 90]: Goal verification passed 25/25 after fresh focused `142/0/0`,
   compatibility `154/0/1`, comparator 554-mutation, preflight `75/65/8`,
@@ -394,6 +396,6 @@ None found under `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-09-06T03:55:47.435Z
-Stopped at: Phase 92 context gathered
-Resume file: .planning/phases/92-signed-eyebrow-head-spacing/92-CONTEXT.md
+Last session: 2026-09-08
+Stopped at: Phase 92 complete, ready to plan Phase 93
+Resume file: None

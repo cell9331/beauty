@@ -47,7 +47,7 @@ remain unchanged and are not accepted as an effective repair.
 
 ### Eyebrows
 
-- [ ] **BROW-01**: Positive and negative `eyebrowHeadSpacing` move only the two
+- [x] **BROW-01**: Positive and negative `eyebrowHeadSpacing` move only the two
   inner eyebrow heads in opposite documented directions, preserve the outer
   eyebrow anchors and non-brow protected regions, and remain semantically
   distinct from whole-brow `eyebrowSpacing`.
@@ -136,7 +136,7 @@ remain unchanged and are not accepted as an effective repair.
 | VAL-02 | Phase 89 | Complete |
 | FACE-02 | Phase 90 | Complete |
 | EYE-01 | Phase 91 | Complete |
-| BROW-01 | Phase 92 | Pending |
+| BROW-01 | Phase 92 | Complete |
 | NOSE-01 | Phase 93 | Pending |
 | NOSE-02 | Phase 93 | Pending |
 | MOUTH-01 | Phase 94 | Pending |

@@ -163,12 +163,13 @@ It is not a device, commercial, shipping, launch, or release-readiness claim.
 v1.18 remains immutable historical qualification evidence and v1.19 remains
 canceled as a learned/data effort.
 **Latest historical UI milestone:** v1.1 Meitu UI on 2026-06-24, retained only as archived evidence.
-**Current work:** Phases 90 and 91 are complete: `chinTaper` is repaired,
+**Current work:** Phases 90–92 are complete: `chinTaper` is repaired,
 `faceContourSmooth` is explicitly deferred/partial with its owner-local public
 field and current safe implementation unchanged, and `gazeCorrection` now
 moves each independently supported pupil toward its own eye center under the
-frozen protection contract. Phase 92 next owns signed inner eyebrow-head
-spacing; Phases 93–94 retain the nose and negative mouth-width repairs. White
+frozen protection contract. Phase 92 now proves both signed inner eyebrow-head
+directions under unchanged pixels and a per-side summed displacement budget.
+Phases 93–94 retain the nose and negative mouth-width repairs. White
 teeth, sclera redness reduction, and upper-eyelid fullness reduction are
 excluded. Dataset admission, exact-target authoring, training, Core ML
 conversion, learned qualification, and all external/device/commercial work
@@ -938,4 +939,4 @@ Current visual reference contracts:
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-09-06 after Phase 91*
+*Last updated: 2026-09-08 after Phase 92*

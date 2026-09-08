@@ -43,7 +43,7 @@ intact.
 - [x] **Phase 89: Semantic Validation Baseline** - Turn the live 65-case owner-local portrait command into the deterministic acceptance gate for the original eight repair directions. (completed 2026-08-26)
 - [x] **Phase 90: Chin Repair and Contour Deferral** - Retain the proven chin-taper repair and close the bounded contour attempt honestly as deferred/partial. (completed 2026-09-04)
 - [x] **Phase 91: Independent Gaze Correction** - Move each supported pupil toward its own eye center without changing eye shape or borrowing peer-eye support. (completed 2026-09-05)
-- [ ] **Phase 92: Signed Eyebrow-Head Spacing** - Make both inner-eyebrow-head directions effective without moving outer anchors or aliasing whole-brow spacing.
+- [x] **Phase 92: Signed Eyebrow-Head Spacing** - Make both inner-eyebrow-head directions effective without moving outer anchors or aliasing whole-brow spacing. (completed 2026-09-08)
 - [ ] **Phase 93: Distinct Nose Bridge and Root Repairs** - Restore independently measurable bridge definition and root narrowing.
 - [ ] **Phase 94: Negative Mouth-Width Repair** - Restore mouth contraction while retaining the existing positive direction and surrounding anatomy.
 - [ ] **Phase 95: Compatibility and SDK-Only Closeout** - Prove fail-closed safety, exact compatibility, seven effective directions plus one explicit deferred/partial direction, and the complete no-skip SDK gate.
@@ -211,7 +211,7 @@ attempts before an explicit owner decision to repair, defer, or stop.
 | 89. Semantic Validation Baseline | v1.22 | 4/4 | Complete    | 2026-08-26 |
 | 90. Chin Repair and Contour Deferral | v1.22 | 4/4 | Complete    | 2026-09-04 |
 | 91. Independent Gaze Correction | v1.22 | 4/4 | Complete    | 2026-09-06 |
-| 92. Signed Eyebrow-Head Spacing | v1.22 | 0/TBD | Not started | - |
+| 92. Signed Eyebrow-Head Spacing | v1.22 | 6/6 | Complete    | 2026-09-08 |
 | 93. Distinct Nose Bridge and Root Repairs | v1.22 | 0/TBD | Not started | - |
 | 94. Negative Mouth-Width Repair | v1.22 | 0/TBD | Not started | - |
 | 95. Compatibility and SDK-Only Closeout | v1.22 | 0/TBD | Not started | - |
