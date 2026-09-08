@@ -1,7 +1,17 @@
 # Phase 92: Signed Eyebrow-Head Spacing - Context
 
 **Gathered:** 2026-09-06
-**Status:** Ready for planning
+**Status:** Owner-authorized repair reopened (2026-09-08)
+
+## Owner repair decision — 2026-09-08
+
+After the terminal second-attempt failure and exact production rollback, the
+owner explicitly selected `repair`. This supersedes D-18's old implementation
+ceiling for Phase 92 and authorizes a newly scoped, independently checked repair
+cycle. Prior failure summaries remain unchanged. All other decisions, including
+the generic 4.5%-face-width radius ceiling and the frozen actual-pixel thresholds,
+remain acceptance requirements. The new cycle records implementation iterations
+and evidence without requiring a repeat authorization for routine in-scope fixes.
 
 <domain>
 ## Phase Boundary
