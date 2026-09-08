@@ -638,3 +638,30 @@ Phase 95 retains portrait publication and the complete no-skip gate. Package-
 host determinism does not establish device performance, endurance, population
 quality, naturalness, commercial suitability, packaging, shipping, launch,
 release readiness, or distribution.
+
+## Phase 92 Signed Eyebrow-Head Spacing Reliability Contract
+
+R5 (`470ae0d`) recomputes brow support per request and admits candidates per
+side. Nonfinite/unit/clearance errors or failure of the final per-side 0.9
+summed displacement budget cause that side to abstain. Dense admitted traces
+cannot bypass this bound through individually safe overlapping cones. Sparse
+fields remain byte-exact, and the unchanged generic 4.5% face-width radius
+ceiling, public cap 0.25 and Float.ulpOfOne dead zone remain enforced. This is
+a per-side inverse-field bound, not an arbitrary combined-effects guarantee.
+
+Provider-empty and valid-invalid-valid requests remain deterministic; a failed
+peer does not suppress or borrow from the valid peer. R4's sparse semantic pass
+did not close the phase: independent review exposed dense folding, a retained
+RED regression reproduced it, and reviewed R5 resolved it. Repair cycle 1 /
+cumulative attempt 7 preserves every earlier failure and frozen threshold.
+
+Fresh evidence: provider 18/0/0, public/registration 5/0/0, combined compatibility
+and freshness 217 discovered / 0 failures / 2 established portrait opt-in skips.
+The required compatibility subset is 120/0/0; the two skipped live Vision tests
+remain Phase 95 work. Comparator 576 mutations and inventories 5/65/8 passed;
+runner cleanup 6, exact preflight 75/65/8, backend-neutral 24+41, archive and
+SDK-only boundaries passed. Metrics and metadata assertions bind to final
+pixels; no child transcript, raw geometry, pixels or private locator is retained.
+No new public error/log/report API or shared renderer/backend/shader change was
+introduced. Phase 95 retains portraits and full no-skip closeout; no device,
+commercial-quality, launch or distribution claim is made.

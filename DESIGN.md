@@ -1553,3 +1553,31 @@ contract changed. Phase 95 retains authorized portrait publication and the
 complete no-skip closeout; this design establishes no device, population,
 naturalness, commercial, packaging, shipping, launch, release, or distribution
 authority.
+
+## Phase 92 Signed Eyebrow-Head Spacing Design Contract
+
+Owner-local `eyebrowHeadSpacing` retains positive gap expansion and negative
+contraction, cap 0.25 and exact Float.ulpOfOne dead zone. R5 (`470ae0d`) keeps
+each validated side independent; carriers use cumulative arc progress p<0.5
+with w=1-smoothstep(2p). With face width W, unit axis A and u=strength/0.25,
+nominal magnitude N=W*0.020*abs(u)*w. The cutoff is 85% along the observed chord;
+L is each carrier's axis clearance to it. Radius is
+min(W*0.045,W*(0.020+0.025*w),(L-N)/2,L/2.5)*(1-8*Float.ulpOfOne).
+Target C=P+A*0.5r is sign-independent; the private source is
+C-A*sign(u)*min(N,0.8r). These construction anchors do not replace observations.
+Finite/unit/positive source and target clearance, actual displacement<=0.81r
+and actual-target half-clearance are validated atomically per side.
+
+Head points use existing linear falloff 1. R5 measures the sum of actual Float
+displacement norms/radii using Double; a side above 0.9 receives one common
+scale Float(0.9/budget)*(1-32*Float.ulpOfOne). Sources are reconstructed and all
+source/clearance/displacement/final-budget bounds revalidated. Invalid sides
+abstain; zero-rounded work remains neutral. Unscaled sparse fields are byte-exact.
+This bounds the individual side's complete displacement field before image
+clamping; arbitrary cross-side/sibling-field injectivity is not claimed.
+
+Whole-brow spacing and other eyebrow controls, 62 fields, five presets,
+75 renderer cases, both still-image facades, CPU/GPU policy and retained
+Warp.metal remain unchanged. Frozen generated pixels retain signs +48/-22 Q16,
+all four whole-brow distinctions and zero protected-region changes. This is
+package-host mechanics; Phase 95 owns portraits and full no-skip closeout.

@@ -448,3 +448,27 @@ It completes EYE-01 for owner-local package-host use only. Phase 95 still owns
 the authorized portrait rerun, clean 65-output publication, and complete
 no-skip closeout; no device, population, naturalness, commercial, packaging,
 shipping, launch, release, or distribution claim follows.
+
+## Phase 92 Signed Eyebrow-Head Spacing Owner Journey
+
+For validated owner-local still images, positive `eyebrowHeadSpacing` expands
+and negative contracts the inner-head gap. Each eligible side remains usable
+when its peer is missing or invalid, with no fabricated peer. R5 (`470ae0d`)
+repairs dense same-side overlap while preserving accepted sparse output.
+
+Frozen 512x512 explicit-sRGB public-facade tests measured source/neutral signs
++48/-22 Q16, opposite separation 70 and whole-brow distinctions 26/35/96/35.
+Positive/negative target changes are 699/720 pixels with RGB deltas 61174/45676
+against both source and neutral. Outside, outer-anchor, eye, background and
+watermark maxima are all 0/0. Valid-side changes are 350/349 with rejected peers
+0/0; valid-invalid-valid recovery is deterministic and source-safe. Extent,
+alpha, sRGB, metadata, neutral identity and redaction assertions pass.
+
+This evidence is repair cycle 1, cumulative attempt 7; the two original failed
+attempts and R1–R3 rejections remain failures. Owner repair authorization
+permitted further in-scope work; independent review caught and closed R4's
+dense-trace defect before phase promotion. The owner-facing surface remains
+62 fields, five presets, 75 cases, both facades and existing CPU/GPU behavior.
+Phase 95 retains portrait evaluation and the complete no-skip gate. Generated
+mechanics establish no device, portrait-naturalness, commercial-quality,
+packaging, shipping, launch or external-distribution approval.
