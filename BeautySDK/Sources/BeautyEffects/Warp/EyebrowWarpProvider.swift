@@ -245,6 +245,33 @@ struct EyebrowWarpProvider: WarpControlPointProvider {
             candidates.append((source: source, target: target, radius: radius))
         }
 
+        // Individual cones can still fold when a dense trace overlaps them.
+        // Bound the complete side's linear displacement field, preserving
+        // sparse fields exactly and keeping admission independent of the peer.
+        func displacementBudget(_ points: [(source: SIMD2<Float>, target: SIMD2<Float>, radius: Float)]) -> Double {
+            points.reduce(0) { sum, point in
+                let delta = point.target - point.source
+                return sum + hypot(Double(delta.x), Double(delta.y)) / Double(point.radius)
+            }
+        }
+        let budget = displacementBudget(candidates)
+        guard budget.isFinite else { return [] }
+        if budget > 0.9 {
+            let scale = Float(0.9 / budget) * (1 - 32 * Float.ulpOfOne)
+            guard scale.isFinite, scale > 0, scale < 1 else { return [] }
+            for index in candidates.indices {
+                let point = candidates[index]
+                let source = point.target - (point.target - point.source) * scale
+                let clearance = dot(headLimit - source, axis)
+                guard isUnitPoint(source), clearance.isFinite, clearance > geometryEpsilon,
+                      vectorLength(point.target - source) <= point.radius * 0.81
+                else { return [] }
+                candidates[index].source = source
+            }
+            let finalBudget = displacementBudget(candidates)
+            guard finalBudget.isFinite, finalBudget <= 0.9 else { return [] }
+        }
+
         return candidates.compactMap { candidate in
             guard candidate.source != candidate.target else { return nil }
             return WarpControlPoint(

@@ -181,6 +181,15 @@ final class EyebrowWarpProviderTests: XCTestCase {
                 XCTAssertFalse(positive.contains { $0.source == trace.outerEndpoint }, "\(side) count \(count)")
                 XCTAssertEqual(positive.map(\.radius), negative.map(\.radius), "\(side) count \(count)")
 
+                let nominalBudget = expectedIndices.enumerated().reduce(0.0) { sum, pair in
+                    guard pair.offset < positive.count else { return sum }
+                    let t = progress[pair.element] / 0.5
+                    let weight = 1 - t * t * (3 - 2 * t)
+                    let radius = positive[pair.offset].radius
+                    return sum + Double(min(geometry.bounds.width * 0.020 * weight, radius * 0.8)) / Double(radius)
+                }
+                let budgetScale: Float = nominalBudget > 0.9
+                    ? Float(0.9 / nominalBudget) * (1 - 32 * Float.ulpOfOne) : 1
                 var previousWeight = Float.infinity
                 var previousRadius = Float.infinity
                 let comparableCount = [expectedIndices.count, positive.count, negative.count].min() ?? 0
@@ -208,7 +217,7 @@ final class EyebrowWarpProviderTests: XCTestCase {
                     let supportClearance = dot(cutoff - outwardTarget, axis)
                     let carrierClearance = dot(cutoff - observed, axis)
                     let expectedRadius = min(nominalRadius, supportClearance * 0.5, carrierClearance / 2.5)
-                    let expectedMagnitude = min(nominalMagnitude, expectedRadius * 0.8)
+                    let expectedMagnitude = min(nominalMagnitude, expectedRadius * 0.8) * budgetScale
                     let expectedCenter = observed + axis * (expectedRadius * 0.5)
 
                     XCTAssertLessThanOrEqual(magnitude(positivePoint.target - expectedCenter), tolerance)
