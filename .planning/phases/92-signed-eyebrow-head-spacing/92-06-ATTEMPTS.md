@@ -37,3 +37,26 @@ The negative target-centered disks overlap near the midline and fail the
 directional oracle. The candidate is rejected and production restored before
 reviewing a revised support placement. No oracle, threshold, public API,
 shared renderer, or shader change is authorized by these results.
+
+## R2 — rejected
+
+Cumulative implementation attempt: 4; repair-cycle candidate: 2.
+Provider invariants passed 16/16. Public pixel suite: 3 methods, 4 failed
+assertions, zero unexpected. Registration/extra peer class: 2 methods,
+2 failed assertions, zero unexpected. Registration itself remained GREEN.
+
+| Aggregate | Positive | Negative |
+| --- | ---: | ---: |
+| Source/neutral target changed pixels | 636 | 627 |
+| Source/neutral target RGB delta | 44,260 | 31,793 |
+| Signed source/neutral gap Q16 | +35 | -15 |
+
+Opposite distinction: 50 Q16; four whole-brow margins: 39/22/89/28.
+Outside/outer/eye/background/watermark maxima: 0/0. The frozen signal's
+changed-pixel counter reported zero rejected-peer changes, but exact RGB
+assertions detected 12/16 total peer delta. The additional exact-byte peer
+test independently detected three changed pixels on two requests. Both
+failures reject the candidate regardless of the aggregate counter's tolerance.
+Recovery: 636 changed, recovered-equal 1, rejected-source-equal 1.
+Failure classes: signed_direction, peer_protection. Production restored before
+further revision; frozen image/metric/threshold/registration unchanged.
