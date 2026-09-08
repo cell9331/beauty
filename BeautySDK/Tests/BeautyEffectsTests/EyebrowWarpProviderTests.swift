@@ -50,8 +50,13 @@ final class EyebrowWarpProviderTests: XCTestCase {
             if row.isSigned {
                 let negative = row.emission(provider.fieldEmissions(face: face, strengths: row.strengths(-firstEligible)))
                 XCTAssertFalse(negative.isEmpty, "\(row.name) negative first eligible magnitude")
-                XCTAssertEqual(negative.map(\.source), positive.map(\.source), row.name)
-                XCTAssertNotEqual(negative.map(\.target), positive.map(\.target), row.name)
+                if row.name == "eyebrowHeadSpacing" {
+                    XCTAssertEqual(negative.map(\.target), positive.map(\.target), row.name)
+                    XCTAssertNotEqual(negative.map(\.source), positive.map(\.source), row.name)
+                } else {
+                    XCTAssertEqual(negative.map(\.source), positive.map(\.source), row.name)
+                    XCTAssertNotEqual(negative.map(\.target), positive.map(\.target), row.name)
+                }
             }
         }
     }
@@ -167,12 +172,12 @@ final class EyebrowWarpProviderTests: XCTestCase {
                 ).eyebrowHeadSpacing
                 let progress = cumulativeProgress(trace.points)
                 let expectedIndices = progress.indices.filter { progress[$0] < 0.5 }
-                let expectedSources = expectedIndices.map { trace.points[$0] }
                 let axis = unit(trace.outerEndpoint - trace.innerEndpoint)
                 let cutoff = trace.innerEndpoint + (trace.outerEndpoint - trace.innerEndpoint) * 0.85
 
-                XCTAssertEqual(positive.map(\.source), expectedSources, "\(side) count \(count)")
-                XCTAssertEqual(negative.map(\.source), expectedSources, "\(side) count \(count)")
+                XCTAssertEqual(positive.count, expectedIndices.count, "\(side) count \(count)")
+                XCTAssertEqual(negative.count, expectedIndices.count, "\(side) count \(count)")
+                XCTAssertEqual(positive.map(\.target), negative.map(\.target), "sign-independent support centers")
                 XCTAssertFalse(positive.contains { $0.source == trace.outerEndpoint }, "\(side) count \(count)")
                 XCTAssertEqual(positive.map(\.radius), negative.map(\.radius), "\(side) count \(count)")
 
@@ -187,7 +192,7 @@ final class EyebrowWarpProviderTests: XCTestCase {
                     let normalized = p / 0.5
                     let smoothstep = normalized * normalized * (3 - 2 * normalized)
                     let weight = 1 - smoothstep
-                    let expectedMagnitude = geometry.bounds.width * 0.020 * weight
+                    let nominalMagnitude = geometry.bounds.width * 0.022 * weight
                     let positiveDelta = positivePoint.target - positivePoint.source
                     let negativeDelta = negativePoint.target - negativePoint.source
                     let positiveAlongAxis = dot(positiveDelta, axis)
@@ -198,9 +203,18 @@ final class EyebrowWarpProviderTests: XCTestCase {
                         geometry.bounds.width * (0.020 + 0.025 * weight),
                         geometry.bounds.width * 0.045
                     )
-                    let outwardTarget = positivePoint.source + axis * abs(expectedMagnitude)
+                    let observed = trace.points[traceIndex]
+                    let outwardTarget = observed + axis * nominalMagnitude
                     let supportClearance = dot(cutoff - outwardTarget, axis)
-                    let expectedRadius = min(nominalRadius, supportClearance * 0.5)
+                    let carrierClearance = dot(cutoff - observed, axis)
+                    let expectedRadius = min(nominalRadius, supportClearance * 0.5, carrierClearance / 2.4)
+                    let expectedMagnitude = min(nominalMagnitude, expectedRadius * 0.49)
+                    let expectedCenter = observed + axis * (expectedRadius * 0.4)
+
+                    XCTAssertLessThanOrEqual(magnitude(positivePoint.target - expectedCenter), tolerance)
+                    XCTAssertLessThanOrEqual(magnitude(negativePoint.target - expectedCenter), tolerance)
+                    XCTAssertLessThanOrEqual(magnitude(positiveDelta), positivePoint.radius * 0.5)
+                    XCTAssertLessThanOrEqual(magnitude(negativeDelta), negativePoint.radius * 0.5)
 
                     XCTAssertGreaterThan(positiveAlongAxis, 0, "\(side) count \(count) p \(p)")
                     XCTAssertLessThan(negativeAlongAxis, 0, "\(side) count \(count) p \(p)")
@@ -216,7 +230,7 @@ final class EyebrowWarpProviderTests: XCTestCase {
                     XCTAssertEqual(negativePoint.radius, expectedRadius, accuracy: tolerance)
                     XCTAssertLessThanOrEqual(positivePoint.radius, nominalRadius + tolerance)
                     XCTAssertLessThanOrEqual(positivePoint.radius, geometry.bounds.width * 0.045)
-                    XCTAssertLessThanOrEqual(expectedMagnitude, nominalRadius * 0.5)
+                    XCTAssertLessThanOrEqual(expectedMagnitude, expectedRadius * 0.5)
                     XCTAssertGreaterThan(supportClearance, 0)
                     XCTAssertGreaterThan(positivePlaneClearance, 0)
                     XCTAssertGreaterThan(negativePlaneClearance, 0)
@@ -247,7 +261,7 @@ final class EyebrowWarpProviderTests: XCTestCase {
         let capPositive = provider.fieldEmissions(face: valid, strengths: headSpacingStrength(cap))
         let capNegative = provider.fieldEmissions(face: valid, strengths: headSpacingStrength(-cap))
         XCTAssertFalse(capPositive.eyebrowHeadSpacing.isEmpty)
-        XCTAssertEqual(capPositive.eyebrowHeadSpacing.map(\.source), capNegative.eyebrowHeadSpacing.map(\.source))
+        XCTAssertEqual(capPositive.eyebrowHeadSpacing.map(\.target), capNegative.eyebrowHeadSpacing.map(\.target))
         XCTAssertEqual(capPositive.eyebrowHeadSpacing.map(\.radius), capNegative.eyebrowHeadSpacing.map(\.radius))
         XCTAssertTrue(provider.fieldEmissions(
             face: valid,
@@ -487,7 +501,9 @@ final class EyebrowWarpProviderTests: XCTestCase {
         let left = EyebrowSafetyFixtures.trace(side: .left)
         let emissions = EyebrowWarpProvider().fieldEmissions(face: face(left: left), strengths: headSpacingStrength(0.25))
         assertRenderable(emissions.eyebrowHeadSpacing)
-        XCTAssertTrue(emissions.eyebrowHeadSpacing.contains { $0.source == left.innerEndpoint })
+        XCTAssertTrue(emissions.eyebrowHeadSpacing.contains {
+            magnitude($0.target - left.innerEndpoint) < $0.radius
+        })
         XCTAssertFalse(emissions.eyebrowHeadSpacing.contains { $0.source == left.outerEndpoint })
     }
 
