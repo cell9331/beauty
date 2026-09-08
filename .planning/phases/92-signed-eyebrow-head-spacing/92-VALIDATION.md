@@ -33,7 +33,7 @@ created: "2026-09-06"
 - **After provider implementation:** run both the provider suite and the generated public-facade pixel oracle before any frozen batch case is admitted.
 - **After each plan wave:** run the combined quick filter plus any SDK-owned script seam exercised in that wave.
 - **Before Phase 92 verification:** run both exact Phase 89 eyebrow-head cases through the existing package-host batch path, require all frozen signed/locality/protection/sibling facts to pass, then run the SDK-only boundary gate.
-- **Attempt ceiling:** all implementation summaries must record the same `implementation_attempt: 1` or `2`; failure of attempt two stops for an explicit owner decision.
+- **Attempt authority:** the original two-attempt stop remains historical. The owner explicitly reopened repair on 2026-09-08; current acceptance binds repair cycle 1 / cumulative attempt 7. Historical failed summaries retain their original values and outcomes.
 - **Max feedback latency:** focused unit feedback under 60 seconds when warm; package-host semantic feedback may take several minutes but remains bounded to the two exact cases and their required siblings.
 
 ---
@@ -115,7 +115,7 @@ All Phase 92 completion behaviors have automated verification. Live owner-contro
 - [x] Wave 0 covers the repair-specific missing test file and independent metric helpers.
 - [x] No watch-mode flags or unbounded coefficient-search loops appear.
 - [x] Both exact Phase 89 cases and every required sibling/protected-region fact pass unchanged.
-- [x] All implementation summaries agree on attempt `1` or `2`; no third attempt occurs.
+- [x] Current 92-06/03/04 acceptance agrees on repair cycle 1 / cumulative attempt 7 under explicit owner reopening; original failed summaries remain unchanged.
 - [x] Durable evidence contains only fixed aggregates and temporary media/report artifacts are absent after success and failure.
 - [x] `nyquist_compliant: true` and `wave_0_complete: true` are set only after execution supplies all passing evidence.
 

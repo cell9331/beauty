@@ -1,7 +1,8 @@
 ---
 phase: 92-signed-eyebrow-head-spacing
 status: clean
-reviewed_commit: c14719b
+reviewed_commit: 470ae0d
+original_reviewed_commit: c14719b
 critical_count: 0
 warning_count: 0
 ---
