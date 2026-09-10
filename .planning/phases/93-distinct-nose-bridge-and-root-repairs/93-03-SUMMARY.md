@@ -13,7 +13,8 @@ failure_category: none
 historical_ledger_failure_category: child_timeout
 attempts_exhausted: true
 rollback: retained_after_reviewed_infrastructure_recovery
-independent_review: pending
+independent_review: passed
+independent_goal_verification: pending
 requires:
   - phase: 93-02
     provides: Frozen registration and both original-provider semantic baseline_pass verdicts

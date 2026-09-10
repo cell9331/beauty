@@ -8,7 +8,7 @@ tasks_total: 2
 implementation_attempt: 2
 code_review_status: passed
 independent_goal_verification: pending
-supplemental_cross_phase_regression: scope_correction_pending
+supplemental_cross_phase_regression: passed
 requirements-addressed: [NOSE-01, NOSE-02]
 requirements-completed: []
 key-files:
@@ -20,7 +20,7 @@ completed: 2026-09-10
 ---
 # Phase 93 Plan 04: Compatibility and Independent Review
 
-The exact second candidate passed the complete focused and compatibility conjunction, all eight SDK-owned boundary commands and independent code review. Goal verification and owner synchronization remain separate. The later supplemental cross-phase selection error is retained and awaits its narrow scope correction; it does not turn these actually completed gates into unexecuted or failed tests.
+The exact second candidate passed the complete focused and compatibility conjunction, all eight SDK-owned boundary commands and independent code review. Goal verification and owner synchronization remain separate. The later supplemental cross-phase selection error is retained and its reviewed scope correction has passed; it does not turn these actually completed gates into unexecuted or failed tests.
 
 ## Current evidence
 
@@ -49,7 +49,7 @@ Bridge target/source and target/neutral comparisons each change611 pixels with R
 
 Attempt1's field-safety failure and rollback remain unchanged. Candidate2 first passed core36, then compatibility timeout39 triggered rollback40. Review exposed the outer60s/inner120s cold-build budget mismatch. `35899899` adds a separately reviewed scheduling/recovery wrapper; `2194e04c` restores the exact same candidate. No third production candidate, radius/test/threshold change or baseline rewrite occurred. New runner selftests133 retained plus27 new pass; the same candidate then freshly passed the gates above.
 
-After these gates, the parent's additional prior-phase selector mistakenly included two private-portrait opt-ins. Ledger55 records `skip_failure` after34 passes; no portrait access occurred and no later method received credit. See `93-REGRESSION-DISPOSITION.md`: the scope correction must preserve this failure and require106 deterministic methods, while reusing the unchanged, complete receipts47/53/54 transparently. No supplemental regression pass is claimed here yet.
+After these gates, the parent's additional prior-phase selector mistakenly included two private-portrait opt-ins. Ledger55 records `skip_failure` after34 passes; no portrait access occurred and no later method received credit. See `93-REGRESSION-DISPOSITION.md`: the scope correction preserves this failure and requires106 deterministic methods, while reusing the unchanged, complete receipts47/53/54 transparently. The reviewed correction `07664fa5` subsequently passed all106 deterministic methods with zero failures/skips at ledger56; prior completed receipts remain unchanged with explicit identity provenance in CHECKS.
 
 ## Handoff
 
