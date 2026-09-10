@@ -281,13 +281,13 @@ final class NoseWarpProviderTests: XCTestCase {
         XCTAssertTrue(emissions.noseSlim.isEmpty)
         XCTAssertFalse(emissions.noseWingSlim.isEmpty)
         XCTAssertFalse(emissions.noseTipSize.isEmpty)
-        XCTAssertFalse(emissions.noseBridge.isEmpty)
+        XCTAssertTrue(emissions.noseBridge.isEmpty, "P93_CENTERED_BRIDGE_EMPTY")
         XCTAssertFalse(emissions.noseRootNarrowing.isEmpty)
-        XCTAssertEqual(emissions.points.count, 5)
+        XCTAssertEqual(emissions.points.count, 4, "P93_CENTERED_BRIDGE_TOTAL_FOUR")
         XCTAssertEqual(sanitized.noseSlim, 0)
         XCTAssertEqual(sanitized.noseWingSlim, requested.noseWingSlim)
         XCTAssertEqual(sanitized.noseTipSize, requested.noseTipSize)
-        XCTAssertEqual(sanitized.noseBridge, requested.noseBridge)
+        XCTAssertEqual(sanitized.noseBridge, 0, "P93_CENTERED_BRIDGE_SANITIZED_ZERO")
         XCTAssertEqual(sanitized.noseRootNarrowing, requested.noseRootNarrowing)
     }
 
