@@ -149,7 +149,7 @@ Plans:
   2. Positive `noseRootNarrowing` detectably narrows the eligible root ROI while preserving bridge, tip, and non-nose regions and retaining its exact safety cap and fail-closed behavior.
   3. The two repaired controls produce distinct semantic evidence and do not alias each other, `noseSlim`, or any nose-tip control.
 
-**Plans**: 4/5 complete; core36, compatibility229, boundary commands8 and deterministic cross-phase regression106 pass. Historical failures remain preserved. Owner synchronization and independent goal verification are pending.
+**Plans**: 5/5 complete; core36, compatibility229, boundary commands8, deterministic regression106 and seven-owner checks pass. Historical failures remain preserved. Independent goal verification is pending.
 **Wave 1**
 
 - [x] 93-01-PLAN.md — Independent registration and authorized root adapter correction.
@@ -168,7 +168,7 @@ Plans:
 
 **Wave 5** *(blocked on Wave 4 completion)*
 
-- [ ] 93-05-PLAN.md — Owner contract synchronization.
+- [x] 93-05-PLAN.md — Owner contract synchronization.
 
 ### Phase 94: Negative Mouth-Width Repair
 
@@ -231,7 +231,7 @@ attempts before an explicit owner decision to repair, defer, or stop.
 | 90. Chin Repair and Contour Deferral | v1.22 | 4/4 | Complete    | 2026-09-04 |
 | 91. Independent Gaze Correction | v1.22 | 4/4 | Complete    | 2026-09-06 |
 | 92. Signed Eyebrow-Head Spacing | v1.22 | 6/6 | Complete    | 2026-09-08 |
-| 93. Distinct Nose Bridge and Root Repairs | v1.22 | 4/5 | Owner synchronization | - |
+| 93. Distinct Nose Bridge and Root Repairs | v1.22 | 5/5 | Goal verification pending | - |
 | 94. Negative Mouth-Width Repair | v1.22 | 0/TBD | Not started | - |
 | 95. Compatibility and SDK-Only Closeout | v1.22 | 0/TBD | Not started | - |
 

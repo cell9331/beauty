@@ -5,7 +5,7 @@ milestone_name: Non-Local Facial Effect Repairs
 current_phase: 93
 current_phase_name: Distinct Nose Bridge and Root Repairs
 status: executing
-stopped_at: Core, compatibility, boundary and regression passed; owner and goal checks pending
+stopped_at: All five plans and owner gates complete; independent goal verification pending
 last_updated: "2026-09-10T09:08:01.188355+00:00"
 last_activity: 2026-09-10
 last_activity_desc: 36 core, 229 compatibility, 8 boundary commands and 106 regression methods passed
@@ -14,7 +14,7 @@ progress:
   total_phases: 7
   completed_phases: 4
   total_plans: 23
-  completed_plans: 22
+  completed_plans: 23
   percent: 57
 ---
 
@@ -31,18 +31,18 @@ without distributing the SDK, model, or weights.
 
 ## Current Position
 
-Phase: 93 (Distinct Nose Bridge and Root Repairs) — INFRASTRUCTURE RECOVERY
-Plan: 5 of 5 in progress; plans 1–4 complete
-Status: All implementation gates passed; seven owners and independent goal verification pending
+Phase: 93 (Distinct Nose Bridge and Root Repairs) — GOAL VERIFICATION
+Plan: 5 of 5 complete; independent goal verification pending
+Status: All implementation and seven-owner gates passed; independent goal verification pending
 Last activity: 2026-09-10 — Reviewed Float reconstruction repair passed the complete core conjunction
 
-Progress: 4/7 milestone phases complete (57%); 22/23 currently authored plans have summaries, including preserved historical failed attempts. Phase 93 has 4/5 completed plans; all implementation gates passed, with owner synchronization and independent phase verification pending.
+Progress: 4/7 milestone phases complete (57%); 23/23 currently authored plans have summaries, including preserved historical failed attempts. Phase 93 has 5/5 completed plans and all owner gates passed; independent phase verification remains pending.
 
 ## Performance Metrics
 
 **Current milestone:**
 
-- Authored plans with summaries: 22 (historical failed and halted attempts are not semantic successes)
+- Authored plans with summaries: 23 (historical failed and halted attempts are not semantic successes)
 - Average documented duration: 13 min across 11 timed summaries
 - Total documented execution time: 144 min plus the untimed FACE-01 terminal record
 
@@ -387,15 +387,15 @@ None found under `.planning/todos/pending/`.
 - Authorized portrait media and detailed outputs remain local and ignored;
   durable evidence must stay aggregate and privacy-safe.
 
-- Phase 93 plan 93-01 checkpoint: Task 1 complete; Task 2 has exact old-root RED 3 discovered / 2 passed / 1 expected failure / 0 skips. begin 1 stopped before admission because the frozen gate replaces root literals across unrelated regression fixtures. Attempts started 0/2; adapter/provider remain baseline exact. Gate and baseline binding amendment requires orchestrator disposition; no later plan or pixel scoring ran.
+- [Historical, resolved by reviewed gate amendment] Phase 93 plan 93-01 checkpoint: Task 1 complete; Task 2 has exact old-root RED 3 discovered / 2 passed / 1 expected failure / 0 skips. begin 1 stopped before admission because the frozen gate replaces root literals across unrelated regression fixtures. Attempts started 0/2; adapter/provider remain baseline exact. Gate and baseline binding amendment requires orchestrator disposition; no later plan or pixel scoring ran.
 
 ## Deferred Items
 
-### Phase 93 plan 02 checkpoint — 2026-09-10
+### Historical Phase 93 plan 02 checkpoint — 2026-09-10
 
 Task 93-02-01 is complete (`1c9ffd27`): four independent metric methods pass 4/0/0. Task 93-02-02 is blocked; its six compiled public tests and failure receipt are retained in `2ed83f1a`, with checkpoint summary `e451eb08`. The frozen `red` command passed registration 4/0/0 and metrics 4/0/0, then stopped in the first lifecycle method at the named-sRGB assertion (4 discovered, 0 passed, 1 failed, 0 skipped; three unexecuted). One bounded diagnostic rerun found 24 failures only at that assertion. The retained raw CPU geometry route uses device RGB; parent disposition is required before reconciling the plan's named-sRGB requirement. No assertion, provider, fixture, SPI, gate, authority or registration change was made. Both semantic directions remain unmeasured; no `93-RED.json` exists and no plan 93-03 work ran. Shared attempt 1 remains open with one begin and zero finish; do not repeat begin 1. Both NOSE requirements remain active. This scoped checkpoint supplements preserved parent state and historical entries; it does not advance the plan counter.
 
-### Phase 93 plan 02 complete — 2026-09-10
+### Historical Phase 93 plan 02 complete — 2026-09-10
 
 Plan 93-02 is complete, 2/2 tasks. Fresh current-gate registration 4/0/0, metrics 4/0/0, lifecycle 4/0/0 and semantics 2/0/0 passed; freeze event 23 created immutable 93-RED.json (`571a87141a7ffcf77e2d5c42c7a9e43edd2ac3510a07751775ef4d09ef234f84`). Both directions are baseline_pass with the original provider: bridge 858 changed / 56232 RGB / +563 Q8 / minimum sibling 553; root 964 / 92187 / +133 Q16 / minimum sibling 133. Source/neutral results match; all protection maxima are 0/0 and repeated-byte status is 1/1. Final evidence is committed in `6af5d87f`; complete summary in `16d77c50`. Historical failures 15/18 remain preserved under exact reviewed authoring dispositions. Shared attempt 1 remains open (one begin / zero finish). Parent coordinates plan 93-03: only independently demonstrated safety/scaling regressions may be changed, never efficacy tuning to manufacture RED. Both NOSE requirements remain active pending later phase work. No plan 93-03 execution, rollback, budget reset or broad parent-state resynchronization occurred.
 
@@ -408,12 +408,12 @@ Plan 93-02 is complete, 2/2 tasks. Fresh current-gate registration 4/0/0, metric
 
 ## Session Continuity
 
-### Phase 93 plan 03 terminal checkpoint — 2026-09-10
+### Historical Phase 93 plan 03 terminal checkpoint — 2026-09-10
 
 Plan 93-03 is halted, 1/2 tasks complete. Task 1 committed `811734f2`: unchanged-provider RED discovered 22 methods, 17 passed, 5 expected-failing methods, zero skips; exactly three centered IDs plus four named scaling/budget/cutoff IDs are frozen in PROVIDER-RED (`650e48e51a4701fa653bfb53e24955dc239e46b420f12decb841bb91adb09138`). Fixed candidate 1 compiled and passed authorities, then failed `testFinalFloatFieldBudgetAndDenseMap` / `P93_FIELD_BUDGET` at ledger sequence 25 (22 discovered, 18 passed, 1 failed, zero skips; three unexecuted). Candidate source is preserved in `e4e89680`. This is a blocking safety conjunction; no second candidate, post-evaluation correction or semantic rerun occurred. Both candidate directions remain untested; prior bridge/root baseline_pass evidence remains historical.
 
 Sequence 26 finishes shared attempt 1 as failed/assertion_failure/production_restored; rollback commit `5392e9d1` restores the exact pinned original adapter and provider. The ledger contains one begin and one finish. All immutable bindings and corrected root/new provider tests remain as failing historical proof. Both NOSE requirements remain active; no phase completion or 93-04/05 work. See 93-03-SUMMARY.md. Parent repair/defer/stop disposition is required; no retry budget is reset. Parent frontmatter, position, config/state.json/runtime/lock and unrelated state entries remain preserved.
 
-Last session: 2026-09-08
-Stopped at: Phase 92 complete, ready to plan Phase 93
+Last session: 2026-09-10
+Stopped at: Phase 93 all five plans and owner gates complete; independent goal verification pending
 Resume file: None
