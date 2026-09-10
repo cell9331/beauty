@@ -241,7 +241,26 @@ def no_duplicates(pairs):
 
 
 def load(name):
-    return json.loads(read_bytes(PHASE + "93-" + name + ".json"), object_pairs_hook=no_duplicates)
+    data = read_bytes(PHASE + "93-" + name + ".json")
+    value = json.loads(data, object_pairs_hook=no_duplicates)
+    amendment_path = PHASE + "93-GATE-AMENDMENT.json"
+    if name == "BASELINE" and (ROOT / amendment_path).exists():
+        amendment = json.loads(read_bytes(amendment_path), object_pairs_hook=no_duplicates)
+        value = amended_baseline(value, amendment, digest(data), sha(GATE))
+    return value
+
+
+def amended_baseline(baseline, amendment, baseline_hash, gate_hash):
+    require(set(amendment) == {"schema", "phase", "reason", "baseline_sha256", "previous_gate", "gate"}, "invalid_record")
+    require(amendment["schema"] == 1 and amendment["phase"] == 93
+            and amendment["reason"] == "named_regression_scope_correction"
+            and amendment["baseline_sha256"] == baseline_hash
+            and amendment["previous_gate"] == baseline["gate"]
+            and amendment["gate"] == gate_hash, "hash_drift")
+    require(all(isinstance(amendment[k], str) and re.fullmatch("[0-9a-f]{64}", amendment[k])
+                for k in ("baseline_sha256", "previous_gate", "gate")), "invalid_record")
+    return dict(baseline, gate=gate_hash)
+
 
 
 def write_once(name, value):
@@ -329,6 +348,18 @@ def initialize():
     write_once("BASELINE", value)
 
 
+def validate_root_regression(before, current):
+    method_name = REG_METHOD.split("/")[1]
+    require(len(re.findall(r"(?m)^    func " + re.escape(method_name) + r"\(", before)) == 1, "source_scope")
+    _, method = remove_function(before, method_name)
+    corrected = method
+    for old, new in (("SIMD2<Float>(0.476, 0.488)", "SIMD2<Float>(0.476, 0.380)"),
+                     ("SIMD2<Float>(0.524, 0.488)", "SIMD2<Float>(0.524, 0.380)")):
+        require(corrected.count(old) == 1, "source_scope")
+        corrected = corrected.replace(old, new)
+    require(current in (before, before.replace(method, corrected, 1)), "source_scope")
+
+
 def source_scope(baseline):
     original = blob_bytes(baseline, ADAPTER).decode()
     current = read_bytes(ADAPTER).decode()
@@ -342,9 +373,7 @@ def source_scope(baseline):
     new_spi, count = re.subn(r"(?ms)^            // Phase93 nose fixture begin\n.*?^            // Phase93 nose fixture end\n", "", new_spi)
     require(count == 1 and new_spi == old_spi, "source_scope")
     before = blob_bytes(baseline, REGRESSION).decode()
-    after = before.replace("SIMD2<Float>(0.476, 0.488)", "SIMD2<Float>(0.476, 0.380)")
-    after = after.replace("SIMD2<Float>(0.524, 0.488)", "SIMD2<Float>(0.524, 0.380)")
-    require(read_bytes(REGRESSION).decode() in (before, after), "source_scope")
+    validate_root_regression(before, read_bytes(REGRESSION).decode())
     before_provider = blob_bytes(baseline, PROVIDER).decode()
     after_provider = read_bytes(PROVIDER).decode()
     # New private helpers are restricted to a phase93-prefixed namespace and
@@ -646,6 +675,7 @@ def begin(attempt):
     admit_begin(prior, attempt)
     if attempt == 1:
         old = latest("registration_old-root-red", current=False)
+        require(old["identity"][GATE] == base["gate"], "hash_drift")
         # Registration tests may now include the new regression expectation.
         for p in [FIXTURE, SPI, REG_TEST, ADAPTER, PROVIDER]:
             require(sha(p) == old["identity"][p], "hash_drift")
@@ -821,6 +851,7 @@ def closeout(stage):
 
 def self_test():
     """All parser/admission mutations are in memory; no Swift child is launched."""
+    global authorities, events, latest, sha, append, identity
     checks = 0
 
     def rejects(call):
@@ -831,6 +862,30 @@ def self_test():
             checks += 1
             return
         raise GateError("self_test_failure")
+
+    # The same literals outside the named method must stay byte-exact.
+    left, right = "SIMD2<Float>(0.476, 0.488)", "SIMD2<Float>(0.524, 0.488)"
+    old_method = "    func " + REG_METHOD.split("/")[1] + "() {\n" + left + "\n" + right + "\n    }"
+    original = old_method + "\nlet unrelated = [" + left + ", " + right + "]\n"
+    scoped = original.replace(old_method, old_method.replace("0.488", "0.380"), 1)
+    validate_root_regression(original, original)
+    validate_root_regression(original, scoped)
+    checks += 2
+    for invalid in (original.replace("0.488", "0.380"), scoped + " ",
+                    original.replace(left, left.replace("0.488", "0.380"), 1)):
+        rejects(lambda invalid=invalid: validate_root_regression(original, invalid))
+    rejects(lambda: validate_root_regression(original + old_method, scoped))
+    rejects(lambda: validate_root_regression("no method", scoped))
+    base = {"gate": "a" * 64, "fixture": {"untouched": "b" * 64}}
+    amendment = {"schema": 1, "phase": 93, "reason": "named_regression_scope_correction",
+                 "baseline_sha256": "c" * 64, "previous_gate": "a" * 64, "gate": "d" * 64}
+    require(amended_baseline(base, amendment, "c" * 64, "d" * 64) == dict(base, gate="d" * 64), "self_test_failure")
+    require(base["gate"] == "a" * 64, "self_test_failure")
+    checks += 2
+    for key, invalid in (("schema", 2), ("phase", 94), ("reason", "other"),
+                         ("baseline_sha256", "e" * 64), ("previous_gate", "e" * 64), ("gate", "e" * 64)):
+        rejects(lambda key=key, invalid=invalid: amended_baseline(base, dict(amendment, **{key: invalid}), "c" * 64, "d" * 64))
+    rejects(lambda: amended_baseline(base, dict(amendment, extra=True), "c" * 64, "d" * 64))
 
     method = "BeautyCoreTests.NoseFixtureRegistrationTests/testSourceAnatomyRegistersIndependently"
     cname, name = method.split(".", 1)[1].split("/")
@@ -893,7 +948,6 @@ def self_test():
     rejects(lambda: admit_child(0, b"\xff"))
     rejects(lambda: admit_child(0, b"x" * (8 * 1024 * 1024 + 1)))
     # Hash drift checks use an in-memory source, never a temp fixture/transcript.
-    global sha
     original_sha = sha
     try:
         sha = lambda _: "a" * 64
@@ -923,6 +977,43 @@ def self_test():
         rejects(lambda: safe_path(PHASE + "93-RED.json", writing=True))
     finally:
         ROOT = original_root
+
+    # Exercise the real begin admission with every dependency held in memory.
+    # Identical source/count evidence from a superseded gate cannot authorize
+    # an attempt; the effective gate's fresh RED can. Never write a begin event.
+    saved = authorities, events, latest, sha, append, identity
+    source_hash = "b" * 64
+    effective_gate = "d" * 64
+    red_receipt = {
+        "identity": dict.fromkeys([FIXTURE, SPI, REG_TEST, ADAPTER, PROVIDER], source_hash),
+        "counts": {"discovered": 3, "passed": 2, "failed": 1, "skipped": 0},
+    }
+    red_receipt["identity"][GATE] = effective_gate
+    collected = []
+    try:
+        authorities = lambda: {"gate": effective_gate, "originals": {ADAPTER: {"sha256": source_hash}}}
+        events = lambda: []
+        latest = lambda kind, current=True: red_receipt
+        sha = lambda path: source_hash
+        append = collected.append
+        identity = lambda: dict(red_receipt["identity"])
+        begin(1)
+        require(len(collected) == 1 and collected[0]["event"] == "begin"
+                and collected[0]["attempt"] == 1, "self_test_failure")
+        checks += 1
+        collected.clear()
+        red_receipt["identity"][GATE] = "a" * 64
+        try:
+            begin(1)
+        except GateError as error:
+            require(str(error) == "hash_drift", "self_test_failure")
+            checks += 1
+        else:
+            raise GateError("self_test_failure")
+        require(not collected, "self_test_failure")
+        checks += 1
+    finally:
+        authorities, events, latest, sha, append, identity = saved
     return checks
 
 
