@@ -618,6 +618,8 @@ block acceptance and support owned rollback. Its fresh 106/0/0 deterministic
 regression grants no credit to excluded portrait tests. Separate core,
 compatibility and script gates passed 36/0/0, 229/0/0 and 8/0/0.
 
-Independent goal verification remains pending. Phase 95 owns private portraits,
+Independent goal verification passed. Phase 95 owns private portraits,
 final 65-output evidence and full no-skip closeout. No device, commercial or
 external-distribution authority is conferred.
+
+Independent goal verdict: [93-VERIFICATION.md](.planning/phases/93-distinct-nose-bridge-and-root-repairs/93-VERIFICATION.md), 18/18 must-haves and zero blockers.

@@ -1,20 +1,114 @@
 ---
 phase: "93"
 slug: "distinct-nose-bridge-and-root-repairs"
-status: draft
+status: validated
 nyquist_compliant: true
-wave_0_complete: false
+wave_0_complete: true
 created: "2026-09-09"
 updated: "2026-09-10"
 planning_disposition: independently_checked_plan_set
-registration_status: planned_not_executed
+registration_status: executed_passed
+semantic_status: executed_passed
+provider_status: executed_passed
+compatibility_status: executed_passed
+owner_status: executed_passed
+independent_goal_verification: passed
 plan_count: 5
-implementation_attempts_consumed: 0
+task_count: 11
+tasks_covered: 11
+implementation_attempts_consumed: 2
+coverage_gaps: 0
 ---
 
-# Phase 93 — Validation Strategy
+# Phase 93 — Validation Audit
 
-> Current disposition: D-09 explicitly authorizes the bounded adapter root-positioning correction. Five executable plans are authored for independent checking. No production changes or semantic acceptance are claimed. The historical checkpoint below remains source-only evidence; its pending-authorization/zero-plan wording is superseded by D-09 and the current strategy appended after it.
+Current disposition: **validated; 11/11 tasks covered; no gaps**. This documentation-only Nyquist post-hook audits the five PLAN/SUMMARY pairs against recorded execution and independent verification. It creates no tests, performs no native reruns and does not commit. The historical source-only checkpoint below is preserved verbatim and supplies no current execution credit.
+
+## Test infrastructure and authoritative evidence
+
+XCTest runs through SwiftPM (`BeautySDK/Package.swift`); SDK-owned Python/shell gates enforce exact discovery, nonzero denominators, zero failures/skips, immutable authorities and aggregate-only receipts. The current final entrypoint is `python3 scripts/check-phase93-regression-closeout.py`, SHA-256 `7ff1598beb9708ba1917e3f8f1d7ca995de2fdd98eaed2adcd1a1eeb0f784378`. Its reviewed delegation chain retains the timeout-recovery and attempt2 wrappers and the original frozen nose gate; original gate and frozen bindings remain unchanged. Historical commands in PLAN files describe their execution stage, not an instruction to restart an earlier entrypoint or refreeze evidence.
+
+The accepted provider is `bafa9d2ac365f104e2dc0ec16ed080cddcced1199a16d471c27d5923d5166b45`; adapter is `cf191001ae1245a82b042cc54eaca63aa6b3ba2abeed40e86781bc056eb159d9`. `93-CHECKS.json` directly retains receipts 53/54/56/57/58/59 and identity provenance. Core 47 is in `93-ATTEMPTS.md`, pinned through `93-REGRESSION-DISPOSITION.md`; CHECKS plus ledger/disposition preserve the full chain. Receipt numbers below are ledger sequence numbers.
+
+| Evidence | Executed result | Authority |
+|---|---|---|
+| Core conjunction | 36 passed / 0 failed / 0 skipped: provider 22, registration 4, metrics 4, pixels 2, lifecycle 4 | 42–47; focused repeat 48–52 |
+| Compatibility | 229 passed / 0 failed / 0 skipped | 53 |
+| Script commands | 8 passed / 0 failed / 0 skipped | 54 |
+| Supplemental deterministic regression | 106 passed / 0 failed / 0 skipped | 56 |
+| Design owners | 3 passed / 0 failed / 0 skipped | 57 |
+| Seven owners | 7 passed / 0 failed / 0 skipped; repeated after goal verification | 58, then 59 |
+| Independent code review | Passed, no actionable blockers | `93-REVIEW.md`, review commit `ee6d55f9` |
+| Independent goal verification | 18/18 must-haves; NOSE-01/02 and D-01–D-10 verified; no gaps | `93-VERIFICATION.md`; evidence/source audit, not a native rerun |
+
+Counts describe their own receipts, not a sum of disjoint tests. The eight script commands cover comparator self-test (576 mutations; 5/65/8), cleanup/boundary self-tests (cleanup 6), runner syntax, preflight (75/65/8), backend-neutral checks (24 focused + 41 CPU), archive verification, SDK-only boundary and diff hygiene.
+
+## Per-task verification map
+
+Every task covers NOSE-01 and NOSE-02. All five plans have executed summaries; historical pending statements are interpreted at their recorded checkpoint, with current completion established by the later receipts and independent verdict.
+
+| Task | Wave | Automated coverage and evidence | State |
+|---|---:|---|---|
+| 93-01-01 | 1 | Gate self-tests and independent generated `NoseRepairFixture.swift`/Testing SPI; initial 50 and reviewed amended 69 self-tests passed; source admission exercised by registration | COVERED — executed |
+| 93-01-02 | 1 | `NoseFixtureRegistrationTests` plus existing adapter regression: expected old-root RED 7; corrected GREEN 9/10; current 43/49 each 4/4 | COVERED — executed |
+| 93-01-03 | 1 | Freeze-registration receipt 11 and immutable `93-REGISTRATION.json`; current authority/identity checks retain binding | COVERED — executed |
+| 93-02-01 | 2 | Four `NoseSemanticMetricTests` check independent integer arithmetic, admission, polarity and full comparison conjunction; 12 and current 44/50 passed | COVERED — executed |
+| 93-02-02 | 2 | `BeautyEngineNoseRepairTests`: actual-pixel baseline 22 honestly records both baseline_pass; lifecycle 21; freeze 23 (`93-RED.json`); current pixels 45/51 and lifecycle 46/52 passed | COVERED — executed |
+| 93-03-01 | 3 | 16 `NoseWarpProviderTests` + 6 `NoseRepairFieldTests`; expected baseline RED 24 (22 discovered, 17 passed, 5 failed), exact assertion binding in `93-PROVIDER-RED.json`; current 42/48 all 22 passed | COVERED — executed |
+| 93-03-02 | 3 | Provider/registration/metrics/pixels/lifecycle and immutable-authority conjunction; exact candidate2 revalidation 47: 36/0/0 | COVERED — executed |
+| 93-04-01 | 4 | Eleven compatibility classes and authorities: 53, 229/0/0; reviewed supplemental regression 56, 106/0/0 | COVERED — executed |
+| 93-04-02 | 4 | Eight closeout script commands 54 and independent `93-REVIEW.md`; current identity provenance retained | COVERED — executed |
+| 93-05-01 | 5 | Design owner closeout 57: 3/0/0 | COVERED — executed |
+| 93-05-02 | 5 | Seven-owner closeout 58/59: 7/0/0; independent goal verification 18/18 | COVERED — executed |
+
+## Requirement and safety coverage
+
+NOSE-01 and NOSE-02 are covered by independent registration, literal checked integer metric tests, actual public-output pixels, lifecycle/fail-closed tests, the complete reconstructed Float field safety conjunction and compatibility. Provider tests retain exact caps, strength scaling, pair-atomic strict cutoff, complete-field budget, dense/combined fields and sibling isolation. Candidate2 uses conservative Double accumulation and inward Float target quantization with explicit reconstructed checks, retains the final 0.45 bound and R1 radii; no empirical margin sweep, third candidate or test relaxation supplies acceptance.
+
+| Canonical public-pixel result | Bridge | Root |
+|---|---:|---:|
+| Changed pixels / RGB absolute delta | 611 / 29460 | 1043 / 43917 |
+| Semantic margin | 383 Q8 | 24 Q16 |
+| Minimum sibling margin | 373 Q8 | 24 Q16 |
+| Frozen comparisons | 6 | 5 |
+| Repeated deterministic comparison | 1 | 1 |
+
+Outside/protected/background/watermark changed-pixel and RGB deltas are zero; retained sibling outputs match the frozen baseline. Canonical pixels cover both controls. The eight-orientation loop establishes **bridge raw/facade agreement only**, not root semantic behavior across all orientations. The adapter root anatomy bound is bounds-derived 0.30, not observed anatomy. Metadata/identity, malformed/missing inputs, recovery and reuse are covered by the public lifecycle and compatibility evidence; no device or broader visual-quality claim follows.
+
+## Historical failures and recovery disposition
+
+Two substantive implementation attempts remain consumed. Candidate1's failure and rollback (25/26) remain failed history. Candidate2's initial 36-pass acceptance (33) was revoked after compatibility timeout 39; that receipt establishes 67 passes + 1 timeout + 161 unexecuted out of 229, **zero established assertion failures**. The timed-out method was `BeautyCoreTests.BeautyExampleRendererProcessTests/testCompiledRendererBindsOnlyExactSuccessfulGazeAggregate`. Receipt 40 restores both production files to the admitted baseline. This is not negative arithmetic or pixel evidence.
+
+Reviewed infrastructure-only recovery resumed the exact same candidate at 41 and produced current core 47 and compatibility 53; it did not create a third candidate. Scope error 55 remains a failed record for including deferred portrait opt-ins. Its reviewed scope correction produced deterministic 106/0/0 at 56, without modifying tests or rewriting the failure. `93-ATTEMPTS.md` and recovery/regression dispositions remain the detailed history authorities.
+
+## Wave 0 and validation sign-off
+
+- [x] Independent registration tests exist in `BeautySDK/Tests/BeautyCoreTests/NoseFixtureRegistrationTests.swift`; source/adapter registration passed before provider repair.
+- [x] Metric and public-pixel/lifecycle tests exist, executed and are frozen with their source and authorities.
+- [x] Exact test discovery and nonzero denominators are enforced; expected historical RED is distinct from current zero-failure acceptance.
+- [x] All 11 tasks have automated coverage or executed prerequisite bindings; no three consecutive implementation tasks lack checks.
+- [x] Frozen manifest, comparator, renderer, shared sampler, retained shader and numeric predicates remain unchanged.
+- [x] Current compatibility, scripts, supplemental regression, owners and independent code/goal reviews passed.
+- [x] Evidence remains aggregate-only; no raw pixels, geometry, masks, private paths or child transcripts are added here.
+
+Sampling was executed in dependency order: registration → frozen metrics/pixel baseline → provider RED/repair → compatibility/scripts/review → owners/goal verification. Expected RED commands and freezes are completed historical steps, not rerun requests. Feedback latency is not claimed; reviewed cold-build/cache timeout handling is an infrastructure disposition, not relaxed result acceptance.
+
+All in-scope acceptance is automated; no manual-only verification gap exists. Owner-local Phase 95 retains independent per-gate obligations for private portraits, final 65-output/full no-skip closeout and deferred precision residuals. FACE-01 semantic repair, UI/realtime/model/data, device qualification and external distribution remain outside Phase 93. These exclusions do not weaken either NOSE contract.
+
+## Nyquist audit trail — 2026-09-10
+
+| Audit measure | Result |
+|---|---:|
+| Plans / tasks audited | 5 / 11 |
+| Tasks covered | 11 |
+| Coverage gaps found / resolved / escalated | 0 / 0 / 0 |
+| New tests / native reruns in this post-hook | 0 / 0 |
+
+**Sign-off:** validated against current recorded evidence and independent 18/18 verification. The earlier independent plan check (`93-PLAN-CHECK.md`) resolved its two initial blockers with zero remaining issues; its 10/10 structural checks were planning evidence, superseded for execution status by the receipts above.
+
+---
+
+The following preserved checkpoint is historical only. Its zero-attempt, blocked and pending-authorization statements describe the pre-D-09 planning state and do not override the current validated disposition.
 
 ## Historical Planning Checkpoint — 2026-09-10 (preserved; scope disposition superseded by D-09)
 
@@ -144,288 +238,4 @@ deferred 项不属于本阶段缺口。front-end=false；drift advisory 不构�
 | face-feature-batch-manifest.json | `5665ffa04b9241a73ee864f7230a4abcd677de5dce01a5091a19e70714b7647e` |
 | compare-face-feature-batches.swift | `4d51f4727646ae88460ce5d17f9d661fa63a461da1dc6e15e58afa06803a9ffa` |
 
-## Test Infrastructure
-
-| Property | Value |
-|----------|-------|
-| **Framework** | XCTest through SwiftPM |
-| **Config file** | `BeautySDK/Package.swift` |
-| **Execution readiness** | Blocked before test authoring and production planning |
-| **Future suite owners** | Nose registration, public repair, provider, compatibility, comparator, boundary and SDK-only gates |
-| **Estimated runtime** | Not measured; no latency promise |
-
-## Sampling Rate
-
-- **After every task commit:** Run the task's narrow discovered-test-count and focused XCTest command.
-- **After every plan wave:** Run every focused suite introduced or modified in that wave.
-- **Before goal verification:** Run the complete focused conjunction and immutable-authority checks.
-- **Max feedback latency:** Unmeasured; split registration, provider and public-pixel filters to preserve fast diagnosis.
-
-## Per-Task Verification Map
-
-Not assigned. No PLAN.md exists and no execution wave is approved. The future
-checked plan must assign exact paths, discovered test methods, dependencies,
-commands and an adjacent `fails_when` for every `automated` command after an
-authorized registration disposition. The following obligations remain pending;
-they are not tasks to execute from this checkpoint.
-
-## Wave 0 Requirements
-
-- [ ] `BeautySDK/Tests/BeautyEffectsTests/NoseFixtureRegistrationTests.swift` — common source/observation/adapter registration; stop production planning if unresolved.
-- [ ] `BeautySDK/Tests/BeautyCoreTests/BeautyEngineNoseRepairTests.swift` — exact bridge/root metrics, lifecycle and immutable public-pixel RED.
-- [ ] Discover each required new test exactly once before relying on its result; zero discovered tests is failure.
-- [ ] Pin relevant source recipe, observation, metric-helper, provider and frozen authority blobs before the first production edit.
-
-## Manual-Only Verifications
-
-All Phase 93 acceptance behavior is automated. Physical-device and portrait evaluation are optional or owned by Phase 95 and do not gate this phase.
-
-## Phase Gates — suspended pending owner disposition
-
-After the prerequisite is resolved, the single independently checked plan set
-must order: registration GREEN → independent metrics and immutable actual-pixel
-RED → bounded production candidates → focused provider/pixel/compatibility and
-frozen-authority/cleanup/backend/archive/SDK-only gates → independent code review
-and goal verification. Do not invoke missing tests as if they existed. At most
-two substantive implementation attempts are shared by both requirements and
-all plans; candidate failure cannot reset the budget. The second failed attempt
-requires verified restoration of the approved baseline and an explicit owner
-repair/defer/stop decision. No third candidate or threshold relaxation is authorized.
-
-The registration test must pass before any edit to `NoseWarpProvider.swift`. A registration failure is a prerequisite finding, does not earn semantic credit, and does not consume either authorized implementation attempt. New and focused nose tests require a nonzero denominator, zero failures and zero skips. Existing opt-in portrait skips remain outside Phase 93 acceptance. Full 65-output and no-skip closeout remain Phase 95.
-
-## Validation Sign-Off
-
-- [ ] All tasks have an automated verification or a Wave 0 dependency.
-- [ ] Registration precedes RED; RED precedes production mutation.
-- [ ] No three consecutive implementation tasks lack an automated check.
-- [ ] Every new test is discovered exactly once and cannot silently select zero tests.
-- [ ] Frozen manifest, comparator, renderer, shared sampler and retained shader remain unchanged.
-- [ ] Aggregate-only evidence contains no raw pixels, geometry, masks, private paths or transcripts.
-- [ ] `nyquist_compliant: true` is set only after independent validation audit.
-
-**Approval:** CHECKPOINT — awaiting explicit owner registration disposition.
-No executable plan set has been independently checked; no phase approval or
-new research/implementation budget is implied by this document.
-
-## Current recovery strategy — D-09 approved, plan check pending
-
-This section is the current execution strategy. Earlier checkpoint text is
-preserved verbatim apart from its historical heading/banner and does not impose
-a new scope approval. D-09 already authorizes the adapter's internal root
-positioning correction, its regression/independent registration tests and
-affected owner synchronization. This authorization supplies no pixel efficacy
-and does not reset attempts. Existing RESEARCH and PATTERNS are reused; no new
-research pass was performed.
-
-The planner owns only 93-*-PLAN.md and this validation file. It does not change
-production, tests, owner documents, roadmap, state or configuration, and does
-not commit. The PLAN files describe future executor ownership.
-
-### Evidence categories and present baseline
-
-| Category | Current evidence | Credit |
-|---|---|---|
-| Historical source analysis | Earlier checkpoint's aggregate registration findings and source hashes | Source-only; no XCTest, render, pixel RED or impossibility claim |
-| Current provider baseline | Orchestrator reports on 2026-09-10: `swift test --package-path BeautySDK --filter NoseWarpProviderTests`, exit 0, 16 tests, 0 failures, 0 skips; no production modifications | Existing provider regression baseline only; not NOSE semantic acceptance |
-| D-09 | Explicit owner authorization recorded in CONTEXT and active PLANS | Bounded root-positioning scope approval only |
-| Registration and public pixels | Planned; not executed by this planner | None |
-| Research passes | Existing 1, new 0 | Existing research reused |
-| Implementation attempts | 0 consumed / 2 maximum, shared across both controls and every plan | No new implementation during planning |
-| Independent plan/code/goal review | Pending | Plans authored, not independently approved |
-
-### Source-side correction and bounded uncertainty
-
-Source inspection confirms that the current bounds-derived root lies below the
-adapter's coarse eye band and between retained bridge samples. Plan 93-01
-specifies one fixed internal upper-root positioning correction with its
-source-side anatomical order and unchanged root pair ownership. Its generated
-input is authored and frozen before rendering, with a single independent
-observation shared by both controls and every sibling. The canonical fixture
-remains unchanged as a historical control. No ROI center is used as a runtime
-support source, and no output-guided anatomy/fixture search is authorized.
-
-The new registration test must prove source anatomy, actual detector/coordinate
-mapping, corrected adapter supports and predeclared source/cap-target support
-envelopes before pixel scoring. Registration and the independent metric oracle
-both use checked edgePPM*axisExtent / 1_000_000 for every raster edge: floor
-for all four nonnegative edges, with exclusive maxima. The existing source
-registration and metric-admission methods include the same literal nonintegral-
-edge bounds/membership regression; metric admission also asserts exact integer
-thirds and half partitions. Frozen source, manifest, comparator and thresholds
-remain unchanged. Geometry stays in executable source/tests, not
-this evidence document. Those envelope checks are a conservative sufficient
-fixture check, not a replacement for the frozen pixel tolerances or a new
-general public eligibility rule. A failed envelope produces a precise
-prerequisite stop; it is not proof that the pixel goal is impossible.
-
-The exact corrected adapter is the first production edit and starts shared
-attempt 1. Only after registration GREEN does 93-02 establish the actual-pixel
-RED/baseline_pass table against the original provider. That table, source,
-observation, metrics and thresholds are immutable before effect tuning. A
-baseline direction already passing is preserved honestly, never weakened to
-manufacture RED. Unknown pixel effectiveness is resolved by the finite oracle
-run; no further research or prolonged feasibility search is required.
-
-### Waves, task dependencies and context bounds
-
-| Wave | Plan | Tasks | Needs → creates | Approximate context |
-|---|---|---:|---|---|
-| 1 | 93-01 | 3 | D-09/current source → fixed fixture/gate, adapter correction, independent registration binding | 45–50% |
-| 2 | 93-02 | 2 | GREEN registration → literal metrics, public pixels/lifecycle, immutable RED binding | 40–45% |
-| 3 | 93-03 | 2 | Frozen RED → provider regression RED, bounded private repair and shared attempt outcome | 45–50% |
-| 4 | 93-04 | 2 | Accepted candidate → current compatibility/cleanup receipts and independent code review | 25–35% |
-| 5 | 93-05 | 2 | Accepted current receipts/review → measured owner synchronization and goal-verification handoff | 25–35% |
-
-All tasks are autonomous; no repeated user scope approval is planned. Independent
-review is an orchestrator/reviewer dependency, not a human UI checkpoint.
-Registration/RED/attempt evidence and shared source ownership require sequential
-waves. Every plan has nonempty NOSE requirement coverage; no same-wave file
-overlap exists. Within each task, no more than five modified files are assigned.
-
-### Exact automated verification map
-
-Every gate command is implemented in 93-01 before use. Missing tests/artifacts
-return `gate_not_ready` and nonzero exit, never success. First compile uses
-`swift build --package-path BeautySDK --build-tests` (600-second ceiling), then
-`swift test --package-path BeautySDK list` checks exact fully qualified unique
-method discovery. After any Swift edit, rebuild before using
-`swift test --package-path BeautySDK --skip-build --filter '<anchored escaped module.class/method>'`.
-Method execution has a 60-second ceiling; first compilation is not promised
-under that ceiling. No permanent raw child transcript is written.
-
-| Task | Command(s) | fails_when |
-|---|---|---|
-| 93-01-01 | `python3 scripts/check-phase93-nose-repair.py self-test` | Any accepted parser/path/hash/budget mutation, zero denominator, nonzero exit |
-| 93-01-02 | `python3 scripts/check-phase93-nose-repair.py registration --expect old-root-red`, then after admitted attempt-1 correction `python3 scripts/check-phase93-nose-repair.py registration --expect green` | Old RED includes anything except named root placement failure; GREEN is not exactly three new methods plus existing adapter regression passing, or any skip |
-| 93-01-03 | `python3 scripts/check-phase93-nose-repair.py freeze-registration` | Non-GREEN registration, missing attempt-1 start, wrong/unsafe/stale binding |
-| 93-02-01 | `python3 scripts/check-phase93-nose-repair.py metrics` | Any of four metric/admission/polarity/conjunction methods missing, failing or skipped; nonintegral-edge floor/floor bounds, exclusive membership or thirds/half partition mismatch |
-| 93-02-02 | `python3 scripts/check-phase93-nose-repair.py red` then `python3 scripts/check-phase93-nose-repair.py freeze-red` | Registration/metrics/lifecycle failure, unexpected semantic-method assertion, missing comparison, provider drift or mutable RED |
-| 93-03-01 | `python3 scripts/check-phase93-nose-repair.py provider --expect baseline-red` | 22 methods not uniquely discovered, missing/duplicate centered-bridge RED ID, zero named new regression failures, unexpected failure/skip, or frozen gate/pixel/registration drift |
-| 93-03-02 | `python3 scripts/check-phase93-nose-repair.py provider`, `registration --expect green`, `metrics`, `pixels`, `lifecycle`, `authorities` (same script prefix, ordered conjunction) | Any gate fails, a frozen predicate/sibling digest changes, unexpected skip, or attempt ceiling exceeded |
-| 93-04-01 | `python3 scripts/check-phase93-nose-repair.py compatibility` then `python3 scripts/check-phase93-nose-repair.py authorities` | Stale accepted identity, missing/duplicate/failed/skipped class/method or unplanned source/resource addition/change/deletion |
-| 93-04-02 | `python3 scripts/check-phase93-nose-repair.py closeout --stage checks` | Comparator/preflight/cleanup/backend/archive/boundary failure, residue or missing/noncurrent independent review |
-| 93-05-01 | `python3 scripts/check-phase93-nose-repair.py closeout --stage design` | Owner contract diverges from measured/current evidence or lacks scope limits |
-| 93-05-02 | `python3 scripts/check-phase93-nose-repair.py closeout --stage owners` | Owner/history/taxonomy drift, raw data, boundary/cleanup failure or false independent-verification claim |
-
-`pixels` runs the two semantic methods; `lifecycle` runs the four remaining
-public methods. The focused inventory is 22 provider + 4 registration/regression
-+ 4 metrics + 6 public = 36 unique methods, all zero-failure/zero-skip for
-acceptance. Expected RED is classified by exact fixed assertion IDs and method
-exit/result agreement, never generic exit 1. Before its initial hash freezes,
-93-01-01 predeclares P93_CENTERED_BRIDGE_EMPTY,
-P93_CENTERED_BRIDGE_TOTAL_FOUR and P93_CENTERED_BRIDGE_SANITIZED_ZERO, scoped
-only to NoseWarpProviderTests/testLegacyFieldEmissionsUseEachHelpersActualPrerequisites.
-93-03-01 updates exactly those three dependent expectations to bridge empty,
-total count 4 and sanitized bridge strength 0, preserving every sibling
-assertion. Baseline RED requires all three IDs separately plus the named new
-regression failures; no whole-method whitelist or later gate edit is permitted.
-After provider repair, all three assertions and all 22 provider methods must
-pass without failure or skip. Runtime discovery counts are
-verified against the planned inventory rather than assumed from the baseline.
-
-`closeout --stage checks` executes the exact existing commands listed in
-93-04: comparator self-test (576 mutations; 5/65/8), boundary/cleanup self-tests
-(including cleanup 6), runner syntax, preflight-only (75/65/8), backend-neutral
-(24 + 41), archive verification, post-archive SDK-only boundary and diff hygiene.
-No portrait run or full no-skip wrapper is part of this phase. Script children
-have finite timeouts/capture bounds, current receipts and sanitized output;
-routine compile cost is distinct from method execution.
-
-### Shared attempt and rollback boundary
-
-- One existing research pass, one independently checked plan set, at most two
-  substantive joint implementation attempts. Attempt 1 starts at the fixed
-  adapter change, not separately for each provider. Test-only/source-only
-  failures before that edit consume none.
-- Both candidate radius choices and the same complete-field safety budget are
-  predeclared in 93-01/93-03 before pixels. Attempt 2 is available only under the
-  specified semantic-signal failure branch while all safety/protection/
-  registration/infrastructure checks pass. No adaptive coefficient, fixture,
-  support-position, threshold or sibling search occurs.
-- A candidate passes only if both full semantic contracts and all applicable
-  protections/safety/metadata/compatibility checks pass at the same hashes.
-  A failed first candidate is preserved as failed even if the second passes.
-- No third candidate follows code review or goal verification. A new substantive
-  production correction counts against the same shared limit. At a terminal
-  failure, restore only owned production bytes from admitted baseline blobs,
-  keep new regression/RED tests and failed evidence, verify rollback and stop for
-  explicit owner repair/defer/stop. Existing dirty state/config/owners and other
-  threads' work are never reset. Restored source may intentionally fail the new
-  root/scaling/effect regressions; that is recorded as retained RED, not a failed
-  baseline suite silently changed to pass.
-- Fixed source-only findings and current 16/0/0 baseline are separate records.
-  No result from this recovery planning is claimed as a SwiftPM or pixel run.
-
-### Multi-source coverage audit — all items planned, none claimed complete
-
-| Source | Item | Plan/task coverage | Status |
-|---|---|---|---|
-| GOAL | Independently applicable bridge definition and root narrowing in own regions; all three roadmap success criteria | 93-01 through 93-05 | COVERED |
-| REQ | NOSE-01 full definition, non-alias and protection | 93-02-02, 93-03-02, 93-04-01 | COVERED |
-| REQ | NOSE-02 full root contraction, cap/fail-closed and bridge/tip/non-nose protection | 93-01-02, 93-02-02, 93-03-02, 93-04-01 | COVERED |
-| RESEARCH | Root placement mismatch, common source/anatomy/provenance and canonical control | 93-01-01/02/03, D-09 correction | COVERED |
-| RESEARCH | Actual target-source scaling; independent root pair; no sibling borrowing | 93-03-01/02 | COVERED |
-| RESEARCH | Final Float/radius-floor/renderer-cutoff admission; half/reused/cap/near-cutoff strengths | 93-03-01/02 | COVERED |
-| RESEARCH | Whole-field derivative budget, dense and combined safety; restricted injectivity claim | 93-03-01/02, 93-04-01 | COVERED |
-| RESEARCH | Exact floor/floor integer PPM with exclusive maxima, nonintegral-edge membership/partition regression, bridge-Q8/root-Q16, polarity/admission/mutations and all frozen comparisons | 93-01-02, 93-02-01/02 | COVERED |
-| RESEARCH | Textured protected guards, source/neutral identity, extent/orientation/color/alpha, deterministic bytes | 93-01-01, 93-02-02 | COVERED |
-| RESEARCH | Missing/malformed/provider-empty, reuse/freshness, valid-invalid-valid and field isolation | 93-02-02, 93-03-01, 93-04-01 | COVERED |
-| RESEARCH | Build freshness, source/authority bindings, honest RED and bounded retry/rollback | 93-01, 93-02-02, 93-03 | COVERED |
-| RESEARCH | Existing stack/target patterns, no installs/services/migrations/new geometry payload | All plans; existing Testing SPI only | COVERED |
-| RESEARCH | Comparison self-test, preflight, cleanup, backend, archive, SDK-only and inventory compatibility | 93-04 | COVERED |
-| RESEARCH | Security/privacy, measured owner synchronization and independent review/goal verification | All threat models, 93-04-02, 93-05 | COVERED |
-| RESEARCH | A1 candidate effectiveness is LOW confidence, not proven passing or impossible | Frozen oracle and finite stop in 93-02/03 | COVERED |
-| CONTEXT | D-01 distinct controls and complete frozen comparisons | 93-02, 93-03, 93-04 | COVERED |
-| CONTEXT | D-02 exact caps, fail-closed, no proxy support | 93-01, 93-03 | COVERED |
-| CONTEXT | D-03 immutable regions, numeric gates and authorities | 93-01, 93-02, 93-04 | COVERED |
-| CONTEXT | D-04 independent registration and actual public pixels/metadata/recovery | 93-01, 93-02, 93-03 | COVERED |
-| CONTEXT | D-05 renderer-effective/overlapping fields | 93-03, 93-04 | COVERED |
-| CONTEXT | D-06 private seams, retained public/sibling/backend scope | All plans, especially 93-04 | COVERED |
-| CONTEXT | D-07 one research/checked plan set, shared two attempts | 93-01, 93-03, 93-04 | COVERED |
-| CONTEXT | D-08 reviews, measured owners, history/privacy | All plans, 93-04/05 review dependencies | COVERED |
-| CONTEXT | D-09 approved adapter root correction and tests, unchanged other boundaries | 93-01-02, 93-03, 93-05 | COVERED |
-
-Deferred Phase95 portraits/final65/no-skip/precision residuals, FACE-01 repair,
-UI/realtime/model/data/device and external-distribution work are exclusions,
-not gaps. Research's obsolete provider-only checkpoint is resolved by D-09;
-its efficacy uncertainty remains a falsifiable execution question.
-
-### Current threat disposition and sign-off
-
-Each PLAN includes STRIDE trust boundaries with concrete mitigation tasks:
-source/observation/adapter registration; actual Float field/sampler admission;
-immutable oracle and shared attempt evidence; finite child/filesystem receipt
-admission; aggregate-only privacy; independent review and claim scope.
-No dependency install, new service, credentials, model, private portrait or
-manual-only test is planned.
-
-- [x] Every task has exact automated verification and adjacent fails_when.
-- [x] Wave-0 equivalents are assigned to 93-01 and 93-02 before effect tuning.
-- [x] Every locked decision and required source item maps to concrete tasks.
-- [x] Shared attempts, terminal stops and preservation of local edits are explicit.
-- [ ] Independent plan checker has approved the set.
-- [ ] Registration/metrics and intended RED have executed and frozen.
-- [ ] Both semantic directions and current compatibility gates have passed.
-- [ ] Independent code review and goal verification have passed.
-
-`nyquist_compliant` and `wave_0_complete` remain false until their respective
-independent audit/execution evidence exists. Planning completion is not phase
-completion. No genuinely unresolved product/scope decision remains; a precise
-fail-closed registration or pixel check can handle the remaining technical
-uncertainty within the authorized budget.
-
-### Recovery planner structural checks
-
-All five plans passed `frontmatter.validate --schema plan` and
-`verify.plan-structure` through the local GSD CLI: 10/10 checks, zero errors,
-zero warnings, 11 tasks across five sequential waves. `git diff --check`
-passed. These are document-structure checks only; independent deterministic
-probes and plan review remain pending. No production/test edit, new SwiftPM
-execution, render, research pass or implementation attempt was performed by
-this recovery planner. Only the five PLAN files and this validation file were
-edited; existing local changes were preserved and no commit was created.
-
-## Independent plan check — passed
-
-2026-09-10: Two initial blockers (raster upper-edge rounding and the three dependent centered-bridge expectations) were corrected and independently rechecked with zero remaining issues. See 93-PLAN-CHECK.md. Structural sampling is compliant; runtime registration and semantic gates remain unexecuted.
+<!-- End preserved historical checkpoint. Current disposition is validated above. -->

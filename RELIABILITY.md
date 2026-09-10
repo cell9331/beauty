@@ -697,6 +697,7 @@ then passed compatibility, without a third production candidate or test change.
 
 Supplemental selection error 55 remains separate from numerical failure;
 its reviewed scope correction excludes only two Phase 95 portrait opt-ins
-and requires the fresh 106-method deterministic pass. Independent goal
-verification remains pending. Phase 95 owns portrait/final-output and full
+and requires the fresh 106-method deterministic pass. Independent goal verification passed. Phase 95 owns portrait/final-output and full
 no-skip evidence; no device performance or distribution claim is made.
+
+Independent goal verdict: [93-VERIFICATION.md](.planning/phases/93-distinct-nose-bridge-and-root-repairs/93-VERIFICATION.md), 18/18 must-haves and zero blockers.

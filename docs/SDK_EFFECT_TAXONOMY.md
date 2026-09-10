@@ -256,7 +256,8 @@ orientation. Core 36/0/0, compatibility 229/0/0, eight script commands and
 supplemental regression 106/0/0 have separate recorded evidence.
 
 Both attempts and preserved failures retain their original meaning; no third
-candidate or relaxed threshold supplies this qualification. Independent goal
-verification remains pending. Phase 95 retains private portraits, final-output
+candidate or relaxed threshold supplies this qualification. Independent goal verification passed. Phase 95 retains private portraits, final-output
 and full no-skip qualification; no naturalness, device, commercial or external
 distribution approval is implied.
+
+Independent goal verdict: [93-VERIFICATION.md](../.planning/phases/93-distinct-nose-bridge-and-root-repairs/93-VERIFICATION.md), 18/18 must-haves and zero blockers.

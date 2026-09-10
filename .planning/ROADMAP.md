@@ -44,7 +44,7 @@ intact.
 - [x] **Phase 90: Chin Repair and Contour Deferral** - Retain the proven chin-taper repair and close the bounded contour attempt honestly as deferred/partial. (completed 2026-09-04)
 - [x] **Phase 91: Independent Gaze Correction** - Move each supported pupil toward its own eye center without changing eye shape or borrowing peer-eye support. (completed 2026-09-05)
 - [x] **Phase 92: Signed Eyebrow-Head Spacing** - Make both inner-eyebrow-head directions effective without moving outer anchors or aliasing whole-brow spacing. (completed 2026-09-08)
-- [ ] **Phase 93: Distinct Nose Bridge and Root Repairs** - Restore independently measurable bridge definition and root narrowing.
+- [x] **Phase 93: Distinct Nose Bridge and Root Repairs** - Restore independently measurable bridge definition and root narrowing.
 - [ ] **Phase 94: Negative Mouth-Width Repair** - Restore mouth contraction while retaining the existing positive direction and surrounding anatomy.
 - [ ] **Phase 95: Compatibility and SDK-Only Closeout** - Prove fail-closed safety, exact compatibility, seven effective directions plus one explicit deferred/partial direction, and the complete no-skip SDK gate.
 
@@ -149,7 +149,7 @@ Plans:
   2. Positive `noseRootNarrowing` detectably narrows the eligible root ROI while preserving bridge, tip, and non-nose regions and retaining its exact safety cap and fail-closed behavior.
   3. The two repaired controls produce distinct semantic evidence and do not alias each other, `noseSlim`, or any nose-tip control.
 
-**Plans**: 5/5 complete; core36, compatibility229, boundary commands8, deterministic regression106 and seven-owner checks pass. Historical failures remain preserved. Independent goal verification is pending.
+**Plans**: 5/5 complete; core36, compatibility229, boundary commands8, deterministic regression106 and seven-owner checks pass. Independent goal verification passed18/18, zero blockers. Historical failures remain preserved.
 **Wave 1**
 
 - [x] 93-01-PLAN.md — Independent registration and authorized root adapter correction.
@@ -231,7 +231,7 @@ attempts before an explicit owner decision to repair, defer, or stop.
 | 90. Chin Repair and Contour Deferral | v1.22 | 4/4 | Complete    | 2026-09-04 |
 | 91. Independent Gaze Correction | v1.22 | 4/4 | Complete    | 2026-09-06 |
 | 92. Signed Eyebrow-Head Spacing | v1.22 | 6/6 | Complete    | 2026-09-08 |
-| 93. Distinct Nose Bridge and Root Repairs | v1.22 | 5/5 | Goal verification pending | - |
+| 93. Distinct Nose Bridge and Root Repairs | v1.22 | 5/5 | Complete | 2026-09-10 |
 | 94. Negative Mouth-Width Repair | v1.22 | 0/TBD | Not started | - |
 | 95. Compatibility and SDK-Only Closeout | v1.22 | 0/TBD | Not started | - |
 

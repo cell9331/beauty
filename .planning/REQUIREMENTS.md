@@ -54,12 +54,12 @@ remain unchanged and are not accepted as an effective repair.
 
 ### Nose
 
-- [ ] **NOSE-01**: Positive `noseBridge` produces a detectable bridge-definition
+- [x] **NOSE-01**: Positive `noseBridge` produces a detectable bridge-definition
   effect in the bridge semantic ROI on eligible input, remains independent from
   `noseRootNarrowing`, `noseSlim`, and tip controls, and preserves non-bridge
   protected regions within bounded tolerance.
 
-- [ ] **NOSE-02**: Positive `noseRootNarrowing` produces detectable narrowing in
+- [x] **NOSE-02**: Positive `noseRootNarrowing` produces detectable narrowing in
   the root semantic ROI on eligible input, never aliases `noseBridge`, preserves
   bridge/tip/non-nose protected regions, and retains its exact safety cap and
   fail-closed support handling.
@@ -137,8 +137,8 @@ remain unchanged and are not accepted as an effective repair.
 | FACE-02 | Phase 90 | Complete |
 | EYE-01 | Phase 91 | Complete |
 | BROW-01 | Phase 92 | Complete |
-| NOSE-01 | Phase 93 | Pending |
-| NOSE-02 | Phase 93 | Pending |
+| NOSE-01 | Phase 93 | Complete |
+| NOSE-02 | Phase 93 | Complete |
 | MOUTH-01 | Phase 94 | Pending |
 | SAFE-01 | Phase 95 | Pending |
 | COMPAT-01 | Phase 95 | Pending |
