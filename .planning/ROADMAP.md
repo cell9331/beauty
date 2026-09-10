@@ -72,7 +72,7 @@ Plans:
 
 - [x] 89-02-PLAN.md — Implement direction-specific semantic metrics and deterministic aggregate reporting.
 
-**Wave 3** *(halted: candidate 1 safety failure)*
+**Wave 3** *(D-10 repair authorized after candidate 1 rollback)*
 
 - [x] 89-03-PLAN.md — Reconcile two public-renderer attempts through the existing owner-local batch command.
 
@@ -149,7 +149,7 @@ Plans:
   2. Positive `noseRootNarrowing` detectably narrows the eligible root ROI while preserving bridge, tip, and non-nose regions and retaining its exact safety cap and fail-closed behavior.
   3. The two repaired controls produce distinct semantic evidence and do not alias each other, `noseSlim`, or any nose-tip control.
 
-**Plans**: 2/5 complete; plan 93-03 halted at candidate 1 safety failure. Adapter/provider restored; prior registration/pixel passes are historical evidence. Explicit repair/defer/stop disposition required before further execution.
+**Plans**: 2/5 complete; plan 93-03 halted at candidate 1 safety failure. Adapter/provider restored; prior registration/pixel passes are historical evidence. Owner D-10 now authorizes the remaining second attempt using a first-principles reconstruction correction.
 **Wave 1**
 
 - [x] 93-01-PLAN.md — Independent registration and authorized root adapter correction.
@@ -231,7 +231,7 @@ attempts before an explicit owner decision to repair, defer, or stop.
 | 90. Chin Repair and Contour Deferral | v1.22 | 4/4 | Complete    | 2026-09-04 |
 | 91. Independent Gaze Correction | v1.22 | 4/4 | Complete    | 2026-09-06 |
 | 92. Signed Eyebrow-Head Spacing | v1.22 | 6/6 | Complete    | 2026-09-08 |
-| 93. Distinct Nose Bridge and Root Repairs | v1.22 | 2/5 | Halted; production restored | - |
+| 93. Distinct Nose Bridge and Root Repairs | v1.22 | 2/5 | D-10 repair in progress | - |
 | 94. Negative Mouth-Width Repair | v1.22 | 0/TBD | Not started | - |
 | 95. Compatibility and SDK-Only Closeout | v1.22 | 0/TBD | Not started | - |
 

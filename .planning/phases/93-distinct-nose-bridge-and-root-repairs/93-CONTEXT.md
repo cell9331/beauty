@@ -55,3 +55,15 @@ why outputs are weak require research and frozen tests, not presumed success.
 Phase95 portraits/final65-output/no-skip; all UI/realtime/model/data/device or
 external-distribution work; further FACE-01 repair remains separately deferred.
 </deferred>
+
+## D-10 — Owner repair disposition (2026-09-10)
+
+After candidate 1 stopped and both production files were restored, the owner
+requested “使用第一性原理，查找并修复问题” in response to the remaining-second-attempt
+repair proposal. This authorizes the second attempt to correct Float
+reconstruction after the safety stop, without resetting the two-attempt ceiling.
+Derive the bound from actual reconstructed displacement; retain the 0.45 budget,
+strict renderer admission, frozen tests/metrics/ROIs and sibling contracts.
+Restore the already approved D-09 adapter exactly. Keep candidate-1 radii to
+isolate the rounding correction. Review the recovery admission and candidate
+before evaluation; preserve the failed candidate and rollback records.

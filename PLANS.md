@@ -62,6 +62,8 @@ Phase 93 planning resumed after explicit owner approval of the bounded adapter r
 
 - 93-03 read-only failure analysis (2026-09-10): source inspection and explicit binary32 arithmetic reconstruction identify the existing 16-support cap case at budget 0.45000014551914536, above 0.45. The final guard returns an empty field, conflicting with its frozen applicable-cap nonempty assertion. This identifies a concrete failing subpredicate, not emitted folding or proof that all other predicates pass; no post-stop Swift/render rerun or candidate change occurred. See `93-FAILURE-ANALYSIS.md`. Any reconstruction-aware substantive correction is the remaining second attempt and needs a new repair disposition after this safety stop; no budget reset or automatic retry. State/roadmap now show 2/5 plans complete and 93-03 halted; both NOSE requirements remain active.
 
+- Phase 93 D-10 (2026-09-10): owner requested first-principles diagnosis and repair after the second-attempt proposal. Reopen plan 93-03 for the remaining second attempt, retaining the 0.45 ceiling, all frozen tests/pixel thresholds and candidate-1 radii. Derive quantization toward the source rather than increasing empirical Float slack. Exact prior rollback and failed history remain; candidate and recovery runner require independent review before execution. No third attempt or budget reset.
+
 ## 4. Completed
 
 
