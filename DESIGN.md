@@ -1581,3 +1581,42 @@ Whole-brow spacing and other eyebrow controls, 62 fields, five presets,
 Warp.metal remain unchanged. Frozen generated pixels retain signs +48/-22 Q16,
 all four whole-brow distinctions and zero protected-region changes. This is
 package-host mechanics; Phase 95 owns portraits and full no-skip closeout.
+
+## Phase 93 Distinct Nose Bridge and Root Design Contract
+
+The owner-local implementation is candidate 2, provider `bafa9d2a...` and
+adapter `cf191001...`, bound by
+[93-CHECKS.json](.planning/phases/93-distinct-nose-bridge-and-root-repairs/93-CHECKS.json)
+and the independent code review `ee6d55f9`. Core 36/0/0, compatibility
+229/0/0 and supplemental deterministic regression 106/0/0 are separate gates.
+
+D-09 changes only the bounds-derived root template's relative Y coefficient
+to 0.30, gated by the existing nose group. This is an implementation placement
+contract, not observed individual anatomy. Independent source registration
+justifies its separation above the retained bridge template; production does
+not borrow brow/eye support. Existing root X placement and legacy nose/tip
+templates remain unchanged.
+
+Bridge validates all nose support before recomputing its center, selects upper
+noncentral samples and uses cap X displacement `center.x - source.x`.
+Root consumes only its validated explicit pair and moves inward by at most
+`min(0.025 * faceWidth, minimumMidlineRoom - 0.0001)`. Both preserve source Y.
+Effective caps remain exactly 0.30/0.25, with strict `Float.ulpOfOne` dead-zone
+admission and exact 0.5 reuse; actual displacement scales with strength/cap.
+Radii remain face-width factors 0.08/0.07 clamped to [0.03, 0.20], falloff 2.
+
+The cap sum is conservatively rounded upward in Double; scale and allocations
+round downward. Endpoint quantization moves at most one Float neighbor toward
+its own source, followed by actual magnitude/sign checks. Final reconstructed
+`2 * sum(abs(dx) / radius) <= 0.45` per field remains mandatory, with strict
+renderer radius/L1 cutoff >0.0001 and source/cap-target/target disk admission.
+Root remains pair-atomic; any required point failure empties its field without
+borrowing or redistributing work. Isolated bridge+root has a 0.90 real-field
+bound; fixed dense/mixed tests do not prove arbitrary GPU or clamped-raster
+injectivity.
+
+No target, dependency, public API, backend or shader changed; ARCHITECTURE.md
+is unchanged. Independent goal verification remains pending. Phase 95 retains
+private portraits, final 65-output evidence, precision residuals and full
+no-skip closeout; these generated mechanics do not qualify device or commercial
+visual performance.

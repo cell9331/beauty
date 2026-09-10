@@ -587,3 +587,37 @@ The 62/5/75 surface, public facades, CPU/GPU policy, and retained `Warp.metal`
 are unchanged. Phase 95 alone owns authorized portraits, clean 65-output
 publication, and the full no-skip closeout; Phase 91 grants no device,
 commercial, release, or distribution authority.
+
+## Phase 93 Evidence Admission and Privacy Boundary
+
+The owner-local trust boundary is request-local support to field emission and
+measured receipts to claims. Current independent code review and
+[93-CHECKS.json](.planning/phases/93-distinct-nose-bridge-and-root-repairs/93-CHECKS.json)
+bind the exact candidate, frozen tests and validator identities. Regular,
+non-symlink path admission, immutable hashes, bounded child capture, exact
+method discovery, fail-closed RED classification and aggregate-only export
+remain required. Raw support, pixels, masks, private locators and transcripts
+are not durable evidence. No network, authentication, model or service boundary
+was introduced.
+
+The original gate remains `873dba5a...`; its bindings are unchanged. The three
+reviewed entrypoints form the recovery chain:
+`check-phase93-attempt2.py` (`4b07195c...`),
+`check-phase93-timeout-recovery.py` (`eb7ccc0f...`), and
+`check-phase93-regression-closeout.py` (`7ff1598b...`).
+CHECKS plus `93-TIMEOUT-AMENDMENT.json` and
+`93-REGRESSION-DISPOSITION.json` retain full identities and receipt provenance.
+Compatibility/check receipts 53/54 belong to the timeout runner; regression
+56 belongs to the new closeout runner. Reuse of completed receipts is explicit,
+not a claimed rerun or retroactive rebinding.
+
+Two substantive candidates were consumed. Candidate-1 failure, timeout 39,
+rollback 40 and supplemental scope error 55 remain immutable. The last
+disposition admits only that exact extra selection error; new failures still
+block acceptance and support owned rollback. Its fresh 106/0/0 deterministic
+regression grants no credit to excluded portrait tests. Separate core,
+compatibility and script gates passed 36/0/0, 229/0/0 and 8/0/0.
+
+Independent goal verification remains pending. Phase 95 owns private portraits,
+final 65-output evidence and full no-skip closeout. No device, commercial or
+external-distribution authority is conferred.

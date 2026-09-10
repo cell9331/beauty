@@ -472,3 +472,31 @@ dense-trace defect before phase promotion. The owner-facing surface remains
 Phase 95 retains portrait evaluation and the complete no-skip gate. Generated
 mechanics establish no device, portrait-naturalness, commercial-quality,
 packaging, shipping, launch or external-distribution approval.
+
+## Phase 93 Distinct Nose Bridge and Root Owner Journey
+
+For the owner-local still-image SDK, `noseBridge` defines the bridge and
+`noseRootNarrowing` contracts its separately supported root. Neither borrows
+a slim/wing/tip effect. Candidate 2 and independent code review are bound by
+[93-CHECKS.json](.planning/phases/93-distinct-nose-bridge-and-root-repairs/93-CHECKS.json);
+canonical frozen public pixels cover both NOSE controls.
+
+Against both source and neutral, bridge changes 611 target pixels / 29460 RGB
+with +383 Q8 margin and minimum sibling margin 373; root changes 1043 / 43917
+with +24 Q16 margin and minimum sibling margin 24. Comparisons number 6/5,
+repeat flags are 1/1, and outside/protected nose/background/watermark maxima
+are all 0 changed pixels / 0 RGB. All five retained sibling digests agree.
+These are generated mechanics, not portrait-naturalness qualification.
+
+The eight-orientation loop establishes **bridge raw-facade agreement only**;
+it does not establish root semantic effectiveness at every orientation.
+The emitting raw route retains Device RGB metadata, with named-sRGB extraction
+for the frozen pixel measurements. Neutral identity, caps, metadata and
+valid-invalid-valid recovery remain covered by the four lifecycle methods.
+
+The surface stays 62 fields, five presets, 75 renderer cases, both facades and
+existing CPU/GPU policy. Independent goal verification remains pending after
+the separate 36 core, 229 compatibility, 8 script-command and 106 supplemental
+regression gates. Phase 95 alone owns private portraits, final 65-output
+evidence and full no-skip closeout. No device, naturalness, commercial quality
+or external-distribution approval follows.

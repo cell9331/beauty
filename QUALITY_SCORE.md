@@ -610,3 +610,59 @@ retained Warp.metal remain unchanged. No raw media, geometry, private paths,
 reports or transcripts were retained. Phase 95 alone owns portraits and the full
 no-skip wrapper. No device, naturalness, commercial, launch or distribution
 qualification is inferred from generated package-host evidence.
+
+## Phase 93 Distinct Nose Repair Quality Evidence
+
+Candidate 2 supplies owner-local generated mechanics at provider
+`bafa9d2ac365f104e2dc0ec16ed080cddcced1199a16d471c27d5923d5166b45`
+and adapter
+`cf191001ae1245a82b042cc54eaca63aa6b3ba2abeed40e86781bc056eb159d9`.
+[93-CHECKS.json](.planning/phases/93-distinct-nose-bridge-and-root-repairs/93-CHECKS.json)
+binds the per-gate results and independent code review `ee6d55f9`
+(`1d86dcdd42ca8c6fedf239f835c1abd070628b66039e3688017a4d165e8e6441`).
+Independent goal verification remains pending.
+
+| Gate | Discovered / passed / failed / skipped | Evidence |
+|---|---:|---|
+| Core | 36 / 36 / 0 / 0 | 42–47; repeated 48–52: provider 22, registration 4, metrics 4, pixels 2, lifecycle 4 |
+| Compatibility, 11 classes | 229 / 229 / 0 / 0 | Receipt 53 |
+| SDK-owned commands | 8 / 8 / 0 / 0 | Receipt 54; commands, not XCTest methods |
+| Supplemental deterministic regression | 106 / 106 / 0 / 0 | Receipt 56 under reviewed scope correction `07664fa5` |
+
+The eight commands independently establish: comparator self-test 576 mutations
+and 5/65/8 inventory; runner-boundary/report-cleanup 6; batch-shell syntax;
+preflight 75/65/8; backend-neutral 24 plus CPU-reference 41 tests; both historical
+archive verifications; SDK-only boundary; and diff hygiene. They do not mean
+the full no-skip suite or a 65-output portrait batch ran.
+
+| Canonical control | Source and neutral changed pixels / RGB | Signed margin | Minimum sibling margin | Comparisons |
+|---|---:|---:|---:|---:|
+| Bridge | 611 / 29460 each | +383 Q8 | 373 Q8 | 6 |
+| Root | 1043 / 43917 each | +24 Q16 | 24 Q16 | 5 |
+
+Both repeat flags are 1; all outside, protected nose, background and watermark
+maxima are 0 changed pixels / 0 RGB. All five legacy sibling digests agree.
+The metric uses bridge Q8 and root Q16 without rescaling frozen thresholds.
+Registration and both canonical semantic tests passed; the eight-orientation
+loop proves bridge raw-facade agreement only, not all-orientation root semantics.
+The raw emitting route retains Device RGB; measurement extracts named sRGB.
+Dense/mixed, cutoff, malformed support, metadata and recovery evidence is
+limited to the frozen generated cases.
+
+CHECKS and the timeout/regression dispositions distinguish the unchanged
+original gate `873dba5a...` from recovery entrypoints `4b07195c...`,
+`eb7ccc0f...` and `7ff1598b...`. Receipts 47/53/54 are transparently reused
+at their original identities; receipt 56 is fresh under the last entrypoint.
+No historical receipt or frozen binding is rewritten.
+
+The initial 16/0/0 provider baseline establishes unchanged-provider invariants
+only; the earlier registration checkpoint is source-only, not runtime evidence.
+Candidate-1 failure, candidate-2 timeout 39/rollback 40 and scope error 55 remain.
+Error 55 classified an extra portrait opt-in selection after 34 passes, not a
+numerical assertion failure. The corrected 106-method selection removes only
+the two out-of-scope opt-ins, preserves the failed record and changes no tests,
+thresholds or production candidate. Two substantive attempts remain consumed.
+
+Phase 95 alone owns private portraits, final clean 65-output evidence, precision
+residuals and full no-skip closeout. These results do not qualify naturalness,
+device performance, commercial quality or external distribution.

@@ -237,3 +237,26 @@ Neutral, metadata, unilateral peer protection and deterministic recovery pass.
 The 62 fields/5 presets/75 renderer cases and facades/backends/shader are unchanged.
 Phase 95 retains portrait evaluation and full no-skip closeout. No portrait,
 device, commercial-quality or external-distribution approval is implied.
+
+## Phase 93 Distinct Nose Bridge and Root Qualification
+
+The existing implemented `noseBridge` and `noseRootNarrowing` rows retain
+their mappings and statuses. Candidate 2 qualifies their distinct owner-local
+generated mechanics through
+[93-CHECKS.json](../.planning/phases/93-distinct-nose-bridge-and-root-repairs/93-CHECKS.json)
+and independent code review, without promoting another control or changing
+FACE-01, the 62 fields, five presets, 75 cases, facades or backend policy.
+
+Canonical bridge source/neutral evidence is 611 changed pixels / 29460 RGB,
++383 Q8 and minimum sibling margin 373; root is 1043 / 43917, +24 Q16 and
+minimum sibling margin 24. Comparisons are 6/5, repeats 1/1, and all protected,
+outside, background and watermark changes are 0/0. The eight-orientation
+bridge raw-facade agreement test does not qualify root semantics at every
+orientation. Core 36/0/0, compatibility 229/0/0, eight script commands and
+supplemental regression 106/0/0 have separate recorded evidence.
+
+Both attempts and preserved failures retain their original meaning; no third
+candidate or relaxed threshold supplies this qualification. Independent goal
+verification remains pending. Phase 95 retains private portraits, final-output
+and full no-skip qualification; no naturalness, device, commercial or external
+distribution approval is implied.

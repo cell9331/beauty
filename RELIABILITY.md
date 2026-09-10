@@ -665,3 +665,38 @@ pixels; no child transcript, raw geometry, pixels or private locator is retained
 No new public error/log/report API or shared renderer/backend/shader change was
 introduced. Phase 95 retains portraits and full no-skip closeout; no device,
 commercial-quality, launch or distribution claim is made.
+
+## Phase 93 Nose Field Admission and Recovery
+
+The owner-local evidence in
+[93-CHECKS.json](.planning/phases/93-distinct-nose-bridge-and-root-repairs/93-CHECKS.json)
+binds independent code review and separate 36/0/0 core, 229/0/0 compatibility,
+8/0/0 script-command and 106/0/0 deterministic regression gates.
+
+Actual Float displacement, not strength metadata alone, controls rendering.
+Both repaired fields retain finite/bounded support, source/cap-target/target
+disks, strict radius/L1 >0.0001, direction checks and the final 0.45 field
+budget. Invalid root work abstains as a pair; any required point failure
+empties only its field and sanitation removes its effective work. Missing
+support cannot borrow a sibling; valid-invalid-valid recovery is deterministic.
+
+Frozen tests cover 2/4/16/64-support fields, quarter/half/cap strengths,
+129x129 maps, disk neighbors/midline, exact reuse and fixed signed sibling
+combinations. Applicable cap fields require nonempty output; dense lower
+strengths may correctly abstain at the strict cutoff. The isolated two-field
+0.90 bound does not establish arbitrary mixed-field/GPU/clamped-raster safety.
+
+Attempt 1's field-budget failure remains a failure. Attempt 2's compatibility
+timeout 39 and rollback 40 also remain: 229 discovered, 67 passed, no completed
+assertion failures or skips, one timeout and 161 unexecuted. Infrastructure
+review established an outer 60s/inner 120s scheduling mismatch, not the exact
+historical runtime stage. The corrected launcher keeps the eight renderer
+process methods in one cache-sharing child with a derived 1839s envelope and
+owned cleanup; other methods retain 60s deadlines. The exact same candidate
+then passed compatibility, without a third production candidate or test change.
+
+Supplemental selection error 55 remains separate from numerical failure;
+its reviewed scope correction excludes only two Phase 95 portrait opt-ins
+and requires the fresh 106-method deterministic pass. Independent goal
+verification remains pending. Phase 95 owns portrait/final-output and full
+no-skip evidence; no device performance or distribution claim is made.
