@@ -60,6 +60,8 @@ Phase 93 planning resumed after explicit owner approval of the bounded adapter r
 
 - 93-03 rollback verified (2026-09-10): failed candidate preserved in `e4e89680`; ledger sequence 26 finishes attempt 1 as `failed` / `assertion_failure` / `production_restored`. Adapter and provider match their pinned original SHA-256 values exactly; one begin and one finish remain, with no candidate 2. Frozen registration/RED/amendment files and tests remain unchanged. The corrected root regression and new provider regressions are intentionally retained as failing proof after rollback. Do not run plan 93-04/05 or treat the finish command's successful rollback status as candidate acceptance.
 
+- 93-03 read-only failure analysis (2026-09-10): source inspection and explicit binary32 arithmetic reconstruction identify the existing 16-support cap case at budget 0.45000014551914536, above 0.45. The final guard returns an empty field, conflicting with its frozen applicable-cap nonempty assertion. This identifies a concrete failing subpredicate, not emitted folding or proof that all other predicates pass; no post-stop Swift/render rerun or candidate change occurred. See `93-FAILURE-ANALYSIS.md`. Any reconstruction-aware substantive correction is the remaining second attempt and needs a new repair disposition after this safety stop; no budget reset or automatic retry. State/roadmap now show 2/5 plans complete and 93-03 halted; both NOSE requirements remain active.
+
 ## 4. Completed
 
 

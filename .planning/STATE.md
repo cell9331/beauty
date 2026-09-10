@@ -4,17 +4,17 @@ milestone: v1.22
 milestone_name: Non-Local Facial Effect Repairs
 current_phase: 93
 current_phase_name: Distinct Nose Bridge and Root Repairs
-status: planning
-stopped_at: Phase 93 checked plan set ready for execution
-last_updated: "2026-09-10T06:09:43Z"
+status: blocked
+stopped_at: Phase 93 plan 03 candidate 1 safety stop; owned production restored
+last_updated: "2026-09-10T08:33:02.846039+00:00"
 last_activity: 2026-09-10
-last_activity_desc: Owner approved Phase 93 root adapter correction; planning resumed
-state_head: e2768cf5bdfc2a314a5ae58ef5226d3d639c488d
+last_activity_desc: Candidate 1 failed field-safety conjunction; exact rollback verified
+state_head: afc1d4c0994c69d20ee820f5a9eb073a3a60ebf0
 progress:
   total_phases: 7
   completed_phases: 4
   total_plans: 23
-  completed_plans: 18
+  completed_plans: 21
   percent: 57
 ---
 
@@ -31,18 +31,18 @@ without distributing the SDK, model, or weights.
 
 ## Current Position
 
-Phase: 93 — Distinct Nose Bridge and Root Repairs
-Plan: 0/5 executed; independent plan check passed
-Status: Ready to execute Phase 93 after independent plan check
-Last activity: 2026-09-10 — Owner approved bounded internal root adapter correction; independent planning resumed
+Phase: 93 (Distinct Nose Bridge and Root Repairs) — HALTED
+Plan: 3 of 5 halted; plans 1 and 2 completed as historical evidence
+Status: Candidate 1 failed safety conjunction; adapter/provider restored; explicit repair/defer/stop disposition required
+Last activity: 2026-09-10 — Terminal rollback verified; read-only Float reconstruction diagnosis recorded
 
-Progress: 4/7 milestone phases complete (57%); 18/23 currently authored plans have summaries, including historical failed attempts.
+Progress: 4/7 milestone phases complete (57%); 21/23 currently authored plans have summaries, including historical failed attempts and halted 93-03. Phase 93 has 2/5 completed plans and no accepted candidate.
 
 ## Performance Metrics
 
 **Current milestone:**
 
-- Authored plans with summaries: 18 (historical failed attempts are not semantic successes)
+- Authored plans with summaries: 21 (historical failed and halted attempts are not semantic successes)
 - Average documented duration: 13 min across 11 timed summaries
 - Total documented execution time: 144 min plus the untimed FACE-01 terminal record
 
