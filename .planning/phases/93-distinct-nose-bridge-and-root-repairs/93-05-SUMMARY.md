@@ -71,6 +71,8 @@ The [93-CHECKS.json](93-CHECKS.json) snapshot after receipt 56 has SHA-256 `ff1b
 
 Independent implementation review `ee6d55f9` is clean at these candidate bytes. The disposition/review in `07664fa5` admits only the parent's supplemental scope error 55. Full original gate and frozen binding identities remain unchanged; completed receipts are reused transparently, not called new runs.
 
+The sequence numbers below refer to `93-ATTEMPTS.md`. Core receipt 47 is in that ledger and pinned by `93-REGRESSION-DISPOSITION.json`; CHECKS directly contains 53/54/56 and may later include owner receipts. CHECKS alone is not described as containing core receipt 47.
+
 | Gate | Passed / failed / skipped | Scope |
 |---|---:|---|
 | Core revalidation 47 | 36 / 0 / 0 | Provider 22, registration 4, metrics 4, pixels 2, lifecycle 4; also repeated 48–52 |

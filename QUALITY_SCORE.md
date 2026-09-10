@@ -622,7 +622,11 @@ binds the per-gate results and independent code review `ee6d55f9`
 (`1d86dcdd42ca8c6fedf239f835c1abd070628b66039e3688017a4d165e8e6441`).
 Independent goal verification remains pending.
 
-| Gate | Discovered / passed / failed / skipped | Evidence |
+Sequence references below are from `93-ATTEMPTS.md`. CHECKS directly contains
+receipts 53/54/56 (and subsequent owner receipts when recorded); core receipt
+47 remains in the ledger and is pinned by `93-REGRESSION-DISPOSITION.json`.
+
+| Gate | Discovered / passed / failed / skipped | Ledger evidence |
 |---|---:|---|
 | Core | 36 / 36 / 0 / 0 | 42–47; repeated 48–52: provider 22, registration 4, metrics 4, pixels 2, lifecycle 4 |
 | Compatibility, 11 classes | 229 / 229 / 0 / 0 | Receipt 53 |
