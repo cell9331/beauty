@@ -46,6 +46,15 @@ start without its unchanged prerequisites.
 
 ## Current retained state
 
+Follow-up: the color/metadata lifecycle method passed after the reviewed fix.
+The missing-support method then exposed a separate authored scanner error:
+the fixed public enum value `missingLandmarks` matched the forbidden substring
+`landmark`. Exact typed reason-array assertions replace only this conflation;
+free-text warning/metric scans remain. Failure 18 and the prior metadata
+amendment are preserved byte-for-byte. A separate hash-linked redaction amendment
+carries forward these two exact dispositions and must pass independent review
+before execution resumes. No semantic output has yet been scored.
+
 The D-09 root correction is committed and registration passes. The provider is
 unchanged. One begin and zero finish events exist. Plans 93-03 through 93-05 have
 not run, and both NOSE requirements remain active. Pre-existing configuration,

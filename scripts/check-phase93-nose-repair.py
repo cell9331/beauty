@@ -289,11 +289,50 @@ def metadata_amendment():
     value = json.loads(read_bytes(path), object_pairs_hook=no_duplicates)
     previous_path = PHASE + "93-GATE-AMENDMENT.json"
     previous = json.loads(read_bytes(previous_path), object_pairs_hook=no_duplicates)
+    history = events()
+    redaction_path = PHASE + "93-REDACTION-AMENDMENT.json"
+    successor = None
+    if (ROOT / redaction_path).exists():
+        successor = json.loads(read_bytes(redaction_path), object_pairs_hook=no_duplicates)
+        validate_redaction_amendment(successor, value,
+                                     {"previous_amendment_sha256": sha(path),
+                                      "gate": sha(GATE), "test_after": sha(PIXEL_TEST)}, history)
+    else:
+        require(not (ROOT / redaction_path).is_symlink(), "unsafe_path")
     actual = {"baseline_sha256": sha(PHASE + "93-BASELINE.json"),
               "previous_amendment_sha256": sha(previous_path),
               "registration_sha256": sha(PHASE + "93-REGISTRATION.json"),
-              "previous_gate": previous["gate"], "gate": sha(GATE), "test_after": sha(PIXEL_TEST)}
-    return validate_metadata_amendment(value, actual, events())
+              "previous_gate": previous["gate"],
+              "gate": value["gate"] if successor else sha(GATE),
+              "test_after": value["test_after"] if successor else sha(PIXEL_TEST)}
+    value = validate_metadata_amendment(value, actual, history)
+    if successor:
+        resolved = [(value["failure_sequence"], value["failure_sha256"]),
+                    (successor["failure_sequence"], successor["failure_sha256"])]
+        return dict(value, gate=successor["gate"], test_after=successor["test_after"], resolved_failures=resolved)
+    return value
+
+
+def validate_redaction_amendment(value, previous, actual, history):
+    hash_keys = {"previous_amendment_sha256", "previous_gate", "gate", "test_before", "test_after", "failure_sha256"}
+    require(set(value) == hash_keys | {"schema", "phase", "reason", "failure_sequence"}, "invalid_record")
+    require(value["schema"] == 1 and value["phase"] == 93
+            and value["reason"] == "public_typed_reason_redaction"
+            and type(value["failure_sequence"]) is int and value["failure_sequence"] == 18, "invalid_record")
+    require(all(type(value[k]) is str and re.fullmatch("[0-9a-f]{64}", value[k]) for k in hash_keys), "invalid_record")
+    require(all(value[k] == v for k, v in actual.items())
+            and value["previous_gate"] == previous["gate"]
+            and value["test_before"] == previous["test_after"], "hash_drift")
+    require(len(history) >= 18, "ledger_failure")
+    failure = history[17]
+    require(digest(encode(failure).encode()) == value["failure_sha256"]
+            and failure["sequence"] == 18 and failure["event"] == "failure"
+            and failure["kind"] == "red" and failure["category"] == "assertion_failure"
+            and failure["method"] == PUBLIC[3] and failure["assertions"] == []
+            and failure["counts"] == {"discovered": 4, "passed": 1, "failed": 1, "skipped": 0}
+            and failure["identity"][GATE] == value["previous_gate"]
+            and failure["identity"][PIXEL_TEST] == value["test_before"], "ledger_failure")
+    return value
 
 
 def candidate_failures(failures, metadata):
@@ -302,8 +341,8 @@ def candidate_failures(failures, metadata):
     # A repetition at a new sequence/hash, or any other failure, remains fatal.
     if metadata is None:
         return failures
-    return [e for e in failures if not (e["sequence"] == metadata["failure_sequence"]
-            and digest(encode(e).encode()) == metadata["failure_sha256"])]
+    resolved = metadata.get("resolved_failures", [(metadata["failure_sequence"], metadata["failure_sha256"])])
+    return [e for e in failures if (e["sequence"], digest(encode(e).encode())) not in resolved]
 
 
 def amended_baseline(baseline, amendment, baseline_hash, gate_hash):
@@ -977,6 +1016,35 @@ def self_test():
             == [dict(historical_failure, category="protection_failure")], "self_test_failure")
     require(history[-1] == historical_failure and len(failures) == 3, "self_test_failure")
     checks += 3
+
+    typed_failure = dict(historical_failure, sequence=18, method=PUBLIC[3],
+                         counts={"discovered": 4, "passed": 1, "failed": 1, "skipped": 0},
+                         identity={GATE: metadata["gate"], PIXEL_TEST: metadata["test_after"]})
+    typed_history = history + [{}, {}, typed_failure]
+    actual_next = {"previous_amendment_sha256": "3" * 64, "gate": "4" * 64, "test_after": "5" * 64}
+    redaction = dict(actual_next, schema=1, phase=93, reason="public_typed_reason_redaction",
+                     previous_gate=metadata["gate"], test_before=metadata["test_after"],
+                     failure_sequence=18, failure_sha256=digest(encode(typed_failure).encode()))
+    require(validate_redaction_amendment(redaction, metadata, actual_next, typed_history) == redaction, "self_test_failure")
+    checks += 1
+    for key in actual_next:
+        rejects(lambda key=key: validate_redaction_amendment(dict(redaction, **{key: "6" * 64}), metadata, actual_next, typed_history))
+    for key, invalid in (("previous_gate", "6" * 64), ("test_before", "6" * 64),
+                         ("failure_sha256", "6" * 64), ("failure_sequence", 19),
+                         ("phase", 94), ("schema", 2), ("reason", "other")):
+        rejects(lambda key=key, invalid=invalid: validate_redaction_amendment(dict(redaction, **{key: invalid}), metadata, actual_next, typed_history))
+    rejects(lambda: validate_redaction_amendment(dict(redaction, extra=True), metadata, actual_next, typed_history))
+    rejects(lambda: validate_redaction_amendment(redaction, metadata, actual_next, typed_history[:-1]))
+    for key, invalid in (("method", PUBLIC[4]), ("category", "protection_failure"), ("kind", "pixels")):
+        changed = dict(typed_failure, **{key: invalid})
+        bound = dict(redaction, failure_sha256=digest(encode(changed).encode()))
+        rejects(lambda changed=changed, bound=bound: validate_redaction_amendment(bound, metadata, actual_next, typed_history[:-1] + [changed]))
+    effective = dict(metadata, resolved_failures=[(15, metadata["failure_sha256"]), (18, redaction["failure_sha256"])])
+    retry = dict(typed_failure, sequence=19)
+    require(candidate_failures([historical_failure, typed_failure, retry, safety], effective) == [retry, safety], "self_test_failure")
+    require(candidate_failures([dict(typed_failure, category="protection_failure")], effective)
+            == [dict(typed_failure, category="protection_failure")], "self_test_failure")
+    checks += 2
 
     method = "BeautyCoreTests.NoseFixtureRegistrationTests/testSourceAnatomyRegistersIndependently"
     cname, name = method.split(".", 1)[1].split("/")

@@ -50,6 +50,8 @@ Phase 93 planning resumed after explicit owner approval of the bounded adapter r
 
 - 93-02 metadata disposition (2026-09-10): code and DESIGN explicitly retain Device RGB for emitting raw-image geometry; the plan incorrectly assumed canonical-carrier named-sRGB output. Parent selected a test-contract correction within existing D-04/D-06 scope, preserving production/rendering, explicit named-sRGB pixel extraction and all frozen semantic/protection thresholds. A hash-linked amendment preserves original binding files and ledger failure 15, permits only this exact pre-semantic authoring mismatch to be excluded from later candidate eligibility, and rejects repeated/other failures. Gate self-tests 90/0/0 and authorities pass; corrected Swift test build passed and independent amendment review passed with zero blockers/warnings. Attempt 1 remains open, no new begin or provider edit.
 
+- 93-02 typed-reason correction (2026-09-10): fresh registration/metrics each passed 4/0/0 and the metadata lifecycle method passed. The missing-support method hit only three scanner assertions because the public `missingLandmarks` enum contains `landmark`; failure 18 is retained at `580cbc8d`. Tests now require exact fixture-specific typed reason arrays while retaining free-text warning/metric privacy checks. The successor redaction amendment binds only this failure and preserves all previous bindings/failed records; gate self-tests 108/0/0 and authorities pass. Corrected Swift test build and independent review passed (zero blockers/warnings); no semantic execution, RED binding, provider edit or budget reset.
+
 ## 4. Completed
 
 

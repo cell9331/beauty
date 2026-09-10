@@ -9,6 +9,7 @@ import XCTest
 final class BeautyEngineNoseRepairTests: XCTestCase {
     private typealias O = NoseSemanticOracle
     private enum ExpectedImageColor { case namedSRGB, legacyDeviceRGB }
+    private enum TestContractError: Error { case unexpectedDetectionFixture }
     private let extent = CGRect(x: 0, y: 0, width: 512, height: 512)
     private let siblingRows: [(String, BeautyParameters)] = [
         ("noseSlim_0p35", .init(noseSlim: 0.35)),
@@ -72,10 +73,11 @@ final class BeautyEngineNoseRepairTests: XCTestCase {
             XCTAssertEqual(provider.invocationCount, 1)
             XCTAssertEqual(oldProvider.invocationCount, 1)
             XCTAssertTrue(try bytes(current.output, expectedColor: .legacyDeviceRGB) == bytes(old, expectedColor: .legacyDeviceRGB))
-            assertRedacted(current)
+            assertRedacted(current, expectedReasons: [])
             let noOp = try BeautyEngine(faceDetectionProvider: SDKTestingFaceDetectionProvider([.phase93RegisteredNose]))
                 .processResult(image: encoded, metadata: metadata, parameters: .init())
             XCTAssertTrue(try bytes(noOp.output, expectedColor: .namedSRGB) == bytes(encoded, expectedColor: .namedSRGB))
+            assertRedacted(noOp, expectedReasons: [])
         }
     }
 
@@ -101,6 +103,8 @@ final class BeautyEngineNoseRepairTests: XCTestCase {
         let image = try NoseRepairFixture.image()
         let source = NoseRepairFixture.source()
         for missing: SDKTestingFaceDetectionFixture in [.phase93MissingNose, .noFace] {
+            let rejectedReasons: [DetectionDegradationReason] = missing == .phase93MissingNose
+                ? [.missingLandmarks] : [.noFaceDetected]
             for intent in [BeautyParameters(noseBridge: 0.30), .init(noseRootNarrowing: 0.25)] {
                 let provider = SDKTestingFaceDetectionProvider([.phase93RegisteredNose, missing, .phase93RegisteredNose])
                 let engine = try BeautyEngine(faceDetectionProvider: provider)
@@ -123,12 +127,12 @@ final class BeautyEngineNoseRepairTests: XCTestCase {
                 XCTAssertTrue(first.detectionSummary?.reasons == recovered.detectionSummary?.reasons)
                 XCTAssertEqual(first.detectionSummary?.faceCount, recovered.detectionSummary?.faceCount)
                 XCTAssertEqual(first.detectionSummary?.usedFaceCount, recovered.detectionSummary?.usedFaceCount)
-                for (result, expectedColor) in [
-                    (first, ExpectedImageColor.legacyDeviceRGB),
-                    (rejected, .namedSRGB),
-                    (recovered, .legacyDeviceRGB),
+                for (result, expectedColor, expectedReasons) in [
+                    (first, ExpectedImageColor.legacyDeviceRGB, [DetectionDegradationReason]()),
+                    (rejected, .namedSRGB, rejectedReasons),
+                    (recovered, .legacyDeviceRGB, []),
                 ] {
-                    assertRedacted(result)
+                    assertRedacted(result, expectedReasons: expectedReasons)
                     _ = try bytes(result.output, expectedColor: expectedColor)
                 }
             }
@@ -231,11 +235,23 @@ final class BeautyEngineNoseRepairTests: XCTestCase {
         XCTAssertTrue(expectedColor == (expectedEmission ? .legacyDeviceRGB : .namedSRGB),
                       "declared raw route color contract")
         _ = try bytes(image, expectedColor: .namedSRGB)
+        // Expectations follow the declared fixture/request, not returned reasons.
+        let expectedReasons: [DetectionDegradationReason]
+        switch (active, fixture) {
+        case (false, _), (true, .phase93RegisteredNose):
+            expectedReasons = []
+        case (true, .phase93MissingNose):
+            expectedReasons = [.missingLandmarks]
+        case (true, .noFace):
+            expectedReasons = [.noFaceDetected]
+        default:
+            throw TestContractError.unexpectedDetectionFixture
+        }
         let provider = SDKTestingFaceDetectionProvider([fixture])
         let result = try BeautyEngine(faceDetectionProvider: provider).processResult(
             image: image, metadata: NoseRepairFixture.metadata(), parameters: parameters)
         let output = try bytes(result.output, expectedColor: expectedColor)
-        assertRedacted(result)
+        assertRedacted(result, expectedReasons: expectedReasons)
         XCTAssertEqual(result.metrics["beauty.effects.cappedCount"], capped)
         if active {
             XCTAssertEqual(provider.invocationCount, 1)
@@ -294,9 +310,14 @@ final class BeautyEngineNoseRepairTests: XCTestCase {
         try O.Image(bytes, width: 512, height: 512)
     }
 
-    private func assertRedacted(_ result: BeautyResult<CIImage>) {
-        let text = (result.warnings.map { $0.code + " " + $0.message } + Array(result.metrics.keys)
-                    + (result.detectionSummary?.reasons.map(\.rawValue) ?? [])).joined(separator: " ").lowercased()
+    private func assertRedacted(_ result: BeautyResult<CIImage>, expectedReasons: [DetectionDegradationReason]) {
+        // Typed public reasons are finite redacted statuses, not freeform payloads.
+        // Exact equality also rejects a missing summary, extras and duplicates.
+        XCTAssertTrue(expectedReasons.isEmpty || expectedReasons == [.missingLandmarks]
+                      || expectedReasons == [.noFaceDetected], "finite reason contract")
+        XCTAssertTrue(result.detectionSummary?.reasons == expectedReasons, "exact expected typed reasons")
+        let text = (result.warnings.map { $0.code + " " + $0.message }
+                    + Array(result.metrics.keys)).joined(separator: " ").lowercased()
         let forbidden = ["landmark", "coordinate", "controlpoint", "control point", "simd", "mask", "raw",
                          "pixel", "image bytes", "transcript", "path", "/private/", "file://"]
         XCTAssertTrue(forbidden.allSatisfy { !text.contains($0) }, "redacted diagnostics")
