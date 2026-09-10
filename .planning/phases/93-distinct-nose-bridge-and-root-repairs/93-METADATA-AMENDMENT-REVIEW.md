@@ -98,4 +98,3 @@ Paths below are repository-relative; phase-local filenames refer to this directo
 | DESIGN.md | 081af8e973f4f142711bcc92252bc8bf61ef945d88f9e57dc9be9952759b3a8c |
 
 _Reviewer: independent gsd-code-reviewer. Only this review artifact is written._
-
