@@ -408,6 +408,12 @@ Plan 93-02 is complete, 2/2 tasks. Fresh current-gate registration 4/0/0, metric
 
 ## Session Continuity
 
+### Phase 93 plan 03 terminal checkpoint — 2026-09-10
+
+Plan 93-03 is halted, 1/2 tasks complete. Task 1 committed `811734f2`: unchanged-provider RED discovered 22 methods, 17 passed, 5 expected-failing methods, zero skips; exactly three centered IDs plus four named scaling/budget/cutoff IDs are frozen in PROVIDER-RED (`650e48e51a4701fa653bfb53e24955dc239e46b420f12decb841bb91adb09138`). Fixed candidate 1 compiled and passed authorities, then failed `testFinalFloatFieldBudgetAndDenseMap` / `P93_FIELD_BUDGET` at ledger sequence 25 (22 discovered, 18 passed, 1 failed, zero skips; three unexecuted). Candidate source is preserved in `e4e89680`. This is a blocking safety conjunction; no second candidate, post-evaluation correction or semantic rerun occurred. Both candidate directions remain untested; prior bridge/root baseline_pass evidence remains historical.
+
+Sequence 26 finishes shared attempt 1 as failed/assertion_failure/production_restored; rollback commit `5392e9d1` restores the exact pinned original adapter and provider. The ledger contains one begin and one finish. All immutable bindings and corrected root/new provider tests remain as failing historical proof. Both NOSE requirements remain active; no phase completion or 93-04/05 work. See 93-03-SUMMARY.md. Parent repair/defer/stop disposition is required; no retry budget is reset. Parent frontmatter, position, config/state.json/runtime/lock and unrelated state entries remain preserved.
+
 Last session: 2026-09-08
 Stopped at: Phase 92 complete, ready to plan Phase 93
 Resume file: None
