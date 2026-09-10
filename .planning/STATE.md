@@ -5,10 +5,10 @@ milestone_name: Non-Local Facial Effect Repairs
 current_phase: 93
 current_phase_name: Distinct Nose Bridge and Root Repairs
 status: executing
-stopped_at: Preparing owner-authorized first-principles second attempt
-last_updated: "2026-09-10T08:33:02.846039+00:00"
+stopped_at: Same-candidate infrastructure recovery awaiting independent review
+last_updated: "2026-09-10T09:08:01.188355+00:00"
 last_activity: 2026-09-10
-last_activity_desc: Candidate 1 failed field-safety conjunction; exact rollback verified
+last_activity_desc: 36 core passes retained; compatibility timeout triggered exact rollback
 state_head: afc1d4c0994c69d20ee820f5a9eb073a3a60ebf0
 progress:
   total_phases: 7
@@ -31,12 +31,12 @@ without distributing the SDK, model, or weights.
 
 ## Current Position
 
-Phase: 93 (Distinct Nose Bridge and Root Repairs) — REPAIR AUTHORIZED
-Plan: 3 of 5 halted; plans 1 and 2 completed as historical evidence
-Status: D-10 authorizes first-principles repair in remaining attempt 2; preparing reviewed candidate
-Last activity: 2026-09-10 — Terminal rollback verified; read-only Float reconstruction diagnosis recorded
+Phase: 93 (Distinct Nose Bridge and Root Repairs) — INFRASTRUCTURE RECOVERY
+Plan: 4 of 5 blocked on compatibility timeout; core repair passed before rollback
+Status: 60s outer / 120s inner build budget mismatch diagnosed; same-candidate revalidation prepared
+Last activity: 2026-09-10 — Reviewed Float reconstruction repair passed the complete core conjunction
 
-Progress: 4/7 milestone phases complete (57%); 21/23 currently authored plans have summaries, including historical failed attempts and halted 93-03. Phase 93 has 2/5 completed plans and no accepted candidate.
+Progress: 4/7 milestone phases complete (57%); 21/23 currently authored plans have summaries, including preserved historical failed attempts. Phase 93 has 3/5 completed plans; candidate 2 passed core checks but is currently rolled back; infrastructure review/revalidation and independent phase verification remain pending.
 
 ## Performance Metrics
 
