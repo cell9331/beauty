@@ -387,6 +387,8 @@ None found under `.planning/todos/pending/`.
 - Authorized portrait media and detailed outputs remain local and ignored;
   durable evidence must stay aggregate and privacy-safe.
 
+- Phase 93 plan 93-01 checkpoint: Task 1 complete; Task 2 has exact old-root RED 3 discovered / 2 passed / 1 expected failure / 0 skips. begin 1 stopped before admission because the frozen gate replaces root literals across unrelated regression fixtures. Attempts started 0/2; adapter/provider remain baseline exact. Gate and baseline binding amendment requires orchestrator disposition; no later plan or pixel scoring ran.
+
 ## Deferred Items
 
 | Category | Item | Status | Deferred At |
