@@ -3,16 +3,16 @@ phase: 93-distinct-nose-bridge-and-root-repairs
 plan: "03"
 subsystem: effects
 tags: [swiftpm, nose, scaling, field-safety, conservative-reconstruction]
-status: halted
-accepted_or_stopped: stopped
-tasks_completed: 1
+status: complete
+accepted_or_stopped: accepted
+tasks_completed: 2
 tasks_total: 2
 implementation_attempt: 2
-attempt_status: revoked_after_compatibility_timeout
-failure_category: compatibility_timeout
-ledger_failure_category: child_timeout
+attempt_status: same_candidate_revalidated
+failure_category: none
+historical_ledger_failure_category: child_timeout
 attempts_exhausted: true
-rollback: production_restored
+rollback: retained_after_reviewed_infrastructure_recovery
 independent_review: pending
 requires:
   - phase: 93-02
@@ -50,8 +50,8 @@ key-decisions:
   - Candidate 1 remains failed; its source, safety failure and exact terminal rollback are preserved.
   - Owner D-10 authorized the remaining second attempt after the safety stop, without resetting the two-attempt ceiling.
   - Preserve candidate-1 radii and replace empirical Float slack with conservative Double allocation and inward endpoint quantization.
-  - Candidate 2 core passes remain historical; later compatibility child_timeout revokes current acceptance without establishing an arithmetic, pixel or assertion failure.
-  - Preserve successful finish 33 and append recovery rollback 40; both attempts are exhausted and downstream plans are blocked.
+  - Historical compatibility child_timeout revoked the first acceptance without establishing an arithmetic, pixel or assertion failure; identical candidate 2 is now freshly revalidated.
+  - Preserve finish 33, timeout 39 and rollback 40; infrastructure resume 41 and revalidation 47 introduce no third candidate.
 requirements-completed: []
 requirements-addressed: [NOSE-01, NOSE-02]
 duration: 17min initial execution; 68s attempt-2 begin-to-finish, excluding intervening review
@@ -87,11 +87,13 @@ coverage:
     human_judgment: false
 ---
 
-# Phase 93 Plan 03: Core Passes and Compatibility-Timeout Rollback Summary
+# Phase 93 Plan 03: Reconstruction-Safe Candidate Revalidated
 
-**Candidate 2 passed all 36 core methods and both frozen pixel contracts, then a compatibility child timeout revoked acceptance and triggered exact rollback of both production files. Plan 93-03 is halted; neither candidate is currently accepted.**
+**The identical candidate-2 provider is restored and freshly revalidated: 36 discovered, 36 passed, zero failures/skips at the reviewed timeout-recovery runner identity. Plan 93-03 is complete; compatibility, independent phase review and owner synchronization remain pending.**
 
-Successful finish sequence 33 remains immutable historical core acceptance. Compatibility failure 39 and recovery rollback 40 supersede its eligibility: plan 93-03 is now halted, 1/2 tasks complete, with both attempts exhausted. Both NOSE requirements remain active and downstream plans must not advance. This update runs no Swift, tests, renderer or subsequent plan.
+`35899899` corrects only infrastructure scheduling and recovery, and `2194e04c` restores exactly the reviewed production bytes. Ledger 41 resumes infrastructure without a third begin/candidate; fresh receipts 42–46 and revalidation 47 bind the same provider/adapter plus new runner. Original failure 39 and rollback 40 remain immutable. No test, radius, semantic threshold or public API changed. Both NOSE requirements remain active until independent goal verification.
+
+The evidence below preserves prior RED, attempts, timeout and rollback checkpoints. Their statements about the then-current checkout describe those historical checkpoints; current status is the revalidation above.
 
 ## Task results
 
@@ -223,7 +225,7 @@ The recovery failure latch revokes current acceptance. Candidate 2 is preserved 
 - At the historical attempt-1 checkpoint, only a scoped STATE task note was added. This completion update owns only this summary and the existing PLANS entry; parent-owned ledger, STATE, ROADMAP, config/state.json, runtime, lock, production and tests remain untouched and unstaged by this update.
 - **Owner-authorized D-10 deviation:** the original plan's semantic-only second-candidate admission and radius expansion are superseded for this reconstruction repair after a safety stop. Candidate-1 radii and every frozen verdict remain; independent candidate/runner review preceded evaluation. This consumes attempt 2 without a budget reset or free retry.
 
-## Deferred issues and handoff
+## Historical timeout handoff
 
 Core truth passed historically, but current candidate acceptance is revoked by compatibility timeout 39 and exact rollback 40. Both NOSE requirements remain active; plan 93-03 is halted/compatibility-blocked and plans 93-04/05 must not advance. Parent continues the authorized infrastructure-only correction and independent review for possible revalidation of the exact same `bafa9d2a...` provider. That is not a new production candidate or reclassification of failure 39. This handoff runs no Swift, edits no runner and adds no approval prerequisite; it does not expand the two-attempt ceiling or edit state/roadmap/requirements.
 
@@ -239,6 +241,10 @@ Durable evidence contains counts, fixed statuses, hashes and aggregate prior sem
 
 Verified the new test, immutable provider RED and summary exist; all three task/candidate/rollback commits resolve. Nine original binding/amendment/review artifacts are byte-identical to the incoming commit. Both frozen test hashes agree with PROVIDER-RED. Independent rollback comparison matches both baseline originals; the ledger retains one begin and one failed finish. Stub/debug-output scan and diff hygiene passed. This self-check verifies the retained halted outcome, not plan completion.
 
-## Self-Check: PASSED
+## Historical timeout self-check: PASSED
 
 Read-only checks confirmed the five referenced test/candidate/rollback/recovery commits, all 17 frozen manifest pins, the byte-exact original 26-event ledger prefix, both historical core conjunctions and identical sequence-31/37 pixel aggregates. Sequence 39 has the exact 229/67/0/0 counts and no assertions; sequence 40 records recovery rollback, and both current production hashes independently match its pinned originals. Summary existence and scoped `git diff --check` passed. Only SUMMARY/PLANS were authored; no Swift, renderer, gate, ledger, production, test, state, roadmap or runner mutation was performed by this documentation update. This verifies the halted compatibility-timeout handoff, not current acceptance or completion.
+
+## Current revalidation self-check
+
+The parent executed provider 22, registration 4, metrics 4, pixels 2 and lifecycle 4 through `check-phase93-timeout-recovery.py`, all passing without skips, followed by its strict `accept` command. The candidate provider remains `bafa9d2ac365f104e2dc0ec16ed080cddcced1199a16d471c27d5923d5166b45`; adapter remains `cf191001ae1245a82b042cc54eaca63aa6b3ba2abeed40e86781bc056eb159d9`; runner is `eb7ccc0f4dda224d8ad78080bf64bed95cb6bee7b1f608dd821c927dc54da116`. Independent timeout review is clean with zero blockers; retained/new selftests pass 133/27. The complete compatibility command is running separately and receives no completion credit here. Historical failures and rollback hashes remain unchanged.

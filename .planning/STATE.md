@@ -5,10 +5,10 @@ milestone_name: Non-Local Facial Effect Repairs
 current_phase: 93
 current_phase_name: Distinct Nose Bridge and Root Repairs
 status: executing
-stopped_at: Same-candidate infrastructure recovery awaiting independent review
+stopped_at: Same candidate revalidated; full compatibility in progress
 last_updated: "2026-09-10T09:08:01.188355+00:00"
 last_activity: 2026-09-10
-last_activity_desc: 36 core passes retained; compatibility timeout triggered exact rollback
+last_activity_desc: Fresh 36 core passes after reviewed launcher correction
 state_head: afc1d4c0994c69d20ee820f5a9eb073a3a60ebf0
 progress:
   total_phases: 7
@@ -32,11 +32,11 @@ without distributing the SDK, model, or weights.
 ## Current Position
 
 Phase: 93 (Distinct Nose Bridge and Root Repairs) — INFRASTRUCTURE RECOVERY
-Plan: 4 of 5 blocked on compatibility timeout; core repair passed before rollback
-Status: 60s outer / 120s inner build budget mismatch diagnosed; same-candidate revalidation prepared
+Plan: 4 of 5 in progress; plans 1–3 complete
+Status: Same candidate revalidated 36/0/0 after reviewed timeout correction; full compatibility in progress
 Last activity: 2026-09-10 — Reviewed Float reconstruction repair passed the complete core conjunction
 
-Progress: 4/7 milestone phases complete (57%); 21/23 currently authored plans have summaries, including preserved historical failed attempts. Phase 93 has 3/5 completed plans; candidate 2 passed core checks but is currently rolled back; infrastructure review/revalidation and independent phase verification remain pending.
+Progress: 4/7 milestone phases complete (57%); 21/23 currently authored plans have summaries, including preserved historical failed attempts. Phase 93 has 3/5 completed plans; candidate 2 is freshly revalidated; full compatibility and independent phase verification remain pending.
 
 ## Performance Metrics
 
