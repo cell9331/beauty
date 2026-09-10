@@ -138,42 +138,22 @@ struct NoseWarpProvider: WarpControlPointProvider {
     func rootNarrowingPoints(face: FaceGeometry, strength: Float) -> [WarpControlPoint] {
         guard strength.isFinite,
               strength > Float.ulpOfOne,
+              strength <= BeautySafetyCaps.noseRootNarrowing,
+              phase93ValidBounds(face.bounds),
               let pair = validatedRootPair(in: face)
         else {
             return []
         }
 
-        let requestedDisplacement = face.bounds.width * 0.025 * strength / BeautySafetyCaps.noseRootNarrowing
         let room = min(face.bounds.midX - pair.left.x, pair.right.x - face.bounds.midX)
-        let displacement = min(requestedDisplacement, room - 0.0001)
-        guard displacement.isFinite, displacement > Float.ulpOfOne else {
+        let magnitude = min(face.bounds.width * 0.025, room - 0.0001)
+        guard magnitude.isFinite, magnitude > 0 else {
             return []
         }
-
-        let leftTarget = SIMD2<Float>(pair.left.x + displacement, pair.left.y)
-        let rightTarget = SIMD2<Float>(pair.right.x - displacement, pair.right.y)
-        guard isValidNormalizedPoint(leftTarget),
-              isValidNormalizedPoint(rightTarget),
-              leftTarget.x < face.bounds.midX,
-              rightTarget.x > face.bounds.midX
-        else {
-            return []
-        }
-
-        return [
-            makePoint(
-                source: pair.left,
-                target: leftTarget,
-                radius: face.bounds.width * 0.07,
-                strength: strength
-            ),
-            makePoint(
-                source: pair.right,
-                target: rightTarget,
-                radius: face.bounds.width * 0.07,
-                strength: strength
-            )
-        ]
+        return phase93Field(face: face, sources: [pair.left, pair.right],
+                            displacements: [magnitude, -magnitude],
+                            strength: strength, cap: BeautySafetyCaps.noseRootNarrowing,
+                            radius: face.bounds.width * 0.07, root: true)
     }
 
     func tipLiftPoints(face: FaceGeometry, strength: Float) -> [WarpControlPoint] {
@@ -292,15 +272,89 @@ struct NoseWarpProvider: WarpControlPointProvider {
         center: SIMD2<Float>,
         strength: Float
     ) -> [WarpControlPoint] {
-        let upper = face.nose.filter { $0.y <= center.y }
-        return upper.map { source in
-            makePoint(
-                source: source,
-                target: SIMD2<Float>(center.x, source.y),
-                radius: face.bounds.width * 0.08,
-                strength: strength
-            )
+        guard strength.isFinite, strength > Float.ulpOfOne,
+              strength <= BeautySafetyCaps.noseBridge,
+              phase93ValidBounds(face.bounds),
+              !face.nose.isEmpty,
+              face.nose.allSatisfy({ isValidSupportPoint($0, in: face.bounds) }),
+              hasOnlyDistinctPoints(face.nose),
+              let checkedCenter = LandmarkGeometryHelper.center(of: face.nose),
+              isValidSupportPoint(checkedCenter, in: face.bounds)
+        else { return [] }
+        // Recompute only after validating every source. The retained dispatch's
+        // legacy center never makes malformed or clamped support eligible.
+        let upper = face.nose.filter { $0.y <= checkedCenter.y && $0.x != checkedCenter.x }
+        return phase93Field(face: face, sources: upper,
+                            displacements: upper.map { checkedCenter.x - $0.x },
+                            strength: strength, cap: BeautySafetyCaps.noseBridge,
+                            radius: face.bounds.width * 0.08, root: false)
+    }
+
+    private func phase93ValidBounds(_ bounds: FaceBounds) -> Bool {
+        bounds.x.isFinite && bounds.y.isFinite && bounds.width.isFinite && bounds.height.isFinite &&
+            bounds.width > 0 && bounds.height > 0 && bounds.maxX.isFinite && bounds.maxY.isFinite &&
+            bounds.midX.isFinite && bounds.midY.isFinite
+    }
+
+    private func phase93ContainsDisk(_ point: SIMD2<Float>, radius: Float, bounds: FaceBounds) -> Bool {
+        isValidSupportPoint(point, in: bounds) && radius.isFinite && radius > 0.0001 &&
+            point.x - radius >= max(0, bounds.minX) && point.x + radius <= min(1, bounds.maxX) &&
+            point.y - radius >= max(0, bounds.minY) && point.y + radius <= min(1, bounds.maxY)
+    }
+
+    private func phase93Field(
+        face: FaceGeometry,
+        sources: [SIMD2<Float>],
+        displacements: [Float],
+        strength: Float,
+        cap: Float,
+        radius: Float,
+        root: Bool
+    ) -> [WarpControlPoint] {
+        guard !sources.isEmpty, sources.count == displacements.count,
+              radius.isFinite, radius > 0, strength.isFinite, strength > Float.ulpOfOne,
+              strength <= cap, phase93ValidBounds(face.bounds)
+        else { return [] }
+        let finalRadius = min(max(radius, 0.03), 0.20)
+        var capBudget: Double = 0
+        for (source, delta) in zip(sources, displacements) {
+            let capTarget = SIMD2<Float>(source.x + delta, source.y)
+            guard delta.isFinite, delta != 0,
+                  phase93ContainsDisk(source, radius: finalRadius, bounds: face.bounds),
+                  phase93ContainsDisk(capTarget, radius: finalRadius, bounds: face.bounds)
+            else { return [] }
+            if root {
+                guard (source.x < face.bounds.midX && capTarget.x < face.bounds.midX) ||
+                        (source.x > face.bounds.midX && capTarget.x > face.bounds.midX)
+                else { return [] }
+            }
+            capBudget += 2 * abs(Double(delta)) / Double(finalRadius)
         }
+        guard capBudget.isFinite, capBudget > 0 else { return [] }
+        let scale = min(1, 0.45 / capBudget) * Double(1 - 64 * Float.ulpOfOne)
+        let unitStrength = strength / cap
+        guard scale.isFinite, scale > 0, unitStrength.isFinite else { return [] }
+        var points: [WarpControlPoint] = []
+        var finalBudget: Double = 0
+        for (source, delta) in zip(sources, displacements) {
+            let target = SIMD2<Float>(source.x + Float(Double(unitStrength) * scale * Double(delta)), source.y)
+            guard phase93ContainsDisk(target, radius: finalRadius, bounds: face.bounds) else { return [] }
+            if root {
+                guard (source.x < face.bounds.midX && target.x < face.bounds.midX) ||
+                        (source.x > face.bounds.midX && target.x > face.bounds.midX)
+                else { return [] }
+            }
+            let point = makePoint(source: source, target: target, radius: finalRadius, strength: strength)
+            let actual = point.target - point.source
+            guard point.source == source, point.target == target,
+                  actual.x.isFinite, actual.y == 0,
+                  point.radius > 0.0001, abs(actual.x) + abs(actual.y) > 0.0001
+            else { return [] }
+            finalBudget += 2 * abs(Double(actual.x)) / Double(point.radius)
+            points.append(point)
+        }
+        guard finalBudget.isFinite, finalBudget <= 0.45 else { return [] }
+        return points
     }
 
     private func lowerNosePoints(face: FaceGeometry, center: SIMD2<Float>) -> [SIMD2<Float>] {
