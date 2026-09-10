@@ -10,3 +10,7 @@
 
 No unresolved product preference changes the authorized phase scope. Implementation
 choices remain for one bounded research pass and independent plan review.
+
+2026-09-10 — Explicit owner disposition after registration checkpoint:
+
+The owner answered “允许” to including the adapter internal root positioning and corresponding regression tests in Phase 93 while preserving frozen acceptance regions, thresholds and public interfaces. D-09 records this bounded extension. Resume planning and independent checking; no additional research pass or implementation-attempt budget is granted. Historical checkpoint findings remain valid for the former contract.

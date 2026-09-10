@@ -1,7 +1,7 @@
 # Phase 93: Distinct Nose Bridge and Root Repairs — Context
 
 Gathered: 2026-09-08
-Status: Ready for planning
+Status: Ready for resumed planning after explicit owner scope authorization (2026-09-10)
 Mode: --auto; defaults derived from existing owner requirements, not new user claims.
 
 <domain>
@@ -39,6 +39,7 @@ and retained Warp.metal. Phase 95 owns portrait evaluation and full no-skip.
   Synchronize affected owners from measured evidence only. Preserve archived and
   failed historical records. Store only bounded aggregates/status/hashes, never
   raw pixels, geometry, masks, private locators, media/reports or transcripts.
+- D-09 (explicit owner authorization, 2026-09-10): The owner approved extending Phase 93 to correct the adapter internal noseRoot(in:) positioning contract and corresponding regression/independent registration tests, with affected owner synchronization. Establish source-side anatomical justification before scoring. This supersedes the prior provider-only scope limitation for this root correction only. Frozen ROIs, numeric thresholds, public interfaces/inventory, shared renderer/sampler/backend/shader and unrelated legacy nose/tip/sibling behavior remain unchanged. The existing two implementation attempts are not reset or expanded; authorization is not efficacy evidence. Continue planning and independent review without asking for this scope approval again.
 </decisions>
 
 <code_context>

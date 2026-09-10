@@ -26,7 +26,16 @@
 
 ## 3. Active
 
-Phase 93 is next: distinct nose bridge and root repairs; Phase 92 verification passed 10/10.
+Phase 93 planning resumed after explicit owner approval of the bounded adapter root-positioning correction; Phase 92 verification passed 10/10.
+
+### A-2026-09-10-phase-93-registration-disposition
+
+- Status: `active`; owner approved the scope extension and the five-plan set passed independent review on 2026-09-10.
+- Scope: NOSE-01 and NOSE-02 remain active. Existing research was reused; the typed planner returned a checkpoint after source-only registration analysis.
+- Finding: neither canonical root support center registers in the frozen root ROI (0/2). Common translation/scaling does not resolve the existing research candidate's support/containment conditions. This is not proof that every provider alternative is impossible and is not a rendered-pixel failure.
+- Authorized next step: extend Phase 93 to the adapter's internal `noseRoot(in:)` positioning contract, corresponding regression/independent registration tests, and affected owners. The owner explicitly approved this on 2026-09-10 (CONTEXT D-09). Establish source-side anatomical justification first; preserve frozen ROI/thresholds, public inventory, renderer/backend, legacy nose/tip siblings and the existing two-attempt ceiling. Resume executable planning and independent review.
+- Evidence: `.planning/phases/93-distinct-nose-bridge-and-root-repairs/93-VALIDATION.md` records aggregate findings, source hashes and the checkpoint. Initial checkpoint had zero executable plans. Current checked plan set: 5 plans / 11 tasks / 5 sequential waves; two initial review blockers were corrected and independently cleared. New research passes: 0; implementation attempts: 0/2. No production/test edits or SwiftPM/render runs; source-only analysis is not runtime validation. `git diff --check` passed.
+- Resumed-planning baseline: `swift test --package-path BeautySDK --filter NoseWarpProviderTests` passed 16/0/0 on 2026-09-10. This verifies the unchanged provider baseline only, not registration or frozen NOSE semantic effectiveness.
 
 ## 4. Completed
 

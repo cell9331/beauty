@@ -5,15 +5,15 @@ milestone_name: Non-Local Facial Effect Repairs
 current_phase: 93
 current_phase_name: Distinct Nose Bridge and Root Repairs
 status: planning
-stopped_at: Phase 92 complete, ready to plan Phase 93
-last_updated: "2026-09-08T06:48:41.433Z"
-last_activity: 2026-09-08
-last_activity_desc: Phase 92 complete, transitioned to Phase 93
+stopped_at: Phase 93 checked plan set ready for execution
+last_updated: "2026-09-10T06:09:43Z"
+last_activity: 2026-09-10
+last_activity_desc: Owner approved Phase 93 root adapter correction; planning resumed
 state_head: e2768cf5bdfc2a314a5ae58ef5226d3d639c488d
 progress:
   total_phases: 7
   completed_phases: 4
-  total_plans: 18
+  total_plans: 23
   completed_plans: 18
   percent: 57
 ---
@@ -32,11 +32,11 @@ without distributing the SDK, model, or weights.
 ## Current Position
 
 Phase: 93 — Distinct Nose Bridge and Root Repairs
-Plan: Not started
-Status: Ready to plan
-Last activity: 2026-09-08 — Phase 92 complete, transitioned to Phase 93
+Plan: 0/5 executed; independent plan check passed
+Status: Ready to execute Phase 93 after independent plan check
+Last activity: 2026-09-10 — Owner approved bounded internal root adapter correction; independent planning resumed
 
-Progress: 4/7 milestone phases complete (57%); 18/18 currently authored plans have summaries, including historical failed attempts.
+Progress: 4/7 milestone phases complete (57%); 18/23 currently authored plans have summaries, including historical failed attempts.
 
 ## Performance Metrics
 
@@ -67,6 +67,8 @@ roadmaps.
 ## Accumulated Context
 
 ### Decisions
+
+- [Phase 93, 2026-09-10]: Owner explicitly approved root adapter positioning and corresponding regression/registration tests (D-09). Frozen ROI/thresholds/public interfaces remain unchanged; existing research reused and implementation budget remains two attempts. Approval clears the scope decision, not the technical registration gate.
 
 - [Phase 92]: R5 passed independent 10/10 goal verification, focused 23/0/0 and frozen +48/-22 Q16 pixels. The per-side 0.9 summed displacement budget resolves dense-trace folding; historical failures remain unchanged. Phase 93 is next; Phase 95 retains portraits/no-skip.
 
