@@ -207,6 +207,8 @@ private func phase91GazeObservation(
 }
 
 @_spi(Testing) public enum SDKTestingFaceDetectionFixture: Sendable {
+    case phase93RegisteredNose
+    case phase93MissingNose
     case usableFace
     case missingObservedFaceContour
     case malformedObservedFaceContour
@@ -253,6 +255,38 @@ private func phase91GazeObservation(
     package func makeObservationProvider() -> VisionFaceDetector.ObservationProvider {
         { [self] _ in
             switch nextFixture() {
+            // Phase93 nose fixture begin
+            case .phase93RegisteredNose:
+                // Match the independently authored source head recipe, not a
+                // provider or ROI: canonical width, 2:1 height, 35% upper gap.
+                let headWidth = 0.40
+                let headHeight = headWidth * 2
+                let top = (1 - headHeight) * 0.35
+                return [VisionDetectionObservation(
+                    stableID: "phase-93-nose-fixture",
+                    confidence: 0.96,
+                    normalizedArea: headWidth * headHeight,
+                    visionBounds: CoordinateRect(x: (1 - headWidth) / 2,
+                                                 y: 1 - top - headHeight,
+                                                 width: headWidth, height: headHeight),
+                    landmarks: .complete
+                )]
+            case .phase93MissingNose:
+                let headWidth = 0.40
+                let headHeight = headWidth * 2
+                let top = (1 - headHeight) * 0.35
+                return [VisionDetectionObservation(
+                    stableID: "phase-93-nose-fixture",
+                    confidence: 0.96,
+                    normalizedArea: headWidth * headHeight,
+                    visionBounds: CoordinateRect(x: (1 - headWidth) / 2,
+                                                 y: 1 - top - headHeight,
+                                                 width: headWidth, height: headHeight),
+                    landmarks: BeautyFaceLandmarks(
+                        availableGroups: Set(BeautyLandmarkGroup.allCases).subtracting([.nose])
+                    )
+                )]
+            // Phase93 nose fixture end
             case .usableFace:
                 return [
                     VisionDetectionObservation(
