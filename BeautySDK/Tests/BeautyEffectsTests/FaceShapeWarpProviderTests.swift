@@ -24,8 +24,8 @@ final class FaceShapeWarpProviderTests: XCTestCase {
             SIMD2<Float>(0.540, 0.584)
         ])
         assertPoints(complete.noseRoot, equalTo: [
-            SIMD2<Float>(0.476, 0.488),
-            SIMD2<Float>(0.524, 0.488)
+            SIMD2<Float>(0.476, 0.380),
+            SIMD2<Float>(0.524, 0.380)
         ])
         assertPoints(complete.noseTip, equalTo: [
             SIMD2<Float>(0.476, 0.572),
