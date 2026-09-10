@@ -3,42 +3,47 @@ phase: 93-distinct-nose-bridge-and-root-repairs
 plan: "01"
 subsystem: testing
 tags: [swiftpm, nose, registration, bounded-evidence]
-status: checkpoint
-tasks_completed: 1
+status: complete
+tasks_completed: 3
 tasks_total: 3
-implementation_attempt: 0
+implementation_attempt: 1
+attempt_status: open
 requires:
   - phase: 93-planning
     provides: D-09 authorization and independently checked five-plan protocol
 provides:
   - Bounded gate and immutable source/authority baseline
   - Independent in-memory source and additive Testing SPI cases
-  - Verified source and old-root registration RED
+  - Verified old-root RED followed by four GREEN registration/regression methods
+  - Fixed root positioning and immutable registration binding
 affects: [93-02, 93-03, 93-04, 93-05]
 tech-stack:
   added: []
-  patterns: [bounded child capture, exact named discovery, immutable hashes]
+  patterns: [bounded child capture, exact named discovery, immutable hashes, shared attempt ledger]
 key-files:
   created:
     - scripts/check-phase93-nose-repair.py
     - BeautySDK/Tests/BeautyCoreTests/NoseRepairFixture.swift
     - BeautySDK/Tests/BeautyCoreTests/NoseFixtureRegistrationTests.swift
     - .planning/phases/93-distinct-nose-bridge-and-root-repairs/93-BASELINE.json
+    - .planning/phases/93-distinct-nose-bridge-and-root-repairs/93-REGISTRATION.json
     - .planning/phases/93-distinct-nose-bridge-and-root-repairs/93-ATTEMPTS.md
   modified:
     - BeautySDK/Sources/BeautySDK/BeautyEngineTestingSupport.swift
+    - BeautySDK/Sources/BeautyEffects/Planning/BeautyFaceGeometryAdapter.swift
     - BeautySDK/Tests/BeautyEffectsTests/FaceShapeWarpProviderTests.swift
     - PLANS.md
     - .planning/STATE.md
 key-decisions:
-  - Keep the frozen gate and source unchanged after admission rejected an overbroad regression comparison.
-  - No implementation attempt starts without a successful begin event; D-09 approval remains valid.
+  - Retain the original baseline; use only the independently reviewed hash-linked gate amendment.
+  - Open shared attempt 1 before the sole D-09 adapter correction and leave it open for subsequent plans.
+  - Registration proves fixture alignment, not rendered semantic efficacy.
 requirements-completed: []
 requirements-addressed: [NOSE-01, NOSE-02]
-duration: 22min
-checkpoint_date: 2026-09-10
+duration: 38min
+completed: 2026-09-10
 coverage:
-  - deliverable: Independent source, mapping and canonical/missing controls
+  - deliverable: Independent source, actual detector mapping and canonical/missing controls
     verification:
       - kind: test
         ref: NoseFixtureRegistrationTests/testSourceAnatomyRegistersIndependently
@@ -47,68 +52,96 @@ coverage:
         ref: NoseFixtureRegistrationTests/testMissingNoseAndCanonicalControl
         status: pass
     human_judgment: false
-  - deliverable: Gate self-tests and source baseline
+  - deliverable: Corrected root positioning with unchanged legacy/tip templates
+    verification:
+      - kind: test
+        ref: NoseFixtureRegistrationTests/testAdapterMatchesSourceRootAndBridge
+        status: pass
+      - kind: test
+        ref: FaceShapeWarpProviderTests/testFaceGeometryAdapterKeepsLegacyNoseAndAddsExplicitRootAndTipSupports
+        status: pass
+    human_judgment: false
+  - deliverable: Bounded admission and source baseline
     verification:
       - kind: command
         ref: python3 scripts/check-phase93-nose-repair.py self-test
         status: pass
+      - kind: command
+        ref: python3 scripts/check-phase93-nose-repair.py authorities
+        status: pass
+    human_judgment: false
+  - deliverable: Immutable registration binding with shared attempt 1 open
+    verification:
+      - kind: command
+        ref: python3 scripts/check-phase93-nose-repair.py freeze-registration
+        status: pass
     human_judgment: false
 ---
 
-# Phase 93 Plan 01: Nose Registration — Checkpoint Summary
+# Phase 93 Plan 01: Independent Nose Registration Summary
 
-**Independent source registration proves the old root mismatch; a frozen gate comparison defect blocks attempt admission before any production correction.**
+**The independently authored source now registers the corrected upper root and retained bridge supports; four named tests pass and the registration binding is frozen.**
 
-## Status and task results
+## Accomplishments and evidence
 
-- Task 93-01-01: complete. Gate self-test passed 50/0/0; SwiftPM test build passed. The independent 512-square opaque sRGB source and two additive SPI cases are bound with original Git blobs, hashes, inventory and dirty-file digests.
-- Task 93-01-02: incomplete, checkpoint after verified RED. Three named methods each discovered once: 2 passed, 1 expected failure, 0 skips. Only `P93_ROOT_PLACEMENT` failed. Source anatomy, floor/floor exclusive raster regression, source/bridge envelopes for both prescribed alternatives, and missing/canonical controls passed. The named existing adapter regression now expects the approved correction; its original shared/malformed fixtures remain unchanged.
-- Task 93-01-03: not started. No registration freeze exists.
-- Implementation attempts started: **0/2**. `begin --attempt 1` stopped before creating a begin event. No adapter/provider production edit, rendered candidate, semantic score or later plan was executed.
+All three tasks are complete. Both NOSE requirements remain active: this plan establishes registration and does not score rendered efficacy.
 
-## Commits
+| Task | Verified result | Commit |
+|---|---|---|
+| 93-01-01 — gate and independent source | Initial self-test 50/0/0; reviewed amendment self-test 69/0/0; SwiftPM test build passed | `71f5fef3`, `09f92f5d`, amendment `8ececea9` |
+| 93-01-02 — source, RED and fixed adapter correction | Fresh current-gate old-root RED: 3 discovered, 2 passed, exactly one named failure, 0 skips. After begin 1 and the sole root-Y correction: 4 discovered, 4 passed, 0 failures/skips | RED `c2f81b9d`; GREEN `08358ffc` |
+| 93-01-03 — freeze registration | Four methods freshly repeated GREEN; regular hash-only registration binding created; authorities passed | `70542110` |
 
-1. `71f5fef3` — test(93-01): declare gate discovery and RED admission regressions
-2. `09f92f5d` — feat(93-01): bind bounded nose gate and independent source fixture
-3. `c2f81b9d` — test(93-01): prove independent anatomy and old-root registration RED
+The source test verifies independent anatomical ordering, deterministic opaque sRGB carriers, literal checked floor/floor exclusive raster edges and textured protected guards. The real detector-to-adapter path verifies common source bounds, root/bridge membership, both prescribed source/cap-target radius envelopes, missing-nose rejection and canonical controls. The fourth method retains the original legacy/tip expected arrays and updates only the named root regression.
 
-Checkpoint metadata is committed separately. Work began at the recorded 2026-09-10T06:48:22Z timestamp and stopped at approximately 07:10Z. Nine task/progress files were touched, plus this summary; neither production adapter nor provider was changed.
+The only production algorithm change is the two approved root-Y literals in `noseRoot(in:)`. Its X values, cardinality, group admission and every other adapter helper remain byte-identical. The provider and its tests are unchanged. No gate, fixture, SPI, regression or source recipe was edited during the final production continuation.
 
-## Precise blocker and continuation
+## Shared candidate state and handoff
 
-`source_scope` in the frozen gate computes the permitted regression file with whole-file literal replacement. The literals also occur in unrelated shared and malformed-root fixtures; this erroneously demands six additional line changes outside the named adapter regression. The actual two-line edit obeys the plan and therefore fails that incorrect comparison.
+The append-only ledger has exactly **one begin event, attempt 1**, created before the adapter edit, and **zero finish events**. The joint candidate remains open for Plan 93-03 under the unchanged two-attempt ceiling. No efficacy claim or accepted-candidate finish is issued from registration.
 
-The gate's hash was already bound by initialize. Plan 93-01's execution refinements prohibit rewriting the gate or earlier bindings after freeze. No attempt was made to change those unrelated fixtures, weaken the comparator, regenerate the baseline, tune source geometry/radii, or bypass admission. This is an infrastructure stop, not a registration impossibility or semantic failure.
+Plan 93-02 has not run: no pixel oracle, semantic RED, provider amplitude mutation or later-plan test/artifact was created. The orchestrator may proceed to 93-02 to freeze actual-pixel RED at the registered adapter and original provider. Phase-wide independent code review and goal verification remain future obligations. The clean infrastructure review covers only the gate amendment/CR-01 correction.
 
-Continuation needs an orchestrator-authorized amendment that confines this comparison to the named regression method and explicitly handles the frozen gate/baseline binding while retaining the failed record. D-09 does **not** need renewed approval. After that amendment, reverify source and exact old-root RED, admit shared attempt 1, apply only the approved adapter correction, run four GREEN registration/regression methods and freeze registration. Do not start 93-02 before that succeeds.
-
-## Evidence and unchanged production
+## Current bindings
 
 | Binding | SHA-256 |
 |---|---|
-| Gate | b2401be9ec23e331e034ec18655349db5eb1fcd03c875fa70dd4a2bfd80b6d1f |
-| Baseline JSON | a95d281f619bdef97c85dd6935f10b1b2084bce5d795ae9890981692517f4c31 |
+| Effective reviewed gate | fcee37289aeba5d657179e2d5a6c02f1caf33a3c514d81887c59b6688a9778e0 |
+| Original immutable baseline JSON | a95d281f619bdef97c85dd6935f10b1b2084bce5d795ae9890981692517f4c31 |
 | Registration tests | 77a54acd34384fbb9a79e248aa50e95c90c3093d089f480aaac820bbf075d368 |
-| Unchanged adapter | 7b3ca8d3dafad4068a49ee6fae963183601e59d10bb5eb40b0fdd8ee7f3e515d |
-| Unchanged provider | 0684e2689cd5f3b780a69f13f701339879c3f418691a586205f4dda028ea23c8 |
+| Corrected adapter | cf191001ae1245a82b042cc54eaca63aa6b3ba2abeed40e86781bc056eb159d9 |
+| Original unchanged provider | 0684e2689cd5f3b780a69f13f701339879c3f418691a586205f4dda028ea23c8 |
+| Frozen registration JSON | 87d1990da6f2c6780dc2bff37784fcca20962ae88824238508f36e7c8d3a0f81 |
 
-The append-only ledger retains two compile stops, the initial missing-support test-authoring stop, the exact accepted old-root RED, and the failed begin admission. It contains zero begin events. Adapter/provider hashes were checked against their admitted original blobs: both exact, so no production rollback was necessary. Original provider 16/0/0 remains the orchestrator's historical baseline, not newly measured pixel evidence.
+The registration JSON binds the original baseline, effective gate, fixture/SPI, registration test, corrected adapter and scoped existing regression; its counts distinguish three new methods from one retained regression. It records two prescribed envelope alternatives and pixel efficacy as unmeasured.
 
-## Deviations from Plan
+## Historical checkpoint and deviations
 
-- [Rule 3 — test-authoring blocker] Simplified an overloaded Swift assertion after a type-check failure. A local row-stride rename alone did not resolve it; the equivalent explicit loop compiled. Source recipe and numeric assertions were unchanged.
-- [Rule 1 — test expectation] The normal geometry detector intentionally discards a missing-nose observation. The test now asserts that rejection, then uses the existing combined-purpose partial mapping to verify adapter-local group isolation. No detection or SPI production policy changed.
-- [Unresolved gate bug] The immutable regression comparison described above prevents Task 2 completion. No gate edit or binding replacement was performed.
-- The SDK blocker handler resynchronized unrelated STATE frontmatter from stale session fields. Those collateral changes were reverted to the exact pre-call orchestrator frontmatter; only the added checkpoint blocker is retained and staged. Config, state.json, runtime and orchestrator progress changes remain unstaged and preserved.
+The checkpoint summary at `43a734fc` and all earlier ledger records remain history, not retroactive success. Before production, two test-build stops and a missing-support expectation failure were followed by verified exact old-root RED. The initial begin command then stopped at `source_scope` with **zero attempts started**, because whole-file literal replacement incorrectly required six unrelated fixture changes. Production adapter/provider bytes were original at that checkpoint; no rollback was needed.
 
-## Deferred Issues / Known Limitations
+- **[Rule 3 — test authoring]** Replaced an overloaded Swift assertion with an equivalent explicit loop after a row-stride rename alone did not resolve type checking. Source recipe and numerical assertions were unchanged.
+- **[Rule 1 — test expectation]** Asserted the existing geometry detector's missing-nose rejection, then used its existing combined-purpose partial mapping to test adapter-local group isolation. No detection policy changed.
+- **[Rule 1 — infrastructure, reviewed amendment]** The parent scoped regression validation to the named method and introduced `93-GATE-AMENDMENT.json`, preserving original baseline bytes and linking the previous/effective gate hashes. Independent review found CR-01: superseded-gate RED could still admit begin 1. A test reproduced the bypass; the precise effective-gate identity check fixed it. The current 69-case self-test and independent historical-prefix probes reject superseded receipts. The parent committed the clean reviewed amendment at `8ececea9`, then authorized continuation under the existing D-09 decision.
+- **State tooling:** Earlier SDK blocker recording resynchronized unrelated parent frontmatter. Those collateral changes were restored. Final task progress is scoped to this plan; parent configuration, state.json, runtime and unrelated STATE edits remain preserved and unstaged.
 
-The gate's later command mappings are authored but have not been exercised against the future tests. The demonstrated admission bug prevents claiming the complete gate protocol works. No stub supplies success: missing future artifacts return nonzero. No semantic effectiveness, phase completion, independent code/goal review, device quality or external-distribution claim is made. Owner contract promotion remains with the later plans.
+The gate's later command mappings are implemented but await the future tests/artifacts specified by Plans 93-02 through 93-05; their missing prerequisites fail closed. No success-returning stub was found in this plan's files. No unresolved blocker remains for the completed 93-01 scope.
 
-## Privacy and threat review
+## Commits and timing
 
-Only executable fixture/test sources contain source geometry. Durable evidence contains fixed identities, statuses, bounded counts and hashes. No media, raw geometry, pixels, private locators or child transcripts were written as evidence. The local child/evidence boundary is the one already declared in the plan; no additional network, auth or schema boundary was introduced.
+- `71f5fef3`: test(93-01): declare gate discovery and RED admission regressions
+- `09f92f5d`: feat(93-01): bind bounded nose gate and independent source fixture
+- `c2f81b9d`: test(93-01): prove independent anatomy and old-root registration RED
+- `43a734fc`: docs(93-01): record pre-attempt gate checkpoint
+- `8ececea9`: fix(93-01): scope regression admission and bind fresh gate receipts
+- `08358ffc`: fix(93-01): register upper nose root with independent source anatomy
+- `70542110`: test(93-01): freeze verified nose registration and open candidate binding
+
+Started at the recorded 2026-09-10T06:48:22Z timestamp; completed on 2026-09-10 at approximately 07:26Z, about 38 minutes elapsed including checkpoint/review time. Nine planned task files, two progress owners and this summary were changed; the parent separately owns the three amendment/plan/review files. Completion metadata is committed separately.
+
+## Privacy and scope
+
+Durable evidence contains fixed statuses, counts, hashes and aggregate results only. Executable fixture/test sources retain the source recipe; no media, raw geometry, pixels, private locators or child transcripts were persisted as evidence. The local child/evidence boundary was already declared in the plan; no new network, auth or resource boundary was introduced. This is owner-local generated registration evidence, with no device, naturalness, commercial or external-distribution qualification.
 
 ## Self-Check: PASSED
 
-Verified the five created task files and this summary exist; all three implementation/test commits resolve. Baseline/gate hashes match, production adapter/provider are unchanged, and the ledger has zero begin events. Registration freeze is intentionally absent. This self-check verifies the checkpoint record, not plan completion.
+Verified all six created task files, the summary and seven preceding task/amendment/checkpoint commits exist. Current immutable hashes agree, production diff is exactly the approved two-line adapter correction, the provider remains original, and the registration binding records four passing methods. The ledger contains one open attempt and no finish. No later-plan artifacts exist. This self-check establishes 93-01 completion only.
