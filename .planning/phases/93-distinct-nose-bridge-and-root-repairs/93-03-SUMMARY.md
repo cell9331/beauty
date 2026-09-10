@@ -124,7 +124,7 @@ Both production SHA-256 values were independently compared with the admitted bas
 
 - **[Rule 3 — compile-only test authoring]** The initial new reuse test used an unavailable resolver initializer/context. The sanitized build identified the error before gate execution; the test was corrected to the existing `BeautyEffectResolver.resolve(parameters:faceGeometry:)` API. No behavior or production change was made by this compile correction. Subsequent test and candidate builds passed.
 - Before freezing, a copied sibling hash literal was corrected to the captured digest. This was authoring, with no failed gate event or changed production candidate.
-- The owner's density clarification was incorporated before RED freezing, preserving strict cutoff and scaled-budget mathematics rather than inventing impossible nonempty expectations.
+- The parent orchestrator's mathematical-consistency note on density was incorporated before RED freezing, preserving strict cutoff and scaled-budget mathematics rather than inventing impossible nonempty expectations. This was not a new user decision.
 - Serena was unavailable; repository source/rg tracing and the mandatory spike-findings-beauty privacy guidance were used. No external package or new research pass was needed.
 - Parent-owned config, state.json, runtime directory, milestone lock and STATE frontmatter/position remain preserved and unstaged. Only a scoped STATE task note is added. Broad state/roadmap/requirements resynchronization is intentionally omitted because it would overwrite parent-owned work and falsely advance a halted plan.
 
