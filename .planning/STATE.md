@@ -391,6 +391,10 @@ None found under `.planning/todos/pending/`.
 
 ## Deferred Items
 
+### Phase 93 plan 02 checkpoint — 2026-09-10
+
+Task 93-02-01 is complete (`1c9ffd27`): four independent metric methods pass 4/0/0. Task 93-02-02 is blocked; its six compiled public tests and failure receipt are retained in `2ed83f1a`, with checkpoint summary `e451eb08`. The frozen `red` command passed registration 4/0/0 and metrics 4/0/0, then stopped in the first lifecycle method at the named-sRGB assertion (4 discovered, 0 passed, 1 failed, 0 skipped; three unexecuted). One bounded diagnostic rerun found 24 failures only at that assertion. The retained raw CPU geometry route uses device RGB; parent disposition is required before reconciling the plan's named-sRGB requirement. No assertion, provider, fixture, SPI, gate, authority or registration change was made. Both semantic directions remain unmeasured; no `93-RED.json` exists and no plan 93-03 work ran. Shared attempt 1 remains open with one begin and zero finish; do not repeat begin 1. Both NOSE requirements remain active. This scoped checkpoint supplements preserved parent state and historical entries; it does not advance the plan counter.
+
 | Category | Item | Status | Deferred At |
 | --- | --- | --- | --- |
 | Face geometry | Further `faceContourSmooth` repair | Future separate milestone; current public field remains unchanged/partial | v1.22 Phase 90 contraction |
