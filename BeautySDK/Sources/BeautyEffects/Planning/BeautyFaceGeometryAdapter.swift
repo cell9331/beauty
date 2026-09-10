@@ -1017,8 +1017,8 @@ enum BeautyFaceGeometryAdapter {
 
     private static func noseRoot(in bounds: FaceBounds) -> [SIMD2<Float>] {
         [
-            point(bounds, x: 0.44, y: 0.30),
-            point(bounds, x: 0.56, y: 0.30)
+            point(bounds, x: 0.44, y: 0.48),
+            point(bounds, x: 0.56, y: 0.48)
         ]
     }
 

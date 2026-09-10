@@ -58,6 +58,8 @@ Phase 93 planning resumed after explicit owner approval of the bounded adapter r
 
 - 93-03 task 2 terminal safety stop (2026-09-10): fixed candidate 1 compiled and passed source/authority admission, then provider GREEN stopped at `testFinalFloatFieldBudgetAndDenseMap` / `P93_FIELD_BUDGET`: 22 discovered, 18 passed, 1 failed, zero skips, three unexecuted. No post-evaluation correction, candidate 2, pixel rerun or later-plan work is authorized. Candidate semantics are untested; both prior original-provider semantic baselines remain historical `baseline_pass`, not acceptance of the repaired candidate. Preserve evaluated candidate/test hashes and failing proof, finish shared attempt 1 as failed, and restore only owned adapter/provider bytes to the pinned originals. Both NOSE requirements remain active; parent repair/defer/stop disposition is required.
 
+- 93-03 rollback verified (2026-09-10): failed candidate preserved in `e4e89680`; ledger sequence 26 finishes attempt 1 as `failed` / `assertion_failure` / `production_restored`. Adapter and provider match their pinned original SHA-256 values exactly; one begin and one finish remain, with no candidate 2. Frozen registration/RED/amendment files and tests remain unchanged. The corrected root regression and new provider regressions are intentionally retained as failing proof after rollback. Do not run plan 93-04/05 or treat the finish command's successful rollback status as candidate acceptance.
+
 ## 4. Completed
 
 
