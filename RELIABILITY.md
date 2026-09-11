@@ -666,6 +666,19 @@ No new public error/log/report API or shared renderer/backend/shader change was
 introduced. Phase 95 retains portraits and full no-skip closeout; no device,
 commercial-quality, launch or distribution claim is made.
 
+## Phase 94 Prerequisite Compile Recovery
+
+The first registration preparation stopped before test discovery. A bounded
+diagnostic build reproduced a Swift type-check timeout in the registration
+test's channel predicate; an equivalent explicit loop cleared that build.
+This is compiler recovery evidence, not registration or effect evidence.
+`check-phase94-compile-recovery.py` binds the exact before/after test bytes
+and original terminal history through `94-COMPILE-AMENDMENT.json`. It writes
+only separate successor evidence, retains the original deadlines and bounded
+memory-only child capture, and records stage/exit status on later failures.
+New failures and interrupted lanes cannot automatically restart. Prerequisite
+GREEN, if earned, still leaves MOUTH-01 incomplete and attempts at 0/2.
+
 ## Phase 93 Nose Field Admission and Recovery
 
 The owner-local evidence in

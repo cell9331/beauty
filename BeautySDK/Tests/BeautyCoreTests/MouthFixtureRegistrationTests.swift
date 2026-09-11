@@ -16,9 +16,15 @@ final class MouthFixtureRegistrationTests: XCTestCase {
         let bytes = MouthRepairFixture.source()
         XCTAssertTrue(bytes == MouthRepairFixture.source(), "P94_SOURCE_DETERMINISM")
         XCTAssertTrue(bytes.count == width * height * 4, "P94_SOURCE_LENGTH")
-        XCTAssertTrue(stride(from: 0, to: bytes.count, by: 4).allSatisfy {
-            bytes[$0] == bytes[$0 + 1] && bytes[$0] == bytes[$0 + 2] && bytes[$0 + 3] == 255
-        }, "P94_SOURCE_CHANNELS")
+        var sourceChannelsAreValid = true
+        for offset in stride(from: 0, to: bytes.count, by: 4) {
+            let isGrayscale = bytes[offset] == bytes[offset + 1] && bytes[offset] == bytes[offset + 2]
+            if !isGrayscale || bytes[offset + 3] != 255 {
+                sourceChannelsAreValid = false
+                break
+            }
+        }
+        XCTAssertTrue(sourceChannelsAreValid, "P94_SOURCE_CHANNELS")
         let metadata = MouthRepairFixture.metadata()
         XCTAssertTrue(metadata.orientation == .up && !metadata.isInputMirrored && !metadata.isPreviewMirrored,
                       "P94_SOURCE_METADATA")

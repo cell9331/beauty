@@ -5,10 +5,10 @@ milestone_name: Non-Local Facial Effect Repairs
 current_phase: 94
 current_phase_name: Negative Mouth-Width Repair
 status: executing_prerequisites
-stopped_at: Phase 94 prerequisite plan reviewed; execution next
-last_updated: "2026-09-10T11:54:57.274180+00:00"
-last_activity: 2026-09-10
-last_activity_desc: Phase 93 verified 18/18; both NOSE requirements complete
+stopped_at: Phase 94 compiler repair builds; successor prerequisite admission under review
+last_updated: "2026-09-11T03:05:53.276469+00:00"
+last_activity: 2026-09-11
+last_activity_desc: Phase 94 frozen build failure diagnosed and equivalent compiler fix built; tests unmeasured
 state_head: b537ed626cf30d43d26352752bc9660a48047889
 progress:
   total_phases: 7
@@ -32,11 +32,11 @@ without distributing the SDK, model, or weights.
 ## Current Position
 
 Phase: 94 (Negative Mouth-Width Repair) — PREREQUISITES
-Plan: 94-01 prerequisite-only, 0/3 tasks executed; full repair plan pending baseline
-Status: Phase 93 complete; Phase 94 prerequisite plan passed independent review, zero blockers
-Last activity: 2026-09-10 — Both NOSE requirements closed after exact-candidate automated evidence and owner synchronization
+Plan: 94-01 prerequisite-only, 1/3 tasks complete; full repair plan pending baseline
+Status: Original Phase 94 native preparation failure preserved; compile-only recovery under review
+Last activity: 2026-09-11 — Equivalent channel predicate decomposition cleared Swift type-check timeout; no registration test executed
 
-Progress: 5/7 milestone phases complete (71%); all 23 currently authored plans have summaries. Historical diagnostic/deferred outcomes retain their recorded meaning. Phase 94 and Phase 95 have not been executed here.
+Progress: 5/7 milestone phases complete (71%); 23 completed plans plus the Phase 94 prerequisite checkpoint have summaries. Historical diagnostic/deferred outcomes retain their recorded meaning. Phase 94 has no semantic completion credit; Phase 95 remains unexecuted.
 
 ## Performance Metrics
 

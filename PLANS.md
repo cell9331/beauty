@@ -28,11 +28,12 @@
 
 ### A-2026-09-11-phase-94-negative-mouth-width
 
-- Status: `active` — prerequisite plan independently reviewed, ready for execution; no production attempt.
+- Status: `active` — prerequisite execution resumed through a narrowly scoped compiler repair; no production attempt.
 - Scope: MOUTH-01 negative width contraction, retained positive expansion/height/siblings under frozen Phase89 semantic gates.
 - Progress: Prior phases89–93 have matching summaries and passed verification; Phase94 context carries forward existing decisions. Negative provider targets already move inward, so rendered efficacy must be traced independently before selecting a repair.
-- Validation: One source research pass completed; canonical source calculation shows 0/2 registered corners and a protected-height footprint mismatch, not native pixel failure. One prerequisite plan (3 tasks) passed independent review with zero blockers. Full MOUTH-01 planning remains incomplete. No native runs or production attempts yet; implementation budget 0/2.
+- Validation: One source research pass completed; canonical source calculation shows 0/2 registered corners and a protected-height footprint mismatch, not native pixel failure. One prerequisite plan (3 tasks) passed independent review with zero blockers. Full MOUTH-01 planning remains incomplete. Native build diagnostics ran; registration and rendered pixels remain unmeasured. Implementation budget 0/2.
 - Execution checkpoint: Task1 self-tests 12/0/0 and source lock passed. Task2 native preparation recorded child_failure before discovery (0 executed, 3 unexecuted); no registration assertion or pixel evaluation occurred. Events1–3 and all frozen inputs retained. Task3 absent, attempts0/2. Parent continues the authorized infrastructure diagnosis; no automatic acceptance retry.
+- Compiler diagnosis: A bounded build on the frozen inputs reproduced Swift `type_check_timeout` at `MouthFixtureRegistrationTests.swift:19:9` (exit 1). Splitting the compound channel/alpha predicate into an equivalent short-circuit Boolean loop made the same build pass (exit 0). Neither diagnostic executed tests. The original binding, runner and terminal event history remain immutable; a precise compile-only amendment must be reviewed before successor registration admission.
 - Evidence: Phase94 CONTEXT, RESEARCH, PATTERNS, VALIDATION, 94-01-PLAN and 94-PLAN-REVIEW. Execute only source lock → actual mapping registration → retained-positive baseline, stopping at its phase-incomplete checkpoint. Preserve pre-existing config/state-cache/runtime/lock changes.
 
 ## 4. Completed
