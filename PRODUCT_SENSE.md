@@ -502,3 +502,24 @@ evidence and full no-skip closeout. No device, naturalness, commercial quality
 or external-distribution approval follows.
 
 Independent goal verdict: [93-VERIFICATION.md](.planning/phases/93-distinct-nose-bridge-and-root-repairs/93-VERIFICATION.md), 18/18 must-haves and zero blockers.
+
+## Phase94 Owner-Local Negative Mouth-Width Acceptance
+
+For MOUTH-01, the owner's existing still-image wrappers can contract the
+registered generated mouth while retaining positive expansion, signed mouth
+sizes and the protected mouth-height/face/background/watermark regions.
+The negative source and neutral comparisons each measure520 changed pixels,
+73743 RGB delta and−24Q16 span; distinction from positive width/size-plus/
+size-minus is200/181/37Q16. All negative protection maxima are0/0 and all14
+original retained-row output hashes are unchanged.
+
+This is the fixed generated-source CPU contract, verified by41/41 tests at
+`94-REMAINING-CHECKS.json` SHA256
+`fa696dba3273f248924bdd34744088979bae1e23a35a8d5d433e1c379a8f3ac4`.
+PolicyB is the second predeclared attempt after A's preserved insufficient-signal
+failure. No new parameter, public interface, preset, renderer case or backend
+was added. Lifecycle coverage of all eight raw encodings and mirror policies
+does not claim canonical contraction semantics for every orientation or face.
+Physical iPhone feedback stays optional; population/naturalness, device,
+commercial and distribution claims are not established. Phase95 private
+portraits, final65 and full no-skip closeout remain separate.

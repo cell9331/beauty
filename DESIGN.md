@@ -1622,3 +1622,28 @@ no-skip closeout; these generated mechanics do not qualify device or commercial
 visual performance.
 
 Independent goal verdict: [93-VERIFICATION.md](.planning/phases/93-distinct-nose-bridge-and-root-repairs/93-VERIFICATION.md), 18/18 must-haves and zero blockers.
+
+## Phase94 Negative Mouth-Width Design Contract
+
+MOUTH-01 now has a measured owner-local generated-source contract under policyB.
+Current acceptance: `94-REMAINING-CHECKS.json` SHA256
+`fa696dba3273f248924bdd34744088979bae1e23a35a8d5d433e1c379a8f3ac4`,
+41/41 passed with zero failures/skips. Only the private negative width
+dispatch/helper changed; the original positive body, shared helpers, adapter,
+renderer, sibling fields, public inventory and target architecture are unchanged.
+
+For valid negative support, gap is the distance between outer-lip X extrema.
+The radius is clamp(gap/7,0.035,0.20); cap displacement is
+min(faceWidth*0.040,radius/5,gap/4), multiplied by abs(effectiveStrength)/0.35
+through the retained legacy displacement floor. Source Y is preserved.
+The helper reconstructs actual Float points, verifies inward noncrossing
+targets, and checks the sum of 2*displacementLength/radius in Double against0.8.
+If rounding exceeds that bound, it scales once by
+min(1,0.8/actualBound)*(1-16*Float.ulpOfOne), reconstructs and rechecks;
+invalid results empty only the negative field.
+
+The0.8 bound is sufficient for the two quadratic negative fields, including
+overlap. It is not a universal mixed-field, clamped-raster or GPU injectivity
+claim. Fixed field tests separate actual crossing/reversal from an inconclusive
+sufficient bound. Phase95 private portraits/final65/full no-skip and all
+population/device/commercial/distribution claims remain separate.

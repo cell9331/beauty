@@ -723,3 +723,32 @@ and requires the fresh 106-method deterministic pass. Independent goal verificat
 no-skip evidence; no device performance or distribution claim is made.
 
 Independent goal verdict: [93-VERIFICATION.md](.planning/phases/93-distinct-nose-bridge-and-root-repairs/93-VERIFICATION.md), 18/18 must-haves and zero blockers.
+
+## Phase94 Negative Mouth-Width Reliability Contract
+
+MOUTH-01 acceptance `94-REMAINING-CHECKS.json` SHA256
+`fa696dba3273f248924bdd34744088979bae1e23a35a8d5d433e1c379a8f3ac4`
+passed41/41, including actual Float field and signed lifecycle checks.
+Signed caps remain±0.35; fresh/reused/stale resolution and existing conflict
+sanitation remain unchanged. Tests verify reuse displacement scaling within an8-ULP
+reconstruction tolerance. Provider emission retains its legacy tiny-vector
+policy; renderer admission separately requires radius and L1 displacement
+strictly greater than0.0001.
+
+The original baseline demonstrated protection leakage and actual narrow-support
+crossing/reversal. PolicyA fixed those but failed the fixed500 changed-pixel
+minimum at392; its complete41/40/1 result and owned rollback remain recorded.
+The predeclared policyB passed at520 changed pixels with−24Q16 source/neutral
+margins and all negative protection maxima0/0. Compile/review/seal and native
+acceptance bind the same code; failed, stale, interrupted or incomplete evidence
+cannot authorize a retry or completion. The two-attempt budget is exhausted.
+
+Both signs preserve neutral/nonfinite identity, cap equality, integral extent
+including translated input, opaque alpha, wrapper/repeat determinism, eight
+raw EXIF encodings and the existing input/preview-mirror policy. Raw geometry
+retains Device RGB while measurements use named-sRGB extraction; neutral
+metadata and the existing optional color-only lipColor tag policy are retained.
+Reset/rejected-support/recovery checks preserve exact source and recovered
+bytes, reasons and invocation counts. No all-orientation semantic ROI,
+device performance or long-duration claim follows. Phase95 final65/private
+portraits/full no-skip and commercial/distribution qualification remain separate.

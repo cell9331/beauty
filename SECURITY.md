@@ -623,3 +623,27 @@ final 65-output evidence and full no-skip closeout. No device, commercial or
 external-distribution authority is conferred.
 
 Independent goal verdict: [93-VERIFICATION.md](.planning/phases/93-distinct-nose-bridge-and-root-repairs/93-VERIFICATION.md), 18/18 must-haves and zero blockers.
+
+## Phase94 Negative Mouth-Width Evidence Boundary
+
+MOUTH-01 acceptance is bound to `94-REMAINING-CHECKS.json` SHA256
+`fa696dba3273f248924bdd34744088979bae1e23a35a8d5d433e1c379a8f3ac4`.
+Historical prerequisites remain immutable at their original provider identity.
+The current exception admits only the reviewed private negative provider
+addition through a counted begin, exact compile receipt, independent review,
+seal and fresh41-method acceptance. All other pinned code/tests remain exact.
+
+The initial runner and seed are preserved under the separate independently
+reviewed authoring disposition. Strict event replay validates writes before
+append; exclusive receipts publish atomically and orphaned/interrupted receipts
+cannot grant completion. Current inputs, history and reviews are checked around
+each bounded child. Native output is capped at8MiB in memory, with owned-process
+cleanup; only fixed markers, reconciled counts, bounded aggregates and digests
+enter durable evidence. Generated pixels, masks, geometry, private locators
+and native transcripts remain request-local and are not persisted.
+
+Both original defects and the failed policyA attempt/rollback remain recorded;
+policyB is attempt2/2, with no hidden retry or threshold edit. No external
+dependency installation, new public API, service, model/data, shader/backend,
+UI or redistribution scope was introduced. Phase95 private portraits/final65/
+full no-skip and device/commercial/release qualification remain separate.
