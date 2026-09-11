@@ -4,16 +4,16 @@ milestone: v1.22
 milestone_name: Non-Local Facial Effect Repairs
 current_phase: 94
 current_phase_name: Negative Mouth-Width Repair
-status: planning_remaining_repair
-stopped_at: Phase 94 prerequisites GREEN 9/0/0; full negative repair planning next
-last_updated: "2026-09-11T03:38:24.706426+00:00"
+status: executing_remaining_repair
+stopped_at: Phase 94 remaining plans independently reviewed;94-02 execution next
+last_updated: "2026-09-11T04:12:09.003472+00:00"
 last_activity: 2026-09-11
-last_activity_desc: Phase 94 reviewed prerequisite recovery passed all nine methods; negative width unmeasured
+last_activity_desc: Phase 94 remaining five plans reviewed; original-provider negative baseline is next
 state_head: 29c2c423ebc0c6f6a23e530c586d7cded8d35c88
 progress:
   total_phases: 7
   completed_phases: 5
-  total_plans: 24
+  total_plans: 29
   completed_plans: 24
   percent: 71
 ---
@@ -32,8 +32,8 @@ without distributing the SDK, model, or weights.
 ## Current Position
 
 Phase: 94 (Negative Mouth-Width Repair) — PREREQUISITES
-Plan: 94-01 prerequisite-only, 3/3 tasks complete; full repair plan next using GREEN baseline
-Status: Prerequisites GREEN, original failures preserved; MOUTH-01 remains incomplete
+Plan: 94-02 of6;94-01 complete, remaining five plans reviewed
+Status: Prerequisites GREEN; remaining execution authorized after independent plan review
 Last activity: 2026-09-11 — Fresh reviewed baseline passed 9/0/0; 14 retained-row digests frozen, production attempts 0/2
 
 Progress: 5/7 milestone phases complete (71%); 23 completed plans plus the Phase 94 prerequisite checkpoint have summaries. Historical diagnostic/deferred outcomes retain their recorded meaning. Phase 94 has no semantic completion credit; Phase 95 remains unexecuted.
@@ -415,7 +415,7 @@ Plan 93-03 is halted, 1/2 tasks complete. Task 1 committed `811734f2`: unchanged
 Sequence 26 finishes shared attempt 1 as failed/assertion_failure/production_restored; rollback commit `5392e9d1` restores the exact pinned original adapter and provider. The ledger contains one begin and one finish. All immutable bindings and corrected root/new provider tests remain as failing historical proof. Both NOSE requirements remain active; no phase completion or 93-04/05 work. See 93-03-SUMMARY.md. Parent repair/defer/stop disposition is required; no retry budget is reset. Parent frontmatter, position, config/state.json/runtime/lock and unrelated state entries remain preserved.
 
 Last session: 2026-09-11
-Stopped at: Phase 94 prerequisites GREEN; full negative repair planning next
+Stopped at: Phase 94 remaining plans reviewed;94-02 execution next
 Resume file: None
 
 ### Historical Phase 93 completion handoff
@@ -426,4 +426,4 @@ Independent verification passed18/18, both NOSE requirements and D-01–D-10 sat
 
 94-01 is complete, 3/3 prerequisite tasks. Fresh `check-phase94-metadata-recovery.py baseline` passed 9/0/0 and read-only status revalidated the receipt. `94-METADATA-BASELINE.json` SHA256 `5a8b3d22d8378b8b0746877c62f4c3d0c97f9bd220ca501d38737bb8d3711c64` binds positive/protection evidence, all 14 retained rows and source digest. Actual source/adapter registration passed; the canonical 0/2 source calculation remains a separate control. Original preparation failure and retained-row failure remain immutable under two exact independently reviewed test/infrastructure corrections.
 
-Next: return this evidence to the same checked Phase94 plan set for remaining negative oracle/candidate/safety/lifecycle/compatibility/goal/owner coverage. One research pass, one checked plan set, attempts0/2; negative pixels unmeasured and MOUTH-01 incomplete. No Phase95 advancement. Bound planning input documents stay unchanged; current execution status lives in SUMMARY and receipts. Scoped Markdown tracking preserves pre-existing config/state-cache/runtime/lock bytes.
+Next: execute94-02 (negative oracle/public baseline), then94-03..06. Five remaining plans/eleven tasks passed independent review after two integrity/order fixes;8/8 decisions and1/1 requirement are covered. Same checked Phase94 plan set covers candidate/safety/lifecycle/compatibility/goal/owners. One research pass, one checked plan set, attempts0/2; negative pixels unmeasured and MOUTH-01 incomplete. No Phase95 advancement. Bound planning input documents stay unchanged; current execution status lives in SUMMARY and receipts. Scoped Markdown tracking preserves pre-existing config/state-cache/runtime/lock bytes.

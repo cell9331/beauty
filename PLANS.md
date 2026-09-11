@@ -28,12 +28,12 @@
 
 ### A-2026-09-11-phase-94-negative-mouth-width
 
-- Status: `active` — 94-01 prerequisites complete (3/3); full negative-width repair planning is next. MOUTH-01 remains incomplete.
+- Status: `active` — 94-01 prerequisites complete (3/3); remaining five plans passed independent review and execution starts at94-02. MOUTH-01 remains incomplete.
 - Scope: Negative width contraction while retaining positive expansion, mouth height and siblings under frozen Phase89 gates. The provider already moves negative targets inward; actual negative efficacy remains unmeasured.
 - Fixes: Split a compiler-heavy channel predicate without changing semantics (`80e15ce9`); separated color-only lipColor metadata from emitting geometry, adding exact optional-tag wrapper/repeat equality (`29c2c423`). Production algorithms, source recipe, ROI and pixel thresholds are unchanged.
 - Validation: Initial source/runner self-tests12/0/0; compile recovery35/0/0 and metadata recovery17/0/0 independently reviewed. Fresh complete baseline **9 discovered / 9 passed / 0 failed / 0 skipped / 0 unexecuted** includes actual registration, oracle mutations, positive/protection pixels, 14 retained rows across56 outputs and two existing provider tests. Positive source/neutral margin +176Q16, signed-size margins19/237; all protection limits pass.
 - Evidence: `94-METADATA-BASELINE.json` and `94-METADATA-EVENTS.jsonl`, with `94-01-SUMMARY.md`, own current prerequisite GREEN. Original preparation failure and subsequent retained-row failure are immutable; their bounded diagnostic and exact recovery provenance remain in the two amendments/reviews and historical ledgers. No raw child text or image payload was retained.
-- Next: Plan the remaining negative oracle, fixed candidate/final-Float safety, signed lifecycle, post-candidate baseline equality and implementation/goal/owner verification within the SAME Phase94 plan set. One research pass, one checked plan set, implementation attempts0/2. No Phase95 or full no-skip advancement.
+- Next: Execute94-02 through94-06 sequentially: negative oracle, full safety/lifecycle baseline, conditional private correction or original-code retention, exact retained-output equality, independent reviews and owners/goal. The SAME Phase94 plan set is now independently checked (5 remaining plans/11 tasks; two review defects resolved). One research pass, one checked plan set, implementation attempts0/2. No Phase95 or full no-skip advancement.
 - Preservation: Bound planning inputs retain historical pre-execution wording. Pre-existing config/state-cache/runtime/lock changes remain untouched.
 
 ## 4. Completed
