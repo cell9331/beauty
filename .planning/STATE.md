@@ -5,16 +5,16 @@ milestone_name: Non-Local Facial Effect Repairs
 current_phase: 94
 current_phase_name: Negative Mouth-Width Repair
 status: executing_remaining_repair
-stopped_at: Phase 94 remaining plans independently reviewed;94-02 execution next
-last_updated: "2026-09-11T04:12:09.003472+00:00"
+stopped_at: Phase 94 negative baseline complete;94-03 field and lifecycle authoring
+last_updated: "2026-09-11T04:58:35.405178+00:00"
 last_activity: 2026-09-11
-last_activity_desc: Phase 94 remaining five plans reviewed; original-provider negative baseline is next
+last_activity_desc: Phase 94 negative baseline13/12/1 demonstrates protected-area leakage;94-03 next
 state_head: 29c2c423ebc0c6f6a23e530c586d7cded8d35c88
 progress:
   total_phases: 7
   completed_phases: 5
   total_plans: 29
-  completed_plans: 24
+  completed_plans: 25
   percent: 71
 ---
 
@@ -27,22 +27,22 @@ See: `.planning/PROJECT.md` (updated 2026-09-08)
 **Core value:** The project owner's local iOS host can integrate `BeautySDK`
 and get natural, controllable real-time and still-image beauty processing
 without distributing the SDK, model, or weights.
-**Current focus:** Phase 94 — Negative Mouth-Width Repair (prerequisites)
+**Current focus:** Phase 94 — Negative Mouth-Width Repair (field and lifecycle baseline)
 
 ## Current Position
 
-Phase: 94 (Negative Mouth-Width Repair) — PREREQUISITES
-Plan: 94-02 of6;94-01 complete, remaining five plans reviewed
-Status: Prerequisites GREEN; remaining execution authorized after independent plan review
-Last activity: 2026-09-11 — Fresh reviewed baseline passed 9/0/0; 14 retained-row digests frozen, production attempts 0/2
+Phase: 94 (Negative Mouth-Width Repair) — FULL BASELINE
+Plan: 94-03 of6;94-01/02 complete, remaining four plans reviewed
+Status: Negative baseline complete with a protected-area defect; full safety/lifecycle baseline in progress
+Last activity: 2026-09-11 — Negative baseline13 executed/12 passed/1 semantic failure;14 retained hashes unchanged, production attempts0/2
 
-Progress: 5/7 milestone phases complete (71%); 23 completed plans plus the Phase 94 prerequisite checkpoint have summaries. Historical diagnostic/deferred outcomes retain their recorded meaning. Phase 94 has no semantic completion credit; Phase 95 remains unexecuted.
+Progress: 5/7 milestone phases complete (71%); 25 plans have summaries, including the two Phase94 baseline plans. Historical diagnostic/deferred outcomes retain their recorded meaning. Phase 94 has no semantic completion credit; Phase 95 remains unexecuted.
 
 ## Performance Metrics
 
 **Current milestone:**
 
-- Authored plans with summaries: 24, including the active Phase 94 checkpoint (historical failed and halted attempts are not semantic successes)
+- Authored plans with summaries: 25, including the two active Phase94 baseline plans (historical failed and halted attempts are not semantic successes)
 - Average documented duration: 13 min across 11 timed summaries
 - Total documented execution time: 144 min plus the untimed FACE-01 terminal record
 
@@ -415,15 +415,21 @@ Plan 93-03 is halted, 1/2 tasks complete. Task 1 committed `811734f2`: unchanged
 Sequence 26 finishes shared attempt 1 as failed/assertion_failure/production_restored; rollback commit `5392e9d1` restores the exact pinned original adapter and provider. The ledger contains one begin and one finish. All immutable bindings and corrected root/new provider tests remain as failing historical proof. Both NOSE requirements remain active; no phase completion or 93-04/05 work. See 93-03-SUMMARY.md. Parent repair/defer/stop disposition is required; no retry budget is reset. Parent frontmatter, position, config/state.json/runtime/lock and unrelated state entries remain preserved.
 
 Last session: 2026-09-11
-Stopped at: Phase 94 remaining plans reviewed;94-02 execution next
+Stopped at: Phase94 negative baseline complete;94-03 field/lifecycle authoring
 Resume file: None
 
 ### Historical Phase 93 completion handoff
 
 Independent verification passed18/18, both NOSE requirements and D-01–D-10 satisfied. Current candidate2 is retained: core36, compatibility229, commands8, deterministic regression106, design3 and owners7 passed. The ledger preserves candidate1 failure, timeout39/rollback40 and supplemental selection failure55 with their reviewed dispositions. Phase94 is next to plan, not started. Administrative tracking was updated in scoped Markdown files to preserve pre-existing config/state.json/runtime/lock changes.
 
-### Phase94 current handoff — 2026-09-11
+### Historical Phase94 prerequisite handoff — 2026-09-11
 
 94-01 is complete, 3/3 prerequisite tasks. Fresh `check-phase94-metadata-recovery.py baseline` passed 9/0/0 and read-only status revalidated the receipt. `94-METADATA-BASELINE.json` SHA256 `5a8b3d22d8378b8b0746877c62f4c3d0c97f9bd220ca501d38737bb8d3711c64` binds positive/protection evidence, all 14 retained rows and source digest. Actual source/adapter registration passed; the canonical 0/2 source calculation remains a separate control. Original preparation failure and retained-row failure remain immutable under two exact independently reviewed test/infrastructure corrections.
 
 Next: execute94-02 (negative oracle/public baseline), then94-03..06. Five remaining plans/eleven tasks passed independent review after two integrity/order fixes;8/8 decisions and1/1 requirement are covered. Same checked Phase94 plan set covers candidate/safety/lifecycle/compatibility/goal/owners. One research pass, one checked plan set, attempts0/2; negative pixels unmeasured and MOUTH-01 incomplete. No Phase95 advancement. Bound planning input documents stay unchanged; current execution status lives in SUMMARY and receipts. Scoped Markdown tracking preserves pre-existing config/state-cache/runtime/lock bytes.
+
+### Phase94 current handoff — negative baseline complete
+
+94-02 completed3/3 tasks. Its independently reviewed and frozen original-provider baseline executed13 methods:12 passed,1 semantic failure,0 skipped/unexecuted. Negative contraction and all three sibling margins pass, but height/outside protection each measures506 changed pixels/79962 RGB. Four fixed protection assertions fail in one method;14 retained output hashes remain exact. The runner authoring corrections and initial evidence are preserved under the separate exact disposition. Current runner self-tests16/16,72 attacks; oracle author-build exit0 and zero tests before review/freeze.
+
+Continue94-03: author/build the four actual Float field methods and four signed lifecycle methods, obtain independent review, freeze safety, then full-baseline41. Do not modify frozen tests/runner/source/thresholds or begin a production attempt before full baseline selection. Research1, checked plan sets1, attempts0/2. MOUTH-01 remains incomplete; Phase95 excluded.
