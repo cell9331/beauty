@@ -207,6 +207,8 @@ private func phase91GazeObservation(
 }
 
 @_spi(Testing) public enum SDKTestingFaceDetectionFixture: Sendable {
+    case phase94MouthPortrait
+    case phase94MouthPortraitMissingOuterLips
     case phase93RegisteredNose
     case phase93MissingNose
     case usableFace
@@ -255,6 +257,28 @@ private func phase91GazeObservation(
     package func makeObservationProvider() -> VisionFaceDetector.ObservationProvider {
         { [self] _ in
             switch nextFixture() {
+            // BEGIN PHASE94 FIXED OBSERVATION
+            case .phase94MouthPortrait:
+                return [VisionDetectionObservation(
+                    stableID: "phase-94-mouth-fixture",
+                    confidence: 0.96,
+                    normalizedArea: (512.0 / 640.0) * (672.0 / 800.0),
+                    visionBounds: CoordinateRect(x: 64.0 / 640.0, y: 1 - (48.0 + 672.0) / 800.0,
+                                                 width: 512.0 / 640.0, height: 672.0 / 800.0),
+                    landmarks: .complete
+                )]
+            case .phase94MouthPortraitMissingOuterLips:
+                return [VisionDetectionObservation(
+                    stableID: "phase-94-mouth-fixture",
+                    confidence: 0.96,
+                    normalizedArea: (512.0 / 640.0) * (672.0 / 800.0),
+                    visionBounds: CoordinateRect(x: 64.0 / 640.0, y: 1 - (48.0 + 672.0) / 800.0,
+                                                 width: 512.0 / 640.0, height: 672.0 / 800.0),
+                    landmarks: BeautyFaceLandmarks(
+                        availableGroups: Set(BeautyLandmarkGroup.allCases).subtracting([.outerLips])
+                    )
+                )]
+            // END PHASE94 FIXED OBSERVATION
             // Phase93 nose fixture begin
             case .phase93RegisteredNose:
                 // Match the independently authored source head recipe, not a
