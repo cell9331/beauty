@@ -5,16 +5,16 @@ milestone_name: Non-Local Facial Effect Repairs
 current_phase: 94
 current_phase_name: Negative Mouth-Width Repair
 status: executing_remaining_repair
-stopped_at: Phase 94 negative baseline complete;94-03 field and lifecycle authoring
+stopped_at: Phase94 full baseline complete;94-04 policyA selected
 last_updated: "2026-09-11T04:58:35.405178+00:00"
 last_activity: 2026-09-11
-last_activity_desc: Phase 94 negative baseline13/12/1 demonstrates protected-area leakage;94-03 next
+last_activity_desc: Phase94 full baseline41/39/2 confirms negative-only defects;94-04 next
 state_head: 29c2c423ebc0c6f6a23e530c586d7cded8d35c88
 progress:
   total_phases: 7
   completed_phases: 5
   total_plans: 29
-  completed_plans: 25
+  completed_plans: 26
   percent: 71
 ---
 
@@ -27,22 +27,22 @@ See: `.planning/PROJECT.md` (updated 2026-09-08)
 **Core value:** The project owner's local iOS host can integrate `BeautySDK`
 and get natural, controllable real-time and still-image beauty processing
 without distributing the SDK, model, or weights.
-**Current focus:** Phase 94 — Negative Mouth-Width Repair (field and lifecycle baseline)
+**Current focus:** Phase94 negative-only correction (policyA)
 
 ## Current Position
 
-Phase: 94 (Negative Mouth-Width Repair) — FULL BASELINE
-Plan: 94-03 of6;94-01/02 complete, remaining four plans reviewed
-Status: Negative baseline complete with a protected-area defect; full safety/lifecycle baseline in progress
+Phase: 94 (Negative Mouth-Width Repair) — CONDITIONAL CORRECTION
+Plan: 94-04 of6;94-01/02/03 complete, negative-only policyA selected
+Status: Full baseline41/39/2 complete; policyA selected for negative-only protection and field defects
 Last activity: 2026-09-11 — Negative baseline13 executed/12 passed/1 semantic failure;14 retained hashes unchanged, production attempts0/2
 
-Progress: 5/7 milestone phases complete (71%); 25 plans have summaries, including the two Phase94 baseline plans. Historical diagnostic/deferred outcomes retain their recorded meaning. Phase 94 has no semantic completion credit; Phase 95 remains unexecuted.
+Progress: 5/7 milestone phases complete (71%); 26 plans have summaries, including the three Phase94 baseline plans. Historical diagnostic/deferred outcomes retain their recorded meaning. Phase 94 has no semantic completion credit; Phase 95 remains unexecuted.
 
 ## Performance Metrics
 
 **Current milestone:**
 
-- Authored plans with summaries: 25, including the two active Phase94 baseline plans (historical failed and halted attempts are not semantic successes)
+- Authored plans with summaries: 26, including the three active Phase94 baseline plans (historical failed and halted attempts are not semantic successes)
 - Average documented duration: 13 min across 11 timed summaries
 - Total documented execution time: 144 min plus the untimed FACE-01 terminal record
 
@@ -415,7 +415,7 @@ Plan 93-03 is halted, 1/2 tasks complete. Task 1 committed `811734f2`: unchanged
 Sequence 26 finishes shared attempt 1 as failed/assertion_failure/production_restored; rollback commit `5392e9d1` restores the exact pinned original adapter and provider. The ledger contains one begin and one finish. All immutable bindings and corrected root/new provider tests remain as failing historical proof. Both NOSE requirements remain active; no phase completion or 93-04/05 work. See 93-03-SUMMARY.md. Parent repair/defer/stop disposition is required; no retry budget is reset. Parent frontmatter, position, config/state.json/runtime/lock and unrelated state entries remain preserved.
 
 Last session: 2026-09-11
-Stopped at: Phase94 negative baseline complete;94-03 field/lifecycle authoring
+Stopped at: Phase94 full baseline complete;94-04 policyA selected
 Resume file: None
 
 ### Historical Phase 93 completion handoff
@@ -428,8 +428,12 @@ Independent verification passed18/18, both NOSE requirements and D-01–D-10 sat
 
 Next: execute94-02 (negative oracle/public baseline), then94-03..06. Five remaining plans/eleven tasks passed independent review after two integrity/order fixes;8/8 decisions and1/1 requirement are covered. Same checked Phase94 plan set covers candidate/safety/lifecycle/compatibility/goal/owners. One research pass, one checked plan set, attempts0/2; negative pixels unmeasured and MOUTH-01 incomplete. No Phase95 advancement. Bound planning input documents stay unchanged; current execution status lives in SUMMARY and receipts. Scoped Markdown tracking preserves pre-existing config/state-cache/runtime/lock bytes.
 
-### Phase94 current handoff — negative baseline complete
+### Historical Phase94 negative baseline handoff
 
 94-02 completed3/3 tasks. Its independently reviewed and frozen original-provider baseline executed13 methods:12 passed,1 semantic failure,0 skipped/unexecuted. Negative contraction and all three sibling margins pass, but height/outside protection each measures506 changed pixels/79962 RGB. Four fixed protection assertions fail in one method;14 retained output hashes remain exact. The runner authoring corrections and initial evidence are preserved under the separate exact disposition. Current runner self-tests16/16,72 attacks; oracle author-build exit0 and zero tests before review/freeze.
 
 Continue94-03: author/build the four actual Float field methods and four signed lifecycle methods, obtain independent review, freeze safety, then full-baseline41. Do not modify frozen tests/runner/source/thresholds or begin a production attempt before full baseline selection. Research1, checked plan sets1, attempts0/2. MOUTH-01 remains incomplete; Phase95 excluded.
+
+### Phase94 current handoff — full baseline complete
+
+94-03 completed2/2 tasks. Full baseline41 executed/39 passed/2 failed/0 skipped/unexecuted preserves the four negative height/outside failures and two actual-field crossing/interior-reversal markers. All lifecycle/other field/retained-provider/degradation checks pass;14 row hashes remain exact. Receipt hash10a867678984aba6a543834560ba6775c047c0eb40306b501799966e998356c6. Selection choosesA, attempts0/2 until counted begin. Continue94-04 compile/review/seal before fresh acceptance. Frozen inputs and limits unchanged; no Phase95.
