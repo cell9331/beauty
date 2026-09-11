@@ -4,8 +4,8 @@ milestone: v1.22
 milestone_name: Non-Local Facial Effect Repairs
 current_phase: 94
 current_phase_name: Negative Mouth-Width Repair
-status: ready_to_plan
-stopped_at: Phase 93 complete; Phase 94 ready to plan
+status: executing_prerequisites
+stopped_at: Phase 94 prerequisite plan reviewed; execution next
 last_updated: "2026-09-10T11:54:57.274180+00:00"
 last_activity: 2026-09-10
 last_activity_desc: Phase 93 verified 18/18; both NOSE requirements complete
@@ -13,7 +13,7 @@ state_head: b537ed626cf30d43d26352752bc9660a48047889
 progress:
   total_phases: 7
   completed_phases: 5
-  total_plans: 23
+  total_plans: 24
   completed_plans: 23
   percent: 71
 ---
@@ -27,13 +27,13 @@ See: `.planning/PROJECT.md` (updated 2026-09-08)
 **Core value:** The project owner's local iOS host can integrate `BeautySDK`
 and get natural, controllable real-time and still-image beauty processing
 without distributing the SDK, model, or weights.
-**Current focus:** Phase 94 — Negative Mouth-Width Repair (not started)
+**Current focus:** Phase 94 — Negative Mouth-Width Repair (prerequisites)
 
 ## Current Position
 
-Phase: 94 (Negative Mouth-Width Repair) — READY TO PLAN
-Plan: Not yet authored; Phase 93 finished all 5 plans
-Status: Phase 93 complete with independent goal verification 18/18, zero blockers
+Phase: 94 (Negative Mouth-Width Repair) — PREREQUISITES
+Plan: 94-01 prerequisite-only, 0/3 tasks executed; full repair plan pending baseline
+Status: Phase 93 complete; Phase 94 prerequisite plan passed independent review, zero blockers
 Last activity: 2026-09-10 — Both NOSE requirements closed after exact-candidate automated evidence and owner synchronization
 
 Progress: 5/7 milestone phases complete (71%); all 23 currently authored plans have summaries. Historical diagnostic/deferred outcomes retain their recorded meaning. Phase 94 and Phase 95 have not been executed here.
@@ -421,3 +421,7 @@ Resume file: None
 ### Current Phase 93 completion
 
 Independent verification passed18/18, both NOSE requirements and D-01–D-10 satisfied. Current candidate2 is retained: core36, compatibility229, commands8, deterministic regression106, design3 and owners7 passed. The ledger preserves candidate1 failure, timeout39/rollback40 and supplemental selection failure55 with their reviewed dispositions. Phase94 is next to plan, not started. Administrative tracking was updated in scoped Markdown files to preserve pre-existing config/state.json/runtime/lock changes.
+
+### Phase94 current handoff — 2026-09-11
+
+One bounded research pass and one independently checked prerequisite plan. MOUTH-01 remains incomplete; production attempts 0/2. Canonical source arithmetic finds 0/2 corners registered; no native result yet. Execute94-01 in order and stop at its phase-incomplete checkpoint, including after GREEN. No Phase95 advancement. Scoped Markdown tracking preserves pre-existing config/state-cache/runtime/lock bytes.

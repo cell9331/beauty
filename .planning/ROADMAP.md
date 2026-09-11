@@ -181,7 +181,11 @@ Plans:
   2. Positive `mouthWidth` retains its existing measurable expansion behavior, and the two directions remain distinct from whole-mouth `mouthSize`.
   3. Both signed outputs preserve mouth height, surrounding face, and background within their established protection bounds.
 
-**Plans**: TBD
+**Plans**: 1 prerequisite plan; full repair planning pending registered baseline
+
+- [ ] 94-01-PLAN.md — Fixed source, registration and retained-positive baseline (wave 1, no dependencies; prerequisites only).
+
+Negative candidate selection and complete MOUTH-01 coverage remain unplanned until this prerequisite result.
 
 ### Phase 95: Compatibility and SDK-Only Closeout
 

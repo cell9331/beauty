@@ -26,7 +26,13 @@
 
 ## 3. Active
 
-No active implementation. Phase 93 is completed; Phase 94 (Negative Mouth-Width Repair) is next to plan and has not started.
+### A-2026-09-11-phase-94-negative-mouth-width
+
+- Status: `active` — prerequisite plan independently reviewed, ready for execution; no production attempt.
+- Scope: MOUTH-01 negative width contraction, retained positive expansion/height/siblings under frozen Phase89 semantic gates.
+- Progress: Prior phases89–93 have matching summaries and passed verification; Phase94 context carries forward existing decisions. Negative provider targets already move inward, so rendered efficacy must be traced independently before selecting a repair.
+- Validation: One source research pass completed; canonical source calculation shows 0/2 registered corners and a protected-height footprint mismatch, not native pixel failure. One prerequisite plan (3 tasks) passed independent review with zero blockers. Full MOUTH-01 planning remains incomplete. No native runs or production attempts yet; implementation budget 0/2.
+- Evidence: Phase94 CONTEXT, RESEARCH, PATTERNS, VALIDATION, 94-01-PLAN and 94-PLAN-REVIEW. Execute only source lock → actual mapping registration → retained-positive baseline, stopping at its phase-incomplete checkpoint. Preserve pre-existing config/state-cache/runtime/lock changes.
 
 ## 4. Completed
 
