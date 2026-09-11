@@ -92,10 +92,11 @@ final class BeautyEngineMouthBaselineTests: XCTestCase {
             let provider = SDKTestingFaceDetectionProvider([.phase94MouthPortrait])
             let engine = try BeautyEngine(faceDetectionProvider: provider)
             let result = try engine.processResult(image: image, metadata: MouthRepairFixture.metadata(), parameters: row.1)
-            let current = try extract(result.output, active: active)
+            let current = try extract(result.output, active: active, colorOnly: row.0 == "lipColor_0p50")
             XCTAssertTrue(provider.invocationCount == (active ? 1 : 0), "P94_BASELINE_RESULT_DETECTOR_COUNT")
             checkMetadata(result, active: active)
             if let old = firstResult {
+                XCTAssertTrue(sameColorMetadata(old.output, result.output), "P94_BASELINE_REPEATED_COLOR_METADATA")
                 XCTAssertTrue(old.metrics == result.metrics && old.warnings == result.warnings,
                               "P94_BASELINE_REPEATED_METADATA")
                 XCTAssertTrue(old.detectionSummary?.availability == result.detectionSummary?.availability
@@ -107,7 +108,8 @@ final class BeautyEngineMouthBaselineTests: XCTestCase {
             let legacyProvider = SDKTestingFaceDetectionProvider([.phase94MouthPortrait])
             let legacyEngine = try BeautyEngine(faceDetectionProvider: legacyProvider)
             let legacy = try legacyEngine.process(image: image, orientation: .up, parameters: row.1)
-            let legacyBytes = try extract(legacy, active: active)
+            let legacyBytes = try extract(legacy, active: active, colorOnly: row.0 == "lipColor_0p50")
+            XCTAssertTrue(sameColorMetadata(result.output, legacy), "P94_BASELINE_WRAPPER_COLOR_METADATA")
             XCTAssertTrue(legacyProvider.invocationCount == (active ? 1 : 0), "P94_BASELINE_LEGACY_DETECTOR_COUNT")
             XCTAssertTrue(current == legacyBytes && sha(current) == sha(legacyBytes), "P94_BASELINE_WRAPPER_EQUALITY")
             if let previous = first {
@@ -138,14 +140,33 @@ final class BeautyEngineMouthBaselineTests: XCTestCase {
         }
     }
 
-    private func extract(_ image: CIImage, active: Bool) throws -> [UInt8] {
+    private func sameColorMetadata(_ first: CIImage, _ second: CIImage) -> Bool {
+        switch (first.colorSpace, second.colorSpace) {
+        case (nil, nil): return true
+        case let (lhs?, rhs?): return CFEqual(lhs, rhs)
+        default: return false
+        }
+    }
+
+    private func extract(_ image: CIImage, active: Bool, colorOnly: Bool = false) throws -> [UInt8] {
         XCTAssertTrue(image.extent == extent, "P94_BASELINE_EXTENT")
-        guard let sRGB = CGColorSpace(name: CGColorSpace.sRGB), let actual = image.colorSpace else { throw Admission.color }
-        let expected = active ? CGColorSpaceCreateDeviceRGB() : sRGB
-        XCTAssertTrue(actual.model == expected.model && actual.name == expected.name,
-                      "P94_BASELINE_COLOR_METADATA")
-        XCTAssertTrue(actual.numberOfComponents == expected.numberOfComponents && CFEqual(actual, expected),
-                      "P94_BASELINE_EXACT_COLOR_SPACE")
+        guard let sRGB = CGColorSpace(name: CGColorSpace.sRGB) else { throw Admission.color }
+        if colorOnly {
+            // Color-filter output has no promised concrete source tag. Its
+            // optional metadata must still agree across wrappers and repeats;
+            // actual pixels below are always materialized in named sRGB.
+            if let actual = image.colorSpace {
+                XCTAssertTrue(actual.model == .rgb && actual.numberOfComponents == 3,
+                              "P94_BASELINE_COLOR_ONLY_RGB_METADATA")
+            }
+        } else {
+            guard let actual = image.colorSpace else { throw Admission.color }
+            let expected = active ? CGColorSpaceCreateDeviceRGB() : sRGB
+            XCTAssertTrue(actual.model == expected.model && actual.name == expected.name,
+                          "P94_BASELINE_COLOR_METADATA")
+            XCTAssertTrue(actual.numberOfComponents == expected.numberOfComponents && CFEqual(actual, expected),
+                          "P94_BASELINE_EXACT_COLOR_SPACE")
+        }
         var output = [UInt8](repeating: 0, count: 640 * 800 * 4)
         let context = CIContext(options: [.workingColorSpace: sRGB, .outputColorSpace: sRGB])
         output.withUnsafeMutableBytes { buffer in

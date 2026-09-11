@@ -679,6 +679,15 @@ memory-only child capture, and records stage/exit status on later failures.
 New failures and interrupted lanes cannot automatically restart. Prerequisite
 GREEN, if earned, still leaves MOUTH-01 incomplete and attempts at 0/2.
 
+The next retained-row baseline failure is also preserved. Diagnostic execution
+localized an unexpected test error to the test's mandatory color-space guard.
+Color-only lip filtering does not carry the geometry rasterizer's exact source
+tag contract. Its test now checks optional RGB metadata and exact agreement
+across wrappers/repeats while materializing every pixel in named sRGB. Neutral
+and emitting-geometry tags remain strict. This test correction changes no SDK
+output, pixel threshold or protected-region policy and requires fresh baseline
+evidence under its own reviewed disposition.
+
 ## Phase 93 Nose Field Admission and Recovery
 
 The owner-local evidence in
