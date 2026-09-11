@@ -66,7 +66,7 @@ remain unchanged and are not accepted as an effective repair.
 
 ### Mouth
 
-- [ ] **MOUTH-01**: Negative `mouthWidth` measurably contracts mouth width in the
+- [x] **MOUTH-01**: Negative `mouthWidth` measurably contracts mouth width in the
   expected direction on eligible input; the already-detected positive direction
   remains correct, both directions are distinct from whole-mouth `mouthSize`,
   and mouth height, surrounding face, and background remain protected.
@@ -139,7 +139,7 @@ remain unchanged and are not accepted as an effective repair.
 | BROW-01 | Phase 92 | Complete |
 | NOSE-01 | Phase 93 | Complete |
 | NOSE-02 | Phase 93 | Complete |
-| MOUTH-01 | Phase 94 | Pending |
+| MOUTH-01 | Phase 94 | Complete — current41/41 and independent28/28 goal verification |
 | SAFE-01 | Phase 95 | Pending |
 | COMPAT-01 | Phase 95 | Pending |
 | CLOSE-01 | Phase 95 | Pending |

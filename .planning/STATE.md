@@ -4,18 +4,18 @@ milestone: v1.22
 milestone_name: Non-Local Facial Effect Repairs
 current_phase: 94
 current_phase_name: Negative Mouth-Width Repair
-status: executing_remaining_repair
-stopped_at: Phase94 final owner binding complete; independent goal verification
-last_updated: "2026-09-11T05:26:46.431804+00:00"
+status: ready_for_next_phase
+stopped_at: Phase94 complete at valid receipt; Phase95 unstarted
+last_updated: "2026-09-11T05:39:38.696139+00:00"
 last_activity: 2026-09-11
-last_activity_desc: Phase94 seven final owner hashes bound after41/41 and independent review
-state_head: 56ecd84deec0d0a72f69083154a1394ced2329d9
+last_activity_desc: Phase94 complete:41/41 acceptance,28/28 independent goal and valid receipt
+state_head: 0bc58b4af3201c6767a1a6da2ba313bfda9a3a45
 progress:
   total_phases: 7
-  completed_phases: 5
+  completed_phases: 6
   total_plans: 29
-  completed_plans: 28
-  percent: 71
+  completed_plans: 29
+  percent: 86
 ---
 
 # Project State
@@ -27,22 +27,22 @@ See: `.planning/PROJECT.md` (updated 2026-09-08)
 **Core value:** The project owner's local iOS host can integrate `BeautySDK`
 and get natural, controllable real-time and still-image beauty processing
 without distributing the SDK, model, or weights.
-**Current focus:** Phase94 independent goal verification
+**Current focus:** Phase94 complete; Phase95 remains unstarted
 
 ## Current Position
 
-Phase: 94 (Negative Mouth-Width Repair) — CONDITIONAL CORRECTION
-Plan: 94-06 of6;94-01–05 complete, final owner binding complete
-Status: PolicyB41/41 and independent implementation review passed; final seven-owner binding complete, independent goal verification pending
-Last activity: 2026-09-11 — PolicyB41/41, independent implementation review and seven-owner binding passed; attempts2/2
+Phase: 94 (Negative Mouth-Width Repair) — COMPLETE
+Plan: 94-06 of6 complete; all six Phase94 plans complete
+Status: Phase94/MOUTH-01 complete; independent goal28/28 and valid COMPLETE receipt
+Last activity: 2026-09-11 — Phase94 complete:41/41 acceptance,28/28 goal verification, attempts2/2
 
-Progress: 5/7 milestone phases complete (71%); 28 plans have summaries, including five Phase94 plans. Historical diagnostic/deferred outcomes retain their recorded meaning. Phase 94 has no semantic completion credit; Phase 95 remains unexecuted.
+Progress: 6/7 milestone phases complete (86%); 29 plans have summaries, including all six Phase94 plans. Historical diagnostic/deferred outcomes retain their recorded meaning. Phase94 has bounded generated-source semantic completion credit; Phase95 remains unexecuted.
 
 ## Performance Metrics
 
 **Current milestone:**
 
-- Authored plans with summaries: 28, including five active Phase94 plans (historical failed and halted attempts are not semantic successes)
+- Authored plans with summaries: 29, including all six completed Phase94 plans (historical failed and halted attempts are not semantic successes)
 - Average documented duration: 13 min across 11 timed summaries
 - Total documented execution time: 144 min plus the untimed FACE-01 terminal record
 
@@ -415,7 +415,7 @@ Plan 93-03 is halted, 1/2 tasks complete. Task 1 committed `811734f2`: unchanged
 Sequence 26 finishes shared attempt 1 as failed/assertion_failure/production_restored; rollback commit `5392e9d1` restores the exact pinned original adapter and provider. The ledger contains one begin and one finish. All immutable bindings and corrected root/new provider tests remain as failing historical proof. Both NOSE requirements remain active; no phase completion or 93-04/05 work. See 93-03-SUMMARY.md. Parent repair/defer/stop disposition is required; no retry budget is reset. Parent frontmatter, position, config/state.json/runtime/lock and unrelated state entries remain preserved.
 
 Last session: 2026-09-11
-Stopped at: Phase94 final owner binding complete; independent goal verification
+Stopped at: Phase94 complete at valid receipt; Phase95 unstarted
 Resume file: None
 
 ### Historical Phase 93 completion handoff
@@ -444,6 +444,12 @@ Continue94-03: author/build the four actual Float field methods and four signed 
 
 Continue94-05 independent implementation/security review then owners;94-06 final owner hash binding and independent goal report before receipt-only finalize. No frozen code/test/runner edits, no old live authority replay, no Phase95. PLANS must reach its required conditional snapshot before final owner binding and remain unchanged after binding.
 
-### Phase94 current handoff — final owners sealed
+### Historical Phase94 final-owner handoff
 
 94-05 complete2/2; fresh independent implementation/security review passed with0 blockers/high findings. All seven final owner files were validated and bound by the latest qualification event. PLANS contains its required conditional snapshot and MUST NOT be edited after this binding.94-06 Task1 is complete; independent goal verification is running. Only a matching goal PASS and receipt-only finalize can close MOUTH-01. Parent may update administrative STATE/ROADMAP/REQUIREMENTS after completion, never sealed owners in this handoff.
+
+### Phase94 completed handoff — 2026-09-11
+
+All six plans complete. MOUTH-01 is complete under current CHECKS41/41 and independent goal28/28. COMPLETE SHA256 fbfa022b732c0a6ba4e633d98e996620badf1a5e1daa2213a270c8e165acdeeb was atomically published and read-only status revalidated phase_complete:true. Source/neutral520 changed/73743 RGB/−24Q16, all negative protections0/0 and14 retained row hashes exact; actual-field/lifecycle/degradation checks pass. Research1, checked plan sets1, attempts2/2; original and policyA failures/rollback remain immutable.
+
+No owner file changed after final qualification binding. PLANS intentionally remains its sealed conditional verifying snapshot, with current completion determined by the valid receipt. Phase95 is the remaining milestone phase and has not started: private portraits/final65/full no-skip and device/commercial/distribution claims are not credited here. User config/state-cache/runtime/lock changes remain untouched.

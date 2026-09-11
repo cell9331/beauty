@@ -45,7 +45,7 @@ intact.
 - [x] **Phase 91: Independent Gaze Correction** - Move each supported pupil toward its own eye center without changing eye shape or borrowing peer-eye support. (completed 2026-09-05)
 - [x] **Phase 92: Signed Eyebrow-Head Spacing** - Make both inner-eyebrow-head directions effective without moving outer anchors or aliasing whole-brow spacing. (completed 2026-09-08)
 - [x] **Phase 93: Distinct Nose Bridge and Root Repairs** - Restore independently measurable bridge definition and root narrowing.
-- [ ] **Phase 94: Negative Mouth-Width Repair** - Restore mouth contraction while retaining the existing positive direction and surrounding anatomy.
+- [x] **Phase 94: Negative Mouth-Width Repair** - Restore mouth contraction while retaining the existing positive direction and surrounding anatomy.
 - [ ] **Phase 95: Compatibility and SDK-Only Closeout** - Prove fail-closed safety, exact compatibility, seven effective directions plus one explicit deferred/partial direction, and the complete no-skip SDK gate.
 
 ## Phase Details
@@ -181,7 +181,7 @@ Plans:
   2. Positive `mouthWidth` retains its existing measurable expansion behavior, and the two directions remain distinct from whole-mouth `mouthSize`.
   3. Both signed outputs preserve mouth height, surrounding face, and background within their established protection bounds.
 
-**Plans**: 6 plans;94-01–05 complete,94-06 independent goal verification in progress
+**Plans**: 6 plans;94-01–06 complete; current41/41 and independent28/28 goal verification
 
 - [x] 94-01-PLAN.md — Fixed source, registration and retained-positive baseline (9/0/0 fresh; prerequisites only).
 
@@ -189,7 +189,7 @@ Plans:
 - [x] 94-03-PLAN.md — Field safety and signed lifecycle baseline (41/39/2; negative-only defects).
 - [x] 94-04-PLAN.md — PolicyB accepted41/41; policyA failure/rollback preserved (2/2 attempts).
 - [x] 94-05-PLAN.md — Independent implementation/security review and behavior owners passed.
-- [ ] 94-06-PLAN.md — Qualification owners and independent goal closeout (wave6, depends94-05).
+- [x] 94-06-PLAN.md — Seven final owners bound; independent28/28 goal PASS and valid COMPLETE receipt.
 
 Negative efficacy remains unmeasured. All work uses the frozen baseline and same one-research/two-attempt budget.
 
@@ -242,7 +242,7 @@ attempts before an explicit owner decision to repair, defer, or stop.
 | 91. Independent Gaze Correction | v1.22 | 4/4 | Complete    | 2026-09-06 |
 | 92. Signed Eyebrow-Head Spacing | v1.22 | 6/6 | Complete    | 2026-09-08 |
 | 93. Distinct Nose Bridge and Root Repairs | v1.22 | 5/5 | Complete | 2026-09-10 |
-| 94. Negative Mouth-Width Repair | v1.22 | 5/6 | Independent goal verification | - |
+| 94. Negative Mouth-Width Repair | v1.22 | 6/6 | Complete | 2026-09-11 |
 | 95. Compatibility and SDK-Only Closeout | v1.22 | 0/TBD | Not started | - |
 
 ---
