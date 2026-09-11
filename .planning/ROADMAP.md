@@ -181,11 +181,11 @@ Plans:
   2. Positive `mouthWidth` retains its existing measurable expansion behavior, and the two directions remain distinct from whole-mouth `mouthSize`.
   3. Both signed outputs preserve mouth height, surrounding face, and background within their established protection bounds.
 
-**Plans**: 1 prerequisite plan; full repair planning pending registered baseline
+**Plans**: 1 completed prerequisite plan; full repair planning next using the GREEN registered baseline
 
-- [ ] 94-01-PLAN.md — Fixed source, registration and retained-positive baseline (wave 1, no dependencies; prerequisites only).
+- [x] 94-01-PLAN.md — Fixed source, registration and retained-positive baseline (9/0/0 fresh; prerequisites only).
 
-Negative candidate selection and complete MOUTH-01 coverage remain unplanned until this prerequisite result.
+Negative candidate selection and complete MOUTH-01 coverage remain unplanned; use 94-METADATA-BASELINE.json within the same phase budget.
 
 ### Phase 95: Compatibility and SDK-Only Closeout
 
@@ -236,7 +236,7 @@ attempts before an explicit owner decision to repair, defer, or stop.
 | 91. Independent Gaze Correction | v1.22 | 4/4 | Complete    | 2026-09-06 |
 | 92. Signed Eyebrow-Head Spacing | v1.22 | 6/6 | Complete    | 2026-09-08 |
 | 93. Distinct Nose Bridge and Root Repairs | v1.22 | 5/5 | Complete | 2026-09-10 |
-| 94. Negative Mouth-Width Repair | v1.22 | 0/TBD | Not started | - |
+| 94. Negative Mouth-Width Repair | v1.22 | 1/TBD | Prerequisites complete; repair planning next | - |
 | 95. Compatibility and SDK-Only Closeout | v1.22 | 0/TBD | Not started | - |
 
 ---

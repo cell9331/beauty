@@ -613,19 +613,25 @@ qualification is inferred from generated package-host evidence.
 
 ## Phase 94 Mouth Prerequisite Evidence
 
-The fixed authored source and actual geometry mapping passed the three
-registration methods: 3 discovered, 3 passed, zero failures/skips/unexecuted.
-This covers both source carriers, source/adapter corner registration, rejected
-mismatched or disconnected mouths, and missing-support/canonical controls.
-The original preparation failure remains in `94-PREREQUISITE-EVENTS.jsonl`;
-the reviewed compile-only recovery and fresh result are separately bound in
-`94-COMPILE-AMENDMENT.json` and `94-COMPILE-EVENTS.jsonl`.
-Recovery self-tests passed 35/0/0. These results establish fixture admission,
-not positive/negative effect efficacy or Phase 94 completion. A later nine-method baseline invocation passed registration, both oracle methods
-and positive expansion/protection, then failed the retained-row method: 7
-executed, 6 passed, 1 failed, 0 skipped, 2 unexecuted. No baseline receipt
-was issued. A color-only metadata assumption is under diagnosis; production
-attempts remain 0/2.
+The reviewed metadata successor freshly passed **9 discovered / 9 passed /
+0 failed / 0 skipped / 0 unexecuted**. This includes three actual registration
+and rejection-control methods, two checked-integer oracle methods, two public
+baseline methods and two unchanged provider methods. All 56 retained-row
+outputs agree across wrappers and repeats; `94-METADATA-BASELINE.json` binds
+14 row digests, the source digest and the positive aggregate.
+
+Positive source/neutral comparisons each measured 2233 changed pixels,
+728847 absolute RGB and +176 Q16 span. Signed-size margins are19/237 Q16.
+Full and clipped protection checks pass: mouth-height/face/background/watermark
+maxima0/0, outside0 changed/90 RGB. Color-only optional metadata must agree
+across wrappers/repeats; neutral/geometry tags and named-sRGB extraction remain
+strict. No production algorithm, source recipe or pixel threshold changed.
+
+Original build failure and the later retained-row assertion failure remain in
+their immutable histories. Exact compile and metadata corrections passed
+independent review and pure checks35/0/0 and17/0/0 before fresh acceptance.
+These results complete 94-01 prerequisites only. Negative width is unmeasured,
+MOUTH-01 and Phase94 remain incomplete, and production attempts remain0/2.
 
 ## Phase 93 Distinct Nose Repair Quality Evidence
 

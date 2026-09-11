@@ -2,12 +2,12 @@
 phase: 94-negative-mouth-width-repair
 plan: "01"
 subsystem: testing
-tags: [swiftpm, registration, prerequisites, terminal-hold]
+tags: [swiftpm, registration, prerequisites, preserved-failures]
 completion_scope: prerequisites_only
 status: checkpoint
 phase_complete: false
 requirements-completed: []
-tasks_completed: 2
+tasks_completed: 3
 tasks_total: 3
 research_passes: 1
 checked_plan_sets: 1
@@ -20,7 +20,7 @@ provides:
   - Fixed portrait and runner with 12 passing admission self-tests
   - Immutable source binding and terminal native-preparation failure history
   - Reviewed compile-only recovery with actual registration GREEN
-  - Passing positive prerequisite method and preserved retained-row failure
+  - Fresh nine-method prerequisite GREEN with preserved historical failures
 affects: [94-negative-mouth-width-repair]
 tech-stack:
   added: []
@@ -41,16 +41,33 @@ key-decisions:
   - Preserve terminal hold without rerunning or changing frozen inputs.
   - Native preparation failure does not establish a registration assertion failure.
 actuals:
-  tasks: 2
-  commits: 0
+  tasks: 3
+  commits: 5
 recorded: 2026-09-11
 ---
 
 # Phase 94 Plan 01: Mouth Prerequisites Summary
 
-**Registration and the positive expansion/protection method passed after reviewed compile recovery; the sole baseline lane stopped at the retained-row method with `assertion_failure`. No baseline receipt exists.**
+**All three prerequisite tasks are complete. The reviewed metadata successor freshly passed all nine methods, with zero failures/skips/unexecuted. Phase 94 and MOUTH-01 remain incomplete.**
 
-## Current checkpoint — Task 3
+## Current prerequisite GREEN — 2026-09-11
+
+`python3 scripts/check-phase94-metadata-recovery.py baseline` ran once after independent review and commit `29c2c423`: **9 discovered / 9 executed / 9 passed / 0 failed / 0 skipped / 0 unexecuted**. Read-only `status` confirmed the same receipt and all current identities. It freshly executed three registration methods, two oracle methods, two public baseline methods and two unchanged provider methods. The retained-row test compared 56 in-memory outputs across 14 rows, both public wrappers and two repeats; its 14 row digests plus source digest and positive aggregate are frozen in the receipt.
+
+- Receipt: `94-METADATA-BASELINE.json`, SHA-256 `5a8b3d22d8378b8b0746877c62f4c3d0c97f9bd220ca501d38737bb8d3711c64`.
+- Current event history: `94-METADATA-EVENTS.jsonl`, SHA-256 `e1419dfee1cd6f60ddb74f7c1d02e4e46ae96dbc5ed758c24d26d8a75ed3eb49`.
+- Amendment: `94-METADATA-AMENDMENT.json`, SHA-256 `244e499c515fc79f13ec7c80344cd34b02235370d5baf7492c9d903282363ca9`; independent review PASS, 17/0/0 pure checks.
+- Current public test SHA-256: `b06820a45a24f398042f5c1714b3b8c202a2a076f510f8ceacc666990ff1c282`. Oracle/source/SPI/registration/production identities remain unchanged from the corresponding frozen inputs.
+
+Positive source and neutral comparisons each measured 2233 changed pixels, 728847 absolute RGB and +176 Q16 span. The signed-size distinctions are 19 and 237 Q16. Protected mouth-height, face, background and watermark maxima are 0 changed / 0 RGB; outside maxima are 0 changed / 90 RGB. All frozen admission bounds passed. This is positive prerequisite evidence, not a negative-width result.
+
+The test correction distinguishes color-only lip filtering from emitting geometry. Only the lipColor row admits optional RGB metadata; exact optional metadata equality across wrappers/repeats was added. Neutral and geometry tag requirements, named-sRGB extraction, every pixel threshold and all production code remain unchanged. Two prior diagnostic-only invocations preserved the failed input: the first extractor was inconclusive, the second localized an unexpected error to the mandatory color-space guard at line143. The guard diagnosis did not independently identify a row; static source review justified the bounded correction. The corrected build passed before the reviewed fresh baseline.
+
+## Current mandatory checkpoint
+
+Return the GREEN prerequisite receipt to planning within the same Phase94 plan set. No negative pixel measurement or provider candidate was attempted: `negative_pixels=not_measured`, implementation attempts **0/2**, one research pass. Full negative oracle, candidate/final-Float safety, signed lifecycle, post-candidate baseline equality and implementation/goal/owner verification remain unplanned. Do not mark MOUTH-01 or Phase94 complete or advance to Phase95. Frozen planning documents retain their pre-execution wording as historical bound inputs; this summary and the receipt own execution status.
+
+## Historical baseline checkpoint — Task 3
 
 | Task | Current status | Evidence |
 | --- | --- | --- |
@@ -78,7 +95,7 @@ The parent's review message arrived after the sole baseline invocation had compl
 
 This review finding is not a recovered runtime diagnostic. The failed child's transcript and aggregate output stayed memory-only and were discarded by the frozen runner. Its durable result identifies the method and failure class, not the individual assertion, row, completed output count or measured metric values. Consequently this summary does not assert that the review finding was the sole executed failure. Both test files remain unchanged at their measured hashes, as the parent's conditional instruction required. A metadata correction, new binding or rerun requires explicit successor disposition preserving this failure.
 
-## Current frozen identities
+## Historical baseline-hold identities
 
 | Artifact | SHA-256 |
 | --- | --- |
@@ -149,7 +166,7 @@ No raw image, support payload, geometry, private locator or native transcript wa
 - Task 1 RED was an in-memory missing-admission-implementation authoring check, not semantic RED. TDD commits were not made because this prerequisite plan and parent reserve all commits for parent review.
 - No functional stubs were added. Unstarted Task 3 files are absent rather than placeholder implementations. Runtime correctness of the authored Swift remains unestablished.
 
-## Mandatory checkpoint
+## Historical initial mandatory checkpoint
 
 Await parent D-06 repair/defer/stop disposition. The terminal hold remains active. No routine continuation, source/assertion tuning, further measurement or negative candidate admission is authorized by this result. Any diagnosis must preserve the immutable binding and complete event history. Neither this failure nor later prerequisite GREEN completes MOUTH-01.
 
@@ -157,6 +174,6 @@ Await parent D-06 repair/defer/stop disposition. The terminal hold remains activ
 
 Read-only checks confirmed all seven touched files exist; both future baseline test files and the baseline receipt are absent; all four events, exact binding/event hashes, measured input identities and terminal counts remain intact. Stub-token scan and `git diff --check` passed. No child process was invoked by the self-check. This verifies the handoff's factual claims, not native prerequisite success. No commit-existence claim applies because commits remain parent-owned.
 
-## Current Self-Check: PASSED
+## Historical baseline-hold Self-Check: PASSED
 
 The read-only successor snapshot confirmed the original immutable authorities, corrected registration hash, both measured baseline test hashes and all four successor events. The first two successor events still hash to the parent's registration-GREEN prefix. Current counts are exactly 9 discovered / 7 executed / 6 passed / 1 failed / 0 skipped / 2 unexecuted, with `assertion_failure` and no baseline receipt. The summary exists and `git diff --check` passes. No native child was invoked by this check. This validates the checkpoint record, not Task 3 acceptance.
