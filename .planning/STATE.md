@@ -5,16 +5,16 @@ milestone_name: Non-Local Facial Effect Repairs
 current_phase: 94
 current_phase_name: Negative Mouth-Width Repair
 status: executing_remaining_repair
-stopped_at: Phase94 policyB acceptance41/41;94-05 review and owners
-last_updated: "2026-09-11T04:58:35.405178+00:00"
+stopped_at: Phase94 final owner binding complete; independent goal verification
+last_updated: "2026-09-11T05:26:46.431804+00:00"
 last_activity: 2026-09-11
-last_activity_desc: Phase94 policyB accepted41/41 at attempt2; independent review/owners next
-state_head: 29c2c423ebc0c6f6a23e530c586d7cded8d35c88
+last_activity_desc: Phase94 seven final owner hashes bound after41/41 and independent review
+state_head: 56ecd84deec0d0a72f69083154a1394ced2329d9
 progress:
   total_phases: 7
   completed_phases: 5
   total_plans: 29
-  completed_plans: 27
+  completed_plans: 28
   percent: 71
 ---
 
@@ -27,22 +27,22 @@ See: `.planning/PROJECT.md` (updated 2026-09-08)
 **Core value:** The project owner's local iOS host can integrate `BeautySDK`
 and get natural, controllable real-time and still-image beauty processing
 without distributing the SDK, model, or weights.
-**Current focus:** Phase94 accepted policyB review and owners
+**Current focus:** Phase94 independent goal verification
 
 ## Current Position
 
 Phase: 94 (Negative Mouth-Width Repair) — CONDITIONAL CORRECTION
-Plan: 94-05 of6;94-01–04 complete, policyB accepted41/41
-Status: PolicyB acceptance41/41; independent implementation/security review and owners pending
-Last activity: 2026-09-11 — Negative baseline13 executed/12 passed/1 semantic failure;14 retained hashes unchanged, production attempts0/2
+Plan: 94-06 of6;94-01–05 complete, final owner binding complete
+Status: PolicyB41/41 and independent implementation review passed; final seven-owner binding complete, independent goal verification pending
+Last activity: 2026-09-11 — PolicyB41/41, independent implementation review and seven-owner binding passed; attempts2/2
 
-Progress: 5/7 milestone phases complete (71%); 27 plans have summaries, including four Phase94 plans. Historical diagnostic/deferred outcomes retain their recorded meaning. Phase 94 has no semantic completion credit; Phase 95 remains unexecuted.
+Progress: 5/7 milestone phases complete (71%); 28 plans have summaries, including five Phase94 plans. Historical diagnostic/deferred outcomes retain their recorded meaning. Phase 94 has no semantic completion credit; Phase 95 remains unexecuted.
 
 ## Performance Metrics
 
 **Current milestone:**
 
-- Authored plans with summaries: 27, including four active Phase94 plans (historical failed and halted attempts are not semantic successes)
+- Authored plans with summaries: 28, including five active Phase94 plans (historical failed and halted attempts are not semantic successes)
 - Average documented duration: 13 min across 11 timed summaries
 - Total documented execution time: 144 min plus the untimed FACE-01 terminal record
 
@@ -415,7 +415,7 @@ Plan 93-03 is halted, 1/2 tasks complete. Task 1 committed `811734f2`: unchanged
 Sequence 26 finishes shared attempt 1 as failed/assertion_failure/production_restored; rollback commit `5392e9d1` restores the exact pinned original adapter and provider. The ledger contains one begin and one finish. All immutable bindings and corrected root/new provider tests remain as failing historical proof. Both NOSE requirements remain active; no phase completion or 93-04/05 work. See 93-03-SUMMARY.md. Parent repair/defer/stop disposition is required; no retry budget is reset. Parent frontmatter, position, config/state.json/runtime/lock and unrelated state entries remain preserved.
 
 Last session: 2026-09-11
-Stopped at: Phase94 policyB acceptance41/41;94-05 review and owners
+Stopped at: Phase94 final owner binding complete; independent goal verification
 Resume file: None
 
 ### Historical Phase 93 completion handoff
@@ -438,8 +438,12 @@ Continue94-03: author/build the four actual Float field methods and four signed 
 
 94-03 completed2/2 tasks. Full baseline41 executed/39 passed/2 failed/0 skipped/unexecuted preserves the four negative height/outside failures and two actual-field crossing/interior-reversal markers. All lifecycle/other field/retained-provider/degradation checks pass;14 row hashes remain exact. Receipt hash10a867678984aba6a543834560ba6775c047c0eb40306b501799966e998356c6. Selection choosesA, attempts0/2 until counted begin. Continue94-04 compile/review/seal before fresh acceptance. Frozen inputs and limits unchanged; no Phase95.
 
-### Phase94 current handoff — policyB accepted
+### Historical Phase94 policyB acceptance handoff
 
 94-04 complete2/2 tasks. A failed only source/neutral changed count392<500, with all protections/field/lifecycle/retained rows passing. Preserve commit3230d016 and rollback event; begin2 allowed only the predeclared gap/7 change. B compiled, independently reviewed, sealed and accepted41/41 with zero skips/failures. CHECKS fa696dba3273f248924bdd34744088979bae1e23a35a8d5d433e1c379a8f3ac4; provider7c3218d0586704cb078b4c7e2004805e182341c37b371567f204094be59153c8. Each source/neutral target520/73743/−24Q16; all protections0/0. Attempts2/2, research1, same checked plan set.
 
 Continue94-05 independent implementation/security review then owners;94-06 final owner hash binding and independent goal report before receipt-only finalize. No frozen code/test/runner edits, no old live authority replay, no Phase95. PLANS must reach its required conditional snapshot before final owner binding and remain unchanged after binding.
+
+### Phase94 current handoff — final owners sealed
+
+94-05 complete2/2; fresh independent implementation/security review passed with0 blockers/high findings. All seven final owner files were validated and bound by the latest qualification event. PLANS contains its required conditional snapshot and MUST NOT be edited after this binding.94-06 Task1 is complete; independent goal verification is running. Only a matching goal PASS and receipt-only finalize can close MOUTH-01. Parent may update administrative STATE/ROADMAP/REQUIREMENTS after completion, never sealed owners in this handoff.

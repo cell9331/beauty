@@ -694,3 +694,34 @@ residuals and full no-skip closeout. These results do not qualify naturalness,
 device performance, commercial quality or external distribution.
 
 Independent goal verdict: [93-VERIFICATION.md](.planning/phases/93-distinct-nose-bridge-and-root-repairs/93-VERIFICATION.md), 18/18 must-haves and zero blockers.
+
+## Phase94 Negative Mouth-Width Acceptance Evidence
+
+MOUTH-01 policyB passed the current41-method acceptance:41 discovered/executed/
+passed,0 failed/skipped/unexecuted, at the exact compiled/reviewed/sealed provider.
+The current CHECKS SHA256 is `fa696dba3273f248924bdd34744088979bae1e23a35a8d5d433e1c379a8f3ac4`.
+Both source and neutral comparisons independently measured520 changed pixels,
+73743 RGB and−24Q16 signed span. Positive-width/size-plus/size-minus separation
+margins are200/181/37Q16. All outside/height/face/background/watermark protection
+maxima are0/0;14 inherited row digests and the source digest remain exact.
+
+Coverage includes three registration and two inherited oracle methods, two
+public baseline methods, three new negative oracle methods and one actual
+negative public method, four actual Float field methods, four signed lifecycle
+methods, the16-method original mouth provider inventory and six degradation
+methods (deduplicating the two inherited provider anchors gives41 total).
+The new public negative method compares20 returned images across both wrappers
+and repeats. Field tests prove actual fixed-support behavior; an inconclusive
+sufficient bound alone never counts as a failure. Lifecycle checks preserve
+raw orientation/mirror/metadata contracts without claiming canonical semantics
+for every encoding. Independent implementation/security review has zero
+correctness blockers or high-security findings.
+
+History remains: prerequisite9/9; negative baseline13/12/1; full baseline
+41/39/2 with protection leakage and actual crossing/reversal; attemptA41/40/1
+with only392 changed pixels below500, then owned rollback; attemptB41/41.
+The runner's reviewed authoring self-tests pass16/16 with72 attack rejections.
+Research1, same checked plan set1, attempts2/2; thresholds, source and frozen
+tests were not tuned after measurement. Phase95 private portraits/final65/full
+no-skip remain separate. No population, device, commercial or distribution
+qualification is inferred from these generated-source CPU checks.

@@ -124,7 +124,7 @@ names and visual organization are intentionally omitted from the active contract
 | 眼睛 | 外眼角 | implemented | `outerCornerOpen` | Independent outer-corner geometry. |
 | 眼睛 | 对称 | implemented | `eyeSymmetry` | Bounded paired symmetry correction. |
 | 嘴唇 | 大小 | implemented | `mouthSize` | Signed whole-mouth size geometry. |
-| 嘴唇 | 宽度 | implemented | `mouthWidth` | Signed mouth width. |
+| 嘴唇 | 宽度 | implemented | `mouthWidth` | Signed mouth width; Phase94 verifies bounded negative contraction on the registered generated source while retaining positive output. |
 | 嘴唇 | 上下 | implemented | `mouthYPosition` | Signed vertical position. |
 | 嘴唇 | 倾斜 | implemented | `mouthTilt` | Signed mouth rotation. |
 | 嘴唇 | 左右 | implemented | `mouthXPosition` | Signed horizontal position. |
@@ -261,3 +261,18 @@ and full no-skip qualification; no naturalness, device, commercial or external
 distribution approval is implied.
 
 Independent goal verdict: [93-VERIFICATION.md](../.planning/phases/93-distinct-nose-bridge-and-root-repairs/93-VERIFICATION.md), 18/18 must-haves and zero blockers.
+
+## Phase94 Mouth-Width Qualification
+
+MOUTH-01 retains the existing implemented `mouthWidth` field and±0.35 cap;
+no control, status count, preset or renderer case is added. Private policyB
+repairs negative protection leakage and narrow-support crossing/reversal,
+while the original positive/shared implementation and14 retained row hashes
+remain unchanged. Acceptance is41/41 at CHECKS SHA256
+`fa696dba3273f248924bdd34744088979bae1e23a35a8d5d433e1c379a8f3ac4`.
+Source/neutral each520 changed pixels,73743 RGB,−24Q16; all five comparisons
+and every protected-area bound pass. All negative protection maxima are0/0.
+This is the owner-local registered generated-source CPU contract. Eight-encoding
+lifecycle coverage does not establish semantic effectiveness for all faces or
+orientations. Phase95 private portraits/final65/full no-skip, optional device
+feedback, commercial quality and distribution claims remain separate.

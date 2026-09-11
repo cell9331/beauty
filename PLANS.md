@@ -28,17 +28,15 @@
 
 ### A-2026-09-11-phase-94-negative-mouth-width
 
-- Status: `active` — 94-01 through94-04 complete;94-05 independent implementation review in progress. MOUTH-01 remains incomplete.
-- Scope: Negative width contraction while retaining positive expansion, mouth height and siblings under frozen Phase89 gates. Original negative width contracts, but actual pixels reveal protected mouth-height/outside leakage.
-- Fixes: Split a compiler-heavy channel predicate without changing semantics (`80e15ce9`); separated color-only lipColor metadata from emitting geometry, adding exact optional-tag wrapper/repeat equality (`29c2c423`). Production algorithms, source recipe, ROI and pixel thresholds are unchanged.
-- Validation: Initial source/runner self-tests12/0/0; compile recovery35/0/0 and metadata recovery17/0/0 independently reviewed. Fresh complete baseline **9 discovered / 9 passed / 0 failed / 0 skipped / 0 unexecuted** includes actual registration, oracle mutations, positive/protection pixels, 14 retained rows across56 outputs and two existing provider tests. Positive source/neutral margin +176Q16, signed-size margins19/237; all protection limits pass.
-- Evidence: `94-METADATA-BASELINE.json` and `94-METADATA-EVENTS.jsonl`, with `94-01-SUMMARY.md`, own current prerequisite GREEN. Original preparation failure and subsequent retained-row failure are immutable; their bounded diagnostic and exact recovery provenance remain in the two amendments/reviews and historical ledgers. No raw child text or image payload was retained.
-- Negative baseline:13 discovered/executed,12 passed,1 semantic failure,0 skipped/unexecuted. Source/neutral contraction margins−142Q16 and target2732 changed/700494 RGB pass; positive/size-plus/size-minus separation318/299/81Q16 pass. Height/outside each506 changed/79962 RGB fail four protection predicates in one public method. All14 retained-row hashes remain exact. `94-NEGATIVE-BASELINE.json` and the remaining event chain preserve the complete result; it does not yet authorize mutation.
-- Full baseline:41 executed/39 passed/2 failed/0 skipped/unexecuted. The same negative protection failures and actual-field crossing/interior-reversal are the only failures; lifecycle and retained behavior pass. Selection chooses the declared policyA.
-- Candidate progress: Attempt1/A completed41/40/1; only source/neutral target signal failed (392 changed pixels versus500 minimum), while signed margins, all protections0/0, field/lifecycle and14 retained hashes passed. Its source and failure were preserved in3230d016 before verified rollback. Counted attempt2/B changes only gap/8 to gap/7; its compile, independent review, seal and fresh41/41 acceptance passed. Source/neutral each520 changed/73743 RGB/−24Q16; all protection maxima0/0 and14 retained hashes exact. Current implementation budget2/2; no further attempt is authorized by this plan.
-- Next: Complete94-05/06 independent implementation/security review, behavior/qualification owners and independent goal verification. The SAME independently checked Phase94 plan set remains binding. One research pass, one checked plan set, implementation attempts2/2. No Phase95 or full no-skip advancement.
-- Preservation: Bound planning inputs retain historical pre-execution wording. Pre-existing config/state-cache/runtime/lock changes remain untouched.
-- 94-02 authoring disposition: Six initial runner review defects and three remaining write/publication/cleanup gaps were repaired before the first Swift build. Original runner snapshot/binding/seed bytes remain preserved; exact independent successor review and disposition admit the corrected runner. Current pure checks16/16 with72 attacks pass; oracle first author-build passed exit0/error_count0/tests_executed0, followed by independent final test review and freeze. Oracle review also corrected inclusive protection boundaries and added raster/tolerance/typed-failure controls before measurement. Production remains original and attempts remain0/2.
+- Status: verifying (snapshot before independent goal decision).
+- Completion authority: Current Phase94 completion is determined solely by a valid current `94-REMAINING-COMPLETE.json`; absent, stale or failed evidence means incomplete. This static owner snapshot is not edited after final owner binding.
+- Scope: MOUTH-01 negative mouth-width contraction with positive/sibling preservation in the registered owner-local generated-source CPU contract. No new API, backend, model/data or UI work.
+- Change: Private negative policyB uses radius clamp(gap/7,0.035,0.20) and cap min(faceWidth*0.040,radius/5,gap/4), preserves Y and checks final Float inward/noncrossing points plus the0.8 negative-pair bound. Original positive body/shared helpers, adapter, renderer and frozen tests/source/thresholds remain unchanged.
+- Validation: Current acceptance41/41,0 failures/skips/unexecuted. Source/neutral each520 changed pixels/73743 RGB/−24Q16; positive/size-plus/size-minus margins200/181/37Q16; all negative protection maxima0/0. Actual field/lifecycle/degradation checks and14 original row hashes pass at one identity.
+- Preserved failures: Prerequisite compiler/metadata authoring corrections; original negative baseline13/12/1 and full baseline41/39/2; policyA41/40/1 (only392 changed pixels), source commit3230d016 and owned rollback. PolicyB is the declared second attempt; research1, checked plan sets1, attempts2/2, no additional attempt.
+- Reviews: Runner authoring16/16 with72 attack rejections; both test freezes and both candidate compile/review/seal chains preserved. Fresh independent implementation/security review reports0 correctness blockers/0 high-security findings. Seven owners are finalized before the independent goal decision.
+- Evidence: `.planning/phases/94-negative-mouth-width-repair/94-REMAINING-CHECKS.json` SHA256 `fa696dba3273f248924bdd34744088979bae1e23a35a8d5d433e1c379a8f3ac4`, append-only events,94-01..05 summaries and exact reviews/dispositions. Accepted provider SHA256 `7c3218d0586704cb078b4c7e2004805e182341c37b371567f204094be59153c8`; code/evidence commit4200858a and behavior-owner commit56ecd84d.
+- Scope limits: Phase95 private portraits/final65/full no-skip and all population/device/commercial/distribution claims remain separate. Pre-existing config/state-cache/runtime/lock changes are preserved.
 
 ## 4. Completed
 
@@ -4351,3 +4349,15 @@ Outcome:
 - `mechanics-only-not-promotion` selects verified exact public absence: no field, renderer case, route, resource, package dependency, or public/SPI activation was added.
 - `去脂` remains future and `眼睛` remains partial. QUAL-01/02 are explicitly not satisfied because the required genuine bundle and blinded review were not supplied.
 - CPU authority, selected GPU behavior, terminal `.metalUnavailable`, canonical image metadata, privacy, and all device/commercial/release nonclaims remain intact.
+
+## Phase94 Final Owner Snapshot
+
+Status: verifying (snapshot before independent goal decision). MOUTH-01 has
+current41/41 acceptance and independent implementation review at CHECKS SHA256
+`fa696dba3273f248924bdd34744088979bae1e23a35a8d5d433e1c379a8f3ac4`.
+Current Phase94 completion is determined solely by a valid current
+`94-REMAINING-COMPLETE.json`; absent, stale or failed evidence means incomplete.
+The final seven-owner binding includes this entire PLANS file without hash
+normalization. Goal verification and receipt-only finalize must preserve these
+bytes. Phase95 private portraits/final65/full no-skip remain separate; no device,
+commercial or distribution qualification is granted.
