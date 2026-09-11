@@ -5,11 +5,11 @@ milestone_name: Non-Local Facial Effect Repairs
 current_phase: 94
 current_phase_name: Negative Mouth-Width Repair
 status: executing_prerequisites
-stopped_at: Phase 94 compiler repair builds; successor prerequisite admission under review
+stopped_at: Phase 94 baseline retained-row assertion failure; exact inputs preserved for diagnosis
 last_updated: "2026-09-11T03:05:53.276469+00:00"
 last_activity: 2026-09-11
-last_activity_desc: Phase 94 frozen build failure diagnosed and equivalent compiler fix built; tests unmeasured
-state_head: b537ed626cf30d43d26352752bc9660a48047889
+last_activity_desc: Phase 94 baseline 6 passed / 1 failed / 2 unexecuted; retained-row failure diagnosis next
+state_head: 80e15ce980c7317c61f57e3499da056e7bfed92c
 progress:
   total_phases: 7
   completed_phases: 5
@@ -32,9 +32,9 @@ without distributing the SDK, model, or weights.
 ## Current Position
 
 Phase: 94 (Negative Mouth-Width Repair) — PREREQUISITES
-Plan: 94-01 prerequisite-only, 1/3 tasks complete; full repair plan pending baseline
-Status: Original Phase 94 native preparation failure preserved; compile-only recovery under review
-Last activity: 2026-09-11 — Equivalent channel predicate decomposition cleared Swift type-check timeout; no registration test executed
+Plan: 94-01 prerequisite-only, 2/3 tasks complete; full repair plan pending baseline
+Status: Original Phase 94 failure preserved; registration and positive control passed, full baseline held
+Last activity: 2026-09-11 — Baseline retained-row method failed after 6 passes; no GREEN receipt or production attempt
 
 Progress: 5/7 milestone phases complete (71%); 23 completed plans plus the Phase 94 prerequisite checkpoint have summaries. Historical diagnostic/deferred outcomes retain their recorded meaning. Phase 94 has no semantic completion credit; Phase 95 remains unexecuted.
 
@@ -42,7 +42,7 @@ Progress: 5/7 milestone phases complete (71%); 23 completed plans plus the Phase
 
 **Current milestone:**
 
-- Authored plans with summaries: 23 (historical failed and halted attempts are not semantic successes)
+- Authored plans with summaries: 24, including the active Phase 94 checkpoint (historical failed and halted attempts are not semantic successes)
 - Average documented duration: 13 min across 11 timed summaries
 - Total documented execution time: 144 min plus the untimed FACE-01 terminal record
 

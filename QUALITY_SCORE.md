@@ -611,6 +611,22 @@ reports or transcripts were retained. Phase 95 alone owns portraits and the full
 no-skip wrapper. No device, naturalness, commercial, launch or distribution
 qualification is inferred from generated package-host evidence.
 
+## Phase 94 Mouth Prerequisite Evidence
+
+The fixed authored source and actual geometry mapping passed the three
+registration methods: 3 discovered, 3 passed, zero failures/skips/unexecuted.
+This covers both source carriers, source/adapter corner registration, rejected
+mismatched or disconnected mouths, and missing-support/canonical controls.
+The original preparation failure remains in `94-PREREQUISITE-EVENTS.jsonl`;
+the reviewed compile-only recovery and fresh result are separately bound in
+`94-COMPILE-AMENDMENT.json` and `94-COMPILE-EVENTS.jsonl`.
+Recovery self-tests passed 35/0/0. These results establish fixture admission,
+not positive/negative effect efficacy or Phase 94 completion. A later nine-method baseline invocation passed registration, both oracle methods
+and positive expansion/protection, then failed the retained-row method: 7
+executed, 6 passed, 1 failed, 0 skipped, 2 unexecuted. No baseline receipt
+was issued. A color-only metadata assumption is under diagnosis; production
+attempts remain 0/2.
+
 ## Phase 93 Distinct Nose Repair Quality Evidence
 
 Candidate 2 supplies owner-local generated mechanics at provider
