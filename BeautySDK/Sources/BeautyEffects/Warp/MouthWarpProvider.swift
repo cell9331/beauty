@@ -128,6 +128,9 @@ struct MouthWarpProvider: WarpControlPointProvider {
             return []
         }
 
+        // BEGIN PHASE94 NEGATIVE DISPATCH
+        if signedStrength < 0 { return phase94NegativeWidth(face: face, strength: signedStrength) }
+        // END PHASE94 NEGATIVE DISPATCH
         let requestedDisplacement = face.bounds.width * 0.040 * abs(signedStrength) / BeautySafetyCaps.mouthWidth
         guard let displacement = legacyRenderableDisplacement(requestedDisplacement) else {
             return []
@@ -145,6 +148,61 @@ struct MouthWarpProvider: WarpControlPointProvider {
         )
     }
 
+    // BEGIN PHASE94 NEGATIVE HELPER
+    private func phase94NegativeWidth(face: FaceGeometry, strength: Float) -> [WarpControlPoint] {
+        guard let signedStrength = validatedSignedStrength(strength, cap: BeautySafetyCaps.mouthWidth),
+              signedStrength < 0,
+              let support = validatedWholeSupport(in: face),
+              let left = support.min(by: { $0.x < $1.x }),
+              let right = support.max(by: { $0.x < $1.x })
+        else { return [] }
+
+        let gap = right.x - left.x
+        guard gap.isFinite, gap > 0 else { return [] }
+        let radius = min(max(gap / 8, 0.035), 0.20)
+        let cap = min(face.bounds.width * 0.040, min(radius / 5, gap / 4))
+        let fraction = abs(signedStrength) / BeautySafetyCaps.mouthWidth
+        guard var displacement = legacyRenderableDisplacement(cap * fraction) else { return [] }
+
+        func construct(_ delta: Float) -> [WarpControlPoint] {
+            makePoints(
+                sources: [left, right],
+                targets: [SIMD2<Float>(left.x + delta, left.y), SIMD2<Float>(right.x - delta, right.y)],
+                bounds: face.bounds,
+                radius: radius,
+                strength: abs(signedStrength)
+            )
+        }
+        func actualBound(_ points: [WarpControlPoint]) -> Double {
+            points.reduce(0) { sum, point in
+                let delta = point.target - point.source
+                return sum + 2 * hypot(Double(delta.x), Double(delta.y)) / Double(point.radius)
+            }
+        }
+
+        var points = construct(displacement)
+        guard points.count == 2 else { return [] }
+        var bound = actualBound(points)
+        guard bound.isFinite else { return [] }
+        // Bound the actual reconstructed Float vectors, including their
+        // rounding, rather than assuming the requested displacement survived.
+        if bound > 0.8 {
+            let scale = min(1.0, 0.8 / bound) * (1.0 - 16.0 * Double(Float.ulpOfOne))
+            displacement *= Float(scale)
+            points = construct(displacement)
+            guard points.count == 2 else { return [] }
+            bound = actualBound(points)
+        }
+        guard bound.isFinite, bound <= 0.8,
+              points[0].target.x > points[0].source.x,
+              points[1].target.x < points[1].source.x,
+              points[0].target.x < points[1].target.x,
+              points.allSatisfy({ $0.target.y == $0.source.y })
+        else { return [] }
+        return points
+    }
+
+    // END PHASE94 NEGATIVE HELPER
     private func smilePoints(face: FaceGeometry, strength: Float) -> [WarpControlPoint] {
         guard let positiveStrength = validatedPositiveStrength(strength, cap: BeautySafetyCaps.smile),
               let support = validatedWholeSupport(in: face),
