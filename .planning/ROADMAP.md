@@ -181,13 +181,13 @@ Plans:
   2. Positive `mouthWidth` retains its existing measurable expansion behavior, and the two directions remain distinct from whole-mouth `mouthSize`.
   3. Both signed outputs preserve mouth height, surrounding face, and background within their established protection bounds.
 
-**Plans**: 6 plans;94-01/02/03 complete,94-04 policyA selected
+**Plans**: 6 plans;94-01–04 complete,94-05 independent review in progress
 
 - [x] 94-01-PLAN.md — Fixed source, registration and retained-positive baseline (9/0/0 fresh; prerequisites only).
 
 - [x] 94-02-PLAN.md — Full negative oracle and original-provider baseline (13 executed/12 passed/1 classified protection failure).
 - [x] 94-03-PLAN.md — Field safety and signed lifecycle baseline (41/39/2; negative-only defects).
-- [ ] 94-04-PLAN.md — Evidence-based retain/repair and full acceptance (wave4, depends94-03).
+- [x] 94-04-PLAN.md — PolicyB accepted41/41; policyA failure/rollback preserved (2/2 attempts).
 - [ ] 94-05-PLAN.md — Independent implementation review and behavior owners (wave5, depends94-04).
 - [ ] 94-06-PLAN.md — Qualification owners and independent goal closeout (wave6, depends94-05).
 
@@ -242,7 +242,7 @@ attempts before an explicit owner decision to repair, defer, or stop.
 | 91. Independent Gaze Correction | v1.22 | 4/4 | Complete    | 2026-09-06 |
 | 92. Signed Eyebrow-Head Spacing | v1.22 | 6/6 | Complete    | 2026-09-08 |
 | 93. Distinct Nose Bridge and Root Repairs | v1.22 | 5/5 | Complete | 2026-09-10 |
-| 94. Negative Mouth-Width Repair | v1.22 | 3/6 | Executing remaining plans | - |
+| 94. Negative Mouth-Width Repair | v1.22 | 4/6 | Independent review and owners | - |
 | 95. Compatibility and SDK-Only Closeout | v1.22 | 0/TBD | Not started | - |
 
 ---

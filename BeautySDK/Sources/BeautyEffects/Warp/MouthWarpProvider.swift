@@ -159,7 +159,7 @@ struct MouthWarpProvider: WarpControlPointProvider {
 
         let gap = right.x - left.x
         guard gap.isFinite, gap > 0 else { return [] }
-        let radius = min(max(gap / 8, 0.035), 0.20)
+        let radius = min(max(gap / 7, 0.035), 0.20)
         let cap = min(face.bounds.width * 0.040, min(radius / 5, gap / 4))
         let fraction = abs(signedStrength) / BeautySafetyCaps.mouthWidth
         guard var displacement = legacyRenderableDisplacement(cap * fraction) else { return [] }

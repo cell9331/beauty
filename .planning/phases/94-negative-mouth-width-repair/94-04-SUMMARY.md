@@ -1,10 +1,20 @@
 ---
 phase: 94-negative-mouth-width-repair
 plan: "04"
-status: in-progress
+status: completed
 ---
 
-# 94-04 candidate checkpoint
+# 94-04 complete: policyB accepted
+
+Both tasks are complete. After the preserved A failure and verified owned rollback, begin2 selected the predeclared B ratio. B differs from A only by gap/8→gap/7. Its own compile-only invocation passed, independent review bound the exact compiled bytes, and seal/scope passed before measurement.
+
+Fresh acceptance **41 discovered/executed/passed,0 failed/skipped/unexecuted**. Source/neutral each:520 changed pixels,73743 RGB,−24Q16 signed span. Positive/size-plus/size-minus distinction margins200/181/37Q16. Outside, height, face, background and watermark maxima are all0/0. All four field methods, four lifecycle methods, original provider/degradation coverage, registration/oracles and14 retained row hashes pass at this same identity.
+
+Current provider SHA256 `7c3218d0586704cb078b4c7e2004805e182341c37b371567f204094be59153c8`; `94-REMAINING-CHECKS.json` SHA256 `fa696dba3273f248924bdd34744088979bae1e23a35a8d5d433e1c379a8f3ac4`. The original positive body/shared helpers remain byte-identical after stripping the sole private negative additions. No test/source/threshold changes followed freeze. Research1, checked plan sets1, attempts2/2, no third attempt.
+
+Next:94-05 independent implementation/security review and behavior owners, then94-06 qualification/goal verification. Acceptance is not yet phase completion, population/device qualification or Phase95/full no-skip credit.
+
+## Historical policyA checkpoint
 
 PolicyA was selected from the complete unchanged41-method baseline, then attempt1 was counted before mutation. Its private negative dispatch/helper compiled successfully with zero tests, passed independent exact-code review and was sealed before acceptance. Stripping those additions restores the entire original provider byte-for-byte.
 
