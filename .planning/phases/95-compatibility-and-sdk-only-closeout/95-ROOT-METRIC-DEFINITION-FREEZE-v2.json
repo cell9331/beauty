@@ -1,0 +1,12 @@
+{
+  "schema": "phase95-root-generic-definition-freeze-v2",
+  "status": "independently_approved_generic_only",
+  "metric_id": "rootStructuralEdgeSpanQ16_v2_draft2",
+  "reviewer_agent_id": "01a09df2-c361-7c13-9118-cb87697b0163",
+  "implementation_sha256": "7100a47cc3176035cb097016b252f00be477307f0d75fde932bffa869027287b",
+  "spec_sha256": "168394eb55445d770e72fa1de65546ee0c1ba1cceb15721032f14bdaa9ce426b",
+  "test_sha256": "9634829b8630a6b06aa25fcb0f54e73a7c5229a4497eaacf9fcadcb71c1bfeb4",
+  "review_sha256": "947645b74934d89898af44c4644b96ff39f628c4eeaa64bdaa1bfb27323402be",
+  "original_registration_sha256": "ef066fbe62a8385c137666ea0213284244b05199a9df0a81c8998bed07e4c43d",
+  "portrait_scoring_enabled": false
+}
