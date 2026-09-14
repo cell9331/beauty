@@ -1,0 +1,26 @@
+{
+  "schema": "phase95-root-source-attempt-history-v2",
+  "date": "2026-09-14",
+  "status": "blocked_source_registration_ambiguous",
+  "source_sha256": "707e9106e394421a00732b0efa2fbd2e1dc4dfee79d9244fcc763e2dbb106818",
+  "original_registration_sha256": "ef066fbe62a8385c137666ea0213284244b05199a9df0a81c8998bed07e4c43d",
+  "metric_id": "rootStructuralEdgeSpanQ16_v2_draft2",
+  "metric_implementation_sha256": "7100a47cc3176035cb097016b252f00be477307f0d75fde932bffa869027287b",
+  "current_registrar_snapshot_sha256": "d98958712203954b4ae9b641e28d322d6dec395ba8250e2121a0fb5117671787",
+  "current_registrar_review_sha256": "b97736540c450db6d8da4e615c44fb1720ed69ef13d6e0ccf58de6fb599aaf56",
+  "events": [
+    {"kind": "reviewed_registrar_v2", "exit_code": 2, "status": "rejected", "reason": "child_invalid_output", "registrar_sha256": "2a269e38820fb2e6ccf18b8d59e999d7c1d7f15f0189f858d42145283c6ab1a8"},
+    {"kind": "identity_admitted_source_only_diagnostic", "child_exit_code": 2, "status": "rejected", "reason": "ambiguous_structure", "typed_records": 1, "nonrecord_lines": 1, "registration_credit": false},
+    {"kind": "reviewed_registrar_v3", "exit_code": 2, "status": "rejected", "reason": "ambiguous_structure", "registrar_sha256": "99a4edb93b9487ce70d13b411f55c12bc766a4175777fc8fdf551750e5d5fe13"}
+  ],
+  "successful_registrations": 0,
+  "matched_successful_registration_pairs": 0,
+  "new_metric_portrait_scoring_attempts": 0,
+  "phase95_complete": false,
+  "environment": {
+    "architecture": "arm64",
+    "os_version": "26.5.1",
+    "compiler_version_sha256": "5fa4b669e41b23b9ad0760253d062493487f93cf5d8ad8c44f0d4fd635137499",
+    "os_build_sha256": "9f01454a441e06792cd7851dcbd23d54b38d2e45ee882e9a612b124d2b6aa404"
+  }
+}
