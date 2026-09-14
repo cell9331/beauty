@@ -24,9 +24,10 @@ PINNED = {
     PHASE+'95-ROI-REGISTRATION.json': 'ef066fbe62a8385c137666ea0213284244b05199a9df0a81c8998bed07e4c43d',
     'scripts/face-feature-batch-manifest.json': '5665ffa04b9241a73ee864f7230a4abcd677de5dce01a5091a19e70714b7647e',
     'scripts/compare-face-feature-batches.swift': 'd7c7ccd293d4adb53cc2ea521d676cc6f51acd5215ae3a020862d332d1cfca26',
+    PHASE+'95-ROOT-REGISTRAR-SPEC-v2.md': '93d37da3b4a17c6b5e5087ee54744bb67c5c8dd1ea009704be0e54f1f28db8db',
 }
 ADAPTER_FILES = ('scripts/phase95-root-registration.py', 'scripts/phase95-root-registration-adapter.swift',
-                 PHASE+'95-ROOT-METRIC-DEFINITION-FREEZE-v2.json', PHASE+'95-ROOT-REGISTRAR-SPEC-v2.md')
+                 PHASE+'95-ROOT-METRIC-DEFINITION-FREEZE-v2.json', PHASE+'95-ROOT-REGISTRAR-SPEC-v3.md')
 
 class AdmissionError(Exception):
     pass
@@ -61,7 +62,7 @@ def snapshot() -> dict:
 
 def validate_review(record: dict, expected: dict) -> None:
     if (set(record) != {'schema', 'status', 'reviewer_agent_id', 'files', 'findings'} or
-        record['schema'] != 'phase95-root-registrar-review-v2' or record['status'] != 'pass' or
+        record['schema'] != 'phase95-root-registrar-review-v3' or record['status'] != 'pass' or
         not isinstance(record['reviewer_agent_id'], str) or
         not re.fullmatch(r'[A-Za-z0-9-]{8,80}', record['reviewer_agent_id']) or
         record['files'] != expected or record['findings'] != []):
@@ -88,24 +89,26 @@ def source_code(mode: str) -> bytes:
 def execute(code: bytes) -> tuple[int, bytes]:
     if len(code) > 1024 * 1024: raise AdmissionError('source_size')
     child = subprocess.Popen(['/usr/bin/swift', '-O', '-'], cwd=ROOT, stdin=subprocess.PIPE,
-                             stdout=subprocess.PIPE, stderr=subprocess.STDOUT, start_new_session=True)
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE, start_new_session=True)
     def feed() -> None:
         try:
             child.stdin.write(code); child.stdin.close()
         except (BrokenPipeError, OSError):
             pass
     writer = threading.Thread(target=feed, daemon=True); writer.start()
-    output = bytearray(); wall = time.time(); monotonic = time.monotonic()
+    output = bytearray(); total_bytes = 0; wall = time.time(); monotonic = time.monotonic()
     try:
         with selectors.DefaultSelector() as selector:
-            selector.register(child.stdout, selectors.EVENT_READ)
+            selector.register(child.stdout, selectors.EVENT_READ, 'protocol')
+            selector.register(child.stderr, selectors.EVENT_READ, 'diagnostic')
             while selector.get_map():
                 if max(time.time()-wall, time.monotonic()-monotonic) > 180: raise AdmissionError('child_timeout')
                 for key, _ in selector.select(timeout=0.1):
                     chunk = os.read(key.fileobj.fileno(), 8192)
                     if not chunk: selector.unregister(key.fileobj); continue
-                    if len(output)+len(chunk) > 16*1024*1024: raise AdmissionError('child_output_limit')
-                    output.extend(chunk)
+                    total_bytes += len(chunk)
+                    if total_bytes > 16*1024*1024: raise AdmissionError('child_output_limit')
+                    if key.data == 'protocol': output.extend(chunk)
         return child.wait(timeout=5), bytes(output)
     finally:
         # Own and clean the whole child group, including descendants, on every
@@ -123,6 +126,7 @@ def execute(code: bytes) -> tuple[int, bytes]:
         except ProcessLookupError: pass
         writer.join(timeout=2)
         child.stdout.close()
+        child.stderr.close()
 
 def checked_result(code: int, output: bytes, mode: str) -> dict:
     try: record = decode(output)
@@ -157,7 +161,7 @@ def checked_result(code: int, output: bytes, mode: str) -> dict:
 def admission_tests(expected: dict) -> int:
     import copy
     checks = 0
-    good = {'schema':'phase95-root-registrar-review-v2', 'status':'pass',
+    good = {'schema':'phase95-root-registrar-review-v3', 'status':'pass',
             'reviewer_agent_id':'generated-reviewer', 'files':expected, 'findings':[]}
     validate_review(good, expected); checks += 1
     for key, value in (('schema','legacy'),('status','pending'),('reviewer_agent_id',''),
@@ -199,12 +203,33 @@ def environment_identity() -> dict:
         result[key] = sha(completed.stdout)
     return result
 
+def transport_tests() -> int:
+    header = 'import Foundation\n'
+    success = 'print("{\\"status\\":\\"generated_pass\\",\\"checks\\":8}")\n'
+    diagnostic = 'FileHandle.standardError.write(Data("generated diagnostic\\n".utf8))\n'
+    result = checked_result(*execute((header+diagnostic+success).encode()),'--self-test')
+    if result != {'status':'generated_pass','checks':8}: raise AdmissionError('transport_self_test_failed')
+    cases = [
+        (diagnostic+'print("{\\"status\\":\\"rejected\\",\\"reason\\":\\"ambiguous_structure\\"}"); exit(2)', 'ambiguous_structure'),
+        ('print("extra stdout"); '+success, 'child_invalid_output'),
+        (success+'exit(1)', 'child_failed'),
+        ('FileHandle.standardError.write(Data(repeating:65,count:17*1024*1024))', 'child_output_limit'),
+        ('FileHandle.standardOutput.write(Data(repeating:65,count:17*1024*1024))', 'child_output_limit'),
+        ('FileHandle.standardError.write(Data(repeating:65,count:9*1024*1024)); FileHandle.standardOutput.write(Data(repeating:65,count:9*1024*1024))', 'child_output_limit'),
+    ]
+    for source, expected in cases:
+        try: checked_result(*execute((header+source).encode()),'--self-test')
+        except AdmissionError as failure:
+            if str(failure) != expected: raise AdmissionError('transport_self_test_failed')
+        else: raise AdmissionError('transport_self_test_failed')
+    return len(cases)+1
+
 def main() -> None:
     if sys.argv[1:] not in (['--self-test'], ['--register-source']): raise AdmissionError('arguments')
     mode = sys.argv[1]; before = snapshot()
     environment = environment_identity()
     if mode == '--register-source':
-        validate_review(decode(read(PHASE+'95-ROOT-REGISTRAR-REVIEW-v2.json')), before)
+        validate_review(decode(read(PHASE+'95-ROOT-REGISTRAR-REVIEW-v3.json')), before)
     code = source_code(mode)
     first = checked_result(*execute(code), mode)
     if mode == '--register-source':
@@ -214,6 +239,7 @@ def main() -> None:
                      adapter_identity=sha(json.dumps(before,sort_keys=True,separators=(',',':')).encode()))
     else:
         first['admission_checks'] = admission_tests(before)
+        first['transport_checks'] = transport_tests()
     if snapshot() != before or environment_identity() != environment: raise AdmissionError('input_changed')
     print(json.dumps(first, sort_keys=True, separators=(',',':')))
 
