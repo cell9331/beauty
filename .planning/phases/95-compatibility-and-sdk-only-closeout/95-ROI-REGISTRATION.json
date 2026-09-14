@@ -1,0 +1,10 @@
+{
+  "schema": "phase95-portrait-registration-v1",
+  "status": "registered",
+  "fixtures": 1,
+  "directions": 7,
+  "comparator_sha256": "6a9b90e7eabfbfa82df65dfe493493d014c87ea1e63c091d1fa7adbb698d1ebe",
+  "contracts_sha256": "68d192c37821c4c059ac3763722bea491e5dd27850c2ab0a69ec5aa6246cd168",
+  "manifest_sha256": "5665ffa04b9241a73ee864f7230a4abcd677de5dce01a5091a19e70714b7647e",
+  "source_sha256": "707e9106e394421a00732b0efa2fbd2e1dc4dfee79d9244fcc763e2dbb106818"
+}

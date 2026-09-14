@@ -3,6 +3,7 @@ import CoreImage
 import CryptoKit
 import Darwin
 import Foundation
+import Vision
 
 enum SemanticMetricKind: String, Codable, CaseIterable {
     case contourContinuityGain
@@ -286,6 +287,173 @@ private func semanticContractsDigest(_ contracts: [SemanticContract]) throws -> 
     let object = try JSONSerialization.jsonObject(with: encoded)
     let canonical = try JSONSerialization.data(withJSONObject: object, options: [.sortedKeys])
     return sha256Hex(canonical)
+}
+
+// Owner-approved Phase 95 registration v1. This recipe reads source anatomy
+// only, before any output is loaded. It never exports coordinates or images.
+// The original manifest and generated-source oracles remain unchanged.
+private func portraitContracts(
+    source: URL, context: CIContext, base: [SemanticContract]
+) throws -> [SemanticContract] {
+    guard let image = CIImage(contentsOf: source, options: [.applyOrientationProperty: true]),
+          let cg = context.createCGImage(image, from: image.extent) else {
+        throw SemanticContractError.admission
+    }
+    let request = VNDetectFaceLandmarksRequest()
+    try VNImageRequestHandler(cgImage: cg, orientation: .up).perform([request])
+    guard let faces = request.results, faces.count == 1,
+          let face = faces.first, let anatomy = face.landmarks else {
+        throw SemanticContractError.admission
+    }
+    let bounds = CGRect(x: face.boundingBox.minX, y: 1 - face.boundingBox.maxY,
+                        width: face.boundingBox.width, height: face.boundingBox.height)
+    let w = bounds.width
+    func points(_ region: VNFaceLandmarkRegion2D?) throws -> [CGPoint] {
+        guard let region, region.pointCount > 0 else { throw SemanticContractError.admission }
+        return region.normalizedPoints.map {
+            CGPoint(x: bounds.minX + Double($0.x) * w,
+                    y: bounds.maxY - Double($0.y) * bounds.height)
+        }
+    }
+    func box(_ points: [CGPoint], pad: Double = 0) throws -> CGRect {
+        guard let first = points.first else { throw SemanticContractError.admission }
+        var minX = first.x, maxX = first.x, minY = first.y, maxY = first.y
+        for p in points {
+            guard p.x.isFinite, p.y.isFinite else { throw SemanticContractError.admission }
+            minX = min(minX, p.x); maxX = max(maxX, p.x)
+            minY = min(minY, p.y); maxY = max(maxY, p.y)
+        }
+        return CGRect(x: minX - pad, y: minY - pad,
+                      width: maxX - minX + 2 * pad, height: maxY - minY + 2 * pad)
+    }
+    func region(_ r: CGRect, id: String? = nil) throws -> NormalizedRegion {
+        guard r.minX >= 0, r.minY >= 0, r.maxX <= 1, r.maxY <= 1,
+              r.width > 0, r.height > 0 else { throw SemanticContractError.region }
+        let result = NormalizedRegion(id: id,
+            minXPPM: Int(floor(r.minX * 1e6)), maxXPPM: Int(ceil(r.maxX * 1e6)),
+            minYPPM: Int(floor(r.minY * 1e6)), maxYPPM: Int(ceil(r.maxY * 1e6)))
+        _ = try rasterize(result, width: Int64(cg.width), height: Int64(cg.height))
+        return result
+    }
+    func centerX(_ ps: [CGPoint]) -> CGFloat {
+        var total: CGFloat = 0
+        for p in ps { total += p.x }
+        return total / CGFloat(ps.count)
+    }
+    let eyeInput: [[CGPoint]] = try [points(anatomy.leftEye), points(anatomy.rightEye)]
+    let eyePoints = eyeInput.sorted { centerX($0) < centerX($1) }
+    let eyes = try eyePoints.map { try box($0) }
+    let eyeUnion = eyes[0].union(eyes[1])
+    let browInput: [[CGPoint]] = try [points(anatomy.leftEyebrow), points(anatomy.rightEyebrow)]
+    let brows = browInput.sorted { centerX($0) < centerX($1) }
+    let browBoxes = try brows.map { try box($0, pad: w * 0.01) }
+    let mouthPoints = try points(anatomy.outerLips)
+    let mouth = try box(mouthPoints, pad: w * 0.015)
+    let corners = [mouthPoints.min { $0.x < $1.x }!, mouthPoints.max { $0.x < $1.x }!]
+    let mouthCorners = try corners.map { try box([$0], pad: w * 0.09) }
+    guard mouthCorners[0].maxX < mouthCorners[1].minX else { throw SemanticContractError.overlap }
+    let mouthHeight = CGRect(x: mouthCorners[0].maxX + 0.000002, y: mouth.minY,
+                             width: mouthCorners[1].minX - mouthCorners[0].maxX - 0.000004,
+                             height: mouth.height)
+    let chinPoints = try points(anatomy.faceContour).sorted { $0.y > $1.y }
+    let chinEnvelope = try box(Array(chinPoints.prefix(7)), pad: w * 0.125)
+    let chinTop = max(chinEnvelope.minY, mouth.maxY + w * 0.015)
+    let chin = CGRect(x: chinEnvelope.minX, y: chinTop, width: chinEnvelope.width,
+                      height: chinEnvelope.maxY - chinTop)
+    // Nose bands are separated by the midpoint of observed eye/root and nose
+    // crest anatomy. They are not selected by rendered differences.
+    let crest = try points(anatomy.noseCrest).sorted { $0.y < $1.y }
+    guard crest.count >= 3 else { throw SemanticContractError.admission }
+    let rootTop = min(eyeUnion.minY, crest[0].y) - w * 0.035
+    let rootBottom = (crest[0].y + crest[crest.count / 2].y) / 2
+    let bridgeBottom = crest.last!.y
+    let noseX = centerX(crest)
+    let rootBox = CGRect(x: noseX - w * 0.14, y: rootTop,
+                         width: w * 0.28, height: rootBottom - rootTop)
+    let bridge = CGRect(x: noseX - w * 0.14, y: rootBottom + 0.000002,
+                        width: w * 0.28, height: bridgeBottom - rootBottom - 0.000002)
+    let tipPoints = try points(anatomy.nose).filter { $0.y > bridgeBottom + 0.000004 }
+    let tip = try box(tipPoints, pad: 0)
+    let background = [
+        CGRect(x: 0, y: 0.08, width: max(0.000002, bounds.minX - w * 0.16), height: 0.74),
+        CGRect(x: min(0.999998, bounds.maxX + w * 0.16), y: 0.08,
+               width: max(0.000002, 1 - bounds.maxX - w * 0.16), height: 0.74)
+    ]
+    var result: [SemanticContract] = []
+    for contract in base {
+        if contract.caseID == "faceContourSmooth_0p25" { result.append(contract); continue }
+        let targets: [CGRect]
+        var protections: [String: [CGRect]] = ["background": background]
+        switch contract.metric {
+        case .pupilToOwnEyeCenter:
+            targets = eyes
+            protections["eyebrows"] = browBoxes
+            var rims: [CGRect] = []
+            let rimWidth: CGFloat = w * 0.025
+            for eye in eyes {
+                rims.append(CGRect(x: eye.minX - rimWidth, y: eye.minY,
+                    width: rimWidth - 0.000002, height: eye.height))
+                rims.append(CGRect(x: eye.maxX + 0.000002, y: eye.minY,
+                    width: rimWidth, height: eye.height))
+            }
+            protections["eyeContours"] = rims
+        case .centerlineTaper:
+            targets = [chin]
+            protections["mouth"] = [mouth]
+            protections["upperFace"] = [eyeUnion.union(browBoxes[0]).union(browBoxes[1])]
+        case .innerBrowHeadGap:
+            targets = try brows.enumerated().map { side, trace in
+                let sorted = trace.sorted { side == 0 ? $0.x > $1.x : $0.x < $1.x }
+                return try box(Array(sorted.prefix((trace.count + 1) / 2)), pad: w * 0.065)
+            }
+            protections["outerAnchors"] = try brows.enumerated().map { side, trace in
+                let ordered = trace.sorted { $0.x < $1.x }
+                let outer: CGPoint = side == 0 ? ordered.first! : ordered.last!
+                return try box([outer], pad: w * 0.015)
+            }
+            protections["eyes"] = eyes
+        case .bridgeDefinitionGain:
+            targets = [bridge]; protections["root"] = [rootBox]; protections["tip"] = [tip]
+        case .rootWidthContraction:
+            targets = [rootBox]; protections["bridge"] = [bridge]; protections["tip"] = [tip]
+        case .mouthWidthContraction:
+            targets = mouthCorners; protections["mouthHeight"] = [mouthHeight]
+            let union = mouthCorners[0].union(mouthCorners[1]).union(mouthHeight)
+            protections["surroundingFace"] = [
+                CGRect(x: union.minX, y: union.minY - w * 0.06, width: union.width, height: w * 0.06 - 0.000002),
+                CGRect(x: union.minX, y: union.maxY + 0.000002, width: union.width, height: w * 0.06)
+            ]
+        default: throw SemanticContractError.contracts
+        }
+        guard targets.count == contract.targetRegions.count else { throw SemanticContractError.region }
+        let registered = SemanticContract(caseID: contract.caseID, metric: contract.metric,
+            expectedSign: contract.expectedSign, comparisonCaseIDs: contract.comparisonCaseIDs,
+            targetRegions: try zip(targets, contract.targetRegions).map { try region($0.0, id: $0.1.id) },
+            thresholds: contract.thresholds,
+            protectedRegions: try contract.protectedRegions.map { p in
+                if p.id == "watermark" { return p }
+                guard let boxes = protections[p.id] else { throw SemanticContractError.region }
+                return ProtectedRegionContract(id: p.id, regions: try boxes.map { try region($0) },
+                    maximumChangedPixels: p.maximumChangedPixels, maximumAbsoluteRGBDelta: p.maximumAbsoluteRGBDelta)
+            })
+        do { try validateOwnership(registered, width: Int64(cg.width), height: Int64(cg.height)) }
+        catch {
+            fputs("registration_ownership_failed:\(contract.caseID)\n", stderr)
+            let named = registered.targetRegions.map { ($0.id ?? "target", $0) }
+                + registered.protectedRegions.flatMap { p in p.regions.map { (p.id, $0) } }
+            for i in named.indices {
+                for j in named.indices where j > i {
+                    if try overlaps(rasterize(named[i].1, width: Int64(cg.width), height: Int64(cg.height)),
+                                    rasterize(named[j].1, width: Int64(cg.width), height: Int64(cg.height))) {
+                        fputs("registration_overlap:\(named[i].0):\(named[j].0)\n", stderr)
+                    }
+                }
+            }
+            throw error
+        }
+        result.append(registered)
+    }
+    return result
 }
 
 private struct RasterizedRegion: Equatable {
@@ -849,6 +1017,8 @@ private func semanticMeasurement(
         sourceMargin = Int64(gazeAggregate.minimumReductionQ16)
         neutralMargin = sourceMargin
         signedMargin = sourceMargin
+        // The admitted aggregate proves direction only; target signal,
+        // sibling distinction, locality and protection still use real pixels.
         let minimumChanged = Int64(contract.thresholds.minimumChangedPixels)
         let minimumDelta = Int64(contract.thresholds.minimumAbsoluteRGBDelta)
         for sibling in siblings {
@@ -1836,6 +2006,53 @@ private func writeSemanticReport(
     return digest
 }
 
+private func phase95Classification(
+    _ data: Data, contracts: [SemanticContract], expectedContractID: String
+) throws -> Data {
+    struct RunnerEnvelope: Decodable {
+        let schemaVersion: String
+        let stableSemanticPayload: StableSemanticPayload
+        let stableSemanticPayloadDigest: String
+        let stableSemanticReconciliationDigest: String
+        let status: String
+    }
+    guard privacySafeJSON(data),
+          let object = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+          Set(object.keys) == Set(["schemaVersion", "stableSemanticPayload", "stableSemanticPayloadDigest",
+                                   "stableSemanticReconciliationDigest", "status"]) else {
+        throw SemanticContractError.admission
+    }
+    let envelope = try JSONDecoder().decode(RunnerEnvelope.self, from: data)
+    let payload = envelope.stableSemanticPayload
+    try validateStablePayload(payload, contracts: contracts)
+    guard envelope.schemaVersion == "beauty.face-feature-batch-runner.semantic.1",
+          envelope.status == payload.verdict,
+          payload.contractID == expectedContractID,
+          envelope.stableSemanticPayloadDigest == sha256Hex(try stablePayloadData(payload)),
+          envelope.stableSemanticReconciliationDigest == envelope.stableSemanticPayloadDigest else {
+        throw SemanticContractError.admission
+    }
+    let deferred = "faceContourSmooth_0p25"
+    let active = payload.semanticDirections.filter { $0.caseID != deferred }
+    guard active.count == 7, active.allSatisfy({ $0.verdict == "semantic_pass" }),
+          let contour = payload.semanticDirections.first(where: { $0.caseID == deferred }),
+          contour.verdict == "semantic_fail" else { throw SemanticContractError.verdict }
+    let output: [String: Any] = [
+        "schema": "phase95-clean-65-v2", "status": "pass",
+        "comparison_count": payload.mechanicalCases.count,
+        "outputs": payload.mechanicalCases.reduce(0) { $0 + $1.outputCount },
+        "fixture_count": payload.fixtureCount, "repeat_count": 2,
+        "directions": Dictionary(uniqueKeysWithValues: payload.semanticDirections.map {
+            ($0.caseID, $0.caseID == deferred ? "deferred/partial" : "effective")
+        }),
+        "measurements": try JSONSerialization.jsonObject(with: JSONEncoder().encode(payload.semanticDirections)),
+        "source_report_digest": sha256Hex(data),
+        "stable_payload_digest": envelope.stableSemanticPayloadDigest,
+        "contract_id": payload.contractID
+    ]
+    return try JSONSerialization.data(withJSONObject: output, options: [.sortedKeys, .prettyPrinted])
+}
+
 private func semanticDirectionSummary(
     contract: SemanticContract,
     sources: [CanonicalImage],
@@ -2249,6 +2466,42 @@ private func runDirectionMetricSelfTests(contracts: [SemanticContract]) throws -
     }
     probes += 1
 
+    // Anatomical direction evidence cannot substitute for rendered target
+    // signal or hide changes outside the frozen target regions.
+    let identityGazeSummary = try semanticDirectionSummary(
+        contract: gazeContract,
+        sources: [gazeSource], neutrals: [gazeSource], candidates: [gazeSource],
+        siblingImages: Array(
+            repeating: [gazeCandidate], count: gazeContract.comparisonCaseIDs.count - 2
+        ),
+        gazeAggregates: [aggregate]
+    )
+    guard identityGazeSummary.verdict == "semantic_fail",
+          identityGazeSummary.failureReasonCodes.contains(SemanticFailureReason.sourceTargetSignal.rawValue),
+          identityGazeSummary.failureReasonCodes.contains(SemanticFailureReason.neutralTargetSignal.rawValue) else {
+        throw SemanticContractError.verdict
+    }
+    probes += 1
+
+    let leakingGazeCandidate = generatedImage(
+        width: 80, height: 300,
+        rectangles: [(24, 165, 38, 210), (41, 165, 56, 210), (32, 75, 48, 95)]
+    )
+    let leakingGazeSummary = try semanticDirectionSummary(
+        contract: gazeContract,
+        sources: [gazeSource], neutrals: [gazeSource], candidates: [leakingGazeCandidate],
+        siblingImages: Array(
+            repeating: [gazeSource], count: gazeContract.comparisonCaseIDs.count - 2
+        ),
+        gazeAggregates: [aggregate]
+    )
+    guard leakingGazeSummary.verdict == "semantic_fail",
+          leakingGazeSummary.failureReasonCodes.contains(SemanticFailureReason.outsideLocality.rawValue),
+          leakingGazeSummary.outsideChangedPixels == 320 else {
+        throw SemanticContractError.verdict
+    }
+    probes += 1
+
     let browRegions = [
         RasterizedRegion(minX: 24, maxX: 40, minY: 12, maxY: 24),
         RasterizedRegion(minX: 40, maxX: 56, minY: 12, maxY: 24)
@@ -2451,6 +2704,53 @@ private func runSemanticReportSelfTests(manifest: BatchManifest) throws -> Int {
         semanticDirections: directions, verdict: "semantic_pass"
     )
     try validateStablePayload(payload, contracts: contracts)
+
+    func runnerData(_ rows: [SemanticDirectionSummary], badDigest: Bool = false) throws -> Data {
+        let value = StableSemanticPayload(
+            schemaVersion: payload.schemaVersion, contractID: payload.contractID,
+            cpuReferenceToken: payload.cpuReferenceToken, fixtureCount: payload.fixtureCount,
+            fixtureIDs: payload.fixtureIDs, watermarkExcludedRowCount: payload.watermarkExcludedRowCount,
+            batches: payload.batches, mechanicalCases: payload.mechanicalCases,
+            semanticDirections: rows,
+            verdict: rows.allSatisfy { $0.verdict == "semantic_pass" } ? "semantic_pass" : "semantic_fail")
+        let digest = sha256Hex(try stablePayloadData(value))
+        return try JSONSerialization.data(withJSONObject: [
+            "schemaVersion": "beauty.face-feature-batch-runner.semantic.1",
+            "stableSemanticPayload": JSONSerialization.jsonObject(with: stablePayloadData(value)),
+            "stableSemanticPayloadDigest": digest,
+            "stableSemanticReconciliationDigest": badDigest ? String(repeating: "0", count: 64) : digest,
+            "status": value.verdict
+        ])
+    }
+    var deferredRows = directions
+    deferredRows[0] = replacingDirection(directions[0], sourceTargetChangedPixels: 0,
+        failureReasonCodes: [SemanticFailureReason.sourceTargetSignal.rawValue], verdict: "semantic_fail")
+    let classification = try phase95Classification(runnerData(deferredRows), contracts: contracts,
+                                                  expectedContractID: payload.contractID)
+    guard let classified = try JSONSerialization.jsonObject(with: classification) as? [String: Any],
+          let measured = classified["measurements"] as? [[String: Any]], measured.count == 8,
+          (measured[1]["outsideChangedPixels"] as? Int) == contracts[1].thresholds.maximumOutsideChangedPixels else {
+        throw SemanticContractError.verdict
+    }
+    probes += 1 // A complete 7-pass/1-deferred failure is accepted without invented zero maxima.
+    for index in 1..<directions.count {
+        var failing = deferredRows
+        failing[index] = replacingDirection(directions[index], sourceTargetChangedPixels: 0,
+            failureReasonCodes: [SemanticFailureReason.sourceTargetSignal.rawValue], verdict: "semantic_fail")
+        try expect(.verdict) {
+            _ = try phase95Classification(runnerData(failing), contracts: contracts, expectedContractID: payload.contractID)
+        }
+    }
+    try expect(.verdict) {
+        _ = try phase95Classification(runnerData(directions), contracts: contracts, expectedContractID: payload.contractID)
+    }
+    try expect(.admission) {
+        _ = try phase95Classification(runnerData(deferredRows, badDigest: true), contracts: contracts,
+                                      expectedContractID: payload.contractID)
+    }
+    try expect(.admission) {
+        _ = try phase95Classification(runnerData(deferredRows), contracts: contracts, expectedContractID: "stale_contract")
+    }
 
     let reordered = StableSemanticPayload(
         schemaVersion: payload.schemaVersion, contractID: payload.contractID,
@@ -3232,6 +3532,46 @@ func runSemanticSelfTests() throws -> Int {
 }
 
 let commandArguments = Array(CommandLine.arguments.dropFirst())
+if commandArguments.contains("--classify-phase95") {
+    do {
+        let report = URL(fileURLWithPath: try argument("--report", in: commandArguments))
+        let manifestURL = URL(fileURLWithPath: try argument("--manifest", in: commandArguments))
+        try requireAdmittedRegularFile(report, beneath: report.deletingLastPathComponent())
+        let manifestData = try Data(contentsOf: manifestURL)
+        let manifest = try validateManifestData(manifestData)
+        guard let contracts = manifest.semanticContracts else { throw SemanticContractError.contracts }
+        let expected = ProcessInfo.processInfo.environment["BEAUTY_PHASE95_ROI_DIGEST"] ?? sha256Hex(manifestData)
+        let output = try phase95Classification(Data(contentsOf: report), contracts: contracts, expectedContractID: expected)
+        print(String(data: output, encoding: .utf8)!)
+        exit(0)
+    } catch {
+        fputs("clean65_classification_failed:\(error)\n", stderr)
+        exit(2)
+    }
+}
+if commandArguments.contains("--register-portrait-roi") {
+    do {
+        let input = URL(fileURLWithPath: try argument("--input", in: commandArguments))
+        let manifestURL = URL(fileURLWithPath: try argument("--manifest", in: commandArguments))
+        let manifest = try validateManifestData(Data(contentsOf: manifestURL))
+        let fixtures = try admittedFixtureURLs(in: input)
+        guard fixtures.count == 1, let base = manifest.semanticContracts else { throw SemanticContractError.admission }
+        let context = CIContext(options: [.workingColorSpace: CGColorSpace(name: CGColorSpace.sRGB)!,
+                                         .outputColorSpace: CGColorSpace(name: CGColorSpace.sRGB)!])
+        let registered = try portraitContracts(source: fixtures[0], context: context, base: base)
+        let digest = try semanticContractsDigest(registered)
+        let record: [String: Any] = ["schema": "phase95-portrait-registration-v1",
+            "status": "registered", "fixtures": 1, "directions": 7,
+            "contracts_sha256": digest, "source_sha256": sha256Hex(try Data(contentsOf: fixtures[0])),
+            "manifest_sha256": sha256Hex(try Data(contentsOf: manifestURL)),
+            "comparator_sha256": sha256Hex(try Data(contentsOf: URL(fileURLWithPath: #filePath)))]
+        print(String(data: try JSONSerialization.data(withJSONObject: record, options: [.sortedKeys]), encoding: .utf8)!)
+        exit(0)
+    } catch {
+        fputs("portrait_registration_failed:\(error)\n", stderr)
+        exit(2)
+    }
+}
 if commandArguments == ["--self-test"] {
     do {
         let mutationCount = try runSemanticSelfTests()
@@ -3283,7 +3623,7 @@ do {
     let manifestData = try Data(contentsOf: manifestURL)
     let manifest = try validateManifestData(manifestData)
     let allCaseIDs = manifest.batches.flatMap { $0.cases }
-    guard let contracts = manifest.semanticContracts else { throw SemanticContractError.contracts }
+    guard var contracts = manifest.semanticContracts else { throw SemanticContractError.contracts }
     let fixtures = try admittedFixtureURLs(in: inputURL)
     let admittedOutputs = try admitRunInventory(
         manifest: manifest, fixtures: fixtures, runRoot: runRoot, attemptID: attemptID
@@ -3301,6 +3641,15 @@ do {
         .outputColorSpace: CGColorSpace(name: CGColorSpace.sRGB)!
     ])
     let inputImages = try fixtures.map { try canonicalImage(at: $0, context: context) }
+    if let frozenDigest = ProcessInfo.processInfo.environment["BEAUTY_PHASE95_ROI_DIGEST"] {
+        guard fixtures.count == 1,
+              let sourceDigest = ProcessInfo.processInfo.environment["BEAUTY_PHASE95_SOURCE_DIGEST"],
+              sha256Hex(try Data(contentsOf: fixtures[0])) == sourceDigest else {
+            throw SemanticContractError.admission
+        }
+        contracts = try portraitContracts(source: fixtures[0], context: context, base: contracts)
+        guard try semanticContractsDigest(contracts) == frozenDigest else { throw SemanticContractError.contracts }
+    }
     let tolerance = 2
 
     for image in inputImages {
@@ -3421,7 +3770,7 @@ do {
     let overallPass = semanticDirections.allSatisfy { $0.verdict == "semantic_pass" }
     let payload = StableSemanticPayload(
         schemaVersion: "beauty.face-feature-batch-report.semantic.1",
-        contractID: sha256Hex(manifestData),
+        contractID: ProcessInfo.processInfo.environment["BEAUTY_PHASE95_ROI_DIGEST"] ?? sha256Hex(manifestData),
         cpuReferenceToken: "beauty_cpu_reference_v1",
         fixtureCount: fixtures.count,
         fixtureIDs: fixtures.indices.map { String(format: "portrait_%03d", $0 + 1) },
