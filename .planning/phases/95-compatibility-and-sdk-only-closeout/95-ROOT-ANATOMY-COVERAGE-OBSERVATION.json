@@ -1,0 +1,28 @@
+{
+  "schema": "phase95-root-anatomy-coverage-observation-v1",
+  "observed_at": "2026-09-15T06:43:40Z",
+  "command": "python3 -B scripts/phase95-root-anatomy-coverage.py --inspect-source",
+  "exit_code": 0,
+  "result": {
+    "anatomical_boundary_qualified": false,
+    "attempts": 2,
+    "contour_covered_rows": 3,
+    "contracts_sha256": "68d192c37821c4c059ac3763722bea491e5dd27850c2ab0a69ec5aa6246cd168",
+    "crest_covered_rows": 11,
+    "diagnostic_identity": "307fd2e44b90bd46ad5cb071c7cc2cff27439961f5cf1d2aff58b5cda9d7e414",
+    "environment": {
+      "architecture": "arm64",
+      "compiler_version_sha256": "5fa4b669e41b23b9ad0760253d062493487f93cf5d8ad8c44f0d4fd635137499",
+      "os_build_sha256": "9f01454a441e06792cd7851dcbd23d54b38d2e45ee882e9a612b124d2b6aa404",
+      "os_version": "26.5.1"
+    },
+    "portrait_scoring_attempts": 0,
+    "root_rows": 16,
+    "source_registered": false,
+    "source_sha256": "707e9106e394421a00732b0efa2fbd2e1dc4dfee79d9244fcc763e2dbb106818",
+    "status": "source_coverage",
+    "vision_revision": 3
+  },
+  "acceptance_credit": false,
+  "phase_complete": false
+}
