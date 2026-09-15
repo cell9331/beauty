@@ -30,6 +30,91 @@ final class Phase95RootImageFormationTests: XCTestCase {
             observedNoseSupport: base.observedNoseSupport)
     }
 
+    func testForwardLocalizationMeasuresActualGeneratedStructureWidth() throws {
+        try checkForwardStructure(row: 143, expectNarrower: true)
+    }
+
+    func testForwardLocalizationRejectsMovementAwayFromGeneratedBoundaries() throws {
+        try checkForwardStructure(row: 164, expectNarrower: false)
+    }
+
+    private func checkForwardStructure(row: Int, expectNarrower: Bool) throws {
+        let size = 512
+        let color = try XCTUnwrap(CGColorSpace(name: CGColorSpace.sRGB))
+        let context = CIContext(options: [.workingColorSpace: color, .outputColorSpace: color])
+        var source = [UInt8](repeating: 255, count: size * size * 4)
+        for y in 0..<size { for x in 0..<size {
+            // Source-defined material boundaries are227.5 and283.5, independent
+            // of emitted field centers. Other channels supply generated texture.
+            source[(y * size + x) * 4] = (228...283).contains(x) ? 40 : 220
+            for c in 1..<3 {
+                let a = UInt64(x + 17 * c + y) &* 1_103_515_245 &+ 12_345
+                let b = UInt64(x * x + y * 7_919 + c * 107) &* 2_654_435_761
+                source[(y * size + x) * 4 + c] = UInt8(40 + (a ^ b) % 176)
+            }
+        } }
+        let canonical = try BeautyCanonicalStillImage(rgba8Data: Data(source), width: size,
+            height: size, rowBytes: size * 4, metadata: .init(orientation: .up, source: .testFixture))
+        let geometry = face()
+        let plan = BeautyEffectResolver.resolve(parameters: .init(noseRootNarrowing: 0.25), faceGeometry: geometry)
+        let points = BeautyGeometryEffectPipeline.controlPoints(for: plan, face: geometry)
+        let active = points.filter { abs((Float(row) + 0.5) / Float(size) - $0.target.y) < $0.radius }
+        XCTAssertEqual(active.count, 2)
+        guard HorizontalInwardWarpSafety.accepts(active, maximumSlope: 0.8),
+              points.allSatisfy({ $0.pixelCenterSampling && $0.source.y == $0.target.y && $0.falloff == 1 })
+        else { return XCTFail("Generated horizontal map lacks required slope admission") }
+        // Two linear cones: ordered admission gives lower secant1-.8; triangle
+        // inequality gives upper1+.8+.8. No field coordinates select anchors.
+        let rendered = BeautyGeometryEffectPipeline.applyMVPProxy(to: canonical.ciImage,
+            canonicalImage: canonical, plan: plan, face: geometry)
+        let output = read(rendered, size: size, context: context, color: color)
+        let redChanges = (0..<size).filter { source[(row * size + $0) * 4] != output[(row * size + $0) * 4] }.count
+        if expectNarrower { XCTAssertGreaterThan(redChanges, 0) }
+        else { XCTAssertEqual(redChanges, 0) }
+        func rgbRow(_ bytes: [UInt8]) -> [[Int]] {
+            (0..<size).map { x in (0..<3).map { Int(bytes[(row * size + x) * 4 + $0]) } }
+        }
+        let root = URL(fileURLWithPath: #filePath).deletingLastPathComponent()
+            .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+        let script = """
+        import json,runpy,sys
+        from fractions import Fraction as F
+        correspondence=runpy.run_path('scripts/phase95-root-nonlinear-probe.py')
+        forward=runpy.run_path('scripts/phase95-root-forward-span.py')
+        data=json.load(sys.stdin)
+        def checked(call,*args,**kwargs):
+            try:
+                return call(*args,**kwargs)
+            except Exception as error:
+                allowed={'no_feasible_motion','state_limit','work_limit','unbracketed_anchor',
+                         'inconsistent_correspondence','unordered_structure'}
+                reason=str(error) if str(error) in allowed else 'measurement_failed'
+                print(json.dumps({'rejected':reason}))
+                sys.exit(2)
+        positions=[]
+        for base in (227,283):
+            samples=[]
+            for x in range(base-8,base+10):
+                lo,hi=checked(correspondence['interval'],data['source'],data['output'][x-2:x+3],x,search=16)
+                samples.append((F(x),F(x)-hi,F(x)-lo))
+            anchor=F(base)+F(1,2)
+            positions.append(checked(forward['position'],(anchor,anchor),samples,F(1,5),F(13,5)))
+        measured=checked(forward['span'],*positions)
+        admitted=(F(56)-measured[1])*65536/512 >= 16
+        if data['expect_narrower'] and not admitted:
+            print(json.dumps({'rejected':'structure_not_narrower'}))
+            sys.exit(2)
+        if not data['expect_narrower'] and (admitted or not measured[0] <= 56 <= measured[1]):
+            print(json.dumps({'rejected':'unchanged_structure_misclassified'}))
+            sys.exit(2)
+        print(json.dumps({'structural_pairs':1,'passed':True}))
+        """
+        let payload = try JSONSerialization.data(withJSONObject:
+            ["source": rgbRow(source), "output": rgbRow(output), "expect_narrower": expectNarrower])
+        let data = try Phase95GeneratedChild.run(script, payload: payload, directory: root)
+        XCTAssertTrue(Phase95GeneratedChild.isSuccess(data, pairs: true))
+    }
+
     private func displacement(_ x: Int, _ y: Int, _ size: Int, _ points: [WarpControlPoint]) -> Double {
         let px = (Double(x) + 0.5) / Double(size), py = (Double(y) + 0.5) / Double(size)
         return points.reduce(0) { sum, p in
@@ -167,10 +252,7 @@ final class Phase95RootImageFormationTests: XCTestCase {
         XCTAssertEqual(cases.count, 2)
         let root = URL(fileURLWithPath: #filePath).deletingLastPathComponent()
             .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
-        let child = Process()
-        child.executableURL = URL(fileURLWithPath: "/usr/bin/python3")
-        child.currentDirectoryURL = root
-        child.arguments = ["-B", "-c", """
+        let script = """
         import json,runpy,sys
         from fractions import Fraction as F
         m=runpy.run_path('scripts/phase95-root-nonlinear-probe.py')
@@ -182,26 +264,9 @@ final class Phase95RootImageFormationTests: XCTestCase {
                 raise SystemExit('containment_failed')
             count+=1
         print(json.dumps({'contained':count}))
-        """]
-        let input = Pipe(), result = Pipe()
-        child.standardInput = input; child.standardOutput = result
-        child.standardError = FileHandle.nullDevice
-        let ended = expectation(description: "Generated nonlinear measurement finishes")
-        child.terminationHandler = { _ in ended.fulfill() }
-        try child.run()
-        defer {
-            try? input.fileHandleForWriting.close()
-            if child.isRunning { child.terminate(); child.waitUntilExit() }
-            try? result.fileHandleForReading.close()
-        }
-        try input.fileHandleForWriting.write(contentsOf: JSONSerialization.data(withJSONObject: cases))
-        try input.fileHandleForWriting.close()
-        wait(for: [ended], timeout: 220)
-        if child.isRunning { child.terminate(); child.waitUntilExit() }
-        XCTAssertEqual(child.terminationStatus, 0)
-        let data = result.fileHandleForReading.readData(ofLength: 4097)
-        XCTAssertLessThanOrEqual(data.count, 4096)
-        let summary = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Int])
-        XCTAssertEqual(summary, ["contained": 2])
+        """
+        let data = try Phase95GeneratedChild.run(script,
+            payload: JSONSerialization.data(withJSONObject: cases), directory: root, timeout: 220)
+        XCTAssertTrue(Phase95GeneratedChild.isSuccess(data, pairs: false))
     }
 }
