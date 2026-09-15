@@ -127,4 +127,81 @@ final class Phase95RootImageFormationTests: XCTestCase {
                 "Exact affine five-sample model misses curvature/cusps in this actual field")
         }
     }
+
+    func testNonlinearMeasurementContainsActualRootSamplerDisplacements() throws {
+        let size = 512
+        let color = try XCTUnwrap(CGColorSpace(name: CGColorSpace.sRGB))
+        let context = CIContext(options: [.workingColorSpace: color, .outputColorSpace: color])
+        let geometry = face()
+        var original = [UInt8](repeating: 255, count: size * size * 4)
+        for y in 0..<size { for x in 0..<size { for c in 0..<3 {
+            let a = (x + 17 * c + y) * 1_103_515_245 + 12_345
+            let b = (x * x + y * 7919 + c * 107) * 2_654_435_761
+            original[(y * size + x) * 4 + c] = UInt8(40 + (a ^ b) % 176)
+        } } }
+        let canonical = try BeautyCanonicalStillImage(rgba8Data: Data(original), width: size,
+            height: size, rowBytes: size * 4, metadata: .init(orientation: .up, source: .testFixture))
+        let plan = BeautyEffectResolver.resolve(parameters: .init(noseRootNarrowing: 0.25),
+                                                faceGeometry: geometry)
+        let points = BeautyGeometryEffectPipeline.controlPoints(for: plan, face: geometry)
+        XCTAssertEqual(points.count, 6)
+        let rendered = BeautyGeometryEffectPipeline.applyMVPProxy(to: canonical.ciImage,
+            canonicalImage: canonical, plan: plan, face: geometry)
+        let output = read(rendered, size: size, context: context, color: color)
+        var cases: [[String: Any]] = []
+        // Generated field centers select demanding sampler inputs only. This
+        // is NOT anatomy registration or independent semantic-motion truth.
+        for p in points.suffix(2) {
+            let x = Int((Double(p.target.x) * Double(size) - 0.5).rounded())
+            let y = Int((Double(p.target.y) * Double(size) - 0.5).rounded())
+            let truth = displacement(x, y, size, points)
+            XCTAssertGreaterThan(abs(truth), 1)
+            let row = (0..<size).map { column in
+                (0..<3).map { Int(original[(y * size + column) * 4 + $0]) }
+            }
+            let patch = (x - 2...x + 2).map { column in
+                (0..<3).map { Int(output[(y * size + column) * 4 + $0]) }
+            }
+            cases.append(["source": row, "output": patch, "center": x, "truth": truth])
+        }
+        XCTAssertEqual(cases.count, 2)
+        let root = URL(fileURLWithPath: #filePath).deletingLastPathComponent()
+            .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+        let child = Process()
+        child.executableURL = URL(fileURLWithPath: "/usr/bin/python3")
+        child.currentDirectoryURL = root
+        child.arguments = ["-B", "-c", """
+        import json,runpy,sys
+        from fractions import Fraction as F
+        m=runpy.run_path('scripts/phase95-root-nonlinear-probe.py')
+        cases=json.load(sys.stdin)
+        count=0
+        for case in cases:
+            lo,hi=m['interval'](case['source'],case['output'],case['center'],search=32)
+            if not lo <= F(str(case['truth'])) <= hi:
+                raise SystemExit('containment_failed')
+            count+=1
+        print(json.dumps({'contained':count}))
+        """]
+        let input = Pipe(), result = Pipe()
+        child.standardInput = input; child.standardOutput = result
+        child.standardError = FileHandle.nullDevice
+        let ended = expectation(description: "Generated nonlinear measurement finishes")
+        child.terminationHandler = { _ in ended.fulfill() }
+        try child.run()
+        defer {
+            try? input.fileHandleForWriting.close()
+            if child.isRunning { child.terminate(); child.waitUntilExit() }
+            try? result.fileHandleForReading.close()
+        }
+        try input.fileHandleForWriting.write(contentsOf: JSONSerialization.data(withJSONObject: cases))
+        try input.fileHandleForWriting.close()
+        wait(for: [ended], timeout: 220)
+        if child.isRunning { child.terminate(); child.waitUntilExit() }
+        XCTAssertEqual(child.terminationStatus, 0)
+        let data = result.fileHandleForReading.readData(ofLength: 4097)
+        XCTAssertLessThanOrEqual(data.count, 4096)
+        let summary = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Int])
+        XCTAssertEqual(summary, ["contained": 2])
+    }
 }
