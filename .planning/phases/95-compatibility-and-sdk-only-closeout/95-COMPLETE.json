@@ -1,0 +1,19 @@
+{
+  "evidence": {
+    "95-CLEAN-65-REPORT.json": "7adb2eebd8478e049fe76386ab8c23ee1aa9c288acf3b9dc274bbea228d9c214",
+    "95-CLOSEOUT-BINDING.json": "517813ce76902f6b59645ac1d0a69ae860d405e26f79f3c0ec6dd18fc337e473",
+    "95-CLOSEOUT-CHECKS.json": "46a03c1fb20ea5b6530777d687e4c58c29371c32db27b208ce8e85037f65b8d8",
+    "95-GOAL-VERIFICATION.json": "6916e91c20ac42fe7372984866e562d2e54d55fc1e9373cca684cf8cf954778c",
+    "95-INDEPENDENT-REPAIR-REVIEW.json": "2a1ec7ae77a8ab65e7de4962a14290a56f32587febdeebd5cc6ea1289a75557a"
+  },
+  "input_digest": "56d33c8d9ddfbd6899287feeac501139d6ea1bac05250ca8982fa861482ed6f0",
+  "measurement_identity": "799d7b69c11d691ce2193a61dbdcf44b8c15d0b525bd5ed95ca6bc0f79eb0f17",
+  "phase_complete": true,
+  "requirements": [
+    "CLOSE-01",
+    "COMPAT-01",
+    "SAFE-01"
+  ],
+  "schema": "phase95-complete-v3",
+  "status": "complete"
+}

@@ -92,7 +92,7 @@ struct ChinWarpProvider: WarpControlPointProvider {
         let strength = min(requestedStrength, BeautySafetyCaps.chinTaper)
         let normalizedStrength = strength / BeautySafetyCaps.chinTaper
         let maximumDisplacement =
-            0.016 * face.bounds.width * normalizedStrength
+            (face.observedOuterLips == nil ? 0.016 : 0.024) * face.bounds.width * normalizedStrength
         let radius = face.bounds.width * 0.12
         let falloff: Float = 2
         guard strength.isFinite,
@@ -124,25 +124,36 @@ struct ChinWarpProvider: WarpControlPointProvider {
         guard immediateDistance.isFinite, immediateDistance > 0 else {
             return []
         }
-
+        let immediateFieldIsQuantizationHostile = immediateDistance < maximumDisplacement * 0.5
+        let exactCapNeedsValidatedBand = strength == BeautySafetyCaps.chinTaper
+        let pairCount = immediateFieldIsQuantizationHostile || exactCapNeedsValidatedBand ? 3 : 1
+        guard apexIndex - pairCount >= support.contour.startIndex,
+              apexIndex + pairCount < support.contour.endIndex
+        else { return [] }
         // Sub-cap fields retain the original two points when their immediate
         // flanks have enough leverage. Exact-cap requests and quantization-
         // hostile flanks expand to the narrowest three paired contour samples
         // around the same observed apex so the validated chin ROI receives a
         // raster-visible field. No legacy or sibling geometry enters this
         // request-local centerline-owned band.
-        let immediateFieldIsQuantizationHostile = immediateDistance < maximumDisplacement * 0.5
-        let exactCapNeedsValidatedBand = strength == BeautySafetyCaps.chinTaper
-        let pairCount = immediateFieldIsQuantizationHostile || exactCapNeedsValidatedBand ? 3 : 1
-        guard apexIndex - pairCount >= support.contour.startIndex,
-              apexIndex + pairCount < support.contour.endIndex
-        else {
-            return []
-        }
-
         var points: [WarpControlPoint] = []
-        for offset in 1...pairCount {
+        var requestedMagnitudes: [Float] = []
+        let observedMouthBottom: Float?
+        if let lips = face.observedOuterLips {
+            guard lips.count >= 4, lips.count <= 32, lips.allSatisfy(isFiniteUnitPoint),
+                  Set(lips).count == lips.count else { return [] }
+            observedMouthBottom = lips.map(\.y).max()
+        } else { observedMouthBottom = nil }
+        let eligiblePairs = (1...pairCount).filter { offset in
+            guard let bottom = observedMouthBottom else { return true }
+            return [apexIndex - offset, apexIndex + offset].allSatisfy {
+                support.contour[$0].y - bottom > face.bounds.width * 0.04
+            }
+        }
+        for offset in eligiblePairs {
             let pair = [apexIndex - offset, apexIndex + offset]
+            if let bottom = observedMouthBottom,
+               pair.contains(where: { support.contour[$0].y <= bottom }) { continue }
             var pairSides: [Float] = []
             for index in pair {
                 let source = support.contour[index]
@@ -168,27 +179,73 @@ struct ChinWarpProvider: WarpControlPointProvider {
                 }
 
                 let signedDisplacement = signedDistance < 0 ? displacement : -displacement
-                let target = SIMD2<Float>(source.x + signedDisplacement, source.y)
+                var target = SIMD2<Float>(source.x + signedDisplacement, source.y)
+                var localRadius = radius
+                if let mouthBottom = observedMouthBottom {
+                    // Keep a face-relative lip clearance and use at most 3/4
+                    // of the gap. Ordered inward fields use the x-Jacobian
+                    // bound, while nil-support legacy outputs remain exact.
+                    let clearance = source.y - mouthBottom
+                    localRadius = min(radius, clearance * 0.75, clearance - face.bounds.width * 0.04)
+                    let slopePerPoint = Float(0.8 / Double(max(1, eligiblePairs.count)))
+                    let bounded = min(displacement, localRadius * slopePerPoint * normalizedStrength)
+                        * (1 - 32 * Float.ulpOfOne)
+                    target.x = source.x + (signedDistance < 0 ? bounded : -bounded)
+                }
                 guard isFiniteUnitPoint(target),
                       abs(target.x - axisX) < distanceToAxis,
                       let point = validatedPoint(
                           source: source,
                           target: target,
-                          radius: radius,
+                          radius: localRadius,
                           strength: strength,
-                          falloff: falloff
+                          falloff: observedMouthBottom == nil ? falloff : 1,
+                          preserveRadius: observedMouthBottom != nil
                       )
                 else {
                     return []
                 }
                 pairSides.append(signedDistance)
                 points.append(point)
+                requestedMagnitudes.append(displacement)
             }
             guard pairSides.count == 2,
                   pairSides[0] * pairSides[1] < 0
             else {
                 return []
             }
+        }
+        if observedMouthBottom != nil {
+            // Water-fill each side's unchanged slope budget. Equal allocation
+            // wastes the unused share of wide-radius, physical-cap-limited
+            // points and unnecessarily suppresses narrower eligible supports.
+            for positive in [true, false] {
+                let indices = points.indices.filter {
+                    (points[$0].target.x > points[$0].source.x) == positive
+                }
+                let budget = 0.8 * Double(normalizedStrength) * (1 - 32 * Double(Float.ulpOfOne))
+                var low = 0.0, high = budget
+                for _ in 0..<48 {
+                    let level = (low + high) * 0.5
+                    let used = indices.reduce(0.0) {
+                        $0 + min(Double(requestedMagnitudes[$1]) / Double(points[$1].radius), level)
+                    }
+                    if used <= budget { low = level } else { high = level }
+                }
+                for index in indices {
+                    let point = points[index]
+                    let magnitude = min(Double(requestedMagnitudes[index]), low * Double(point.radius))
+                        * (1 - 32 * Double(Float.ulpOfOne))
+                    var x = Float(Double(point.source.x) + (positive ? magnitude : -magnitude))
+                    if abs(Double(x) - Double(point.source.x)) > magnitude {
+                        x = positive ? x.nextDown : x.nextUp
+                    }
+                    points[index] = WarpControlPoint(source: point.source,
+                        target: SIMD2<Float>(x, point.source.y), radius: point.radius,
+                        strength: point.strength, falloff: point.falloff)
+                }
+            }
+            return HorizontalInwardWarpSafety.admitted(points, maximumSlope: 0.8)
         }
         return points
     }
@@ -222,7 +279,8 @@ struct ChinWarpProvider: WarpControlPointProvider {
         target: SIMD2<Float>,
         radius: Float,
         strength: Float,
-        falloff: Float
+        falloff: Float,
+        preserveRadius: Bool = false
     ) -> WarpControlPoint? {
         guard isFiniteUnitPoint(source),
               isFiniteUnitPoint(target),
@@ -238,7 +296,7 @@ struct ChinWarpProvider: WarpControlPointProvider {
         return WarpControlPoint(
             source: source,
             target: target,
-            radius: min(max(radius, 0.04), 0.35),
+            radius: preserveRadius ? radius : min(max(radius, 0.04), 0.35),
             strength: strength,
             falloff: falloff
         )

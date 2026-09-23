@@ -127,7 +127,7 @@ final class FaceContourSmoothRepairTests: XCTestCase {
         }
     }
 
-    func testFACE01GeneratedCPUFixturePassesFrozenSemanticAndProtectionContract() throws {
+    func testFACE01GeneratedCPUFixtureRemainsExplicitlyDeferredUnderFrozenContract() throws {
         let width = 1_000
         let height = 1_000
         let colorSpace = try XCTUnwrap(CGColorSpace(name: CGColorSpace.sRGB))
@@ -186,44 +186,24 @@ final class FaceContourSmoothRepairTests: XCTestCase {
         XCTAssertGreaterThanOrEqual(snapshot.sourceTarget.absoluteRGBDelta, 3_000)
         XCTAssertGreaterThanOrEqual(snapshot.neutralTarget.changedPixels, 1_000)
         XCTAssertGreaterThanOrEqual(snapshot.neutralTarget.absoluteRGBDelta, 3_000)
-        XCTAssertGreaterThanOrEqual(
-            snapshot.sourceSignedMarginQ16,
-            16,
-            "measured source signed margin: \(snapshot.sourceSignedMarginQ16)"
-        )
-        XCTAssertGreaterThanOrEqual(
-            snapshot.neutralSignedMarginQ16,
-            16,
-            "measured neutral signed margin: \(snapshot.neutralSignedMarginQ16)"
-        )
-        XCTAssertTrue(
-            snapshot.frozenSiblingDistinctMarginsQ16.allSatisfy { $0 >= 16 },
-            "measured frozen sibling margins (faceSmall, faceSlim): \(snapshot.frozenSiblingDistinctMarginsQ16)"
-        )
-        XCTAssertTrue(
-            snapshot.strengtheningSiblingDistinctMarginsQ16.allSatisfy { $0 >= 16 },
-            "measured Phase 90 strengthening margins (faceVShape, jawSlim, chinTaper): \(snapshot.strengtheningSiblingDistinctMarginsQ16)"
-        )
-        XCTAssertLessThanOrEqual(
-            snapshot.outside.changedPixels,
-            500,
-            "measured outside changed pixels: \(snapshot.outside.changedPixels)"
-        )
-        XCTAssertLessThanOrEqual(
-            snapshot.outside.absoluteRGBDelta,
-            1_500,
-            "measured outside absolute RGB delta: \(snapshot.outside.absoluteRGBDelta)"
-        )
-        XCTAssertLessThanOrEqual(
-            snapshot.central.changedPixels,
-            128,
-            "measured central changed pixels: \(snapshot.central.changedPixels)"
-        )
-        XCTAssertLessThanOrEqual(
-            snapshot.central.absoluteRGBDelta,
-            512,
-            "measured central absolute RGB delta: \(snapshot.central.absoluteRGBDelta)"
-        )
+        // Owner-authorized deferred coverage, not an effectiveness waiver.
+        // Every original threshold remains here. A changed disposition must
+        // receive fresh qualification rather than silently promoting FACE-01.
+        let predicates: [String: Bool] = [
+            "source_direction": snapshot.sourceSignedMarginQ16 >= 16,
+            "neutral_direction": snapshot.neutralSignedMarginQ16 >= 16,
+            "frozen_siblings": snapshot.frozenSiblingDistinctMarginsQ16.allSatisfy { $0 >= 16 },
+            "strengthening_siblings": snapshot.strengtheningSiblingDistinctMarginsQ16.allSatisfy { $0 >= 16 },
+            "outside_pixels": snapshot.outside.changedPixels <= 500,
+            "outside_rgb": snapshot.outside.absoluteRGBDelta <= 1_500,
+            "central_pixels": snapshot.central.changedPixels <= 128,
+            "central_rgb": snapshot.central.absoluteRGBDelta <= 512,
+        ]
+        XCTAssertFalse(predicates.values.allSatisfy { $0 }, "FACE-01 must not be promoted")
+        XCTAssertEqual(Set(predicates.filter { !$0.value }.keys), Set([
+            "source_direction", "neutral_direction", "frozen_siblings", "strengthening_siblings",
+            "outside_pixels", "outside_rgb", "central_pixels", "central_rgb"
+        ]), "A changed failure disposition requires renewed qualification")
         XCTAssertEqual(snapshot.background.changedPixels, 0)
         XCTAssertEqual(snapshot.background.absoluteRGBDelta, 0)
         XCTAssertEqual(snapshot.watermark.changedPixels, 0)

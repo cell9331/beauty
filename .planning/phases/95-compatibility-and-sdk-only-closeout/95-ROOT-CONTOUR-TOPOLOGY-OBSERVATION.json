@@ -1,0 +1,18 @@
+{
+  "acceptance_credit": false,
+  "anatomical_boundary_qualified": false,
+  "attempts": 2,
+  "contracts_sha256": "68d192c37821c4c059ac3763722bea491e5dd27850c2ab0a69ec5aa6246cd168",
+  "counts": {
+    "ambiguous_rows": 0,
+    "paired_rows": 3,
+    "unsupported_rows": 13
+  },
+  "diagnostic_identity": "664c6ef6d1b0292c259a687d9ef1fccdad67521ac4584c50fd26ce3ae04c8b65",
+  "nose_topology": "closed",
+  "schema": "phase95-contour-topology-observation-v1",
+  "source_registered": false,
+  "source_sha256": "707e9106e394421a00732b0efa2fbd2e1dc4dfee79d9244fcc763e2dbb106818",
+  "status": "source_contour_topology_support",
+  "vision_revision": 3
+}

@@ -119,6 +119,9 @@ struct MouthWarpProvider: WarpControlPointProvider {
     }
 
     private func widthPoints(face: FaceGeometry, strength: Float) -> [WarpControlPoint] {
+        if strength < 0, face.observedOuterLips != nil {
+            return phase94NegativeWidth(face: face, strength: strength)
+        }
         guard let signedStrength = validatedSignedStrength(strength, cap: BeautySafetyCaps.mouthWidth),
               let support = validatedWholeSupport(in: face),
               let left = support.min(by: { $0.x < $1.x }),
@@ -150,17 +153,22 @@ struct MouthWarpProvider: WarpControlPointProvider {
 
     // BEGIN PHASE94 NEGATIVE HELPER
     private func phase94NegativeWidth(face: FaceGeometry, strength: Float) -> [WarpControlPoint] {
+        let selected = face.observedOuterLips ?? face.outerLips
         guard let signedStrength = validatedSignedStrength(strength, cap: BeautySafetyCaps.mouthWidth),
               signedStrength < 0,
-              let support = validatedWholeSupport(in: face),
+              isValidBounds(face.bounds), selected.count <= 32,
+              let support = validatedSupport(selected, minimumCount: 4, in: face.bounds),
+              hasSpan(support, keyPath: \.x), hasSpan(support, keyPath: \.y),
               let left = support.min(by: { $0.x < $1.x }),
               let right = support.max(by: { $0.x < $1.x })
         else { return [] }
 
         let gap = right.x - left.x
         guard gap.isFinite, gap > 0 else { return [] }
-        let radius = min(max(gap / 7, 0.035), 0.20)
-        let cap = min(face.bounds.width * 0.040, min(radius / 5, gap / 4))
+        let radius = face.observedOuterLips == nil
+            ? min(max(gap / 7, 0.035), 0.20) : min(gap / 7, 0.20)
+        let cap = min(face.bounds.width * 0.040,
+                      min(radius * (face.observedOuterLips == nil ? 0.2 : 0.65), gap / 4))
         let fraction = abs(signedStrength) / BeautySafetyCaps.mouthWidth
         guard var displacement = legacyRenderableDisplacement(cap * fraction) else { return [] }
 
@@ -170,7 +178,9 @@ struct MouthWarpProvider: WarpControlPointProvider {
                 targets: [SIMD2<Float>(left.x + delta, left.y), SIMD2<Float>(right.x - delta, right.y)],
                 bounds: face.bounds,
                 radius: radius,
-                strength: abs(signedStrength)
+                strength: abs(signedStrength),
+                preserveRadius: face.observedOuterLips != nil,
+                falloff: face.observedOuterLips == nil ? 2 : 1
             )
         }
         func actualBound(_ points: [WarpControlPoint]) -> Double {
@@ -182,6 +192,9 @@ struct MouthWarpProvider: WarpControlPointProvider {
 
         var points = construct(displacement)
         guard points.count == 2 else { return [] }
+        if face.observedOuterLips != nil {
+            return HorizontalInwardWarpSafety.admitted(points, maximumSlope: 0.8)
+        }
         var bound = actualBound(points)
         guard bound.isFinite else { return [] }
         // Bound the actual reconstructed Float vectors, including their
@@ -552,7 +565,9 @@ struct MouthWarpProvider: WarpControlPointProvider {
         targets: [SIMD2<Float>],
         bounds: FaceBounds,
         radius: Float,
-        strength: Float
+        strength: Float,
+        preserveRadius: Bool = false,
+        falloff: Float = 2
     ) -> [WarpControlPoint] {
         guard !sources.isEmpty,
               sources.count == targets.count,
@@ -574,9 +589,9 @@ struct MouthWarpProvider: WarpControlPointProvider {
             WarpControlPoint(
                 source: LandmarkGeometryHelper.clamp(source),
                 target: LandmarkGeometryHelper.clamp(target),
-                radius: min(max(radius, 0.035), 0.20),
+                radius: preserveRadius ? radius : min(max(radius, 0.035), 0.20),
                 strength: strength,
-                falloff: 2
+                falloff: falloff
             )
         }
     }

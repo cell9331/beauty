@@ -1,0 +1,13 @@
+{
+  "acceptance_credit": false,
+  "attempts": 2,
+  "candidate_pairs": 539,
+  "contracts_sha256": "68d192c37821c4c059ac3763722bea491e5dd27850c2ab0a69ec5aa6246cd168",
+  "mesh_prior_rows": 15,
+  "portrait_acceptance": false,
+  "schema": "phase95-mesh-source-observation-v1",
+  "source_registered": false,
+  "source_sha256": "707e9106e394421a00732b0efa2fbd2e1dc4dfee79d9244fcc763e2dbb106818",
+  "unavailable_rows": 10,
+  "visible_pair_rows": 6
+}

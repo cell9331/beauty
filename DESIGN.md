@@ -1,5 +1,278 @@
 # DESIGN.md
 
+## Observed root placement and raster seam repair (2026-09-23)
+
+Default still-image Vision detection uses an explicitly named-sRGB CGImage
+rendered from the admitted CIImage extent, with its original metadata orientation
+passed to Vision and the existing coordinate mapper preserved. This is the same
+source representation used by registered portrait anatomy. The prior CIImage
+handler and CGImage handler produced a five-row split disagreement on the
+authorized source; shrinking a field by a photo-specific number is not a fix.
+Geometry-only calls retain their existing output color contract and do not enter
+the local-retouch compositor merely to obtain this common detection input.
+Finite positive integral extents are required, including nonzero integral
+origins. Fractional origins/dimensions degrade to detectorUnavailable rather
+than mapping a silently rounded crop; raster allocation respects the configured
+input pixel budget.
+
+The paired-eye root path now locates its source material band at
+`min(0.04 * faceWidth, 0.35 * observedNoseContourWidth)`, centered on the observed
+crest. Eye clearance limits the support radius; it no longer pushes the source
+locations outward toward the clearance boundary. The former construction left
+the inner dorsal band outside all three support rows in the generated face.
+Source locations stay fixed across strength; radii remain contained in each
+source-owned vertical band and both original/target eye-safe envelopes.
+
+Observed paired-eye root points also carry a private `exclusiveMaximumY` at the
+root/bridge split. CPU sampling excludes rows `>= floor(split * imageHeight)`
+from those points. Continuous disk containment alone cannot protect a raster
+row whose center precedes the split but whose integer row belongs to the bridge
+region. The cutoff is a domain condition, not an added displacement. Default-nil
+points retain existing sampling; no public API, GPU backend or Metal contract
+is added. The retained Metal adapter rejects a non-nil cutoff with typed
+`invalidInput` before submission, because its uniform cannot encode that domain.
+Independent RGB sampler qualification uses this same declared domain,
+while measured displacement still comes exclusively from actual RGB values.
+
+Generated tests use source-fixed inner material markers and multiple strengths;
+the former wide outer stripe is retained as a stationary negative control.
+This is the production successor to failed candidate10; effect acceptance still
+requires the unchanged original-source 31-parameter cohort, 16 Q16 comparison
+thresholds, and original signal/protection predicates.
+
+## Root top-surface width correction (2026-09-22, current)
+
+NOSE-02 requires measurable narrowing of the registered upper-root appearance;
+it does not require the outer nasal base or physical bone boundary to move.
+The earlier source-anatomy/forward-structure entries below document rejected
+measurement attempts. Their demand for certified outer edges does not override
+this corrected object definition. A stationary registered surface band with
+moving unrelated interior texture remains a negative control; actual compression
+of that registered dorsal band with a stationary outer base can be valid.
+
+The source-only operational definition is
+[95-ROOT-SURFACE-MARKER-DEFINITION.md](.planning/phases/95-compatibility-and-sdk-only-closeout/95-ROOT-SURFACE-MARKER-DEFINITION.md):
+fixed homologous inner dorsal mesh chains, source ROI/eye containment, equal
+weights, and no output-dependent selection. These are project-defined surface
+markers, not Google-certified anatomical boundaries or mf–mf measurements.
+The temporary offline model remains validation-only, outside BeautySDK.
+
+Actual RGB correspondence must measure the same source markers in candidate,
+neutral and all three original sibling outputs. Whole-image-width Q16, the
+16 threshold, original source/ROI and all protection predicates are unchanged.
+Every feasible RGB source cell is retained; conservative monotone forward
+intervals preserve ambiguity. LK/ECC and empirical error floors failed actual
+SDK nonlinear calibration and are not admission methods. A feasible same-position
+gain/offset explanation must retain zero motion rather
+than awarding geometric credit to pure exposure. Generated true geometry and
+actual SDK sampling calibration precede portrait evaluation. This definition
+and prototype do not by themselves admit a measurement or complete v1.22.
+
+
+## Forward structure and source-anatomy boundary (2026-09-15)
+
+Structural width must follow source-defined material boundaries through
+q^-1(s), not compare displacement at arbitrary interior output coordinates.
+The generated forward primitive preserves source/correspondence uncertainty
+under separately admitted positive secant bounds. A fixed-boundary/interior-
+motion counterexample is explicitly negative; actual canonical positive and
+negative generated pixel tests exercise the integrated measurement.
+
+The approved source-only coverage diagnostic reports crest11/16 and contour3/16
+vertical row coverage on the original source, twice identically. Coverage alone
+does not identify lateral root boundaries; existing unextrapolated contour
+support cannot provide12 registered rows. No landmark extrapolation, lower
+coverage threshold or generic texture-edge substitution is authorized by this
+observation. Source boundary confirmation or a separately validated automatic
+anatomical registrar remains required before portrait scoring.
+
+## Nonlinear root correspondence experiment (2026-09-15)
+
+The generated-only successor permits independent horizontal displacement at
+each RGB sample, with shared gain/offset and exact rational feasible unions.
+It does not assume constant or affine motion, select a best match, or discard
+ambiguous components. Resource exhaustion rejects rather than truncates.
+Independent mathematical review and the repaired optimization-safe adapter
+review are recorded in95-ROOT-NONLINEAR-REVIEW-v1/v2.md. Finite generated actual
+root windows are contained; this is sampler applicability, not anatomical truth.
+It is NOT a frozen portrait metric. Source-only anatomical registration,
+format/error admission and protected/sibling conjunction remain necessary.
+No production deformation, ROI, threshold or original metric is changed.
+
+## Actual root versus affine measurement model (2026-09-15)
+
+Generated execution of the current root provider/canonical renderer confirms
+its displacement exceeds the experimental +/-1px domain and is not exactly
+affine over every five-sample patch. A second-difference argument lower-bounds
+some best affine uniform residuals above0.05px. Consequently the reviewed
+affine math is NOT a valid complete root measurement model. This is not a
+request to change the provider or relax measurement acceptance. The current
+root path matches unrounded Double sampling within one byte on the selected
+256/512 grids, with neutral/extent/alpha/outside/PNG assertions. This finite
+test does not certify a universal error budget or production geometric truth.
+See95-ROOT-APPLICABILITY.md; no portrait metric contract has been promoted.
+
+## Phase 95 subpixel translation experiment (2026-09-15)
+
+The generated-only signed affine successor jointly models RGB samples,
+local linear displacement and affine photometry. It searches both directions
+and sign changes, retaining the complete feasible displacement hull without
+an ambiguity-width cutoff. This repairs the one-channel/inward-only draft,
+whose32Q16 power was0/2. Revised42 paired cases contain84 analytic true shifts;
+32Q16 power is6/6,20Q16 is5/6 at the unchanged16Q16 floor. The fixture truth is
+analytic, not independent production-pixel truth. This is not a root metric:
+non-affine fields, full-pipeline error, source anatomy, sibling distinction and
+portrait acceptance remain outstanding. See95-ROOT-AFFINE-MODEL.md.
+The exact generated implementation has a clean independent mathematical review
+in NEW95-ROOT-AFFINE-REVIEW-v1.md, not approval of a real-source metric.
+
+A generated-only exact-rational model now retains all feasible local horizontal
+translations across integer interpolation cells, with a fixed byte-error budget.
+Its sampler-backed126 cases and independent118-case review validate the stated
+limited model. It is not the spatially varying root field or an anatomical
+metric, and arbitrary photometric safety is not established. See
+`95-ROOT-SUBPIXEL-MODEL.md`. Existing frozen metric/registrar remain unchanged.
+
+The selected canonical sRGB geometry plus memory-PNG tests now compare actual
+pixels directly against UNROUNDED Double values, within one byte on64x48 and
+257x193 generated mouth-field grids. Neutral and PNG round-trip bytes are exact;
+alpha/extent and outside-field preservation pass. The reference uses control
+points only as sampler inputs, never as an independent semantic-motion oracle.
+The review-v2 result is not a universal image-formation bound or root efficacy
+claim. A real successor still needs photometric identifiability, spatially
+varying motion and source-only anatomical registration before portrait scoring.
+
+## Phase 95 measurement identifiability finding (2026-09-15)
+
+Generated-only independent review establishes that the frozen +/-2 spatially
+varying blur nuisance includes opposite two-pixel shifts and can explain a
+real four-pixel narrowing with zero geometric motion. Manual source boundary
+selection alone does not fix this loss of identifiability. The next repair
+must justify uncertainty from the actual CPU image-formation path, separating
+anatomical support, material correspondence and the unchanged acceptance floor.
+`95-ROOT-FIRST-PRINCIPLES.md` records the investigation and bounded repair route.
+No successor is approved for source registration or output scoring. Frozen
+contracts remain unchanged; the generated integer correlation experiment is
+not a production or anatomical/subpixel measurement implementation.
+
+Static sampler inspection on 2026-09-15 confirms that the current observed
+CPU path computes an inverse sample coordinate, then bilinearly interpolates
+adjacent source pixels and rounds each channel to UInt8. It does not apply
+an independent arbitrary +/-2 spatially varying blur in that loop. This is a
+reason to validate a tighter image-formation model, not permission to assume
+zero error: Float coordinates, canonical color conversion, export/reload and
+spatially varying deformation still need end-to-end bounds. Do not use the
+candidate's own intended field as the output measurement oracle.
+
+## Current Phase 95 measurement repair (2026-09-14)
+
+Current outcome: the approved automatic source-only registrar rejects the
+unchanged portrait as ambiguous. No correspondence/measurement identity is
+registered and no amended output score is enabled. An owner-confirmed source
+registration approach is a possible next decision, not an implemented contract.
+
+Independent review confirmed that dark-half centroids can reverse structural
+contraction and credit pure photometric changes. The owner authorized a reviewed,
+versioned measurement-definition amendment, preserving ROI/threshold/source and
+history. The source-anchored conservative-width prototype is generated-only and
+is not yet approved for portrait scoring. Its exact draft and remaining gates
+are in `95-ROOT-METRIC-SPEC-v2.md`; it has no image input or production dispatch.
+Legacy registration and comparator bytes are preserved in commit `7d3d336b`.
+
+Generic definition draft 2 is now independently approved and frozen at commit
+`a205d973` (346 generated checks). Its separate source-only adapter reuses the
+exact original canonicalization/ROI functions, commits outward-rasterized eye
+exclusions and requires two identical registrations. The adapter has its own
+review gate; no live scoring or new acceptance report is enabled. Integration
+contract: `95-ROOT-REGISTRAR-SPEC-v2.md`.
+
+The current unaccepted root candidate partitions the observed root at actual
+eye-box Y boundaries. Rows intersecting an eye stay medial to that eye's full
+contour; rows above/below it may use the original 0.14-face-width root envelope.
+Rows are disjoint, each pair retains the <=0.8 slope bound, and displacement is
+still capped by 0.04 face widths, half source span and 0.7 radius. This supersedes
+the earlier infinite canthus-strip restriction below, under the authorized
+internal support revision. Public caps, bridge and nil-eye legacy paths remain.
+Generated geometry now uses known boundary crossings with rounding intervals
+for independent contraction assertions. No portrait effectiveness is inferred.
+
+## Owner-approved internal chin/root revision (2026-09-14)
+
+The owner authorized revising these two internal deformation contracts, not
+ROI/acceptance thresholds/public parameter caps/fixture identity. Observed-lip
+chin displacement is bounded by 0.024 face widths (legacy nil-support remains
+0.016), scaled by normalized strength and inward distance. Water-filled per-side
+slope stays <=0.8 and the existing lip clearance remains unchanged.
+
+Observed-eye root support includes a 0.03-face-width superior glabellar interval
+above the crest/upper-eye boundary, terminating before the same bridge split.
+Its displacement is capped by 0.04 face widths, half its source half-span and
+0.7 radius, scaled by normalized strength. Target-centered disks must remain
+strictly inside the inner-canthus interval and 0.14-face-width root half-envelope.
+Radius solves both displacement-cap containment inequalities continuously at
+sub-cap strengths. Original source-centered disk containment within face bounds
+remains; eye containment is on the actual inverse sampler, not an unused
+source-centered disk. Monotonicity plus boundary identity prevents source
+sampling from escaping the interval. Root without observed eyes retains the
+previous 0.025 cap; bridge, siblings and all public caps are unchanged.
+
+Generated shape contraction, canthus/source-sampling bounds, sub-cap admission,
+alpha/locality and legacy receipts are tested before portrait evaluation.
+Success still requires all seven registered active directions to pass.
+
+## Phase 95 resumed repair contract (2026-09-13)
+
+The owner authorized continuing chin/root/negative-mouth repair and explicit
+FACE-01 deferred coverage. Observed inward horizontal fields now use ordered
+left/right linear cones with each side's sum(abs(deltaX)/radius) <= 0.8;
+actual endpoints must remain ordered. Physical face-relative caps remain.
+Root fields center between crest and observed inner canthi and contain their
+unshifted disks inside the canthus interval (nose-contour fallback); bridge
+keeps its earlier separate band and 0.45 bound. Chin pairs retain a 0.04-face-
+width lip clearance. Mouth corner supports remain within quarter-gap envelopes.
+Chin redistributes unused shares by water-filling the same per-side slope budget;
+the original face-relative physical displacement cap remains unchanged.
+
+Admitted homogeneous observed chin/root/negative-mouth CPU fields invert
+pixel-center normalization with `u*extent-0.5`, clamped to valid pixel indices.
+The previous `u*(extent-1)` resampled Y even for horizontal-only movement.
+An internal point flag selects the correction only when every emitted point
+is admitted; legacy and mixed fields retain old sampling for compatibility.
+No public field, renderer case, backend, Metal shader or model changes.
+All original ROI digests, thresholds, signs and sibling comparisons remain.
+
+## Phase 95 source-anatomy ROI registration (2026-09-12)
+
+The owner approved a source-only registration amendment for the current
+authorized portrait. The original image-relative manifest remains the frozen
+generated-test and historical contract. The opt-in portrait comparator derives
+target and neighboring protected rectangles from one canonical source Vision
+observation, validates non-overlap, and checks the pre-evaluation registration
+digest. Source, manifest and comparator identities are pinned separately.
+Coordinates are memory-only. Thresholds, signs, metric formulas and sibling
+comparisons are unchanged. Successful registration does not establish that a
+control is effective; actual rendered pixels must still pass every predicate.
+
+The repair candidate consumes request-local observed outer lips for negative
+mouth width and chin-to-mouth clearance; explicit malformed support rejects
+that field rather than borrowing a template. Nose root and bridge consume
+canonical observed crest/contour in distinct vertical bands, with inward-only
+horizontal displacements and an actual emitted slope budget at most 0.45.
+Absent synthetic-fixture support retains the legacy oracle path; native missing
+nose regions are explicit empty support. Positive mouth and legacy nose sibling
+emissions remain unchanged. Gaze uses a linear cone inside the existing strict
+eye aperture and unchanged movement bound. None of these candidates establish
+portrait effectiveness without the registered pixel gate.
+
+The second candidate keeps eligible lower-chin pairs when a higher pair crosses
+the observed mouth boundary. Derived small radii are not expanded by legacy
+minimum-radius clamps; chin displacement scales down with radius to preserve
+its original ratio bound. Observed negative mouth and chin use linear falloff
+with the same or smaller displacement/support; nil-support historical paths
+remain unchanged. Root's upper interval includes observed upper-eye support,
+while bridge remains in its separate crest interval. Mapped malformed lips
+retain an explicit empty carrier instead of turning into nil template absence.
+
 > `beauty` 的核心设计契约。本文记录设计理念、数据结构决策和状态机。
 > 包边界看 `ARCHITECTURE.md`，UI 规则看 `FRONTEND.md`，可靠性规则看 `RELIABILITY.md`。
 >

@@ -5,7 +5,16 @@
 
 ## Current Post-Archive Acceptance Status
 
-v1.21 is the current owner-local acceptance boundary. On 2026-08-25 the owner
+The v1.22 observed paired-eye `noseRootNarrowing` repair uses the CPU backend.
+Its private raster-row protection is unsupported by the retained Metal geometry
+uniform; an explicit GPU request carrying this protection returns typed
+`BeautyError.invalidInput` before submission. Existing neutral and other
+supported requests remain usable after the rejection. No new backend is added.
+
+v1.21 is a historical owner-local acceptance boundary. The current v1.22 result
+is established only by the execution-bound Phase95 COMPLETE receipt and
+`verify-complete`; an absent or stale receipt is not milestone completion.
+On 2026-08-25 the owner
 superseded the earlier `去脂` deferral and accepted the existing bounded v4
 mechanics as a provisional public still-image effect. The acceptance fact is
 owner-provided; the repository does not claim that a new blinded manual review

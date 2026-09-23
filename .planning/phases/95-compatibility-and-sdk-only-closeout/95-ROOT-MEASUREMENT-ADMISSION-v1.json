@@ -1,0 +1,30 @@
+{
+  "source_sha256": "707e9106e394421a00732b0efa2fbd2e1dc4dfee79d9244fcc763e2dbb106818",
+  "original_registration_sha256": "ef066fbe62a8385c137666ea0213284244b05199a9df0a81c8998bed07e4c43d",
+  "metric_id": "rootSurfaceSpanQ16_v4",
+  "definition_sha256": "c028df5f1f077fedc0753e5da4493da06ae56830a7d7bbba090e4d2b96c2fdd7",
+  "registration_sha256": "970be43d32b5e9386952beedef5d9418e70cf640b9d3e4d29b596628103f442f",
+  "registered_pairs": 31,
+  "model_sha256": "64184e229b263107bc2b804c6625db1341ff2bb731874b0bcc2fe6544e0bc9ff",
+  "runtime_sha256": "bba0ba295b5f5abd543b17418ba522e101b5b5dc78317e7e8742046ccfdcabb2",
+  "implementation": {
+    "scripts/compare-face-feature-batches.swift": "90e3eabddab6192d5da7e633acd90fbdf1dd5257ad63cdc64d46328c5d3fa8e8",
+    "scripts/run-clean-65-portrait.sh": "1f35363b6b55db037aac5c3df24e5a80013e7f6e8a574392600b1106dbc5022d",
+    "scripts/phase95-root-surface-batch.py": "1cb96dfdcfdedba81972843c684f6eaf353ec633f3815820a7b90d811d803353",
+    "scripts/phase95-root-surface-batch-native.swift": "f763775010bb3b71bef5dd95305acbe29bceef93c8396d79e3e1d22b1ae082c0",
+    "scripts/phase95-root-surface-probe.py": "44b06315b2e01d24dac0ec721a9d97d9beb9750bba31558874806e82c176d967",
+    "scripts/phase95-root-surface-native.swift": "f8d187129e3b14bb30d9f38d52d7b7bcb6e6a98cfeb2f724f5b03b78502c8a3c",
+    "scripts/phase95-root-surface-worker.py": "ede22db79b1a369dcd36fc517818441c257cd6976c3da21982acc9f77a005f3b",
+    "scripts/phase95-root-surface-horizontal.py": "af4b2b66f0bf56843a5a18cbefdebacf875bf77d6632fffe116ef6a17519a7de",
+    "scripts/phase95-root-mesh-source-diagnostic.py": "e27b22a8c45243779d48e0a09ea97a7c024ea3a3bb85904039de90f3ccbd26ea",
+    "scripts/phase95-root-mesh-source-worker.py": "aee0bad28fd0463c2d18b4277d66fe77013918d327f749390057eaaad979f0cb",
+    "scripts/phase95-root-sampler-correspondence.py": "7f838e03bd78bd31075c35ed8c8049ba968bbf3b86785aa0048eab5c55fd4367",
+    "scripts/phase95-root-forward-span.py": "0cfac9277c2efdbc47ec65f120c2a43f659d0a8d279e716940ed17051660fa2d",
+    "scripts/phase95-root-regional-motion.py": "267902733e7a75b415ce5b80281c96a4297803cf5ead40191cda569905ab9141"
+  },
+  "measurement_identity": "c195c36885785d770034c9ae59c2a6493ca11d20a517fb82973b76e654314c96",
+  "schema": "phase95-root-measurement-admission-v4",
+  "status": "registered",
+  "reviewer_agent_id": "independent-closeout-review-agent",
+  "findings": []
+}

@@ -38,15 +38,33 @@ final class Phase95RootImageFormationTests: XCTestCase {
         try checkForwardStructure(row: 164, expectNarrower: false)
     }
 
-    private func checkForwardStructure(row: Int, expectNarrower: Bool) throws {
+    func testCanonicalSamplerCorrespondenceTracksGeneratedBoundaryContraction() throws {
+        try checkForwardStructure(row: 143, expectNarrower: true, canonicalSampler: true)
+    }
+
+    func testCanonicalSamplerCorrespondenceRejectsFixedOuterBoundary() throws {
+        try checkForwardStructure(row: 164, expectNarrower: false, canonicalSampler: true)
+    }
+
+    func testSharedSourceUncertaintyTracksGeneratedBoundaryContraction() throws {
+        try checkForwardStructure(row: 143, expectNarrower: true, canonicalSampler: true, correlatedAnchors: true)
+    }
+
+    func testSharedSourceUncertaintyRejectsFixedOuterBoundary() throws {
+        try checkForwardStructure(row: 164, expectNarrower: false, canonicalSampler: true, correlatedAnchors: true)
+    }
+
+    private func checkForwardStructure(row: Int, expectNarrower: Bool, canonicalSampler: Bool = false,
+                                       correlatedAnchors: Bool = false) throws {
         let size = 512
         let color = try XCTUnwrap(CGColorSpace(name: CGColorSpace.sRGB))
         let context = CIContext(options: [.workingColorSpace: color, .outputColorSpace: color])
+        let anchors=expectNarrower ? [239,271] : [227,283]
         var source = [UInt8](repeating: 255, count: size * size * 4)
         for y in 0..<size { for x in 0..<size {
-            // Source-defined material boundaries are227.5 and283.5, independent
-            // of emitted field centers. Other channels supply generated texture.
-            source[(y * size + x) * 4] = (228...283).contains(x) ? 40 : 220
+            // Source-defined inner dorsal band, or the unchanged outer-base
+            // negative control; neither is selected from emitted field centers.
+            source[(y * size + x) * 4] = (anchors[0]+1...anchors[1]).contains(x) ? 40 : 220
             for c in 1..<3 {
                 let a = UInt64(x + 17 * c + y) &* 1_103_515_245 &+ 12_345
                 let b = UInt64(x * x + y * 7_919 + c * 107) &* 2_654_435_761
@@ -81,6 +99,8 @@ final class Phase95RootImageFormationTests: XCTestCase {
         from fractions import Fraction as F
         correspondence=runpy.run_path('scripts/phase95-root-nonlinear-probe.py')
         forward=runpy.run_path('scripts/phase95-root-forward-span.py')
+        sampler=runpy.run_path('scripts/phase95-root-sampler-correspondence.py')
+        shared=runpy.run_path('scripts/phase95-root-correlated-change.py')
         data=json.load(sys.stdin)
         def checked(call,*args,**kwargs):
             try:
@@ -92,25 +112,43 @@ final class Phase95RootImageFormationTests: XCTestCase {
                 print(json.dumps({'rejected':reason}))
                 sys.exit(2)
         positions=[]
-        for base in (227,283):
+        changes=[]
+        for base in data['anchors']:
             samples=[]
             for x in range(base-8,base+10):
-                lo,hi=checked(correspondence['interval'],data['source'],data['output'][x-2:x+3],x,search=16)
-                samples.append((F(x),F(x)-hi,F(x)-lo))
+                if data['canonical_sampler']:
+                    lo,hi=checked(sampler['inverse_hull'],data['source'],data['output'][x],x-16,x+16)
+                    samples.append((F(x),lo,hi))
+                else:
+                    lo,hi=checked(correspondence['interval'],data['source'],data['output'][x-2:x+3],x,search=16)
+                    samples.append((F(x),F(x)-hi,F(x)-lo))
             anchor=F(base)+F(1,2)
             positions.append(checked(forward['position'],(anchor,anchor),samples,F(1,5),F(13,5)))
+            if data['correlated_anchors']:
+                identity=tuple((x,x,x) for x,_,_ in samples)
+                changes.append(checked(shared['change'],(anchor-F(1,2),anchor+F(1,2)),
+                    (identity,F(1),F(1)),(tuple(samples),F(1,5),F(13,5)),cells=32))
+        if data['correlated_anchors']:
+            contraction=(changes[1][0]-changes[0][1],changes[1][1]-changes[0][0])
+            admitted=contraction[0]*65536/512 >= 16
+            if data['expect_narrower'] and not admitted:
+                print(json.dumps({'rejected':'uncertain_structure_not_narrower'}));sys.exit(2)
+            if not data['expect_narrower'] and (admitted or not contraction[0] <= 0 <= contraction[1]):
+                print(json.dumps({'rejected':'uncertain_fixed_structure_misclassified'}));sys.exit(2)
+            print(json.dumps({'structural_pairs':1,'passed':True}));sys.exit(0)
         measured=checked(forward['span'],*positions)
-        admitted=(F(56)-measured[1])*65536/512 >= 16
+        source_width=F(data['anchors'][1]-data['anchors'][0])
+        admitted=(source_width-measured[1])*65536/512 >= 16
         if data['expect_narrower'] and not admitted:
             print(json.dumps({'rejected':'structure_not_narrower'}))
             sys.exit(2)
-        if not data['expect_narrower'] and (admitted or not measured[0] <= 56 <= measured[1]):
+        if not data['expect_narrower'] and (admitted or not measured[0] <= source_width <= measured[1]):
             print(json.dumps({'rejected':'unchanged_structure_misclassified'}))
             sys.exit(2)
         print(json.dumps({'structural_pairs':1,'passed':True}))
         """
         let payload = try JSONSerialization.data(withJSONObject:
-            ["source": rgbRow(source), "output": rgbRow(output), "expect_narrower": expectNarrower])
+            ["source": rgbRow(source), "output": rgbRow(output), "anchors":anchors,"expect_narrower": expectNarrower, "canonical_sampler": canonicalSampler, "correlated_anchors": correlatedAnchors])
         let data = try Phase95GeneratedChild.run(script, payload: payload, directory: root)
         XCTAssertTrue(Phase95GeneratedChild.isSuccess(data, pairs: true))
     }
@@ -118,6 +156,7 @@ final class Phase95RootImageFormationTests: XCTestCase {
     private func displacement(_ x: Int, _ y: Int, _ size: Int, _ points: [WarpControlPoint]) -> Double {
         let px = (Double(x) + 0.5) / Double(size), py = (Double(y) + 0.5) / Double(size)
         return points.reduce(0) { sum, p in
+            if let maximumY=p.exclusiveMaximumY,y>=Int(floor(Double(maximumY)*Double(size))) { return sum }
             let dx = px - Double(p.target.x), dy = py - Double(p.target.y)
             let weight = max(0, 1 - (dx * dx + dy * dy).squareRoot() / Double(p.radius))
             return sum + (Double(p.target.x) - Double(p.source.x)) * weight * Double(size)

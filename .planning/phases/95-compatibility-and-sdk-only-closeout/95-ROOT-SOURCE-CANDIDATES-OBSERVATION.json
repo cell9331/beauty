@@ -1,0 +1,15 @@
+{
+  "acceptance_credit": false,
+  "anatomical_boundary_qualified": false,
+  "attempts": 2,
+  "candidate_rows": 0,
+  "contracts_sha256": "68d192c37821c4c059ac3763722bea491e5dd27850c2ab0a69ec5aa6246cd168",
+  "diagnostic_identity": "e9bc4a2d5a77dda595ef235c59c01d08b12a078aa3e4c44e7e8b5109bc2f044c",
+  "portrait_scoring_enabled": false,
+  "reason": "visible_coverage",
+  "schema": "phase95-source-candidates-observation-v1",
+  "source_profile_digest": "fc7792657e96642134aad8f5dd1e83ee024f5df938b98cb42c19580e05ce96cf",
+  "source_registered": false,
+  "source_sha256": "707e9106e394421a00732b0efa2fbd2e1dc4dfee79d9244fcc763e2dbb106818",
+  "status": "metric_unavailable"
+}

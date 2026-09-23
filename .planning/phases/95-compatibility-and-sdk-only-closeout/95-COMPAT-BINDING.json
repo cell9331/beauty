@@ -1,0 +1,9 @@
+{
+  "files": {
+    "BeautySDK/Tests/BeautyCoreTests/RepairedControlCompatibilityFixture.swift": "5c327d8101fdc41077449c00885073c08196ee54d11707db857902484efc9759",
+    "BeautySDK/Tests/BeautyCoreTests/RepairedControlCompatibilityTests.swift": "365c886a9646f98dc96ab3f0fe6991b2899557ac09aa539d5b07745cf16d1761"
+  },
+  "review_sha256": "8d9d991bbe5c6ee1b06ed54c517a1fb4a5344ed2b9f0b6214d82fd15c4f37376",
+  "schema": "phase95-compat-v1",
+  "status": "frozen"
+}

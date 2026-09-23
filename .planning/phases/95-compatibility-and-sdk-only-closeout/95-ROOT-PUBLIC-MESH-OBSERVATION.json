@@ -1,0 +1,11 @@
+{
+  "anatomical_boundary_qualified": false,
+  "canonical_prior_only": true,
+  "chains": 4,
+  "faces": 898,
+  "hypotheses": 2,
+  "portrait_scoring_enabled": false,
+  "public_asset_sha256": "8bac80443397e113f41a8b565ea72c59390bc031d9defab289dba7bc0c54e618",
+  "schema": "phase95-public-mesh-prior-v1",
+  "vertices": 468
+}

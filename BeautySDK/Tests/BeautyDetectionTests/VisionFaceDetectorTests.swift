@@ -1,6 +1,7 @@
 import CoreImage
 import Foundation
 import ImageIO
+import Vision
 import XCTest
 import BeautyCore
 @testable import BeautyDetection
@@ -552,6 +553,151 @@ final class VisionFaceDetectorTests: XCTestCase {
 
     // Opt-in live Vision integration smoke. The deterministic no-observation
     // unit contract is covered by testPIPE07NoObservationsReturnsNoFaceSummary.
+    func testCanonicalVisionRasterUsesSRGBForRGBP3GrayAndAlpha() throws {
+        let sRGB = try XCTUnwrap(CGColorSpace(name: CGColorSpace.sRGB))
+        let p3 = try XCTUnwrap(CGColorSpace(name: CGColorSpace.displayP3))
+        var opaqueBytes: [UInt8] = []
+        for index in 0..<12 {
+            opaqueBytes.append(UInt8(35 + index * 9))
+            opaqueBytes.append(UInt8(165 - index * 6))
+            opaqueBytes.append(UInt8(55 + index * 7))
+            opaqueBytes.append(255)
+        }
+        let opaque = Data(opaqueBytes)
+        var translucent = opaque
+        for offset in stride(from: 3, to: translucent.count, by: 4) { translucent[offset] = 192 }
+        let fixtures: [(Data, Int, CIFormat, CGColorSpace)] = [
+            (opaque, 16, .RGBA8, sRGB),
+            (opaque, 16, .RGBA8, p3),
+            (translucent, 16, .RGBA8, sRGB),
+            (Data((0..<12).map { UInt8(30 + $0 * 15) }), 4, .L8, CGColorSpaceCreateDeviceGray()),
+        ]
+        let context = CIContext(options: [.workingColorSpace: sRGB, .outputColorSpace: sRGB])
+        var normalizedRGB: [[UInt8]] = []
+        for (data, rowBytes, format, colorSpace) in fixtures {
+            let source = CIImage(bitmapData: data, bytesPerRow: rowBytes,
+                                 size: CGSize(width: 4, height: 3), format: format, colorSpace: colorSpace)
+            let input = VisionFaceDetectionInput(metadata: metadata(), imageExtent: source.extent.size,
+                                                 stillImage: source, maximumPixelCount: 12)
+            let raster = try VisionFaceDetector.canonicalStillImageInput(input)
+            let actual = canonicalTestBytes(CIImage(cgImage: raster.image), context: context, colorSpace: sRGB)
+            let expected = canonicalTestBytes(source, context: context, colorSpace: sRGB)
+            XCTAssertTrue(raster.image.colorSpace.map { CFEqual($0, sRGB) } == true)
+            XCTAssertEqual(raster.image.width, 4)
+            XCTAssertEqual(raster.image.height, 3)
+            XCTAssertTrue(actual.count == expected.count && zip(actual, expected).allSatisfy {
+                abs(Int($0) - Int($1)) <= 1
+            }, "Vision raster must preserve the independently rendered sRGB source")
+            normalizedRGB.append(actual)
+        }
+        XCTAssertTrue(normalizedRGB[0] != normalizedRGB[1], "P3 must be converted, not relabeled as sRGB")
+        XCTAssertTrue(stride(from: 3, to: normalizedRGB[2].count, by: 4).allSatisfy {
+            normalizedRGB[2][$0] == 192
+        }, "Detection-only rasterization must not force source alpha opaque")
+        let gray = normalizedRGB[3]
+        var grayChannelsAgree = true
+        for offset in stride(from: 0, to: gray.count, by: 4) {
+            if gray[offset] != gray[offset + 1] || gray[offset] != gray[offset + 2] {
+                grayChannelsAgree = false
+            }
+        }
+        XCTAssertTrue(grayChannelsAgree)
+    }
+
+    func testCanonicalVisionRasterPreservesExtentAndPassesOrientationWithoutPixelTransform() throws {
+        let colorSpace = try XCTUnwrap(CGColorSpace(name: CGColorSpace.sRGB))
+        var bytes: [UInt8] = []
+        for index in 0..<6 {
+            bytes.append(UInt8(20 + index * 30))
+            bytes.append(UInt8(190 - index * 20))
+            bytes.append(UInt8(40 + index * 17))
+            bytes.append(255)
+        }
+        let data = Data(bytes)
+        let original = CIImage(bitmapData: data, bytesPerRow: 12, size: CGSize(width: 3, height: 2),
+                               format: .RGBA8, colorSpace: colorSpace)
+        let context = CIContext(options: [.workingColorSpace: colorSpace, .outputColorSpace: colorSpace])
+        let expected = canonicalTestBytes(original, context: context, colorSpace: colorSpace)
+        for source in [original, original.transformed(by: CGAffineTransform(translationX: 11, y: -7))] {
+            for rawValue in UInt32(1)...UInt32(8) {
+                let orientation = try XCTUnwrap(CGImagePropertyOrientation(rawValue: rawValue))
+                for mirrored in [false, true] {
+                    let requestMetadata = BeautyInputMetadata(orientation: orientation, isInputMirrored: mirrored,
+                                                             source: .testFixture)
+                    let input = VisionFaceDetectionInput(metadata: requestMetadata, imageExtent: source.extent.size,
+                                                         stillImage: source)
+                    let raster = try VisionFaceDetector.canonicalStillImageInput(input)
+                    XCTAssertEqual(raster.orientation, orientation)
+                    XCTAssertEqual(raster.image.width, 3)
+                    XCTAssertEqual(raster.image.height, 2)
+                    XCTAssertTrue(canonicalTestBytes(CIImage(cgImage: raster.image), context: context,
+                                                    colorSpace: colorSpace) == expected,
+                                  "Orientation and mirroring stay with Vision and CoordinateMapper")
+                    XCTAssertEqual(input.metadata.isInputMirrored, mirrored)
+                    XCTAssertTrue(input.stillImage?.extent == source.extent)
+                }
+            }
+        }
+    }
+
+    func testCanonicalVisionRasterRejectsInvalidOrUnboundedCropsBeforeAllocation() throws {
+        let source = CIImage(color: .white)
+        let finite = source.cropped(to: CGRect(x: 0, y: 0, width: 3, height: 2))
+        let fractionalOrigin = finite.transformed(by: CGAffineTransform(translationX: 0.25, y: 0))
+        let fractionalWidth = finite.transformed(by: CGAffineTransform(scaleX: 1.125, y: 1))
+        // Core Image has already rounded these fractional crop/transform
+        // requests. Detection must use that actual extent, not the requested
+        // fractional dimensions retained by a caller's coordinate mapper.
+        for image in [fractionalOrigin, fractionalWidth] {
+            let input = VisionFaceDetectionInput(metadata: metadata(), imageExtent: image.extent.size,
+                                                 stillImage: image, maximumPixelCount: 12)
+            let raster = try VisionFaceDetector.canonicalStillImageInput(input)
+            XCTAssertTrue(CGFloat(raster.image.width) == image.extent.width)
+            XCTAssertTrue(CGFloat(raster.image.height) == image.extent.height)
+        }
+        XCTAssertThrowsError(try VisionFaceDetector.canonicalStillImageInput(
+            VisionFaceDetectionInput(metadata: metadata(), imageExtent: CGSize(width: 3.375, height: 2),
+                                     stillImage: fractionalWidth, maximumPixelCount: 12)
+        )) { XCTAssertTrue(($0 as? VisionFaceDetector.Failure) == .detectorUnavailable) }
+        let invalid: [CIImage?] = [
+            nil, source, CIImage.empty(),
+            source.cropped(to: CGRect(x: 0, y: 0, width: 1_000_000_000, height: 1_000_000_000)),
+        ]
+        for image in invalid {
+            let input = VisionFaceDetectionInput(metadata: metadata(), imageExtent: image?.extent.size ?? .zero,
+                                                 stillImage: image, maximumPixelCount: 12)
+            XCTAssertThrowsError(try VisionFaceDetector.canonicalStillImageInput(input)) {
+                XCTAssertTrue(($0 as? VisionFaceDetector.Failure) == .detectorUnavailable)
+            }
+        }
+        let bounded = source.cropped(to: CGRect(x: 0, y: 0, width: 4, height: 3))
+        for limit in [0, 11] {
+            XCTAssertThrowsError(try VisionFaceDetector.canonicalStillImageInput(
+                VisionFaceDetectionInput(metadata: metadata(), imageExtent: bounded.extent.size,
+                                         stillImage: bounded, maximumPixelCount: limit)
+            )) { XCTAssertTrue(($0 as? VisionFaceDetector.Failure) == .detectorUnavailable) }
+        }
+        XCTAssertNoThrow(try VisionFaceDetector.canonicalStillImageInput(
+            VisionFaceDetectionInput(metadata: metadata(), imageExtent: bounded.extent.size,
+                                     stillImage: bounded, maximumPixelCount: 12)
+        ))
+        var detector = VisionFaceDetector()
+        let rejected = detector.detect(image: bounded, metadata: metadata(), imageExtent: bounded.extent.size,
+                                       configuration: BeautyConfiguration(maximumInputPixelCount: 11))
+        XCTAssertEqual(rejected.summary.availability, .skipped)
+        XCTAssertEqual(rejected.summary.reasons, [.detectorUnavailable])
+    }
+
+    private func canonicalTestBytes(_ image: CIImage, context: CIContext, colorSpace: CGColorSpace) -> [UInt8] {
+        let width = Int(image.extent.width), height = Int(image.extent.height)
+        var bytes = [UInt8](repeating: 0, count: width * height * 4)
+        bytes.withUnsafeMutableBytes { storage in
+            context.render(image, toBitmap: storage.baseAddress!, rowBytes: width * 4,
+                           bounds: image.extent, format: .RGBA8, colorSpace: colorSpace)
+        }
+        return bytes
+    }
+
     func testIntegrationDefaultStillImageProviderReturnsRedactedNoFaceForNoFaceFixture() throws {
         guard ProcessInfo.processInfo.environment[
             "BEAUTYSDK_RUN_VISION_INTEGRATION_TESTS"
@@ -648,6 +794,7 @@ final class VisionFaceDetectorTests: XCTestCase {
                 XCTAssertGreaterThanOrEqual(result.summary.faceCount, 1)
                 XCTAssertEqual(result.summary.usedFaceCount, 1)
                 XCTAssertEqual(result.observations.count, 1)
+                try assertCanonicalRootSplitMatchesOriginalRegistration(image: image, result: result)
                 if result.observations.first?.observedFaceSupport?.contour != nil,
                    result.observations.first?.observedFaceSupport?.medianLine != nil {
                     completeSupportCount += 1
@@ -657,6 +804,47 @@ final class VisionFaceDetectorTests: XCTestCase {
 
         XCTAssertGreaterThan(usableFaceCount, 0, "Expected usable aggregate detection; summaries=\(summaries.joined(separator: ","))")
         XCTAssertGreaterThan(completeSupportCount, 0, "Expected complete aggregate observed-face support")
+    }
+
+    // The original source-only registration recipe is independent of the SDK
+    // helper. Inspect only this authorized input; never write coordinates,
+    // points, images, or a failed assertion's operand values to test output.
+    private func assertCanonicalRootSplitMatchesOriginalRegistration(
+        image: CIImage, result: VisionFaceDetectionResult
+    ) throws {
+        let sRGB = try XCTUnwrap(CGColorSpace(name: CGColorSpace.sRGB))
+        let context = CIContext(options: [.workingColorSpace: sRGB, .outputColorSpace: sRGB])
+        guard let raster = context.createCGImage(image, from: image.extent) else {
+            XCTFail("Independent source-only registration raster unavailable")
+            return
+        }
+        let request = VNDetectFaceLandmarksRequest()
+        try VNImageRequestHandler(cgImage: raster, orientation: .up).perform([request])
+        guard let faces = request.results, faces.count == 1,
+              let face = faces.first, let crest = face.landmarks?.noseCrest,
+              crest.pointCount >= 3,
+              let observed = result.observations.first?.observedNoseSupport,
+              observed.crest.count >= 3 else {
+            XCTFail("Independent and production source-only nasal support must be available")
+            return
+        }
+        let bounds = CGRect(x: face.boundingBox.minX, y: 1 - face.boundingBox.maxY,
+                            width: face.boundingBox.width, height: face.boundingBox.height)
+        let independentY = crest.normalizedPoints.map {
+            bounds.maxY - Double($0.y) * bounds.height
+        }.sorted()
+        let originalSplit = (independentY[0] + independentY[independentY.count / 2]) / 2
+        // The compositor floors a PPM-quantized bridge minimum; the SDK owns
+        // the first protected integer row via its emitted Float split.
+        let bridgeMinimumPPM = floor((originalSplit + 0.000002) * 1e6)
+        let originalBridgeRow = Int(floor(bridgeMinimumPPM * Double(raster.height) / 1e6))
+        let productionY = observed.crest.map { Float($0.y) }.sorted()
+        let productionSplit = (productionY[0] + productionY[productionY.count / 2]) * 0.5
+        let productionBridgeRow = Int(floor(Double(productionSplit) * Double(raster.height)))
+        XCTAssertTrue(abs(Double(productionSplit) - originalSplit) <= 0.0000001,
+                      "Production and independent source-only nasal ownership must agree")
+        XCTAssertTrue(productionBridgeRow == originalBridgeRow,
+                      "Production cutoff must protect the original registered bridge row")
     }
 
     func testIntegrationDefaultStillImageProviderReportsObservedEyebrowAvailabilityWithoutRawPayload() throws {

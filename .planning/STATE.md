@@ -2,47 +2,49 @@
 gsd_state_version: 1.0
 milestone: v1.22
 milestone_name: Non-Local Facial Effect Repairs
-current_phase: 94
-current_phase_name: Negative Mouth-Width Repair
-status: ready_for_next_phase
-stopped_at: Phase94 complete at valid receipt; Phase95 unstarted
-last_updated: "2026-09-11T05:39:38.696139+00:00"
-last_activity: 2026-09-11
-last_activity_desc: Phase94 complete:41/41 acceptance,28/28 independent goal and valid receipt
+current_phase: 95
+current_phase_name: Compatibility and SDK-only Closeout
+status: completed
+stopped_at: v1.22 complete; valid receipt verified; no active next milestone
+last_updated: "2026-09-23T10:55:05+08:00"
+last_activity: 2026-09-23
+last_activity_desc: Valid COMPLETE; 65/65 twice; seven effective and one deferred; full SwiftPM 937/0/0
 state_head: 0bc58b4af3201c6767a1a6da2ba313bfda9a3a45
 progress:
   total_phases: 7
-  completed_phases: 6
-  total_plans: 29
-  completed_plans: 29
-  percent: 86
+  completed_phases: 7
+  total_plans: 33
+  completed_plans: 33
+  percent: 100
 ---
 
 # Project State
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (updated 2026-09-08)
+See: `.planning/PROJECT.md` (updated 2026-09-23)
 
 **Core value:** The project owner's local iOS host can integrate `BeautySDK`
 and get natural, controllable real-time and still-image beauty processing
 without distributing the SDK, model, or weights.
-**Current focus:** Phase94 complete; Phase95 remains unstarted
+**Current focus:** [v1.22 current execution contract](V1.22-CURRENT.md).
 
 ## Current Position
 
-Phase: 94 (Negative Mouth-Width Repair) — COMPLETE
-Plan: 94-06 of6 complete; all six Phase94 plans complete
-Status: Phase94/MOUTH-01 complete; independent goal28/28 and valid COMPLETE receipt
-Last activity: 2026-09-11 — Phase94 complete:41/41 acceptance,28/28 goal verification, attempts2/2
+Phase: 95 (Compatibility and SDK-only Closeout) — COMPLETE
+Plans: 95-01 safety,95-02 compatibility,95-03 actual65/full regression,95-04 independent goal/finalization all complete.
+Last activity: 2026-09-23 — v1.22 completed 2026-09-23: 7/7 phases, 33/33 plans, 11/11 active requirements; [verified COMPLETE](phases/95-compatibility-and-sdk-only-closeout/95-COMPLETE.json).
 
-Progress: 6/7 milestone phases complete (86%); 29 plans have summaries, including all six Phase94 plans. Historical diagnostic/deferred outcomes retain their recorded meaning. Phase94 has bounded generated-source semantic completion credit; Phase95 remains unexecuted.
+Actual portrait: 65/65 outputs, 2 reconciled runs, seven effective directions and one deferred/partial direction. Current safety 1/0/0, compatibility 4/0/0, archive-first full SwiftPM 937/0/0; all 8 opt-ins accounted for.
+Root: 31 fixed source pairs; source interval [260, 373] Q16, neutral interval [260, 373] Q16; all three sibling intervals pass; outside 0 pixels / 0 absolute RGB delta; all root protected-region changes are zero.
+FACE-01/faceContourSmooth remains explicitly deferred/partial under FUTURE-04, without effectiveness credit. The repaired observed paired-eye root uses CPU; retained Metal rejects its unsupported private raster cutoff with typed invalidInput before submission and recovers for later supported requests. This is owner-local SDK validation, with no device, population, commercial quality, packaging, shipping, launch, release-readiness or distribution claim. No owner annotation or device action remains. Phase96 is absorbed into95-03, and no next milestone is started.
+COMPLETE SHA256: `33b49fee25b4156b8a947ac437822ac33f7e5473a61ed74b1015c393035862d4`; normative input digest: `56d33c8d9ddfbd6899287feeac501139d6ea1bac05250ca8982fa861482ed6f0`.
 
 ## Performance Metrics
 
 **Current milestone:**
 
-- Authored plans with summaries: 29, including all six completed Phase94 plans (historical failed and halted attempts are not semantic successes)
+- Authored plans with summaries: 33/33; all seven milestone phases complete. Historical failures retain their original outcomes.
 - Average documented duration: 13 min across 11 timed summaries
 - Total documented execution time: 144 min plus the untimed FACE-01 terminal record
 
@@ -67,6 +69,13 @@ roadmaps.
 ## Accumulated Context
 
 ### Decisions
+
+Current authorization and next steps are in V1.22-CURRENT.md. The dated records below
+retain historical context; their superseded next-step/approval language is not a new blocker.
+
+### Roadmap Evolution
+
+- 2026-09-22: Phase96 draft absorbed into95-03; its old dependency on95 is retired. Preserve historical logs; no separate execution or retry loop.
 
 - [Phase 93, 2026-09-10]: Owner explicitly approved root adapter positioning and corresponding regression/registration tests (D-09). Frozen ROI/thresholds/public interfaces remain unchanged; existing research reused and implementation budget remains two attempts. Approval clears the scope decision, not the technical registration gate.
 
@@ -374,6 +383,12 @@ None found under `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
+No unresolved blocker remains within the completed v1.22 scope. FACE-01/faceContourSmooth remains explicitly deferred/partial under FUTURE-04, without effectiveness credit. The repaired observed paired-eye root uses CPU; retained Metal rejects its unsupported private raster cutoff with typed invalidInput before submission and recovers for later supported requests. This is owner-local SDK validation, with no device, population, commercial quality, packaging, shipping, launch, release-readiness or distribution claim. No owner annotation or device action remains. Phase96 is absorbed into95-03, and no next milestone is started.
+Authorized portraits and detailed outputs remain owner-local and outside durable evidence.
+
+### Historical blocker notes — superseded current status, not pending instructions
+
+
 - [Phase 90] The former FACE-01 implementation blocker is resolved by scope,
   not by repair: revision 22 remains consumed diagnostic evidence and no GREEN
   claim is permitted. Further repair requires a separately authorized
@@ -408,15 +423,28 @@ Plan 93-02 is complete, 2/2 tasks. Fresh current-gate registration 4/0/0, metric
 
 ## Session Continuity
 
+### Current completion handoff — 2026-09-23
+
+Last session: 2026-09-23
+Stopped at: v1.22 completed; no active next milestone or unresolved root diagnosis
+Resume file: .planning/phases/95-compatibility-and-sdk-only-closeout/95-COMPLETE.json (read-only verification, no diagnostic continuation)
+
+v1.22 completed 2026-09-23: 7/7 phases, 33/33 plans, 11/11 active requirements; [verified COMPLETE](phases/95-compatibility-and-sdk-only-closeout/95-COMPLETE.json).
+No resumption of historical Phase95 diagnosis, manual annotation, or retired Phase96 scripts is pending.
+Use `python3 scripts/check-phase95-closeout.py verify-complete` for read-only receipt validation.
+COMPLETE SHA256: `33b49fee25b4156b8a947ac437822ac33f7e5473a61ed74b1015c393035862d4`; normative input digest: `56d33c8d9ddfbd6899287feeac501139d6ea1bac05250ca8982fa861482ed6f0`.
+
+### Historical session records — not current instructions
+
 ### Historical Phase 93 plan 03 terminal checkpoint — 2026-09-10
 
 Plan 93-03 is halted, 1/2 tasks complete. Task 1 committed `811734f2`: unchanged-provider RED discovered 22 methods, 17 passed, 5 expected-failing methods, zero skips; exactly three centered IDs plus four named scaling/budget/cutoff IDs are frozen in PROVIDER-RED (`650e48e51a4701fa653bfb53e24955dc239e46b420f12decb841bb91adb09138`). Fixed candidate 1 compiled and passed authorities, then failed `testFinalFloatFieldBudgetAndDenseMap` / `P93_FIELD_BUDGET` at ledger sequence 25 (22 discovered, 18 passed, 1 failed, zero skips; three unexecuted). Candidate source is preserved in `e4e89680`. This is a blocking safety conjunction; no second candidate, post-evaluation correction or semantic rerun occurred. Both candidate directions remain untested; prior bridge/root baseline_pass evidence remains historical.
 
 Sequence 26 finishes shared attempt 1 as failed/assertion_failure/production_restored; rollback commit `5392e9d1` restores the exact pinned original adapter and provider. The ledger contains one begin and one finish. All immutable bindings and corrected root/new provider tests remain as failing historical proof. Both NOSE requirements remain active; no phase completion or 93-04/05 work. See 93-03-SUMMARY.md. Parent repair/defer/stop disposition is required; no retry budget is reset. Parent frontmatter, position, config/state.json/runtime/lock and unrelated state entries remain preserved.
 
-Last session: 2026-09-11
-Stopped at: Phase94 complete at valid receipt; Phase95 unstarted
-Resume file: None
+> Last session: 2026-09-14
+> Stopped at: Resumed Phase95 Plan03; diagnosing the precise automatic registration failure without altering frozen predicates
+> Resume file: .planning/debug/phase95-semantic-repair.md
 
 ### Historical Phase 93 completion handoff
 
@@ -453,3 +481,5 @@ Continue94-05 independent implementation/security review then owners;94-06 final
 All six plans complete. MOUTH-01 is complete under current CHECKS41/41 and independent goal28/28. COMPLETE SHA256 fbfa022b732c0a6ba4e633d98e996620badf1a5e1daa2213a270c8e165acdeeb was atomically published and read-only status revalidated phase_complete:true. Source/neutral520 changed/73743 RGB/−24Q16, all negative protections0/0 and14 retained row hashes exact; actual-field/lifecycle/degradation checks pass. Research1, checked plan sets1, attempts2/2; original and policyA failures/rollback remain immutable.
 
 No owner file changed after final qualification binding. PLANS intentionally remains its sealed conditional verifying snapshot, with current completion determined by the valid receipt. Phase95 is the remaining milestone phase and has not started: private portraits/final65/full no-skip and device/commercial/distribution claims are not credited here. User config/state-cache/runtime/lock changes remain untouched.
+
+<!-- beauty-v122-complete-sha256: 33b49fee25b4156b8a947ac437822ac33f7e5473a61ed74b1015c393035862d4 -->

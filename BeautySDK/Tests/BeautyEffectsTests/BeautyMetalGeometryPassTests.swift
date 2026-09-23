@@ -8,6 +8,38 @@ import BeautyRender
 @testable import BeautyEffects
 
 final class BeautyMetalGeometryPassTests: XCTestCase {
+    func testObservedRootRasterProtectionRejectsUnsupportedMetalAndRecovers() throws {
+        guard let runtime = makeRuntime() else { return }
+        func eye(_ side: BeautyObservedEyeSide, _ x: Double) -> BeautyObservedEyeSupport {
+            .init(side: side, contour: (0..<12).map { index in
+                let angle = Double(index) * .pi / 6
+                return .init(x: x + 0.04 * cos(angle), y: 0.28 + 0.02 * sin(angle))
+            })
+        }
+        let observation = BeautyFaceObservation(
+            imageBounds: .init(x: 0.1, y: 0.1, width: 0.8, height: 0.8),
+            landmarks: .complete, observedEyeSupport: [eye(.left, 0.38), eye(.right, 0.62)],
+            observedEyeOrder: .canonical,
+            observedNoseSupport: .init(
+                crest: [0.30, 0.35, 0.40, 0.45, 0.50].map { .init(x: 0.5, y: $0) },
+                contour: [.init(x: 0.44, y: 0.51), .init(x: 0.46, y: 0.55),
+                    .init(x: 0.5, y: 0.56), .init(x: 0.54, y: 0.55), .init(x: 0.56, y: 0.51)]))
+        let face = BeautyFaceGeometryAdapter.makeGeometry(from: observation)
+        let plan = BeautyEffectResolver.resolve(parameters: .init(noseRootNarrowing: 0.25), faceGeometry: face)
+        let points = BeautyGeometryEffectPipeline.controlPoints(for: plan, face: face)
+        XCTAssertFalse(points.isEmpty)
+        XCTAssertTrue(points.allSatisfy { $0.exclusiveMaximumY != nil })
+        let fixture = geometryFixture(width: 128, height: 128)
+        let backend = BeautyMetalBackend(runtime: runtime)
+        let request = try makeRequest(fixture: fixture, plan: plan, observation: observation)
+        XCTAssertThrowsError(try backend.execute(request)) { error in
+            XCTAssertEqual(error as? BeautyError, .invalidInput)
+        }
+        let neutral = BeautyEffectResolver.resolve(parameters: .init(), faceGeometry: face)
+        let recovered = try makeRequest(fixture: fixture, plan: neutral, observation: observation)
+        XCTAssertEqual(try rgba(backend.execute(recovered)), fixture.rgba8)
+    }
+
     func testGeneratedInventoryUsesOneUnifiedFiniteBoundedPointSource() {
         let face = FaceGeometry.phase46AsymmetricComplete
         let rows = geometryRows()

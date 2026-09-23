@@ -102,12 +102,20 @@ final class PortraitNoseRegistrationTests: XCTestCase {
         try checkRootStructure(bright: true)
     }
 
-    private func checkRootStructure(bright: Bool) throws {
+    func testObservedRootDoesNotClaimStationaryOuterStructure() throws {
+        try checkRootStructure(bright:false,inner:false)
+        try checkRootStructure(bright:true,inner:false)
+    }
+
+    private func checkRootStructure(bright: Bool, inner:Bool=true) throws {
         let size = 512, color = try XCTUnwrap(CGColorSpace(name: CGColorSpace.sRGB))
         var source = [UInt8](repeating: 255, count: size * size * 4)
         for y in 0..<size { for x in 0..<size {
             let px = (Double(x) + 0.5) / Double(size), py = (Double(y) + 0.5) / Double(size)
-            let inside = (0.445...0.555).contains(px) && (0.24...0.35).contains(py)
+            // Fixed source objects: the dorsal material band and, separately,
+            // the former much wider outer-base negative control.
+            let band:ClosedRange<Double> = inner ? 0.468...0.532 : 0.445...0.555
+            let inside = band.contains(px) && (0.24...0.35).contains(py)
             let value: UInt8 = inside != bright ? 40 : 220
             for c in 0..<3 { source[(y * size + x) * 4 + c] = value }
         } }
@@ -140,7 +148,11 @@ final class PortraitNoseRegistrationTests: XCTestCase {
             return (lower / 56, upper / 56)
         }
         let beforeWidth = try widthBounds(source), afterWidth = try widthBounds(output)
-        XCTAssertGreaterThanOrEqual((beforeWidth.lower - afterWidth.upper) * 65_536 / Double(size), 16)
+        if inner {
+            XCTAssertGreaterThanOrEqual((beforeWidth.lower - afterWidth.upper) * 65_536 / Double(size), 16)
+        } else {
+            XCTAssertTrue(source==output,"Stationary outer material must not earn dorsal narrowing credit")
+        }
         for y in 0..<size { for x in 0..<size {
             let i = (y * size + x) * 4
             XCTAssertEqual(output[i + 3], source[i + 3])

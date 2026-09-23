@@ -12,6 +12,7 @@ enum SemanticMetricKind: String, Codable, CaseIterable {
     case innerBrowHeadGap
     case bridgeDefinitionGain
     case rootWidthContraction
+    case rootSurfaceSpanQ16_v4
     case mouthWidthContraction
 }
 
@@ -131,6 +132,7 @@ struct StableSemanticPayload: Codable, Equatable {
     let mechanicalCases: [MechanicalCaseSummary]
     let semanticDirections: [SemanticDirectionSummary]
     let verdict: String
+    var rootEvidence: RootBatchEvidence? = nil
 }
 
 struct SemanticReportEnvelope: Codable, Equatable {
@@ -941,6 +943,7 @@ private func semanticMetricValue(
     case .innerBrowHeadGap: return try innerBrowHeadGap(image, regions: regions)
     case .bridgeDefinitionGain: return try bridgeDefinitionGain(image, regions: regions)
     case .rootWidthContraction: return try rootWidthContraction(image, regions: regions)
+    case .rootSurfaceSpanQ16_v4: throw SemanticContractError.unsupportedMetric
     case .mouthWidthContraction: return try mouthWidthContraction(image, regions: regions)
     }
 }
@@ -987,7 +990,8 @@ private func semanticMeasurement(
     candidate: CanonicalImage,
     siblings: [CanonicalImage],
     watermarkRows: Int,
-    gazeAggregate: RendererGazeAggregate? = nil
+    gazeAggregate: RendererGazeAggregate? = nil,
+    rootEvidence: RootBatchEvidence? = nil
 ) throws -> SemanticMeasurement {
     try validateCanonicalPair(source, neutral)
     try validateCanonicalPair(source, candidate)
@@ -1002,7 +1006,9 @@ private func semanticMeasurement(
     let neutralMargin: Int64
     let signedMargin: Int64
     var siblingMargin = Int64.max
-    if contract.metric == .pupilToOwnEyeCenter {
+    if contract.caseID == "noseRootNarrowing_0p25", let rootEvidence {
+        (sourceMargin, neutralMargin, signedMargin, siblingMargin) = try rootBatchMargins(rootEvidence)
+    } else if contract.metric == .pupilToOwnEyeCenter {
         guard let gazeAggregate,
               gazeAggregate.eligibleCount > 0,
               gazeAggregate.correctedCount == gazeAggregate.eligibleCount,
@@ -1890,7 +1896,8 @@ private func canonicalPayload(_ payload: StableSemanticPayload) -> StableSemanti
                 verdict: direction.verdict
             )
         },
-        verdict: payload.verdict
+        verdict: payload.verdict,
+        rootEvidence: payload.rootEvidence
     )
 }
 
@@ -1961,9 +1968,20 @@ private func validateStablePayload(
     guard contracts.map(\ .caseID) == expectedSemanticContracts.map(\ .caseID) else {
         throw SemanticContractError.contracts
     }
+    if let root = canonical.rootEvidence {
+        try validateRootBatchEvidence(root)
+        guard canonical.fixtureCount == 1 else { throw SemanticContractError.admission }
+    }
     for (direction, contract) in zip(canonical.semanticDirections, contracts) {
-        guard direction.fixtureCount == canonical.fixtureCount else {
+        let expectedMetric: SemanticMetricKind = contract.caseID == "noseRootNarrowing_0p25" && canonical.rootEvidence != nil ? .rootSurfaceSpanQ16_v4 : contract.metric
+        guard direction.fixtureCount == canonical.fixtureCount,
+              direction.metric == expectedMetric else {
             throw SemanticContractError.verdict
+        }
+        if direction.caseID == "noseRootNarrowing_0p25", let root = canonical.rootEvidence {
+            let margins = try rootBatchMargins(root)
+            guard direction.sourceSignedMarginQ16 == margins.0, direction.neutralSignedMarginQ16 == margins.1,
+                  direction.signedMarginQ16 == margins.2, direction.siblingDistinctMarginQ16 == margins.3 else { throw SemanticContractError.verdict }
         }
         let expectedReasons = try expectedFailureReasonCodes(
             for: direction, contract: contract, fixtureCount: canonical.fixtureCount
@@ -2022,6 +2040,7 @@ private func phase95Classification(
                                    "stableSemanticReconciliationDigest", "status"]) else {
         throw SemanticContractError.admission
     }
+    if let nested = object["stableSemanticPayload"] as? [String:Any], let root = nested["rootEvidence"] as? [String:Any] { _ = try parseRootBatchEvidence(root) }
     let envelope = try JSONDecoder().decode(RunnerEnvelope.self, from: data)
     let payload = envelope.stableSemanticPayload
     try validateStablePayload(payload, contracts: contracts)
@@ -2037,8 +2056,8 @@ private func phase95Classification(
     guard active.count == 7, active.allSatisfy({ $0.verdict == "semantic_pass" }),
           let contour = payload.semanticDirections.first(where: { $0.caseID == deferred }),
           contour.verdict == "semantic_fail" else { throw SemanticContractError.verdict }
-    let output: [String: Any] = [
-        "schema": "phase95-clean-65-v2", "status": "pass",
+    var output: [String: Any] = [
+        "schema": payload.rootEvidence == nil ? "phase95-clean-65-v2" : "phase95-clean-65-v4", "status": "pass",
         "comparison_count": payload.mechanicalCases.count,
         "outputs": payload.mechanicalCases.reduce(0) { $0 + $1.outputCount },
         "fixture_count": payload.fixtureCount, "repeat_count": 2,
@@ -2050,6 +2069,15 @@ private func phase95Classification(
         "stable_payload_digest": envelope.stableSemanticPayloadDigest,
         "contract_id": payload.contractID
     ]
+    if let root = payload.rootEvidence {
+        if let expected = ProcessInfo.processInfo.environment["BEAUTY_PHASE95_ROOT_MEASUREMENT_IDENTITY"] {
+            guard root.measurement_identity == expected else { throw SemanticContractError.admission }
+        }
+        output["root_evidence"] = try JSONSerialization.jsonObject(with: JSONEncoder().encode(root))
+        output["measurement_identity"] = root.measurement_identity
+        output["root_metric_id"] = root.metric_id
+        output["root_source_registration_sha256"] = root.registration_sha256
+    }
     return try JSONSerialization.data(withJSONObject: output, options: [.sortedKeys, .prettyPrinted])
 }
 
@@ -2059,7 +2087,8 @@ private func semanticDirectionSummary(
     neutrals: [CanonicalImage],
     candidates: [CanonicalImage],
     siblingImages: [[CanonicalImage]],
-    gazeAggregates: [RendererGazeAggregate]? = nil
+    gazeAggregates: [RendererGazeAggregate]? = nil,
+    rootEvidence: RootBatchEvidence? = nil
 ) throws -> SemanticDirectionSummary {
     guard !sources.isEmpty, sources.count == neutrals.count,
           sources.count == candidates.count,
@@ -2088,7 +2117,8 @@ private func semanticDirectionSummary(
             source: sources[index], neutral: neutrals[index], candidate: candidates[index],
             siblings: siblingImages.map { $0[index] },
             watermarkRows: watermarkExcludedRows(width: sources[index].width),
-            gazeAggregate: gazeAggregates?[index]
+            gazeAggregate: gazeAggregates?[index],
+            rootEvidence: rootEvidence
         )
         sourceChanged = try checkedAdd(sourceChanged, measurement.sourceTarget.changedPixels)
         sourceDelta = try checkedAdd(sourceDelta, measurement.sourceTarget.absoluteRGBDelta)
@@ -2113,7 +2143,7 @@ private func semanticDirectionSummary(
     let protectedRows = contract.protectedRegions.compactMap { protected[$0.id] }
     let provisional = SemanticDirectionSummary(
         caseID: contract.caseID,
-        metric: contract.metric,
+        metric: rootEvidence == nil ? contract.metric : .rootSurfaceSpanQ16_v4,
         fixtureCount: sources.count,
         sourceTargetChangedPixels: sourceChanged,
         sourceTargetAbsoluteRGBDelta: sourceDelta,
@@ -2365,7 +2395,7 @@ private func runRendererReportAdmissionSelfTests() throws -> Int {
 }
 
 private func runDirectionMetricSelfTests(contracts: [SemanticContract]) throws -> Int {
-    guard Set(contracts.map(\ .metric)) == Set(SemanticMetricKind.allCases) else {
+    guard Set(contracts.map(\ .metric)) == Set(SemanticMetricKind.allCases.filter { $0 != .rootSurfaceSpanQ16_v4 }) else {
         throw SemanticContractError.verdict
     }
     var probes = 0
@@ -2632,12 +2662,13 @@ private func runSemanticReportSelfTests(manifest: BatchManifest) throws -> Int {
     }
     func replacingDirection(
         _ direction: SemanticDirectionSummary,
+        metric: SemanticMetricKind? = nil,
         sourceTargetChangedPixels: Int64? = nil,
         failureReasonCodes: [String]? = nil,
         verdict: String? = nil
     ) -> SemanticDirectionSummary {
         SemanticDirectionSummary(
-            caseID: direction.caseID, metric: direction.metric,
+            caseID: direction.caseID, metric: metric ?? direction.metric,
             fixtureCount: direction.fixtureCount,
             sourceTargetChangedPixels: sourceTargetChangedPixels ?? direction.sourceTargetChangedPixels,
             sourceTargetAbsoluteRGBDelta: direction.sourceTargetAbsoluteRGBDelta,
@@ -2733,6 +2764,16 @@ private func runSemanticReportSelfTests(manifest: BatchManifest) throws -> Int {
         throw SemanticContractError.verdict
     }
     probes += 1 // A complete 7-pass/1-deferred failure is accepted without invented zero maxima.
+    // A recomputed digest must not launder a wrong measurement identity.
+    for index in deferredRows.indices {
+        var wrongMetric = deferredRows
+        let other = SemanticMetricKind.allCases.first { $0 != wrongMetric[index].metric }!
+        wrongMetric[index] = replacingDirection(wrongMetric[index], metric: other)
+        try expect(.verdict) {
+            _ = try phase95Classification(runnerData(wrongMetric), contracts: contracts,
+                                          expectedContractID: payload.contractID)
+        }
+    }
     for index in 1..<directions.count {
         var failing = deferredRows
         failing[index] = replacingDirection(directions[index], sourceTargetChangedPixels: 0,
@@ -3527,9 +3568,424 @@ func runSemanticSelfTests() throws -> Int {
     mutationCount += try runDirectionMetricSelfTests(contracts: contracts)
     mutationCount += try runRendererReportAdmissionSelfTests()
     mutationCount += try runSemanticReportSelfTests(manifest: manifest)
+    mutationCount += try runRootBatchSelfTests()
+    mutationCount += try runRootBatchTransportSelfTests()
 
     return mutationCount
 }
+
+struct RootBatchEvidence: Codable, Equatable {
+    let schema: String
+    let metric_id: String
+    let measurement_identity: String
+    let source_sha256: String
+    let original_registration_sha256: String
+    let definition_sha256: String
+    let registration_sha256: String
+    let model_sha256: String
+    let runtime_sha256: String
+    let pair_count: Int
+    let crop_rgb_sha256: [String:String]
+    let intervals_q16: [String:[Int64]]
+}
+
+private let rootBatchRoles = ["source", "neutral", "candidate", "noseBridge_0p30", "noseSlim_0p35", "noseTipLift_0p25"]
+private let rootBatchReferences = ["source", "neutral", "noseBridge_0p30", "noseSlim_0p35", "noseTipLift_0p25"]
+
+private func validateRootBatchEvidence(_ value: RootBatchEvidence) throws {
+    func hash(_ value:String)->Bool { value.count==64 && value.allSatisfy {"0123456789abcdef".contains($0)} }
+    guard value.schema=="phase95-root-batch-evidence-v1",value.metric_id=="rootSurfaceSpanQ16_v4",
+          (4...32).contains(value.pair_count),
+          [value.measurement_identity,value.source_sha256,value.original_registration_sha256,
+           value.definition_sha256,value.registration_sha256,value.model_sha256,value.runtime_sha256].allSatisfy(hash),
+          Set(value.crop_rgb_sha256.keys)==Set(rootBatchRoles),value.crop_rgb_sha256.values.allSatisfy(hash),
+          value.crop_rgb_sha256["source"]==value.crop_rgb_sha256["neutral"],
+          Set(value.intervals_q16.keys)==Set(rootBatchReferences),value.intervals_q16.values.allSatisfy({
+              $0.count==2 && $0[0] <= $0[1] && $0.allSatisfy { -(1<<31) <= $0 && $0 < (1<<31) }
+          }) else {throw SemanticContractError.admission}
+}
+
+private func parseRootBatchEvidence(_ response:[String:Any]) throws -> RootBatchEvidence {
+    guard Set(response.keys)==Set(["schema","metric_id","measurement_identity","source_sha256","original_registration_sha256","definition_sha256","registration_sha256","model_sha256","runtime_sha256","pair_count","crop_rgb_sha256","intervals_q16"]),
+          strictJSONInteger(response["pair_count"]) != nil,
+          let intervals=response["intervals_q16"] as? [String:[Any]],
+          intervals.values.allSatisfy({$0.count==2 && $0.allSatisfy{strictJSONInteger($0) != nil}}) else {throw SemanticContractError.admission}
+    let evidence=try JSONDecoder().decode(RootBatchEvidence.self,from:JSONSerialization.data(withJSONObject:response))
+    try validateRootBatchEvidence(evidence)
+    return evidence
+}
+
+private func validateRootBatchBindings(_ evidence:RootBatchEvidence,identity:String,sourceHash:String,hashes:[String:String]) throws {
+    try validateRootBatchEvidence(evidence)
+    guard evidence.measurement_identity==identity,evidence.source_sha256==sourceHash,evidence.crop_rgb_sha256==hashes else {throw SemanticContractError.admission}
+}
+
+private func rootBatchMargins(_ value:RootBatchEvidence) throws -> (Int64,Int64,Int64,Int64) {
+    try validateRootBatchEvidence(value)
+    let source=value.intervals_q16["source"]![0],neutral=value.intervals_q16["neutral"]![0]
+    let distinct=rootBatchReferences.dropFirst(2).map { role -> Int64 in
+        let interval=value.intervals_q16[role]!
+        return interval[0]>0 ? interval[0] : (interval[1]<0 ? -interval[1] : 0)
+    }.min()!
+    return (source,neutral,min(source,neutral),distinct)
+}
+
+private final class RootBatchCancellation: @unchecked Sendable {
+    private let lock=NSLock();private var interrupted=false
+    func cancel(){lock.lock();interrupted=true;lock.unlock()}
+    var isCancelled:Bool {lock.lock();defer{lock.unlock()};return interrupted}
+}
+
+private enum RootBatchTransport {
+    enum Failure:Error {case invalidInput,transport,timeout,outputLimit,childFailed,protocolFailure,interrupted}
+    final class Observation {
+        var output=Data() {didSet {onOutput?(output)}}
+        var leaderPID:Int32?
+        var onOutput:((Data)->Void)? // Synchronous, generated-test observation only.
+    }
+    static let ready=Data("phase95-root-batch-ready\n".utf8)
+    // A fixed acknowledgement proves ownership of the launched PID's group.
+    // The batch's nested processes inherit it; no supplied group ID is accepted.
+    static func run(_ script:String,arguments:[String]=[],payload:Data,directory:URL,
+                    timeout:Double=600,maximum:Int=32*1024*1024,observation:Observation?=nil)throws->Data {
+        guard timeout.isFinite,timeout>0,timeout<=600,maximum>0,maximum<=32*1024*1024,
+              !payload.isEmpty,payload.count<=128*1024*1024,script.utf8.count<=32768 else {throw Failure.invalidInput}
+        observation?.output=Data();observation?.leaderPID=nil
+        let child=Process(),input=Pipe(),output=Pipe()
+        let writeFD=input.fileHandleForWriting.fileDescriptor,readFD=output.fileHandleForReading.fileDescriptor
+        var inputClosed=false,groupOwned=false
+        func closeInput(){if !inputClosed {try? input.fileHandleForWriting.close();inputClosed=true}}
+        defer {closeInput();try? output.fileHandleForReading.close()}
+        guard fcntl(writeFD,F_SETFL,O_NONBLOCK)==0,fcntl(readFD,F_SETFL,O_NONBLOCK)==0,
+              fcntl(writeFD,F_SETNOSIGPIPE,1)==0 else {throw Failure.transport}
+        // Outer-gate TERM/INT triggers bounded cleanup before this call unwinds.
+        let cancellation=RootBatchCancellation()
+        let previousTerm=Darwin.signal(SIGTERM,SIG_IGN),previousInt=Darwin.signal(SIGINT,SIG_IGN)
+        let signals=[SIGTERM,SIGINT].map {number -> DispatchSourceSignal in
+            let source=DispatchSource.makeSignalSource(signal:number,queue:DispatchQueue.global())
+            source.setEventHandler{cancellation.cancel()};source.resume();return source
+        }
+        defer {for source in signals {source.cancel()};Darwin.signal(SIGTERM,previousTerm);Darwin.signal(SIGINT,previousInt)}
+        let preamble="import os,sys\nif os.getpgrp()!=os.getpid(): os.setsid()\nsys.stdout.write('phase95-root-batch-ready\\n');sys.stdout.flush()\n"
+        child.executableURL=URL(fileURLWithPath:"/usr/bin/python3")
+        child.arguments=["-I","-B","-c",preamble+script]+arguments
+        child.currentDirectoryURL=directory;child.standardInput=input;child.standardOutput=output
+        child.standardError=FileHandle.nullDevice
+        let start=ProcessInfo.processInfo.systemUptime
+        try child.run();observation?.leaderPID=child.processIdentifier
+        var sent=0,bytes=Data(),eof=false
+        func signalOwned(_ signal:Int32){
+            let pid=child.processIdentifier
+            if groupOwned || getpgid(pid)==pid {groupOwned=true;_ = kill(-pid,signal)}
+            else if child.isRunning {_ = kill(pid,signal)}
+        }
+        defer {
+            closeInput()
+            // Recover readiness after a fast leader exits with a live descendant.
+            if !groupOwned {
+                var prefix=Data(bytes.prefix(ready.count))
+                while prefix.count<ready.count {
+                    var buffer=[UInt8](repeating:0,count:ready.count-prefix.count)
+                    let count=Darwin.read(readFD,&buffer,buffer.count)
+                    if count<=0 {break};prefix.append(contentsOf:buffer.prefix(count))
+                }
+                groupOwned=prefix==ready
+            }
+            signalOwned(SIGTERM)
+            let grace=ProcessInfo.processInfo.systemUptime+0.2
+            while child.isRunning && ProcessInfo.processInfo.systemUptime<grace {usleep(10_000)}
+            signalOwned(SIGKILL) // Includes descendants of a completed leader.
+            let reap=ProcessInfo.processInfo.systemUptime+2
+            while child.isRunning && ProcessInfo.processInfo.systemUptime<reap {usleep(10_000)}
+            // Foundation owns reaping; no unbounded wait or blocked I/O thread.
+        }
+        while true {
+            guard !cancellation.isCancelled else {throw Failure.interrupted}
+            guard ProcessInfo.processInfo.systemUptime-start<=timeout else {throw Failure.timeout}
+            if groupOwned && !inputClosed {
+                let count=payload.withUnsafeBytes {raw in Darwin.write(writeFD,raw.baseAddress!.advanced(by:sent),payload.count-sent)}
+                if count>0 {sent+=count}
+                else if count<0 && errno != EAGAIN && errno != EINTR {throw Failure.transport}
+                if sent==payload.count {closeInput()}
+            }
+            while !eof {
+                var buffer=[UInt8](repeating:0,count:65536)
+                let count=Darwin.read(readFD,&buffer,buffer.count)
+                if count==0 {eof=true;break}
+                if count<0 {if errno==EAGAIN {break};if errno==EINTR {continue};throw Failure.transport}
+                bytes.append(contentsOf:buffer.prefix(count))
+                guard bytes.count<=maximum+ready.count else {throw Failure.outputLimit}
+                if bytes.count>=ready.count {
+                    guard bytes.starts(with:ready) else {throw Failure.protocolFailure}
+                    groupOwned=true;observation?.output=Data(bytes.dropFirst(ready.count))
+                }
+            }
+            if !child.isRunning && eof {
+                guard sent==payload.count,child.terminationStatus==0 else {throw Failure.childFailed}
+                guard groupOwned,bytes.starts(with:ready) else {throw Failure.protocolFailure}
+                return bytes.dropFirst(ready.count)
+            }
+            usleep(10_000)
+        }
+    }
+}
+
+private func rootBatchPipe(_ value:[String:Any]) throws -> [String:Any] {
+    let data=try JSONSerialization.data(withJSONObject:value,options:[.sortedKeys])
+    let root=URL(fileURLWithPath:#filePath).deletingLastPathComponent().deletingLastPathComponent()
+    let script=root.appendingPathComponent("scripts/phase95-root-surface-batch.py")
+    try requireAdmittedRegularFile(script,beneath:root.appendingPathComponent("scripts"))
+    let wrapper="import runpy\npath=sys.argv.pop(1)\nrunpy.run_path(path,run_name='__main__')\n"
+    let result=try RootBatchTransport.run(wrapper,arguments:[script.path,"--pipe"],payload:data,directory:root)
+    guard let object=try JSONSerialization.jsonObject(with:result) as? [String:Any] else {throw SemanticContractError.admission}
+    return object
+}
+
+private func rootBatchRGB(_ image:CanonicalImage,crop:[Int]) throws -> Data {
+    guard crop.count==4,0<=crop[0],crop[0]<crop[2],crop[2]<=image.width,
+          0<=crop[1],crop[1]<crop[3],crop[3]<=image.height,
+          (crop[2]-crop[0])*(crop[3]-crop[1])<=1_048_576 else {throw SemanticContractError.admission}
+    var bytes=Data();bytes.reserveCapacity((crop[2]-crop[0])*(crop[3]-crop[1])*3)
+    for y in crop[1]..<crop[3] {for x in crop[0]..<crop[2] {
+        let i=(y*image.width+x)*4
+        guard image.rgba[i+3]==255 else {throw SemanticContractError.admission}
+        bytes.append(contentsOf:image.rgba[i..<i+3])
+    }}
+    return bytes
+}
+
+private struct RootBatchSession {
+    let common:[String:Any]
+    let registration:[String:Any]
+    let crop:[Int]
+    let identity:String
+}
+
+private func registerRootBatch(sourceURL:URL,source:CanonicalImage,contract:SemanticContract,contractID:String,identity:String) throws -> RootBatchSession {
+    let encoded=try Data(contentsOf:sourceURL)
+    let common:[String:Any]=["schema":"phase95-root-batch-input-v1","source_encoded":encoded.base64EncodedString(),
+        "source_sha256":sha256Hex(encoded),"source_rgba_sha256":sha256Hex(Data(source.rgba)),"contracts_sha256":contractID]
+    var request=common;request["mode"]="register";request["registration"]=NSNull();request["images"]=[String:String]();request["signals"]=[String:Int]()
+    let registration=try rootBatchPipe(request)
+    guard Set(registration.keys)==Set(["schema","source","cohort","measurement_identity"]),
+          registration["schema"] as? String == "phase95-root-batch-registration-v1",
+          registration["measurement_identity"] as? String == identity,
+          let packet=registration["source"] as? [String:Any],
+          strictJSONInteger(packet["width"])==source.width,strictJSONInteger(packet["height"])==source.height,
+          let cropValue=packet["crop"] as? [Any],let roiValue=packet["roi"] as? [Any],
+          let images=packet["images"] as? [String:String],Set(images.keys)==Set(["source"]),
+          contract.targetRegions.count==1 else {throw SemanticContractError.admission}
+    let crop=cropValue.compactMap(strictJSONInteger),roi=roiValue.compactMap(strictJSONInteger)
+    let expected=try rasterize(contract.targetRegions[0],width:Int64(source.width),height:Int64(source.height))
+    guard crop.count==4,roi==[Int(expected.minX),Int(expected.minY),Int(expected.maxX),Int(expected.maxY)],
+          images["source"] == (try rootBatchRGB(source,crop:crop)).base64EncodedString() else {throw SemanticContractError.admission}
+    return RootBatchSession(common:common,registration:registration,crop:crop,identity:identity)
+}
+
+private func measureRootBatch(session:RootBatchSession,source:CanonicalImage,neutral:CanonicalImage,candidate:CanonicalImage,siblings:[CanonicalImage],contract:SemanticContract) throws -> RootBatchEvidence {
+    guard siblings.count==3,contract.comparisonCaseIDs==["source","geometryBaseline_noop","noseBridge_0p30","noseSlim_0p35","noseTipLift_0p25"] else {throw SemanticContractError.admission}
+    let all=[source,neutral,candidate]+siblings
+    let rgb=try all.map {try rootBatchRGB($0,crop:session.crop)}
+    let images=Dictionary(uniqueKeysWithValues:zip(rootBatchRoles,rgb.map{$0.base64EncodedString()}))
+    let hashes=Dictionary(uniqueKeysWithValues:zip(rootBatchRoles,rgb.map(sha256Hex)))
+    let rows=watermarkExcludedRows(width:source.width)
+    let target=try watermarkSafeRegions(contract.targetRegions,image:source,excludedRows:rows)
+    let signal=try regionSignal(source,candidate,include:{contains(target,x:$0,y:$1)},watermarkRows:rows)
+    let outside=try regionSignal(source,candidate,include:{!contains(target,x:$0,y:$1)},watermarkRows:rows)
+    var protections:[[String:Any]]=[]
+    for p in contract.protectedRegions {
+        let regions=try watermarkSafeRegions(p.regions,image:source,excludedRows:rows,allowEmpty:true)
+        if regions.isEmpty {protections.append(["id":p.id,"changedPixels":0,"absoluteRGBDelta":0]);continue}
+        let result=try regionSignal(source,candidate,include:{contains(regions,x:$0,y:$1)},watermarkRows:rows)
+        protections.append(["id":p.id,"changedPixels":result.changedPixels,"absoluteRGBDelta":result.absoluteRGBDelta])
+    }
+    let signals:[String:Any]=["targetChangedPixels":signal.changedPixels,"targetAbsoluteRGBDelta":signal.absoluteRGBDelta,
+        "outsideChangedPixels":outside.changedPixels,"outsideAbsoluteRGBDelta":outside.absoluteRGBDelta,"protectedRegions":protections,"neutralIdentity":rgb[0]==rgb[1]]
+    var request=session.common;request["mode"]="measure";request["registration"]=session.registration;request["images"]=images;request["signals"]=signals
+    let response=try rootBatchPipe(request)
+    let evidence=try parseRootBatchEvidence(response)
+    guard let sourceHash=session.common["source_sha256"] as? String else {throw SemanticContractError.admission}
+    try validateRootBatchBindings(evidence,identity:session.identity,sourceHash:sourceHash,hashes:hashes)
+    return evidence
+}
+
+
+private func runRootBatchTransportSelfTests()throws->Int {
+    let directory=URL(fileURLWithPath:#filePath).deletingLastPathComponent().deletingLastPathComponent()
+    let payload=Data(repeating:32,count:200_000)
+    let normal=try RootBatchTransport.run("data=sys.stdin.buffer.read();print(len(data))",payload:payload,directory:directory,timeout:3,maximum:4096)
+    guard normal==Data("200000\n".utf8) else {throw SemanticContractError.verdict}
+    var count=1
+    for (script,expected) in [("sys.stdin.buffer.read();sys.stdout.write('x'*8192)",RootBatchTransport.Failure.outputLimit),
+                               ("sys.stdin.buffer.read();sys.exit(3)",RootBatchTransport.Failure.childFailed)] {
+        do {_=try RootBatchTransport.run(script,payload:payload,directory:directory,timeout:3,maximum:4096)}
+        catch let error as RootBatchTransport.Failure {
+            guard String(describing:error)==String(describing:expected) else {throw SemanticContractError.verdict};count+=1;continue
+        }
+        throw SemanticContractError.verdict
+    }
+    func isExecuting(_ pid:Int32)->Bool {
+        var info=kinfo_proc(),size=MemoryLayout<kinfo_proc>.stride
+        var mib:[Int32]=[CTL_KERN,KERN_PROC,KERN_PROC_PID,pid]
+        let result=mib.withUnsafeMutableBufferPointer{sysctl($0.baseAddress,4,&info,&size,nil,0)}
+        return result != 0 || (size>0 && info.kp_proc.p_stat != SZOMB)
+    }
+    let common="""
+    import signal,time
+    def ack(role,pid=None):
+        pid=os.getpid() if pid is None else pid
+        print('scenario:%s:%d:%d'%(role,pid,os.getpgid(pid)),flush=True)
+    sys.stdin.buffer.read()
+    """
+    let leader="""
+    signal.signal(signal.SIGTERM,signal.SIG_IGN)
+    ack('leader')
+    time.sleep(60)
+    """
+    let stopped="""
+    pid=os.fork()
+    if pid==0:
+        os.kill(os.getpid(),signal.SIGSTOP)
+        time.sleep(60);os._exit(0)
+    _,state=os.waitpid(pid,os.WUNTRACED)
+    if not os.WIFSTOPPED(state):os._exit(2)
+    ack('descendant',pid);ack('leader');time.sleep(60)
+    """
+    func forked(closeOutput:Bool)->String {"""
+    r,w=os.pipe();pid=os.fork()
+    if pid==0:
+        os.close(r);signal.signal(signal.SIGTERM,signal.SIG_IGN);ack('descendant')
+        \(closeOutput ? "os.close(1)" : "pass")
+        os.write(w,b'1');os.close(w);time.sleep(60);os._exit(0)
+    os.close(w)
+    if os.read(r,1)!=b'1':os._exit(2)
+    os.close(r);ack('leader');os._exit(0)
+    """}
+    let cancelled="""
+    signal.signal(signal.SIGTERM,signal.SIG_IGN)
+    signal.signal(signal.SIGUSR1,lambda *_:os.kill(os.getppid(),signal.SIGTERM))
+    ack('leader')
+    while True:signal.pause()
+    """
+    for (body,identities,outcome) in [(leader,1,"timeout"),(stopped,2,"timeout"),
+        (forked(closeOutput:false),2,"timeout"),(forked(closeOutput:true),2,"success"),(cancelled,1,"interrupted")] {
+        let observation=RootBatchTransport.Observation()
+        var cancellationTriggered=false
+        if outcome=="interrupted" {
+            // The child can cancel only after its complete acknowledgement has
+            // actually reached the observer. This orders the test's evidence;
+            // cancellation still travels through real child-to-parent SIGTERM.
+            observation.onOutput = {[weak observation] bytes in
+                guard !cancellationTriggered,let pid=observation?.leaderPID,
+                      bytes==Data("scenario:leader:\(pid):\(pid)\n".utf8) else {return}
+                cancellationTriggered=kill(pid,SIGUSR1)==0
+            }
+        }
+        defer {if let pid=observation.leaderPID {_ = kill(-pid,SIGKILL);if isExecuting(pid){_ = kill(pid,SIGKILL)}}}
+        let start=ProcessInfo.processInfo.systemUptime
+        do {
+            _=try RootBatchTransport.run(common+"\n"+body,payload:payload,directory:directory,timeout:1,maximum:4096,observation:observation)
+            guard outcome=="success" else {throw SemanticContractError.verdict}
+        } catch let error as RootBatchTransport.Failure {
+            guard String(describing:error)==outcome else {throw SemanticContractError.verdict}
+        }
+        guard outcome != "interrupted" || cancellationTriggered else {throw SemanticContractError.verdict}
+        guard ProcessInfo.processInfo.systemUptime-start<4 else {throw SemanticContractError.verdict}
+        let records=String(decoding:observation.output,as:UTF8.self).split(separator:"\n").compactMap {line -> Int32? in
+            let parts=line.split(separator:":")
+            guard parts.count==4,parts[0]=="scenario",["leader","descendant"].contains(parts[1]),
+                  let pid=Int32(parts[2]),let group=Int32(parts[3]),pid>1,group>1,
+                  group != getpgrp(),group==observation.leaderPID else {return nil}
+            return pid
+        }
+        let cleanupDeadline=ProcessInfo.processInfo.systemUptime+1
+        while records.contains(where:isExecuting) && ProcessInfo.processInfo.systemUptime<cleanupDeadline {usleep(10_000)}
+        guard records.count==identities,records.allSatisfy({!isExecuting($0)}) else {throw SemanticContractError.verdict}
+        count+=1
+    }
+    // Exercise the actual Python batch transport inside the Swift-owned group.
+    // A grandchild closes its pipes, outlives both nested leaders, and must still
+    // be killed on successful completion. Only generated process IDs are read.
+    let nested="""
+    import runpy,json,signal,time
+    sys.stdin.buffer.read()
+    b=runpy.run_path('scripts/phase95-root-surface-batch.py')
+    child='''import os,sys,signal,time,json
+    sys.stdin.buffer.read()
+    r,w=os.pipe();pid=os.fork()
+    if pid==0:
+        os.close(r);signal.signal(signal.SIGTERM,signal.SIG_IGN)
+        os.close(0);os.close(1);os.close(2);os.write(w,b'1');os.close(w)
+        time.sleep(60);os._exit(0)
+    os.close(w)
+    if os.read(r,1)!=b'1':os._exit(2)
+    os.close(r);print(json.dumps([os.getpid(),pid,os.getpgrp()]),flush=True)
+    '''
+    data=b['managed_pipe'](['/usr/bin/python3','-I','-B','-c',child],b'generated',2,4096)
+    print(data.decode(),end='',flush=True)
+    """
+    let observation=RootBatchTransport.Observation()
+    defer {if let pid=observation.leaderPID {_ = kill(-pid,SIGKILL)}}
+    let result=try RootBatchTransport.run(nested,payload:payload,directory:directory,timeout:4,maximum:4096,observation:observation)
+    guard let values=try JSONSerialization.jsonObject(with:result) as? [Int32],values.count==3 else {throw SemanticContractError.verdict}
+    let nestedDeadline=ProcessInfo.processInfo.systemUptime+1
+    while values.prefix(2).contains(where:isExecuting) && ProcessInfo.processInfo.systemUptime<nestedDeadline {usleep(10_000)}
+    guard
+          values[2]==observation.leaderPID,values[2] != getpgrp(),values[0]>1,values[1]>1,
+          !isExecuting(values[0]),!isExecuting(values[1]) else {throw SemanticContractError.verdict}
+    return count+1
+}
+
+private func runRootBatchSelfTests() throws -> Int {
+    let sha=String(repeating:"a",count:64)
+    func evidence(_ intervals:[String:[Int64]],pairs:Int=4,hashes:[String:String]?=nil)->RootBatchEvidence {
+        RootBatchEvidence(schema:"phase95-root-batch-evidence-v1",metric_id:"rootSurfaceSpanQ16_v4",measurement_identity:sha,
+            source_sha256:sha,original_registration_sha256:sha,definition_sha256:sha,registration_sha256:sha,
+            model_sha256:sha,runtime_sha256:sha,pair_count:pairs,
+            crop_rgb_sha256:hashes ?? Dictionary(uniqueKeysWithValues:rootBatchRoles.map{($0,sha)}),intervals_q16:intervals)
+    }
+    var intervals=Dictionary(uniqueKeysWithValues:rootBatchReferences.map{($0,[Int64(16),Int64(30)])})
+    let boundary=try rootBatchMargins(evidence(intervals))
+    guard boundary.0==16,boundary.1==16,boundary.2==16,boundary.3==16 else {throw SemanticContractError.verdict}
+    intervals["source"]=[-8,80];intervals["noseBridge_0p30"]=[-30,-17];intervals["noseTipLift_0p25"]=[-2,90]
+    let mixed=try rootBatchMargins(evidence(intervals))
+    guard mixed.0 == -8,mixed.2 == -8,mixed.3 == 0 else {throw SemanticContractError.verdict}
+    intervals["noseTipLift_0p25"]=[-40,-21]
+    guard try rootBatchMargins(evidence(intervals)).3==16 else {throw SemanticContractError.verdict}
+    var count=3
+    func reject(_ item:RootBatchEvidence) throws {
+        do {try validateRootBatchEvidence(item)} catch SemanticContractError.admission {count+=1;return}
+        throw SemanticContractError.verdict
+    }
+    var endpoints=intervals;endpoints["source"]=[-(1<<31),(1<<31)-1]
+    try validateRootBatchEvidence(evidence(endpoints));count+=1
+    endpoints["source"]=[0,1<<31];try reject(evidence(endpoints))
+    endpoints["source"]=[-(1<<31)-1,0];try reject(evidence(endpoints))
+    try reject(evidence(intervals,pairs:3));try reject(evidence(intervals,pairs:33))
+    var omitted=intervals;omitted.removeValue(forKey:"noseSlim_0p35");try reject(evidence(omitted))
+    var inverted=intervals;inverted["neutral"]=[2,1];try reject(evidence(inverted))
+    var forged=Dictionary(uniqueKeysWithValues:rootBatchRoles.map{($0,sha)});forged["other"]=sha;try reject(evidence(intervals,hashes:forged))
+    var nonHash=Dictionary(uniqueKeysWithValues:rootBatchRoles.map{($0,sha)});nonHash["candidate"]="missing";try reject(evidence(intervals,hashes:nonHash))
+    let base=evidence(intervals)
+    let baseObject=try JSONSerialization.jsonObject(with:JSONEncoder().encode(base)) as! [String:Any]
+    for (key,value) in [("metric_id","rootWidthContraction" as Any),("pair_count",true as Any),("extra",0 as Any),("source_sha256","not-a-hash" as Any)] {
+        var object=baseObject;object[key]=value
+        do {_=try parseRootBatchEvidence(object)} catch {count+=1;continue}
+        throw SemanticContractError.verdict
+    }
+    var falseHashes=base.crop_rgb_sha256;falseHashes["candidate"]=String(repeating:"b",count:64)
+    var bindingRejected=false
+    do {try validateRootBatchBindings(base,identity:sha,sourceHash:sha,hashes:falseHashes)} catch SemanticContractError.admission {bindingRejected=true;count+=1}
+    guard bindingRejected else {throw SemanticContractError.verdict}
+    try validateRootBatchBindings(base,identity:sha,sourceHash:sha,hashes:base.crop_rgb_sha256)
+    var rgba:[UInt8]=[]
+    for index in 0..<16 { rgba += [UInt8(index),UInt8(index+20),UInt8(index+40),255] }
+    let crop=try rootBatchRGB(CanonicalImage(width:4,height:4,rgba:rgba),crop:[1,1,3,3])
+    guard Array(crop)==[5,25,45,6,26,46,9,29,49,10,30,50] else {throw SemanticContractError.verdict}
+    count+=1
+    return count
+}
+
 
 let commandArguments = Array(CommandLine.arguments.dropFirst())
 if commandArguments.contains("--classify-phase95") {
@@ -3662,6 +4118,13 @@ do {
         }
     }
 
+    let rootBatchSession: RootBatchSession?
+    if let identity = ProcessInfo.processInfo.environment["BEAUTY_PHASE95_ROOT_MEASUREMENT_IDENTITY"] {
+        guard fixtures.count == 1, let frozen = ProcessInfo.processInfo.environment["BEAUTY_PHASE95_ROI_DIGEST"],
+              let contract = contracts.first(where: { $0.caseID == "noseRootNarrowing_0p25" }) else { throw SemanticContractError.admission }
+        rootBatchSession = try registerRootBatch(sourceURL: fixtures[0], source: inputImages[0], contract: contract, contractID: frozen, identity: identity)
+    } else { rootBatchSession = nil }
+
     let controlImages = try fixtures.map { fixture -> CanonicalImage in
         let url = outputURL(
             runRoot: runRoot,
@@ -3691,6 +4154,16 @@ do {
             candidateImages[caseID] = decoded
         }
     }
+
+    let rootBatchEvidence: RootBatchEvidence?
+    if let session = rootBatchSession {
+        guard let rootImages = candidateImages["noseRootNarrowing_0p25"],
+              let contract = contracts.first(where: { $0.caseID == "noseRootNarrowing_0p25" }) else { throw SemanticContractError.admission }
+        let siblings = try rootBatchReferences.dropFirst(2).map { role -> CanonicalImage in
+            guard let images = candidateImages[role], images.count == 1 else { throw SemanticContractError.admission }; return images[0]
+        }
+        rootBatchEvidence = try measureRootBatch(session: session, source: inputImages[0], neutral: controlImages[0], candidate: rootImages[0], siblings: siblings, contract: contract)
+    } else { rootBatchEvidence = nil }
 
     var caseSummaries: [MechanicalCaseSummary] = []
     var batchSummaries: [BatchSummary] = []
@@ -3764,7 +4237,8 @@ do {
             : nil
         return try semanticDirectionSummary(
             contract: contract, sources: inputImages, neutrals: controlImages,
-            candidates: candidate, siblingImages: siblings, gazeAggregates: gazeAggregates
+            candidates: candidate, siblingImages: siblings, gazeAggregates: gazeAggregates,
+            rootEvidence: contract.caseID == "noseRootNarrowing_0p25" ? rootBatchEvidence : nil
         )
     }
     let overallPass = semanticDirections.allSatisfy { $0.verdict == "semantic_pass" }
@@ -3780,7 +4254,8 @@ do {
         batches: batchSummaries,
         mechanicalCases: caseSummaries,
         semanticDirections: semanticDirections,
-        verdict: overallPass ? "semantic_pass" : "semantic_fail"
+        verdict: overallPass ? "semantic_pass" : "semantic_fail",
+        rootEvidence: rootBatchEvidence
     )
     let digest = try writeSemanticReport(
         payload: payload, contracts: contracts, attemptID: attemptID,

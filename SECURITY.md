@@ -1,5 +1,108 @@
 # SECURITY.md
 
+## Source-fixed surface validation (2026-09-23)
+
+The current root method uses the reviewed source-only dorsal marker definition,
+not the historical certified-outer-edge requirement below. The validation-only
+mesh runtime/model stays outside BeautySDK, is verified against its locked
+payloads, and runs in network-denied isolated children. Actual RGB, source
+coordinates and decoded cohort data remain in bounded memory pipes. Only typed
+counts, conservative intervals and identity commitments enter evidence.
+
+The65 successor consumes the same decoded batch source/root/neutral/three
+siblings that the comparator scores. It binds their RGB digests and the fixed
+source cohort into the stable payload. A native qualifier may reconstruct
+source detection and sampling eligibility but must not rerender replacement
+outputs. Historical original-source/ROI and failure receipts remain unchanged.
+Default Vision's explicit sRGB CGImage is request-local and never persisted.
+
+
+## Source-only coverage diagnostic (2026-09-15)
+
+An independently authored exact14-entry review latch admits only bounded
+aggregate coverage of the same source/ROI/contracts. Two source-only processes
+must agree, with byte/environment identities rechecked. Only support-overlap
+counts, fixed false/zero qualification flags, hashes and environment summaries
+are exported. The observed11/16 crest and3/16 contour coverage does not grant
+source registration, anatomical-boundary qualification or scoring permission.
+No image, raw support, private locator or child transcript is persisted. The
+original frozen registrar and its ambiguous failures remain unchanged.
+
+## Phase 95 measurement identity and anatomical rows (2026-09-14)
+
+Registrar transport v3 retains strict stdout JSON and separately drains native
+stderr without persistence. Both streams count against the same bound; stderr
+cannot create success or hide an exit failure. Original v2 reviewer receipt is
+not reused for changed code. The observed structural ambiguity stays rejected.
+
+Report validation now checks case-to-metric equality in addition to existing
+inventory/verdict/digest checks; all eight recomputed-digest substitution probes
+are rejected. This does not create a successor measurement authorization. The
+original v1 registration is unchanged, and its comparator hash rejects the
+modified implementation until a reviewed successor binding exists.
+
+Root candidate rows partition actual eye extents. At each Y only one admitted
+inward pair acts; its monotone map is identity at the local root/eye boundary,
+preventing samples from entering protected eye pixels. Entire target disks are
+inside their own vertical row and the corresponding horizontal safe interval.
+No cross-row slope budget is borrowed. Historical stricter strip constraints
+remain documented but are not the current anatomical support contract.
+
+The new metric prototype accepts generated in-memory planes only. Source-only
+edge templates/exclusions are explicitly committed and never persisted as raw
+geometry or pixels. Positive affine/noise/blur ambiguity is retained as a
+conservative position interval, not resolved by picking favorable matches.
+Live source registration and scoring remain disabled pending independent review.
+
+The generic draft-2 mathematics has since been independently approved; a new
+source-only adapter is pending its own review. It verifies pinned definition/
+legacy identities, strips both original CLI dispatchers at exact boundaries,
+and composes the reviewed definitions in memory. It admits only the original
+single source, opaque canonical pixels and original contract digest. Source
+profiles/exclusions never leave memory except as commitments/counts. Process
+input/output/deadlines are bounded; all child-group exits are cleaned. Unknown
+arguments, stale review, duplicate fields and old source-result schemas reject.
+
+## Internal-bound revision (2026-09-14)
+
+Owner-approved chin/root displacement changes do not raise the 0.8 per-side
+slope ceiling. Root inverse-sampling disks, not hypothetical source-centered
+disks, are constrained to the canthus interval; the strictly monotone horizontal
+map is identity at both interval boundaries, so its samples cannot cross them.
+Generated coordinate sweeps and pixel protection tests supplement the analytic
+bound. Root sub-cap radii solve containment before emission. Portrait acceptance
+thresholds and privacy rules remain frozen, with no automatic promotion.
+
+## Phase 95 ordered inward field bound (2026-09-13)
+
+For horizontal linear cones with all positive-displacement targets preceding
+all negative-displacement targets, the positive part of du/dx is bounded by
+one side's sum(abs(deltaX)/radius). Requiring each sum <= 0.8 gives the normalized
+inverse field a horizontal derivative >= 0.2; between the groups it is >= 1.
+Admission checks finite unit coordinates, fixed Y, positive finite radius and
+strength, linear falloff, ordered groups and bounded counts. Canonical CPU
+sampling applies only to homogeneous admitted sets; this proof is not an
+assertion about legacy/mixed sampling or other backends. Input support remains
+request-local and non-persistent; no measurement thresholds are relaxed.
+
+Phase 95's observed nose carrier is package-only and request-scoped, has no
+Codable conformance, and redacts description/debug/reflection to counts. The
+canonical mapper bounds each coordinate and caps each nose array at 32 points;
+malformed explicit support stays empty and cannot borrow a legacy template.
+Observed lips used by negative mouth and chin remain memory-only. No additional
+detector, network, resource, model or persistent anatomical data is introduced.
+
+## Phase 95 registered portrait evidence (2026-09-12)
+
+Owner-authorized ROI registration reads only canonical source pixels and source
+anatomy before outputs are evaluated. Its frozen binding contains hashes and
+counts, never coordinates, raw support, media or fixture locators. Missing
+anatomy, region overlap, changed source/manifest/comparator, or a different
+registration digest rejects admission. Gaze direction aggregates cannot replace
+target signal, locality or protected-pixel checks. Closeout validates the
+runner envelope, recomputes payload digest and verdicts from measurements, and
+retains actual measured protection values instead of inventing zero maxima.
+
 > Current SDK-only privacy, input/resource trust, and archive safety contract.
 
 ## Current Post-Archive Audit Status

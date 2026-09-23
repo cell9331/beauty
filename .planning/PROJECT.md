@@ -1,5 +1,9 @@
 # Beauty
 
+v1.22 completed 2026-09-23: 7/7 phases, 33/33 plans, 11/11 active requirements; [verified COMPLETE](phases/95-compatibility-and-sdk-only-closeout/95-COMPLETE.json).
+Actual portrait: 65/65 outputs, 2 reconciled runs, seven effective directions and one deferred/partial direction. Current safety 1/0/0, compatibility 4/0/0, archive-first full SwiftPM 937/0/0; all 8 opt-ins accounted for.
+FACE-01/faceContourSmooth remains explicitly deferred/partial under FUTURE-04, without effectiveness credit. The repaired observed paired-eye root uses CPU; retained Metal rejects its unsupported private raster cutoff with typed invalidInput before submission and recovers for later supported requests. This is owner-local SDK validation, with no device, population, commercial quality, packaging, shipping, launch, release-readiness or distribution claim. No owner annotation or device action remains. Phase96 is absorbed into95-03, and no next milestone is started.
+
 ## What This Is
 
 `beauty` is a modular local-first iOS beauty SDK. The SDK owns image/frame processing, parameters, detection, rendering, effects, resources, diagnostics, and the host-facing `BeautySDK` facade. SwiftPM tests, `BeautyExampleRenderer`, and SDK-owned scripts are the only active build/test/validation surfaces.
@@ -18,7 +22,7 @@ The project owner's local iOS host can integrate `BeautySDK` and get natural,
 controllable, real-time and still-image beauty processing through a stable
 modular facade without distributing the SDK or its model resources.
 
-## Current Milestone: v1.22 Non-Local Facial Effect Repairs
+## Completed Milestone Scope: v1.22 Non-Local Facial Effect Repairs
 
 **Goal:** Repair the active non-local-retouch facial geometry controls that the
 authorized portrait batch screen found inert or too weak, while preserving one
@@ -40,7 +44,7 @@ degradation.
   direction or borrowing `mouthSize` behavior.
 - Keep the repeatable five-batch, parameter-watermarked input/output comparison
   and add ROI-, polarity-, protection-, determinism-, and degradation-specific
-  gates before closeout. Phase 95 must finish all 65 outputs with seven active
+  gates. Phase 95 completed all 65 outputs with seven active
   directions effective and `faceContourSmooth` explicitly deferred/partial.
 
 **Non-negotiable boundary:** `teethWhitening`, `scleraRednessReduction`, and
@@ -52,7 +56,18 @@ v1.22. Phases 91–94 are timeboxed to one research pass, one independently
 checked plan, and at most two implementation attempts before an explicit owner
 decision to repair, defer, or stop.
 
-## Latest Completed Milestone: v1.21 Provisional Upper-Eyelid Public Activation
+## Latest Completed Milestone: v1.22 Non-Local Facial Effect Repairs
+
+**Completed:** 2026-09-23; 7/7 phases, 33/33 plans, 11/11 active requirements. No next milestone is active.
+
+**Outcome:** Actual portrait: 65/65 outputs, 2 reconciled runs, seven effective directions and one deferred/partial direction. Current safety 1/0/0, compatibility 4/0/0, archive-first full SwiftPM 937/0/0; all 8 opt-ins accounted for.
+Root: 31 fixed source pairs; source interval [260, 373] Q16, neutral interval [260, 373] Q16; all three sibling intervals pass; outside 0 pixels / 0 absolute RGB delta; all root protected-region changes are zero.
+
+**Boundary:** FACE-01/faceContourSmooth remains explicitly deferred/partial under FUTURE-04, without effectiveness credit. The repaired observed paired-eye root uses CPU; retained Metal rejects its unsupported private raster cutoff with typed invalidInput before submission and recovers for later supported requests. This is owner-local SDK validation, with no device, population, commercial quality, packaging, shipping, launch, release-readiness or distribution claim. No owner annotation or device action remains. Phase96 is absorbed into95-03, and no next milestone is started.
+
+**Evidence:** [verified COMPLETE](phases/95-compatibility-and-sdk-only-closeout/95-COMPLETE.json); COMPLETE SHA256: `33b49fee25b4156b8a947ac437822ac33f7e5473a61ed74b1015c393035862d4`; normative input digest: `56d33c8d9ddfbd6899287feeac501139d6ea1bac05250ca8982fa861482ed6f0`.
+
+## Previous Completed Milestone: v1.21 Provisional Upper-Eyelid Public Activation
 
 **Outcome:** `去脂` is callable from both public still-image entries through
 `BeautyParameters.upperEyelidFullnessReduction`. The route retains bounded
@@ -940,3 +955,5 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 *Last updated: 2026-09-08 after Phase 92*
+
+<!-- beauty-v122-complete-sha256: 33b49fee25b4156b8a947ac437822ac33f7e5473a61ed74b1015c393035862d4 -->

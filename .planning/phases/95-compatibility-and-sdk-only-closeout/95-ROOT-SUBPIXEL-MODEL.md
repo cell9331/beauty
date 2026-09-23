@@ -2,6 +2,16 @@
 
 Date: 2026-09-15. Status: experiment, not an amended acceptance contract.
 
+## Successor affine-motion probe checkpoint
+
+The initial one-channel, inward-only affine draft had0/2 power at32Q16.
+Its arbitrary quarter-pixel rejection and overstated coordinate-ramp truth
+were not accepted. A signed RGB successor now records42 paired cases and84
+analytic true-motion containments,32Q16 power6/6 and20Q16 power5/6.
+See95-ROOT-AFFINE-MODEL.md for the distinct model, exact clipping and limitations.
+This does not modify/promote the constant-translation experiment below or
+constitute source registration, portrait scoring or completion evidence.
+
 ## Scope and image-formation assumption
 
 `scripts/phase95-root-subpixel-probe.py --self-test` exercises the exact current

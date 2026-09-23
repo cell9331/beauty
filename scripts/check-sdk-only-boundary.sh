@@ -583,12 +583,26 @@ allowed_backend_paths = {
     "BeautySDK/Tests/BeautyCoreTests/BeautyEngineBackendRoutingTests.swift",
     "BeautySDK/Tests/BeautyCoreTests/BeautyBackendSelectionConcurrencyTests.swift",
 }
+# Later CPU-only facade regressions are not new backend APIs. Admit their
+# exact inspected bytes, not their paths in perpetuity; any change must be
+# reviewed again. No production source or new GPU declaration is admitted.
+cpu_test_backend_hashes = {
+    "BeautySDK/Tests/BeautyCoreTests/BeautyEngineMouthNegativeTests.swift":
+        "f6bf8d3c9ce59ce25ac09c9e0b4147a61e5e54d9e397abfd6ee35c2b4e4cc65a",
+    "BeautySDK/Tests/BeautyCoreTests/BeautyEngineMouthLifecycleTests.swift":
+        "30e6dc39fe1ec3ac7d88c5b33880e1a0bfd7e179e2fcf7f2026573dcf8ff3ef9",
+    "BeautySDK/Tests/BeautyCoreTests/RepairedControlSafetyTests.swift":
+        "342f7baeed85577a367a8c1fea0c51a4c7b7d77db07cfb3806cf28c899ccc6ac",
+}
 for base in (root / "BeautySDK/Sources", root / "BeautySDK/Tests"):
     if not base.exists():
         continue
     for path in base.rglob("*.swift"):
         match = backend_pattern.search(path.read_text(encoding="utf-8", errors="replace"))
         if match and path.relative_to(root).as_posix() not in allowed_backend_paths:
+            expected = cpu_test_backend_hashes.get(path.relative_to(root).as_posix())
+            if expected and hashlib.sha256(path.read_bytes()).hexdigest() == expected:
+                continue
             raise SystemExit(f"v1.16 GPU API/backend drift in {path.relative_to(root)}: {match.group(0)}")
 PY
     [ "$?" -eq 0 ] || return 1
@@ -830,6 +844,14 @@ PY
     printf '%s\n' 'enum BeautyRenderBackend { case gpu }' > "$fixture/BeautySDK/Sources/Backend.swift"
     expect_failure validate_post_archive "$fixture"
     rm "$fixture/BeautySDK/Sources/Backend.swift"
+    for cpu_test in BeautyEngineMouthNegativeTests BeautyEngineMouthLifecycleTests RepairedControlSafetyTests; do
+        cp "$PROJECT_ROOT/BeautySDK/Tests/BeautyCoreTests/$cpu_test.swift" \
+            "$fixture/BeautySDK/Tests/BeautyCoreTests/$cpu_test.swift"
+        validate_post_archive "$fixture" >/dev/null
+        printf '%s\n' 'enum UnexpectedBackend { case gpu }' >> "$fixture/BeautySDK/Tests/BeautyCoreTests/$cpu_test.swift"
+        expect_failure validate_post_archive "$fixture"
+        rm "$fixture/BeautySDK/Tests/BeautyCoreTests/$cpu_test.swift"
+    done
     rm -rf "$fixture"
     trap - EXIT
     echo "SDK BOUNDARY SELF-TEST PASSED"

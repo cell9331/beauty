@@ -2,6 +2,7 @@ import BeautyCore
 import CoreGraphics
 import CoreImage
 import Foundation
+import ImageIO
 import Vision
 
 enum EyebrowPreflight {
@@ -32,6 +33,7 @@ package struct VisionDetectionObservation: Equatable, Sendable {
     package let observedFaceSupport: BeautyObservedFaceSupport?
     package let observedEyebrowSupport: BeautyObservedEyebrowSupport?
     package let observedLipSupport: BeautyObservedLipSupport?
+    package let observedNoseSupport: BeautyObservedNoseSupport?
 
     package init(
         stableID: String? = nil,
@@ -42,7 +44,8 @@ package struct VisionDetectionObservation: Equatable, Sendable {
         observedEyeSupport: [BeautyObservedEyeSupport]? = nil,
         observedFaceSupport: BeautyObservedFaceSupport? = nil,
         observedEyebrowSupport: BeautyObservedEyebrowSupport? = nil,
-        observedLipSupport: BeautyObservedLipSupport? = nil
+        observedLipSupport: BeautyObservedLipSupport? = nil,
+        observedNoseSupport: BeautyObservedNoseSupport? = nil
     ) {
         self.stableID = stableID
         self.confidence = confidence
@@ -53,6 +56,7 @@ package struct VisionDetectionObservation: Equatable, Sendable {
         self.observedFaceSupport = observedFaceSupport
         self.observedEyebrowSupport = observedEyebrowSupport
         self.observedLipSupport = observedLipSupport
+        self.observedNoseSupport = observedNoseSupport
     }
 }
 
@@ -151,17 +155,20 @@ package struct VisionFaceDetectionInput: @unchecked Sendable {
     package let imageExtent: CGSize
     package let previewExtent: CGSize?
     package let stillImage: CIImage?
+    package let maximumPixelCount: Int
 
     package init(
         metadata: BeautyInputMetadata,
         imageExtent: CGSize,
         previewExtent: CGSize? = nil,
-        stillImage: CIImage? = nil
+        stillImage: CIImage? = nil,
+        maximumPixelCount: Int = BeautyConfiguration.default.maximumInputPixelCount
     ) {
         self.metadata = metadata
         self.imageExtent = imageExtent
         self.previewExtent = previewExtent
         self.stillImage = stillImage
+        self.maximumPixelCount = maximumPixelCount
     }
 }
 
@@ -241,7 +248,8 @@ package struct VisionFaceDetector: Sendable {
                     metadata: metadata,
                     imageExtent: imageExtent,
                     previewExtent: previewExtent,
-                    stillImage: image
+                    stillImage: image,
+                    maximumPixelCount: configuration.maximumInputPixelCount
                 )
             )
             return summarize(
@@ -564,12 +572,17 @@ package struct VisionFaceDetector: Sendable {
                 in: visionBounds,
                 with: mapper
             )
-            observedLipSupport = outer != nil || inner != nil
-                ? BeautyObservedLipSupport(outer: outer, inner: inner)
-                : nil
+            observedLipSupport = BeautyObservedLipSupport(outer: outer ?? [], inner: inner ?? [])
         } else {
             observedLipSupport = nil
         }
+
+        let observedNoseSupport: BeautyObservedNoseSupport?
+        if let raw = detection.observedNoseSupport, let bounds = detection.visionBounds {
+            let crest = raw.crest.count <= 32 ? (try? mapPoints(raw.crest, in: bounds, with: mapper)) : nil
+            let contour = raw.contour.count <= 32 ? (try? mapPoints(raw.contour, in: bounds, with: mapper)) : nil
+            observedNoseSupport = BeautyObservedNoseSupport(crest: crest ?? [], contour: contour ?? [])
+        } else { observedNoseSupport = nil }
 
         return BeautyFaceObservation(
                 stableID: detection.stableID,
@@ -581,7 +594,8 @@ package struct VisionFaceDetector: Sendable {
                 observedEyeOrder: observedEyeOrder,
                 observedFaceSupport: observedFaceSupport,
                 observedEyebrowSupport: observedEyebrowSupport,
-                observedLipSupport: observedLipSupport
+                observedLipSupport: observedLipSupport,
+                observedNoseSupport: observedNoseSupport
             )
     }
 
@@ -967,10 +981,11 @@ package struct VisionFaceDetector: Sendable {
         observedEyeSupport: [BeautyObservedEyeSupport]?,
         observedFaceSupport: BeautyObservedFaceSupport?,
         observedEyebrowSupport: BeautyObservedEyebrowSupport?,
-        observedLipSupport: BeautyObservedLipSupport?
+        observedLipSupport: BeautyObservedLipSupport?,
+        observedNoseSupport: BeautyObservedNoseSupport?
     ) {
         guard let landmarks else {
-            return (BeautyFaceLandmarks(availableGroups: []), nil, nil, nil, nil)
+            return (BeautyFaceLandmarks(availableGroups: []), nil, nil, nil, nil, nil)
         }
 
         var groups: Set<BeautyLandmarkGroup> = []
@@ -1009,15 +1024,15 @@ package struct VisionFaceDetector: Sendable {
             : nil
         let outerLips = makePoints(from: landmarks.outerLips)
         let innerLips = makePoints(from: landmarks.innerLips)
-        let lipSupport = outerLips != nil || innerLips != nil
-            ? BeautyObservedLipSupport(outer: outerLips, inner: innerLips)
-            : nil
+        let lipSupport = BeautyObservedLipSupport(outer: outerLips ?? [], inner: innerLips ?? [])
         return (
             BeautyFaceLandmarks(availableGroups: groups),
             supports.isEmpty ? nil : supports,
             faceSupport,
             eyebrowSupport,
-            lipSupport
+            lipSupport,
+            BeautyObservedNoseSupport(crest: makePoints(from: landmarks.noseCrest) ?? [],
+                                      contour: makePoints(from: landmarks.nose) ?? [])
         )
     }
 
@@ -1076,15 +1091,44 @@ package struct VisionFaceDetector: Sendable {
         }
     }
 
-    private static func defaultObservationProvider(_ input: VisionFaceDetectionInput) throws -> [VisionDetectionObservation] {
-        guard let image = input.stillImage else {
+    // Detection and source-only image validation must inspect the same rendered
+    // RGB image. Letting Vision render the lazy CIImage chooses a different
+    // color-conversion path and can move an anatomical ownership boundary.
+    // This is only the Vision input: the raw facade's output and metadata policy
+    // remain unchanged, including orientation handling in CoordinateMapper.
+    static func canonicalStillImageInput(
+        _ input: VisionFaceDetectionInput
+    ) throws -> (image: CGImage, orientation: CGImagePropertyOrientation) {
+        guard let image = input.stillImage,
+              image.extent.origin.x.isFinite, image.extent.origin.y.isFinite,
+              image.extent.width.isFinite, image.extent.height.isFinite,
+              image.extent.width > 0, image.extent.height > 0,
+              image.extent == image.extent.integral,
+              input.imageExtent == image.extent.size,
+              input.maximumPixelCount > 0,
+              image.extent.width <= CGFloat(input.maximumPixelCount) / image.extent.height,
+              let sRGB = CGColorSpace(name: CGColorSpace.sRGB)
+        else {
             throw Failure.detectorUnavailable
         }
+        let context = CIContext(options: [
+            .workingColorSpace: sRGB,
+            .outputColorSpace: sRGB,
+        ])
+        guard let raster = context.createCGImage(image, from: image.extent) else {
+            throw Failure.detectorUnavailable
+        }
+        // Do not orient or mirror pixels here: Vision and the existing mapper
+        // still receive the caller's original orientation and mirror metadata.
+        return (raster, input.metadata.orientation)
+    }
 
+    private static func defaultObservationProvider(_ input: VisionFaceDetectionInput) throws -> [VisionDetectionObservation] {
+        let raster = try canonicalStillImageInput(input)
         let request = VNDetectFaceLandmarksRequest()
         let handler = VNImageRequestHandler(
-            ciImage: image,
-            orientation: input.metadata.orientation,
+            cgImage: raster.image,
+            orientation: raster.orientation,
             options: [:]
         )
         try handler.perform([request])
@@ -1105,7 +1149,8 @@ package struct VisionFaceDetector: Sendable {
                 observedEyeSupport: payload.observedEyeSupport,
                 observedFaceSupport: payload.observedFaceSupport,
                 observedEyebrowSupport: payload.observedEyebrowSupport,
-                observedLipSupport: payload.observedLipSupport
+                observedLipSupport: payload.observedLipSupport,
+                observedNoseSupport: payload.observedNoseSupport
             )
         }
     }

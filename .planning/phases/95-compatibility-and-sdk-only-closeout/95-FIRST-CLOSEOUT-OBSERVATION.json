@@ -1,0 +1,16 @@
+{
+  "actual_focused_tests": 35,
+  "completion_issued": false,
+  "deferred_directions": 1,
+  "effective_directions": 7,
+  "expected_focused_tests": 34,
+  "failure": "no_skip_metal_feature_passes_focused_accounting",
+  "input_digest": "9f2bd14ec386184d07f5915c35c5d2baa85b135cc7dba86aabcf1ab3cb73821b",
+  "outputs": 65,
+  "portrait_classification": "pass",
+  "portrait_observation_sha256": "275cd58c81011c1e467b49abd54fc511b17b8da8cbb237c28a27452751beca71",
+  "repeat_count": 2,
+  "review_sha256": "e1bd54cc4685da9606b71eeaed95002b5b8df70184dc687c4f3e10db950dace1",
+  "schema": "phase95-closeout-attempt-observation-v1",
+  "status": "incomplete"
+}

@@ -1,8 +1,11 @@
 # Phase 95: Compatibility and SDK-Only Closeout - Context
 
 **Gathered:** 2026-09-11
-**Status:** Ready for planning
+**Status:** Complete 2026-09-23; verified95-COMPLETE.json
 **Mode:** Auto-generated (discuss skipped via workflow.skip_discuss)
+
+Current completion: [verified COMPLETE](95-COMPLETE.json); [V1.22-CURRENT.md](../../V1.22-CURRENT.md). No old diagnostic or manual-confirmation action remains.
+The original gathered context below is historical; it is not the current blocker or command list.
 
 <domain>
 ## Phase Boundary
@@ -64,3 +67,5 @@ No specific requirements — discuss phase skipped. Refer to ROADMAP phase descr
 None — discuss phase skipped.
 
 </deferred>
+
+<!-- beauty-v122-complete-sha256: 33b49fee25b4156b8a947ac437822ac33f7e5473a61ed74b1015c393035862d4 -->

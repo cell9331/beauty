@@ -332,6 +332,11 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
     }
 
     private func makeGeometryPass(points: [WarpControlPoint]) throws -> BeautyMetalPass? {
+        // The retained Metal uniform has no raster-row ownership boundary.
+        // Reject before submission instead of silently dropping CPU protection.
+        guard points.allSatisfy({ $0.exclusiveMaximumY == nil }) else {
+            throw BeautyError.invalidInput
+        }
         guard !points.isEmpty,
               points.count <= BeautyMetalGeometryParameters.maximumPointCount
         else {

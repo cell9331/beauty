@@ -142,6 +142,17 @@ extension BeautyObservedLipSupport: CustomStringConvertible, CustomDebugStringCo
     }
 }
 
+package struct BeautyObservedNoseSupport: Equatable, Sendable, CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
+    package let crest: [CoordinatePoint]
+    package let contour: [CoordinatePoint]
+    package init(crest: [CoordinatePoint], contour: [CoordinatePoint]) {
+        self.crest = crest; self.contour = contour
+    }
+    package var description: String { "BeautyObservedNoseSupport(crestCount: \(crest.count), contourCount: \(contour.count))" }
+    package var debugDescription: String { description }
+    package var customMirror: Mirror { Mirror(self, children: ["crestCount": crest.count, "contourCount": contour.count]) }
+}
+
 package struct BeautyFaceObservation: Equatable, Sendable {
     package let stableID: String?
     package let confidence: Double
@@ -153,6 +164,7 @@ package struct BeautyFaceObservation: Equatable, Sendable {
     package let observedFaceSupport: BeautyObservedFaceSupport?
     package let observedEyebrowSupport: BeautyObservedEyebrowSupport?
     package let observedLipSupport: BeautyObservedLipSupport?
+    package let observedNoseSupport: BeautyObservedNoseSupport?
 
     package init(
         stableID: String? = nil,
@@ -164,7 +176,8 @@ package struct BeautyFaceObservation: Equatable, Sendable {
         observedEyeOrder: BeautyObservedEyeOrder? = nil,
         observedFaceSupport: BeautyObservedFaceSupport? = nil,
         observedEyebrowSupport: BeautyObservedEyebrowSupport? = nil,
-        observedLipSupport: BeautyObservedLipSupport? = nil
+        observedLipSupport: BeautyObservedLipSupport? = nil,
+        observedNoseSupport: BeautyObservedNoseSupport? = nil
     ) {
         self.stableID = stableID
         self.confidence = confidence
@@ -176,6 +189,7 @@ package struct BeautyFaceObservation: Equatable, Sendable {
         self.observedFaceSupport = observedFaceSupport
         self.observedEyebrowSupport = observedEyebrowSupport
         self.observedLipSupport = observedLipSupport
+        self.observedNoseSupport = observedNoseSupport
     }
 }
 

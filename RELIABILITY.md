@@ -1,5 +1,123 @@
 # RELIABILITY.md
 
+## Observed-root raster protection (2026-09-23)
+
+Paired-eye nasal-root fields explicitly stop before the bridge-owned integer
+row (`row < floor(split * height)`). The private optional cutoff defaults to nil
+for all other controls and is rejected when nonfinite/out of normalized range.
+This prevents continuous-support checks from overlooking a changed boundary row.
+The retained Metal adapter rejects non-nil cutoffs with `BeautyError.invalidInput`
+before runtime submission; it cannot silently discard the protection. A later
+supported or neutral request remains usable. The repaired observed-root path
+therefore requires the CPU backend.
+Narrowing and protection are checked on actual generated and registered original
+pixels; a valid sampler or inward control point alone does not prove efficacy.
+
+Default Vision now consumes an explicit named-sRGB CGImage from the existing
+CIImage extent. Failure to form this detection raster is typed detectorUnavailable;
+metadata orientation and canonical coordinate mapping remain unchanged. This
+also rejects fractional crop origins or dimensions instead of silently rounding
+the detection raster against different mapper dimensions. Nonzero integral
+origins remain supported; allocation obeys the caller's configured pixel budget.
+This
+removes the CIImage/CGImage source-boundary disagreement rather than compensating
+with a fixed pixel offset. All observed controls require the full portrait gate
+because they share this provider.
+
+
+## Generated measurement child supervision (2026-09-15)
+
+Phase95 test-only Python transport uses exact canonical success bytes rather
+than Foundation JSON coercion. Nonblocking full-duplex pipes bound input262144
+bytes, output4096 bytes and monotonic execution time. A fixed preamble establishes
+process-group ownership; cleanup recovers readiness even on early timeout, uses
+bounded TERM grace then KILL, and never calls unbounded waitUntilExit. Generated
+test observations retain process identities only in memory, require post-setup
+acknowledgements and verify processes stop executing. Test-owned final cleanup
+protects the suite when deliberate KILL/leader-only mutations fail assertions.
+This is test infrastructure, not a new SDK runtime/subprocess API.
+
+## Phase 95 metric-amendment checkpoint (2026-09-14)
+
+Actual reviewed source registration rejected with `child_invalid_output`; a
+bounded source-only diagnostic exposed `ambiguous_structure` plus one native
+diagnostic line. Transport v3 separates stdout protocol from discarded stderr
+under one aggregate output cap, preserving typed rejection and nonzero exits.
+This is a transport correction only, not a workaround for source ambiguity.
+Original v2 review and failure remain historical; successor review is required.
+
+The independently confirmed legacy metric defect is not an effect pass. The
+case-to-metric validation fix intentionally changes comparator identity; the
+unchanged v1 driver binding now fails closed. Do not repair that mismatch by
+overwriting the old registration. A separately reviewed versioned amendment,
+source-only registration and report identity plumbing are required first.
+
+The generated-only structural metric exposes typed invalid-input, unavailable,
+ambiguous and identity-mismatch outcomes. It has no portrait input or passing
+closeout output. Missing correspondence cannot drop an output row or borrow a
+new template. Old portrait failures remain separate immutable observations.
+
+Draft-2 generic math is independently approved (a205d973). The separate registrar
+is still review-gated and accepts no candidate/reference inputs. It must compare
+two complete source-only records and recheck code, source, compiler and OS
+identities; no automatic fallback or parameter retuning follows unavailable,
+ambiguous or mismatched registration. Its aggregate output cannot grant an
+effect pass or repair the still-unchanged v1 clean65 driver admission.
+
+## Execution-backed Phase 95 closeout (2026-09-14)
+
+`check-phase95-closeout.py full-closeout` uses the genuine gate, requiring an
+independent review bound to current source/test/script/owner/history hashes.
+It re-executes the portrait gate, wrapper self-test, and archive-first no-skip
+wrapper, validates actual XCTest totals and all eight opt-ins, then rechecks
+identities before exclusive receipt creation. Missing/stale review, input drift,
+failure/skip, capture overflow or deadline failure issues no passing receipt.
+Pre-existing receipts are never silently overwritten. Declared-counter legacy
+baseline/freeze lanes are disabled; their historical artifacts remain unchanged.
+
+Capture stays in bounded memory; only fixed stage labels and aggregate receipts
+are emitted. Both wall-clock and monotonic elapsed time bound children. Managed
+portrait execution inherits the supervisor's owned process group so timeouts
+also terminate descendants rather than orphaning a nested runner session.
+These mechanics and their self-tests do not establish live effect success.
+
+## Phase 95 resumed CPU sampling repair (2026-09-13)
+
+A deterministic in-memory vertical gradient reproduced 2274 changed bytes
+under a pure horizontal observed mouth field. Pixel-center inverse conversion
+now preserves the gradient exactly on admitted homogeneous observed inward
+fields. Legacy/mixed sets explicitly retain prior conversion: global conversion
+was rejected because it changed frozen legacy mouth receipts. The correction
+is CPU-scoped; it does not claim Metal parity for the new sampling convention.
+Malformed or excessive fields return no points; no fallback borrowing is added.
+
+## Phase 95 clean-65 classification (2026-09-12)
+
+The established batch runner's exit 3 means a complete deterministic semantic
+measurement, including its expected deferred contour failure. The closeout
+driver now submits that result to per-direction classification: all seven
+active directions must pass, and the failed contour stays deferred/partial.
+An active failure, unexpected contour promotion, malformed or stale report,
+digest mismatch or incomplete inventory remains a failure. Measured target,
+sibling and protected values are preserved. Preparation uses the established
+runner's preflight and fresh-attempt ownership, without recursively deleting
+previous owner-local output attempts. Full no-skip closeout remains contingent
+on successful registered portrait evidence.
+
+Observed chin rejects a complete invalid flank pair without discarding other
+validated lower pairs. Explicit malformed lips remain rejected at detection and
+geometry; absence in historical synthetic fixtures remains a separate state.
+Small observed support is never enlarged by legacy minimum-radius clamps.
+Candidate 1's two registered attempts passed four active directions but still
+failed chin, root and negative mouth. Candidate 2 is under evaluation; this is
+not a final closeout or evidence of device/visual-quality qualification.
+
+Candidate 2 has now completed: four active directions pass, chin/root/negative
+mouth still fail fixed direction/distinctness margins. All seven active target
+signals and every outside/protected zero-change check pass. Execution stops
+at the recorded two-candidate boundary; no automatic retry loop, weakened
+threshold or fabricated completion is used.
+
 > Current SDK-only error, degradation, observability, performance-risk, archive,
 > and recovery contract.
 

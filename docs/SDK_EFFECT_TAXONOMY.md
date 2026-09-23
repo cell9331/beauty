@@ -135,7 +135,7 @@ names and visual organization are intentionally omitted from the active contract
 | 鼻子 | 大小 | implemented | `noseSlim` | Bounded nose-size geometry. |
 | 鼻子 | 提升 | implemented | `noseTipLift` | Independent tip lift. |
 | 鼻子 | 鼻翼 | implemented | `noseWingSlim` | Nose-wing narrowing. |
-| 鼻子 | 山根 | implemented | `noseRootNarrowing` | Independent root narrowing; never aliases `noseBridge`. |
+| 鼻子 | 山根 | implemented | `noseRootNarrowing` | Independent inner dorsal surface narrowing with source-owned bridge protection. Repaired observed paired-eye path requires CPU; retained Metal rejects its unsupported raster cutoff with typed invalidInput. Never aliases `noseBridge`. |
 | 鼻子 | 鼻梁 | implemented | `noseBridge` | Bridge definition. |
 | 鼻子 | 鼻尖 | implemented | `noseTipSize` | Signed tip-size geometry. |
 | 眉毛 | 上下 | implemented | `eyebrowYPosition` | Signed bilateral vertical translation. |

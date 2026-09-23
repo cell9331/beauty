@@ -1,5 +1,358 @@
 # QUALITY_SCORE.md
 
+## 当前 v1.22 验收（2026-09-23）
+
+当前完成凭证为 [95-COMPLETE.json](.planning/phases/95-compatibility-and-sdk-only-closeout/95-COMPLETE.json)，
+`python3 scripts/check-phase95-closeout.py verify-complete` 验证通过。
+同一规范快照真实执行：安全1/0/0、兼容4/0/0、65/65输出双次一致，七个有效方向与一项批准延期；
+archive-first、SDK-only、wrapper检查和完整SwiftPM **937/0/0**，全部8项opt-in各精确一次。
+
+山根使用source固定31对内侧鼻背表面标记，五组比较区间均为 **[260, 373] Q16**；
+目标10774像素/RGB217300，目标外、鼻梁、鼻尖、背景和水印变化全部为0。
+实际SDK生成校准6/6、432/432位置、72移动点真值全部覆盖；测量仅绑定当前已审核方法。
+
+首次完整验收的65结果保留为 FIRST-RUN-OBSERVATION；随后 Metal 专项固定测试计数从34修正到35，
+独立复核与当前完整门禁重新通过。没有减少测试、放宽失败/skip条件或把历史失败改为通过。
+取消自测的就绪消息观察竞态经25次复现定位：其中3次测试观察先后颠倒，25次真实进程清理均正确且无残留。
+同步修复后串行6次与双并发6次均通过，每次624项；生产管道与山根测量算法未改。
+默认CPU支持修复；显式GPU遇新保护边界返回typed invalidInput并可恢复，不能宣称该效果CPU/GPU功能等价。
+FACE-01/faceContourSmooth保持deferred/partial（FUTURE-04）；没有设备、群体或商业视觉质量结论。
+
+证据：[CHECKS](.planning/phases/95-compatibility-and-sdk-only-closeout/95-CLOSEOUT-CHECKS.json)、
+[65项结果](.planning/phases/95-compatibility-and-sdk-only-closeout/95-CLEAN-65-REPORT.json)、
+[独立目标审核](.planning/phases/95-compatibility-and-sdk-only-closeout/95-GOAL-VERIFICATION.json)。
+PLANS/QUALITY等行政更新不改变规范快照；后续规范代码/契约修改需当前身份重新验证。
+
+## 历史质量记录：以下 current/latest 均指所标日期与对应快照
+
+## Current whole-package regression (2026-09-22)
+
+The archive-first SDK-owned wrapper executed929 tests:0 failed,0 skipped, all8
+opt-ins exactly once. Strict transcript identity/order accounting and before/after
+normative snapshots passed. See95-CURRENT-REGRESSION-OBSERVATION.json. This replaces
+925 as the latest observed full-suite count, but does not grant missing root
+measurement,65-output portrait or milestone completion acceptance. Future normative
+changes require their corresponding fresh checks.
+
+## Latest isolated mesh validation (2026-09-22)
+
+All18 dependencies are acquired and hash-verified, installed offline in a fresh
+isolated Python runtime. Independent review verifies2587 installed wheel payloads.
+Actual CPU inference under network denial passes12 generated gray-image cases
+with no face detections and unchanged input arrays. This supersedes older
+acquisition/runtime blockers below; it is not positive-face/effect acceptance.
+The local visible registrar passes7 generated tests normal/optimized, including
+mixed-polarity outward alternatives. Source-only diagnostic passes5 protocol,
+executable-closure and pixel-center mapping tests normal/optimized and Swift
+compile-only; final independent review has zero unresolved findings. Two actual
+source observations agree: prior15/16 rows, visible pairs6/16,539 candidate pairs,
+unavailable10. This is applicability coverage, not semantic width qualification.
+No output-image scoring, source registration or milestone completion follows.
+
+## 当前质量状态（2026-09-22）
+
+当前执行以[里程碑细则](.planning/V1.22-CURRENT.md)为准。下文带日期的各次
+“current/latest”描述是对应版本的历史验证，不是当前工作树的全量认证。
+旧完整人像candidate6为6/7；旧山根指标有确定反例；后继方法未完成人像准入。
+历史914/0/0不替代当前closeout，SAFE-01/COMPAT-01/CLOSE-01仍待当前证据。
+历史owner快照与当前回归分开验证，不能因PLANS正常记账就否定历史完成。
+随后已实现v3收尾校验与原子finalize；证据验证16项、结构聚合9项通过。
+genuine-gate拒绝15类日志变体、6类review变体，子进程检查3项通过。
+实际安全/兼容SwiftPM共5/0/0，SDK-only boundary通过；恢复验证包含有效输入
+非neutral正控制。16行原生山根实验失败并撤除；不计作新图片效果证明。
+独立工具复审v3为0 blocker/0 warning；12个身份正控制接受、32个后缀反例拒绝。
+随后独立全量no-skip实际通过925/0/0、8项opt-in精确一次；其执行前后规范
+snapshot未捕获，因此记录为回归观察，不是v3 closeout绑定。
+多候选结构聚合14项正常/优化测试通过并经独立review；候选完备性与结构身份
+仍待证明。经独立review后，原图候选诊断实际执行两次一致，返回
+metric_unavailable / visible_coverage，未形成合格行集合；该有限模型不能授予
+山根效果通过或失败。尚无人像准入或完成凭证。
+后继仿射源模型6项、精确采样器6项均在正常/优化模式通过；原生山根图像
+测试7/0/0。独立审查绑定23文件，随后源图双运行一致：完整16行扫描，
+0个paired candidate rows，metric_unavailable / affine_visible_coverage。
+这证明该模型不适用于当前输入，不证明山根无效果；没有新的人像通过凭证。
+新增测试发生在925项全量回归之后，该总数不描述新增测试后的完整工作树。
+
+
+## Remaining work and dependency continuation (2026-09-22)
+
+Current work is tracked in four blocks in V1.22-CURRENT.md: root measurement,
+65-output acceptance, current full regression, and final independent closeout.
+Historical6/7 phases or29/33 plans do not measure remaining effort. The absl-py
+2.3.1 wheel now matches official hash/size, passes ZIP CRC, and includes Apache-2.0
+metadata/license. No package is installed and no model is executed. System-TLS uv
+still timed out; the subsequent pip dry-run succeeded with18 exact package versions
+and archive hashes. Dependency-resolution JSON and a temporary hash-pinned lock
+were generated; actual dependency acquisition/installation and inference remain pending.
+
+## Public artifact recovery (2026-09-22)
+
+The primary wheel now matches the official pinned SHA256 and size; the complete
+four-member task ZIP passes CRC and the model card parses all7 pages. Static
+bundle comparison matches468 ordered XYZ positions at float32 precision and898
+triangle sets against the pinned OBJ. The upstream graph explicitly selects the
+first468 predicted points. See95-ROOT-MESH-ACQUISITION.md. No dependency installation,
+CPU inference, source registration or effect acceptance is implied. Independent95-ROOT-MESH-INDEX-REVIEW.md confirms ordered vertices and the full
+oriented triangle sequence. Earlier acquisition failures below remain historical
+observations; the latest dependency lock attempt still times out at absl-py.
+
+## Public dense-mesh prior (2026-09-22)
+
+Six generated topology/identity/input tests pass normal and optimized. Exact
+public canonical OBJ digest,468 vertices/898 faces and2 mirrored candidate-chain
+hypotheses validate. Flags remain prior-only, nonqualified and nonscoring. The
+wheel and model-card acquisitions are incomplete; no model/dependency installed,
+no inference, no private input accessed. The isolated resolver was terminated;
+offline resolution confirms missing MediaPipe. This is not a portrait failure
+or success and adds no SwiftPM/full-closeout acceptance.
+
+Independent public-only review reports zero unresolved implementation issues, verifies the final three file digests, and passes43 typed-input rejections,6 asset rejections and2 positive boundary controls. Anatomical ownership, hypothesis completeness,468/478 index compatibility and instance uncertainty remain unqualified; see95-ROOT-MESH-FEASIBILITY-REVIEW.md.
+
+## Lateral contour support (2026-09-22)
+
+The separate lateral-support diagnostic treats all segment indices equally:
+both endpoints must remain strictly on the relevant side of the fixed midpoint.
+Incident-label conflicts remain non-lateral. Generated34 checks pass; independent
+review adds30 conflict checks and rejects37 protocol/8 review-stability mutations.
+Two actual source runs agree: paired3, side_supported0, cap_dependent3,
+unsupported13. Thus geometric closure corrected an undercount but did not admit
+any bilateral root-side cohort under this sufficient rule. No output image was
+read, no threshold changed and no effect or milestone acceptance was issued.
+This is not a theorem that the photograph lacks root anatomy or that every
+possible automatic recognizer must fail. Existing tests remain native root9/0/0;
+this scripts-only diagnostic did not rerun or replace the full-package gate.
+
+## Declared contour topology (2026-09-22)
+
+The prior diagnostic omitted Vision's declared topology. The separate successor
+honors closedPath with exactly one last-to-first segment, leaves openPath open,
+and rejects disconnected/unknown topology. Generated23 checks and independent
+25 protocol/8 review-stability rejections pass. Two actual source-only runs agree:
+closed topology, paired3, ambiguous0, unsupported13. The prior open-convention0
+is not a complete contour-support result. No source registration or effect score
+is granted: a closing edge must not automatically be called a visible root side.
+Old observations and reviewed versions are unchanged.
+
+## Shared-source uncertainty verification (2026-09-22)
+
+The generated-only correlated-change helper retains the same uncertain source
+location in reference/candidate forward changes instead of subtracting independent
+absolute-width envelopes. Twelve Python tests pass both normal and optimized;
+actual canonical RGB integration adds a fixed +/-0.5px uncertain-source positive
+and fixed-boundary negative, passing2/0/0. The whole related image-formation suite
+passes9/0/0 with PYTHONOPTIMIZE=1; SDK-only boundary passes. Original16 Q16, source,
+neutral, all three siblings and signed-before-absolute aggregation are retained.
+Independent95-ROOT-CORRELATED-CHANGE-REVIEW.md has zero unresolved findings;
+720 position differences,720 width differences and200 cohort oracles agree.
+No new private-image observation or admission follows.925 remains the earlier
+whole-package regression count, not the current post-addition suite total.
+
+## Source contour feasibility (2026-09-22)
+
+The new source-only nose-polyline diagnostic passes10 generated checks. Independent
+review binds15 files and rejects19 protocol and7 review/stability mutations. A
+sandbox execution failure is distinguished from image results by a generated-only
+Vision control (sandbox code9, unsandboxed success). The independently reviewed
+environment recovery then completes two matching source-only runs: paired0,
+ambiguous0, unsupported16. No output image, registration or effect score is involved.
+This rejects direct use of the current nose-polyline cross sections as width
+support; it is not proof that every automatic semantic method is impossible.
+
+## Forward measurement and coverage verification (2026-09-15)
+
+Forward helper328 checks pass; independent13500-system/243-map review is clean.
+Two actual canonical generated structure cases include genuine narrowing and
+unchanged boundaries despite neighboring texture movement. Their initial
+single-row positive-assumption failure is preserved, not credited as a pass.
+Integration reviews v1/v2 exposed permissive JSON and cleanup verification
+defects; v3 clears the repairs, independently detecting omitted-KILL/leader-only
+mutations with no stranded processes. Exact final transport tests pass4/0/0.
+
+Approved source-only inspection: two identical records, crest11/16 and contour
+3/16 vertical coverage, zero source registrations/scoring attempts. This does
+not qualify bilateral anatomy. See95-ROOT-ANATOMY-COVERAGE-OBSERVATION.json.
+No current all-opt-ins/no-skip or milestone-completion credit follows.
+Final optimized related SwiftPM29/0/0; post-archive SDK boundary and diff checks
+pass. Existing unrelated compiler warnings were not represented as a warning-free
+build and were not changed in this repair.
+
+## Nonlinear generated measurement verification (2026-09-15)
+
+Final generated self-test contains38 true displacements, passes both ambiguity
+controls, and accepts2/2 at32 and1024Q16 against unchanged16Q16 margin. Negative,
+zero and15/16/17/20Q16 cases accept0/2. Actual-root tests pass3/0/0 under
+PYTHONOPTIMIZE=1. The prior assertion could disappear under optimization;
+unconditional rejection now survives both modes. Independent v2 verifies two
+exclusion rejections and two positive controls; v1's independent exhaustive
+mathematical comparisons found no discrepancies. Neither review credits
+anatomy, portrait acceptance or milestone completion. See95-ROOT-NONLINEAR-MODEL.md
+and its v1/v2 review records. Historical no-skip evidence is not refreshed by
+these focused tests. Final related selection passes23/0/0; post-archive SDK
+boundary and diff checks pass. No fresh all-opt-ins/no-skip closeout was run.
+
+## Actual-root sampler and model applicability (2026-09-15)
+
+`Phase95RootImageFormationTests`:2/0/0. Six canonical executions cover256/512
+and neutral/half/full root strength. Unrounded Double error<=1 byte, identity,
+alpha, extent, outside-field preservation and memory-PNG equality pass.
+Two generated full-strength fields exceed the affine experiment's unit-pixel
+search and have five-sample affine residual lower bounds>0.05px. This records
+model inapplicability, NOT root effectiveness or portrait acceptance. No new
+full no-skip or independent acceptance review is credited. Related SwiftPM
+selection passes30/0/0; SDK-only post-archive boundary and diff checks pass.
+
+## Affine-motion measurement-power probe (2026-09-15)
+
+Revised generated signed-affine/RGB self-test:42 paired cases,84 true-motion
+containments; unchanged16Q16 margin passes32Q16 in6/6 and20Q16 in5/6, with
+-32/0/15/16/17 each0/6. Flat/brightness-ramp ambiguity remains in the returned
+hull instead of being discarded; a sign-crossing slope case is contained.
+The earlier inward-only/one-channel draft's0/2 at32Q16 is retained as failed
+measurement-power history, not promoted. Analytic fixture truth is not an
+independent production-image oracle. No new SwiftPM, portrait, registration,
+full-gate or completion credit. Independent review is clean:22 polytopes,
+97 complete vertex-set comparisons and1172 active-set checks all agree.
+Final main self-test also passes one error-budget widening, one crossing,
+two ambiguity and three invalid-input controls. Exact source/model hashes
+are recorded in NEW95-ROOT-AFFINE-REVIEW-v1.md; these are not portrait receipts.
+
+## Subpixel and canonical image formation verification (2026-09-15)
+
+New actual-sampler-backed exact interval experiment:126/126 reference matches
+and truth containments, seven negative rejections, unchanged16Q16 threshold.
+Independent review:118/118 complete feasible-set agreements, zero findings.
+The wider one-byte budget detects20/32Q16 in9/9 cases each and17Q16 in3/9;
+<=16Q16 is not promoted. It is not arbitrary photometric or root-field evidence.
+Two new SwiftPM methods verify selected canonical sRGB/PNG chains; the reference
+was strengthened to UNROUNDED Double and independently rechecked,2/0/0. Final
+related selection (image formation, pixel-center, inward safety, nose provider)
+passes21/0/0. Reviews: `95-ROOT-SUBPIXEL-REVIEW-v1.md` and `-v2.md`.
+No new full no-skip, portrait scoring, source-registration or closeout credit.
+
+## Measurement power investigation (2026-09-15)
+
+The new generated-only identifiability probe measures actual 112→108 pixel
+widths independently of the frozen metric: true512Q16 versus conservative
+margin-594. Its18 integer correspondence cases and3 negative controls pass.
+Independent review confirmed the nuisance equivalence and identified a truth
+oracle regression gap; the fix is independently clean, and identity/expansion
+substitutions now exit2. See `95-ROOT-IDENTIFIABILITY-REVIEW-v2.md` for exact
+hashes. This proves a measurement-model limitation, not portrait success.
+Near-threshold pixel-to-verdict sensitivity, subpixel uncertainty and anatomical
+registration remain unvalidated. Prior914/0/0 is historical regression only;
+no new full-suite or milestone completion is claimed.
+
+## Current standalone regression (2026-09-14)
+
+Archive-first all-opt-in no-skip gate actually passed: 914 tests, zero failures,
+zero skips, eight opt-ins; actual Metal parity executed 13 focused tests with
+zero unavailable tests. Complete run-time snapshot matched before/after.
+Aggregate evidence: `95-RESUMED-REGRESSION-2026-09-14.json`. This supersedes older
+ordinary-suite counts for regression only, not portrait acceptance or formal
+Phase95 closeout. Source registration still rejects `remote_competing_edge`;
+no successful registration, new-metric portrait score or completion is credited.
+
+## Phase 95 independent metric defect review (2026-09-14)
+
+Terminal evidence: reviewed v3 registrar actually rejects the source with
+`ambiguous_structure`, exit2; zero successful source registrations. Transport
+fix and its independent review pass 8/22/7 generated checks plus 12 reviewer
+assertions. No new-metric portrait score or final no-skip is possible yet.
+Current Plan03 remains blocked; see `95-ROOT-SOURCE-ATTEMPTS-v2.json`.
+
+Latest: independent re-review v3 approved exact generic draft 2 (commit a205d973),
+confirmed all four findings resolved and independently reproduced 346/11 passing
+checks with additional combined-nuisance containment probes. The source-only
+adapter now passes 8 generated carrier/exclusion checks plus 22 admission attacks;
+its integration review and real source registration are not yet completed.
+
+Current successor: implementation review `a74b8c33` rejected draft 1 despite its
+250 passing checks. Draft 2 fixes the three blockers and crossing-oracle warning;
+346 generated checks and focused SwiftPM 11/0/0 now pass. Independent re-review
+is pending. The prior results below remain historical, not draft-2 approval.
+
+The narrow independent review confirmed two blockers: a dark-centroid structural
+measurement defect and missing per-row metric identity validation. It also found
+the generated provider direction test reused the defective proxy. Review report:
+`95-ROOT-METRIC-REVIEW.md`, preserved at commit `2eb0dee0`.
+
+The identity guard now passes comparator self-test 597, including eight new
+metric substitution rejections. The provider direction oracle now measures
+generated boundary crossings with explicit rounding uncertainty; focused 10/0/0
+passed before dead-branch cleanup. The replacement metric prototype passed
+250 generated checks, including size/subpixel ground-truth intervals,
+bounded-noise/blur and pixel-domain threshold adversaries.
+After dead-branch cleanup, ordinary full SwiftPM passed 913 tests with zero
+failures and eight opt-in skips. This is not the no-skip completion gate.
+No current no-skip, amended portrait
+success, implementation-review approval or Phase95 completion is credited.
+
+## Internal contract revision qualification (2026-09-14)
+
+Owner-approved candidate 6 revises internal chin/root bounds, preserving all
+registered pixel acceptance criteria, public parameter caps and fixture identity.
+Final focused source selection passes 14/0/0, including generated root-structure
+contraction, inverse-map canthus containment and sub-cap admission. A rounding
+failure at the canthus was fixed by an interior margin, not a weaker assertion.
+Legacy chin/nose/mouth tests also passed before that final margin-only edit.
+Live portrait evaluation is still required; no completion is inferred here.
+
+The genuine closeout gate rejects seven mutated test transcripts and six invalid
+review records and passes three child-output/deadline checks. The clean driver
+self-test remains 16; actual SDK-only boundary and diff checks pass. Formal
+current completion must be established by current hash-bound
+`95-CLOSEOUT-CHECKS.json`, not by historical predeclared baseline counters.
+
+## Phase 95 resumed repair verification (2026-09-13)
+
+Candidate 3 passed 106 focused methods and ordinary full SwiftPM 906 methods
+with zero failures and eight opt-in skips (not a no-skip completion gate).
+Its two identical portrait runs pass five active directions; chin/root margins
+14/0 remain below 16. Negative mouth passes at -32; all protected/outside deltas
+are zero. FACE-01 now explicitly tests its unchanged failing predicates and
+non-promotion under owner authorization instead of asserting a deferred pass.
+Compatibility exact-backend hashing and hash-pinned CPU-only test fixtures pass
+the boundary self-test and actual SDK-only scan. Original review bindings are
+retained and not claimed to authorize the changed compatibility test.
+
+Candidate 4 fixes a separately reproduced pixel-center defect. Fresh workspace
+focused tests pass 22/0/0; registered portrait and current full-suite evaluation
+completed: full SwiftPM exited zero, while two identical 65-case portrait
+attempts still fail chin/root at 14/0. Candidate 5 redistributes unused chin
+budget and centers root support within the canthus interval; focused 23/0/0
+passes. Its two reconciled 65-case attempts also fail chin/root at 14/0;
+the five other active directions pass with every outside/protected delta zero.
+No candidate-5 full-suite/no-skip credit is inferred. No final receipt or independent
+completion review is claimed.
+See `95-REPAIR-RESUMPTION.md` for pre-run identities and rejected alternatives.
+
+## Phase 95 registration repair verification (2026-09-12)
+
+The original portrait semantic failure remains historical. Source-only
+inspection found its fixed gaze targets disjoint from both actual eye
+apertures. Owner-approved anatomy registration is independently computed before
+output evaluation and frozen by digest. Comparator self-test now covers 589
+probes, including target-identity and outside-leakage gaze attacks plus eleven
+seven-active/one-deferred classifier probes. Driver self-test passes 16/16.
+These tests validate evidence handling; they do not establish live semantic
+success or complete Phase 95.
+
+Candidate 1 passed the expanded 106-test generated selection twice from a fresh
+scratch build; the earlier incremental-build crash remains recorded.
+Candidate 2 passed 117 focused tests with zero failures, including unchanged
+Phase 90–94 generated semantic oracles and new observed support/mapping tests.
+Full registered portrait semantics and the archive-first no-skip gate remain
+separate requirements, not inferred from those focused counts.
+
+Terminal candidate-2 portrait result: 65/65 outputs twice identically, four
+active directions pass, three remain below the fixed semantic margins. All
+active target signals pass and outside/protected pixel/RGB measurements are
+zero. Ordinary full SwiftPM reports 904 methods, eight opt-in skips and eight
+assertion failures in one pre-existing deferred FACE-01 test (reproduced at
+untouched HEAD). Archive verification passes; the existing compatibility-test
+literal trips the frozen boundary scan. No final no-skip or phase completion
+is credited. Detailed aggregates and identities are in `95-ROI-AMENDMENT.md`.
+
 > Current SDK-only quality scorecard and repeatable verification contract.
 > Time-bounded application/UI evidence remains historical in archived milestones.
 

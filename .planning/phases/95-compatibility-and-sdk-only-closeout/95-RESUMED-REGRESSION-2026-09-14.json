@@ -1,0 +1,28 @@
+{
+  "schema": "phase95-standalone-regression-v1",
+  "date": "2026-09-14",
+  "kind": "pre_closeout_regression_not_completion",
+  "command": "bash scripts/run-no-skip-swiftpm.sh",
+  "exit_code": 0,
+  "tests": {"executed": 914, "failures": 0, "skips": 0, "opt_ins": 8},
+  "archive_verified": true,
+  "sdk_boundary_verified": true,
+  "metal_parity": {"available": 1, "executed": 1, "focused_tests": 13, "unavailable_tests": 0},
+  "run_time_snapshot_before": "7e5fef4b275485b13ef414a9cae2fc0f78c7dd7c8d23a2c298bef78181be0002",
+  "run_time_snapshot_after": "7e5fef4b275485b13ef414a9cae2fc0f78c7dd7c8d23a2c298bef78181be0002",
+  "binding_scope": "Historical run-time snapshot; subsequent owner documentation updates are not included. Not a current formal closeout binding.",
+  "transcript_handling": "Bounded in-memory execution and actual transcript count validation; raw transcript discarded.",
+  "source_only_diagnostic": {
+    "exit_code": 2,
+    "stage": "remote_competing_edge",
+    "predicate_changes": 0,
+    "frozen_inputs_and_environment_unchanged": true,
+    "registration_credit": false,
+    "scoring_attempts": 0,
+    "method": "In-memory throw-label instrumentation only; no frozen implementation edit or raw source evidence persisted."
+  },
+  "latest_complete_portrait_active_passes": 6,
+  "required_active_passes": 7,
+  "phase_complete": false,
+  "remaining": ["explicit alternative source-registration disposition", "reviewed and frozen successful source registration", "amended portrait acceptance", "current independent implementation and goal review with formal closeout evidence"]
+}

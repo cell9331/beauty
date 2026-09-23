@@ -1,5 +1,12 @@
 # Requirements: Beauty v1.22 Non-Local Facial Effect Repairs
 
+## Current evidence interpretation (2026-09-23)
+
+v1.22 completed 2026-09-23: 7/7 phases, 33/33 plans, 11/11 active requirements; [verified COMPLETE](phases/95-compatibility-and-sdk-only-closeout/95-COMPLETE.json).
+Actual portrait: 65/65 outputs, 2 reconciled runs, seven effective directions and one deferred/partial direction. Current safety 1/0/0, compatibility 4/0/0, archive-first full SwiftPM 937/0/0; all 8 opt-ins accounted for.
+VAL-02/NOSE-02 use the reviewed rootSurfaceSpanQ16_v4 measurement and current actual-batch acceptance.
+FACE-01/faceContourSmooth remains explicitly deferred/partial under FUTURE-04, without effectiveness credit. The repaired observed paired-eye root uses CPU; retained Metal rejects its unsupported private raster cutoff with typed invalidInput before submission and recovers for later supported requests. This is owner-local SDK validation, with no device, population, commercial quality, packaging, shipping, launch, release-readiness or distribution claim. No owner annotation or device action remains. Phase96 is absorbed into95-03, and no next milestone is started.
+
 **Defined:** 2026-08-26
 
 **Core Value:** The project owner can verify that every in-scope, owner-local
@@ -73,18 +80,18 @@ remain unchanged and are not accepted as an effective repair.
 
 ### Compatibility and closeout
 
-- [ ] **SAFE-01**: Every repaired control has automated coverage for neutral
+- [x] **SAFE-01**: Every repaired control has automated coverage for neutral
   identity, no-face and missing/malformed/stale semantic support, determinism,
   extent/orientation/color-space/alpha preservation, exact safety caps,
   protected regions, privacy-safe diagnostics, and recovery after rejected
   input; no control may use another control's semantic support as a proxy.
 
-- [ ] **COMPAT-01**: Repairs preserve the public `BeautyParameters` Codable and
+- [x] **COMPAT-01**: Repairs preserve the public `BeautyParameters` Codable and
   default contract, five presets, 62 parameter fields, 75 renderer cases,
   public still-image facade signatures, CPU/GPU backend contract, SDK-only
   target boundary, and existing non-target control behavior.
 
-- [ ] **CLOSE-01**: A clean authorized-portrait rerun completes all 65 outputs,
+- [x] **CLOSE-01**: A clean authorized-portrait rerun completes all 65 outputs,
   marks the seven active repair directions effective against neutral through
   their semantic and protection gates, and reports `faceContourSmooth` as the
   one explicit deferred/partial direction without promoting it; focused tests,
@@ -140,14 +147,14 @@ remain unchanged and are not accepted as an effective repair.
 | NOSE-01 | Phase 93 | Complete |
 | NOSE-02 | Phase 93 | Complete |
 | MOUTH-01 | Phase 94 | Complete — current41/41 and independent28/28 goal verification |
-| SAFE-01 | Phase 95 | Pending |
-| COMPAT-01 | Phase 95 | Pending |
-| CLOSE-01 | Phase 95 | Pending |
+| SAFE-01 | Phase 95 | Complete — verified current COMPLETE |
+| COMPAT-01 | Phase 95 | Complete — verified current COMPLETE |
+| CLOSE-01 | Phase 95 | Complete — verified current COMPLETE |
 | FUTURE-04 | Future milestone | Deferred |
 
-**Coverage:** 11 active v1.22 requirements mapped exactly once: 3 complete and
-8 pending. `FUTURE-04` records the explicitly deferred FACE-01 intent outside
-the active milestone.
+**Coverage:** 11/11 active v1.22 requirements complete and mapped exactly once. Eight historical phase requirements retain their original evidence, with the changed source and successor root measurement revalidated by current Phase95 acceptance. SAFE-01, COMPAT-01 and CLOSE-01 are closed by the verified current receipt. FUTURE-04 preserves the explicitly deferred FACE-01 intent outside this milestone.
 
 ---
-*Last updated: 2026-09-02 after owner-approved v1.22 scope contraction*
+*Last updated: 2026-09-23 after verified v1.22 completion*
+
+<!-- beauty-v122-complete-sha256: 33b49fee25b4156b8a947ac437822ac33f7e5473a61ed74b1015c393035862d4 -->

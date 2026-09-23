@@ -1,0 +1,19 @@
+{
+  "binding_sha256": "4eaf1a6d13c2a3da2d7422bb2edf1600e174e1b7ba5956016d969f1d6a48ab4b",
+  "discovered": 7,
+  "executed": 7,
+  "failed": 0,
+  "passed": 7,
+  "predicate_categories": [
+    "codable",
+    "presets",
+    "renderer_cases",
+    "facades",
+    "backend",
+    "sdk_boundary",
+    "non_target"
+  ],
+  "schema": "phase95-compat-baseline-v1",
+  "skipped": 0,
+  "status": "baseline_pass"
+}

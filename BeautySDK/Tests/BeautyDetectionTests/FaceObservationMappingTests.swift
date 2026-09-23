@@ -5,6 +5,64 @@ import BeautyCore
 @testable import BeautyDetection
 
 final class FaceObservationMappingTests: XCTestCase {
+    func testPortraitNoseUsesCanonicalMapperAndNeverSerializesCoordinates() throws {
+        let points = [CoordinatePoint(x: 0.41, y: 0.32),
+                      CoordinatePoint(x: 0.52, y: 0.47),
+                      CoordinatePoint(x: 0.63, y: 0.58)]
+        for raw in UInt32(1)...8 {
+            for mirrored in [false, true] {
+                let orientation = try XCTUnwrap(CGImagePropertyOrientation(rawValue: raw))
+                var detector = VisionFaceDetector { _ in
+                    [VisionDetectionObservation(
+                        visionBounds: CoordinateRect(x: 0.2, y: 0.2, width: 0.6, height: 0.6),
+                        observedLipSupport: BeautyObservedLipSupport(outer: points),
+                        observedNoseSupport: BeautyObservedNoseSupport(crest: points, contour: points))]
+                }
+                let observation = try XCTUnwrap(detector.detect(
+                    metadata: metadata(orientation: orientation, inputMirrored: mirrored)
+                ).observations.first)
+                let support = try XCTUnwrap(observation.observedNoseSupport)
+                XCTAssertEqual(support.crest, observation.observedLipSupport?.outer)
+                XCTAssertEqual(support.contour, support.crest)
+                XCTAssertEqual(support.crest.count, 3)
+                XCTAssertEqual(String(describing: support),
+                    "BeautyObservedNoseSupport(crestCount: 3, contourCount: 3)")
+                XCTAssertTrue(Mirror(reflecting: support).children.allSatisfy { $0.value is Int })
+                XCTAssertFalse(String(reflecting: observation).contains("CoordinatePoint"))
+            }
+        }
+    }
+
+    func testPortraitNoseMalformedPayloadRemainsExplicitlyRejected() throws {
+        let valid = [CoordinatePoint(x: 0.4, y: 0.4), CoordinatePoint(x: 0.5, y: 0.5),
+                     CoordinatePoint(x: 0.6, y: 0.6)]
+        for invalid in [[], [CoordinatePoint(x: .nan, y: 0.5)],
+                        [CoordinatePoint(x: 1.2, y: 0.5)], Array(repeating: valid[0], count: 33)] {
+            var detector = VisionFaceDetector { _ in
+                [VisionDetectionObservation(
+                    visionBounds: CoordinateRect(x: 0.2, y: 0.2, width: 0.6, height: 0.6),
+                    observedNoseSupport: BeautyObservedNoseSupport(crest: invalid, contour: valid))]
+            }
+            let observation = try XCTUnwrap(detector.detect(metadata: metadata(orientation: .up)).observations.first)
+            let support = try XCTUnwrap(observation.observedNoseSupport)
+            XCTAssertEqual(support.crest, [])
+            XCTAssertEqual(support.contour.count, 3)
+        }
+    }
+
+    func testPortraitMalformedLipsRemainExplicitInsteadOfTemplateAbsence() throws {
+        for points in [[], [CoordinatePoint(x: .nan, y: 0.5)]] {
+            var detector = VisionFaceDetector { _ in
+                [VisionDetectionObservation(
+                    visionBounds: CoordinateRect(x: 0.2, y: 0.2, width: 0.6, height: 0.6),
+                    observedLipSupport: BeautyObservedLipSupport(outer: points))]
+            }
+            let observation = try XCTUnwrap(detector.detect(metadata: metadata(orientation: .up)).observations.first)
+            XCTAssertNotNil(observation.observedLipSupport)
+            XCTAssertEqual(observation.observedLipSupport?.outer, [])
+        }
+    }
+
     func testPIPE05VisionObservationBoundsReachSelectionAsImageNormalizedData() {
         var detector = VisionFaceDetector { _ in
             [

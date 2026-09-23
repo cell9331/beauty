@@ -1,0 +1,25 @@
+{
+  "binding_sha256": "517813ce76902f6b59645ac1d0a69ae860d405e26f79f3c0ec6dd18fc337e473",
+  "checks_sha256": "46a03c1fb20ea5b6530777d687e4c58c29371c32db27b208ce8e85037f65b8d8",
+  "findings": [],
+  "input_digest": "56d33c8d9ddfbd6899287feeac501139d6ea1bac05250ca8982fa861482ed6f0",
+  "portrait_sha256": "7adb2eebd8478e049fe76386ab8c23ee1aa9c288acf3b9dc274bbea228d9c214",
+  "requirements": {
+    "CLOSE-01": [
+      "portrait",
+      "no_skip"
+    ],
+    "COMPAT-01": [
+      "compatibility",
+      "no_skip"
+    ],
+    "SAFE-01": [
+      "safety",
+      "no_skip"
+    ]
+  },
+  "review_sha256": "2a1ec7ae77a8ab65e7de4962a14290a56f32587febdeebd5cc6ea1289a75557a",
+  "reviewer_agent_id": "independent-final-goal-review-agent",
+  "schema": "phase95-goal-verification-v3",
+  "status": "pass"
+}

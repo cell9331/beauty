@@ -1,0 +1,14 @@
+{
+  "schema": "phase95-independent-regression-observation-v1",
+  "observed_at": "2026-09-22T05:17:20.211882+00:00",
+  "command": "bash scripts/run-no-skip-swiftpm.sh",
+  "exit_code": 0,
+  "validation": "phase95-genuine-gate.counts; exact opt-ins and runner stage order",
+  "executed": 925,
+  "failed": 0,
+  "skipped": 0,
+  "opt_in_tests": 8,
+  "phase_complete": false,
+  "closeout_binding_created": false,
+  "limitation": "Independent executed regression observation; no before/after normative snapshot was captured. Not a v3 closeout receipt and not portrait acceptance."
+}

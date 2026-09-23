@@ -1,0 +1,23 @@
+{
+  "schema": "phase95-contour-support-review-v1",
+  "status": "pass",
+  "reviewer_agent_id": "closeout-review-20260922",
+  "files": {
+    ".planning/phases/95-compatibility-and-sdk-only-closeout/95-ROI-REGISTRATION.json": "ef066fbe62a8385c137666ea0213284244b05199a9df0a81c8998bed07e4c43d",
+    ".planning/phases/95-compatibility-and-sdk-only-closeout/95-ROOT-CONTOUR-SUPPORT-SPEC.md": "3f9be229fe784555c715f129164f350fe041f7371939f2d324eac27b650477e0",
+    ".planning/phases/95-compatibility-and-sdk-only-closeout/95-ROOT-METRIC-DEFINITION-FREEZE-v2.json": "2035543bcfcec79729415cb4e9a8d5ddf30355c177a84a6d0b3e842ce63dbfe2",
+    ".planning/phases/95-compatibility-and-sdk-only-closeout/95-ROOT-METRIC-IMPLEMENTATION-REVIEW-v3.md": "947645b74934d89898af44c4644b96ff39f628c4eeaa64bdaa1bfb27323402be",
+    ".planning/phases/95-compatibility-and-sdk-only-closeout/95-ROOT-METRIC-SPEC-v2.md": "168394eb55445d770e72fa1de65546ee0c1ba1cceb15721032f14bdaa9ce426b",
+    ".planning/phases/95-compatibility-and-sdk-only-closeout/95-ROOT-REGISTRAR-SPEC-v2.md": "93d37da3b4a17c6b5e5087ee54744bb67c5c8dd1ea009704be0e54f1f28db8db",
+    ".planning/phases/95-compatibility-and-sdk-only-closeout/95-ROOT-REGISTRAR-SPEC-v3.md": "a7151d0d49268a961cf35e7d4c7e1568ed6e7087f419dfa4cd5a49f6484bde46",
+    "BeautySDK/Tests/BeautyEffectsTests/PortraitNoseRegistrationTests.swift": "9634829b8630a6b06aa25fcb0f54e73a7c5229a4497eaacf9fcadcb71c1bfeb4",
+    "scripts/compare-face-feature-batches.swift": "d7c7ccd293d4adb53cc2ea521d676cc6f51acd5215ae3a020862d332d1cfca26",
+    "scripts/face-feature-batch-manifest.json": "5665ffa04b9241a73ee864f7230a4abcd677de5dce01a5091a19e70714b7647e",
+    "scripts/phase95-root-anatomy-coverage.py": "d4c421e8b5f7f450ef1e3d0f58308fb2a2d3a90c8084302ed26d391341700943",
+    "scripts/phase95-root-contour-support.py": "4e3b4b829fc7ec4b719cdb45b1917991b3d01f9da8184a30e65c373fc703942b",
+    "scripts/phase95-root-edge-metric.swift": "7100a47cc3176035cb097016b252f00be477307f0d75fde932bffa869027287b",
+    "scripts/phase95-root-registration-adapter.swift": "c19c2cd1384f1cb9ee8200bff9968759be25e02abb18b4bf9e98de6e7c38c4f0",
+    "scripts/phase95-root-registration.py": "99a4edb93b9487ce70d13b411f55c12bc766a4175777fc8fdf551750e5d5fe13"
+  },
+  "findings": []
+}

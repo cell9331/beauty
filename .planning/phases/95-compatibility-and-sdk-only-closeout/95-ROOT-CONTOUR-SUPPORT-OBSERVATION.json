@@ -1,0 +1,17 @@
+{
+  "acceptance_credit": false,
+  "anatomical_boundary_qualified": false,
+  "attempts": 2,
+  "contracts_sha256": "68d192c37821c4c059ac3763722bea491e5dd27850c2ab0a69ec5aa6246cd168",
+  "counts": {
+    "ambiguous_rows": 0,
+    "paired_rows": 0,
+    "unsupported_rows": 16
+  },
+  "diagnostic_identity": "11cab09d5b11fc1b3a9216ca830b5e7e667e057d12a7947172da99b1ab25e60f",
+  "schema": "phase95-contour-support-observation-v1",
+  "source_registered": false,
+  "source_sha256": "707e9106e394421a00732b0efa2fbd2e1dc4dfee79d9244fcc763e2dbb106818",
+  "status": "source_contour_support",
+  "vision_revision": 3
+}

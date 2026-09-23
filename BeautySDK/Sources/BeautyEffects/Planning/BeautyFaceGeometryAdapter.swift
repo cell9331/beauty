@@ -52,6 +52,9 @@ enum BeautyFaceGeometryAdapter {
     static func makeGeometry(from observation: BeautyFaceObservation) -> FaceGeometry {
         let bounds = makeBounds(from: observation)
         let landmarks = observation.landmarks.availableGroups
+        let observedOuterLips = observation.observedLipSupport.map { support in
+            (support.outer ?? []).map { SIMD2<Float>(Float($0.x), Float($0.y)) }
+        }
         let observedFaceSupport = observation.imageBounds
             .flatMap(exactPositiveBounds)
             .flatMap {
@@ -86,7 +89,9 @@ enum BeautyFaceGeometryAdapter {
                 innerLips: landmarks.contains(.innerLips) ? innerLips(in: bounds) : [],
                 leftEyeSupport: nil,
                 rightEyeSupport: nil,
-                observedEyebrowSupport: observedBrowSupport
+                observedEyebrowSupport: observedBrowSupport,
+                observedOuterLips: observedOuterLips,
+                observedNoseSupport: observation.observedNoseSupport
             )
         }
         let supportsBySide = observedSupports.map { supports in
@@ -142,7 +147,9 @@ enum BeautyFaceGeometryAdapter {
             innerLips: landmarks.contains(.innerLips) ? innerLips(in: bounds) : [],
             leftEyeSupport: leftSupport,
             rightEyeSupport: rightSupport,
-            observedEyebrowSupport: observedBrowSupport
+            observedEyebrowSupport: observedBrowSupport,
+            observedOuterLips: observedOuterLips,
+            observedNoseSupport: observation.observedNoseSupport
         )
     }
 

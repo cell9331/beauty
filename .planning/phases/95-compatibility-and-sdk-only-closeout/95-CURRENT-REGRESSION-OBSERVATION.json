@@ -1,0 +1,14 @@
+{
+  "archive_first": true,
+  "counts": {
+    "executed": 929,
+    "failed": 0,
+    "opt_in_tests": 8,
+    "skipped": 0
+  },
+  "input_digest": "32d9b3684cce4af9983be09c910e6c372334532740c08412fed235c07b9ac0a3",
+  "milestone_acceptance": false,
+  "portrait_acceptance": false,
+  "schema": "phase95-current-regression-observation-v1",
+  "snapshot_stable": true
+}

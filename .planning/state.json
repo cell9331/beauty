@@ -21,28 +21,28 @@
     {
       "number": "92",
       "name": "Signed Eyebrow-Head Spacing",
-      "status": "pending"
+      "status": "complete"
     },
     {
       "number": "93",
       "name": "Distinct Nose Bridge and Root Repairs",
-      "status": "pending"
+      "status": "complete"
     },
     {
       "number": "94",
       "name": "Negative Mouth-Width Repair",
-      "status": "pending"
+      "status": "complete"
     },
     {
       "number": "95",
       "name": "Compatibility and SDK-Only Closeout",
-      "status": "pending"
+      "status": "complete"
     }
   ],
   "next": {
-    "command": "/gsd:progress --next",
-    "label": "Advance to the next step",
-    "reason": "Phase 92 of 7 · 43% · executing"
+    "command": "/gsd:progress",
+    "label": "v1.22 complete; no active next milestone",
+    "reason": "Actual portrait: 65/65 outputs, 2 reconciled runs, seven effective directions and one deferred/partial direction. Current safety 1/0/0, compatibility 4/0/0, archive-first full SwiftPM 937/0/0; all 8 opt-ins accounted for. Verified COMPLETE 33b49fee25b4156b8a947ac437822ac33f7e5473a61ed74b1015c393035862d4. FACE-01 remains FUTURE-04; no owner action or active milestone work remains."
   },
-  "updated_at": "2026-09-06T07:21:34.684Z"
+  "updated_at": "2026-09-23T10:55:05+08:00"
 }

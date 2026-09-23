@@ -1,0 +1,23 @@
+{
+  "acceptance_credit": false,
+  "anatomical_boundary_qualified": false,
+  "attempts": 2,
+  "contracts_sha256": "68d192c37821c4c059ac3763722bea491e5dd27850c2ab0a69ec5aa6246cd168",
+  "diagnostic_identity": "d29197aab3bcf9e4721e7aedee7565bbcd5ee1d68497d674b1645af5191ef6b5",
+  "portrait_scoring_enabled": false,
+  "reason": "affine_visible_coverage",
+  "scan": {
+    "candidate_nodes_after": 0,
+    "candidate_nodes_before": 0,
+    "continuity_complete": false,
+    "null_rows": 0,
+    "paired_candidate_rows": 0,
+    "processed_rows": 16,
+    "scan_complete": true
+  },
+  "schema": "phase95-affine-source-observation-v1",
+  "source_profile_digest": "fc7792657e96642134aad8f5dd1e83ee024f5df938b98cb42c19580e05ce96cf",
+  "source_registered": false,
+  "source_sha256": "707e9106e394421a00732b0efa2fbd2e1dc4dfee79d9244fcc763e2dbb106818",
+  "status": "metric_unavailable"
+}

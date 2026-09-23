@@ -285,7 +285,10 @@ struct EyeWarpProvider: WarpControlPointProvider {
             target: sample.target,
             radius: radius,
             strength: strength,
-            falloff: 2
+            // A linear cone retains the same strict aperture support and
+            // endpoint motion, without quadratically suppressing most of the
+            // already small pupil field. Its maximum spatial slope is lower.
+            falloff: 1
         )
         return GazeCandidate(sample: sample, point: point)
     }

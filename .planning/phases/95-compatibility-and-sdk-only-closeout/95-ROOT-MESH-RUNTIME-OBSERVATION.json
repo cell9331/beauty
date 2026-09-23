@@ -1,0 +1,17 @@
+{
+  "schema": "phase95-generated-mesh-runtime-observation-v1",
+  "generated_cases": 12,
+  "faces_detected": 0,
+  "cpu": true,
+  "image_mode": true,
+  "network_denied": true,
+  "isolated_python": true,
+  "packages_installed": 18,
+  "model_sha256": "64184e229b263107bc2b804c6625db1341ff2bb731874b0bcc2fe6544e0bc9ff",
+  "runtime_lock_sha256": "f8ba252e0f40533ac46813c8b9e3e1964f84f6e9802aa5b09cea6a467b6381bb",
+  "worker_sha256": "ffc309c653f937503b9943de4d7707a439b537d4d3fc70e8ea9d582cf21913ab",
+  "wrapper_sha256": "5bfa200df73608fb9a98c96018c73c9113524779be1930ee5ace91cc02a190b4",
+  "source_registered": false,
+  "portrait_acceptance": false,
+  "milestone_acceptance": false
+}

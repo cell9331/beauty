@@ -1,5 +1,23 @@
 # ARCHITECTURE.md
 
+## Phase 95 observed portrait support repair
+
+The default still-image Vision provider renders a named-sRGB CGImage from the
+admitted extent before its single landmarks request. Metadata orientation and
+the canonical mapper keep their existing ownership. This aligns source anatomy
+with the registered raster while preserving geometry-only output contracts.
+The dense-mesh model and isolated Python measurement runtime are SDK-owned
+validation tools only; they add no library target, model resource or dependency.
+
+The existing Vision detection pass now carries package-only request-scoped nose
+crest/contour through the canonical coordinate mapper into `FaceGeometry`.
+Observed outer lips already owned by detection also reach geometry planning.
+No target, dependency, public parameter, detector pass, backend or model is
+added. Raw support has no Codable representation; reflection exposes counts
+only. Root/bridge and negative mouth consume this support without changing
+legacy sibling templates. Portrait qualification is determined by the current
+registered 65-case gate and its execution-bound completion receipt.
+
 > `beauty` 的当前 SDK-only 系统蓝图。参数与状态机见 `DESIGN.md`；effect/control
 > status 见 `docs/SDK_EFFECT_TAXONOMY.md`。
 

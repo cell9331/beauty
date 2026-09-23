@@ -1,5 +1,20 @@
 # Milestones
 
+## v1.22 Non-Local Facial Effect Repairs (Completed: 2026-09-23)
+
+**Delivered:** Seven effective directions: chinTaper, gazeCorrection, eyebrowHeadSpacing positive and negative, noseBridge, noseRootNarrowing and negative mouthWidth.
+
+**Phases and requirements:** 7/7 phases, 33/33 plans, 11/11 active requirements. Phase plan counts:89=4,90=4,91=4,92=6,93=5,94=6,95=4. Phase96 was absorbed into95-03.
+
+**Verification:** Actual portrait: 65/65 outputs, 2 reconciled runs, seven effective directions and one deferred/partial direction. Current safety 1/0/0, compatibility 4/0/0, archive-first full SwiftPM 937/0/0; all 8 opt-ins accounted for.
+Root: 31 fixed source pairs; source interval [260, 373] Q16, neutral interval [260, 373] Q16; all three sibling intervals pass; outside 0 pixels / 0 absolute RGB delta; all root protected-region changes are zero.
+
+**Boundary:** FACE-01/faceContourSmooth remains explicitly deferred/partial under FUTURE-04, without effectiveness credit. The repaired observed paired-eye root uses CPU; retained Metal rejects its unsupported private raster cutoff with typed invalidInput before submission and recovers for later supported requests. This is owner-local SDK validation, with no device, population, commercial quality, packaging, shipping, launch, release-readiness or distribution claim. No owner annotation or device action remains. Phase96 is absorbed into95-03, and no next milestone is started. The public inventory remains62 fields, five presets and75 renderer cases.
+
+**Evidence:** [verified COMPLETE](phases/95-compatibility-and-sdk-only-closeout/95-COMPLETE.json), [current closeout](V1.22-CURRENT.md), [requirements](REQUIREMENTS.md), [roadmap](ROADMAP.md).
+COMPLETE SHA256: `33b49fee25b4156b8a947ac437822ac33f7e5473a61ed74b1015c393035862d4`; normative input digest: `56d33c8d9ddfbd6899287feeac501139d6ea1bac05250ca8982fa861482ed6f0`.
+Existing snapshot-bound phase artifacts remain in place. No archival directory move or new milestone is performed.
+
 ## v1.21 Provisional Upper-Eyelid Public Activation (Completed: 2026-08-25)
 
 **Delivered:** Kept `去脂` and exposed it for owner-local use through the
@@ -749,3 +764,5 @@ launch evidence remain deferred or out of scope.
 **What's next:** v1.2 should create static HTML references for the two Meitu surfaces before further SwiftUI fidelity tuning.
 
 ---
+
+<!-- beauty-v122-complete-sha256: 33b49fee25b4156b8a947ac437822ac33f7e5473a61ed74b1015c393035862d4 -->

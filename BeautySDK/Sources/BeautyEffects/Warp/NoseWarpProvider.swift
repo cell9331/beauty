@@ -136,6 +136,9 @@ struct NoseWarpProvider: WarpControlPointProvider {
     }
 
     func rootNarrowingPoints(face: FaceGeometry, strength: Float) -> [WarpControlPoint] {
+        if face.observedNoseSupport != nil {
+            return observedNoseField(face: face, strength: strength, root: true)
+        }
         guard strength.isFinite,
               strength > Float.ulpOfOne,
               strength <= BeautySafetyCaps.noseRootNarrowing,
@@ -272,6 +275,9 @@ struct NoseWarpProvider: WarpControlPointProvider {
         center: SIMD2<Float>,
         strength: Float
     ) -> [WarpControlPoint] {
+        if face.observedNoseSupport != nil {
+            return observedNoseField(face: face, strength: strength, root: false)
+        }
         guard strength.isFinite, strength > Float.ulpOfOne,
               strength <= BeautySafetyCaps.noseBridge,
               phase93ValidBounds(face.bounds),
@@ -294,6 +300,140 @@ struct NoseWarpProvider: WarpControlPointProvider {
         bounds.x.isFinite && bounds.y.isFinite && bounds.width.isFinite && bounds.height.isFinite &&
             bounds.width > 0 && bounds.height > 0 && bounds.maxX.isFinite && bounds.maxY.isFinite &&
             bounds.midX.isFinite && bounds.midY.isFinite
+    }
+
+    /// Source anatomy owns two disjoint vertical bands. No bounds-derived
+    /// nose template, eye or brow support can substitute for an observed nose.
+    private func observedNoseField(face: FaceGeometry, strength: Float, root: Bool) -> [WarpControlPoint] {
+        let cap = root ? BeautySafetyCaps.noseRootNarrowing : BeautySafetyCaps.noseBridge
+        guard let support = face.observedNoseSupport,
+              (3...32).contains(support.crest.count), (3...32).contains(support.contour.count),
+              strength.isFinite, strength > Float.ulpOfOne, strength <= cap,
+              phase93ValidBounds(face.bounds) else { return [] }
+        let crest = support.crest.map { SIMD2<Float>(Float($0.x), Float($0.y)) }.sorted { $0.y < $1.y }
+        let contour = support.contour.map { SIMD2<Float>(Float($0.x), Float($0.y)) }
+        guard (crest + contour).allSatisfy({ isValidSupportPoint($0, in: face.bounds) }),
+              hasOnlyDistinctPoints(crest), hasOnlyDistinctPoints(contour),
+              let first = crest.first, let last = crest.last,
+              let left = contour.map(\.x).min(), let right = contour.map(\.x).max(),
+              right > left, last.y > first.y else { return [] }
+        let middle = crest[crest.count / 2]
+        let split = (first.y + middle.y) * 0.5
+        let eyeTop = [face.leftEyeSupport, face.rightEyeSupport].compactMap { $0 }
+            .flatMap(\.contour).map(\.y).filter { $0.isFinite }.min()
+        // The observed nasal root includes the superior glabellar transition,
+        // above the upper-eye line, while the bridge begins strictly at split.
+        let lower = root ? min(first.y, eyeTop ?? first.y) - (eyeTop == nil ? 0 : face.bounds.width * 0.03) : split
+        let upper = root ? split : last.y
+        let centerX = crest.reduce(Float(0)) { $0 + $1.x } / Float(crest.count)
+        if root, let leftEye = face.leftEyeSupport, let rightEye = face.rightEyeSupport {
+            return observedRootRows(face: face, eyes: [leftEye, rightEye], centerX: centerX,
+                                    contourWidth: right-left, lower: lower, upper: upper, strength: strength, cap: cap)
+        }
+        // Observed roots with paired eyes returned above. Keep the historical
+        // no-eye observed-root and independent bridge paths small and separate.
+        let halfSpan = root ? min((right - left) * 0.4, face.bounds.width * 0.10)
+            : min((right - left) * 0.22, face.bounds.width * 0.06)
+        let radius = root
+            ? min(face.bounds.width * 0.08, (upper - lower) * 0.4, (right - left) * 0.25)
+            : min(face.bounds.width * 0.06, (upper - lower) * 0.4, halfSpan * 1.5)
+        guard halfSpan > 0, radius.isFinite, radius > 0.0001 else { return [] }
+        let requested = min(face.bounds.width * 0.025,
+                            halfSpan * 0.5, radius * (root ? 0.7 : 0.1125))
+        let magnitude = Double(requested) * Double(strength / cap) * (1 - 32 * Double(Float.ulpOfOne))
+        var points: [WarpControlPoint] = []
+        let centerY = (lower + upper) * 0.5
+        for sign: Float in [-1, 1] {
+            let source = SIMD2<Float>(centerX + sign * halfSpan, centerY)
+            var targetX = Float(Double(source.x) - Double(sign) * magnitude)
+            if abs(Double(targetX) - Double(source.x)) > magnitude {
+                targetX = sign < 0 ? targetX.nextDown : targetX.nextUp
+            }
+            let target = SIMD2<Float>(targetX, centerY)
+            guard phase93ContainsDisk(source, radius: radius, bounds: face.bounds),
+                  phase93ContainsDisk(target, radius: radius, bounds: face.bounds),
+                  abs(target.x - centerX) < abs(source.x - centerX),
+                  abs(target.x - source.x) > 0.0001,
+                  target.y - radius > lower, target.y + radius < upper else { return [] }
+            points.append(WarpControlPoint(source: source, target: target, radius: radius,
+                                          strength: strength, falloff: 1))
+        }
+        if root { return HorizontalInwardWarpSafety.admitted(points, maximumSlope: 0.8) }
+        let budget = points.reduce(0.0) { $0 + 2 * abs(Double($1.target.x - $1.source.x)) / Double($1.radius) }
+        return budget <= 0.45 ? points : []
+    }
+
+    /// Anatomical eye boxes partition the root vertically. Above/below an eye,
+    /// its inner-canthus X is not a nasal boundary. Within an eye's Y band the
+    /// inverse field remains strictly medial to that eye's complete contour.
+    private func observedRootRows(
+        face: FaceGeometry, eyes: [BeautyEyeSemanticSupport], centerX: Float,
+        contourWidth: Float, lower: Float, upper: Float, strength: Float, cap: Float
+    ) -> [WarpControlPoint] {
+        guard upper > lower, eyes.count == 2 else { return [] }
+        var boxes: [(minX: Float, maxX: Float, minY: Float, maxY: Float)] = []
+        for eye in eyes {
+            guard (3...32).contains(eye.contour.count),
+                  eye.contour.allSatisfy({ isValidSupportPoint($0, in: face.bounds) }),
+                  let minX = eye.contour.map(\.x).min(), let maxX = eye.contour.map(\.x).max(),
+                  let minY = eye.contour.map(\.y).min(), let maxY = eye.contour.map(\.y).max(),
+                  maxX > minX, maxY > minY else { return [] }
+            boxes.append((minX, maxX, minY, maxY))
+        }
+        boxes.sort { $0.minX < $1.minX }
+        guard boxes[0].maxX < centerX, boxes[1].minX > centerX else { return [] }
+        var cuts = [lower, upper]
+        for box in boxes {
+            for y in [box.minY, box.maxY] where y > lower && y < upper { cuts.append(y) }
+        }
+        cuts.sort()
+        var points: [WarpControlPoint] = []
+        var previousBottom = -Float.infinity
+        let margin = face.bounds.width * 0.00002
+        for index in 0..<cuts.count - 1 {
+            let rowLower = cuts[index], rowUpper = cuts[index + 1]
+            let centerY = (rowLower + rowUpper) * 0.5
+            var radius = min(face.bounds.width * 0.10, (rowUpper - rowLower) * 0.48)
+            // A tiny band may be left source-exact; it cannot enlarge a peer.
+            guard radius >= 0.001 else { continue }
+            var room = face.bounds.width * 0.14
+            for (side, box) in boxes.enumerated() where centerY > box.minY && centerY < box.maxY {
+                room = min(room, side == 0 ? centerX - box.maxX : box.minX - centerX)
+            }
+            // The inner dorsal material band owns the location. `room` is an
+            // eye-protection ceiling, not a location from which to push inward.
+            // The former room-radius construction left the dorsal band outside
+            // every support disk while moving the much wider nasal sidewall.
+            let sourceSpan = min(face.bounds.width * 0.04, contourWidth * 0.35)
+            let clearance = room - sourceSpan - margin
+            guard sourceSpan > 0.0001, clearance > 0 else { return [] }
+            let unit = strength / cap
+            radius = min(radius, clearance) * (1 - 64 * Float.ulpOfOne)
+            guard radius >= 0.001 else { continue }
+            let requested = min(face.bounds.width * 0.04, sourceSpan * 0.5, radius * 0.7)
+            let magnitude = Double(requested) * Double(unit) * (1 - 32 * Double(Float.ulpOfOne))
+            var pair: [WarpControlPoint] = []
+            for sign: Float in [-1, 1] {
+                let source = SIMD2<Float>(centerX + sign * sourceSpan, centerY)
+                var targetX = Float(Double(source.x) - Double(sign) * magnitude)
+                if abs(Double(targetX) - Double(source.x)) > magnitude {
+                    targetX = sign < 0 ? targetX.nextDown : targetX.nextUp
+                }
+                let target = SIMD2<Float>(targetX, centerY)
+                guard phase93ContainsDisk(source, radius: radius, bounds: face.bounds),
+                      phase93ContainsDisk(target, radius: radius, bounds: face.bounds),
+                      abs(target.x - centerX) + radius < room,
+                      target.y - radius > rowLower, target.y + radius < rowUpper else { return [] }
+                var point=WarpControlPoint(source:source,target:target,radius:radius,strength:strength,falloff:1)
+                point.exclusiveMaximumY=upper
+                pair.append(point)
+            }
+            let safe = HorizontalInwardWarpSafety.admitted(pair, maximumSlope: 0.8)
+            guard safe.count == 2, centerY - radius > previousBottom else { return [] }
+            previousBottom = centerY + radius
+            points += safe
+        }
+        return points
     }
 
     private func phase93ContainsDisk(_ point: SIMD2<Float>, radius: Float, bounds: FaceBounds) -> Bool {

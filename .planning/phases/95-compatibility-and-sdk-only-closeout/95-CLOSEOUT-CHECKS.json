@@ -1,0 +1,39 @@
+{
+  "archive_first": true,
+  "binding_sha256": "517813ce76902f6b59645ac1d0a69ae860d405e26f79f3c0ec6dd18fc337e473",
+  "compatibility": {
+    "executed": 4,
+    "failed": 0,
+    "methods": [
+      "RepairedControlCompatibilityTests.testCodableHasExactly62FrozenFields",
+      "RepairedControlCompatibilityTests.testFivePresetsAndRendererCasesRemainFrozen",
+      "RepairedControlCompatibilityTests.testNonTargetDefaultsAndNeutralBehaviorRemainStable",
+      "RepairedControlCompatibilityTests.testPublicFacadesBackendAndSDKBoundaryRemainPresent"
+    ],
+    "skipped": 0
+  },
+  "input_digest": "56d33c8d9ddfbd6899287feeac501139d6ea1bac05250ca8982fa861482ed6f0",
+  "no_skip": {
+    "executed": 937,
+    "failed": 0,
+    "opt_in_tests": 8,
+    "skipped": 0
+  },
+  "phase_complete": false,
+  "portrait_sha256": "7adb2eebd8478e049fe76386ab8c23ee1aa9c288acf3b9dc274bbea228d9c214",
+  "remaining": [
+    "95-04-owner-sync-and-goal-verification"
+  ],
+  "safety": {
+    "executed": 1,
+    "failed": 0,
+    "methods": [
+      "RepairedControlSafetyTests.testCrossControlSafetyAllDirections"
+    ],
+    "skipped": 0
+  },
+  "schema": "phase95-closeout-checks-v3",
+  "sdk_boundary": "pass",
+  "status": "pass",
+  "wrapper_self_test": "pass"
+}

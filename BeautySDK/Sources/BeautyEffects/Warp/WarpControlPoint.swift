@@ -6,6 +6,52 @@ struct WarpControlPoint: Equatable, Sendable {
     let radius: Float
     let strength: Float
     let falloff: Float
+    var pixelCenterSampling: Bool = false
+    // Optional anatomy-owned raster cutoff. The cut row belongs to the next
+    // region: row < floor(exclusiveMaximumY * imageHeight). No public surface.
+    var exclusiveMaximumY: Float? = nil
+}
+
+/// Sufficient no-fold bound for the inverse map (x - u(x,y), y).
+/// For ordered inward linear cones, between the two sides every du/dx is
+/// non-positive. To the left/right, its positive part is bounded by that
+/// side's sum(|deltaX|/radius). Thus det(J) >= 1 - maximumSlope > 0,
+/// even when same-side disks overlap. This is not a radial 2-D norm bound.
+enum HorizontalInwardWarpSafety {
+    static func admitted(_ points: [WarpControlPoint], maximumSlope: Double) -> [WarpControlPoint] {
+        guard accepts(points, maximumSlope: maximumSlope) else { return [] }
+        return points.map { point in
+            var canonical = point
+            canonical.pixelCenterSampling = true
+            return canonical
+        }
+    }
+    static func accepts(_ points: [WarpControlPoint], maximumSlope: Double) -> Bool {
+        guard !points.isEmpty, points.count <= 64,
+              maximumSlope.isFinite, maximumSlope > 0, maximumSlope < 1 else { return false }
+        var leftEdge = -Double.infinity, rightEdge = Double.infinity
+        var leftSlope = 0.0, rightSlope = 0.0
+        for point in points {
+            guard point.source.x.isFinite, point.source.y.isFinite,
+                  point.target.x.isFinite, point.target.y.isFinite,
+                  (0...1).contains(point.source.x), (0...1).contains(point.source.y),
+                  (0...1).contains(point.target.x), (0...1).contains(point.target.y),
+                  point.target.y == point.source.y,
+                  point.radius.isFinite, (0.001...1).contains(point.radius),
+                  point.strength.isFinite, point.strength > 0, point.falloff == 1 else { return false }
+            let delta = Double(point.target.x) - Double(point.source.x)
+            guard abs(delta) > 0.0001 else { return false }
+            if delta > 0 {
+                leftEdge = max(leftEdge, Double(point.target.x))
+                leftSlope += delta / Double(point.radius)
+            } else {
+                rightEdge = min(rightEdge, Double(point.target.x))
+                rightSlope -= delta / Double(point.radius)
+            }
+        }
+        return leftSlope > 0 && rightSlope > 0 && leftEdge < rightEdge
+            && leftSlope <= maximumSlope && rightSlope <= maximumSlope
+    }
 }
 
 /// Validated, request-scoped semantic evidence for one observed eye.
@@ -255,6 +301,10 @@ struct FaceGeometry: Equatable, Sendable {
     let rightEyeSupport: BeautyEyeSemanticSupport?
     let freshness: LandmarkGeometryFreshness
     let observedEyebrowSupport: BeautyEyebrowSemanticSupport?
+    /// Negative width owns observed outer-lip support independently of legacy
+    /// mouth siblings. nil retains the legacy fixture contract; empty rejects.
+    let observedOuterLips: [SIMD2<Float>]?
+    let observedNoseSupport: BeautyObservedNoseSupport?
 
     var leftEyeSemanticSupport: BeautyEyeSemanticSupport? { leftEyeSupport }
     var rightEyeSemanticSupport: BeautyEyeSemanticSupport? { rightEyeSupport }
@@ -275,7 +325,9 @@ struct FaceGeometry: Equatable, Sendable {
         leftEyeSupport: BeautyEyeSemanticSupport? = nil,
         rightEyeSupport: BeautyEyeSemanticSupport? = nil,
         freshness: LandmarkGeometryFreshness = .fresh,
-        observedEyebrowSupport: BeautyEyebrowSemanticSupport? = nil
+        observedEyebrowSupport: BeautyEyebrowSemanticSupport? = nil,
+        observedOuterLips: [SIMD2<Float>]? = nil,
+        observedNoseSupport: BeautyObservedNoseSupport? = nil
     ) {
         self.bounds = bounds
         self.faceContour = faceContour
@@ -293,6 +345,8 @@ struct FaceGeometry: Equatable, Sendable {
         self.rightEyeSupport = rightEyeSupport
         self.freshness = freshness
         self.observedEyebrowSupport = observedEyebrowSupport
+        self.observedOuterLips = observedOuterLips
+        self.observedNoseSupport = observedNoseSupport
     }
 
     var center: SIMD2<Float> {

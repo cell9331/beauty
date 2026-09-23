@@ -146,6 +146,9 @@ enum BeautyGeometryEffectPipeline {
         points: [RenderableWarpPoint]
     ) -> [UInt8] {
         var output = source
+        // Observed inward-only fields use the inverse of the pixel-center
+        // normalization below. Legacy and mixed fields retain their receipts.
+        let canonicalSampling = points.allSatisfy { $0.pixelCenterSampling }
         for row in 0..<height {
             // `FaceGeometry` and every `WarpControlPoint` use the SDK's
             // canonical ImageNormalized space: top-left origin, y growing
@@ -165,6 +168,10 @@ enum BeautyGeometryEffectPipeline {
                 var hasInfluence = false
 
                 for point in points {
+                    if let maximumY = point.exclusiveMaximumY,
+                       row >= Int(floor(Double(maximumY) * Double(height))) {
+                        continue
+                    }
                     let deltaX = normalized.x - point.target.x
                     let deltaY = normalized.y - point.target.y
                     let distanceSquared = deltaX * deltaX + deltaY * deltaY
@@ -185,8 +192,12 @@ enum BeautyGeometryEffectPipeline {
                 }
 
                 sample = clamp(sample)
-                let sampleX = sample.x * Float(width - 1)
-                let sampleY = sample.y * Float(height - 1)
+                let sampleX = canonicalSampling
+                    ? min(Float(width - 1), max(0, sample.x * Float(width) - 0.5))
+                    : sample.x * Float(width - 1)
+                let sampleY = canonicalSampling
+                    ? min(Float(height - 1), max(0, sample.y * Float(height) - 0.5))
+                    : sample.y * Float(height - 1)
                 writeInterpolatedPixel(
                     source: source,
                     output: &output,
@@ -269,15 +280,19 @@ enum BeautyGeometryEffectPipeline {
     }
 
     private struct RenderableWarpPoint {
+        let pixelCenterSampling: Bool
         let target: SIMD2<Float>
         let displacement: SIMD2<Float>
         let radius: Float
         let falloff: Float
+        let exclusiveMaximumY: Float?
 
         init?(_ point: WarpControlPoint) {
+            self.pixelCenterSampling = point.pixelCenterSampling
             let displacement = point.target - point.source
             guard point.radius > 0.0001,
-                  abs(displacement.x) + abs(displacement.y) > 0.0001
+                  abs(displacement.x) + abs(displacement.y) > 0.0001,
+                  point.exclusiveMaximumY.map({ $0.isFinite && (0...1).contains($0) }) ?? true
             else {
                 return nil
             }
@@ -285,6 +300,7 @@ enum BeautyGeometryEffectPipeline {
             self.displacement = displacement
             self.radius = min(max(point.radius, 0.001), 1)
             self.falloff = max(point.falloff, 1)
+            self.exclusiveMaximumY = point.exclusiveMaximumY
         }
     }
 }

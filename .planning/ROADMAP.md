@@ -2,6 +2,10 @@
 
 ## Overview
 
+v1.22 completed 2026-09-23: 7/7 phases, 33/33 plans, 11/11 active requirements; [verified COMPLETE](phases/95-compatibility-and-sdk-only-closeout/95-COMPLETE.json).
+Actual portrait: 65/65 outputs, 2 reconciled runs, seven effective directions and one deferred/partial direction. Current safety 1/0/0, compatibility 4/0/0, archive-first full SwiftPM 937/0/0; all 8 opt-ins accounted for.
+Current identity is validated by COMPLETE; historical records retain their original scope.
+
 v1.22 first makes the existing owner-local 65-case portrait screen a semantic
 measurement gate, then repairs each active facial-control family as a complete
 public-facade behavior. The original screen found eight weak or inert
@@ -46,7 +50,7 @@ intact.
 - [x] **Phase 92: Signed Eyebrow-Head Spacing** - Make both inner-eyebrow-head directions effective without moving outer anchors or aliasing whole-brow spacing. (completed 2026-09-08)
 - [x] **Phase 93: Distinct Nose Bridge and Root Repairs** - Restore independently measurable bridge definition and root narrowing.
 - [x] **Phase 94: Negative Mouth-Width Repair** - Restore mouth contraction while retaining the existing positive direction and surrounding anatomy.
-- [ ] **Phase 95: Compatibility and SDK-Only Closeout** - Prove fail-closed safety, exact compatibility, seven effective directions plus one explicit deferred/partial direction, and the complete no-skip SDK gate.
+- [x] **Phase 95: Compatibility and SDK-Only Closeout** - Prove fail-closed safety, exact compatibility, seven effective directions plus one explicit deferred/partial direction, and the complete no-skip SDK gate.
 
 ## Phase Details
 
@@ -76,7 +80,7 @@ Plans:
 
 - [x] 89-03-PLAN.md — Reconcile two public-renderer attempts through the existing owner-local batch command.
 
-**Wave 4** *(blocked on Wave 3 completion)*
+**Wave 4** *(historical dependency; completed)*
 
 - [x] 89-04-PLAN.md — Synchronize command, quality, and planning evidence while preserving compatibility and scope.
 
@@ -99,11 +103,11 @@ Plans:
 - [x] 90-01-PLAN.md — Bounded FACE-01 implementation stopped; the owner-approved terminal summary records `completed-deferred` without GREEN repair evidence.
 - [x] 90-02-PLAN.md — Repair `chinTaper` at its provider seam and prove centerline-local output and fail-closed behavior.
 
-**Wave 2** *(blocked on Wave 1 completion)*
+**Wave 2** *(historical dependency; completed)*
 
 - [x] 90-03-PLAN.md — Synchronize design, product, taxonomy, security, and reliability owners with the proven chin repair and explicit contour deferral.
 
-**Wave 3** *(blocked on Wave 2 completion)*
+**Wave 3** *(historical dependency; completed)*
 
 - [x] 90-04-PLAN.md — Run bounded compatibility/boundary evidence and close Phase 90 without claiming FACE-01 effectiveness.
 
@@ -118,7 +122,7 @@ Plans:
   2. Correcting one supported eye does not borrow geometry or eligibility from the other eye and does not alter eye aperture, eye contour, eyebrows, or background beyond their bounds.
   3. Missing or implausible support for one eye leaves that eye source-safe without preventing an independently valid peer eye from being corrected.
 
-**Plans**: TBD
+**Plans**: 4/4 historical completion
 
 - [x] 91-01-PLAN.md
 - [x] 91-02-PLAN.md
@@ -136,7 +140,7 @@ Plans:
   2. Both directions keep the outer eyebrow anchors and non-brow protected regions within their established tolerances.
   3. The signed inner-head behavior remains measurably distinct from whole-brow `eyebrowSpacing` rather than reproducing its output.
 
-**Plans**: TBD
+**Plans**: 6/6 historical completion
 
 ### Phase 93: Distinct Nose Bridge and Root Repairs
 
@@ -154,19 +158,19 @@ Plans:
 
 - [x] 93-01-PLAN.md — Independent registration and authorized root adapter correction.
 
-**Wave 2** *(blocked on Wave 1 completion)*
+**Wave 2** *(historical dependency; completed)*
 
 - [x] 93-02-PLAN.md — Frozen integer metrics and actual-pixel RED.
 
-**Wave 3** *(blocked on Wave 2 completion)*
+**Wave 3** *(historical dependency; completed)*
 
 - [x] 93-03-PLAN.md — Bounded provider repair with shared two-attempt budget.
 
-**Wave 4** *(blocked on Wave 3 completion)*
+**Wave 4** *(historical dependency; completed)*
 
 - [x] 93-04-PLAN.md — Compatibility and independent implementation review.
 
-**Wave 5** *(blocked on Wave 4 completion)*
+**Wave 5** *(historical dependency; completed)*
 
 - [x] 93-05-PLAN.md — Owner contract synchronization.
 
@@ -191,7 +195,7 @@ Plans:
 - [x] 94-05-PLAN.md — Independent implementation/security review and behavior owners passed.
 - [x] 94-06-PLAN.md — Seven final owners bound; independent28/28 goal PASS and valid COMPLETE receipt.
 
-Negative efficacy remains unmeasured. All work uses the frozen baseline and same one-research/two-attempt budget.
+Negative efficacy has historical generated acceptance; current portrait and cross-control acceptance remain Phase95 obligations. Earlier failed attempts and their bounded budgets remain historical.
 
 ### Phase 95: Compatibility and SDK-Only Closeout
 
@@ -205,7 +209,13 @@ Negative efficacy remains unmeasured. All work uses the frozen baseline and same
   3. A clean authorized-portrait rerun completes 65/65 outputs, reports all seven active directions effective against neutral through their semantic and protection gates, and reports `faceContourSmooth` as deferred/partial without promoting it.
   4. Focused tests, full SwiftPM tests, archive-first boundary checks, and the zero-failure/zero-skip closeout gate pass, and every changed behavior contract agrees with its current owner document.
 
-**Plans**: TBD
+**Plans**: 4/4 complete under the current receipt.
+
+- [x] 95-01: current cross-control safety 1/0/0, with full-suite coverage.
+- [x] 95-02: current compatibility 4/0/0, with full-suite coverage.
+- [x] 95-03: actual 65/65 outputs in two reconciled runs; seven effective and one deferred; archive-first full SwiftPM 937/0/0.
+- [x] 95-04: independent implementation and distinct goal review, atomic COMPLETE and read-only verification.
+- Current v4 contract and completion record: [V1.22-CURRENT.md](V1.22-CURRENT.md).
 
 ## Requirement Coverage
 
@@ -243,7 +253,16 @@ attempts before an explicit owner decision to repair, defer, or stop.
 | 92. Signed Eyebrow-Head Spacing | v1.22 | 6/6 | Complete    | 2026-09-08 |
 | 93. Distinct Nose Bridge and Root Repairs | v1.22 | 5/5 | Complete | 2026-09-10 |
 | 94. Negative Mouth-Width Repair | v1.22 | 6/6 | Complete | 2026-09-11 |
-| 95. Compatibility and SDK-Only Closeout | v1.22 | 0/TBD | Not started | - |
+| 95. Compatibility and SDK-Only Closeout | v1.22 | 4/4 | Complete | 2026-09-23 |
+
+### Former Phase 96 draft: absorbed into Phase 95
+
+Status: superseded/absorbed (2026-09-22), not an eighth milestone phase.
+Its repair work belongs to95-03 before final95-04 acceptance; it does not depend
+on Phase95 completion. Existing96-01 and attempt logs are historical context.
+No extra requirement, automatic retry budget or six-failing-controls claim is retained.
 
 ---
-*Last updated: 2026-09-02 after owner-approved v1.22 scope contraction*
+*Last updated: 2026-09-23 after verified v1.22 completion*
+
+<!-- beauty-v122-complete-sha256: 33b49fee25b4156b8a947ac437822ac33f7e5473a61ed74b1015c393035862d4 -->

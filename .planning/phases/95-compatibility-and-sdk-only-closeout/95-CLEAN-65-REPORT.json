@@ -1,0 +1,383 @@
+{
+  "comparison_count": 65,
+  "contract_id": "68d192c37821c4c059ac3763722bea491e5dd27850c2ab0a69ec5aa6246cd168",
+  "directions": {
+    "chinTaper_0p25": "effective",
+    "eyebrowHeadSpacing_minus0p25": "effective",
+    "eyebrowHeadSpacing_plus0p25": "effective",
+    "faceContourSmooth_0p25": "deferred/partial",
+    "gazeCorrection_0p25": "effective",
+    "mouthWidth_minus0p35": "effective",
+    "noseBridge_0p30": "effective",
+    "noseRootNarrowing_0p25": "effective"
+  },
+  "fixture_count": 1,
+  "measurement_identity": "799d7b69c11d691ce2193a61dbdcf44b8c15d0b525bd5ed95ca6bc0f79eb0f17",
+  "measurements": [
+    {
+      "caseID": "faceContourSmooth_0p25",
+      "failureReasonCodes": [
+        "neutral_direction",
+        "neutral_target_signal",
+        "outside_locality",
+        "protected_region",
+        "sibling_alias",
+        "source_direction",
+        "source_target_signal"
+      ],
+      "fixtureCount": 1,
+      "metric": "contourContinuityGain",
+      "neutralSignedMarginQ16": 0,
+      "neutralTargetAbsoluteRGBDelta": 0,
+      "neutralTargetChangedPixels": 0,
+      "outsideAbsoluteRGBDelta": 2119449,
+      "outsideChangedPixels": 64483,
+      "protectedRegions": [
+        {
+          "absoluteRGBDelta": 2119449,
+          "changedPixels": 64483,
+          "id": "centralAnatomy"
+        },
+        {
+          "absoluteRGBDelta": 0,
+          "changedPixels": 0,
+          "id": "background"
+        },
+        {
+          "absoluteRGBDelta": 0,
+          "changedPixels": 0,
+          "id": "watermark"
+        }
+      ],
+      "siblingDistinctMarginQ16": 0,
+      "signedMarginQ16": 0,
+      "sourceSignedMarginQ16": 0,
+      "sourceTargetAbsoluteRGBDelta": 0,
+      "sourceTargetChangedPixels": 0,
+      "verdict": "semantic_fail"
+    },
+    {
+      "caseID": "chinTaper_0p25",
+      "failureReasonCodes": [],
+      "fixtureCount": 1,
+      "metric": "centerlineTaper",
+      "neutralSignedMarginQ16": 26,
+      "neutralTargetAbsoluteRGBDelta": 1528143,
+      "neutralTargetChangedPixels": 60486,
+      "outsideAbsoluteRGBDelta": 0,
+      "outsideChangedPixels": 0,
+      "protectedRegions": [
+        {
+          "absoluteRGBDelta": 0,
+          "changedPixels": 0,
+          "id": "upperFace"
+        },
+        {
+          "absoluteRGBDelta": 0,
+          "changedPixels": 0,
+          "id": "mouth"
+        },
+        {
+          "absoluteRGBDelta": 0,
+          "changedPixels": 0,
+          "id": "background"
+        },
+        {
+          "absoluteRGBDelta": 0,
+          "changedPixels": 0,
+          "id": "watermark"
+        }
+      ],
+      "siblingDistinctMarginQ16": 26,
+      "signedMarginQ16": 26,
+      "sourceSignedMarginQ16": 26,
+      "sourceTargetAbsoluteRGBDelta": 1528143,
+      "sourceTargetChangedPixels": 60486,
+      "verdict": "semantic_pass"
+    },
+    {
+      "caseID": "gazeCorrection_0p25",
+      "failureReasonCodes": [],
+      "fixtureCount": 1,
+      "metric": "pupilToOwnEyeCenter",
+      "neutralSignedMarginQ16": 123,
+      "neutralTargetAbsoluteRGBDelta": 19270,
+      "neutralTargetChangedPixels": 299,
+      "outsideAbsoluteRGBDelta": 0,
+      "outsideChangedPixels": 0,
+      "protectedRegions": [
+        {
+          "absoluteRGBDelta": 0,
+          "changedPixels": 0,
+          "id": "eyeContours"
+        },
+        {
+          "absoluteRGBDelta": 0,
+          "changedPixels": 0,
+          "id": "eyebrows"
+        },
+        {
+          "absoluteRGBDelta": 0,
+          "changedPixels": 0,
+          "id": "background"
+        },
+        {
+          "absoluteRGBDelta": 0,
+          "changedPixels": 0,
+          "id": "watermark"
+        }
+      ],
+      "siblingDistinctMarginQ16": 123,
+      "signedMarginQ16": 123,
+      "sourceSignedMarginQ16": 123,
+      "sourceTargetAbsoluteRGBDelta": 19270,
+      "sourceTargetChangedPixels": 299,
+      "verdict": "semantic_pass"
+    },
+    {
+      "caseID": "eyebrowHeadSpacing_plus0p25",
+      "failureReasonCodes": [],
+      "fixtureCount": 1,
+      "metric": "innerBrowHeadGap",
+      "neutralSignedMarginQ16": 18,
+      "neutralTargetAbsoluteRGBDelta": 442234,
+      "neutralTargetChangedPixels": 13358,
+      "outsideAbsoluteRGBDelta": 0,
+      "outsideChangedPixels": 0,
+      "protectedRegions": [
+        {
+          "absoluteRGBDelta": 0,
+          "changedPixels": 0,
+          "id": "outerAnchors"
+        },
+        {
+          "absoluteRGBDelta": 0,
+          "changedPixels": 0,
+          "id": "eyes"
+        },
+        {
+          "absoluteRGBDelta": 0,
+          "changedPixels": 0,
+          "id": "background"
+        },
+        {
+          "absoluteRGBDelta": 0,
+          "changedPixels": 0,
+          "id": "watermark"
+        }
+      ],
+      "siblingDistinctMarginQ16": 19,
+      "signedMarginQ16": 18,
+      "sourceSignedMarginQ16": 18,
+      "sourceTargetAbsoluteRGBDelta": 442234,
+      "sourceTargetChangedPixels": 13358,
+      "verdict": "semantic_pass"
+    },
+    {
+      "caseID": "eyebrowHeadSpacing_minus0p25",
+      "failureReasonCodes": [],
+      "fixtureCount": 1,
+      "metric": "innerBrowHeadGap",
+      "neutralSignedMarginQ16": -24,
+      "neutralTargetAbsoluteRGBDelta": 506257,
+      "neutralTargetChangedPixels": 13516,
+      "outsideAbsoluteRGBDelta": 0,
+      "outsideChangedPixels": 0,
+      "protectedRegions": [
+        {
+          "absoluteRGBDelta": 0,
+          "changedPixels": 0,
+          "id": "outerAnchors"
+        },
+        {
+          "absoluteRGBDelta": 0,
+          "changedPixels": 0,
+          "id": "eyes"
+        },
+        {
+          "absoluteRGBDelta": 0,
+          "changedPixels": 0,
+          "id": "background"
+        },
+        {
+          "absoluteRGBDelta": 0,
+          "changedPixels": 0,
+          "id": "watermark"
+        }
+      ],
+      "siblingDistinctMarginQ16": 25,
+      "signedMarginQ16": -24,
+      "sourceSignedMarginQ16": -24,
+      "sourceTargetAbsoluteRGBDelta": 506257,
+      "sourceTargetChangedPixels": 13516,
+      "verdict": "semantic_pass"
+    },
+    {
+      "caseID": "noseBridge_0p30",
+      "failureReasonCodes": [],
+      "fixtureCount": 1,
+      "metric": "bridgeDefinitionGain",
+      "neutralSignedMarginQ16": 131,
+      "neutralTargetAbsoluteRGBDelta": 104575,
+      "neutralTargetChangedPixels": 6704,
+      "outsideAbsoluteRGBDelta": 0,
+      "outsideChangedPixels": 0,
+      "protectedRegions": [
+        {
+          "absoluteRGBDelta": 0,
+          "changedPixels": 0,
+          "id": "root"
+        },
+        {
+          "absoluteRGBDelta": 0,
+          "changedPixels": 0,
+          "id": "tip"
+        },
+        {
+          "absoluteRGBDelta": 0,
+          "changedPixels": 0,
+          "id": "background"
+        },
+        {
+          "absoluteRGBDelta": 0,
+          "changedPixels": 0,
+          "id": "watermark"
+        }
+      ],
+      "siblingDistinctMarginQ16": 131,
+      "signedMarginQ16": 131,
+      "sourceSignedMarginQ16": 131,
+      "sourceTargetAbsoluteRGBDelta": 104575,
+      "sourceTargetChangedPixels": 6704,
+      "verdict": "semantic_pass"
+    },
+    {
+      "caseID": "noseRootNarrowing_0p25",
+      "failureReasonCodes": [],
+      "fixtureCount": 1,
+      "metric": "rootSurfaceSpanQ16_v4",
+      "neutralSignedMarginQ16": 260,
+      "neutralTargetAbsoluteRGBDelta": 217300,
+      "neutralTargetChangedPixels": 10774,
+      "outsideAbsoluteRGBDelta": 0,
+      "outsideChangedPixels": 0,
+      "protectedRegions": [
+        {
+          "absoluteRGBDelta": 0,
+          "changedPixels": 0,
+          "id": "bridge"
+        },
+        {
+          "absoluteRGBDelta": 0,
+          "changedPixels": 0,
+          "id": "tip"
+        },
+        {
+          "absoluteRGBDelta": 0,
+          "changedPixels": 0,
+          "id": "background"
+        },
+        {
+          "absoluteRGBDelta": 0,
+          "changedPixels": 0,
+          "id": "watermark"
+        }
+      ],
+      "siblingDistinctMarginQ16": 260,
+      "signedMarginQ16": 260,
+      "sourceSignedMarginQ16": 260,
+      "sourceTargetAbsoluteRGBDelta": 217300,
+      "sourceTargetChangedPixels": 10774,
+      "verdict": "semantic_pass"
+    },
+    {
+      "caseID": "mouthWidth_minus0p35",
+      "failureReasonCodes": [],
+      "fixtureCount": 1,
+      "metric": "mouthWidthContraction",
+      "neutralSignedMarginQ16": -29,
+      "neutralTargetAbsoluteRGBDelta": 726784,
+      "neutralTargetChangedPixels": 10982,
+      "outsideAbsoluteRGBDelta": 0,
+      "outsideChangedPixels": 0,
+      "protectedRegions": [
+        {
+          "absoluteRGBDelta": 0,
+          "changedPixels": 0,
+          "id": "mouthHeight"
+        },
+        {
+          "absoluteRGBDelta": 0,
+          "changedPixels": 0,
+          "id": "surroundingFace"
+        },
+        {
+          "absoluteRGBDelta": 0,
+          "changedPixels": 0,
+          "id": "background"
+        },
+        {
+          "absoluteRGBDelta": 0,
+          "changedPixels": 0,
+          "id": "watermark"
+        }
+      ],
+      "siblingDistinctMarginQ16": 29,
+      "signedMarginQ16": -29,
+      "sourceSignedMarginQ16": -29,
+      "sourceTargetAbsoluteRGBDelta": 726784,
+      "sourceTargetChangedPixels": 10982,
+      "verdict": "semantic_pass"
+    }
+  ],
+  "outputs": 65,
+  "repeat_count": 2,
+  "root_evidence": {
+    "crop_rgb_sha256": {
+      "candidate": "ecac043e74b4805c7b999e39678423096a40aa658b8d931191594e51914eeea3",
+      "neutral": "6d71e64bbd1b353eb1fa162fbad4ad1d38cc50c60799283ed2fece1592f6937a",
+      "noseBridge_0p30": "7fb7d6052afda4782f5c1d70958f2ef88d1a26eb58706ffaff06781f8864b49d",
+      "noseSlim_0p35": "6d71e64bbd1b353eb1fa162fbad4ad1d38cc50c60799283ed2fece1592f6937a",
+      "noseTipLift_0p25": "6d71e64bbd1b353eb1fa162fbad4ad1d38cc50c60799283ed2fece1592f6937a",
+      "source": "6d71e64bbd1b353eb1fa162fbad4ad1d38cc50c60799283ed2fece1592f6937a"
+    },
+    "definition_sha256": "c028df5f1f077fedc0753e5da4493da06ae56830a7d7bbba090e4d2b96c2fdd7",
+    "intervals_q16": {
+      "neutral": [
+        260,
+        373
+      ],
+      "noseBridge_0p30": [
+        260,
+        373
+      ],
+      "noseSlim_0p35": [
+        260,
+        373
+      ],
+      "noseTipLift_0p25": [
+        260,
+        373
+      ],
+      "source": [
+        260,
+        373
+      ]
+    },
+    "measurement_identity": "799d7b69c11d691ce2193a61dbdcf44b8c15d0b525bd5ed95ca6bc0f79eb0f17",
+    "metric_id": "rootSurfaceSpanQ16_v4",
+    "model_sha256": "64184e229b263107bc2b804c6625db1341ff2bb731874b0bcc2fe6544e0bc9ff",
+    "original_registration_sha256": "ef066fbe62a8385c137666ea0213284244b05199a9df0a81c8998bed07e4c43d",
+    "pair_count": 31,
+    "registration_sha256": "970be43d32b5e9386952beedef5d9418e70cf640b9d3e4d29b596628103f442f",
+    "runtime_sha256": "bba0ba295b5f5abd543b17418ba522e101b5b5dc78317e7e8742046ccfdcabb2",
+    "schema": "phase95-root-batch-evidence-v1",
+    "source_sha256": "707e9106e394421a00732b0efa2fbd2e1dc4dfee79d9244fcc763e2dbb106818"
+  },
+  "root_metric_id": "rootSurfaceSpanQ16_v4",
+  "root_source_registration_sha256": "970be43d32b5e9386952beedef5d9418e70cf640b9d3e4d29b596628103f442f",
+  "schema": "phase95-clean-65-v4",
+  "source_report_digest": "89c0962c00042cbe23485a19aab3e2d670739b046b511f0b783f4ffd9a9a8af2",
+  "stable_payload_digest": "a9c05c79c90a4eba7ab512483b17feca51400ff2f23379136c6ab7b4f92d49d4",
+  "status": "pass"
+}
