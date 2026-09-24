@@ -1,0 +1,20 @@
+{
+  "attempt_id": "attempt-20260924T045750Z-9429627d",
+  "claim": "synthetic-mechanics-only",
+  "contract_sha256": "c948e9dc0c9a107152ace4a04d76fa80a43860ba8c5d5a821d6e8c0e563a090e",
+  "effectiveness_credit": false,
+  "evidence": {
+    "GATES.json": "618aa1e1f1757f4ceef6b401baa44b9e34a86329e2296a734816c6c51d68cdb6",
+    "GENERATED.json": "8993c55245b4437f950e89a4c49daed46ab827ae603f08ff8d0b033cb5164f72",
+    "REVIEW.json": "b77145a3db7d28daaaf1f11758e6720149381701d82b5bdd10da7465d28754ff"
+  },
+  "input_digest": "9429627df1c013a3b32ec7e9508ec61391dda4f4fc61c4d9bb15034550bd8acd",
+  "phase_complete": true,
+  "schema": "v123-synthetic-complete-v1",
+  "source_input_digest": "ec2589298925422dc6c3dfc65a68285caea4b6bdd913dffb3c0821673c6d3319",
+  "source_sha256": [
+    "ae25e9f0bb0e6ddb2353d7a9396f313a84772e3e8ca73164f3ffb51913af5706",
+    "c73333a64de22e8259602138615368ad1da35e419db141475341762d944fe7d9"
+  ],
+  "status": "complete"
+}

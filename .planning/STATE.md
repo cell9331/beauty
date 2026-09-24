@@ -21,10 +21,11 @@ progress:
 # Project State
 
 The frontmatter above is the completed v1.22 GSD snapshot. The separately
-authorized [v1.23 FACE-01 follow-up](V1.23-FACE01-CURRENT.md) is currently
-active in `PLANS.md`; its bounded generated candidate has not earned portrait
-effectiveness or taxonomy promotion. No historical Phase 90/95 receipt is
-reopened by that work.
+authorized [v1.23 FACE-01 follow-up](V1.23-FACE01-CURRENT.md) now has a
+[verified synthetic-mechanics-only COMPLETE](qualifications/v1.23-synthetic/attempt-20260924T045750Z-9429627d/COMPLETE.json)
+at source identity `ec2589298925422dc6c3dfc65a68285caea4b6bdd913dffb3c0821673c6d3319`.
+It has not earned natural-portrait effectiveness or taxonomy promotion. No
+historical Phase 90/95 receipt is reopened by that work.
 
 ## Project Reference
 
@@ -33,7 +34,8 @@ See: `.planning/PROJECT.md` (updated 2026-09-23)
 **Core value:** The project owner's local iOS host can integrate `BeautySDK`
 and get natural, controllable real-time and still-image beauty processing
 without distributing the SDK, model, or weights.
-**Current focus:** [v1.22 current execution contract](V1.22-CURRENT.md).
+**Current focus:** [v1.23 generated-input mechanics closeout](V1.23-FACE01-CURRENT.md);
+the v1.22 contract remains a historical signed snapshot.
 
 ## Current Position
 
@@ -41,14 +43,16 @@ The original v1.22 completion below is historical for its signed digest.
 The later face-mapping repair changed normative files, so the old
 `verify-complete` returns `review_missing_or_stale` on the current tree.
 The separately scoped [append-only follow-up](qualifications/v1.22-mapping-followup/)
-has now verified the current code under the same in-scope Phase95 acceptance:
+verified the then-current mapping-repair code under the same in-scope Phase95 acceptance:
 65/65 outputs twice, seven effective and one deferred, safety 1/0/0,
 compatibility 4/0/0 and archive-first SwiftPM 938/0/0 with eight opt-ins and
 zero skips. Its distinct independent reviews and new COMPLETE bind current
 input digest `0debce887ab95a49a4970f78dbb53f3500aca75d67861e4d493f011a176204af`.
-This does not reopen or rewrite the historical milestone; use the new
-`check-v122-mapping-followup.py verify --attempt attempt-20260923T083240Z-16509266`
-for the current-tree claim.
+This does not reopen or rewrite the historical milestone. Later v1.23 FACE-01
+source changes make that follow-up's read-only `verify --attempt` stale for the
+present worktree; its signed receipt remains evidence for its recorded digest.
+The bounded FACE-01 closeout and separate missing portrait effect evidence are tracked in
+`V1.23-FACE01-CURRENT.md` and `PLANS.md`.
 
 Phase: 95 (Compatibility and SDK-only Closeout) — COMPLETE
 Plans: 95-01 safety,95-02 compatibility,95-03 actual65/full regression,95-04 independent goal/finalization all complete.

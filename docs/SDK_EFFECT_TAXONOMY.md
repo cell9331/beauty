@@ -292,6 +292,9 @@ alignment that worsened under the first candidate. A bounded source-edge
 correction now passes both generated alignments and leaves a straight-side
 negative unchanged; natural portrait efficacy remains unproven, so the field
 stays `partial`.
-The [v1.23 contract](../.planning/V1.23-FACE01-CURRENT.md) defines the
-remaining owner-local positive/negative qualification. No historical receipt
-or FACE-01 threshold is changed.
+The owner-directed [v1.23 qualification](../.planning/V1.23-FACE01-CURRENT.md)
+uses two fictional generated portraits for a bounded synthetic-mechanics
+completion claim. Their render and repeat results provide no natural-portrait
+direction credit. The original rough-positive/smooth-negative natural-portrait
+effectiveness target remains open. No historical receipt or FACE-01 threshold
+is changed.

@@ -1,5 +1,25 @@
 # Milestones
 
+## v1.23 FACE-01 Generated-Input Mechanics (Completed: 2026-09-24)
+
+**Delivered:** An owner-local bounded lateral-contour candidate, unchanged
+generated `+16 Q16` gate, independent generated silhouette roughness oracle,
+and two fictional generated-portrait public CPU checks. The owner accepted
+these generated images for a `synthetic-mechanics-only` completion claim.
+
+**Verification:** [append-only COMPLETE](qualifications/v1.23-synthetic/attempt-20260924T045750Z-9429627d/COMPLETE.json)
+passed read-only verification at source identity
+`ec2589298925422dc6c3dfc65a68285caea4b6bdd913dffb3c0821673c6d3319`.
+Independent review had no unresolved findings. FACE-01 focused `8/0`;
+registered 65-case diagnostic twice retained all seven prior effective
+directions and reported FACE-01 `semantic_fail`; full archive-first SDK gate
+`944/0/0`, eight opt-ins, zero skips.
+
+**Boundary:** Generated pixel changes have no natural-portrait effectiveness
+credit. `faceContourSmooth` remains taxonomy `partial`; the original rough
+natural-positive/smooth-negative effectiveness question stays in FUTURE-04.
+Historical v1.22 receipts remain snapshot-bound and unchanged.
+
 ## v1.22 Non-Local Facial Effect Repairs (Completed: 2026-09-23)
 
 **Delivered:** Seven effective directions: chinTaper, gazeCorrection, eyebrowHeadSpacing positive and negative, noseBridge, noseRootNarrowing and negative mouthWidth.
@@ -24,10 +44,12 @@ for the current tree. The repair's separate archive-first SDK gate passed
 then executed fresh 65/65 portrait evidence twice and the same 938/0/0 gate,
 with separate independent implementation and goal reviews. Its
 [COMPLETE](qualifications/v1.22-mapping-followup/attempt-20260923T083240Z-16509266/COMPLETE.json)
-verifies current code at input digest
+verifies the mapping-repair snapshot at input digest
 `0debce887ab95a49a4970f78dbb53f3500aca75d67861e4d493f011a176204af`.
 The original v1.22 milestone remains completed for its recorded scope and its
 receipts are unchanged; the old `verify-complete` is still snapshot-bound.
+Later v1.23 FACE-01 source changes make the follow-up `verify` stale for the
+present worktree without revoking that signed snapshot.
 See the [post-closeout audit](V1.22-POST-CLOSEOUT-DOC-AUDIT-2026-09-23.md).
 
 ## v1.21 Provisional Upper-Eyelid Public Activation (Completed: 2026-08-25)

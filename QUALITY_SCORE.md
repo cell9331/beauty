@@ -1,15 +1,31 @@
 # QUALITY_SCORE.md
 
+## 2026-09-24 v1.23 合成输入机制验收
+
+所有者指定的两张虚构生成图按[冻结契约](.planning/qualifications/v1.23-synthetic/CONTRACT.md)
+在同一源码身份 `ec2589298925422dc6c3dfc65a68285caea4b6bdd913dffb3c0821673c6d3319`
+完成公开 CPU neutral/candidate/repeat 像素检查；两张图的候选变化像素数为
+12,031 / 9,495，neutral 与源图一致，重复输出一致，尺寸与 alpha 不变。
+FACE-01 聚焦 `8/0`；注册 65 例双轮中原有七方向通过，FACE-01 旧固定 ROI
+仍为 `semantic_fail`；archive-first 完整 SDK `944/0/0`、8 opt-in、0 skip。
+独立复审无未解决问题，[追加式 COMPLETE](.planning/qualifications/v1.23-synthetic/attempt-20260924T045750Z-9429627d/COMPLETE.json)
+的只读 verify 通过。此结果仅授予合成机制完成信用，不证明真实粗糙轮廓改善或
+平滑人像不恶化；taxonomy 保持 `partial`。
+
 ## 2026-09-23 审计修复后的身份状态
 
 本次人脸映射隔离改动修改了 `VisionFaceDetector.swift` 与对应测试，并修正
 `maximumFaceCount` 文档口径。下方 **937/0/0** 与原 Phase95 COMPLETE 仅证明
 原 v1.22 规范快照；旧 `verify-complete` 对当前代码仍返回
 `review_missing_or_stale`。现由[追加式 COMPLETE](.planning/qualifications/v1.22-mapping-followup/attempt-20260923T083240Z-16509266/COMPLETE.json)
-独立绑定当前身份 `0debce887ab95a49a4970f78dbb53f3500aca75d67861e4d493f011a176204af`：
+独立绑定当时映射修复身份 `0debce887ab95a49a4970f78dbb53f3500aca75d67861e4d493f011a176204af`：
 真实65/65双次一致、七有效一延期，山根31对及五组[260,373] Q16；安全1/0/0、
 兼容4/0/0、archive-first SwiftPM **938/0/0**、8项 opt-in、零skip，
-实现/安全与目标由不同审查者复核。新 `verify --attempt` 通过。
+实现/安全与目标由不同审查者复核。新 `verify --attempt` 当时通过；后续 v1.23
+FACE-01 源码改动后，对当前工作树返回 `review_missing_or_stale`，旧签发身份仍有效。
+2026-09-24 当前源码再次通过 archive-first no-skip 全门禁（8项opt-in、零skip）；
+带原 Phase95 源注册的隔离65案例双轮诊断中，七个既有方向通过，FACE-01
+在旧固定ROI比较器下仍为 `semantic_fail`，不能用作其真人像效果回执。
 原 CHECKS/BINDING/portrait/COMPLETE 保持字节不变；没有设备、商业质量或
 外部分发资格结论。
 

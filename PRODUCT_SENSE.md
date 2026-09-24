@@ -555,8 +555,12 @@ still-image paths share the bounded contour adjustment.
 The current natural portrait is already smooth. Its changed pixels were
 localized by a source-only exploratory contour ROI, but neither a measurable
 contour gain nor an obvious visual improvement was established. The field
-therefore remains `partial` in the taxonomy. The owner needs an appropriate
-rough-contour positive example and smooth negative control before this
-candidate can be described as a completed contour-smoothing experience.
+therefore remains `partial` in the taxonomy. On 2026-09-24 the owner chose two
+fictional generated portraits for a bounded synthetic-mechanics qualification.
+Their public CPU renders can check neutral identity, repeatability, alpha, and
+that the control changes pixels; they cannot establish contour improvement on
+natural portraits. An appropriate rough-contour positive example and smooth
+negative control remain necessary before this candidate can be described as a
+completed contour-smoothing experience.
 This does not require a physical iPhone or imply population, performance,
 commercial quality, release, or distribution readiness.

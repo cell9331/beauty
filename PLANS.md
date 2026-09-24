@@ -26,20 +26,27 @@
 
 ## 3. Active
 
-### A-2026-09-23-face-contour-completion
+当前无进行中的 v1.23 机制验收；真实人像效果问题保留在 Tech Debt。
 
-- Status: active；所有者要求完成剩余的 `faceContourSmooth` 工作，先审查文档/验收是否正确，再修复代码或文档。v1.22 原快照和映射修复追加式验收各自保留，不回写历史 Phase90/95 回执。
+## 4. Completed
+
+### C-2026-09-24-face-contour-synthetic-mechanics
+
+- Status: completed（2026-09-24，`synthetic-mechanics-only`）；所有者接受两张生成图作为有界机制验收输入。v1.22 原快照和映射修复追加式验收各自保留，不回写历史 Phase90/95 回执。
 - [x] 核对现行 taxonomy、FUTURE-04、Phase89 manifest、portrait comparator、SwiftPM 冻结测试及当前 provider：数值契约一致，但逐行整数像素重心的二阶差分大量计入几何直线段的栅格阶梯；五个仅按轮廓曲率构造的候选均未通过。
 - [x] 独立生成输入的亚像素机制改善原冻结指标并守住目标与保护区；探索值和正式 SwiftPM 验收已分开记录，见 [v1.23 当前契约与证据](.planning/V1.23-FACE01-CURRENT.md)。
 - [x] 在现有 SDK/后端内接入双侧外轮廓的有界候选，保留原 `+16 Q16` 八项阈值；生成 SwiftPM、公开 facade 像素/恢复、CPU/Metal still-image 对比、尺寸/alpha 通过。稀疏轮廓使 44 字段合并测试漏掉 FACE-01，已修正并通过该 17 项测试类。
 - [x] 补充独立生成剪影边界测试，不复用条纹重心指标：已知轮廓就近取整的粗糙正例平均边缘二阶差分约 `0.709 → 0.172`，平直轮廓负例保持原图，重复输出和中央/背景保护通过。原候选对内收取整边缘从约 `0.706` 恶化到 `1.213`，因此新增只在单一强边缘可辨时使用源像素边界的有界对齐；当前正例两种取整方式都降至源粗糙度一半以下，原冻结八谓词不变且 8 项 FACE-01 聚焦测试通过。仍不能替代真人像效果验收，详情见 [v1.23 当前契约与证据](.planning/V1.23-FACE01-CURRENT.md)。
-- [ ] 在真实人像预注册的轮廓与图像边界上确认像素对齐不会使粗糙度恶化；生成两种对齐方式已通过，但没有粗糙真人像正例，不能签发效果信用。
+- 原始效果目标延期：在真实人像预注册的轮廓与图像边界上确认像素对齐不会使粗糙度恶化；生成两种对齐方式已通过，但没有粗糙真人像正例，不能签发效果信用。
 - [x] 识别真实人像验收契约问题：历史 comparator 未给 FACE-01 登记人像 ROI，65/65 双次输出中其他七方向仍通过，FACE-01 的 5,647 个变化像素被旧固定区全部误计在中央；源图先行的临时 ROI 探针将它们归入脸侧目标且区外为 0，但连续性与 sibling 均为 `0 Q16`，未达到原门槛。该诊断批次早于后续仅影响稀疏轮廓的修正，不是最终源码身份的签发回执；临时探针已移除，历史比较器/回执不改。
-- [ ] 用权利明确且确有粗糙脸侧轮廓的正例和平滑负例，预注册源图目标与保护区，验证真实边缘/纹理的可见改善及方向；在此之前 taxonomy 维持 `partial`，不以生成夹具或像素信号代替效果信用。
+- 原始效果目标延期：用权利明确且确有粗糙脸侧轮廓的正例和平滑负例，预注册源图目标与保护区，验证真实边缘/纹理的可见改善及方向；在此之前 taxonomy 维持 `partial`，不以生成夹具或像素信号代替效果信用。
 - [x] 最终源码重跑 archive-first no-skip 完整门禁：源边缘对齐修复后 SwiftPM `944/0/0`，8 项 opt-in 全执行、0 skip，归档、SDK-only、后端/Metal/consumer/CPU-reference 各门禁通过；`git diff --check` 通过。已同步 `DESIGN.md`、`ARCHITECTURE.md`、`PRODUCT_SENSE.md`、`SECURITY.md`、`RELIABILITY.md`、`QUALITY_SCORE.md`、taxonomy、v1.23 当前契约和本账本；未满足的真人像效果边界仍明确保留。
 - [x] 最终源码另运行一次隔离输出的 65 案例机械诊断，但该直接 runner 未加载 Phase95 源注册环境，聚合 `semantic_fail` 不可与此前已注册的七方向通过批次对比，也不用于签发；FACE-01 旧固定 ROI 下仍为 `5,647/126,841` 像素/RGB 变化。该次生成输出与临时报告已清理。
+- [x] 2026-09-24 使用 Phase95 源注册环境、隔离临时输出重跑当前树 65 案例双轮诊断：七个既有方向均 `semantic_pass`，FACE-01 仍因旧固定 ROI 的目标信号、方向、保护区、区外及 sibling 检查为 `semantic_fail`；该批次只作诊断，临时图像与报告已清理。当前树 archive-first no-skip 全门禁再次通过，8 项 opt-in、0 skip；此门禁不授予缺失的真人像效果信用。
+- [x] 为机制探针生成两张虚构肖像，放在忽略的本地输入目录；CPU 公共 renderer 的 FACE-01 与 neutral 均能输出，候选对两张都有像素变化。生成器没有可靠地造出可测的粗糙真人像正例，故这些图不能进入权利批准的实际人像正负证据，也不能用变化像素数替代边缘改善。
+- 原始效果目标延期：取得权利明确的真实粗糙脸侧正例和平滑负例，在输出前完成源图轮廓/边缘及目标和保护区登记；同一最终代码身份上运行方向、不恶化、确定性及完整 SDK 验收，并经独立复审后签发单独的真人像效果回执。当前本地正式输入只有一张原有肖像，缺少正负成对授权记录；所有者已将本次验收限定为生成输入机制。不得凭生成图或本轮诊断将 taxonomy 从 `partial` 提升。
 
-## 4. Completed
+- [x] 所有者指定的两张虚构生成图在最终源码身份 `ec2589298925422dc6c3dfc65a68285caea4b6bdd913dffb3c0821673c6d3319` 下完成公开 CPU neutral/candidate/repeat 像素检查；8 项 FACE-01 聚焦测试通过，注册 65 案例双轮保留七个既有方向，FACE-01 旧 ROI 判定按失败记录，archive-first SwiftPM `944/0/0`、8 opt-in、零 skip。独立复审无未解决问题；[追加式 COMPLETE](.planning/qualifications/v1.23-synthetic/attempt-20260924T045750Z-9429627d/COMPLETE.json) 签发并只读 verify 通过。此回执仅为合成机制，不授予真实人像效果信用；taxonomy 维持 `partial`。
 
 ### C-2026-09-23-face-contour-roughness-localization
 
@@ -4631,6 +4638,8 @@ Outcome:
 - `QUALITY_SCORE.md` 给出当前真实质量基线与修复队列。
 
 ## 5. Tech Debt
+
+- FUTURE-04：`faceContourSmooth` 在自然粗糙脸侧正例、平滑负例上的改善与不恶化尚未证明。现有生成图只获合成机制回执；将来如要提升 taxonomy，需另立明确范围、取得有权使用的样本、源图先行登记边界和保护区，并做独立效果验收。
 
 ### Phase 95 evidence-chain follow-up (2026-09-13 historical finding)
 

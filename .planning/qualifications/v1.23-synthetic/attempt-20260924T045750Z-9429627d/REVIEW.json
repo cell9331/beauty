@@ -1,0 +1,10 @@
+{
+  "schema": "v123-synthetic-independent-review-v1",
+  "status": "pass",
+  "reviewer_agent_id": "v123-independent-reviewer-01",
+  "input_digest": "9429627df1c013a3b32ec7e9508ec61391dda4f4fc61c4d9bb15034550bd8acd",
+  "generated_sha256": "8993c55245b4437f950e89a4c49daed46ab827ae603f08ff8d0b033cb5164f72",
+  "gates_sha256": "618aa1e1f1757f4ceef6b401baa44b9e34a86329e2296a734816c6c51d68cdb6",
+  "claim": "synthetic-mechanics-only",
+  "findings": []
+}
