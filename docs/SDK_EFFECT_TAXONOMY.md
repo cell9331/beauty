@@ -96,7 +96,7 @@ names and visual organization are intentionally omitted from the active contract
 | 比例 | 短脸 | future | — | No current neutral parameter. |
 | 脸型 | 脸宽 | implemented | `faceSlim` | Bounded contour narrowing. |
 | 脸型 | 小脸 | implemented | `faceSmall` | Bounded small-face geometry. |
-| 脸型 | 面部流畅 | partial | `faceContourSmooth` | Owner-local public field and current fail-closed observed-contour path remain available, but the bounded v1.22 Phase 90 attempt series did not meet the frozen effectiveness gate; further repair is deferred to a separately authorized milestone. |
+| 脸型 | 面部流畅 | partial | `faceContourSmooth` | Owner-local bounded lateral-contour candidate passes the original generated gate, but actual portrait contour improvement remains unproven; v1.23 follow-up is active. |
 | 脸型 | 太阳穴 | implemented | `templeFullness` | Upper-lateral contour geometry. |
 | 脸型 | 颧骨 | implemented | `cheekboneSlim` | Mid-lateral contour geometry. |
 | 脸型 | 下巴长短 | implemented | `chinLength` | Signed chin-length geometry. |
@@ -276,3 +276,22 @@ This is the owner-local registered generated-source CPU contract. Eight-encoding
 lifecycle coverage does not establish semantic effectiveness for all faces or
 orientations. Phase95 private portraits/final65/full no-skip, optional device
 feedback, commercial quality and distribution claims remain separate.
+
+## v1.23 FACE-01 Current Status
+
+The old Phase 90 `completed-deferred` record remains true for its snapshot.
+The later owner-authorized FACE-01 candidate now passes the unchanged generated
+`+16 Q16` gate, with source-exact neutral behavior, bounded lateral changes,
+protected-region stability, and public-facade pixels. It is still `partial`:
+the one available natural portrait produced a bounded target-area pixel signal
+but no measured contour-direction gain or clear visual improvement. The old
+portrait comparator's fixed generated-image FACE-01 ROIs do not localize that
+portrait, and a source-admitted exploratory ROI still measured `0 Q16` gain.
+An independent generated silhouette edge oracle exposed a second raster
+alignment that worsened under the first candidate. A bounded source-edge
+correction now passes both generated alignments and leaves a straight-side
+negative unchanged; natural portrait efficacy remains unproven, so the field
+stays `partial`.
+The [v1.23 contract](../.planning/V1.23-FACE01-CURRENT.md) defines the
+remaining owner-local positive/negative qualification. No historical receipt
+or FACE-01 threshold is changed.

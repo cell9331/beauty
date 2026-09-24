@@ -1,0 +1,21 @@
+{
+  "attempt_id": "attempt-20260923T083240Z-16509266",
+  "evidence": {
+    "BINDING.json": "6c98e2af3250b3f7413792ef7ea49aafe5e90ea9ae232cc2ff222c011cf34975",
+    "CHECKS.json": "b16e67f38e36bc6a9979936496e0277a368568ab0c69976bfbecb0ad62faaf1a",
+    "GOAL-REVIEW.json": "ca2ea79b6a7d7bf9a7cffdcce741018b073a33d522c58fd2b9e825f3eb1a7dcf",
+    "IMPLEMENTATION-REVIEW.json": "7d89021d831d0d3c5b0c5cb2419803c2e1886afae034f96a51cbd5f8f212392a",
+    "PORTRAIT.json": "7adb2eebd8478e049fe76386ab8c23ee1aa9c288acf3b9dc274bbea228d9c214"
+  },
+  "historical_complete_sha256": "33b49fee25b4156b8a947ac437822ac33f7e5473a61ed74b1015c393035862d4",
+  "input_digest": "0debce887ab95a49a4970f78dbb53f3500aca75d67861e4d493f011a176204af",
+  "measurement_identity": "799d7b69c11d691ce2193a61dbdcf44b8c15d0b525bd5ed95ca6bc0f79eb0f17",
+  "phase_complete": true,
+  "requirements": [
+    "CLOSE-01",
+    "COMPAT-01",
+    "SAFE-01"
+  ],
+  "schema": "v122-mapping-followup-complete-v1",
+  "status": "complete"
+}

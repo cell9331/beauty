@@ -1,5 +1,13 @@
 # Requirements: Beauty v1.22 Non-Local Facial Effect Repairs
 
+Current successor requirement: **FACE01-23** is the separately authorized
+v1.23 `faceContourSmooth` repair and qualification in
+[V1.23-FACE01-CURRENT.md](V1.23-FACE01-CURRENT.md). The candidate has passed
+the unchanged generated oracle but has not passed a meaningful positive
+portrait direction gate; its taxonomy remains `partial`. The v1.22
+requirements and FUTURE-04 wording below describe the completed historical
+scope and the source state at its closeout.
+
 ## Current evidence interpretation (2026-09-23)
 
 v1.22 completed 2026-09-23: 7/7 phases, 33/33 plans, 11/11 active requirements; [verified COMPLETE](phases/95-compatibility-and-sdk-only-closeout/95-COMPLETE.json).

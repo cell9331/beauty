@@ -1,5 +1,13 @@
 # SECURITY.md
 
+## Cross-face mapping isolation (2026-09-23)
+
+Malformed detected-face support cannot invalidate a separate mapped face or
+lend its geometry to one. Mapping and rejection stay within the request; only
+aggregate counts and `.mappingFailed` leave the detector. No coordinates,
+landmarks, stable face identities, pixels, or fixture locators are persisted or
+added to public diagnostics.
+
 ## Source-fixed surface validation (2026-09-23)
 
 The current root method uses the reviewed source-only dorsal marker definition,
@@ -750,3 +758,24 @@ policyB is attempt2/2, with no hidden retry or threshold edit. No external
 dependency installation, new public API, service, model/data, shader/backend,
 UI or redistribution scope was introduced. Phase95 private portraits/final65/
 full no-skip and device/commercial/release qualification remain separate.
+
+## v1.23 FACE-01 Raster and Evidence Boundary
+
+The contour refiner reads only the current request's canonical RGBA8 bytes
+and observed support. It produces no persistent mask, contour, coordinate,
+pixel, or fixture locator. It copies source alpha and edits RGB only when the
+destination and both interpolation neighbors are fully opaque; invalid
+dimensions, overflow, nonfinite geometry, missing support, and out-of-bounds
+samples fail closed. The two lateral bands exclude the central chin; field
+emission is checked before raster work. The owned image copy is released with
+the request and does not change public diagnostics.
+The bounded strong-edge scan reads only four horizontal source pairs per row
+near each observed lateral crossing; it retains no edge map or pixel-derived
+state after the request.
+
+Current portrait evidence remains aggregate-only. The historical Phase 95
+FACE-01 fixed ROIs cannot be treated as anatomical protection proof for a
+natural portrait; the source-admitted exploratory ROI was not promoted into
+the signed comparator. No raw pixels, coordinates, private paths, or child
+transcripts enter durable evidence. The existing owner-local, non-distributed
+boundary remains in force.

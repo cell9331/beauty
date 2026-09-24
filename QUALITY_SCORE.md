@@ -1,6 +1,19 @@
 # QUALITY_SCORE.md
 
-## 当前 v1.22 验收（2026-09-23）
+## 2026-09-23 审计修复后的身份状态
+
+本次人脸映射隔离改动修改了 `VisionFaceDetector.swift` 与对应测试，并修正
+`maximumFaceCount` 文档口径。下方 **937/0/0** 与原 Phase95 COMPLETE 仅证明
+原 v1.22 规范快照；旧 `verify-complete` 对当前代码仍返回
+`review_missing_or_stale`。现由[追加式 COMPLETE](.planning/qualifications/v1.22-mapping-followup/attempt-20260923T083240Z-16509266/COMPLETE.json)
+独立绑定当前身份 `0debce887ab95a49a4970f78dbb53f3500aca75d67861e4d493f011a176204af`：
+真实65/65双次一致、七有效一延期，山根31对及五组[260,373] Q16；安全1/0/0、
+兼容4/0/0、archive-first SwiftPM **938/0/0**、8项 opt-in、零skip，
+实现/安全与目标由不同审查者复核。新 `verify --attempt` 通过。
+原 CHECKS/BINDING/portrait/COMPLETE 保持字节不变；没有设备、商业质量或
+外部分发资格结论。
+
+## 原 v1.22 验收快照（2026-09-23）
 
 当前完成凭证为 [95-COMPLETE.json](.planning/phases/95-compatibility-and-sdk-only-closeout/95-COMPLETE.json)，
 `python3 scripts/check-phase95-closeout.py verify-complete` 验证通过。
@@ -1078,3 +1091,35 @@ Research1, same checked plan set1, attempts2/2; thresholds, source and frozen
 tests were not tuned after measurement. Phase95 private portraits/final65/full
 no-skip remain separate. No population, device, commercial or distribution
 qualification is inferred from these generated-source CPU checks.
+
+## v1.23 FACE-01 Evidence Boundary
+
+The current candidate passes the unchanged generated FACE-01 eight-predicate
+oracle, generated public-facade pixel/metadata/recovery coverage, multi-size
+alpha and central/background checks, and generated CPU/Metal still-image
+parity. A source-only portrait batch completed all 65 cases twice; seven
+previously active directions remained semantic passes. FACE-01 changed 5,647
+pixels / 126,841 absolute RGB delta, but the historical comparator still
+used its generated-image fixed FACE-01 ROIs and reported target `0`, fixed
+central `5,647`, and direction `0 Q16`. An exploratory source-admitted lateral
+ROI moved the same 5,647 changes into target with outside `0`, yet direction
+and sibling distinction remained `0 Q16`. This is no portrait effectiveness
+credit. The ROI experiment was not retained in the historical comparator.
+The portrait run preceded the sparse-contour source correction, so it is a
+diagnostic run rather than a final-current-identity acceptance receipt.
+
+The first full no-skip gate failed one combined 44-field compatibility test
+because sparse FACE-01 lateral admission was too narrow. The provider was
+corrected without changing thresholds; the focused 17-test compatibility
+class passes. An independent generated silhouette boundary oracle now covers
+nearest and inward edge rasterization, with a straight-side negative. The
+final-source archive-first gate passed `944/0/0`, with all eight opt-ins, zero skips,
+archive and SDK-only checks, and all backend, Metal, consumer, and CPU-reference
+gates. The bounded source-edge correction also passed all eight focused
+FACE-01 tests. A direct 65-case diagnostic without Phase 95 source registration
+returned `semantic_fail` and is excluded from comparison with the earlier
+registered portrait batch. Positive/negative portrait
+qualification remains outstanding, as recorded in
+[v1.23 FACE-01 current](.planning/V1.23-FACE01-CURRENT.md). The taxonomy
+remains `partial`; a generated mechanical pass does not establish natural
+portrait quality, population behavior, device performance, or release scope.

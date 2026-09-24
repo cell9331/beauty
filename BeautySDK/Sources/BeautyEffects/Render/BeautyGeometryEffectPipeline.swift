@@ -117,7 +117,14 @@ enum BeautyGeometryEffectPipeline {
             )
         }
 
-        let output = warpedRGBABytes(source, width: width, height: height, points: points)
+        let alignedSource = FaceContourSubpixelRefiner.refine(
+            source,
+            width: width,
+            height: height,
+            face: face,
+            strength: plan.effectiveStrengths.faceContourSmooth
+        )
+        let output = warpedRGBABytes(alignedSource, width: width, height: height, points: points)
         let data = Data(output)
         let warped = CIImage(
             bitmapData: data,

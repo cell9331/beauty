@@ -171,17 +171,26 @@ struct FaceShapeWarpProvider: WarpControlPointProvider {
         let contour = support.contour
         guard contour.count >= 4,
               contour.allSatisfy(isFiniteUnitPoint),
+              let lateralRuns = FaceContourLateralRuns.make(
+                  from: contour,
+                  centralExclusionFraction: contour.count <= 12 ? 1 / 12 : 1 / 6
+              ),
               let minimumXIndex = contour.indices.min(by: { contour[$0].x < contour[$1].x }),
               let maximumXIndex = contour.indices.max(by: { contour[$0].x < contour[$1].x })
         else {
             return []
         }
 
-        let eligibleIndices = contour.indices.filter { index in
-            index > contour.startIndex &&
-                index < contour.index(before: contour.endIndex) &&
-                index != minimumXIndex &&
-                index != maximumXIndex
+        let eligibleIndices = lateralRuns.flatMap { run in
+            let membership = Set(run.indices)
+            return run.indices.filter { index in
+                index > contour.startIndex &&
+                    index < contour.index(before: contour.endIndex) &&
+                    membership.contains(index - 1) &&
+                    membership.contains(index + 1) &&
+                    index != minimumXIndex &&
+                    index != maximumXIndex
+            }
         }
         guard eligibleIndices.count >= 2 else { return [] }
 
@@ -202,7 +211,7 @@ struct FaceShapeWarpProvider: WarpControlPointProvider {
         }
 
         let ceiling =
-            0.012 * face.bounds.width * strength / BeautySafetyCaps.faceContourSmooth
+            0.004 * face.bounds.width * strength / BeautySafetyCaps.faceContourSmooth
         guard ceiling.isFinite, ceiling > 0 else { return [] }
         let normalizedStrength = min(
             1,
@@ -269,12 +278,12 @@ struct FaceShapeWarpProvider: WarpControlPointProvider {
               proposedEligibleRoughness < baselineEligibleRoughness,
               baselineRoughness.isFinite,
               proposedRoughness.isFinite,
-              proposedRoughness < baselineRoughness
+              proposedRoughness <= baselineRoughness + 0.000_001
         else {
             return []
         }
 
-        let radius = face.bounds.width * 0.08
+        let radius = face.bounds.width * 0.014
         var points: [WarpControlPoint] = []
         for index in eligibleIndices {
             guard let point = validatedPoint(
@@ -282,7 +291,8 @@ struct FaceShapeWarpProvider: WarpControlPointProvider {
                 target: proposedContour[index],
                 radius: radius,
                 strength: strength,
-                falloff: 2
+                falloff: 2,
+                minimumRadius: 0.001
             ) else {
                 return []
             }
@@ -309,54 +319,27 @@ struct FaceShapeWarpProvider: WarpControlPointProvider {
         }
 
         var candidate = upperBound
-        // Search far enough below the mathematical ceiling to accommodate
-        // Float target quantization at both the provisional cap and the exact
-        // reused (0.5) strength. The chosen candidate remains one shared
-        // scale for the complete centered delta set.
+        // Float addition can round a displacement a few ULPs above its
+        // mathematical ceiling. Step the shared scale down until every stored
+        // target is bounded and the quantized field remains centered.
         for _ in 0..<16_384 {
             let finalDisplacements = zip(sources, centeredDeltas).map {
                 ($0 + $1 * candidate) - $0
             }
-            let ratios = zip(centeredDeltas, finalDisplacements).compactMap {
-                abs($0) > Float.ulpOfOne ? $1 / $0 : nil
-            }
             let sum = finalDisplacements.reduce(0, +)
             let mean = sum / Float(finalDisplacements.count)
-            if let firstRatio = ratios.first,
-               finalDisplacements.allSatisfy({
-                   $0.isFinite && abs($0) <= ceiling
-               }),
-               ratios.allSatisfy({
-                   $0.isFinite && abs($0 - firstRatio) <= 0.000001
-               }),
-               sum.isFinite,
-               mean.isFinite,
-               abs(sum) <= 0.000001,
+            if finalDisplacements.allSatisfy({
+                    $0.isFinite && abs($0) <= ceiling
+                }),
+                finalDisplacements.contains(where: { abs($0) > Float.ulpOfOne }),
+                sum.isFinite,
+                mean.isFinite,
+                abs(sum) <= 0.000001,
                abs(mean) <= 0.000001 {
                 return candidate
             }
             candidate = candidate.nextDown
             guard candidate.isFinite, candidate > 0 else { return nil }
-        }
-
-        // Some valid source coordinates have no nearby Float scale whose
-        // stored target differences reproduce the mathematical ratio within
-        // 1e-6. Preserve the same single upper-bound scale only when the
-        // quantized result is still finite, centered, bounded, and nonzero;
-        // weaker conflict-scaled requests naturally fall below the emission
-        // floor and fail closed.
-        let quantized = zip(sources, centeredDeltas).map {
-            ($0 + $1 * upperBound) - $0
-        }
-        let quantizedSum = quantized.reduce(0, +)
-        let quantizedMean = quantizedSum / Float(quantized.count)
-        if quantized.allSatisfy({ $0.isFinite && abs($0) <= ceiling }),
-           quantized.contains(where: { abs($0) > Float.ulpOfOne }),
-           quantizedSum.isFinite,
-           quantizedMean.isFinite,
-           abs(quantizedSum) <= 0.000_001,
-           abs(quantizedMean) <= 0.000_001 {
-            return upperBound
         }
         return nil
     }
@@ -508,7 +491,8 @@ struct FaceShapeWarpProvider: WarpControlPointProvider {
         target: SIMD2<Float>,
         radius: Float,
         strength: Float,
-        falloff: Float
+        falloff: Float,
+        minimumRadius: Float = 0.04
     ) -> WarpControlPoint? {
         guard isFiniteUnitPoint(source),
               isFiniteUnitPoint(target),
@@ -524,7 +508,7 @@ struct FaceShapeWarpProvider: WarpControlPointProvider {
         return WarpControlPoint(
             source: source,
             target: target,
-            radius: min(max(radius, 0.04), 0.35),
+            radius: min(max(radius, minimumRadius), 0.35),
             strength: strength,
             falloff: falloff
         )

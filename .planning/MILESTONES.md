@@ -15,6 +15,21 @@ Root: 31 fixed source pairs; source interval [260, 373] Q16, neutral interval [2
 COMPLETE SHA256: `33b49fee25b4156b8a947ac437822ac33f7e5473a61ed74b1015c393035862d4`; normative input digest: `56d33c8d9ddfbd6899287feeac501139d6ea1bac05250ca8982fa861482ed6f0`.
 Existing snapshot-bound phase artifacts remain in place. No archival directory move or new milestone is performed.
 
+**2026-09-23 follow-up:** The prior COMPLETE proves the recorded v1.22
+snapshot. A later request changed face-mapping source/tests and corrected a
+multi-face description; `verify-complete` now reports `review_missing_or_stale`
+for the current tree. The repair's separate archive-first SDK gate passed
+938/0/0 with eight opt-ins and zero skips. A later authorized
+[append-only qualification](qualifications/v1.22-mapping-followup/CONTRACT.md)
+then executed fresh 65/65 portrait evidence twice and the same 938/0/0 gate,
+with separate independent implementation and goal reviews. Its
+[COMPLETE](qualifications/v1.22-mapping-followup/attempt-20260923T083240Z-16509266/COMPLETE.json)
+verifies current code at input digest
+`0debce887ab95a49a4970f78dbb53f3500aca75d67861e4d493f011a176204af`.
+The original v1.22 milestone remains completed for its recorded scope and its
+receipts are unchanged; the old `verify-complete` is still snapshot-bound.
+See the [post-closeout audit](V1.22-POST-CLOSEOUT-DOC-AUDIT-2026-09-23.md).
+
 ## v1.21 Provisional Upper-Eyelid Public Activation (Completed: 2026-08-25)
 
 **Delivered:** Kept `去脂` and exposed it for owner-local use through the

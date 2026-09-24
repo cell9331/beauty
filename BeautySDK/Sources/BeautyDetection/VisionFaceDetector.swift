@@ -365,23 +365,19 @@ package struct VisionFaceDetector: Sendable {
             imageExtent: imageExtent,
             previewExtent: previewExtent
         )
-        let observations: [BeautyFaceObservation]
-        do {
-            observations = try usableDetections.map { detection in
-                try mapObservation(detection, mapper: mapper)
+        var observations: [BeautyFaceObservation] = []
+        observations.reserveCapacity(usableDetections.count)
+        var mappingFailed = false
+        for detection in usableDetections {
+            do {
+                observations.append(try mapObservation(detection, mapper: mapper))
+            } catch {
+                // A rejected observation cannot invalidate a separately
+                // mapped face. Keep support and selection request-local.
+                mappingFailed = true
             }
-        } catch is CoordinateMapper.MappingError {
-            selectionPolicy.reset()
-            return VisionFaceDetectionResult(
-                observations: [],
-                summary: BeautyDetectionSummary(
-                    availability: .partial,
-                    reasons: [.mappingFailed],
-                    faceCount: detections.count,
-                    usedFaceCount: 0
-                )
-            )
-        } catch {
+        }
+        guard !observations.isEmpty else {
             selectionPolicy.reset()
             return VisionFaceDetectionResult(
                 observations: [],
@@ -394,12 +390,30 @@ package struct VisionFaceDetector: Sendable {
             )
         }
         let selection = selectionPolicy.select(from: observations, configuration: configuration)
+        let selectedSummary = purposeAwareSummary(
+            selection.summary,
+            selectedFaces: selection.selectedFaces,
+            purpose: purpose
+        )
+        guard mappingFailed else {
+            return VisionFaceDetectionResult(
+                observations: selection.selectedFaces,
+                summary: selectedSummary
+            )
+        }
+        var reasons = selectedSummary.reasons
+        if !reasons.contains(.mappingFailed) {
+            reasons.append(.mappingFailed)
+        }
         return VisionFaceDetectionResult(
             observations: selection.selectedFaces,
-            summary: purposeAwareSummary(
-                selection.summary,
-                selectedFaces: selection.selectedFaces,
-                purpose: purpose
+            summary: BeautyDetectionSummary(
+                availability: .partial,
+                reasons: reasons,
+                faceCount: usableDetections.count,
+                usedFaceCount: selectedSummary.usedFaceCount,
+                detectionDurationMs: selectedSummary.detectionDurationMs,
+                mappingDurationMs: selectedSummary.mappingDurationMs
             )
         )
     }

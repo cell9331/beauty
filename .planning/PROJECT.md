@@ -1,5 +1,12 @@
 # Beauty
 
+Current work (2026-09-24): the separately authorized
+[v1.23 FACE-01 contour follow-up](V1.23-FACE01-CURRENT.md) is active.
+The bounded candidate passes the original generated gate, but natural portrait
+contour improvement is unproven and taxonomy remains `partial`. The v1.22
+completion statements below describe their historical signed snapshot and
+the later mapping-follow-up qualification, not the current FACE-01 candidate.
+
 v1.22 completed 2026-09-23: 7/7 phases, 33/33 plans, 11/11 active requirements; [verified COMPLETE](phases/95-compatibility-and-sdk-only-closeout/95-COMPLETE.json).
 Actual portrait: 65/65 outputs, 2 reconciled runs, seven effective directions and one deferred/partial direction. Current safety 1/0/0, compatibility 4/0/0, archive-first full SwiftPM 937/0/0; all 8 opt-ins accounted for.
 FACE-01/faceContourSmooth remains explicitly deferred/partial under FUTURE-04, without effectiveness credit. The repaired observed paired-eye root uses CPU; retained Metal rejects its unsupported private raster cutoff with typed invalidInput before submission and recovers for later supported requests. This is owner-local SDK validation, with no device, population, commercial quality, packaging, shipping, launch, release-readiness or distribution claim. No owner annotation or device action remains. Phase96 is absorbed into95-03, and no next milestone is started.
@@ -171,6 +178,19 @@ gate passes 800/0/0. The missing genuine evidence is the explicit reason for
 and `眼睛 = partial`.
 
 ## Current State
+
+**Latest completed milestone:** v1.22 Non-Local Facial Effect Repairs,
+completed 2026-09-23 at its signed Phase95 snapshot. The later face-mapping
+repair has a separate [append-only current-code qualification](qualifications/v1.22-mapping-followup/CONTRACT.md)
+with a verified [COMPLETE](qualifications/v1.22-mapping-followup/attempt-20260923T083240Z-16509266/COMPLETE.json):
+65/65 outputs twice, seven effective directions and one deferred/partial,
+archive-first SwiftPM 938/0/0, and distinct implementation and goal reviews.
+The original receipt remains valid for its own snapshot; the old
+`verify-complete` is stale for the repaired code. No new milestone or active
+plan has been started. `faceContourSmooth` remains deferred under FUTURE-04.
+The owner-local SDK boundary and device/commercial/distribution nonclaims hold.
+
+### Historical state retained from the Phase 91 work in progress
 
 **Latest completed milestone:** v1.21 Provisional Upper-Eyelid Public
 Activation, completed 2026-08-25 as an SDK-only owner-local API/output closeout.

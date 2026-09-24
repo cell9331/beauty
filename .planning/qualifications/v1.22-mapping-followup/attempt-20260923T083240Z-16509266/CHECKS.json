@@ -1,0 +1,39 @@
+{
+  "archive_first": true,
+  "binding_sha256": "6c98e2af3250b3f7413792ef7ea49aafe5e90ea9ae232cc2ff222c011cf34975",
+  "compatibility": {
+    "executed": 4,
+    "failed": 0,
+    "methods": [
+      "RepairedControlCompatibilityTests.testCodableHasExactly62FrozenFields",
+      "RepairedControlCompatibilityTests.testFivePresetsAndRendererCasesRemainFrozen",
+      "RepairedControlCompatibilityTests.testNonTargetDefaultsAndNeutralBehaviorRemainStable",
+      "RepairedControlCompatibilityTests.testPublicFacadesBackendAndSDKBoundaryRemainPresent"
+    ],
+    "skipped": 0
+  },
+  "input_digest": "0debce887ab95a49a4970f78dbb53f3500aca75d67861e4d493f011a176204af",
+  "no_skip": {
+    "executed": 938,
+    "failed": 0,
+    "opt_in_tests": 8,
+    "skipped": 0
+  },
+  "phase_complete": false,
+  "portrait_sha256": "7adb2eebd8478e049fe76386ab8c23ee1aa9c288acf3b9dc274bbea228d9c214",
+  "remaining": [
+    "independent-goal-review"
+  ],
+  "safety": {
+    "executed": 1,
+    "failed": 0,
+    "methods": [
+      "RepairedControlSafetyTests.testCrossControlSafetyAllDirections"
+    ],
+    "skipped": 0
+  },
+  "schema": "v122-mapping-followup-checks-v1",
+  "sdk_boundary": "pass",
+  "status": "pass",
+  "wrapper_self_test": "pass"
+}

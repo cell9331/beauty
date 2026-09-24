@@ -449,3 +449,16 @@ presets, 75 renderer cases, both still-image facades, CPU reference,
 selectable `.cpu`/`.gpu`, terminal `.metalUnavailable`, and retained
 `Warp.metal` remain the architecture boundary. Phase 95 owns portrait
 publication and the full no-skip milestone gate.
+
+## v1.23 FACE-01 Still-Image Ownership
+
+`BeautyEffects` owns the new request-local `FaceContourLateralRuns` and
+`FaceContourSubpixelRefiner` internals. The CPU geometry pipeline and the
+selectable Metal still-image backend call the same immutable-source RGBA8
+refiner before their existing warp. The point provider continues to own the
+named FACE-01 control field and fail-closed admission. Neither the public
+facade nor `BeautyCore` gains a type or parameter; `BeautyDetection` still
+supplies observed support. The retained Metal shader, runtime API, and
+pixel-buffer route are unchanged. This architecture supports generated
+CPU/Metal parity only; natural portrait efficacy remains under active v1.23
+qualification.

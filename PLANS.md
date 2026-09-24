@@ -26,9 +26,93 @@
 
 ## 3. Active
 
-当前 v1.22 范围已完成，无需继续执行旧山根诊断或 Phase96 草案。未来工作须另行确定范围。
+### A-2026-09-23-face-contour-completion
+
+- Status: active；所有者要求完成剩余的 `faceContourSmooth` 工作，先审查文档/验收是否正确，再修复代码或文档。v1.22 原快照和映射修复追加式验收各自保留，不回写历史 Phase90/95 回执。
+- [x] 核对现行 taxonomy、FUTURE-04、Phase89 manifest、portrait comparator、SwiftPM 冻结测试及当前 provider：数值契约一致，但逐行整数像素重心的二阶差分大量计入几何直线段的栅格阶梯；五个仅按轮廓曲率构造的候选均未通过。
+- [x] 独立生成输入的亚像素机制改善原冻结指标并守住目标与保护区；探索值和正式 SwiftPM 验收已分开记录，见 [v1.23 当前契约与证据](.planning/V1.23-FACE01-CURRENT.md)。
+- [x] 在现有 SDK/后端内接入双侧外轮廓的有界候选，保留原 `+16 Q16` 八项阈值；生成 SwiftPM、公开 facade 像素/恢复、CPU/Metal still-image 对比、尺寸/alpha 通过。稀疏轮廓使 44 字段合并测试漏掉 FACE-01，已修正并通过该 17 项测试类。
+- [x] 补充独立生成剪影边界测试，不复用条纹重心指标：已知轮廓就近取整的粗糙正例平均边缘二阶差分约 `0.709 → 0.172`，平直轮廓负例保持原图，重复输出和中央/背景保护通过。原候选对内收取整边缘从约 `0.706` 恶化到 `1.213`，因此新增只在单一强边缘可辨时使用源像素边界的有界对齐；当前正例两种取整方式都降至源粗糙度一半以下，原冻结八谓词不变且 8 项 FACE-01 聚焦测试通过。仍不能替代真人像效果验收，详情见 [v1.23 当前契约与证据](.planning/V1.23-FACE01-CURRENT.md)。
+- [ ] 在真实人像预注册的轮廓与图像边界上确认像素对齐不会使粗糙度恶化；生成两种对齐方式已通过，但没有粗糙真人像正例，不能签发效果信用。
+- [x] 识别真实人像验收契约问题：历史 comparator 未给 FACE-01 登记人像 ROI，65/65 双次输出中其他七方向仍通过，FACE-01 的 5,647 个变化像素被旧固定区全部误计在中央；源图先行的临时 ROI 探针将它们归入脸侧目标且区外为 0，但连续性与 sibling 均为 `0 Q16`，未达到原门槛。该诊断批次早于后续仅影响稀疏轮廓的修正，不是最终源码身份的签发回执；临时探针已移除，历史比较器/回执不改。
+- [ ] 用权利明确且确有粗糙脸侧轮廓的正例和平滑负例，预注册源图目标与保护区，验证真实边缘/纹理的可见改善及方向；在此之前 taxonomy 维持 `partial`，不以生成夹具或像素信号代替效果信用。
+- [x] 最终源码重跑 archive-first no-skip 完整门禁：源边缘对齐修复后 SwiftPM `944/0/0`，8 项 opt-in 全执行、0 skip，归档、SDK-only、后端/Metal/consumer/CPU-reference 各门禁通过；`git diff --check` 通过。已同步 `DESIGN.md`、`ARCHITECTURE.md`、`PRODUCT_SENSE.md`、`SECURITY.md`、`RELIABILITY.md`、`QUALITY_SCORE.md`、taxonomy、v1.23 当前契约和本账本；未满足的真人像效果边界仍明确保留。
+- [x] 最终源码另运行一次隔离输出的 65 案例机械诊断，但该直接 runner 未加载 Phase95 源注册环境，聚合 `semantic_fail` 不可与此前已注册的七方向通过批次对比，也不用于签发；FACE-01 旧固定 ROI 下仍为 `5,647/126,841` 像素/RGB 变化。该次生成输出与临时报告已清理。
 
 ## 4. Completed
+
+### C-2026-09-23-face-contour-roughness-localization
+
+- Status: completed（2026-09-23）；对未改动的 FACE-01 生成源夹具做只读分区统计，见 [方法、聚合量与边界](.planning/FACE-CONTOUR-ROUGHNESS-LOCALIZATION-2026-09-23.md)。Swift `Float`/整数列复现源连续性 `-51 Q16`；总粗糙度55508，脸侧41217、下巴过渡14291；脸侧点间窗口38547，占脸侧93.5%，采样点邻域2670。
+- 原门槛 `+16` 要求粗糙度至少减少16773；只消除过渡段至多得到 `+13`。该指标在几何直线段上也主要计入像素列阶梯，故继续仅按采样点曲率选择目标缺少依据；这不是证明原门槛不可能或生产算法正确。已核对 Phase89 manifest、portrait comparator、SwiftPM 冻结测试、taxonomy 与 FUTURE-04：现行数值门槛一致，仍缺少指标与“面部流畅”视觉意图的一致性证明；旧冻结测试、历史回执及 `partial` 状态不变。
+- 本步骤没有生产代码或测试改动，也没有运行实际 SDK 输出/人像；只读临时脚本未落盘，输出仅为聚合数字。验证：源指标复现 `-51 Q16` 的断言通过；`git diff --check` 通过；映射修复追加式回执 `verify` 仍返回 `phase_complete=true`。
+
+### C-2026-09-23-face-contour-absolute-curvature-feasibility
+
+- Status: completed（2026-09-23，结论为 `STOP`）；用七点/侧 contour 的绝对相邻斜率变化构造凸目标，并沿固定保序行映射做生成机械首关。[方法和聚合结果](.planning/FACE-CONTOUR-ABSOLUTE-CURVATURE-FEASIBILITY-2026-09-23.md)。
+- 首次 ADMM 20000轮未收敛且未输出候选；未见效果输出前改用五自由变量的穷举顶点法求同一目标，每侧32个可行顶点。原图连续性-51，候选-53，改善-2低于+16；目标15985/4015479，全部保护区0/0且重复一致。该候选停止，不能从几何绝对曲率优化推断像素连续性通过。
+- 生产源码、冻结测试及旧回执未改；临时实验脚本删除。下一步是只读定位原夹具的语义粗糙度来源，不开始 v1.23 效果实现或签发。
+
+### C-2026-09-23-face-contour-curvature-target-feasibility
+
+- Status: completed（2026-09-23，结论为 `STOP`）；用 contour 行位置的平方二阶差分最小化构造唯一目标曲线，再以左右侧分段保序逆映射生成一次机械结果。[方法和聚合结果](.planning/FACE-CONTOUR-CURVATURE-TARGET-FEASIBILITY-2026-09-23.md)。
+- 首次预注册坐标下降在2000轮内未收敛且无图像输出；未看候选结果前改用同一凸目标的加速投影求解，15584轮达到 `<=1e-9` 残差。原图/候选连续性均 `-51 Q16`，改善0低于+16；目标 `15049/2974476`，所有保护区0/0、重复一致。平方曲率目标不等于冻结绝对曲率指标，不得据此调整输出门槛或声称效果通过。
+- 生产 Swift、冻结测试和历史证据未改；仓库外临时脚本删除。当前未启动 v1.23、未运行 sibling/实际SDK/人像/完整 no-skip，因为首关失败。
+
+### C-2026-09-23-face-contour-monotone-map-feasibility
+
+- Status: completed（2026-09-23，结论为 `STOP`）；第三个预注册生成机械候选保留前次七点/侧支撑与二次曲线，仅以保持顺序的分段行逆映射替代三角权重位移场。[方法和聚合结果](.planning/FACE-CONTOUR-MONOTONE-MAP-FEASIBILITY-2026-09-23.md)。
+- 原图连续性 `-51 Q16`，候选 `-53 Q16`，改善 `-2 Q16 < +16`；目标 `17506/5767164`，outside/central/background/watermark 全部 `0/0`，重复一致。局部性安全不能替代语义效果；该二次拟合目标和分段映射组合停止，不改源码或原测试。
+- 仓库外临时脚本已删除；需先找到有独立依据的轮廓连续性目标，才值得做下一个固定候选。当前无 FACE-01 效果通过信用、v1.23 正式里程碑或新 SDK 验收声明。
+
+### C-2026-09-23-face-contour-lateral-fit-feasibility
+
+- Status: completed（2026-09-23，结论为 `STOP`）；继续 FACE-01 可行性研究，先按 contour 自身的左右外侧连续链排除中央下巴弧，再用一个预注册二次拟合窄带映射做仓库外生成探针。[方法与聚合结果](.planning/FACE-CONTOUR-LATERAL-FIT-FEASIBILITY-2026-09-23.md)。没有修改生产 Swift、冻结测试或历史回执。
+- 初次 scratch 执行误将下巴弧也从源夹具剔除，source continuity 为 -38 而非原 -51，判为无效；修正输入生成后，同一映射参数和门槛下得到 source -51、candidate -44、改善 `+7 Q16 < +16`。目标 `15419/5168211` 达下限，outside/central/background/watermark 均 `0/0`，重复一致。首关因语义强度不足停止；没有 sibling、SDK、真实人像或完成信用。
+- 临时探针删除，当前无 v1.23 正式里程碑；要继续需提出与这两个失败窄带构造不同且预先固定的新机制，不能从保护区通过推导效果通过。
+- 验证：修正夹具输入后的临时脚本退出0并仅输出聚合量，已删除；`git diff --check` 通过，`python3 scripts/check-v122-mapping-followup.py verify --attempt attempt-20260923T083240Z-16509266` 仍为 `phase_complete=true`。未运行完整 SwiftPM 或真实65人像，因为机械首关未达到原语义门槛且 SDK 源码未改。
+
+### C-2026-09-23-face-contour-strip-feasibility
+
+- Status: completed（2026-09-23，结论为 `STOP`）；所有者要求继续 FACE-01 的受控可行性验证。预先固定的单个双侧窄带映射在仓库外临时 Swift 生成夹具中执行一次；没有修改 SDK 生产代码、冻结测试或历史回执。[完整聚合记录](.planning/FACE-CONTOUR-STRIP-FEASIBILITY-2026-09-23.md)。
+- 结果：连续性 `+6 Q16 < +16`；目标 `15581/4654212` 达信号下限，但 outside `1684/428172` 与 central `1583/385749` 均超原保护上限；背景/水印为0/0，重复一致。预设的“窄带均在目标 ROI 内”推论遗漏了下巴端点，已在记录中更正。该候选停用，不按输出调参或冒充原 SwiftPM 冻结 oracle 通过。
+- 后续问题只限于先确定排除中央下巴弧的轮廓侧支撑所有权，再提出独立的新候选；尚无 v1.23 里程碑或 FACE-01 效果通过信用。
+- 验证：临时原型退出0并仅输出聚合量，执行后已删除；`git diff --check` 通过，`python3 scripts/check-v122-mapping-followup.py verify --attempt attempt-20260923T083240Z-16509266` 仍为 `phase_complete=true`。未运行完整 SwiftPM 或真实65人像，因为首关已失败且 SDK 源码未改。
+
+### C-2026-09-23-face-contour-smooth-feasibility-assessment
+
+- Status: completed（2026-09-23）；按所有者要求评估 `faceContourSmooth` 的下一步，不启动新里程碑或修改生产代码。结论与证据见 [FACE-CONTOUR-SMOOTH-ASSESSMENT-2026-09-23.md](.planning/FACE-CONTOUR-SMOOTH-ASSESSMENT-2026-09-23.md)。
+- 当前 provider 和生成测试表明字段可调用、失效时 fail-closed，但八组冻结语义/保护谓词仍未满足；Phase 90 的既有点场尝试未同时达到连续性与局部性。建议先界定不同于旧圆形点场的双侧窄带映射可行性，并以原冻结生成验收为 go/no-go；未证明可行前不写生产修复或声称 FACE-01 完成。
+- 验证：`swift test --package-path BeautySDK --filter FaceContourSmoothRepairTests` 3/0/0；其中输出测试明确要求仍为 deferred，不能把通过计作效果通过。原 v1.22 与映射修复追加式验收回执保持不变。
+
+### C-2026-09-23-v1-22-mapping-followup-qualification
+
+- Status: completed（2026-09-23）；所有者授权为映射修复后的当前代码新增追加式验收。新契约、执行工具、生成测试及全部回执在 [.planning/qualifications/v1.22-mapping-followup/](.planning/qualifications/v1.22-mapping-followup/)；历史 Phase95 文件未覆盖或移动。
+- 当前身份 `0debce887ab95a49a4970f78dbb53f3500aca75d67861e4d493f011a176204af`。独立实现/安全审查与不同审查者的目标复核均为0未解决发现；当前真实65/65输出、双次一致、七有效一延期，山根31对及五组 [260,373] Q16，目标10774像素/RGB217300，outside与全部保护区变化0。安全1/0/0、兼容4/0/0；完整archive-first SwiftPM 938/0/0、8项 opt-in、零skip。
+- 生成回执测试2/2、自测8项拒绝控制、临时目录实际预检75/65/8通过；`python3 scripts/check-v122-mapping-followup.py verify --attempt attempt-20260923T083240Z-16509266` 通过。[新 COMPLETE](.planning/qualifications/v1.22-mapping-followup/attempt-20260923T083240Z-16509266/COMPLETE.json) SHA256 `0fc220c8863f7063bd32b27034191f7d48d8b4b6ea3f90c9759c18647230a7c2`；旧 COMPLETE 保持 `33b49fee25b4156b8a947ac437822ac33f7e5473a61ed74b1015c393035862d4`，旧 portrait/BINDING/CHECKS 哈希逐一不变。
+- 完成声明仅为当前代码在同一范围内的所有者本地 SDK 验收；不补发 `faceContourSmooth` 效果信用，也不产生设备、商业视觉质量、发布或外部分发资格。旧 `verify-complete` 仍按原一次性快照返回 `review_missing_or_stale`，不是新回执失败。
+
+### C-2026-09-23-v1-22-post-closeout-document-audit
+
+- Status: completed（2026-09-23）；在继续 Phase95 重签前核对当前状态文档、一次性签发代码和旧回执，见 [后续文档与工具核对](.planning/V1.22-POST-CLOSEOUT-DOC-AUDIT-2026-09-23.md)。
+- 结论：原 v1.22 完成对签发时快照有效，`verify-complete` 对改动后代码返回 `review_missing_or_stale`；两者可以并存，不自动重开已完成里程碑。现有 `full-closeout` 拒绝已有 CHECKS/BINDING，分类器写原 portrait 路径，`finalize` 排他发布，不能在保留旧证据时直接重签。此前“先重跑旧 Phase95 再选下一里程碑”的建议不成立。
+- 后续核对将 `.planning/V1.22-CURRENT.md` 中原验收段落明确标为历史快照，并把旧 `verify-complete` 的适用范围和当前追加式只读复核入口写清；不改动任何签发回执。
+- 下一步入口核对发现 `.planning/PROJECT.md` 的旧“Current State”仍停在 Phase 91；已在其前写明 v1.22 完成及当前代码追加式验收，并将旧段落标为历史进度记录。当前无新里程碑或 active plan。
+- 仅修正行政状态、质量口径和本账本；未修改旧 Phase95 契约、回执、source/test 或私有图像。验证：只读脚本/回执检查、当前与旧规范身份对照、`verify-complete` 失败原因、`git diff --check`；未运行新 SwiftPM 或人像批次，因为本次无生产代码改动且旧收尾入口不可追加签发。
+
+### C-2026-09-23-multiface-audit-remediation
+
+- Status: completed（2026-09-23）；用户要求先辨别文档与实现，再修复复审问题。原始代码及 Phase04 测试确认 `maximumFaceCount` 是检测选入上限，公开效果只消费主脸；TD-023 为文档过度承诺，已修 `DESIGN.md`、`PRODUCT_SENSE.md`，未新增多脸渲染。
+- TD-024 为真实代码问题：`VisionFaceDetector` 现在逐脸隔离映射失败，保留独立有效脸并以 `.partial`/`.mappingFailed` 和汇总计数报告；新增双人脸顺序及 geometry/combined-purpose 确定性测试，原全部失败仍源安全。
+- 验证：`swift test --package-path BeautySDK --disable-sandbox --filter VisionFaceDetectorTests` 35项、0失败（常规3项 opt-in 跳过）；完整 `bash scripts/run-no-skip-swiftpm.sh` 938/0/0、8项 opt-in、零skip，archive-first、SDK-only、backend/Metal/parity及consumer全部通过；`git diff --check` 通过。
+- 身份边界：旧 Phase95 COMPLETE 为其原规范快照有效；变更后 `verify-complete` 返回 `review_missing_or_stale`。本次修复的自动化门禁通过，但没有重新签发独立审核/真实65绑定的完成回执；各当前 owner 已同步这一点。历史归档及未跟踪 Phase96 草案保持不变。
+
+### C-2026-09-23-historical-milestone-code-reaudit
+
+- Status: completed（2026-09-23）；对 v1.0–v1.22 历史里程碑账本、v1.22 当前回执与现行多脸检测/渲染调用链进行复核，记录于 [历史里程碑代码复审](.planning/HISTORICAL-MILESTONE-REAUDIT-2026-09-23.md)。
+- 结论：当前 v1.22 `verify-complete` 有效且完整 archive-first no-skip gate 本次通过；v1.18 独立复审仍有 EVID-01/02 partial 与 QUAL-01/02 unsatisfied、v1.19 已取消、v1.22 的 FACE-01 已明确延期，均不能被“所有原始目标完成”概括。
+- 当时记录 TD-023/TD-024 两项多脸问题；后续复核将 TD-023 纠正为文档过度承诺、TD-024 定位为源码缺陷并修复（见上方完成记录）。本次原审计未修改生产代码或历史归档，也未将静态路径证明冒充新增人像效果验收。
+- 本次门禁最初在受限执行环境内因 SwiftPM 编译器模块缓存写入被拒而停下；使用获准的文件系统权限重跑同一命令通过，8项 opt-in、零skip。
 
 ### C-2026-09-23-v1-22-root-repair-and-sdk-closeout
 
@@ -4551,7 +4635,7 @@ Outcome:
 ### Phase 95 evidence-chain follow-up (2026-09-13 historical finding)
 
 2026-09-22 disposition: full-closeout现已实现，旧声明计数lane已禁用；下文为发现时记录。
-当前未完成项是后继测量接入、当前证据与finalize实现，见`.planning/V1.22-CURRENT.md`。
+当时未完成项是后继测量接入、当前证据与finalize实现；这些事项已由 v1.22 完成记录收尾，见`.planning/V1.22-CURRENT.md`。
 历史boundary误报后续修订见上方2026-09-13/14检查点；此旧描述不是新的阻塞判定。
 
 The existing untracked `check-phase95-closeout.py` is not a complete final
@@ -4595,6 +4679,8 @@ compatibility-test/binding correction remains necessary for final closeout.
 | TD-020 | v1.18 Decision Binding | The post-archive re-audit found that Phase 79 read mutable Phase-78 verification prose instead of consuming a machine-produced decision report and contract hash. | Resolved by `scripts/check-v1-18-decision-binding.py`: direct machine decision, strict schema/contract hash, exact no-bundle branch, and seven decision mutations. | Preserve commit `b45fe59` and the current exact-absence gate. | `completed-post-v1.18-reaudit` |
 | TD-021 | v1.18 Support/Editor Integration | Phase-76 support and Phase-77 editor mechanics lacked a caller/test connecting one observation through support resolution, editor proposals, and immutable-source composition. | Resolved by the test-only package integration suite: 3/3 integration and 25/25 UpperEyelid tests pass with no public route. | Preserve commit `2d0f83b` and the package-only boundary. | `completed-post-v1.18-reaudit` |
 | TD-022 | v1.18 Audit Reproducibility | The archived Phase-79 checker was cwd/path dependent and Phase 78 named rather than version-bound the Phase-77 baseline. | Resolved by pinned source/evidence digests, ten-test binding, seven archive-resolution checks, a 10/10 wrapper mutation gate, and current 800/0/0 closeout. | Preserve commits `876499a` and `a89e475`; keep immutable archives read-only. | `completed-post-v1.18-reaudit` |
+| TD-023 | Multi-Face Documentation Contract | 原 `DESIGN.md` 将 `maximumFaceCount` 错写为每帧最多处理的脸数；既有 Phase04 测试与代码实际约束检测选入数，公开效果只消费主脸。 | `usedFaceCount` 原易被误读为效果处理脸数。 | 已纠正 `DESIGN.md` 与 `PRODUCT_SENSE.md`，保留11配置字段、单主脸效果与检测器原选择行为。 | `completed-documentation-correction` |
+| TD-024 | Cross-Face Mapping Isolation | 原 `VisionFaceDetector.summarize` 在同一 throwing map 中映射全部候选，一张坏脸会抹去独立有效脸。 | 有效主脸可能在选脸前被坏观测连带抑制。 | 已逐脸隔离失败，双顺序及双检测purpose确定性回归通过；完整no-skip 938/0/0。 | `completed-source-repair` |
 
 ## 6. Plan Template
 

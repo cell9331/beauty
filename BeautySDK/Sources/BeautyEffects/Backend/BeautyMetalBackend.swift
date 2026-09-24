@@ -168,10 +168,23 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
             bytes = try rasterize(image: image, extent: extent, width: dimensions.width, height: dimensions.height)
         }
 
+        let alignedBytes: [UInt8]
+        if let selectedFaceSupport {
+            alignedBytes = FaceContourSubpixelRefiner.refine(
+                bytes,
+                width: dimensions.width,
+                height: dimensions.height,
+                face: BeautyFaceGeometryAdapter.makeGeometry(from: selectedFaceSupport),
+                strength: plan.effectiveStrengths.faceContourSmooth
+            )
+        } else {
+            alignedBytes = bytes
+        }
+
         let renderedBytes = try invokeRuntime(
             width: dimensions.width,
             height: dimensions.height,
-            bytes: bytes,
+            bytes: alignedBytes,
             passes: try makePasses(
                 plan: plan,
                 selectedFaceSupport: selectedFaceSupport,

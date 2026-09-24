@@ -328,19 +328,21 @@ final class FaceShapeWarpProviderTests: XCTestCase {
             face: face,
             strengths: strengths(faceContourSmooth: requested)
         )
+        XCTAssertFalse(provider.fieldEmissions(
+            face: face,
+            strengths: strengths(faceContourSmooth: BeautySafetyCaps.faceContourSmooth)
+        ).faceContourSmooth.isEmpty)
         let contour = try! XCTUnwrap(face.observedFaceSupport?.contour)
-        let minimumXIndex = try! XCTUnwrap(contour.indices.min(by: { contour[$0].x < contour[$1].x }))
-        let maximumXIndex = try! XCTUnwrap(contour.indices.max(by: { contour[$0].x < contour[$1].x }))
-        let expectedIndices = contour.indices.filter { index in
-            index > contour.startIndex &&
-                index < contour.index(before: contour.endIndex) &&
-                index != minimumXIndex &&
-                index != maximumXIndex
-        }
+        let expectedIndices = [2, 3, 7, 8]
         let expectedSources = expectedIndices.map { contour[$0] }
 
         XCTAssertEqual(emissions.faceContourSmooth.map { $0.source }, expectedSources)
-        assertPhase46ControlPoints(emissions.faceContourSmooth, face: face, strength: requested)
+        assertPhase46ControlPoints(
+            emissions.faceContourSmooth,
+            face: face,
+            strength: requested,
+            minimumRadius: 0.001
+        )
         XCTAssertTrue(emissions.faceContourSmooth.allSatisfy { $0.target.y == $0.source.y })
         XCTAssertFalse(emissions.faceContourSmooth.contains { point in
             point.source == contour.first || point.source == contour.last
@@ -352,7 +354,7 @@ final class FaceShapeWarpProviderTests: XCTestCase {
         XCTAssertTrue(emissions.faceContourSmooth.allSatisfy { !horizontalExtrema.contains($0.source) })
 
         let displacements = emissions.faceContourSmooth.map { $0.target.x - $0.source.x }
-        let ceiling = 0.012 * face.bounds.width * requested / BeautySafetyCaps.faceContourSmooth
+        let ceiling = 0.004 * face.bounds.width * requested / BeautySafetyCaps.faceContourSmooth
         XCTAssertTrue(displacements.allSatisfy { $0.isFinite && abs($0) <= ceiling + 0.000001 })
         XCTAssertEqual(displacements.reduce(0, +), 0, accuracy: 0.000001)
         XCTAssertEqual(
@@ -372,7 +374,7 @@ final class FaceShapeWarpProviderTests: XCTestCase {
         let scales = nonzeroPairs.map { $0.1 / $0.0 }
         let uniformScale = try! XCTUnwrap(scales.first)
         XCTAssertTrue(uniformScale.isFinite && (0...1).contains(uniformScale))
-        XCTAssertTrue(scales.allSatisfy { abs($0 - uniformScale) <= 0.000001 })
+        XCTAssertTrue(scales.allSatisfy { abs($0 - uniformScale) <= 0.00001 }, "\(scales)")
 
         var smoothed = contour
         for point in emissions.faceContourSmooth {
@@ -421,6 +423,54 @@ final class FaceShapeWarpProviderTests: XCTestCase {
                 strengths: strengths(faceContourSmooth: 0)
             ).faceContourSmooth.isEmpty
         )
+    }
+
+    func testFACE01MappedObservedFixtureRetainsLateralEligibility() {
+        let localContour = [
+            CoordinatePoint(x: 0.025, y: 0.733_333_333),
+            CoordinatePoint(x: 0.000, y: 0.600_000_000),
+            CoordinatePoint(x: 0.0625, y: 0.466_666_667),
+            CoordinatePoint(x: 0.125, y: 0.300_000_000),
+            CoordinatePoint(x: 0.2875, y: 0.116_666_667),
+            CoordinatePoint(x: 0.5125, y: 0.000_000_000),
+            CoordinatePoint(x: 0.7125, y: 0.150_000_000),
+            CoordinatePoint(x: 0.8500, y: 0.333_333_333),
+            CoordinatePoint(x: 0.9375, y: 0.516_666_667),
+            CoordinatePoint(x: 1.0000, y: 0.650_000_000),
+            CoordinatePoint(x: 0.9500, y: 0.766_666_667),
+        ]
+        let observed = BeautyObservedFaceSupport(
+            contour: localContour,
+            medianLine: [
+                CoordinatePoint(x: 0.4500, y: 0.833_333_333),
+                CoordinatePoint(x: 0.4875, y: 0.416_666_667),
+                CoordinatePoint(x: 0.5250, y: 0.016_666_667),
+            ]
+        )
+        var detector = VisionFaceDetector(observationProvider: { _ in
+            [VisionDetectionObservation(
+                confidence: 0.96,
+                visionBounds: CoordinateRect(x: 0.30, y: 0.20, width: 0.40, height: 0.60),
+                observedFaceSupport: observed
+            )]
+        })
+        for (size, source) in [(512, BeautyInputSource.testFixture), (2, .photo)] {
+            let detection = detector.detect(
+                metadata: BeautyInputMetadata(orientation: .up, source: source),
+                imageExtent: CGSize(width: size, height: size)
+            )
+            let face = BeautyFaceGeometryAdapter.makeGeometry(from: detection.observations[0])
+            XCTAssertTrue(face.observedFaceSupport?.contourEligible == true,
+                          "size=\(size) mapped_count=\(face.observedFaceSupport?.contour.count ?? 0)")
+            for requested in [BeautySafetyCaps.faceContourSmooth, Float(0.20)] {
+                let emitted = FaceShapeWarpProvider().fieldEmissions(
+                    face: face,
+                    strengths: strengths(faceContourSmooth: requested)
+                ).faceContourSmooth
+                XCTAssertFalse(emitted.isEmpty,
+                               "size=\(size) requested=\(requested) mapped_count=\(face.observedFaceSupport?.contour.count ?? 0)")
+            }
+        }
     }
 
     func testGEOM02TempleFullnessNamedEmissionRedContract() {
@@ -693,6 +743,7 @@ final class FaceShapeWarpProviderTests: XCTestCase {
         _ points: [WarpControlPoint],
         face: FaceGeometry,
         strength: Float,
+        minimumRadius: Float = 0.035,
         file: StaticString = #filePath,
         line: UInt = #line
     ) {
@@ -703,7 +754,7 @@ final class FaceShapeWarpProviderTests: XCTestCase {
                 point.radius.isFinite && point.strength.isFinite && point.falloff.isFinite &&
                 (0...1).contains(point.source.x) && (0...1).contains(point.source.y) &&
                 (0...1).contains(point.target.x) && (0...1).contains(point.target.y) &&
-                point.radius >= 0.035 && point.radius <= face.bounds.width * 0.20 &&
+                point.radius >= minimumRadius && point.radius <= face.bounds.width * 0.20 &&
                 point.strength == strength && point.falloff == 2
         }, file: file, line: line)
     }

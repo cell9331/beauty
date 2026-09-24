@@ -1,0 +1,16 @@
+{
+  "schema": "v122-mapping-followup-goal-review-v1",
+  "status": "pass",
+  "reviewer_agent_id": "followup-goal-reviewer-20260923",
+  "input_digest": "0debce887ab95a49a4970f78dbb53f3500aca75d67861e4d493f011a176204af",
+  "checks_sha256": "b16e67f38e36bc6a9979936496e0277a368568ab0c69976bfbecb0ad62faaf1a",
+  "binding_sha256": "6c98e2af3250b3f7413792ef7ea49aafe5e90ea9ae232cc2ff222c011cf34975",
+  "review_sha256": "7d89021d831d0d3c5b0c5cb2419803c2e1886afae034f96a51cbd5f8f212392a",
+  "portrait_sha256": "7adb2eebd8478e049fe76386ab8c23ee1aa9c288acf3b9dc274bbea228d9c214",
+  "requirements": {
+    "SAFE-01": ["safety", "no_skip"],
+    "COMPAT-01": ["compatibility", "no_skip"],
+    "CLOSE-01": ["portrait", "no_skip"]
+  },
+  "findings": []
+}

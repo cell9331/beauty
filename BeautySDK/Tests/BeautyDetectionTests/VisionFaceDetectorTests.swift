@@ -136,6 +136,41 @@ final class VisionFaceDetectorTests: XCTestCase {
         XCTAssertEqual(result.summary.usedFaceCount, 1)
     }
 
+    func testMalformedSecondFaceCannotSuppressValidSelectedFace() {
+        let valid = VisionDetectionObservation(
+            stableID: "valid",
+            confidence: 0.95,
+            normalizedArea: 0.30,
+            visionBounds: CoordinateRect(x: 0.10, y: 0.10, width: 0.40, height: 0.60)
+        )
+        let malformed = VisionDetectionObservation(
+            stableID: "malformed",
+            confidence: 0.95,
+            normalizedArea: 0.40,
+            observedFaceSupport: BeautyObservedFaceSupport(
+                contour: [CoordinatePoint(x: 0.20, y: 0.20)]
+            )
+        )
+
+        for detections in [[valid, malformed], [malformed, valid]] {
+            for purpose in [VisionFaceDetector.DetectionPurpose.geometry, .geometryAndLocalSupport] {
+                var detector = VisionFaceDetector { _ in detections }
+                let result = detector.detect(
+                    metadata: metadata(),
+                    configuration: BeautyConfiguration(maximumFaceCount: 1),
+                    purpose: purpose
+                )
+
+                XCTAssertEqual(result.observations.map(\.stableID), ["valid"])
+                XCTAssertEqual(result.summary.availability, .partial)
+                XCTAssertEqual(result.summary.reasons, [.mappingFailed])
+                XCTAssertEqual(result.summary.faceCount, 2)
+                XCTAssertEqual(result.summary.usedFaceCount, 1)
+                assertNoRawVisionDiagnostics(in: String(describing: result.summary))
+            }
+        }
+    }
+
     func testEYE05InjectedObservedSupportMapsBothSidesAndKeepsMissingPupilAbsent() {
         let left = BeautyObservedEyeSupport(
             side: .left,

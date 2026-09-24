@@ -1,5 +1,15 @@
 # RELIABILITY.md
 
+## Independent face-mapping degradation (2026-09-23)
+
+The Vision adapter maps eligible observations independently. One malformed
+observation is discarded without suppressing another valid selected face. The
+summary becomes `.partial` with redacted `.mappingFailed`, a candidate count
+including the rejected observation, and a selected count limited to valid
+faces. If no observation maps, selection resets and face-dependent work remains
+source-safe. This changes neither the single-primary-face effect route nor
+the existing typed detector-unavailable and timeout behavior.
+
 ## Observed-root raster protection (2026-09-23)
 
 Paired-eye nasal-root fields explicitly stop before the bridge-owned integer
@@ -870,3 +880,31 @@ Reset/rejected-support/recovery checks preserve exact source and recovered
 bytes, reasons and invocation counts. No all-orientation semantic ROI,
 device performance or long-duration claim follows. Phase95 final65/private
 portraits/full no-skip and commercial/distribution qualification remain separate.
+
+## v1.23 FACE-01 Candidate Reliability
+
+The subpixel step is deterministic for a fixed canonical image, support, and
+strength. It bounds input byte-count multiplication, reads immutable source
+pixels for both interpolation neighbors, clips to image bounds, preserves
+alpha, and returns source bytes for neutral or unsupported requests. The
+four-pair source-edge scan is bounded and falls back to the previous
+half-pixel correction for weak or ambiguous boundaries; a unique strong edge
+can move by at most 1.5 pixels. Generated nearest and inward edge alignments
+both pass the independent boundary oracle, while real portrait benefit is
+still unverified. The
+provider rejects malformed or nonmonotone lateral runs and any nonfinite,
+unbalanced, or over-cap quantized point field. Its sparse 10–12-point support
+rule was added after the 44-field combined regression found an unintended
+abstention; the focused 17-test class now passes with all 44 fields retained.
+
+The refiner makes one full RGBA copy and then the existing geometry warp
+performs its own image operation. Package-host tests establish bounded
+behavior and generated CPU/Metal still-image parity, not device memory,
+latency, thermal, battery, or sustained-load performance. Orientation and
+mirror tests show active output for supported generated fixtures and exact
+neutral output when the fixed test support becomes ineligible; they do not
+prove contour efficacy at every orientation. The final archive-first no-skip
+gate passed `944/0/0`, all eight opt-ins, and zero skips on the final source.
+This result belongs
+to the v1.23 evidence record, not the historical v1.22 receipt; actual
+portrait contour improvement is still unverified.

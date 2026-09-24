@@ -368,7 +368,7 @@ SDK 以稳定、可预测的方式输出处理后的图像。SDK、模型和权�
 | Field | Type | Meaning |
 | --- | --- | --- |
 | `preferredProcessingSize` | `CGSize?` | 期望处理尺寸；`nil` 表示由 SDK 按模式选择。 |
-| `maximumFaceCount` | `Int` | 每帧最多处理的人脸数量。 |
+| `maximumFaceCount` | `Int` | 检测器每次最多选入的人脸数量；当前公开效果路径仅使用所选主脸。 |
 | `enableFaceTracking` | `Bool` | 是否启用跨帧跟踪和平滑。 |
 | `detectionFrameInterval` | `Int` | 检测降频间隔。 |
 | `renderQuality` | `BeautyRenderQuality` | 性能与质量等级。 |
@@ -388,6 +388,7 @@ SDK 以稳定、可预测的方式输出处理后的图像。SDK、模型和权�
 - 两个输入上限都是尾部默认参数；非正自定义值回落到各自默认值，旧 JSON 缺少两个 key 时通过显式 `decodeIfPresent` 得到相同默认值。
 - 上限是拒绝边界而非处理策略：精确命中上限继续当前行为，超过上限返回 `BeautyError.invalidInput`；SDK 不借此缩放、降采样或重解释 `preferredProcessingSize`。
 - `renderBackend` 是执行策略而非逐帧美颜参数；新建配置和缺少该 key 的旧 Codable payload 都确定性解码为 `.cpu`。显式 `.gpu` 只经 `BeautyBackendFactory` 构造 package Metal backend；不可用时终止为 `.metalUnavailable`，不回退 CPU。配置初始化后不可变，package-only injection 仅用于测试。
+- `maximumFaceCount` 保留原有检测选择上限和 Codable 字段，不承诺对全部选中人脸渲染效果。当前 `BeautyEngine` 为效果与局部支持只消费所选主脸；扩大到多脸效果须单独定义所有权、重叠和像素验收。
 
 ### 4.2 BeautyParameters
 
@@ -707,13 +708,13 @@ Allowed public fields:
 | --- | --- |
 | `availability` | `notRun`, `disabled`, `noFace`, `usable`, `partial`, `lowConfidence`, `skipped`, `reused`, or `stale`. |
 | `reasons` | Redacted reason codes such as no face, missing landmarks, face limit, mapping failure, or stale detection. |
-| `faceCount`, `usedFaceCount` | Counts only, never face identity or location. |
+| `faceCount`, `usedFaceCount` | Aggregate detection-candidate and detector-selection counts; a rejected mapping can remain in `faceCount`, while `usedFaceCount` counts selected valid faces, not effect-rendered faces. Never face identity or location. |
 | `detectionDurationMs`, `mappingDurationMs` | Optional timing values. |
 
 Rules:
 
 - The summary must not expose points, rects, bounding boxes, landmark coordinates, `VNFaceObservation`, raw framework errors, or local image paths.
-- `.mappingFailed` is a degraded state; output should still be possible when rendering can safely skip face-dependent work.
+- `.mappingFailed` is a degraded state; a malformed face is discarded independently, while another successfully mapped face can still provide bounded effects. If none map, face-dependent work is skipped while safe siblings continue.
 - `.disabled` and `.notRun` are valid non-error states for configuration or first-version no-op paths.
 - Phase 26 still-image processing uses `.notRun` when parameters do not require geometry and `.disabled` when tracking/detection is disabled; geometry-triggered unusable detection maps to redacted `noFace`, `lowConfidence`, `partial`, or failure reason summaries while face-agnostic effects may continue.
 - Phase 27 still-image geometry output keeps this summary model unchanged: selected-face render data stays internal, and saved-output evidence is recorded through renderer/helper counts, dimensions, warnings, and aggregate metrics only.
@@ -1920,3 +1921,38 @@ overlap. It is not a universal mixed-field, clamped-raster or GPU injectivity
 claim. Fixed field tests separate actual crossing/reversal from an inconclusive
 sufficient bound. Phase95 private portraits/final65/full no-skip and all
 population/device/commercial/distribution claims remain separate.
+
+## v1.23 FACE-01 Lateral Contour Candidate
+
+This current section supersedes the historical Phase 90 description of the
+then-unchanged `faceContourSmooth` source. The public positive-only scalar and
+exact `0.25` effective cap remain unchanged. The candidate accepts only finite,
+fresh observed contour support that forms two monotone outer lateral runs. It
+excludes the central chin arc. The point provider uses the outer sixth of the
+contour span; sparse 10–12-point contours use the outer twelfth so at least
+several interior lateral samples can contribute without admitting the chin.
+Each admitted point moves only in X, within `0.004 * faceWidth` at the cap,
+with `0.014 * faceWidth` radius. Quantized targets must remain finite,
+bounded, centered, and strictly reduce lateral geometric roughness.
+
+On opaque still images, a request-local raster step aligns each lateral row
+from its rounded observed contour column toward its continuous interpolated
+column by at most half a pixel when the edge is ambiguous. If the four nearest
+horizontal pixel pairs contain one unique strong boundary (mean RGB contrast
+at least 64 and the next contrast less than half of it), the step instead
+aligns that measured crossing to the continuous contour; the shift is bounded
+to 1.5 pixels. It reads immutable original RGBA bytes, uses a
+14-pixel side band with 6-pixel horizontal feather and 20-row endpoint taper,
+rejects nonopaque or out-of-bounds neighbors, and preserves alpha. CPU and
+Metal still-image paths apply this identical step before the retained geometry
+warp; `Warp.metal` and pixel-buffer behavior are unchanged.
+
+The original generated FACE-01 `+16 Q16` direction and all seven other
+semantic/protection predicates now pass without changing their thresholds.
+An independent generated silhouette test passes both nearest and inward
+pixel-alignment cases and leaves straight sides unchanged. That proves those
+generated staircase mechanisms, not natural portrait contour
+quality. The one currently available smooth portrait yielded target-area pixel
+changes but `0 Q16` contour gain under a source-admitted exploratory ROI.
+Taxonomy remains `partial` pending the v1.23 positive/negative qualification
+defined in [.planning/V1.23-FACE01-CURRENT.md](.planning/V1.23-FACE01-CURRENT.md).

@@ -1,10 +1,25 @@
 # Roadmap: Beauty v1.22 Non-Local Facial Effect Repairs
 
+Current successor: [v1.23 FACE-01 contour follow-up](V1.23-FACE01-CURRENT.md)
+is active under the owner's 2026-09-23 completion request. Its remaining
+positive/negative portrait qualification is separate from this completed
+v1.22 roadmap. The historical phase list and signed receipts below are not
+reopened or overwritten.
+
 ## Overview
 
 v1.22 completed 2026-09-23: 7/7 phases, 33/33 plans, 11/11 active requirements; [verified COMPLETE](phases/95-compatibility-and-sdk-only-closeout/95-COMPLETE.json).
 Actual portrait: 65/65 outputs, 2 reconciled runs, seven effective directions and one deferred/partial direction. Current safety 1/0/0, compatibility 4/0/0, archive-first full SwiftPM 937/0/0; all 8 opt-ins accounted for.
-Current identity is validated by COMPLETE; historical records retain their original scope.
+That closeout identity was validated by COMPLETE at the recorded snapshot.
+The 2026-09-23 detection-mapping repair changed normative source and tests:
+the old receipt is historical and the old `verify-complete` returns
+`review_missing_or_stale` for current code. The separately authorized
+[append-only follow-up](qualifications/v1.22-mapping-followup/CONTRACT.md)
+has now verified current code with its own 65/65 double run, independent
+reviews and archive-first SwiftPM 938/0/0 gate. It does not overwrite the old
+portrait evidence or reopen the completed milestone. See the
+[post-closeout audit](V1.22-POST-CLOSEOUT-DOC-AUDIT-2026-09-23.md) for the
+one-time signer limitation that prompted the successor.
 
 v1.22 first makes the existing owner-local 65-case portrait screen a semantic
 measurement gate, then repairs each active facial-control family as a complete

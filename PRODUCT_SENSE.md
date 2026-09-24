@@ -11,9 +11,12 @@ uniform; an explicit GPU request carrying this protection returns typed
 `BeautyError.invalidInput` before submission. Existing neutral and other
 supported requests remain usable after the rejection. No new backend is added.
 
-v1.21 is a historical owner-local acceptance boundary. The current v1.22 result
-is established only by the execution-bound Phase95 COMPLETE receipt and
-`verify-complete`; an absent or stale receipt is not milestone completion.
+v1.21 is a historical owner-local acceptance boundary. The original v1.22 result
+was established by its execution-bound Phase95 COMPLETE receipt and
+`verify-complete`. The subsequent 2026-09-23 mapping repair changed normative
+source/tests, and `verify-complete` now returns `review_missing_or_stale` for
+the current tree; the prior receipt is historical rather than current-code
+qualification.
 On 2026-08-25 the owner
 superseded the earlier `去脂` deferral and accepted the existing bounded v4
 mechanics as a provisional public still-image effect. The acceptance fact is
@@ -71,6 +74,12 @@ Core promise:
 - processing remains local by default; and
 - effect behavior stays natural, bounded, deterministic, and independently
   testable.
+
+`BeautyConfiguration.maximumFaceCount` caps the detector's selected faces; it
+does not activate multi-face rendering. The current still-image effect route
+uses only the selected primary face. `BeautyDetectionSummary.usedFaceCount`
+reports detector selection, so it must not be interpreted as the number of
+faces visibly changed by an effect.
 
 The maintainer/owner-host validation journey is also public-surface-only:
 
@@ -532,3 +541,22 @@ does not claim canonical contraction semantics for every orientation or face.
 Physical iPhone feedback stays optional; population/naturalness, device,
 commercial and distribution claims are not established. Phase95 private
 portraits, final65 and full no-skip closeout remain separate.
+
+## v1.23 FACE-01 Owner Journey
+
+The owner can still call `faceContourSmooth` through both existing still-image
+facades. At zero strength, missing or malformed observed contour, and invalid
+point admission, the named field leaves the source unchanged; unrelated valid
+effects may continue. At the cap, generated public-facade evidence shows
+deterministic lateral pixel changes, central/background preservation, alpha,
+extent, and valid-invalid-valid recovery. The CPU and selectable Metal
+still-image paths share the bounded contour adjustment.
+
+The current natural portrait is already smooth. Its changed pixels were
+localized by a source-only exploratory contour ROI, but neither a measurable
+contour gain nor an obvious visual improvement was established. The field
+therefore remains `partial` in the taxonomy. The owner needs an appropriate
+rough-contour positive example and smooth negative control before this
+candidate can be described as a completed contour-smoothing experience.
+This does not require a physical iPhone or imply population, performance,
+commercial quality, release, or distribution readiness.
