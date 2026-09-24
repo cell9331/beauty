@@ -1,5 +1,11 @@
 # Requirements: Beauty v1.22 Non-Local Facial Effect Repairs
 
+Latest completed milestone: **v1.24 去脂效果改进**. Its frozen requirements and phase
+sequence are in [V1.24-UPPER-EYELID-CURRENT.md](V1.24-UPPER-EYELID-CURRENT.md).
+The v1.22 requirements below remain historical. v1.23 completed only its
+generated-input mechanics scope; FACE-01 real-portrait effectiveness remains
+FUTURE-04.
+
 Current successor requirement: **FACE01-23** is the separately authorized
 v1.23 `faceContourSmooth` repair and qualification in
 [V1.23-FACE01-CURRENT.md](V1.23-FACE01-CURRENT.md). The candidate has passed

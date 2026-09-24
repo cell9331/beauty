@@ -1,5 +1,16 @@
 # RELIABILITY.md
 
+## v1.24 upper-eyelid bounded correction
+
+The source-derived per-pixel gain is `1.8` at positive strength, still rounded
+deterministically and clipped to `±16` plus RGB headroom before the unchanged
+Q16 feather and immutable-source composition. No extra detection, allocation,
+cache, retry, or backend path is introduced. Neutral/invalid strength,
+unsupported peer, malformed support, and planar/crease-only negatives keep
+their existing source-exact behavior. The generated adjacent-correction and
+high-frequency safety checks remain gates; the historical genuine private
+matrix failures are not erased by a generated pixel improvement.
+
 ## Independent face-mapping degradation (2026-09-23)
 
 The Vision adapter maps eligible observations independently. One malformed

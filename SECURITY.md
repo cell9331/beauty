@@ -1,5 +1,14 @@
 # SECURITY.md
 
+## v1.24 upper-eyelid change boundary
+
+The editor changes one package-only correction gain inside already approved
+per-eye support. It does not admit new pixels or eyes, widen a hard envelope,
+alter alpha, add a model/network path, or expose source RGB, masks, landmarks,
+private fixture locations, or per-pixel diagnostics. Existing source-exact
+rejection and collision behavior remains the trust boundary. Durable v1.24
+evidence records aggregate ratios and test counts only.
+
 ## Cross-face mapping isolation (2026-09-23)
 
 Malformed detected-face support cannot invalidate a separate mapped face or

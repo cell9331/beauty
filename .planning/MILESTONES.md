@@ -1,5 +1,33 @@
 # Milestones
 
+## v1.24 去脂效果改进 (Completed: 2026-09-24, bounded mechanics)
+
+**Delivered:** Kept the owner-local public `upperEyelidFullnessReduction`
+parameter, both still-image entries, and the 62-field/five-preset/75-case
+inventory. Increased only the existing internal relief compression gain from
+`1.5` to `1.8`. On a predeclared in-memory convex input at strength `0.5`,
+the composed central relief-score/source ratio improved from `0.4537424` to
+`0.3422654` (11.15 percentage points), below the fixed `0.35` target.
+
+**Verification:** The fixed target test failed on the old implementation.
+Focused editor/public pixel tests passed `12/0/0`; existing exact support,
+texture, continuity, negative, metadata, neutral, collision, and typed-failure
+tests remained in the final archive-first no-skip SDK gate. That complete
+wrapper passed archive/boundary/backend/consumer/CPU-reference checks, all
+eight opt-ins, zero failures and zero skips. An
+[independent read-only review](V1.24-INDEPENDENT-REVIEW.md) prompted stronger
+uniform-darkening, public protected-pixel, and unilateral-eye oracles; its
+second review found no remaining actionable Swift issue. Baseline and final
+source/test hashes and aggregate evidence are in the
+[v1.24 contract](V1.24-UPPER-EYELID-CURRENT.md).
+
+**Boundary:** Generated pixels establish a bounded mechanical improvement,
+not real-person visible efficacy or commercial visual quality. The historical
+private matrix failures remain; `去脂` remains provisional, callable and
+known weak. No model/data, new API/backend, device, UI/Demo, release, or
+distribution claim is made. `faceContourSmooth` natural-portrait effect
+stays in FUTURE-04 without taxonomy promotion. Earlier receipts are unchanged.
+
 ## v1.23 FACE-01 Generated-Input Mechanics (Completed: 2026-09-24)
 
 **Delivered:** An owner-local bounded lateral-contour candidate, unchanged

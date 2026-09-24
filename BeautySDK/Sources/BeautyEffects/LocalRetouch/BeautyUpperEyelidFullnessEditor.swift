@@ -145,7 +145,10 @@ extension BeautyExperimentalUpperEyelidReliefEditResult: CustomStringConvertible
 
 package enum BeautyExperimentalUpperEyelidReliefEditor {
     package static let maximumAbsoluteChannelDelta = 16
-    package static let reliefCompressionGain = 1.5
+    // A modest increase makes a half-strength request measurably change the
+    // supported low-frequency relief while retaining the existing Q16
+    // feather and per-channel ceiling.
+    package static let reliefCompressionGain = 1.8
 
     package static func edit(
         source: BeautyCanonicalStillImage,

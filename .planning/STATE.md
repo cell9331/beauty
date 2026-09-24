@@ -1,27 +1,23 @@
 ---
-gsd_state_version: 1.0
-milestone: v1.22
-milestone_name: Non-Local Facial Effect Repairs
-current_phase: 95
-current_phase_name: Compatibility and SDK-only Closeout
+gsd_state_version: "1.0"
+milestone: v1.24
+milestone_name: 去脂效果改进
 status: completed
-stopped_at: v1.22 historical snapshot complete; mapping follow-up current-tree qualification complete in append-only receipt
-last_updated: "2026-09-23T16:50:32+08:00"
-last_activity: 2026-09-23
-last_activity_desc: Mapping follow-up verified COMPLETE at current identity; 65/65 twice, seven effective and one deferred, SwiftPM 938/0/0
-state_head: 0bc58b4af3201c6767a1a6da2ba313bfda9a3a45
+last_updated: "2026-09-24T06:14:45Z"
+last_activity: 2026-09-24
 progress:
-  total_phases: 7
-  completed_phases: 7
-  total_plans: 33
-  completed_plans: 33
+  total_phases: 3
+  completed_phases: 3
+  total_plans: 0
+  completed_plans: 0
   percent: 100
 ---
 
 # Project State
 
-The frontmatter above is the completed v1.22 GSD snapshot. The separately
-authorized [v1.23 FACE-01 follow-up](V1.23-FACE01-CURRENT.md) now has a
+The frontmatter above tracks the completed bounded
+[v1.24 去脂效果改进](V1.24-UPPER-EYELID-CURRENT.md) milestone. The separately
+authorized [v1.23 FACE-01 follow-up](V1.23-FACE01-CURRENT.md) has a
 [verified synthetic-mechanics-only COMPLETE](qualifications/v1.23-synthetic/attempt-20260924T045750Z-9429627d/COMPLETE.json)
 at source identity `ec2589298925422dc6c3dfc65a68285caea4b6bdd913dffb3c0821673c6d3319`.
 It has not earned natural-portrait effectiveness or taxonomy promotion. No
@@ -29,43 +25,24 @@ historical Phase 90/95 receipt is reopened by that work.
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (updated 2026-09-23)
+See: `.planning/PROJECT.md` (updated 2026-09-24)
 
 **Core value:** The project owner's local iOS host can integrate `BeautySDK`
 and get natural, controllable real-time and still-image beauty processing
 without distributing the SDK, model, or weights.
-**Current focus:** [v1.23 generated-input mechanics closeout](V1.23-FACE01-CURRENT.md);
-the v1.22 contract remains a historical signed snapshot.
+**Latest result:** [v1.24 bounded upper-eyelid relief improvement](V1.24-UPPER-EYELID-CURRENT.md);
+v1.23 synthetic mechanics and v1.22 remain historical signed snapshots.
 
 ## Current Position
 
-The original v1.22 completion below is historical for its signed digest.
-The later face-mapping repair changed normative files, so the old
-`verify-complete` returns `review_missing_or_stale` on the current tree.
-The separately scoped [append-only follow-up](qualifications/v1.22-mapping-followup/)
-verified the then-current mapping-repair code under the same in-scope Phase95 acceptance:
-65/65 outputs twice, seven effective and one deferred, safety 1/0/0,
-compatibility 4/0/0 and archive-first SwiftPM 938/0/0 with eight opt-ins and
-zero skips. Its distinct independent reviews and new COMPLETE bind current
-input digest `0debce887ab95a49a4970f78dbb53f3500aca75d67861e4d493f011a176204af`.
-This does not reopen or rewrite the historical milestone. Later v1.23 FACE-01
-source changes make that follow-up's read-only `verify --attempt` stale for the
-present worktree; its signed receipt remains evidence for its recorded digest.
-The bounded FACE-01 closeout and separate missing portrait effect evidence are tracked in
-`V1.23-FACE01-CURRENT.md` and `PLANS.md`.
-
-Phase: 95 (Compatibility and SDK-only Closeout) — COMPLETE
-Plans: 95-01 safety,95-02 compatibility,95-03 actual65/full regression,95-04 independent goal/finalization all complete.
-Last activity: 2026-09-23 — v1.22 completed 2026-09-23: 7/7 phases, 33/33 plans, 11/11 active requirements; [verified COMPLETE](phases/95-compatibility-and-sdk-only-closeout/95-COMPLETE.json).
-
-Actual portrait: 65/65 outputs, 2 reconciled runs, seven effective directions and one deferred/partial direction. Current safety 1/0/0, compatibility 4/0/0, archive-first full SwiftPM 937/0/0; all 8 opt-ins accounted for.
-Root: 31 fixed source pairs; source interval [260, 373] Q16, neutral interval [260, 373] Q16; all three sibling intervals pass; outside 0 pixels / 0 absolute RGB delta; all root protected-region changes are zero.
-FACE-01/faceContourSmooth remains explicitly deferred/partial under FUTURE-04, without effectiveness credit. The repaired observed paired-eye root uses CPU; retained Metal rejects its unsupported private raster cutoff with typed invalidInput before submission and recovers for later supported requests. This is owner-local SDK validation, with no device, population, commercial quality, packaging, shipping, launch, release-readiness or distribution claim. No owner annotation or device action remains. Phase96 is absorbed into95-03, and no next milestone is started.
-COMPLETE SHA256: `33b49fee25b4156b8a947ac437822ac33f7e5473a61ed74b1015c393035862d4`; normative input digest: `56d33c8d9ddfbd6899287feeac501139d6ea1bac05250ca8982fa861482ed6f0`.
+Phase: 99 (SDK closeout and independent review) — COMPLETE
+Plans: Phases 97–99 completed inline under the v1.24 current contract.
+Status: Completed for bounded generated-input mechanics improvement
+Last activity: 2026-09-24 — Final archive-first no-skip SDK gate and independent review passed; natural-portrait visual quality remains unproven.
 
 ## Performance Metrics
 
-**Current milestone:**
+**Historical v1.22 milestone:**
 
 - Authored plans with summaries: 33/33; all seven milestone phases complete. Historical failures retain their original outcomes.
 - Average documented duration: 13 min across 11 timed summaries
@@ -93,7 +70,7 @@ roadmaps.
 
 ### Decisions
 
-Current authorization and next steps are in V1.22-CURRENT.md. The dated records below
+Current scope and evidence are in V1.24-UPPER-EYELID-CURRENT.md. The dated records below
 retain historical context; their superseded next-step/approval language is not a new blocker.
 
 ### Roadmap Evolution
@@ -410,7 +387,6 @@ No unresolved blocker remains within the completed v1.22 scope. FACE-01/faceCont
 Authorized portraits and detailed outputs remain owner-local and outside durable evidence.
 
 ### Historical blocker notes — superseded current status, not pending instructions
-
 
 - [Phase 90] The former FACE-01 implementation blocker is resolved by scope,
   not by repair: revision 22 remains consumed diagnostic evidence and no GREEN

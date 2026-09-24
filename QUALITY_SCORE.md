@@ -1,5 +1,22 @@
 # QUALITY_SCORE.md
 
+## 2026-09-24 v1.24 去脂效果改进（有界完成）
+
+[预先固定的目标与保护区](.planning/V1.24-UPPER-EYELID-CURRENT.md) 使用同一
+内存生成凸起输入：半强度源图中央分数 `9.3623085`，旧输出/源图比值
+`0.4537424`；内部 gain `1.5 → 1.8` 后比值 `0.3422654`，改善约
+`0.1114770`，满足 `≤0.35` 且至少多改善 `0.10` 的固定谓词。新增测试在
+生产改动前对旧实现失败；复审后补半强度非均匀性、公开保护像素与双眼
+独立性断言，编辑器/公开双入口 `12/0/0`。初次完整 archive-first
+门禁 `945/0/0`、8 opt-in、0 skip 早于复审补测，属于中间检查；最终
+源码重新通过完整 archive-first no-skip 门禁：archive、SDK-only、
+后端/Metal、consumer、CPU-reference 与所有 8 项 opt-in 通过，SwiftPM
+非零测试、零失败、零 skip；二次独立只读复审无剩余 Swift 问题，
+[复审摘要](.planning/V1.24-INDEPENDENT-REVIEW.md) 与
+[最终身份](.planning/V1.24-UPPER-EYELID-CURRENT.md) 已记录。
+本次有界完成只证明生成输入机制改善；历史真实私有矩阵失败、真实人像
+视觉质量不足及 FUTURE-04 均不因该数值改变。
+
 ## 2026-09-24 v1.23 合成输入机制验收
 
 所有者指定的两张虚构生成图按[冻结契约](.planning/qualifications/v1.23-synthetic/CONTRACT.md)

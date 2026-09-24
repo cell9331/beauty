@@ -1,5 +1,18 @@
 # DESIGN.md
 
+## v1.24 owner-local upper-eyelid relief adjustment (2026-09-24)
+
+The pre-edit [v1.24 contract](.planning/V1.24-UPPER-EYELID-CURRENT.md)
+freezes a half-strength source/composed convexity comparison and protected
+regions. The existing `BeautyExperimentalUpperEyelidReliefEditor` changes only
+its source-derived scalar compression gain from `1.5` to `1.8`; the support
+analyzer, `3.5` applicability threshold, per-eye ownership, `±16` channel cap,
+Q16 feather, and immutable-source composition remain. On the fixed generated
+positive, the central score ratio changes from `0.4537424` to `0.3422654` at
+strength `0.5`, with no public parameter, preset, facade, backend, geometry, or
+model change. The v1.19 candidate-v4 values below describe their historical
+snapshot; they do not measure current genuine-portrait visual quality.
+
 ## Observed root placement and raster seam repair (2026-09-23)
 
 Default still-image Vision detection uses an explicitly named-sRGB CGImage

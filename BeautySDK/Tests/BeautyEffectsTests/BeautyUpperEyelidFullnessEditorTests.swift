@@ -85,6 +85,39 @@ final class BeautyUpperEyelidFullnessEditorTests: XCTestCase {
         XCTAssertTrue(alphaBytes(composed.rgba8Data).allSatisfy { $0 == 255 })
     }
 
+    func testHalfStrengthConvexReliefImprovesBeyondFrozenV121Baseline() throws {
+        let fixture = try reliefFixture(bulgeMagnitude: 24)
+        let before = try XCTUnwrap(BeautyExperimentalUpperEyelidReliefModel.analyze(
+            source: fixture.source,
+            pixels: fixture.pixels
+        ))
+        XCTAssertEqual(before.centralConvexityScore, 9.3623085, accuracy: 0.0001)
+        let edit = BeautyExperimentalUpperEyelidReliefEditor.edit(
+            source: fixture.source,
+            support: support(leftPixels: fixture.pixels),
+            strength: 0.5
+        )
+        XCTAssertEqual(edit.summary.reason, .edited)
+        let rawCorrections = try XCTUnwrap(edit.proposalsByEye.first).map { proposal in
+            Int(proposal.targetRed) - rgb(fixture.source.rgba8Data, pixelIndex: proposal.pixelIndex).red
+        }
+        // A uniform darkening can lower the center-vs-boundary score after
+        // feathering. Require a spatial relief correction before using it.
+        XCTAssertGreaterThan(Set(rawCorrections).count, 5)
+        XCTAssertLessThan(rawCorrections.min() ?? 0, -4)
+        XCTAssertGreaterThan(rawCorrections.max() ?? 0, -2)
+        let owner = BeautyLocalRetouchCompositionOwner(source: fixture.source)
+        let composed = try owner.compose(edit.makeUnits(using: owner)).canonicalImage
+        let after = try XCTUnwrap(BeautyExperimentalUpperEyelidReliefModel.analyze(
+            source: composed,
+            pixels: fixture.pixels
+        ))
+        let ratio = after.centralConvexityScore / before.centralConvexityScore
+        let frozenV121Ratio = 0.4537424
+        XCTAssertLessThanOrEqual(ratio, 0.35)
+        XCTAssertLessThanOrEqual(ratio, frozenV121Ratio - 0.10)
+    }
+
     func testPlanarLightingAndFineCreaseDetailDoNotCreateFullnessApproval() throws {
         let fixture = try reliefFixture(bulgeMagnitude: 0, includeCreaseDetail: true)
         let model = try XCTUnwrap(BeautyExperimentalUpperEyelidReliefModel.analyze(

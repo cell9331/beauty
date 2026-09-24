@@ -26,9 +26,17 @@
 
 ## 3. Active
 
-当前无进行中的 v1.23 机制验收；真实人像效果问题保留在 Tech Debt。
+当前无进行中的里程碑；`faceContourSmooth` 真实人像效果保留在 FUTURE-04。
 
 ## 4. Completed
+
+### C-2026-09-24-v1.24-upper-eyelid-effect-improvement
+
+- Status: completed（有界生成输入机制改进）；[冻结目标、源码身份与聚合证据](.planning/V1.24-UPPER-EYELID-CURRENT.md)。全强度旧夹具比值 `0.1068` 接近地板，改以半强度旧比值 `0.4537424`，固定目标 `≤0.35` 且多改善至少 10 个百分点；新比值 `0.3422654`，改善 `0.1114770`。
+- [x] Phase 97：冻结旧实现 commit/editor hash；固定目标测试在旧实现上失败。复审指出统一变暗反例缺口，补半强度非均匀修正、公开保护像素与双眼独立性 oracle。
+- [x] Phase 98：只将 `BeautyExperimentalUpperEyelidReliefEditor` 内部 gain `1.5 → 1.8`，公开参数、双 still-image 入口、62/5/75 兼容及 fail-closed 边界不变；聚焦编辑器/公开测试 `12/0/0`。
+- [x] Phase 99：初次 `945/0/0` 是复审补测前的中间门禁；最终源码重跑 archive-first no-skip 完整 SDK 门禁，归档、SDK-only、后端/Metal、consumer、CPU-reference、8 项 opt-in 均通过，非零 SwiftPM 测试、0 失败、0 skip。二次[独立只读复审](.planning/V1.24-INDEPENDENT-REVIEW.md)无剩余 Swift 问题；`git diff --check` 通过。
+- 边界：只签发生成输入像素机制改进，不能宣称真实人像视觉有效或商业质量；去脂仍为效果偏弱的 provisional owner-local API。`faceContourSmooth` 真实人像效果继续留在 FUTURE-04；历史 Phase 96 草稿与签发回执未改。
 
 ### C-2026-09-24-face-contour-synthetic-mechanics
 

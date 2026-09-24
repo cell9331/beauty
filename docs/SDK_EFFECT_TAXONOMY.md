@@ -64,7 +64,9 @@ decision later the same day: the bounded v4 mechanics are accepted as a
 provisional owner-local `去脂` implementation and are callable through
 `upperEyelidFullnessReduction`. This is an owner-provided acceptance decision,
 not a claim that a new blinded review was run. The visual result is explicitly
-known to be weak and is future quality work.
+known to be weak and is future quality work. v1.24 adjusts the same bounded
+internal relief gain and records a generated half-strength pixel improvement;
+it does not promote natural-portrait or commercial visual-quality claims.
 
 Internal `BeautyExperimentalUpperEyelid*` names remain unchanged to preserve
 provenance. The current route uses the existing source-derived relief analyzer,

@@ -63,7 +63,7 @@ final class BeautyEngineUpperEyelidFullnessIntegrationTests: XCTestCase {
             let first = try firstHarness.invoke(
                 entry: entry,
                 image: input,
-                parameters: BeautyParameters(upperEyelidFullnessReduction: 1)
+                parameters: BeautyParameters(upperEyelidFullnessReduction: 0.5)
             )
             let firstBytes = try render(first.output)
 
@@ -74,12 +74,13 @@ final class BeautyEngineUpperEyelidFullnessIntegrationTests: XCTestCase {
             let second = try secondHarness.invoke(
                 entry: entry,
                 image: input,
-                parameters: BeautyParameters(upperEyelidFullnessReduction: 1)
+                parameters: BeautyParameters(upperEyelidFullnessReduction: 0.5)
             )
             let secondBytes = try render(second.output)
 
             XCTAssertEqual(first.width, 96)
             XCTAssertEqual(first.height, 96)
+            XCTAssertEqual(first.output.extent, input.extent)
             XCTAssertNotEqual(firstBytes, inputBytes)
             XCTAssertEqual(firstBytes, secondBytes)
             XCTAssertEqual(firstHarness.canonicalizeCount, 1)
@@ -95,6 +96,79 @@ final class BeautyEngineUpperEyelidFullnessIntegrationTests: XCTestCase {
                 [.canonicalize, .detectAndMap, .makeRequestContext, .compose, .render]
             )
             assertAlphaIsPreserved(inputBytes, firstBytes)
+            var targetChanges = 0
+            for y in 0..<96 {
+                for x in 0..<96 {
+                    let offset = (y * 96 + x) * 4
+                    let sourceRGB = inputBytes[offset..<(offset + 3)]
+                    let outputRGB = firstBytes[offset..<(offset + 3)]
+                    let protected = x < 10 || x >= 86 || (40..<56).contains(x)
+                        || y < 35 || y >= 53
+                    if protected {
+                        XCTAssertEqual(outputRGB, sourceRGB, "protected public pixel (\(x), \(y))")
+                    }
+                    guard sourceRGB != outputRGB else { continue }
+                    XCTAssertFalse(protected, "changed protected public pixel (\(x), \(y))")
+                    targetChanges += 1
+                    for channel in 0..<3 {
+                        XCTAssertLessThanOrEqual(
+                            abs(Int(firstBytes[offset + channel]) - Int(inputBytes[offset + channel])),
+                            16
+                        )
+                    }
+                }
+            }
+            XCTAssertGreaterThan(targetChanges, 10)
+        }
+    }
+
+    func testPublicPairedAndSingleEyeOutputsAreIndependent() throws {
+        let input = try reliefImage()
+        let source = try render(input)
+        for entry in [SDKTestingStillImageFacadeEntry.process, .processResult] {
+            func output(_ support: SDKTestingUpperEyelidSupport) throws -> Data {
+                let harness = try SDKTestingLocalRetouchFoundationHarness(
+                    admittedPrivateDemandCount: 0,
+                    upperEyelidSupportSequence: [support]
+                )
+                let result = try harness.invoke(
+                    entry: entry,
+                    image: input,
+                    parameters: BeautyParameters(upperEyelidFullnessReduction: 0.5)
+                )
+                return try render(result.output)
+            }
+
+            let paired = try output(.paired)
+            let left = try output(.leftOnly)
+            let right = try output(.rightOnly)
+            var leftChanges = 0
+            var rightChanges = 0
+            for y in 0..<96 {
+                for x in 0..<96 {
+                    let offset = (y * 96 + x) * 4
+                    let range = offset..<(offset + 4)
+                    let original = source[range]
+                    let leftPixel = left[range]
+                    let rightPixel = right[range]
+                    let pairedPixel = paired[range]
+                    if leftPixel != original {
+                        XCTAssertLessThan(x, 48)
+                        XCTAssertEqual(rightPixel, original)
+                        XCTAssertEqual(pairedPixel, leftPixel)
+                        leftChanges += 1
+                    } else if rightPixel != original {
+                        XCTAssertGreaterThanOrEqual(x, 48)
+                        XCTAssertEqual(leftPixel, original)
+                        XCTAssertEqual(pairedPixel, rightPixel)
+                        rightChanges += 1
+                    } else {
+                        XCTAssertEqual(pairedPixel, original)
+                    }
+                }
+            }
+            XCTAssertGreaterThan(leftChanges, 10)
+            XCTAssertGreaterThan(rightChanges, 10)
         }
     }
 

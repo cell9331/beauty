@@ -3,6 +3,18 @@
 > Current SDK product and acceptance contract. Historical application journeys
 > remain in archived milestone evidence and the verified legacy ZIPs.
 
+## v1.24 upper-eyelid effect improvement boundary
+
+The owner-local `upperEyelidFullnessReduction` scalar and both public
+still-image entries remain unchanged. The current internal gain adjustment
+makes a half-strength generated convex upper-lid relief metric measurably
+stronger (`0.4537424 → 0.3422654` of source score); public pixel tests check
+both entries, repeatability, bounded channel changes, protected border and
+alpha. This is a bounded mechanics improvement, not a finding that a real
+person's eyelid looks less full. The prior owner acceptance remains
+provisional with known weak visual quality until suitable rights-approved
+positive/negative portraits receive original-detail review.
+
 ## Current Post-Archive Acceptance Status
 
 The v1.22 observed paired-eye `noseRootNarrowing` repair uses the CPU backend.

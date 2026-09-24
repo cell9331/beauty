@@ -1,11 +1,13 @@
 # Beauty
 
-Current work (2026-09-24): the separately authorized
-[v1.23 FACE-01 contour follow-up](V1.23-FACE01-CURRENT.md) is active.
-The bounded candidate passes the original generated gate, but natural portrait
-contour improvement is unproven and taxonomy remains `partial`. The v1.22
-completion statements below describe their historical signed snapshot and
-the later mapping-follow-up qualification, not the current FACE-01 candidate.
+Current work (2026-09-24): [v1.24 去脂效果改进](V1.24-UPPER-EYELID-CURRENT.md)
+is completed for a bounded generated-input pixel improvement. No next
+milestone is active.
+The separately authorized [v1.23 FACE-01 contour follow-up](V1.23-FACE01-CURRENT.md)
+has a completed synthetic-mechanics-only receipt. Natural portrait contour
+improvement remains unproven under FUTURE-04; taxonomy stays `partial`.
+The v1.22 completion statements below describe their historical signed
+snapshot and later mapping-follow-up qualification.
 
 v1.22 completed 2026-09-23: 7/7 phases, 33/33 plans, 11/11 active requirements; [verified COMPLETE](phases/95-compatibility-and-sdk-only-closeout/95-COMPLETE.json).
 Actual portrait: 65/65 outputs, 2 reconciled runs, seven effective directions and one deferred/partial direction. Current safety 1/0/0, compatibility 4/0/0, archive-first full SwiftPM 937/0/0; all 8 opt-ins accounted for.
@@ -28,6 +30,22 @@ The former application and legacy UI-reference trees are absent from the active 
 The project owner's local iOS host can integrate `BeautySDK` and get natural,
 controllable, real-time and still-image beauty processing through a stable
 modular facade without distributing the SDK or its model resources.
+
+## Latest Completed Milestone: v1.24 去脂效果改进
+
+**Goal:** Improve the existing owner-local upper-eyelid relief edit by a
+predeclared, observable half-strength pixel metric while retaining its hard
+per-eye protection and public compatibility. [Requirements, roadmap, and
+baseline](V1.24-UPPER-EYELID-CURRENT.md) fixed Phases 97–99 before the
+internal effect adjustment. Focused pixels, the archive-first full SDK gate,
+and independent review passed. Generated-input success grants only bounded
+mechanics credit; natural-portrait visual quality remains unproven.
+
+## Previous Completed Milestone: v1.23 FACE-01 Generated-Input Mechanics
+
+The [synthetic-mechanics-only receipt](qualifications/v1.23-synthetic/attempt-20260924T045750Z-9429627d/COMPLETE.json)
+closed its authorized generated-input scope. Natural-portrait contour effect
+remains FUTURE-04 and taxonomy `partial`; v1.24 does not reopen it.
 
 ## Completed Milestone Scope: v1.22 Non-Local Facial Effect Repairs
 
@@ -63,7 +81,7 @@ v1.22. Phases 91–94 are timeboxed to one research pass, one independently
 checked plan, and at most two implementation attempts before an explicit owner
 decision to repair, defer, or stop.
 
-## Latest Completed Milestone: v1.22 Non-Local Facial Effect Repairs
+## Earlier Completed Milestone: v1.22 Non-Local Facial Effect Repairs
 
 **Completed:** 2026-09-23; 7/7 phases, 33/33 plans, 11/11 active requirements. No next milestone is active.
 

@@ -1,7 +1,13 @@
 # Roadmap: Beauty v1.22 Non-Local Facial Effect Repairs
 
+Latest completed milestone: [v1.24 去脂效果改进](V1.24-UPPER-EYELID-CURRENT.md),
+Phases 97–99, with a frozen pre-edit pixel target, bounded internal
+adjustment, complete SDK gate, and independent review. The phase list below
+is the completed v1.22 historical roadmap. v1.23 is complete for generated
+mechanics only; FACE-01 natural-portrait effectiveness remains FUTURE-04.
+
 Current successor: [v1.23 FACE-01 contour follow-up](V1.23-FACE01-CURRENT.md)
-is active under the owner's 2026-09-23 completion request. Its remaining
+was authorized under the owner's 2026-09-23 completion request. Its remaining
 positive/negative portrait qualification is separate from this completed
 v1.22 roadmap. The historical phase list and signed receipts below are not
 reopened or overwritten.

@@ -1,48 +1,28 @@
 {
   "contract": "1.0.0",
   "flavor": "core",
-  "milestone": "v1.22 — Non-Local Facial Effect Repairs",
+  "milestone": "v1.24",
   "phases": [
     {
-      "number": "89",
-      "name": "Semantic Validation Baseline",
+      "number": "97",
+      "name": "Freeze Upper-Eyelid Baseline and Pixel Oracle",
       "status": "complete"
     },
     {
-      "number": "90",
-      "name": "Chin Repair and Contour Deferral",
+      "number": "98",
+      "name": "Bounded Internal Relief Adjustment",
       "status": "complete"
     },
     {
-      "number": "91",
-      "name": "Independent Gaze Correction",
-      "status": "complete"
-    },
-    {
-      "number": "92",
-      "name": "Signed Eyebrow-Head Spacing",
-      "status": "complete"
-    },
-    {
-      "number": "93",
-      "name": "Distinct Nose Bridge and Root Repairs",
-      "status": "complete"
-    },
-    {
-      "number": "94",
-      "name": "Negative Mouth-Width Repair",
-      "status": "complete"
-    },
-    {
-      "number": "95",
-      "name": "Compatibility and SDK-Only Closeout",
+      "number": "99",
+      "name": "SDK Closeout and Independent Review",
       "status": "complete"
     }
   ],
   "next": {
-    "command": "/gsd:progress",
-    "label": "v1.22 complete; no active next milestone",
-    "reason": "Actual portrait: 65/65 outputs, 2 reconciled runs, seven effective directions and one deferred/partial direction. Current safety 1/0/0, compatibility 4/0/0, archive-first full SwiftPM 937/0/0; all 8 opt-ins accounted for. Verified COMPLETE 33b49fee25b4156b8a947ac437822ac33f7e5473a61ed74b1015c393035862d4. FACE-01 remains FUTURE-04; no owner action or active milestone work remains."
+    "command": "/gsd:new-milestone",
+    "label": "Select a new milestone",
+    "reason": "v1.24 bounded mechanics scope is complete"
   },
-  "updated_at": "2026-09-23T10:55:05+08:00"
+  "updated_at": "2026-09-24T06:14:45Z"
 }
