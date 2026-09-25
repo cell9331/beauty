@@ -84,7 +84,7 @@ enum BeautyBackendParityFixtureFactory {
                     filterIntensity: 0.50
                 )
             )),
-            ("still-highlight-shadow-no-extra-pass", BeautyEffectResolver.resolve(
+            ("still-highlight-shadow-selective", BeautyEffectResolver.resolve(
                 parameters: BeautyParameters(highlight: 0.8, shadow: 0.7)
             )),
             ("still-lip-hard-rectangle", BeautyEffectResolver.resolve(

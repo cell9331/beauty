@@ -3,8 +3,8 @@
 set -euo pipefail
 
 readonly repository_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
-readonly teeth_bundle="${repository_root}/example-images/local-retouch-review/teeth-evidence-20260805"
-readonly sclera_bundle="${repository_root}/example-images/local-retouch-review/evidence-pair-current"
+readonly teeth_bundle="${PHASE59_TEETH_BUNDLE:-${repository_root}/example-images/local-retouch-review/teeth-evidence-20260805}"
+readonly sclera_bundle="${PHASE62_SCLERA_BUNDLE:-${repository_root}/example-images/local-retouch-review/evidence-pair-current}"
 readonly transcript_checker="${repository_root}/scripts/check-no-skip-transcript.py"
 readonly wrapper_checker="${repository_root}/scripts/check-no-skip-wrapper.py"
 readonly decision_checker="${repository_root}/scripts/check-v1-18-decision-binding.py"

@@ -1,5 +1,9 @@
 # Upper-Eyelid Fullness
 
+Current policy: authorized generated portrait positives/negatives can satisfy
+owner-local effect acceptance; the genuine-photo requirement below was a 2026
+spike-era criterion and is superseded by `docs/IMAGE_EFFECT_ACCEPTANCE.md`.
+
 ## Requirements
 
 - Treat `去脂` as upper-eyelid fullness reduction only.
@@ -8,14 +12,16 @@
   removal.
 - Keep work on still images and fail closed when paired eye/eyebrow support is
   missing or the band is implausible.
-- Do not promote this feature until licensed real positive and negative
-  portraits pass human review at 100% detail.
+- For a new effect qualification, use authorized generated or genuine positive
+  and negative portraits with predeclared direction/protection checks and
+  original-detail review; a genuine-human source is optional.
 
 ## How to Build It
 
-There is no production-ready `去脂` path yet. If the direction is explicitly
-reopened, resume from the constrained tone/frequency experiment rather than
-inventing a product feature from the invalidated warp.
+At the time of this spike there was no production `去脂` path. The owner later
+accepted a bounded provisional owner-local API; use current source and owner
+contracts as authority. The tone/frequency experiment below remains background
+for future improvement, and the invalidated warp remains rejected.
 
 1. Run one `VNDetectFaceLandmarksRequest` for the still image.
 2. Require at least four eye points and two eyebrow points per side.
@@ -58,7 +64,8 @@ the fixtures did not prove the intended product semantic.
   to 0.9305 and 0.9188 without a clearer fullness benefit.
 - Do not interpret eye/eyebrow landmarks as a fullness detector or diagnosis.
 - Do not use global smoothing or erase eyelid creases and natural skin detail.
-- Do not infer success from AI-generated portraits without a true positive.
+- Do not infer success from generated portraits that lack a convincing
+  target-bearing positive or an independent negative.
 - Do not expose the experimental band, landmarks, or masks in diagnostics.
 
 ## Constraints

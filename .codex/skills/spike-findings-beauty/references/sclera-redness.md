@@ -1,5 +1,9 @@
 # Sclera Redness Reduction
 
+Current policy: authorized generated eye portraits can provide positive and
+negative effect acceptance; genuine human photos are optional. See
+`docs/IMAGE_EFFECT_ACCEPTANCE.md`.
+
 ## Requirements
 
 - Require actual eye-contour and pupil support for each processed eye.
@@ -9,9 +13,9 @@
   color; never rely on a dark iris failing the redness gate as safety proof.
 - Keep eye geometry, pupil position, raw sclera masks, perturbations, heatmaps,
   and vein-like structure request-local; diagnostics contain aggregates only.
-- Product validation and guard calibration require rights-approved real redness
-  positives/negatives and original-detail review through
-  `references/licensed-fixture-evaluation.md`.
+- Effect validation and guard calibration require authorized generated or
+  genuine redness positives/negatives, source-fixed protection checks, and
+  original-detail review where visual quality is claimed.
 
 ## How to Build It
 
@@ -131,7 +135,8 @@ and retained only 24.6%–38.2% of the legacy baseline color mask.
 - Do not hardcode the spike's `0.30 / 0.14` guard as a user threshold.
 - Do not use global red-channel suppression or skin-based normalization.
 - Do not log, cache, publish, or persist vessel-like masks or descriptors.
-- Do not claim redness coverage from weak-positive or AI-generated fixtures.
+- Do not claim redness coverage from weak positives or generated images whose
+  target condition and improvement were not independently verified.
 
 ## Constraints
 

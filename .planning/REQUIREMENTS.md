@@ -1,10 +1,15 @@
 # Requirements: Beauty v1.22 Non-Local Facial Effect Repairs
 
+Current superseding input policy: [generated portraits can satisfy effect
+acceptance](../docs/IMAGE_EFFECT_ACCEPTANCE.md). Genuine human images are
+optional and cannot block a new SDK requirement or FACE-01 promotion by
+provenance alone. Dated v1.22 requirements below remain historical.
+
 Latest completed milestone: **v1.24 去脂效果改进**. Its frozen requirements and phase
 sequence are in [V1.24-UPPER-EYELID-CURRENT.md](V1.24-UPPER-EYELID-CURRENT.md).
 The v1.22 requirements below remain historical. v1.23 completed only its
-generated-input mechanics scope; FACE-01 real-portrait effectiveness remains
-FUTURE-04.
+generated-input mechanics scope; FACE-01 qualifying positive/negative effect
+evidence remains FUTURE-04 and may use generated portraits.
 
 Current successor requirement: **FACE01-23** is the separately authorized
 v1.23 `faceContourSmooth` repair and qualification in

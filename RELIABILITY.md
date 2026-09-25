@@ -1,5 +1,35 @@
 # RELIABILITY.md
 
+## Current image-fixture recovery policy (2026-09-24)
+
+The complete no-skip wrapper now permits a generated Vision fixture file name
+and generated teeth/sclera bundle overrides. A missing, unreadable, or
+unsuitable replacement fails the owning test or preflight; it does not turn an
+expected opt-in into a skip. The established default paths remain usable for
+existing local runs, and the wrapper retains exactly one SwiftPM child plus
+the archive-first, backend, 8-opt-in, zero-failure, zero-skip checks.
+
+Unavailable genuine human portraits cannot block SDK effect verification.
+Use owner-authorized generated portrait-like positive/negative inputs with a
+predeclared source-fixed oracle; fail the effect gate only for missing or
+incorrect effect evidence, not for generated provenance. A legacy real-only
+fixture dependency should be migrated to an equivalent generated-input gate
+before a future milestone closeout. Existing typed errors, no-skip accounting,
+and aggregate-only diagnostics still apply. See
+[image-effect acceptance](docs/IMAGE_EFFECT_ACCEPTANCE.md).
+
+## 2026-09-24 audit repair errors and recovery
+
+Malformed Codable EXIF orientation outside 1–8 throws
+`DecodingError.dataCorrupted` at the `orientation` key. Configured input pixels
+cannot exceed the backend's 50,000,000-pixel ceiling. Invalid still-image
+dimensions fail as `BeautyError.invalidInput` at the facade before detection;
+the canonicalizer retains its own bound check. A Metal geometry plan exceeding
+256 combined points fails as `BeautyError.invalidInput` rather than silently
+discarding geometry; a subsequent valid request remains independently usable.
+Still-image selective highlights/shadows use built-in Core Image filters and
+retain the existing bounded tone coefficient.
+
 ## v1.24 upper-eyelid bounded correction
 
 The source-derived per-pixel gain is `1.8` at positive strength, still rounded

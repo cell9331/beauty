@@ -5,7 +5,7 @@ set -euo pipefail
 readonly repository_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)"
 readonly package_root="${repository_root}/BeautySDK"
 readonly maximum_output_bytes=$((16 * 1024 * 1024))
-readonly expected_focused_tests=19
+readonly expected_focused_tests=20
 
 temporary_root=""
 cleanup() {

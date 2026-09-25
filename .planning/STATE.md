@@ -15,6 +15,13 @@ progress:
 
 # Project State
 
+Current owner policy (2026-09-24):
+[generated portrait-like positives and negatives can satisfy SDK effect
+acceptance](../docs/IMAGE_EFFECT_ACCEPTANCE.md). Genuine human photos are
+optional and cannot block a current or future milestone. The historical
+v1.23/v1.24 receipt scopes below are unchanged; FACE-01 remains open for a
+qualified effect-direction oracle, which may use generated images.
+
 The frontmatter above tracks the completed bounded
 [v1.24 去脂效果改进](V1.24-UPPER-EYELID-CURRENT.md) milestone. The separately
 authorized [v1.23 FACE-01 follow-up](V1.23-FACE01-CURRENT.md) has a

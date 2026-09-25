@@ -41,7 +41,16 @@ public struct BeautyInputMetadata: Codable, Equatable, Sendable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let orientationRawValue = try container.decode(UInt32.self, forKey: .orientation)
-        self.orientation = CGImagePropertyOrientation(rawValue: orientationRawValue) ?? .up
+        guard (1...8).contains(orientationRawValue),
+              let orientation = CGImagePropertyOrientation(rawValue: orientationRawValue)
+        else {
+            throw DecodingError.dataCorruptedError(
+                forKey: .orientation,
+                in: container,
+                debugDescription: "Unsupported EXIF orientation"
+            )
+        }
+        self.orientation = orientation
         self.isInputMirrored = try container.decode(Bool.self, forKey: .isInputMirrored)
         self.isPreviewMirrored = try container.decode(Bool.self, forKey: .isPreviewMirrored)
         self.source = try container.decode(BeautyInputSource.self, forKey: .source)

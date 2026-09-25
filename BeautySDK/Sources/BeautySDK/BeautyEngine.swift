@@ -354,6 +354,8 @@ public final class BeautyEngine {
     private static func validate(image: CIImage, maximumPixelCount: Int) throws {
         let extent = image.extent
         guard extent.isFiniteAndNonEmpty,
+              extent.width.rounded(.towardZero) == extent.width,
+              extent.height.rounded(.towardZero) == extent.height,
               dimensionsAreWithinPixelLimit(
                 width: extent.width,
                 height: extent.height,

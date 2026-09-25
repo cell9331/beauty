@@ -257,7 +257,7 @@ for marker in (
     if marker not in still_case:
         raise SystemExit(f"still-image parity marker missing: {marker}")
 for marker in (
-    '"still-global-coefficients"', '"still-highlight-shadow-no-extra-pass"',
+    '"still-global-coefficients"', '"still-highlight-shadow-selective"',
     '"still-lip-hard-rectangle"',
 ):
     if marker not in text["fixture"]:
@@ -270,7 +270,8 @@ for marker in (
 for marker in (
     "inputKind: .pixelBuffer", "inputKind: .stillImage", "isStillImage ? 0.20 : 0.22",
     "isStillImage ? 0.14 : 0.16", "isStillImage ? 0.16 : 0.18",
-    "highlightLift: isStillImage ? 0", "shadowLift: isStillImage ? 0",
+    "highlightLift: strengths.highlight * 0.08",
+    "shadowLift: strengths.shadow * 0.08",
     "smoothing: isStillImage ? 0",
 ):
     if marker not in text["metal_backend"]:

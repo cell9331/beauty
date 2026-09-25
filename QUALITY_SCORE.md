@@ -1,5 +1,51 @@
 # QUALITY_SCORE.md
 
+## 2026-09-24 replaceable generated fixtures in the complete gate
+
+The archive-first no-skip wrapper now accepts an owner-authorized generated
+Vision portrait by `BEAUTYSDK_VISION_PORTRAIT_FIXTURE` file name and generated
+teeth/sclera positive-negative bundles by `PHASE59_TEETH_BUNDLE` and
+`PHASE62_SCLERA_BUNDLE`. The default historical fixtures remain available.
+Selection does not change the mandatory 8 opt-ins, face/eyebrow assertions,
+feature-specific pixel or mask checks, zero-failure/zero-skip accounting, or
+private-bundle Git-ignore checks. Validation: wrapper mutation self-test
+`11/11`, renderer regression `24/0/0`; five Vision/facade/renderer checks with
+a temporary alternate file name `5/0/0`; `../` selection rejected with a
+generic missing-fixture error; complete archive-first no-skip gate passed with
+all 8 opt-ins and 0 skips. The alternate-name run checked substitution using
+the existing authorized image's bytes; it is not a generated-effect pass.
+
+## 2026-09-24 generated-portrait acceptance policy
+
+The current [image-effect acceptance policy](docs/IMAGE_EFFECT_ACCEPTANCE.md)
+allows owner-authorized generated portraits to provide full positive/negative
+effect evidence. A real-person source is not a quality gate or milestone
+blocker. Tests still need source-fixed targets and protected regions, actual
+output pixels and metadata, intended direction, negative/non-worsening checks,
+repeatability, and typed failure. The historical v1.23 two-image receipt remains
+limited because its frozen checks only measured output change and determinism,
+not because the images were generated.
+This documentation-only policy update was checked with a current-wording scan,
+existence/reference checks for 14 key documents, and `git diff --check`.
+SwiftPM was not rerun for this text-only change; the `951/0/0` result below
+belongs to the preceding code repair.
+
+## 2026-09-24 SDK audit repair verification
+
+The archive-first `scripts/run-no-skip-swiftpm.sh` gate passed on the repaired
+source with 951 SwiftPM tests, 0 failures, 0 skips, and all 8 opt-ins executed;
+archive, SDK-only, Metal feature, configuration, CPU/Metal parity, consumer,
+and CPU-reference checks passed. After that run started, the existing
+highlight/shadow parity assertion was strengthened to require a changed
+output instead of retaining the obsolete no-op exception. The parity gate was
+rerun against that final test version: Metal available, 13 focused tests,
+0 failures. Focused Core Image alpha tests verify opaque, translucent and
+transparent pixels; invalid EXIF, pixel ceiling and 257-point Metal rejection
+have dedicated regressions. The stale Phase 96 driver passed `bash -n` and
+returns exit 2 before any batch or log action; `git diff --check` passed.
+These are generated fixture and SDK gate results, not actual-portrait effect
+or device qualification.
+
 ## 2026-09-24 v1.24 去脂效果改进（有界完成）
 
 [预先固定的目标与保护区](.planning/V1.24-UPPER-EYELID-CURRENT.md) 使用同一
@@ -671,8 +717,9 @@ or large extraction transcripts are not durable quality evidence.
 - Public behavior requires facade tests and owning-target tests.
 - Safety-sensitive image effects require both positive movement and exact
   protected/out-of-mask preservation.
-- Synthetic fixtures prove mechanics only; rights-approved local fixtures remain
-  separate opt-in product gates.
+- Eligible generated portraits can prove both mechanics and owner-local effect
+  quality when feature-specific direction, negative, protection, and visual or
+  pixel assertions pass. Genuine human fixtures are optional additional input.
 - Every required image fixture gate is code/script-driven and judges actual
   input/output content; rights-approved opt-ins are not physical-device tests.
 - Physical-iPhone testing is optional post-SDK user evaluation. Its absence or

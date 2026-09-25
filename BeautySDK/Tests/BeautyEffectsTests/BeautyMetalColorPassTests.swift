@@ -190,13 +190,8 @@ final class BeautyMetalColorPassTests: XCTestCase {
             )
             XCTAssertEqual(gpuImage.colorSpace?.name, CGColorSpace.sRGB, name)
             XCTAssertEqual(alphaValues(gpuBytes), alphaValues(cpuBytes), name)
-            if name == "still-highlight-shadow-no-extra-pass" {
-                XCTAssertEqual(cpuBytes, fixture.rgba8, name)
-                XCTAssertEqual(gpuBytes, fixture.rgba8, name)
-            } else {
-                XCTAssertNotEqual(cpuBytes, fixture.rgba8, name)
-                XCTAssertNotEqual(gpuBytes, fixture.rgba8, name)
-            }
+            XCTAssertNotEqual(cpuBytes, fixture.rgba8, name)
+            XCTAssertNotEqual(gpuBytes, fixture.rgba8, name)
             XCTAssertLessThanOrEqual(
                 observation.maxChannelDelta,
                 BeautyBackendParityFixtureFactory.stillImageMaxChannelDelta,

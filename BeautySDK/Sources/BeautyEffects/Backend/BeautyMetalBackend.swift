@@ -293,7 +293,7 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
         let geometryPoints = face.map {
             BeautyGeometryEffectPipeline.controlPoints(for: plan, face: $0)
         } ?? []
-        let geometry = try makeGeometryPass(points: geometryPoints)
+        let geometry = try Self.makeGeometryPass(points: geometryPoints)
         guard globalColor || lipEnvelope != nil || geometry != nil || !passes.isEmpty else {
             return []
         }
@@ -310,8 +310,8 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
             redBias: strengths.skinRosy * 0.08 + strengths.temperature * 0.04 + strengths.tint * 0.02 + filter.redBias,
             greenBias: strengths.skinWhitening * 0.02 + strengths.tint * 0.03 + filter.greenBias,
             blueBias: -strengths.temperature * 0.04 + filter.blueBias,
-            highlightLift: isStillImage ? 0 : strengths.highlight * 0.08,
-            shadowLift: isStillImage ? 0 : strengths.shadow * 0.08,
+            highlightLift: strengths.highlight * 0.08,
+            shadowLift: strengths.shadow * 0.08,
             smoothing: isStillImage ? 0 : strengths.skinSmoothing * 0.16,
             lipCenterX: lipEnvelope?.centerX ?? 0,
             lipCenterY: lipEnvelope?.centerY ?? 0,
@@ -344,16 +344,19 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
         return passes
     }
 
-    private func makeGeometryPass(points: [WarpControlPoint]) throws -> BeautyMetalPass? {
+    static func makeGeometryPass(points: [WarpControlPoint]) throws -> BeautyMetalPass? {
         // The retained Metal uniform has no raster-row ownership boundary.
         // Reject before submission instead of silently dropping CPU protection.
         guard points.allSatisfy({ $0.exclusiveMaximumY == nil }) else {
             throw BeautyError.invalidInput
         }
-        guard !points.isEmpty,
-              points.count <= BeautyMetalGeometryParameters.maximumPointCount
-        else {
+        guard !points.isEmpty else {
             return nil
+        }
+        guard points.count <= BeautyMetalGeometryParameters.maximumPointCount else {
+            // A valid request must not silently lose every geometry control
+            // when several independently bounded controls are combined.
+            throw BeautyError.invalidInput
         }
 
         let payload = points.compactMap { point -> BeautyMetalWarpPoint? in

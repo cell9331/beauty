@@ -8,6 +8,24 @@ import BeautyRender
 @testable import BeautyEffects
 
 final class BeautyMetalGeometryPassTests: XCTestCase {
+    func testCombinedPointBudgetRejectsInsteadOfSilentlyDroppingGeometry() {
+        let point = WarpControlPoint(
+            source: SIMD2<Float>(0.4, 0.5),
+            target: SIMD2<Float>(0.41, 0.5),
+            radius: 0.1,
+            strength: 1,
+            falloff: 1
+        )
+        let points = Array(
+            repeating: point,
+            count: BeautyMetalGeometryParameters.maximumPointCount + 1
+        )
+
+        XCTAssertThrowsError(try BeautyMetalBackend.makeGeometryPass(points: points)) { error in
+            XCTAssertEqual(error as? BeautyError, .invalidInput)
+        }
+    }
+
     func testObservedRootRasterProtectionRejectsUnsupportedMetalAndRecovers() throws {
         guard let runtime = makeRuntime() else { return }
         func eye(_ side: BeautyObservedEyeSide, _ x: Double) -> BeautyObservedEyeSupport {

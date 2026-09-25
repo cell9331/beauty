@@ -1,9 +1,17 @@
 # Licensed Fixture Evaluation
 
+This describes a historical spike reviewer and its recorded decisions. Current
+owner policy permits authorized generated portrait positives/negatives for full
+SDK effect acceptance; genuine human photos are optional. See
+`docs/IMAGE_EFFECT_ACCEPTANCE.md`. A legacy reviewer that rejects all generated
+inputs by type must be adapted or replaced for a new qualification; it must not
+block progress solely for missing genuine photos.
+
 ## Requirements
 
-- AI-generated and `mechanics_only` fixtures may exercise tools but may not
-  contribute product-feasibility evidence.
+- In this historical reviewer, `mechanics_only` rows retain their original
+  zero-weight decision. New generated inputs may earn effect credit through
+  a feature-specific predeclared oracle.
 - Every real fixture needs an opaque fixture ID, positive/negative polarity,
   supported feature, rights status, rights-record ID, and complete
   original/mask/after assets.
@@ -75,8 +83,8 @@ open sources/006-licensed-fixture-review-gate/review.html
 10. For teeth, compare fixed versus adaptive coverage and explicitly score lip,
     tongue, gum, braces, occlusion, and naturalness. For sclera, calibrate guard
     safety/retention across open, partial, blink, gaze, glasses/contacts, iris
-    color, pose, and redness. Keep `去脂` gated on genuine positives and
-    identity/detail review.
+    color, pose, and redness. Keep `去脂` gated on target-bearing positives and
+    identity/detail review on eligible generated or genuine inputs.
 
 ## What to Avoid
 

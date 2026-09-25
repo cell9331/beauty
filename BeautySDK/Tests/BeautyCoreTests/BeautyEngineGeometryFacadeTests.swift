@@ -844,14 +844,25 @@ final class BeautyEngineGeometryFacadeTests: XCTestCase {
 
     private func portraitFixtureURLs() throws -> [URL] {
         let inputDirectory = try repositoryRootURL().appendingPathComponent("example-images/input/portraits", isDirectory: true)
-        let fixtureNames = ["p1.jpg"]
+        let fixtureNames = [try portraitFixtureName()]
         return try fixtureNames.map { fixtureName in
             let url = inputDirectory.appendingPathComponent(fixtureName)
-            guard FileManager.default.fileExists(atPath: url.path) else {
-                throw FacadeFixtureError.missing(fixtureName)
+            guard FileManager.default.fileExists(atPath: url.path),
+                  let values = try? url.resourceValues(forKeys: [.isRegularFileKey, .isSymbolicLinkKey]),
+                  values.isRegularFile == true, values.isSymbolicLink != true else {
+                throw FacadeFixtureError.missing("portrait fixture")
             }
             return url
         }
+    }
+
+    private func portraitFixtureName() throws -> String {
+        let name = ProcessInfo.processInfo.environment["BEAUTYSDK_VISION_PORTRAIT_FIXTURE"] ?? "p1.jpg"
+        guard !name.isEmpty, name != ".", name != "..",
+              !name.contains("/"), !name.contains("\\") else {
+            throw FacadeFixtureError.missing("portrait fixture")
+        }
+        return name
     }
 
     private func fixtureImage(at url: URL) throws -> CIImage {
@@ -864,13 +875,13 @@ final class BeautyEngineGeometryFacadeTests: XCTestCase {
     private func repositoryRootURL() throws -> URL {
         var current = URL(fileURLWithPath: #filePath).deletingLastPathComponent()
         while current.path != "/" {
-            let candidate = current.appendingPathComponent("example-images/input/portraits/p1.jpg")
+            let candidate = current.appendingPathComponent("BeautySDK/Package.swift")
             if FileManager.default.fileExists(atPath: candidate.path) {
                 return current
             }
             current.deleteLastPathComponent()
         }
-        throw FacadeFixtureError.missing("example-images/input/portraits/p1.jpg")
+        throw FacadeFixtureError.missing("BeautySDK/Package.swift")
     }
 
     private func renderedRGBABytes(from image: CIImage) -> [UInt8] {

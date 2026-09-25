@@ -4,7 +4,15 @@ This is the local visual-output gate for current public-facade renderer evidence
 
 ## Purpose
 
-Use real portrait fixtures from `example-images/input/`, run them through the `BeautySDK` public facade with `BeautyExampleRenderer`, and save visible outputs under `example-images/output/`.
+Use owner-authorized generated or genuine portrait fixtures, run them through
+the `BeautySDK` public facade with `BeautyExampleRenderer`, and save visible
+outputs under ignored local or temporary output directories. Genuine human
+portraits are optional; missing real photos cannot block a new effect gate.
+For effect acceptance, predeclare a target-bearing positive, a negative, and
+source-fixed protected regions, then judge the actual output direction and
+non-worsening as well as pixels and metadata. See
+[current acceptance policy](../IMAGE_EFFECT_ACCEPTANCE.md). Commands and
+phase-numbered evidence below preserve their historical input/output paths.
 
 This validates the current skin, color, filter, geometry, face-shape, eye, face, eyebrow, teeth-whitening, and sclera-redness-reduction public-facade output paths without adding SwiftUI screens or product routes.
 

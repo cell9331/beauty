@@ -111,6 +111,26 @@ final class BeautyConfigurationTests: XCTestCase {
         XCTAssertEqual(configuration.maximumInputPixelCount, 256)
     }
 
+    func testPixelLimitCannotExceedBackendHardCeiling() throws {
+        let configured = BeautyConfiguration(maximumInputPixelCount: 50_000_001)
+        XCTAssertEqual(configured.maximumInputPixelCount, BeautyConfiguration.defaultMaximumInputPixelCount)
+
+        var changed = BeautyConfiguration(maximumInputPixelCount: 1_000)
+        changed.maximumInputPixelCount = 50_000_001
+        XCTAssertEqual(changed.maximumInputPixelCount, BeautyConfiguration.defaultMaximumInputPixelCount)
+        changed.maximumInputPixelCount = 0
+        XCTAssertEqual(changed.maximumInputPixelCount, BeautyConfiguration.defaultMaximumInputPixelCount)
+
+        let encoded = try JSONEncoder().encode(configured)
+        var object = try XCTUnwrap(JSONSerialization.jsonObject(with: encoded) as? [String: Any])
+        object["maximumInputPixelCount"] = 50_000_001
+        let decoded = try JSONDecoder().decode(
+            BeautyConfiguration.self,
+            from: JSONSerialization.data(withJSONObject: object)
+        )
+        XCTAssertEqual(decoded.maximumInputPixelCount, BeautyConfiguration.defaultMaximumInputPixelCount)
+    }
+
     func testConfigurationIsCodableAndSendable() throws {
         let configuration = BeautyConfiguration(
             preferredProcessingSize: CGSize(width: 720, height: 1280),

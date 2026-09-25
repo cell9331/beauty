@@ -3,6 +3,34 @@
 > Current SDK product and acceptance contract. Historical application journeys
 > remain in archived milestone evidence and the verified legacy ZIPs.
 
+## Current image-effect acceptance (2026-09-24)
+
+The current SDK gate accepts a generated Vision portrait selected by
+`BEAUTYSDK_VISION_PORTRAIT_FIXTURE` and generated teeth/sclera evidence bundles
+selected by `PHASE59_TEETH_BUNDLE` / `PHASE62_SCLERA_BUNDLE`. Selection changes
+the input, not the effect or safety thresholds.
+
+Owner-authorized generated portrait-like positives and negatives can complete
+an owner-local effect acceptance when the output passes a predeclared
+effect-direction, negative, protection, pixel/metadata, repeatability, and
+recovery oracle. Genuine human portraits are optional feedback and cannot
+block completion or taxonomy promotion solely by being unavailable. The older
+v1.23 generated pair proved rendering and determinism, but did not contain a
+qualified rough-positive/smooth-negative effect comparison; that specific
+effect evidence is still to be produced and may also be generated. See
+[`docs/IMAGE_EFFECT_ACCEPTANCE.md`](docs/IMAGE_EFFECT_ACCEPTANCE.md).
+
+## 2026-09-24 SDK audit repair boundary
+
+Still-image highlights and shadows now visibly adjust only their respective
+source-luminance regions. The skin smoothing and sharpening controls currently
+alter saturation and contrast; callers should not expect actual texture
+smoothing or edge sharpening. Configuration fields for processing size, frame
+interval, quality, and diagnostic logging are retained for Codable compatibility
+but do not change rendering. Invalid serialized orientation is rejected.
+Oversized Metal geometry fails explicitly rather than dropping the requested
+effect. These changes do not establish natural-portrait visual quality.
+
 ## v1.24 upper-eyelid effect improvement boundary
 
 The owner-local `upperEyelidFullnessReduction` scalar and both public
@@ -12,8 +40,10 @@ stronger (`0.4537424 → 0.3422654` of source score); public pixel tests check
 both entries, repeatability, bounded channel changes, protected border and
 alpha. This is a bounded mechanics improvement, not a finding that a real
 person's eyelid looks less full. The prior owner acceptance remains
-provisional with known weak visual quality until suitable rights-approved
-positive/negative portraits receive original-detail review.
+provisional with known weak visual quality until suitable owner-authorized
+generated or genuine positive/negative portraits pass a predeclared
+effect-direction and original-detail review. A genuine-human source is not
+required.
 
 ## Current Post-Archive Acceptance Status
 
@@ -214,10 +244,10 @@ Acceptance:
   warp pipeline; missing support cannot be guessed or borrowed.
 - Local retouch uses canonical opaque sRGB input, original-pixel composition,
   hard ownership containment, collision-to-source behavior, and local failure.
-- Generated fixtures are the mandatory repeatable mechanics oracle. When a
-  local-retouch owner requires rights-approved positive/negative evidence, that
-  evidence also runs through automated private opt-in scripts and frozen output
-  assertions; it is separate from physical-device testing.
+- Generated images may provide the mandatory repeatable mechanics **and**
+  portrait-effect positive/negative oracle. Permission for local use, frozen
+  assertions, and automated SDK execution still apply; genuine portraits are
+  optional and separate from physical-device testing.
 - Teeth, sclera, and upper-eyelid mechanics remain independent evidence paths.
   The owner's provisional `去脂` acceptance does not retroactively rewrite the
   failed v1.18/v1.19 qualification records.
@@ -573,6 +603,6 @@ Their public CPU renders can check neutral identity, repeatability, alpha, and
 that the control changes pixels; they cannot establish contour improvement on
 natural portraits. An appropriate rough-contour positive example and smooth
 negative control remain necessary before this candidate can be described as a
-completed contour-smoothing experience.
+completed contour-smoothing experience; both may be generated portraits.
 This does not require a physical iPhone or imply population, performance,
 commercial quality, release, or distribution readiness.

@@ -21,7 +21,8 @@ Spend time on thinking; you do not need to use the commentary channel to report 
 2. 按任务类型读取对应根级 owner。
 3. 再读相关代码、SwiftPM 测试与 `docs/` 背景资料。
 4. 算法/control taxonomy 以 `docs/SDK_EFFECT_TAXONOMY.md` 为当前 authority。
-5. 若契约变化，同步更新拥有该契约的文档。
+5. 图片效果验收输入与声明以 `docs/IMAGE_EFFECT_ACCEPTANCE.md` 为当前 authority。
+6. 若契约变化，同步更新拥有该契约的文档。
 
 冲突优先级：代码与测试 > `PLANS.md` > 根级专项文档 > `docs/` 历史资料。
 
@@ -84,10 +85,13 @@ docs/                            background and historical long-form material
   尺寸/extent、方向/镜像、色彩空间、alpha、neutral identity、目标区域变化、
   保护区域不变、容差、确定性与 typed failure；不能用“脚本运行成功”代替结果
   正确性。
-- 强制图片夹具优先使用代码生成、内存内、确定性的输入；某个算法的 owner
-  若要求 rights-approved 本地正/负样本，仍通过自动化脚本执行并可作为该算法
-  的独立门禁，但这不等于真实设备测试。raw pixels、masks、landmarks、私有
-  路径和生成图片不得进入持久证据。
+- 图片效果验收可使用有权本地使用的代码生成图或 AI 生成肖像，正例、负例和
+  保护区均可由生成输入提供；生成来源本身不降低验收等级。真人肖像和真实
+  设备均为可选补充，不得因缺少真人图像而阻塞里程碑、taxonomy 提升或后续
+  计划。效果方向、负例、不恶化、保护区、重复性、元数据和 typed failure 仍
+  须用实际输入/输出验证；仅有变化像素数不够。具体规则见
+  `docs/IMAGE_EFFECT_ACCEPTANCE.md`。raw pixels、masks、landmarks、私有路径和
+  生成图片不得进入持久证据。
 - SDK 完成后的真实设备反馈作为补充发现记录到 `PLANS.md`，必要时进入后续
   修复计划；它不追溯否定当时已通过的自动化里程碑，除非暴露出可复现的契约
   缺陷。

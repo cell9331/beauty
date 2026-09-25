@@ -2,6 +2,9 @@
 
 `docs/` stores long-form planning and historical design material for `beauty`.
 Root-level documents remain the current contract for agents and implementation work.
+The current [image-effect acceptance policy](IMAGE_EFFECT_ACCEPTANCE.md) allows
+authorized generated portraits as full effect inputs; older real-image-only
+requirements in historical plans or spike notes are superseded for new work.
 
 ## Authority
 
@@ -9,9 +12,11 @@ Use documents in this order:
 
 1. Code and tests.
 2. Root-level contracts: `AGENTS.md`, `PLANS.md`, `ARCHITECTURE.md`, `DESIGN.md`, `FRONTEND.md`, `SECURITY.md`, `RELIABILITY.md`, `PRODUCT_SENSE.md`, `QUALITY_SCORE.md`.
-3. `.planning/PROJECT.md` for the active GSD project definition.
-4. This `docs/` index and the long-form documents below as background.
-5. `docs/_source/` only as imported source material.
+3. `docs/SDK_EFFECT_TAXONOMY.md` for effect status and
+   `docs/IMAGE_EFFECT_ACCEPTANCE.md` for current image-input acceptance.
+4. `.planning/PROJECT.md` for the active GSD project definition.
+5. This `docs/` index and the other long-form documents below as background.
+6. `docs/_source/` only as imported source material.
 
 If a long-form doc conflicts with a root-level contract, follow the root-level contract and update the drifting doc or record the conflict in `PLANS.md`.
 

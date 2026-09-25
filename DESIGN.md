@@ -1,5 +1,28 @@
 # DESIGN.md
 
+## Current image-effect acceptance design (2026-09-24)
+
+Generated portrait-like positives and negatives are valid source inputs for
+feature-specific effect-direction and protection tests. Register source-only
+targets, exclusions, and expected direction before rendering; inspect actual
+output pixels and metadata, not provenance or changed-pixel count alone. A
+genuine human photo is optional, not an algorithm readiness dependency. See
+[image-effect acceptance](docs/IMAGE_EFFECT_ACCEPTANCE.md). Dated prior
+qualification designs below retain their historical baseline meaning.
+
+## 2026-09-24 SDK audit repair
+
+Still-image `highlight` and `shadow` now select bright and dark source-luminance
+pixels respectively, with the same bounded `0.08 × strength` lift used by the
+pixel-buffer and Metal paths. `skinSmoothing` currently reduces color saturation
+and `skinSharpen` increases color contrast; neither is a spatial texture filter.
+The renderer does not use `preferredProcessingSize`, `detectionFrameInterval`,
+`renderQuality`, `enablePerformanceLog`, `enableDebugMode`, or `logLevel` as
+execution controls. They remain Codable compatibility fields pending a
+separately scoped implementation. Input pixel configuration is clamped to the
+backend's 50,000,000-pixel ceiling. Decoding an EXIF orientation outside 1–8
+fails, rather than changing the image to `.up`.
+
 ## v1.24 owner-local upper-eyelid relief adjustment (2026-09-24)
 
 The pre-edit [v1.24 contract](.planning/V1.24-UPPER-EYELID-CURRENT.md)
@@ -380,27 +403,27 @@ SDK 以稳定、可预测的方式输出处理后的图像。SDK、模型和权�
 
 | Field | Type | Meaning |
 | --- | --- | --- |
-| `preferredProcessingSize` | `CGSize?` | 期望处理尺寸；`nil` 表示由 SDK 按模式选择。 |
+| `preferredProcessingSize` | `CGSize?` | 保留的期望处理尺寸字段；当前不缩放输入。 |
 | `maximumFaceCount` | `Int` | 检测器每次最多选入的人脸数量；当前公开效果路径仅使用所选主脸。 |
 | `enableFaceTracking` | `Bool` | 是否启用跨帧跟踪和平滑。 |
-| `detectionFrameInterval` | `Int` | 检测降频间隔。 |
-| `renderQuality` | `BeautyRenderQuality` | 性能与质量等级。 |
-| `enablePerformanceLog` | `Bool` | 是否采样性能日志。 |
-| `enableDebugMode` | `Bool` | 是否输出调试指标与中间信息。 |
-| `logLevel` | `BeautyLogLevel` | SDK 日志等级；默认 release 使用 `error`。 |
+| `detectionFrameInterval` | `Int` | 保留字段；当前不按帧降频。 |
+| `renderQuality` | `BeautyRenderQuality` | 保留字段；当前不切换质量等级。 |
+| `enablePerformanceLog` | `Bool` | 保留字段；当前不采样性能日志。 |
+| `enableDebugMode` | `Bool` | 保留字段；当前不输出调试信息。 |
+| `logLevel` | `BeautyLogLevel` | 保留字段；当前不控制日志。 |
 | `maximumInputByteCount` | `Int` | 编码图像输入上限；默认 `33_554_432`（32 MiB）。 |
-| `maximumInputPixelCount` | `Int` | 解码图像与像素缓冲区的像素数上限；默认 `50_000_000`。 |
+| `maximumInputPixelCount` | `Int` | 解码图像与像素缓冲区的像素数上限；默认且最高 `50_000_000`。 |
 | `renderBackend` | `BeautyRenderBackend` | 执行策略；精确为 `.cpu` 或 `.gpu`，默认 `.cpu`。 |
 
 规则：
 
-- 初始化后不可变。
+- `BeautyConfiguration` 是可变值类型；`BeautyEngine` 在初始化时保存其快照，之后修改调用方的配置副本不会影响已有 Engine。像素上限属性后续赋值仍执行同一硬上限归一化。
 - 必须满足 `Sendable`。
 - 不能包含宿主 UI 框架或宿主 App 状态。
 - 图像方向、输入镜像、预览镜像是逐帧输入状态，不放入全局 configuration。
-- 两个输入上限都是尾部默认参数；非正自定义值回落到各自默认值，旧 JSON 缺少两个 key 时通过显式 `decodeIfPresent` 得到相同默认值。
+- 两个输入上限都是尾部默认参数；非正自定义值回落到各自默认值，旧 JSON 缺少两个 key 时通过显式 `decodeIfPresent` 得到相同默认值。像素数自定义值大于 50,000,000 时压到该硬上限。
 - 上限是拒绝边界而非处理策略：精确命中上限继续当前行为，超过上限返回 `BeautyError.invalidInput`；SDK 不借此缩放、降采样或重解释 `preferredProcessingSize`。
-- `renderBackend` 是执行策略而非逐帧美颜参数；新建配置和缺少该 key 的旧 Codable payload 都确定性解码为 `.cpu`。显式 `.gpu` 只经 `BeautyBackendFactory` 构造 package Metal backend；不可用时终止为 `.metalUnavailable`，不回退 CPU。配置初始化后不可变，package-only injection 仅用于测试。
+- `renderBackend` 是执行策略而非逐帧美颜参数；新建配置和缺少该 key 的旧 Codable payload 都确定性解码为 `.cpu`。显式 `.gpu` 只经 `BeautyBackendFactory` 构造 package Metal backend；不可用时终止为 `.metalUnavailable`，不回退 CPU。已有 Engine 的配置快照不可变，package-only injection 仅用于测试。
 - `maximumFaceCount` 保留原有检测选择上限和 Codable 字段，不承诺对全部选中人脸渲染效果。当前 `BeautyEngine` 为效果与局部支持只消费所选主脸；扩大到多脸效果须单独定义所有权、重叠和像素验收。
 
 ### 4.2 BeautyParameters

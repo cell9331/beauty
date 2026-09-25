@@ -1,5 +1,9 @@
 # Teeth Whitening
 
+Current policy: generated smiles may be full effect inputs when they contain a
+qualified positive/negative and pass the feature oracle; genuine photos are
+optional. See `docs/IMAGE_EFFECT_ACCEPTANCE.md`.
+
 ## Requirements
 
 - Separate teeth selection from the bounded color transform.
@@ -11,8 +15,9 @@
   request-local and out of public or persisted diagnostics.
 - Do not vendor the tested EasyPortrait Core ML artifact unless the complete
   data/checkpoint/conversion/redistribution license chain is approved and pinned.
-- Product validation requires rights-approved real smiles and original-detail
-  blind review through `references/licensed-fixture-evaluation.md`.
+- Effect validation requires authorized generated or genuine positive/negative
+  smiles, source-fixed target/protection checks, and original-detail review
+  where visual quality is claimed.
 
 ## How to Build It
 

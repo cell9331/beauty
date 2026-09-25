@@ -185,6 +185,44 @@ public enum BeautyColorEffectPipeline {
                 ]
             )
 
+            if strengths.highlight != 0 || strengths.shadow != 0 {
+                let luminance = image.applyingFilter(
+                    "CIColorMatrix",
+                    parameters: [
+                        "inputRVector": CIVector(x: 0.2126, y: 0.7152, z: 0.0722, w: 0),
+                        "inputGVector": CIVector(x: 0.2126, y: 0.7152, z: 0.0722, w: 0),
+                        "inputBVector": CIVector(x: 0.2126, y: 0.7152, z: 0.0722, w: 0)
+                    ]
+                )
+                let brightMask = luminance.applyingFilter(
+                    "CIColorThreshold",
+                    parameters: ["inputThreshold": 0.5]
+                )
+                let highlightLift = CGFloat(strengths.highlight * 0.08)
+                let shadowLift = CGFloat(strengths.shadow * 0.08)
+                let bright = output.applyingFilter(
+                    "CIColorMatrix",
+                    parameters: ["inputBiasVector": CIVector(x: highlightLift,
+                                                               y: highlightLift,
+                                                               z: highlightLift,
+                                                               w: 0)]
+                )
+                let dark = output.applyingFilter(
+                    "CIColorMatrix",
+                    parameters: ["inputBiasVector": CIVector(x: shadowLift,
+                                                               y: shadowLift,
+                                                               z: shadowLift,
+                                                               w: 0)]
+                )
+                output = bright.applyingFilter(
+                    "CIBlendWithMask",
+                    parameters: [
+                        kCIInputBackgroundImageKey: dark,
+                        kCIInputMaskImageKey: brightMask
+                    ]
+                )
+            }
+
             output = applyLipColor(to: output, plan: plan, face: face)
         }
 

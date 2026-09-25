@@ -1,5 +1,11 @@
 # Example Images
 
+Current policy: [authorized generated portrait-like inputs are eligible for
+full SDK effect acceptance](../docs/IMAGE_EFFECT_ACCEPTANCE.md). The `p1.jpg`
+inventory below describes the existing renderer fixture, not an exclusive
+image-source requirement for future milestones. Genuine human portraits are
+optional.
+
 `example-images` stores local renderer fixtures, flat machine outputs, and a
 generated review gallery. Binary portraits remain Git-ignored; text policy and
 authorization records carry the durable contract without publishing the media.
@@ -10,7 +16,8 @@ commercial, customer, package, App Store, or model/weight use.
 ## Directories
 
 - `input/`: local source fixtures used by SDK tests and `BeautyExampleRenderer`.
-  - `input/portraits/`: the sole active portrait fixture `p1.jpg`.
+  - `input/portraits/`: existing default `p1.jpg` and optional ignored,
+    owner-authorized generated portrait inputs selected by file name.
   - `input/negatives/`: negative fixtures such as `no-face-gradient.png`.
 - `parked-portraits/`: disabled historical portraits `e1` through `e6`; fixture
   discovery must never read this directory.
@@ -32,7 +39,7 @@ device, and orientation metadata are absent. The no-face negative fixture is
 
 ## Current Authorized Fixture
 
-- `p1.jpg` is the only portrait allowed under `input/`. The user confirmed on
+- `p1.jpg` is the existing default portrait in `input/`. The user confirmed on
   2026-07-30 that the project has copyright, portrait/likeness, derivative, and
   future local test permission for this real portrait.
 - The active copy uses opaque fixture ID `portrait_001`, contains no source
@@ -47,14 +54,25 @@ device, and orientation metadata are absent. The no-face negative fixture is
   automatically a positive or negative for sclera redness or upper-eyelid
   fullness and cannot alone open any feature product gate.
 
+To use a generated portrait in the current SwiftPM and archive-first gate, put
+an authorized, metadata-sanitized, Git-ignored regular image under
+`input/portraits/` and set `BEAUTYSDK_VISION_PORTRAIT_FIXTURE` to its file name.
+The image must satisfy the same Vision face/eyebrow and output assertions;
+its generated origin is not a reason to skip or fail. For teeth and sclera,
+set `PHASE59_TEETH_BUNDLE` and `PHASE62_SCLERA_BUNDLE` to ignored local
+generated positive/negative bundles with the existing manifest and mask
+contract. See [current acceptance policy](../docs/IMAGE_EFFECT_ACCEPTANCE.md).
+
 ## Current Local-Retouch Candidate
 
 - `portrait_002/original.png` is registered under the ignored
   `local-retouch-review/candidates/` boundary as an original-only positive-target
   mechanics candidate for both `teeth_whitening` and `sclera_redness`.
-- Its embedded C2PA provenance declares `trainedAlgorithmicMedia`; it can drive
-  algorithm, mask, transform, and failure-isolation experiments but cannot count
-  as a genuine positive or support product-effectiveness/naturalness admission.
+- Its embedded C2PA provenance declares `trainedAlgorithmicMedia`. At its
+  historical registration it was an original-only mechanics candidate without
+  a complete positive/negative effect oracle. That missing evidence, not its
+  generated provenance, prevents promotion on the current record; a complete
+  generated-image qualification may be performed separately.
 - Each feature must produce and bind its own mask, after image, polarity row,
   structured original-detail judgment, and admission decision. A result from one
   feature does not qualify or block the other.

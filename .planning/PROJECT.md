@@ -1,11 +1,22 @@
 # Beauty
 
+## Current effect-image policy (2026-09-24)
+
+The owner permits [generated portrait effect acceptance](../docs/IMAGE_EFFECT_ACCEPTANCE.md).
+For current and future SDK work, genuine human portraits are optional, not a
+completion, taxonomy, or next-milestone gate. `faceContourSmooth` still needs
+a convincing rough-positive/smooth-negative direction and protection oracle;
+both inputs may be generated. Earlier genuine-bundle requirements and signed
+receipts below describe their dated historical scope and do not govern new
+effect qualifications. No device, population, or commercial claim follows.
+
 Current work (2026-09-24): [v1.24 去脂效果改进](V1.24-UPPER-EYELID-CURRENT.md)
 is completed for a bounded generated-input pixel improvement. No next
 milestone is active.
 The separately authorized [v1.23 FACE-01 contour follow-up](V1.23-FACE01-CURRENT.md)
-has a completed synthetic-mechanics-only receipt. Natural portrait contour
-improvement remains unproven under FUTURE-04; taxonomy stays `partial`.
+has a completed synthetic-mechanics-only receipt. A qualified contour-effect
+positive/negative demonstration remains open under FUTURE-04; taxonomy stays
+`partial` for lack of that effect evidence, not for lack of genuine images.
 The v1.22 completion statements below describe their historical signed
 snapshot and later mapping-follow-up qualification.
 
@@ -688,9 +699,9 @@ For any future semantic-masking milestone, a bundled Core ML resource must be lo
 ### Validated in v1.15
 
 - [x] Independently qualify and implement still-image `白牙` before beginning production `祛红血丝` implementation.
-- [x] Require a complete rights-approved genuine discoloration-positive and already-light/negative teeth bundle with original, mask, after, polarity, and structured original-detail review evidence.
+- [x] Historical v1.14 gate required a complete rights-approved genuine discoloration-positive and already-light/negative teeth bundle with original, mask, after, polarity, and structured original-detail review evidence; this source-type requirement is superseded for new work.
 - [x] Add one compatibility-safe positive-only `teethWhitening` field and a tooth-only production route that changes no protected mouth/face pixels and fails closed without trustworthy support.
-- [x] Require a separate complete rights-approved genuine sclera-redness-positive and normal-sclera-negative bundle with original, per-eye mask, after, polarity, and structured original-detail review evidence.
+- [x] Historical v1.14 gate required a separate complete rights-approved genuine sclera-redness-positive and normal-sclera-negative bundle with original, per-eye mask, after, polarity, and structured original-detail review evidence; this source-type requirement is superseded for new work.
 - [x] Add one compatibility-safe positive-only `scleraRednessReduction` field and an independently failing per-eye route that protects iris, pupil, highlights, lashes, skin, and natural vessel/detail variation.
 - [x] Preserve v1.14 canonical input, request-local support, immutable-original composition, overlap-to-source, privacy, compatibility, and failure-isolation contracts through both feature slices and combined closeout.
 - [x] Keep `去脂` entirely absent and future; exclude realtime/pixel-buffer, Demo activation, cloud/model, tracked portrait media, and release-readiness scope.
@@ -820,9 +831,11 @@ The verified SDK-only slice implements exactly `大小`, `宽度`, and `微笑`.
 
 Current and future milestone sequence:
 
-- **Next milestone:** not yet selected. `去脂` is explicitly deferred; a retry
-  requires a new owner decision and milestone plus suitable data, a qualified
-  method, a complete rights-approved genuine bundle, and blinded review.
+- **Next milestone:** not yet selected. The current provisional owner-local
+  `去脂` field exists. Any further effect qualification requires a scoped
+  objective, suitable owner-authorized generated or genuine positive/negative
+  inputs, a qualified method, and predeclared effect/protection review; a
+  genuine-human bundle is not required.
 - **Future Hairline and Semantic Masking:** approved local semantic-region foundation plus `发际线`.
 - **Future Double-Chin and Facial-Feature Closeout:** `去双下巴`, `去双下巴 Pro`, and a later narrow taxonomy audit.
 - **Other shaping groups:** `比例` and `3D塑颜` remain outside this narrow facial-feature sequence.
@@ -910,7 +923,7 @@ Current visual reference contracts:
 - **v1.12 scope boundary:** v1.12 adds only the four product-neutral public controls and private observed-contour/centerline support needed for `面部流畅`, `太阳穴`, `颧骨`, and `尖下巴`; `去双下巴`, `去双下巴 Pro`, and `发际线` remain future pending an approved semantic-region implementation, and Demo/network/account/device/commercial/performance/packaging/shipping/launch work remains excluded.
 - **v1.13 scope boundary:** v1.13 adds only seven product-neutral eyebrow controls plus private request-scoped observed eyebrow support inside `BeautySDK`; no SwiftUI/Demo UI, remote processing, commercial path, or semantic-region model is included.
 - **v1.14 scope boundary:** v1.14 adds only a still-image local-retouch foundation plus evidence-qualified `白牙`, `祛红血丝`, and conditionally `去脂`; canonical input is shared by Vision and rendering, local masks never escape the request, transparent input fails closed, and no realtime/Demo/cloud/model/commercial/release scope is implied.
-- **v1.15 scope boundary:** v1.15 completes `白牙` first and `祛红血丝` second as independent still-image SDK-core slices. Each requires its own genuine rights-approved positive/negative bundle, public field, provider, renderer/output evidence, protected-region safety, original-detail review, regression, and promotion decision. `去脂`, realtime/pixel-buffer, Demo activation, model/cloud, tracked portrait media, device/commercial/performance-budget/packaging/shipping/launch work remain excluded.
+- **Historical v1.15 scope boundary:** v1.15 completed `白牙` first and `祛红血丝` second as independent still-image SDK-core slices. Its then-current gate required a separate genuine rights-approved positive/negative bundle, public field, provider, renderer/output evidence, protected-region safety, original-detail review, regression, and promotion decision. The genuine-source restriction is superseded for new work; `去脂`, realtime/pixel-buffer, Demo activation, model/cloud, tracked portrait media, device/commercial/performance-budget/packaging/shipping/launch work were excluded from that milestone.
 - **v1.18 scope boundary:** v1.18 conditionally productizes still-image `去脂`
   only through genuine rights-approved positive/negative evidence and a
   non-warp, geometry-preserving implementation. Missing evidence or failed

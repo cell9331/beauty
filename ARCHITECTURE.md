@@ -1,5 +1,14 @@
 # ARCHITECTURE.md
 
+## Current image acceptance input boundary (2026-09-24)
+
+Image provenance does not select a different SDK architecture. Owner-authorized
+generated portrait-like images may exercise the same public facade, source-fixed
+effect oracle, and CPU/Metal paths as genuine portraits. Their absence as
+genuine human photographs is not an implementation or milestone dependency;
+see [image-effect acceptance](docs/IMAGE_EFFECT_ACCEPTANCE.md). Dated phase
+architecture and signed evidence descriptions below remain historical.
+
 ## Phase 95 observed portrait support repair
 
 The default still-image Vision provider renders a named-sRGB CGImage from the

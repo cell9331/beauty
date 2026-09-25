@@ -151,7 +151,8 @@ mask topology differences and maximum output deltas of 9/4/13 bytes. Holding
 anchors fixed reduced those values to 3/0/11 topology differences and 2/1/2
 output deltas. A transparent border similarly moved anchors by 0.77–4.89 px;
 fixed anchors restored zero topology differences. These measurements establish
-the detector/profile/background sensitivity to bound on licensed real inputs;
+the detector/profile/background sensitivity to bound on authorized generated
+or genuine inputs;
 they are not product thresholds.
 
 ## What to Avoid
@@ -191,7 +192,7 @@ they are not product thresholds.
   ownership, camera integration, device performance, and v1.14 remain unproven.
 - The guarded sclera ordering is validated only on a bounded mechanics grid. Its
   24.6%–38.2% legacy-mask retention and 270/360 fail-closed stress cases require
-  licensed real-data calibration before product planning.
+  authorized generated or genuine input calibration before product planning.
 - Original-pixel composition, regional/eye failure isolation, and fail-closed
   overlap ownership are narrowly `VALIDATED` on three AI mechanics fixtures.
   Product coverage, naturalness, optimized performance, memory, and device

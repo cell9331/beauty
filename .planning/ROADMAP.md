@@ -1,10 +1,16 @@
 # Roadmap: Beauty v1.22 Non-Local Facial Effect Repairs
 
+Current superseding input policy: [generated portrait-like positives and
+negatives are eligible effect evidence](../docs/IMAGE_EFFECT_ACCEPTANCE.md).
+No current or future SDK phase is blocked solely by the absence of genuine
+human portraits. The completed v1.22 phase list below remains historical.
+
 Latest completed milestone: [v1.24 去脂效果改进](V1.24-UPPER-EYELID-CURRENT.md),
 Phases 97–99, with a frozen pre-edit pixel target, bounded internal
 adjustment, complete SDK gate, and independent review. The phase list below
 is the completed v1.22 historical roadmap. v1.23 is complete for generated
-mechanics only; FACE-01 natural-portrait effectiveness remains FUTURE-04.
+mechanics only; FACE-01 qualifying rough-positive/smooth-negative effect
+evidence remains FUTURE-04 and may use generated portraits.
 
 Current successor: [v1.23 FACE-01 contour follow-up](V1.23-FACE01-CURRENT.md)
 was authorized under the owner's 2026-09-23 completion request. Its remaining

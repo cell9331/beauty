@@ -13,16 +13,28 @@ public struct BeautyConfiguration: Codable, Equatable, Sendable {
     public static let defaultMaximumInputByteCount = 33_554_432
     public static let defaultMaximumInputPixelCount = 50_000_000
 
+    /// Reserved Codable field; the current SDK does not resize processing inputs.
     public var preferredProcessingSize: CGSize?
     public var maximumFaceCount: Int
     public var enableFaceTracking: Bool
+    /// Reserved Codable field; the current SDK does not schedule frame detection.
     public var detectionFrameInterval: Int
+    /// Reserved Codable field; the current renderer does not switch quality modes.
     public var renderQuality: BeautyRenderQuality
+    /// Reserved Codable field; the current SDK does not emit performance logs.
     public var enablePerformanceLog: Bool
+    /// Reserved Codable field; the current SDK does not emit debug output.
     public var enableDebugMode: Bool
+    /// Reserved Codable field; the current SDK does not filter logs by this level.
     public var logLevel: BeautyLogLevel
     public var maximumInputByteCount: Int
-    public var maximumInputPixelCount: Int
+    public var maximumInputPixelCount: Int {
+        didSet {
+            maximumInputPixelCount = maximumInputPixelCount > 0
+                ? min(maximumInputPixelCount, Self.defaultMaximumInputPixelCount)
+                : Self.defaultMaximumInputPixelCount
+        }
+    }
     public var renderBackend: BeautyRenderBackend
 
     public static let `default` = BeautyConfiguration()
@@ -52,7 +64,7 @@ public struct BeautyConfiguration: Codable, Equatable, Sendable {
             ? maximumInputByteCount
             : Self.defaultMaximumInputByteCount
         self.maximumInputPixelCount = maximumInputPixelCount > 0
-            ? maximumInputPixelCount
+            ? min(maximumInputPixelCount, Self.defaultMaximumInputPixelCount)
             : Self.defaultMaximumInputPixelCount
         self.renderBackend = renderBackend
     }

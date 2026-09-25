@@ -6,7 +6,7 @@ readonly repository_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd 
 readonly package_root="${repository_root}/BeautySDK"
 readonly maximum_output_bytes=$((16 * 1024 * 1024))
 readonly focused_filter='BeautyEffectsTests.BeautyMetalColorPassTests|BeautyEffectsTests.BeautyMetalGeometryPassTests|BeautyEffectsTests.BeautyMetalBackendTests|BeautyEffectsTests.BeautyMetalLocalRetouchPassTests|BeautyRenderTests.BeautyMetalRuntimeTests'
-readonly expected_focused_tests=35
+readonly expected_focused_tests=36
 readonly pass_source="BeautySDK/Sources/BeautyRender/BeautyMetalPass.swift"
 readonly runtime_source="BeautySDK/Sources/BeautyRender/BeautyMetalRuntime.swift"
 readonly shader_source="BeautySDK/Sources/BeautyRender/Shaders/Warp.metal"
@@ -152,7 +152,8 @@ for marker in ("BeautyFaceGeometryAdapter.makeGeometry", "BeautyGeometryEffectPi
 for marker in (
     "inputKind: .pixelBuffer", "inputKind: .stillImage", "isStillImage ? 0.20 : 0.22",
     "isStillImage ? 0.14 : 0.16", "isStillImage ? 0.16 : 0.18",
-    "highlightLift: isStillImage ? 0", "shadowLift: isStillImage ? 0",
+    "highlightLift: strengths.highlight * 0.08",
+    "shadowLift: strengths.shadow * 0.08",
     "smoothing: isStillImage ? 0",
 ):
     if marker not in backend_code:
@@ -229,7 +230,7 @@ for marker in (
 if not re.search(r"stillImageMaxChannelDelta\s*=\s*2(?!\d)", text["parity_fixture"]) or not re.search(r"stillImageMeanRGBDelta\s*=\s*0\.75(?!\d)", text["parity_fixture"]):
     raise SystemExit("tight still-image color tolerance weakened or removed")
 for marker in (
-    '"still-global-coefficients"', '"still-highlight-shadow-no-extra-pass"',
+    '"still-global-coefficients"', '"still-highlight-shadow-selective"',
     '"still-lip-hard-rectangle"',
 ):
     if marker not in text["parity_fixture"]:

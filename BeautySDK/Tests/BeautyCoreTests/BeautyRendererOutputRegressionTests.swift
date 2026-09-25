@@ -86,11 +86,6 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
         "upperEyelidFullnessReduction_1p00"
     ]
 
-    private static let fixtureNames = [
-        "portraits/p1.jpg",
-        "negatives/no-face-gradient.png"
-    ]
-
     func testRendererCaseInventoryMatchesCurrentPublicFacadeMatrix() throws {
         let source = try rendererSource()
 
@@ -200,20 +195,28 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
         XCTAssertTrue(peak.contains("eyebrowPeakDefinition: 0.25"))
         XCTAssertEqual(allFields.filter { peak.contains("\($0):") }, ["eyebrowPeakDefinition"])
         XCTAssertEqual(Set(Self.expectedRendererCaseIDs).count, 75)
-        XCTAssertEqual(Self.fixtureNames, ["portraits/p1.jpg", "negatives/no-face-gradient.png"])
+        let fixtureNames = try exampleFixtureNames()
+        XCTAssertEqual(fixtureNames, [
+            "portraits/\(try portraitFixtureName())",
+            "negatives/no-face-gradient.png",
+        ])
         for parked in 1...5 {
-            XCTAssertFalse(Self.fixtureNames.contains("portraits/e\(parked).png"))
+            XCTAssertFalse(fixtureNames.contains("portraits/e\(parked).png"))
         }
-        XCTAssertFalse(Self.fixtureNames.contains("portraits/e6.jpg"))
+        XCTAssertFalse(fixtureNames.contains("portraits/e6.jpg"))
     }
 
     func testActivePortraitFixtureIsAuthorizedLocalInputWithSanitizedMetadata() throws {
         let root = try repositoryRootURL()
-        let active = root.appendingPathComponent("example-images/input/portraits/p1.jpg")
+        let fixtureName = try portraitFixtureName()
+        let active = root.appendingPathComponent("example-images/input/portraits/\(fixtureName)")
         let authorization = root.appendingPathComponent("example-images/FIXTURE_AUTHORIZATION.md")
         let parkedDirectory = root.appendingPathComponent("example-images/parked-portraits", isDirectory: true)
 
         XCTAssertTrue(FileManager.default.fileExists(atPath: active.path))
+        let activeValues = try active.resourceValues(forKeys: [.isRegularFileKey, .isSymbolicLinkKey])
+        XCTAssertEqual(activeValues.isRegularFile, true)
+        XCTAssertEqual(activeValues.isSymbolicLink, false)
         XCTAssertTrue(FileManager.default.fileExists(atPath: authorization.path))
         let attributes = try FileManager.default.attributesOfItem(atPath: active.path)
         let byteCount = (attributes[.size] as? NSNumber)?.intValue ?? 0
@@ -223,12 +226,17 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
         guard let source = CGImageSourceCreateWithURL(active as CFURL, nil),
               let properties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString: Any]
         else {
-            XCTFail("p1.jpg must be a readable image fixture")
+            XCTFail("active portrait must be a readable image fixture")
             return
         }
 
-        XCTAssertEqual((properties[kCGImagePropertyPixelWidth] as? NSNumber)?.intValue, 2628)
-        XCTAssertEqual((properties[kCGImagePropertyPixelHeight] as? NSNumber)?.intValue, 1778)
+        if fixtureName == "p1.jpg" {
+            XCTAssertEqual((properties[kCGImagePropertyPixelWidth] as? NSNumber)?.intValue, 2628)
+            XCTAssertEqual((properties[kCGImagePropertyPixelHeight] as? NSNumber)?.intValue, 1778)
+        } else {
+            XCTAssertGreaterThan((properties[kCGImagePropertyPixelWidth] as? NSNumber)?.intValue ?? 0, 0)
+            XCTAssertGreaterThan((properties[kCGImagePropertyPixelHeight] as? NSNumber)?.intValue ?? 0, 0)
+        }
         XCTAssertNil(properties[kCGImagePropertyGPSDictionary])
         XCTAssertNil(properties[kCGImagePropertyTIFFDictionary])
         XCTAssertNil(properties[kCGImagePropertyOrientation])
@@ -237,7 +245,7 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
             "latitude", "longitude", "datetime", "hostcomputer", "iphone",
             "artist", "author", "copyright", "makernote",
         ] {
-            XCTAssertFalse(metadata.contains(forbidden), "p1.jpg leaked metadata token: \(forbidden)")
+            XCTAssertFalse(metadata.contains(forbidden), "active portrait leaked metadata token: \(forbidden)")
         }
 
         for parked in 1...5 {
@@ -845,13 +853,28 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
 
     private func exampleFixtureURLs() throws -> [URL] {
         let inputDirectory = try repositoryRootURL().appendingPathComponent("example-images/input", isDirectory: true)
-        return try Self.fixtureNames.map { fixtureName in
+        return try exampleFixtureNames().map { fixtureName in
             let url = inputDirectory.appendingPathComponent(fixtureName)
-            guard FileManager.default.fileExists(atPath: url.path) else {
-                throw RegressionTestError.missing("example-images/input/\(fixtureName)")
+            guard FileManager.default.fileExists(atPath: url.path),
+                  let values = try? url.resourceValues(forKeys: [.isRegularFileKey, .isSymbolicLinkKey]),
+                  values.isRegularFile == true, values.isSymbolicLink != true else {
+                throw RegressionTestError.missing("active renderer fixture")
             }
             return url
         }
+    }
+
+    private func exampleFixtureNames() throws -> [String] {
+        ["portraits/\(try portraitFixtureName())", "negatives/no-face-gradient.png"]
+    }
+
+    private func portraitFixtureName() throws -> String {
+        let name = ProcessInfo.processInfo.environment["BEAUTYSDK_VISION_PORTRAIT_FIXTURE"] ?? "p1.jpg"
+        guard !name.isEmpty, name != ".", name != "..",
+              !name.contains("/"), !name.contains("\\") else {
+            throw RegressionTestError.missing("active portrait fixture")
+        }
+        return name
     }
 
     private func fixtureImage(at url: URL, named fixtureName: String) throws -> CIImage {

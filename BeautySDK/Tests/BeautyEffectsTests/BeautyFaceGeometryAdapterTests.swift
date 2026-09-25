@@ -1,3 +1,4 @@
+import Foundation
 import XCTest
 import BeautyCore
 import BeautyDetection
@@ -2078,21 +2079,30 @@ final class BeautyFaceGeometryAdapterTests: XCTestCase {
     private func portraitFixtureURLs() throws -> [URL] {
         let directory = try repositoryRootURL()
             .appendingPathComponent("example-images/input/portraits", isDirectory: true)
-        return try ["p1.jpg"].map {
+        return try [portraitFixtureName()].map {
             let url = directory.appendingPathComponent($0)
-            guard FileManager.default.fileExists(atPath: url.path) else {
+            guard FileManager.default.fileExists(atPath: url.path),
+                  let values = try? url.resourceValues(forKeys: [.isRegularFileKey, .isSymbolicLinkKey]),
+                  values.isRegularFile == true, values.isSymbolicLink != true else {
                 throw FaceFixtureError.missing
             }
             return url
         }
     }
 
+    private func portraitFixtureName() throws -> String {
+        let name = ProcessInfo.processInfo.environment["BEAUTYSDK_VISION_PORTRAIT_FIXTURE"] ?? "p1.jpg"
+        guard !name.isEmpty, name != ".", name != "..",
+              !name.contains("/"), !name.contains("\\") else {
+            throw FaceFixtureError.missing
+        }
+        return name
+    }
+
     private func repositoryRootURL() throws -> URL {
         var current = URL(fileURLWithPath: #filePath).deletingLastPathComponent()
         while current.path != "/" {
-            let fixture = current.appendingPathComponent(
-                "example-images/input/portraits/p1.jpg"
-            )
+            let fixture = current.appendingPathComponent("BeautySDK/Package.swift")
             if FileManager.default.fileExists(atPath: fixture.path) {
                 return current
             }

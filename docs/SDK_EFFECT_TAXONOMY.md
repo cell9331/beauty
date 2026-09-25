@@ -6,6 +6,13 @@ archived application and UI-reference source trees.
 
 ## Boundary
 
+The [current image-effect acceptance policy](IMAGE_EFFECT_ACCEPTANCE.md)
+permits owner-authorized generated portrait-like positive/negative inputs to
+complete an owner-local effect qualification. No row remains `partial` merely
+because qualifying images are generated rather than genuine human portraits.
+Historical receipts retain their narrower claims; each row still needs its own
+effect-direction and protection evidence before promotion.
+
 The taxonomy preserves algorithm intent, neutral public parameter mappings, and
 implementation status. It does not preserve or require SwiftUI views, visual layout, screen
 layout, navigation, badges, sliders, sticky headers, image-card styling, account
@@ -98,7 +105,7 @@ names and visual organization are intentionally omitted from the active contract
 | 比例 | 短脸 | future | — | No current neutral parameter. |
 | 脸型 | 脸宽 | implemented | `faceSlim` | Bounded contour narrowing. |
 | 脸型 | 小脸 | implemented | `faceSmall` | Bounded small-face geometry. |
-| 脸型 | 面部流畅 | partial | `faceContourSmooth` | Owner-local bounded lateral-contour candidate passes the original generated gate, but actual portrait contour improvement remains unproven; v1.23 follow-up is active. |
+| 脸型 | 面部流畅 | partial | `faceContourSmooth` | Existing v1.23 generated inputs proved mechanics but did not establish a rough-positive/smooth-negative contour improvement. New qualifying generated portraits are eligible for effect acceptance; a genuine human source is not required. |
 | 脸型 | 太阳穴 | implemented | `templeFullness` | Upper-lateral contour geometry. |
 | 脸型 | 颧骨 | implemented | `cheekboneSlim` | Mid-lateral contour geometry. |
 | 脸型 | 下巴长短 | implemented | `chinLength` | Signed chin-length geometry. |
@@ -157,9 +164,11 @@ caveat on `去脂`; this does not establish commercial visual quality.
 
 ## Non-legacy SDK groups
 
-- Skin owns smoothing, whitening, rosy tone, and sharpening.
+- Skin owns smoothing, whitening, rosy tone, and sharpening. Current smoothing
+  and sharpening are saturation/contrast proxies, not spatial texture filters.
 - Global tone owns brightness, contrast, saturation, temperature, tint,
-  exposure, highlights, and shadows.
+  exposure, highlights, and shadows. Still-image highlights and shadows now
+  apply the bounded selective lift to bright and dark source-luminance regions.
 - Filters use a logical `filterId` plus bounded `filterIntensity`.
 
 These groups are product-neutral SDK effects. Home/discovery, galleries,
@@ -292,11 +301,12 @@ portrait, and a source-admitted exploratory ROI still measured `0 Q16` gain.
 An independent generated silhouette edge oracle exposed a second raster
 alignment that worsened under the first candidate. A bounded source-edge
 correction now passes both generated alignments and leaves a straight-side
-negative unchanged; natural portrait efficacy remains unproven, so the field
-stays `partial`.
+negative unchanged. The field stays `partial` because the existing portrait
+pair did not demonstrate rough-positive improvement and smooth-negative
+non-worsening; a new qualifying generated pair is eligible.
 The owner-directed [v1.23 qualification](../.planning/V1.23-FACE01-CURRENT.md)
 uses two fictional generated portraits for a bounded synthetic-mechanics
 completion claim. Their render and repeat results provide no natural-portrait
-direction credit. The original rough-positive/smooth-negative natural-portrait
-effectiveness target remains open. No historical receipt or FACE-01 threshold
-is changed.
+direction credit. A rough-positive/smooth-negative effect target remains open,
+and generated portraits may satisfy it under the current policy. No historical
+receipt or FACE-01 threshold is changed.

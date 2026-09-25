@@ -1,5 +1,30 @@
 # SECURITY.md
 
+## Current generated-image trust boundary (2026-09-24)
+
+The current no-skip gate accepts a generated Vision portrait only as a regular,
+non-symlink file name under `example-images/input/portraits/`; path components
+are rejected. Teeth/sclera bundle overrides must retain their ignored-local
+manifest boundary and the feature tests' rights and pixel checks. Fixture
+provenance alone neither grants nor denies effect credit.
+
+Owner-authorized generated portrait-like inputs may supply effect positives,
+negatives, and adversarial cases. They require permission for actual local use
+and the same ignored-local storage, request-local mask/landmark handling,
+aggregate-only durable evidence, and no-distribution boundary as other
+fixtures. Genuine human photos are optional and never a privacy or evidence
+prerequisite. See [image-effect acceptance](docs/IMAGE_EFFECT_ACCEPTANCE.md).
+
+## 2026-09-24 audit repair input boundary
+
+Serialized EXIF orientation values outside the defined 1–8 range are rejected;
+they cannot silently become an unmirrored `.up` orientation. The configurable
+pixel limit is capped at the backend's 50,000,000-pixel hard ceiling, including
+Codable initialization. Fractional or nonfinite still-image dimensions are
+rejected before expensive detection. Metal geometry exceeding its 256-point
+payload budget fails closed. No raw pixels, landmarks, or private fixture
+locators are added to persistent diagnostics.
+
 ## v1.24 upper-eyelid change boundary
 
 The editor changes one package-only correction gain inside already approved
@@ -311,8 +336,10 @@ artifact.
   and protected bytes, alpha, metadata, and overlap-to-source collision policy
   are enforced there. The editor cannot bypass that owner; the public facade
   may invoke it only through this existing owner chain.
-- Real-fixture masks must match finite zero-origin dimensions/orientation before
-  measurement; synthetic/AI fixtures cannot establish product feasibility.
+- Fixture masks must match finite zero-origin dimensions/orientation before
+  measurement. The historical Phase 78 evaluator classified its own
+  synthetic/AI inputs as mechanics-only; new authorized generated portraits
+  may establish owner-local effect evidence under the current policy.
 - Phase 78 reuses the Phase 75 child-process evaluator and exports only fixed
   aggregate hashes, opaque IDs, counts, normalized reasons, and a decision.
   Missing or metadata-only evidence cannot authorize tuning or promotion.

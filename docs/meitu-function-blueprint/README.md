@@ -20,7 +20,7 @@ Phase 17 status labels are branch-level only. The allowed values are:
 1. `MINDMAP.md` - Full feature tree and Mermaid mind map.
 2. `SHAPE_FEATURE_LEDGER.md` - 1:1 de-duplicated `美型 / 五官` first-level and second-level SDK-core status ledger.
 3. `FEATURE_MATRIX.md` - Branch-level feature inventory, status, and implementation priority.
-4. `EXAMPLE_IMAGE_VALIDATION.md` - How to run real example images through SDK module logic and save outputs.
+4. `EXAMPLE_IMAGE_VALIDATION.md` - How to run authorized generated or genuine example images through SDK module logic and save outputs.
 5. `MODULES.md` - SDK/Demo module ownership and dependency boundaries.
 6. `DELIVERY_BOUNDARY.md` - What this milestone includes and excludes.
 7. Feature folders under `features/` - One large function family per folder.

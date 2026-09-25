@@ -15,6 +15,12 @@ review path, and measured protected-region leakage, landmark uncertainty,
 texture, luminance, privacy, latency, memory, and integration ownership.
 
 Spike sessions wrapped: 2026-07-29 (001a–005, then 006/009/010); 2026-07-30 (011, 012, and 013 appends)
+
+The current owner policy in `docs/IMAGE_EFFECT_ACCEPTANCE.md` supersedes the
+spikes' old requirement for genuine human photographs. Authorized generated
+portrait positives and negatives can complete an SDK effect qualification if
+their own frozen direction, protection, visual/pixel, and metadata oracle passes.
+Spike results and their original fixture outcomes remain historical.
 </context>
 
 <requirements>
@@ -28,9 +34,15 @@ Spike sessions wrapped: 2026-07-29 (001a–005, then 006/009/010); 2026-07-30 (0
   smoothing.
 - Missing, malformed, closed, blinking, occluded, or low-confidence support fails closed per region.
 - Raw masks, landmarks, pupil positions, teeth geometry, and vein patterns are request-local and absent from public or persisted diagnostics.
-- Existing AI-generated fixtures can prove mechanics only. Product-feasibility validation requires licensed real positive/negative fixtures and human original-detail review.
+- The old AI-generated spike fixtures proved only the checks they actually ran.
+  New authorized generated portraits can provide full positive/negative effect
+  evidence; genuine photos are optional. Review output at original detail when
+  the effect claim requires visual judgment.
 - The EasyPortrait Core ML port is research-only until the original data, checkpoint, conversion, and redistribution licenses are independently approved and pinned.
-- If only teeth whitening and redness reduction validate, the next milestone must keep `去脂` future and the eye branch partial.
+- The spike-era recommendation to keep `去脂` future was superseded by the
+  owner's provisional owner-local API acceptance on 2026-08-25; future effect
+  work follows the current generated-image acceptance policy and fail-closed
+  implementation boundary.
 </requirements>
 
 <findings_index>
@@ -38,11 +50,11 @@ Spike sessions wrapped: 2026-07-29 (001a–005, then 006/009/010); 2026-07-30 (0
 
 | Area | Reference | Key Finding |
 | --- | --- | --- |
-| Upper-eyelid fullness | `references/upper-eyelid-fullness.md` | Preserve the tone/frequency experiment only; reject the tested warp and do not ship `去脂` without real positives. |
+| Upper-eyelid fullness | `references/upper-eyelid-fullness.md` | Preserve the tone/frequency safety lesson; owner-local provisional `去脂` now exists, and a future effect review may use qualified generated positives. |
 | Teeth whitening | `references/teeth-whitening.md` | Seeded adaptive growth improves side-tooth mechanics without dropping the fixed baseline, but licensed protected-tissue review remains mandatory. |
-| Sclera redness | `references/sclera-redness.md` | Guard each eye before scoring, feather then re-clip to the hard envelope, and verify the final transform with a color-adversarial oracle; real calibration remains mandatory. |
+| Sclera redness | `references/sclera-redness.md` | Guard each eye before scoring, feather then re-clip to the hard envelope, and verify the final transform with a color-adversarial oracle; generated positive/negative effect calibration is eligible. |
 | Still-image integration | `references/still-image-integration.md` | Normalize orientation/color once before Vision and rendering, detect once, fail locally, preserve hard containment, derive every accepted edit from the original pixel under one explicit mask owner, reject unexpected overlap, and use bounded—not topology-identical—cross-profile criteria. |
-| Licensed fixture evaluation | `references/licensed-fixture-evaluation.md` | Product evidence opens only for complete rights-approved positive/negative bundles reviewed locally with a sanitized structured export. |
+| Licensed fixture evaluation | `references/licensed-fixture-evaluation.md` | Historical reviewer required a complete approved bundle; current generated-image effect acceptance can use an equivalent feature-specific oracle without a genuine-human requirement. |
 
 ## Source Files
 

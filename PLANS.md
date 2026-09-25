@@ -3,6 +3,11 @@
 > `beauty` 的执行追踪账本。任何 Agent 在改代码或改文档前必须读本文件。
 > 本文件记录 Active、Completed、Tech Debt，并要求每次工作留下可追踪状态。
 
+当前生效的图片验收政策见
+[`docs/IMAGE_EFFECT_ACCEPTANCE.md`](docs/IMAGE_EFFECT_ACCEPTANCE.md)：有权使用的
+生成肖像可完成效果正/负例验收；真人图片不是硬门禁或进度 blocker。下方已完成
+计划中有关“必须真人”的句子只记录当时范围与证据，不再约束新工作。
+
 ## 1. Update Rules
 
 - 开始工作前：确认是否已有匹配 Active plan；优先更新既有计划，不重复创建。
@@ -26,9 +31,31 @@
 
 ## 3. Active
 
-当前无进行中的里程碑；`faceContourSmooth` 真实人像效果保留在 FUTURE-04。
+当前无 Active 计划。
 
 ## 4. Completed
+
+### C-2026-09-24-generated-fixture-gate
+
+- Status: completed；现行 Vision 人像和牙齿/眼白完整门禁可选择受控的生成输入，不再把默认真人夹具当作唯一合格来源。
+- [x] 检查所有现行固定人像路径和门禁夹具变量；Vision/facade/renderer 测试改用同一 `BEAUTYSDK_VISION_PORTRAIT_FIXTURE` 文件名，默认仍为原 `p1.jpg`；根目录发现不再依赖该文件存在。
+- [x] Vision 单文件拒绝路径片段和符号链接；证据包使用 `PHASE59_TEETH_BUNDLE` / `PHASE62_SCLERA_BUNDLE` 可覆盖的忽略目录，保留原测试的权利、掩码、像素与安全断言。同步当前验收、示例图、产品、安全、可靠性及质量文档，历史回执未改。
+- [x] 验证：wrapper mutation self-test `11/11`、renderer 回归 `24/0/0`；临时替代文件名下 Vision/facade/renderer 聚焦 `5/0/0`；路径穿越输入被通用缺失夹具错误拒绝；完整 archive-first no-skip 门禁通过、8 opt-in、0 skip；`bash -n`、`git diff --check` 通过。替代文件名验证只证明路径可替换，不把原有图片的别名冒充生成图效果验收。
+
+### C-2026-09-24-generated-portrait-acceptance
+
+- Status: completed；所有者明确要求生成肖像可用于完整效果验收，真人图片不再是硬门禁或进度 blocker。
+- 新建 [`docs/IMAGE_EFFECT_ACCEPTANCE.md`](docs/IMAGE_EFFECT_ACCEPTANCE.md) 作为统一政策；同步 `AGENTS.md`、根级 owner、taxonomy、当前 GSD project/requirements/roadmap/state 与 v1.23/v1.24 当前说明、示例图与授权说明、blueprint 入口和项目级 local-retouch skill。历史签发回执、归档和已完成阶段证据保持原貌。
+- 生成正/负例仍须源图先行目标/保护区、效果方向、负例与不恶化、真实输出像素/元数据、确定性和错误恢复；原 v1.23 两图回执因未测试这些效果谓词继续保持有界机械结论，不能仅凭换政策追认。
+- 验证：当前规范性用语扫描、14 个关键政策文档的存在与引用检查、`git diff --check` 通过。纯文档/skill 文本修改，未运行 SwiftPM；此前代码修复的 `951/0/0` 门禁仍是独立历史验证，不冒充本次验证。
+
+### C-2026-09-24-audit-repair
+
+- Status: completed；用户将 `fix all` 限定为本次审计的代码、测试、文档和脚本问题，14 项 future 功能及真人像效果另立范围。
+- 修复 still-image 高光/阴影空操作、EXIF 非法枚举回落、像素上限与后端硬限不一致、无效尺寸晚拒绝、Metal 组合点数超限静默跳过；配置未执行字段与 skin 色彩代理改为真实声明，更新 taxonomy 的 v1.23 状态。
+- 过期 Phase 96 本地续跑脚本在任何写入或批处理前返回 `phase96_superseded` / exit 2；更新三个专项门禁的旧静态断言与测试数。
+- 验证：archive-first no-skip 完整门禁 `951/0/0`、8 opt-in、0 skip；最终加强的 parity 测试再由 13 项专项门禁确认；`bash -n`、过期脚本 fail-closed 检查、`git diff --check` 通过。详见 `QUALITY_SCORE.md`。
+- 未纳入本轮：FUTURE-04 真人像效果、FUTURE-05 保留配置字段行为、FUTURE-06 真实空间纹理算法及 taxonomy 其余 future 项。
 
 ### C-2026-09-24-v1.24-upper-eyelid-effect-improvement
 
@@ -4647,7 +4674,9 @@ Outcome:
 
 ## 5. Tech Debt
 
-- FUTURE-04：`faceContourSmooth` 在自然粗糙脸侧正例、平滑负例上的改善与不恶化尚未证明。现有生成图只获合成机制回执；将来如要提升 taxonomy，需另立明确范围、取得有权使用的样本、源图先行登记边界和保护区，并做独立效果验收。
+- FUTURE-04：`faceContourSmooth` 的粗糙脸侧正例改善和平滑负例不恶化尚未被现有回执证明。后续可用有权本地使用的生成肖像完成完整效果验收：源图先行登记目标/保护区，检查方向、负例、不恶化、重复性及公开输出，再按结果更新 taxonomy。真人图片可选，不得成为计划推进或签发的硬前提；现有两张生成图仅因缺少上述效果断言而维持原回执范围。
+- FUTURE-05：`preferredProcessingSize`、`detectionFrameInterval`、`renderQuality`、`enablePerformanceLog`、`enableDebugMode`、`logLevel` 当前只保留 Codable 配置，不驱动处理或日志。若将来需要这些行为，应逐项制定输入、性能、日志隐私和可重复测试契约；目前文档和源码注释明确说明未实现。
+- FUTURE-06：`skinSmoothing` 与 `skinSharpen` 目前是饱和度/对比度代理，不构成真正的纹理平滑或边缘锐化。若提升语义，另立算法范围并用目标纹理、保护区、alpha、色彩空间和 CPU/Metal 一致性测试验收；本次只校正声明。
 
 ### Phase 95 evidence-chain follow-up (2026-09-13 historical finding)
 

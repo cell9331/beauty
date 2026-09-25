@@ -27,6 +27,10 @@ EXPECTED_OPT_IN_ENV = (
     "PHASE63_REQUIRE_LOCAL_EVIDENCE=1",
     'PHASE62_SCLERA_BUNDLE="${sclera_bundle}"',
 )
+EXPECTED_BUNDLE_OVERRIDES = (
+    'readonly teeth_bundle="${PHASE59_TEETH_BUNDLE:-${repository_root}/example-images/local-retouch-review/teeth-evidence-20260805}"',
+    'readonly sclera_bundle="${PHASE62_SCLERA_BUNDLE:-${repository_root}/example-images/local-retouch-review/evidence-pair-current}"',
+)
 ORDERED_PATTERNS = (
     ("archive", r'python3\s+"\$\{repository_root\}/scripts/archive-legacy-ui\.py"\s+verify\b'),
     ("boundary-self", r'bash\s+"\$\{repository_root\}/scripts/check-sdk-only-boundary\.sh"\s*\\?\s+--self-test\b'),
@@ -74,6 +78,10 @@ def validate_source(source: str) -> list[str]:
         if source.count(assignment) != 1:
             reasons.append("wrapper.opt-in-environment")
             break
+    for assignment in EXPECTED_BUNDLE_OVERRIDES:
+        if source.count(assignment) != 1:
+            reasons.append("wrapper.fixture-override")
+            break
     if source.count('echo "no_skip_swiftpm_passed opt_in_tests=8 skipped_tests=0"') != 1:
         reasons.append("wrapper.aggregate-output")
     return sorted(set(reasons))
@@ -105,6 +113,7 @@ def self_test(source: str) -> tuple[int, int]:
         source + "\nswift test --package-path BeautySDK\n",
         source.replace(EXPECTED_OPT_IN_TESTS[0], "removed-opt-in", 1),
         source.replace(EXPECTED_OPT_IN_ENV[0], "REMOVED_OPT_IN=1", 1),
+        source.replace("${PHASE59_TEETH_BUNDLE:-", "${REMOVED_TEETH_BUNDLE:-", 1),
         source.replace(
             'python3 "${decision_checker}" --self-test --repo-root "${repository_root}"',
             'python3 "${decision_checker}" --self-test --repo-root "${repository_root}" &',

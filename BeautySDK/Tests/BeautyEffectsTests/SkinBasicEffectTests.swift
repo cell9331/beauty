@@ -89,6 +89,56 @@ final class SkinBasicEffectTests: XCTestCase {
         )
     }
 
+    func testStillImageHighlightAndShadowSelectTheirOwnLuminanceRegion() {
+        let image = ciImage(width: 2, height: 1, rgba: [
+            40, 40, 40, 255,
+            200, 200, 200, 255
+        ])
+        let source = rgbaPixels(from: image, width: 2, height: 1)
+        let highlight = rgbaPixels(
+            from: BeautyColorEffectPipeline.apply(
+                to: image,
+                plan: BeautyEffectResolver.resolve(parameters: BeautyParameters(highlight: 0.8))
+            ),
+            width: 2,
+            height: 1
+        )
+        let shadow = rgbaPixels(
+            from: BeautyColorEffectPipeline.apply(
+                to: image,
+                plan: BeautyEffectResolver.resolve(parameters: BeautyParameters(shadow: 0.8))
+            ),
+            width: 2,
+            height: 1
+        )
+
+        XCTAssertGreaterThan(highlight[1].red, source[1].red)
+        XCTAssertLessThanOrEqual(abs(highlight[0].red - source[0].red), 1)
+        XCTAssertGreaterThan(shadow[0].red, source[0].red)
+        XCTAssertLessThanOrEqual(abs(shadow[1].red - source[1].red), 1)
+        XCTAssertEqual(highlight.map(\.alpha), source.map(\.alpha))
+        XCTAssertEqual(shadow.map(\.alpha), source.map(\.alpha))
+    }
+
+    func testStillImageSelectiveTonePreservesTranslucentAndTransparentAlpha() {
+        let image = ciImage(width: 2, height: 1, rgba: [
+            180, 180, 180, 128,
+            0, 0, 0, 0
+        ])
+        let source = rgbaPixels(from: image, width: 2, height: 1)
+        let output = BeautyColorEffectPipeline.apply(
+            to: image,
+            plan: BeautyEffectResolver.resolve(
+                parameters: BeautyParameters(highlight: 0.8, shadow: 0.8)
+            )
+        )
+        let pixels = rgbaPixels(from: output, width: 2, height: 1)
+
+        XCTAssertEqual(output.extent, image.extent)
+        XCTAssertEqual(pixels.map(\.alpha), source.map(\.alpha))
+        XCTAssertEqual(pixels[1], source[1])
+    }
+
     func testSkinComboProducesVisibleCappedMediumStrengthOutput() throws {
         let image = ciImage(width: 2, height: 1, rgba: [
             116, 90, 74, 255,
