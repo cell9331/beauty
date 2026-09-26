@@ -1,5 +1,16 @@
 # PRODUCT_SENSE.md
 
+## 2026-09-26 FACE-01 additional generated coverage
+
+Code-generated deep, medium, and light cheek colors pass bilateral roughness
+improvement while smooth negatives do not worsen. Opposite background
+brightness across the two sides also passes. A short dark hair band crossing
+the cheek is now source-exact on its rows, without suppressing supported rows
+below it; upper ear, center, far background, and alpha remain protected. The
+predeclared natural-style generated portrait pair continues to pass through
+the public CPU renderer. More varied portrait hair, lighting, and skin
+appearance remain to be qualified before broader coverage is claimed.
+
 ## 2026-09-26 generated skin-texture acceptance
 
 `skinSmoothing` now reduces fine luminance variation in an admitted opaque

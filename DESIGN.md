@@ -1,5 +1,17 @@
 # DESIGN.md
 
+## 2026-09-26 FACE-01 short hair occlusion follow-up
+
+The source-edge refiner now treats a second edge at least eight columns from
+the strongest one as competing when it has at least 40% of the strongest
+contrast. A dark hair band crossing the cheek can present one dominant outer
+edge and a weaker inner return edge; both are source evidence against moving
+that row as face silhouette. A short rejected row remains unchanged while
+supported neighboring cheek rows can still improve. Generated deep, medium,
+and light skin colors and opposite lighting on the two sides retain the
+existing rough-positive and smooth-negative direction bounds. The earlier
+frozen natural-style pair still passes its unchanged public CPU oracle.
+
 ## 2026-09-26 FUTURE-06 skin texture semantics
 
 `skinSmoothing` and `skinSharpen` retain their public unit parameters and

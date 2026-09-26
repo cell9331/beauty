@@ -1,5 +1,17 @@
 # RELIABILITY.md
 
+## 2026-09-26 FACE-01 hair-row recovery
+
+The source-edge search now rejects a second edge at least eight columns away
+when its contrast reaches 40% of the strongest. This guards a dark hair
+occlusion whose return edge is weaker than its outer edge. The rejected row is
+left source-exact; independently supported neighboring rows continue through
+the bounded smoothing path. The focused generated input initially reproduced
+90 changed pixels on the hair rows and now has zero. The full local refiner
+class, public facade orientation/recovery tests, and frozen generated portrait
+oracle pass. No extra allocation, retained state, or diagnostic pixel content
+was introduced.
+
 ## 2026-09-26 skin-texture bounds and recovery
 
 The spatial stage samples immutable request-local RGBA8 pixels within a 5×5

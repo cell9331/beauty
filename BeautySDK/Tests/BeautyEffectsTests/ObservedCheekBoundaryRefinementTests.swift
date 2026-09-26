@@ -150,12 +150,117 @@ final class ObservedCheekBoundaryRefinementTests: XCTestCase {
         XCTAssertEqual(changed(source, candidate) { _, _ in true }, 0)
     }
 
+    func testGeneratedSkinTonesImproveRoughCheeksAndProtectSmoothNegatives() throws {
+        let cases: [(String, (UInt8, UInt8, UInt8), (UInt8, UInt8, UInt8))] = [
+            ("deep", (112, 78, 65), (242, 242, 242)),
+            ("medium", (146, 117, 87), (25, 25, 25)),
+            ("light", (222, 184, 158), (50, 50, 50)),
+        ]
+        for (name, skin, background) in cases {
+            let rough = try image(wavy: true, background: background, skin: skin)
+            let smooth = try image(wavy: false, background: background, skin: skin)
+            let roughOutput = FaceContourSubpixelRefiner.refine(
+                rough, width: width, height: height, face: face, strength: 0.25
+            )
+            let smoothOutput = FaceContourSubpixelRefiner.refine(
+                smooth, width: width, height: height, face: face, strength: 0.25
+            )
+            for left in [true, false] {
+                let roughBefore = try redRoughness(
+                    rough, left: left, backgroundRed: Int(background.0), skinRed: Int(skin.0)
+                )
+                let roughAfter = try redRoughness(
+                    roughOutput, left: left, backgroundRed: Int(background.0), skinRed: Int(skin.0)
+                )
+                XCTAssertGreaterThan(roughBefore, 0.5, name)
+                XCTAssertLessThan(roughAfter, roughBefore * 0.90, name)
+                let smoothBefore = try redRoughness(
+                    smooth, left: left, backgroundRed: Int(background.0), skinRed: Int(skin.0)
+                )
+                let smoothAfter = try redRoughness(
+                    smoothOutput, left: left, backgroundRed: Int(background.0), skinRed: Int(skin.0)
+                )
+                XCTAssertLessThanOrEqual(smoothAfter, smoothBefore * 1.10, name)
+            }
+            for (source, output) in [(rough, roughOutput), (smooth, smoothOutput)] {
+                XCTAssertEqual(changed(source, output) { x, y in
+                    y < Int(0.50 * Double(height)) ||
+                        (0.44..<0.56).contains(Double(x) / Double(width)) ||
+                        x < width / 8 || x >= width * 7 / 8
+                }, 0, name)
+                XCTAssertTrue(stride(from: 3, to: source.count, by: 4).allSatisfy {
+                    source[$0] == output[$0]
+                }, name)
+            }
+            XCTAssertEqual(
+                roughOutput,
+                FaceContourSubpixelRefiner.refine(
+                    rough, width: width, height: height, face: face, strength: 0.25
+                ), name
+            )
+        }
+    }
+
+    func testOppositeSideLightingKeepsBothCheeksDirectionalAndUpperEarProtected() throws {
+        let source = try image(
+            wavy: true,
+            background: (240, 240, 240),
+            skin: (112, 78, 65),
+            rightBackground: (35, 35, 35),
+            rightSkin: (212, 174, 146)
+        )
+        let output = FaceContourSubpixelRefiner.refine(
+            source, width: width, height: height, face: face, strength: 0.25
+        )
+        let sides = [(true, 240, 112), (false, 35, 212)]
+        for (left, backgroundRed, skinRed) in sides {
+            let before = try redRoughness(
+                source, left: left, backgroundRed: backgroundRed, skinRed: skinRed
+            )
+            let after = try redRoughness(
+                output, left: left, backgroundRed: backgroundRed, skinRed: skinRed
+            )
+            XCTAssertGreaterThan(before, 0.5)
+            XCTAssertLessThan(after, before * 0.90)
+        }
+        XCTAssertEqual(changed(source, output) { x, y in
+            y < Int(0.50 * Double(height)) ||
+                (0.44..<0.56).contains(Double(x) / Double(width)) ||
+                x < width / 8 || x >= width * 7 / 8
+        }, 0)
+        XCTAssertTrue(stride(from: 3, to: source.count, by: 4).allSatisfy {
+            source[$0] == output[$0]
+        })
+    }
+
+    func testDarkHairCrossingShortCheekRowsIsProtectedWithoutBlockingNeighboringRows() throws {
+        let hairRows = 456..<472
+        let source = try image(wavy: true, hairRows: hairRows)
+        let output = FaceContourSubpixelRefiner.refine(
+            source, width: width, height: height, face: face, strength: 0.25
+        )
+        XCTAssertEqual(changed(source, output) { _, y in hairRows.contains(y) }, 0)
+        XCTAssertGreaterThan(changed(source, output) { _, y in (472..<528).contains(y) }, 0)
+        XCTAssertEqual(changed(source, output) { x, y in
+            y < Int(0.50 * Double(height)) ||
+                (0.44..<0.56).contains(Double(x) / Double(width)) ||
+                x < width / 8 || x >= width * 7 / 8
+        }, 0)
+        XCTAssertTrue(stride(from: 3, to: source.count, by: 4).allSatisfy {
+            source[$0] == output[$0]
+        })
+    }
+
     private func image(
         wavy: Bool,
         competingEdges: Bool = false,
         competingRows: Range<Int>? = nil,
         background: (UInt8, UInt8, UInt8) = (220, 220, 220),
-        alternatingLighting: Bool = false
+        alternatingLighting: Bool = false,
+        skin: (UInt8, UInt8, UInt8) = (170, 120, 105),
+        rightBackground: (UInt8, UInt8, UInt8)? = nil,
+        rightSkin: (UInt8, UInt8, UInt8)? = nil,
+        hairRows: Range<Int>? = nil
     ) throws -> [UInt8] {
         let runs = try XCTUnwrap(FaceContourLateralRuns.make(
             from: try XCTUnwrap(face.observedFaceSupport?.contour)
@@ -174,15 +279,25 @@ final class ObservedCheekBoundaryRefinementTests: XCTestCase {
                     left.map { x >= $0 - 20 && x < $0 - 14 } == true ||
                     right.map { x > $0 + 14 && x <= $0 + 20 } == true
                 )
+                let hair = hairRows?.contains(row) == true && (
+                    left.map { x >= $0 - 10 && x <= $0 + 12 } == true ||
+                    right.map { x >= $0 - 12 && x <= $0 + 10 } == true
+                )
                 let i = (row * width + column) * 4
-                if inside || competing {
-                    pixels[i] = 170
-                    pixels[i + 1] = 120
-                    pixels[i + 2] = 105
+                if hair {
+                    pixels[i] = 22
+                    pixels[i + 1] = 20
+                    pixels[i + 2] = 18
+                } else if inside || competing {
+                    let color = column >= width / 2 ? rightSkin ?? skin : skin
+                    pixels[i] = color.0
+                    pixels[i + 1] = color.1
+                    pixels[i + 2] = color.2
                 } else {
                     let rowBackground: (UInt8, UInt8, UInt8) =
                         alternatingLighting && (row / 8).isMultiple(of: 2)
-                            ? (40, 40, 40) : background
+                            ? (40, 40, 40) :
+                            (column >= width / 2 ? rightBackground ?? background : background)
                     pixels[i] = rowBackground.0
                     pixels[i + 1] = rowBackground.1
                     pixels[i + 2] = rowBackground.2
@@ -222,13 +337,15 @@ final class ObservedCheekBoundaryRefinementTests: XCTestCase {
         return Double(roughness) / Double(edges.count - 2 * offset)
     }
 
-    private func redRoughness(_ bytes: [UInt8], left: Bool, backgroundRed: Int) throws -> Double {
-        let threshold = (170 + backgroundRed) / 2
+    private func redRoughness(
+        _ bytes: [UInt8], left: Bool, backgroundRed: Int, skinRed: Int = 170
+    ) throws -> Double {
+        let threshold = (skinRed + backgroundRed) / 2
         let edges = try (456..<528).map { row -> Int in
             let columns = left ? Array(100..<400) : Array((400..<700).reversed())
             return try XCTUnwrap(columns.first { column in
                 let red = Int(bytes[(row * width + column) * 4])
-                return backgroundRed < 170 ? red > threshold : red < threshold
+                return backgroundRed < skinRed ? red > threshold : red < threshold
             })
         }
         let offset = 10

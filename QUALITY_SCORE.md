@@ -1,5 +1,21 @@
 # QUALITY_SCORE.md
 
+## 2026-09-26 FACE-01 expanded generated boundary checks
+
+Three skin-color rough/smooth pairs, opposite left/right background lightness,
+and a short dark hair occlusion now have code-generated pixel assertions. The
+hair case failed before repair with 90 changed pixels on its protected rows;
+the guarded source-edge selection makes the rows source-exact while lower
+cheek rows still change. The local refiner class passes `11/0/0`, and the
+public facade orientation/recovery filter passes `2/0/0`. The original frozen
+natural-style generated portrait oracle passes without input or threshold
+changes: rough-positive left/right `6.106/6.731 → 4.000/5.044`,
+smooth-negative `2.806/2.638 → 2.431/2.331`, target/total changes
+`15825/15825` and `9059/9059`, protected changes `0/0`, with neutral,
+repeat and alpha passing. The added color/occlusion inputs are generated
+silhouettes, so more portrait variety remains open. Full no-skip has not yet
+run for this follow-up.
+
 ## 2026-09-26 FUTURE-06 generated texture evidence
 
 The new public generated-image oracle fixes a checker-textured cheek positive,

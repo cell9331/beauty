@@ -1,5 +1,13 @@
 # SECURITY.md
 
+## 2026-09-26 FACE-01 occluding hair boundary
+
+Short dark bands crossing the cheek are treated as competing source edges
+even when their inner return edge is weaker than the outer one. Their rows
+fail closed locally; neighboring accepted rows still use request-local source
+pixels. Generated tests and the frozen portrait oracle persist only aggregate
+results, never the hair pixels or observed contour coordinates.
+
 ## 2026-09-26 skin-texture input boundary
 
 The texture transform reads decoded pixels only inside the admitted request,

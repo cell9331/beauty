@@ -291,12 +291,14 @@ enum FaceContourSubpixelRefiner {
         }
         let competing = candidates.filter {
             abs($0.column - strongest.column) >= 8 &&
-                $0.contrast * 4 >= strongest.contrast * 3
+                $0.contrast * 5 >= strongest.contrast * 2
         }
         if !competing.isEmpty {
-            // Two source-side silhouette edges are unsafe to choose between.
-            // Opposite-side contrast around the observed center is usually
-            // local texture; retain the established narrow correction there.
+            // A dark hair band can put one very strong edge outside the
+            // observed contour and a weaker return edge just inside it. Even
+            // when that second edge is not strong enough to win the search,
+            // moving the outer edge would move hair instead of the cheek.
+            // Rows with a nearby competing edge cannot anchor the wide pass.
             let outward = { (column: Int) in
                 isLeftSide ? column <= center - 4 : column >= center + 4
             }
