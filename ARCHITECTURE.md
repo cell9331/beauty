@@ -1,5 +1,12 @@
 # ARCHITECTURE.md
 
+## 2026-09-26 encoded still-image facade
+
+`BeautyEngine.processResult(encodedImageData:metadata:parameters:)` decodes
+one in-memory ImageIO frame after byte and declared-pixel preflight, then
+delegates to the existing `CIImage` result path. It adds no target, external
+file reader, decoder dependency, or effect/backend route.
+
 ## 2026-09-26 whole-face vertical image control
 
 The owner-local `wholeFaceYPosition` field uses the existing parameter,

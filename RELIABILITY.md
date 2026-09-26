@@ -1,5 +1,14 @@
 # RELIABILITY.md
 
+## 2026-09-26 encoded input failure and recovery
+
+The encoded `Data` facade performs bounded byte and pixel preflight, then
+reuses the existing still-image rendering state machine. It rejects empty,
+malformed, animated/multiframe, byte-oversized and pixel-oversized inputs as
+typed `invalidInput`; a later valid request on the same engine proceeds.
+`maximumInputByteCount` normalizes nonpositive mutation to its default.
+No diagnostic includes encoded contents or a source path.
+
 ## 2026-09-26 whole-face vertical bounds and recovery
 
 The new signed field caps at `±0.30` and emits at most one finite, unit-bounded
@@ -97,8 +106,8 @@ the canonicalizer retains its own bound check. A Metal geometry plan exceeding
 discarding geometry; a subsequent valid request remains independently usable.
 Still-image selective highlights/shadows use built-in Core Image filters and
 retain the existing bounded tone coefficient.
-`maximumInputByteCount` remains a normalized Codable value only; the current
-public API has no encoded-byte input on which to enforce it.
+At that audit date, `maximumInputByteCount` was a normalized Codable value
+only; the new in-memory entry above now enforces it.
 
 ## v1.24 upper-eyelid bounded correction
 

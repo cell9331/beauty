@@ -27,9 +27,15 @@ public struct BeautyConfiguration: Codable, Equatable, Sendable {
     public var enableDebugMode: Bool
     /// Reserved Codable field; the current SDK does not filter logs by this level.
     public var logLevel: BeautyLogLevel
-    /// Reserved Codable field; current public inputs are decoded images or pixel buffers,
-    /// so the SDK does not enforce an encoded-input byte limit.
-    public var maximumInputByteCount: Int
+    /// Maximum encoded bytes accepted by `BeautyEngine.processResult(encodedImageData:...)`.
+    /// Decoded-image and pixel-buffer entries continue to use the pixel limit.
+    public var maximumInputByteCount: Int {
+        didSet {
+            if maximumInputByteCount <= 0 {
+                maximumInputByteCount = Self.defaultMaximumInputByteCount
+            }
+        }
+    }
     public var maximumInputPixelCount: Int {
         didSet {
             maximumInputPixelCount = maximumInputPixelCount > 0

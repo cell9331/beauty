@@ -1,5 +1,16 @@
 # QUALITY_SCORE.md
 
+## 2026-09-26 encoded byte-limit focused evidence
+
+A generated in-memory `32×32` PNG at the exact configured byte limit produces
+different brightness pixels with unchanged extent and alpha, and repeats
+identically. One byte below its encoded size fails as typed `invalidInput`;
+the same engine still accepts the decoded `CIImage` entry. Malformed/empty
+data and a declared image above the configured pixel limit fail typed, then
+the valid encoded image succeeds. The focused public suite passes `2/0/0`;
+configuration plus entry tests pass `12/0/0`. The complete archive-first
+no-skip gate passes `979/0/0`, eight opt-ins executed, zero skips.
+
 ## 2026-09-26 whole-face vertical generated marker probe
 
 The new public still-image test uses an in-memory `128×128` opaque sRGB marker

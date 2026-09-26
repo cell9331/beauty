@@ -122,6 +122,45 @@ public final class BeautyEngine {
         ).output
     }
 
+    /// Decodes one in-memory still image after enforcing the configured
+    /// encoded-byte and declared-pixel limits. Orientation comes from
+    /// `metadata`, exactly as for the decoded-image entry.
+    public func processResult(
+        encodedImageData: Data,
+        metadata: BeautyInputMetadata,
+        parameters: BeautyParameters
+    ) throws -> BeautyResult<CIImage> {
+        guard !encodedImageData.isEmpty,
+              configuration.maximumInputByteCount > 0,
+              encodedImageData.count <= configuration.maximumInputByteCount,
+              let source = CGImageSourceCreateWithData(
+                  encodedImageData as CFData,
+                  [kCGImageSourceShouldCache: false] as CFDictionary
+              ),
+              CGImageSourceGetCount(source) == 1,
+              let properties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil)
+                  as? [CFString: Any],
+              let declaredWidth = (properties[kCGImagePropertyPixelWidth] as? NSNumber)?.intValue,
+              let declaredHeight = (properties[kCGImagePropertyPixelHeight] as? NSNumber)?.intValue,
+              Self.dimensionsAreWithinPixelLimit(
+                  width: declaredWidth,
+                  height: declaredHeight,
+                  maximumPixelCount: configuration.maximumInputPixelCount
+              ),
+              let decoded = CGImageSourceCreateImageAtIndex(source, 0, nil),
+              Self.dimensionsAreWithinPixelLimit(
+                  width: decoded.width,
+                  height: decoded.height,
+                  maximumPixelCount: configuration.maximumInputPixelCount
+              )
+        else {
+            throw BeautyError.invalidInput
+        }
+        let colorSpace = decoded.colorSpace ?? CGColorSpace(name: CGColorSpace.sRGB)!
+        let image = CIImage(cgImage: decoded, options: [.colorSpace: colorSpace])
+        return try processResult(image: image, metadata: metadata, parameters: parameters)
+    }
+
     public func processResult(
         image: CIImage,
         metadata: BeautyInputMetadata,

@@ -1,5 +1,14 @@
 # PRODUCT_SENSE.md
 
+## 2026-09-26 owner-local encoded image entry
+
+The local host can now pass one encoded still image as in-memory `Data` to
+`BeautyEngine.processResult(encodedImageData:metadata:parameters:)`. The
+configured byte limit is checked before ImageIO decoding, and a valid image
+continues through the same still-image effects and result metadata as an
+already decoded `CIImage`. Malformed or oversized input returns a typed error;
+the next valid request remains usable. The SDK still does not read file paths.
+
 ## 2026-09-26 whole-face vertical owner-local control
 
 The `3D塑颜 / 上下` taxonomy row has a new `wholeFaceYPosition` candidate.
@@ -98,8 +107,9 @@ altered saturation and contrast; callers then could not expect actual texture
 smoothing or edge sharpening. Configuration fields for processing size, frame
 interval, quality, and diagnostic logging are retained for Codable compatibility
 but do not change rendering. Invalid serialized orientation is rejected.
-The retained `maximumInputByteCount` does not impose a limit on decoded-image
-or pixel-buffer inputs; callers must apply any encoded-file limit before decoding.
+At that audit date, `maximumInputByteCount` did not impose a limit on
+decoded-image or pixel-buffer inputs and hosts had to bound encoded files
+before decoding. The new in-memory entry above now checks encoded bytes.
 Oversized Metal geometry fails explicitly rather than dropping the requested
 effect. These changes do not establish natural-portrait visual quality.
 

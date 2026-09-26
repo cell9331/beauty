@@ -1,5 +1,15 @@
 # SECURITY.md
 
+## 2026-09-26 encoded input admission
+
+The new in-memory encoded still-image entry checks `Data.count` before any
+ImageIO work, accepts exactly one frame, verifies declared dimensions against
+the configured pixel ceiling before image creation, and validates decoded
+dimensions again before dispatch. Malformed or oversized input fails as
+`invalidInput` without exposing bytes, paths, decoder details, pixels or face
+support in the error. The existing decoded-image and pixel-buffer entries
+retain their separate pixel-only admission.
+
 ## 2026-09-26 whole-face vertical input boundary
 
 `wholeFaceYPosition` uses validated, request-local selected-face bounds and
@@ -67,9 +77,9 @@ Codable initialization. Fractional or nonfinite still-image dimensions are
 rejected before expensive detection. Metal geometry exceeding its 256-point
 payload budget fails closed. No raw pixels, landmarks, or private fixture
 locators are added to persistent diagnostics.
-`maximumInputByteCount` is a retained configuration field, not an enforced
-decoded-input guard. A caller that reads encoded image files must bound their
-size before decoding; the SDK enforces the decoded pixel limit at its facade.
+At that audit date, `maximumInputByteCount` was not an enforced decoded-input
+guard; the host had to bound encoded files. The new in-memory entry above
+checks its encoded bytes; the SDK still does not read file paths.
 
 ## v1.24 upper-eyelid change boundary
 

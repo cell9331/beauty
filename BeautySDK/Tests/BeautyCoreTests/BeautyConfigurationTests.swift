@@ -102,13 +102,18 @@ final class BeautyConfigurationTests: XCTestCase {
     }
 
     func testInputLimitsAcceptPositiveCustomValues() {
-        let configuration = BeautyConfiguration(
+        var configuration = BeautyConfiguration(
             maximumInputByteCount: 128,
             maximumInputPixelCount: 256
         )
 
         XCTAssertEqual(configuration.maximumInputByteCount, 128)
         XCTAssertEqual(configuration.maximumInputPixelCount, 256)
+        configuration.maximumInputByteCount = -1
+        XCTAssertEqual(
+            configuration.maximumInputByteCount,
+            BeautyConfiguration.defaultMaximumInputByteCount
+        )
     }
 
     func testPixelLimitCannotExceedBackendHardCeiling() throws {

@@ -1,5 +1,20 @@
 # DESIGN.md
 
+## 2026-09-26 encoded input byte-limit contract
+
+`maximumInputByteCount` is now enforced by the new owner-local
+`processResult(encodedImageData:metadata:parameters:)` entry. A nonempty
+single-frame `Data` value must have `count ≤ maximumInputByteCount`; ImageIO
+declared dimensions and decoded dimensions must both fit the existing pixel
+limit before the image enters the unchanged still-image path. The bound is
+inclusive. Invalid encoding, multiple frames, missing/invalid dimensions,
+oversized bytes or pixels return `BeautyError.invalidInput`. The caller's
+`BeautyInputMetadata` supplies orientation; the encoded EXIF orientation is
+not separately applied. Existing `CIImage` and `CVPixelBuffer` entries still
+enforce their decoded-pixel limit and do not consult encoded byte count.
+Nonpositive byte-limit values normalize to the default on initialization,
+decoding and later mutation.
+
 ## 2026-09-26 whole-face vertical image contract
 
 `wholeFaceYPosition` is a signed public field with neutral zero and effective
@@ -99,9 +114,8 @@ execution controls. They remain Codable compatibility fields pending a
 separately scoped implementation. Input pixel configuration is clamped to the
 backend's 50,000,000-pixel ceiling. Decoding an EXIF orientation outside 1–8
 fails, rather than changing the image to `.up`.
-`maximumInputByteCount` is also a retained Codable field: the public SDK
-receives decoded images or pixel buffers, and does not enforce an encoded-input
-byte limit.
+At this audit date, `maximumInputByteCount` was a retained Codable field with
+no encoded-input entry; the 2026-09-26 contract above supersedes that state.
 
 ## v1.24 owner-local upper-eyelid relief adjustment (2026-09-24)
 
@@ -491,7 +505,7 @@ SDK 以稳定、可预测的方式输出处理后的图像。SDK、模型和权�
 | `enablePerformanceLog` | `Bool` | 保留字段；当前不采样性能日志。 |
 | `enableDebugMode` | `Bool` | 保留字段；当前不输出调试信息。 |
 | `logLevel` | `BeautyLogLevel` | 保留字段；当前不控制日志。 |
-| `maximumInputByteCount` | `Int` | 保留的编码输入字节上限字段，默认 `33_554_432`（32 MiB）；当前公开入口不接收编码字节，故不执行该上限。 |
+| `maximumInputByteCount` | `Int` | 内存编码单帧图像入口的字节上限，默认 `33_554_432`（32 MiB）；已解码入口不适用。 |
 | `maximumInputPixelCount` | `Int` | 解码图像与像素缓冲区的像素数上限；默认且最高 `50_000_000`。 |
 | `renderBackend` | `BeautyRenderBackend` | 执行策略；精确为 `.cpu` 或 `.gpu`，默认 `.cpu`。 |
 
@@ -502,7 +516,7 @@ SDK 以稳定、可预测的方式输出处理后的图像。SDK、模型和权�
 - 不能包含宿主 UI 框架或宿主 App 状态。
 - 图像方向、输入镜像、预览镜像是逐帧输入状态，不放入全局 configuration。
 - 两个输入上限都是尾部默认参数；非正自定义值回落到各自默认值，旧 JSON 缺少两个 key 时通过显式 `decodeIfPresent` 得到相同默认值。像素数自定义值大于 50,000,000 时压到该硬上限。
-- 当前执行的像素数上限是拒绝边界而非处理策略：精确命中上限继续当前行为，超过上限返回 `BeautyError.invalidInput`；SDK 不借此缩放、降采样或重解释 `preferredProcessingSize`。保留的 `maximumInputByteCount` 只做值归一化与 Codable 往返，不参与此输入检查。
+- 当前执行的像素数上限是拒绝边界而非处理策略：精确命中上限继续当前行为，超过上限返回 `BeautyError.invalidInput`；SDK 不借此缩放、降采样或重解释 `preferredProcessingSize`。编码入口先执行 `maximumInputByteCount`，已解码入口不检查该值。
 - `renderBackend` 是执行策略而非逐帧美颜参数；新建配置和缺少该 key 的旧 Codable payload 都确定性解码为 `.cpu`。显式 `.gpu` 只经 `BeautyBackendFactory` 构造 package Metal backend；不可用时终止为 `.metalUnavailable`，不回退 CPU。已有 Engine 的配置快照不可变，package-only injection 仅用于测试。
 - `maximumFaceCount` 保留原有检测选择上限和 Codable 字段，不承诺对全部选中人脸渲染效果。当前 `BeautyEngine` 为效果与局部支持只消费所选主脸；扩大到多脸效果须单独定义所有权、重叠和像素验收。
 
