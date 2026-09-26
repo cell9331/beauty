@@ -1,5 +1,17 @@
 # DESIGN.md
 
+## 2026-09-26 debug and log-level result contract
+
+Successful public `processResult` results carry a closed array of
+`BeautyDiagnosticEvent` values. `.none` and `.error` emit no successful
+event. `.warning` emits `warningsPresent` only if the existing warning array
+is nonempty. `.info` also emits `requestSucceeded`. `.debug` emits
+`backendExecuted` only with `enableDebugMode=true`. Levels are inclusive
+verbosity thresholds and events contain codes and levels only, never messages
+or input data. Typed failures still throw without a successful result; no OS
+or persistent logging is created. The event list is deterministic and does
+not alter output pixels, warnings, metrics or detection summary.
+
 ## 2026-09-26 performance-log configuration contract
 
 When `enablePerformanceLog` is true, a successful public `processResult`
@@ -134,9 +146,10 @@ above supersedes those proxy semantics.
 At this audit date, the renderer did not use `preferredProcessingSize`,
 `detectionFrameInterval`, `renderQuality`, `enablePerformanceLog`,
 `enableDebugMode`, or `logLevel` as execution controls. The current
-`enablePerformanceLog` result contract is above; the other five fields remain
-Codable compatibility fields. Input pixel configuration is clamped to the
-backend's 50,000,000-pixel ceiling. Decoding an EXIF orientation outside 1–8
+`enablePerformanceLog`, `enableDebugMode`, and `logLevel` result contracts are
+above; the other three fields remain Codable compatibility fields. Input
+pixel configuration is clamped to the backend's 50,000,000-pixel ceiling.
+Decoding an EXIF orientation outside 1–8
 fails, rather than changing the image to `.up`.
 At this audit date, `maximumInputByteCount` was a retained Codable field with
 no encoded-input entry; the 2026-09-26 contract above supersedes that state.
@@ -527,8 +540,8 @@ SDK 以稳定、可预测的方式输出处理后的图像。SDK、模型和权�
 | `detectionFrameInterval` | `Int` | 保留字段；当前不按帧降频。 |
 | `renderQuality` | `BeautyRenderQuality` | 保留字段；当前不切换质量等级。 |
 | `enablePerformanceLog` | `Bool` | 成功的 `processResult` 在 `metrics` 附加同步 facade 耗时；不写系统或持久日志。 |
-| `enableDebugMode` | `Bool` | 保留字段；当前不输出调试信息。 |
-| `logLevel` | `BeautyLogLevel` | 保留字段；当前不控制日志。 |
+| `enableDebugMode` | `Bool` | `.debug` 级别时允许固定的后端阶段事件，不含输入内容。 |
+| `logLevel` | `BeautyLogLevel` | 成功结果的固定代码诊断事件最高详细等级；不写系统日志。 |
 | `maximumInputByteCount` | `Int` | 内存编码单帧图像入口的字节上限，默认 `33_554_432`（32 MiB）；已解码入口不适用。 |
 | `maximumInputPixelCount` | `Int` | 解码图像与像素缓冲区的像素数上限；默认且最高 `50_000_000`。 |
 | `renderBackend` | `BeautyRenderBackend` | 执行策略；精确为 `.cpu` 或 `.gpu`，默认 `.cpu`。 |

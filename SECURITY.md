@@ -1,5 +1,13 @@
 # SECURITY.md
 
+## 2026-09-26 closed diagnostic vocabulary
+
+Result diagnostics use a closed enum with three fixed codes and the existing
+five log levels. The engine emits only an aggregate warning-presence flag,
+successful-request event, and gated backend-stage event. No event can embed
+raw pixels, masks, landmarks, paths, private locators, parameter values or
+framework messages. No system or persistent log is written.
+
 ## 2026-09-26 opt-in performance metric
 
 `enablePerformanceLog` emits only one finite nonnegative elapsed-time number

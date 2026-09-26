@@ -44,6 +44,8 @@
   - `maximumInputByteCount` 已新增仅接收内存编码单帧图像的公开入口：先按编码字节和图像声明尺寸拒绝超限，再解码、复核实际像素尺寸并交给原静态图路径。已解码 CIImage 与 CVPixelBuffer 入口仍只受像素上限约束；不读取文件。32×32 内存 PNG 的恰好上限、超限、像素超限、畸形输入、恢复、输出像素/extent/alpha/重复性和配置变更聚焦 `12/0/0`。该次完整 archive-first no-skip `979/0/0`、8 opt-in、0 skip。
   - `enablePerformanceLog` 候选契约：开启时仅在成功的公开 `processResult` 的 `metrics` 中附加同步 facade 耗时 `beauty.performance.facadeElapsedMilliseconds`（单调时钟、有限且非负）；延迟 CIImage 像素求值不在测量内。不写系统日志、不保留输入或诊断内容。关闭时不增加此键；同一像素请求前后输出仍相同。编码入口耗时从字节检查起算，已解码静态图和像素缓冲区入口从其各自前置检查起算；失败仍返回原 typed error，无成功结果。先用公开入口测试固定此行为。
   - 上述性能字段已在三类 `processResult` 入口实现：先固定的两项测试因缺失指标出现四条失败断言；实现后聚焦 `2/0/0`、Engine/配置/路由组合 `39/0/0`，含源/输出像素一致、失败恢复。名称在红灯后明确为同步 facade 范围，避免把延迟 CIImage 求值计入。完整 archive-first no-skip `986/0/0`、8 opt-in、0 skip；其余五字段仍未实现。
+  - `logLevel` 与 `enableDebugMode` 候选契约：成功的 `processResult` 附带只含固定代码与级别的内存诊断事件，不写系统或持久日志。`.none` 与 `.error` 对成功结果无事件；`.warning` 仅在原 warning 非空时给一项聚合事件；`.info` 再给请求完成事件；`.debug` 且 `enableDebugMode=true` 再给后端执行阶段事件。关闭 debug 时不产生 debug 级事件。失败仍是 typed throw，无成功结果；事件不含输入内容、参数值、像素、支持区或路径。三类公开入口、级别过滤、像素不变、确定性和失败恢复先用测试固定。
+  - 这两项已接入 `BeautyResult.diagnostics` 固定枚举与公开三入口。先固定的验收因事件类型不存在按预期编译失败；实现后级别矩阵、warning 聚合、debug 门、事件顺序、重复、CIImage/编码/像素缓冲区输出、typed failure/recovery 与 Sendable 聚焦 `7/0/0`，含 facade/配置组合 `43/0/0`。完整 archive-first no-skip `988/0/0`、8 opt-in、0 skip；剩余 `preferredProcessingSize`、`detectionFrameInterval`、`renderQuality` 三项。
 - [ ] FUTURE-07：证明现有 Metal 几何点数在公开可达输入中的上界，或将超限组合拆分为安全的有界执行；保留 typed failure 回归。
 - [ ] FUTURE-08：为纹理滤镜固定非面部低对比负例与大图资源预算，实施满足契约的局部保护和资源上界。
 - [ ] 比例「小头」：定义独立于现有 `faceSmall` 的中性比例语义和像素验收，达到后再调整 taxonomy 的 `partial` 状态。

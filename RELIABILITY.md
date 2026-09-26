@@ -1,5 +1,13 @@
 # RELIABILITY.md
 
+## 2026-09-26 diagnostic filtering and recovery
+
+The `logLevel` verbosity threshold is applied after each successful public
+result route; `enableDebugMode` gates the debug-stage event. Encoded input
+reuses the static-image path without duplicating events. Failure remains a
+typed throw with no result; the next valid request emits the same configured
+events. Default `.error` continues to produce no success diagnostics.
+
 ## 2026-09-26 opt-in performance timing
 
 The monotonic timer starts before each public result facade's synchronous

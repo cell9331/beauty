@@ -98,7 +98,7 @@ public final class BeautyEngine {
             plan: plan
         )
         let backendResult = try backendExecutor.execute(request)
-        return withPerformanceMetric(BeautyResult(
+        return withConfiguredResultMetadata(BeautyResult(
             output: try Self.pixelBufferOutput(from: backendResult),
             warnings: plan.warnings,
             metrics: plan.metrics,
@@ -163,7 +163,7 @@ public final class BeautyEngine {
         }
         let colorSpace = decoded.colorSpace ?? CGColorSpace(name: CGColorSpace.sRGB)!
         let image = CIImage(cgImage: decoded, options: [.colorSpace: colorSpace])
-        return try withPerformanceMetric(
+        return try withConfiguredResultMetadata(
             processResult(image: image, metadata: metadata, parameters: parameters),
             since: performanceStart
         )
@@ -199,7 +199,7 @@ public final class BeautyEngine {
             : productionAdmission
 
         guard admission.isEmpty == false else {
-            return try withPerformanceMetric(legacyStillImageResult(
+            return try withConfiguredResultMetadata(legacyStillImageResult(
                 image: image,
                 metadata: metadata,
                 parameters: validated
@@ -332,7 +332,7 @@ public final class BeautyEngine {
                 colorSpace: sRGB
             )
         }
-        return withPerformanceMetric(BeautyResult(
+        return withConfiguredResultMetadata(BeautyResult(
             output: try Self.stillImageOutput(from: backendResult),
             warnings: route.plan.warnings,
             metrics: route.plan.metrics,
@@ -340,17 +340,30 @@ public final class BeautyEngine {
         ), since: performanceStart)
     }
 
-    private func withPerformanceMetric<Output>(
+    private func withConfiguredResultMetadata<Output>(
         _ result: BeautyResult<Output>, since start: UInt64?
     ) -> BeautyResult<Output> {
-        guard let start else { return result }
-        let end = DispatchTime.now().uptimeNanoseconds
-        let milliseconds = end >= start ? Double(end - start) / 1_000_000 : 0
         var metrics = result.metrics
-        metrics["beauty.performance.facadeElapsedMilliseconds"] = milliseconds
+        if let start {
+            let end = DispatchTime.now().uptimeNanoseconds
+            let milliseconds = end >= start ? Double(end - start) / 1_000_000 : 0
+            metrics["beauty.performance.facadeElapsedMilliseconds"] = milliseconds
+        }
+        var diagnostics: [BeautyDiagnosticEvent] = []
+        if configuration.logLevel >= .warning, !result.warnings.isEmpty {
+            diagnostics.append(BeautyDiagnosticEvent(code: .warningsPresent))
+        }
+        if configuration.logLevel >= .info {
+            diagnostics.append(BeautyDiagnosticEvent(code: .requestSucceeded))
+        }
+        if configuration.logLevel >= .debug, configuration.enableDebugMode {
+            diagnostics.append(BeautyDiagnosticEvent(code: .backendExecuted))
+        }
+        if start == nil, diagnostics.isEmpty { return result }
         return BeautyResult(
             output: result.output, warnings: result.warnings,
-            metrics: metrics, detectionSummary: result.detectionSummary
+            metrics: metrics, detectionSummary: result.detectionSummary,
+            diagnostics: diagnostics
         )
     }
 

@@ -1,5 +1,13 @@
 # PRODUCT_SENSE.md
 
+## 2026-09-26 owner-local diagnostics
+
+`logLevel` now selects bounded event verbosity on `BeautyResult.diagnostics`;
+`enableDebugMode` permits one backend-stage debug event at `.debug`. The
+owner-local host can inspect successful requests without exposing images,
+paths or free-form log text. Failed requests keep their typed error and have
+no result event list.
+
 ## 2026-09-26 owner-local performance result
 
 The owner-local host can opt into a per-request synchronous facade duration

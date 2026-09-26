@@ -1,3 +1,4 @@
+/// Maximum verbosity of content-free `BeautyResult.diagnostics` events.
 public enum BeautyLogLevel: Int, Codable, Equatable, Comparable, Sendable {
     case none = 0
     case error = 1

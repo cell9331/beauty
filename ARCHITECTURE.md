@@ -1,5 +1,14 @@
 # ARCHITECTURE.md
 
+## 2026-09-26 result-local diagnostic events
+
+`BeautyDiagnosticCode` and `BeautyDiagnosticEvent` are closed BeautyCore
+values. `BeautyResult` carries their array with a source-compatible empty
+default. The engine decorates successful public result routes after backend
+execution; encoded input delegates to the still-image route and replaces the
+same event list, so it is not duplicated. No logging target or persistent
+diagnostic store is added.
+
 ## 2026-09-26 request-local performance metric
 
 `enablePerformanceLog` adds one result-local numeric metric through the

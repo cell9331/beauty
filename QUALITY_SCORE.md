@@ -1,5 +1,14 @@
 # QUALITY_SCORE.md
 
+## 2026-09-26 diagnostic level focused evidence
+
+Preimplementation public tests failed to compile because the closed event
+type was absent. The completed `7/0/0` focused suite covers `.none` through
+`.debug`, warning aggregation, debug gating, exact event order, repeated
+requests, CIImage/encoded/pixel-buffer routes, pixel preservation, typed
+failure/recovery, opt-in performance timing and result Sendable behavior.
+Full archive-first no-skip passes `988/0/0`, eight opt-ins, zero skips.
+
 ## 2026-09-26 performance-result focused evidence
 
 Two public tests cover disabled/enabled metrics on `CIImage`, in-memory encoded

@@ -24,9 +24,9 @@ public struct BeautyConfiguration: Codable, Equatable, Sendable {
     /// Adds a bounded synchronous-facade duration to successful `processResult` metrics.
     /// No system or persistent log is emitted; deferred CIImage evaluation is excluded.
     public var enablePerformanceLog: Bool
-    /// Reserved Codable field; the current SDK does not emit debug output.
+    /// Enables bounded debug-level result diagnostics when `logLevel` is `.debug`.
     public var enableDebugMode: Bool
-    /// Reserved Codable field; the current SDK does not filter logs by this level.
+    /// Maximum verbosity for content-free events in successful `processResult` results.
     public var logLevel: BeautyLogLevel
     /// Maximum encoded bytes accepted by `BeautyEngine.processResult(encodedImageData:...)`.
     /// Decoded-image and pixel-buffer entries continue to use the pixel limit.
