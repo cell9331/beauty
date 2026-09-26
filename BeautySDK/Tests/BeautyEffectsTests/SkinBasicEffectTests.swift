@@ -58,7 +58,7 @@ final class SkinBasicEffectTests: XCTestCase {
         XCTAssertLessThanOrEqual(abs(pixel.blue - inputPixel.blue), 4)
     }
 
-    func testSkinSharpenIncreasesLocalContrastWithoutChangingExtent() throws {
+    func testSkinSharpenDoesNotApplyGlobalContrastToTwoPixelInput() throws {
         let image = ciImage(width: 2, height: 1, rgba: [
             74, 74, 74, 255,
             172, 172, 172, 255
@@ -70,10 +70,10 @@ final class SkinBasicEffectTests: XCTestCase {
         let pixels = rgbaPixels(from: output, width: 2, height: 1)
 
         XCTAssertEqual(output.extent, image.extent)
-        XCTAssertGreaterThan(pixels[1].red - pixels[0].red, input[1].red - input[0].red)
+        XCTAssertEqual(pixels, input)
     }
 
-    func testSkinSmoothingMovesChannelsTowardLuminanceWithoutFlatteningTextureProxy() throws {
+    func testSkinSmoothingDoesNotDesaturateUniformOnePixelInput() throws {
         let image = ciImage(width: 1, height: 1, rgba: [178, 78, 48, 255])
         let inputPixel = rgbaPixels(from: image, width: 1, height: 1)[0]
         let plan = BeautyEffectResolver.resolve(parameters: BeautyParameters(skinSmoothing: 0.5))
@@ -81,12 +81,7 @@ final class SkinBasicEffectTests: XCTestCase {
         let output = BeautyColorEffectPipeline.apply(to: image, plan: plan)
         let pixel = rgbaPixels(from: output, width: 1, height: 1)[0]
 
-        XCTAssertLessThan(channelSpread(pixel), channelSpread(inputPixel))
-        XCTAssertGreaterThan(channelSpread(pixel), 45)
-        XCTAssertGreaterThanOrEqual(
-            Double(channelSpread(inputPixel) - channelSpread(pixel)) / Double(channelSpread(inputPixel)),
-            0.08
-        )
+        XCTAssertEqual(pixel, inputPixel)
     }
 
     func testStillImageHighlightAndShadowSelectTheirOwnLuminanceRegion() {

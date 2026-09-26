@@ -1,5 +1,24 @@
 # DESIGN.md
 
+## 2026-09-26 FUTURE-06 skin texture semantics
+
+`skinSmoothing` and `skinSharpen` retain their public unit parameters and
+effective caps (`0.60` and `0.40`). Both now operate on source-image spatial
+luminance detail. A 5×5 separable-weight neighborhood is admitted only when
+its opaque pixels remain within 36 RGB levels of the center; a hard color
+edge, transparent footprint, or image border is source-exact. Smoothing moves
+the center luminance toward the local mean; sharpening boosts the center-to-
+mean detail. The combined signed gain is `2.5 × sharpen − 1.5 × smoothing`,
+clipped to ±16 RGB levels per channel. Equal RGB deltas retain local chroma,
+so neither control aliases global saturation or contrast.
+
+The texture operation precedes existing tone and geometry work on still
+images and pixel buffers. It requires no face detection and has no semantic
+skin mask: qualifying low-contrast texture outside a face can also change.
+The generated portrait oracle protects its dark hair, eyes, mouth and distant
+background; this is evidence for those inputs, not a general segmentation
+promise. Images smaller than the 5×5 footprint are neutral for these controls.
+
 ## 2026-09-26 FACE-01 source-boundary repair
 
 The subsequent edge-robustness pass admits either background/skin brightness
@@ -46,10 +65,11 @@ qualification designs below retain their historical baseline meaning.
 
 ## 2026-09-24 SDK audit repair
 
-Still-image `highlight` and `shadow` now select bright and dark source-luminance
+Still-image `highlight` and `shadow` select bright and dark source-luminance
 pixels respectively, with the same bounded `0.08 × strength` lift used by the
-pixel-buffer and Metal paths. `skinSmoothing` currently reduces color saturation
-and `skinSharpen` increases color contrast; neither is a spatial texture filter.
+pixel-buffer and Metal paths. At this audit date, `skinSmoothing` reduced color
+saturation and `skinSharpen` increased color contrast; the 2026-09-26 contract
+above supersedes those proxy semantics.
 The renderer does not use `preferredProcessingSize`, `detectionFrameInterval`,
 `renderQuality`, `enablePerformanceLog`, `enableDebugMode`, or `logLevel` as
 execution controls. They remain Codable compatibility fields pending a

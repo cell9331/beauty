@@ -1,5 +1,16 @@
 # SECURITY.md
 
+## 2026-09-26 skin-texture input boundary
+
+The texture transform reads decoded pixels only inside the admitted request,
+stores no neighborhood map or image outside it, and emits no pixel-derived
+diagnostics. Opaque-footprint and strong-edge guards prevent this bounded
+operation from sampling across transparent or strongly different-color
+regions. They are not a skin classifier: an unprotected low-contrast background
+may be edited. Generated inputs stay in memory; durable evidence records only
+aggregate assertions and test outcomes. No model, network, permission, public
+raw-pixel API, or private fixture locator was added.
+
 ## 2026-09-26 FACE-01 source-edge trust boundary
 
 Both bright and dark backgrounds can qualify, but a side must show a coherent

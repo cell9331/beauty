@@ -1,5 +1,16 @@
 # ARCHITECTURE.md
 
+## 2026-09-26 skin texture path
+
+`BeautyEffects` now owns one request-local 5×5 luminance-detail transform for
+`skinSmoothing` and `skinSharpen`. CPU still-image and pixel-buffer paths call
+it before their existing color/geometry work; the Metal-selected executor
+applies the same CPU transform to admitted RGBA8 bytes before its retained
+passes. This preserves one effect definition without adding a Metal shader,
+backend, model, public parameter, detector dependency, or target. The Metal
+selection still runs through the existing runtime for other passes and output
+conversion; it is not a claim that texture work executes on the GPU.
+
 ## Current image acceptance input boundary (2026-09-24)
 
 Image provenance does not select a different SDK architecture. Owner-authorized
@@ -99,10 +110,10 @@ Current source/test inventory, excluding `.build`:
 
 | Inventory | Count |
 | --- | ---: |
-| Swift source files | 76 |
-| SwiftPM test files | 81 |
-| Swift source lines | 18,857 |
-| SwiftPM test lines | 36,008 |
+| Swift source files | 79 |
+| SwiftPM test files | 118 |
+| Swift source lines | 20,867 |
+| SwiftPM test lines | 46,441 |
 | `BeautyConfiguration` stored fields | 11 |
 
 ## 2. Top-Level Invariants

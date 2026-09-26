@@ -272,7 +272,7 @@ for marker in (
     "isStillImage ? 0.14 : 0.16", "isStillImage ? 0.16 : 0.18",
     "highlightLift: strengths.highlight * 0.08",
     "shadowLift: strengths.shadow * 0.08",
-    "smoothing: isStillImage ? 0",
+    "smoothing: 0", "BeautySkinTexturePipeline.applyRGBA",
 ):
     if marker not in text["metal_backend"]:
         raise SystemExit(f"still-image Metal adapter marker missing: {marker}")

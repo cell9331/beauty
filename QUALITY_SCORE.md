@@ -1,5 +1,24 @@
 # QUALITY_SCORE.md
 
+## 2026-09-26 FUTURE-06 generated texture evidence
+
+The new public generated-image oracle fixes a checker-textured cheek positive,
+a moderate soft-edge positive, flat and hard-edge negatives, alpha and distant
+protections, plus a portrait-like skin-colored cheek input with hair/eye/mouth
+exclusions. Before implementation, all four initial tests failed on the old
+proxy behavior. The final six public tests pass `6/0/0`; they check target
+direction rather than changed-pixel count alone, and cover neutral, repeat,
+orientation/mirroring, sRGB/Display P3, extent, and typed pixel-limit recovery.
+An available-Metal generated buffer/still test checks both texture controls
+and a combined color case against CPU at max RGB delta `≤2`, mean `<0.75`;
+the focused Metal color suite passes `7/0/0`. Historical global-color tests
+now exclude the two controls because their effect no longer aliases saturation
+or contrast. The final archive-first `bash scripts/run-no-skip-swiftpm.sh`
+returned zero with every SDK-owned preflight passing, eight opt-ins executed,
+and zero skips. Two preflight static markers were updated to reflect that
+texture is CPU-owned on both backend selections; the failed preflight attempts
+did not represent pixel-oracle failures.
+
 ## 2026-09-26 FACE-01 source-boundary repair
 
 The follow-up robustness suite initially reproduced two defects: a dark

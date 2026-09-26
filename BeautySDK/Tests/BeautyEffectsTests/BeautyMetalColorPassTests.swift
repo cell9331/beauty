@@ -14,10 +14,8 @@ final class BeautyMetalColorPassTests: XCTestCase {
         guard let runtime = makeRuntime() else { return }
         let fixture = CPUReferenceFixtureFactory.opaqueColorRamp(width: 16, height: 12)
         let rows: [(String, BeautyParameters)] = [
-            ("skinSmoothing", BeautyParameters(skinSmoothing: 0.8)),
             ("skinWhitening", BeautyParameters(skinWhitening: 0.8)),
             ("skinRosy", BeautyParameters(skinRosy: 0.8)),
-            ("skinSharpen", BeautyParameters(skinSharpen: 0.8)),
             ("brightness", BeautyParameters(brightness: 0.8)),
             ("contrast", BeautyParameters(contrast: 0.8)),
             ("saturation", BeautyParameters(saturation: 0.8)),
@@ -69,6 +67,70 @@ final class BeautyMetalColorPassTests: XCTestCase {
             XCTAssertEqual(alphaValues(cpuBytes), fixture.alphaValues)
             XCTAssertLessThanOrEqual(maxRGBDelta(metalBytes, cpuBytes), 8)
             XCTAssertLessThan(meanRGBDelta(metalBytes, cpuBytes), 5.0)
+        }
+    }
+
+    func testGeneratedTextureSmoothingAndSharpeningMatchCPUForBufferAndStillImage() throws {
+        guard let runtime = makeRuntime() else { return }
+        let width = 48
+        let height = 48
+        var source = [UInt8](repeating: 0, count: width * height * 4)
+        for y in 0..<height {
+            for x in 0..<width {
+                let target = (10..<38).contains(x) && (10..<38).contains(y)
+                let value = target
+                    ? (x < 24 ? 138 : 162) + ((x / 2 + y / 2).isMultiple(of: 2) ? 5 : -5)
+                    : 36
+                let offset = (y * width + x) * 4
+                source[offset] = UInt8(value)
+                source[offset + 1] = UInt8(value)
+                source[offset + 2] = UInt8(value)
+                source[offset + 3] = 255
+            }
+        }
+        let fixture = CPUReferenceRGBA8Fixture(
+            width: width, height: height, rgba8: source,
+            colorSpaceName: CGColorSpace.sRGB as CFString, regions: [:]
+        )
+        let colorSpace = try XCTUnwrap(CGColorSpace(name: CGColorSpace.sRGB))
+        let image = CIImage(
+            bitmapData: Data(source), bytesPerRow: width * 4,
+            size: CGSize(width: width, height: height), format: .RGBA8,
+            colorSpace: colorSpace
+        )
+        for parameters in [
+            BeautyParameters(skinSmoothing: 1),
+            BeautyParameters(skinSharpen: 1),
+            BeautyParameters(skinSmoothing: 0.5, skinSharpen: 0.5, saturation: 0.2),
+        ] {
+            let plan = BeautyEffectResolver.resolve(parameters: parameters)
+            let cpuBuffer = try renderCPU(fixture: fixture, plan: plan)
+            let metalBuffer = try renderMetal(fixture: fixture, plan: plan, runtime: runtime)
+            XCTAssertLessThanOrEqual(maxRGBDelta(cpuBuffer, metalBuffer), 2)
+            XCTAssertLessThan(meanRGBDelta(cpuBuffer, metalBuffer), 0.75)
+            XCTAssertTrue(alphaValues(cpuBuffer) == fixture.alphaValues)
+            XCTAssertTrue(alphaValues(metalBuffer) == fixture.alphaValues)
+
+            let metadata = BeautyInputMetadata(orientation: .up, source: .testFixture)
+            let cpuRequest = try BeautyBackendRequest(
+                policy: .cpu, input: .stillImage(image), metadata: metadata, plan: plan
+            )
+            let metalRequest = try BeautyBackendRequest(
+                policy: .metal, input: .stillImage(image), metadata: metadata, plan: plan
+            )
+            let cpuResult = try BeautyCPUBackend().execute(cpuRequest)
+            let metalResult = try BeautyMetalBackend(runtime: runtime).execute(metalRequest)
+            guard case .stillImage(let cpuImage) = cpuResult.output,
+                  case .stillImage(let metalImage) = metalResult.output else {
+                return XCTFail("Texture result changed output kind")
+            }
+            let cpuStill = renderedBytes(cpuImage, width: width, height: height)
+            let metalStill = renderedBytes(metalImage, width: width, height: height)
+            XCTAssertLessThanOrEqual(maxRGBDelta(cpuStill, metalStill), 2)
+            XCTAssertLessThan(meanRGBDelta(cpuStill, metalStill), 0.75)
+            XCTAssertEqual(cpuImage.extent, image.extent)
+            XCTAssertEqual(metalImage.extent, image.extent)
+            XCTAssertEqual(metalImage.colorSpace?.name, colorSpace.name)
         }
     }
 
@@ -261,10 +323,9 @@ final class BeautyMetalColorPassTests: XCTestCase {
 
     private func direction(name: String, before: ColorSummary, after: ColorSummary) -> Bool {
         switch name {
-        case "skinSmoothing": return after.chroma < before.chroma
         case "skinWhitening", "brightness", "exposure", "highlight", "shadow": return after.luminance > before.luminance
         case "skinRosy", "temperature", "filter.warm_light", "filter.soft_clean": return after.redBlue > before.redBlue
-        case "skinSharpen", "contrast": return after.spread > before.spread
+        case "contrast": return after.spread > before.spread
         case "saturation": return after.chroma > before.chroma
         case "tint": return after.greenRed > before.greenRed
         default: return false

@@ -56,6 +56,13 @@ normalize to `-1...1`; `filterId` is an optional logical resource identifier.
 - Filter: `filterId`, `filterIntensity`
 <!-- SDK_PARAMETER_INVENTORY_END -->
 
+`skinSmoothing` and `skinSharpen` now use a bounded spatial luminance-detail
+filter on admitted opaque, low-contrast neighborhoods. Generated skin-colored
+cheek and soft-edge positives, flat negatives, and protected facial features
+pass owner-local public-pixel tests. This is not face segmentation or a claim
+about all real skin, hair, devices, or commercial visual quality. The 62-field
+public inventory and existing control caps are unchanged.
+
 `lipColor` is color-only and is not evidence for geometric `丰唇` (`lipPlump`).
 `teethWhitening`, `scleraRednessReduction`, and
 `upperEyelidFullnessReduction` are bounded opaque still-image local-retouch

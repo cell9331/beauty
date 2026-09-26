@@ -6,7 +6,7 @@ readonly repository_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd 
 readonly package_root="${repository_root}/BeautySDK"
 readonly maximum_output_bytes=$((16 * 1024 * 1024))
 readonly focused_filter='BeautyEffectsTests.BeautyMetalColorPassTests|BeautyEffectsTests.BeautyMetalGeometryPassTests|BeautyEffectsTests.BeautyMetalBackendTests|BeautyEffectsTests.BeautyMetalLocalRetouchPassTests|BeautyRenderTests.BeautyMetalRuntimeTests'
-readonly expected_focused_tests=37
+readonly expected_focused_tests=38
 readonly pass_source="BeautySDK/Sources/BeautyRender/BeautyMetalPass.swift"
 readonly runtime_source="BeautySDK/Sources/BeautyRender/BeautyMetalRuntime.swift"
 readonly shader_source="BeautySDK/Sources/BeautyRender/Shaders/Warp.metal"
@@ -154,7 +154,8 @@ for marker in (
     "isStillImage ? 0.14 : 0.16", "isStillImage ? 0.16 : 0.18",
     "highlightLift: strengths.highlight * 0.08",
     "shadowLift: strengths.shadow * 0.08",
-    "smoothing: isStillImage ? 0",
+    "smoothing: 0", "BeautySkinTexturePipeline.applyRGBA",
+    "saturationDelta: strengths.saturation * 0.28 + filter.saturation",
 ):
     if marker not in backend_code:
         raise SystemExit(f"still-image color adapter marker missing: {marker}")

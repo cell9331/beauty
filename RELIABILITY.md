@@ -1,5 +1,23 @@
 # RELIABILITY.md
 
+## 2026-09-26 skin-texture bounds and recovery
+
+The spatial stage samples immutable request-local RGBA8 pixels within a 5×5
+footprint and writes each result once. It checks input dimensions and byte
+products before allocating for the direct CI path; the public facade still
+rejects invalid extents and configured pixel-limit violations with typed
+`BeautyError.invalidInput`. Nonopaque centers or neighboring pixels, strong
+color discontinuities, and borders are source-exact for texture work. The
+neutral plan avoids this stage. Identical input and plan produce identical
+output; a failed request does not retain a prior neighborhood or output.
+
+This CPU-owned stage also runs when Metal is selected, before retained GPU
+passes. Its worst-case work is 25 neighbor samples per pixel and it can hold
+both source and result rasters while Core Image or the backend owns other
+buffers. No physical-device latency, peak-memory, sustained-load or power
+measurement has been made for this new behavior. Large-image throughput and
+additional non-face low-contrast textures remain follow-up quality risks.
+
 ## 2026-09-26 FACE-01 lower-cheek recovery and bounds
 
 The follow-up robustness gate verifies a dark background rough-positive,

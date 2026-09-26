@@ -35,6 +35,13 @@
 
 ## 4. Completed
 
+### C-2026-09-26-future06-skin-texture
+
+- Status: completed；不改公开字段、cap、preset、75-case inventory 或历史回执，将 `skinSmoothing` 与 `skinSharpen` 的饱和度/对比度代理改为共享的有界空间纹理操作。CPU still-image/pixel-buffer 与 Metal 选择路径均在现有色彩/几何处理前运行同一 CPU-owned、源图驱动的 5×5 亮度细节步骤；强边、非不透明 footprint 和边框保持源图，不新增 shader、模型或皮肤分割。
+- 先于实现固定 `64×64` 纹理/软边正例、平坦/硬边/半透明负例、目标与保护区：平滑中心偏差低于源图 65%，锐化中间梯度大于源图 120%，RGB 单通道变化不超过 16。旧代理在首次 4 项公开测试全部失败（纹理偏差仍 10、软边梯度仅 25、保护区/平坦受影响）；一条测试把合法半像素平移误判为非法输入，已在实现前改为现有的 typed 像素上限契约。随后固定生成肖像脸颊、发眼唇保护区、方向/镜像、Display P3 及 CPU/Metal 容差；均只使用测试内生成像素。
+- 最终公开生成图测试 `6/0/0`，Metal color `7/0/0`，新增 buffer/still parity 对两个控制及组合色彩在可用 Metal 主机通过 `max RGB ≤2`、`mean <0.75`，含 neutral、repeat、extent、alpha、sRGB/P3 与 typed failure/recovery。旧代理方向断言已改为对应的平坦负例或从全局色彩矩阵移除。完整 `bash scripts/run-no-skip-swiftpm.sh` 返回 0：archive-first 与 SDK-owned 专项通过，8 项 opt-in 全执行、0 skip；`git diff --check` 通过。首次沙箱运行因 SwiftPM 用户模块缓存不可写停在 backend-neutral 子脚本；正常缓存权限下又由两个专项脚本的旧 `smoothing` 静态标记拦截，更新标记并分别复测后完整门禁通过。这些前置停止都不是效果断言失败。
+- 同步 `ARCHITECTURE.md`、`DESIGN.md`、`PRODUCT_SENSE.md`、`RELIABILITY.md`、`SECURITY.md`、`QUALITY_SCORE.md` 和 taxonomy。只授予这些生成输入的 owner-local 纹理方向信用，不推断真人/人口、设备性能或商业视觉质量。
+
 ### C-2026-09-26-face-contour-edge-robustness
 
 - Status: completed；承接 FUTURE-04 后续覆盖，用内存生成的深色背景、低对比、短局部遮挡和交替明暗输入验证脸侧预处理。不改公开参数、已冻结的自然风格肖像 oracle 或历史证据。
@@ -4716,8 +4723,9 @@ Outcome:
 
 - FUTURE-04 后续覆盖：2026-09-25 自然风格生成肖像的冻结失败已由 2026-09-26 有界源边界对齐修复；原输入和阈值下公开 CPU 正负例、目标/保护区、neutral、repeat、alpha 已通过。后续代码生成测试还覆盖深色背景正例、低对比保护、短局部遮挡和明暗方向冲突；弱或矛盾证据按当前规则退出。taxonomy 的 owner-local 状态据生成输入证据提升，不追溯改写 v1.23 历史回执。未覆盖发丝/耳侧、复杂光照、更多肤色或大量不同肖像；真人图片和真实设备仍为可选补充，不是当前完成门禁。人口泛化、设备性能和商业视觉质量未经证明。
 - FUTURE-05：`preferredProcessingSize`、`detectionFrameInterval`、`renderQuality`、`enablePerformanceLog`、`enableDebugMode`、`logLevel`、`maximumInputByteCount` 当前只保留 Codable 配置，不驱动处理、日志或编码字节限流。若将来需要这些行为，应逐项制定输入、性能、日志隐私和可重复测试契约；目前文档和源码注释明确说明未实现。
-- FUTURE-06：`skinSmoothing` 与 `skinSharpen` 目前是饱和度/对比度代理，不构成真正的纹理平滑或边缘锐化。若提升语义，另立算法范围并用目标纹理、保护区、alpha、色彩空间和 CPU/Metal 一致性测试验收；本次只校正声明。
+- FUTURE-06：已由 `C-2026-09-26-future06-skin-texture` 完成有界空间纹理语义和生成像素验收；2026-09-24 审计时仅有饱和度/对比度代理的旧判断保留为历史事实。皮肤语义分割、真人泛化和设备性能均未签发。
 - FUTURE-07：Metal 几何组合超过 256 个点现已显式返回 `BeautyError.invalidInput`，不再静默跳过效果。公开 43 控件组合在两种现有完整生成/观测支撑上分别为 115/102 点，已通过实际 GPU 输出回归，原条件性风险在这些输入上未复现。尚无覆盖所有 Vision 观测形状及所有强度的全局点数上界证明；仅在发现可达超限公开组合时，再决定是否拆分或收紧组合契约，不把该未证风险写成已发生的用户故障。
+- FUTURE-08：当前纹理滤镜无需人脸支撑，也没有皮肤语义分割；满足低对比门槛的非面部纹理仍可能变化。5×5 CPU 处理及额外源/结果 raster 的大图吞吐、峰值内存和设备耗电尚未测量。仅在需要更强局部保护或具体性能预算时，另立输入、保护区和资源验收契约；不影响本次生成输入的有界效果信用。
 
 ### Phase 95 evidence-chain follow-up (2026-09-13 historical finding)
 

@@ -125,7 +125,9 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
         let height = CVPixelBufferGetHeight(pixelBuffer)
         let rowBytes = try packedRowBytes(width: width)
         let sourceBytes = try read(pixelBuffer: pixelBuffer, width: width, height: height, rowBytes: rowBytes)
-        let rgbaBytes = bgraToRgba(sourceBytes)
+        let rgbaBytes = BeautySkinTexturePipeline.applyRGBA(
+            bgraToRgba(sourceBytes), width: width, height: height, plan: plan
+        )
         let renderedRGBA = try invokeRuntime(
             width: width,
             height: height,
@@ -168,17 +170,20 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
             bytes = try rasterize(image: image, extent: extent, width: dimensions.width, height: dimensions.height)
         }
 
+        let texturedBytes = BeautySkinTexturePipeline.applyRGBA(
+            bytes, width: dimensions.width, height: dimensions.height, plan: plan
+        )
         let alignedBytes: [UInt8]
         if let selectedFaceSupport {
             alignedBytes = FaceContourSubpixelRefiner.refine(
-                bytes,
+                texturedBytes,
                 width: dimensions.width,
                 height: dimensions.height,
                 face: BeautyFaceGeometryAdapter.makeGeometry(from: selectedFaceSupport),
                 strength: plan.effectiveStrengths.faceContourSmooth
             )
         } else {
-            alignedBytes = bytes
+            alignedBytes = texturedBytes
         }
 
         let renderedBytes = try invokeRuntime(
@@ -301,8 +306,8 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
         let filter = filterContribution(for: plan)
         let isStillImage = inputKind == .stillImage
         let parameters = try BeautyMetalColorParameters(
-            saturationDelta: strengths.saturation * 0.28 - strengths.skinSmoothing * 0.18 + filter.saturation,
-            contrastScale: 1 + strengths.contrast * (isStillImage ? 0.20 : 0.22) + strengths.skinSharpen * 0.18,
+            saturationDelta: strengths.saturation * 0.28 + filter.saturation,
+            contrastScale: 1 + strengths.contrast * (isStillImage ? 0.20 : 0.22),
             lightLift: strengths.brightness * (isStillImage ? 0.14 : 0.16)
                 + strengths.exposure * 0.10
                 + strengths.skinWhitening * (isStillImage ? 0.16 : 0.18)
@@ -312,7 +317,7 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
             blueBias: -strengths.temperature * 0.04 + filter.blueBias,
             highlightLift: strengths.highlight * 0.08,
             shadowLift: strengths.shadow * 0.08,
-            smoothing: isStillImage ? 0 : strengths.skinSmoothing * 0.16,
+            smoothing: 0,
             lipCenterX: lipEnvelope?.centerX ?? 0,
             lipCenterY: lipEnvelope?.centerY ?? 0,
             lipRadiusX: lipEnvelope?.radiusX ?? 0,

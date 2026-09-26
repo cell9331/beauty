@@ -1,5 +1,19 @@
 # PRODUCT_SENSE.md
 
+## 2026-09-26 generated skin-texture acceptance
+
+`skinSmoothing` now reduces fine luminance variation in an admitted opaque
+neighborhood; `skinSharpen` increases a moderate soft-edge gradient. A uniform
+color stays uniform, and hard color boundaries are guarded. The owner-local
+public still-image tests use code-generated textured and flat cheek regions,
+soft-edge positives, and a portrait-like source with eyes, hair, mouth and
+background protections. They assert effect direction, neutral identity,
+repeatability, extent, orientation/mirroring, sRGB and Display P3 behavior,
+alpha, and typed pixel-limit recovery. CPU and Metal-selected buffer/still
+outputs meet the generated pixel-delta contract. These controls do not detect
+skin or promise an anatomical mask; low-contrast non-face texture may also
+change. No real-person or device visual-quality claim follows from this set.
+
 ## 2026-09-26 FACE-01 generated portrait acceptance
 
 The follow-up code-generated robustness checks now cover a dark background
@@ -58,8 +72,8 @@ owner-local effect acceptance.
 ## 2026-09-24 SDK audit repair boundary
 
 Still-image highlights and shadows now visibly adjust only their respective
-source-luminance regions. The skin smoothing and sharpening controls currently
-alter saturation and contrast; callers should not expect actual texture
+source-luminance regions. At the 2026-09-24 audit, skin smoothing and sharpening
+altered saturation and contrast; callers then could not expect actual texture
 smoothing or edge sharpening. Configuration fields for processing size, frame
 interval, quality, and diagnostic logging are retained for Codable compatibility
 but do not change rendering. Invalid serialized orientation is rejected.

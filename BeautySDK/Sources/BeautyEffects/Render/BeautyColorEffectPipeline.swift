@@ -58,17 +58,38 @@ public enum BeautyColorEffectPipeline {
         let sourceBytesPerRow = CVPixelBufferGetBytesPerRow(pixelBuffer)
         let outputBytesPerRow = CVPixelBufferGetBytesPerRow(output)
         let bytesPerPixel = 4
+        let textureBytes: [UInt8]?
+        if BeautySkinTexturePipeline.isActive(plan) {
+            var packed = [UInt8](repeating: 0, count: width * height * 4)
+            for row in 0..<height {
+                let sourceRow = sourceBase.advanced(by: row * sourceBytesPerRow).assumingMemoryBound(to: UInt8.self)
+                for column in 0..<width {
+                    let sourceOffset = column * 4
+                    let destination = (row * width + column) * 4
+                    packed[destination] = sourceRow[sourceOffset + 2]
+                    packed[destination + 1] = sourceRow[sourceOffset + 1]
+                    packed[destination + 2] = sourceRow[sourceOffset]
+                    packed[destination + 3] = sourceRow[sourceOffset + 3]
+                }
+            }
+            textureBytes = BeautySkinTexturePipeline.applyRGBA(
+                packed, width: width, height: height, plan: plan
+            )
+        } else {
+            textureBytes = nil
+        }
 
         for row in 0..<height {
             let sourceRow = sourceBase.advanced(by: row * sourceBytesPerRow).assumingMemoryBound(to: UInt8.self)
             let outputRow = outputBase.advanced(by: row * outputBytesPerRow).assumingMemoryBound(to: UInt8.self)
             for column in 0..<width {
                 let offset = column * bytesPerPixel
+                let textureOffset = (row * width + column) * 4
                 let pixel = transform(
-                    blue: sourceRow[offset],
-                    green: sourceRow[offset + 1],
-                    red: sourceRow[offset + 2],
-                    alpha: sourceRow[offset + 3],
+                    blue: textureBytes?[textureOffset + 2] ?? sourceRow[offset],
+                    green: textureBytes?[textureOffset + 1] ?? sourceRow[offset + 1],
+                    red: textureBytes?[textureOffset] ?? sourceRow[offset + 2],
+                    alpha: textureBytes?[textureOffset + 3] ?? sourceRow[offset + 3],
                     plan: plan
                 )
                 let normalizedPoint = SIMD2<Float>(
@@ -147,7 +168,7 @@ public enum BeautyColorEffectPipeline {
         plan: BeautyEffectPlan,
         face: FaceGeometry?
     ) -> CIImage {
-        var output = image
+        var output = BeautySkinTexturePipeline.apply(to: image, plan: plan)
 
         if plan.hasVisibleColorOutput {
             let strengths = plan.effectiveStrengths
@@ -158,32 +179,36 @@ public enum BeautyColorEffectPipeline {
                     strengths.skinWhitening * 0.16 +
                     filter.brightness
             )
-            let contrast = CGFloat(1 + strengths.contrast * 0.20 + strengths.skinSharpen * 0.18)
-            let saturation = CGFloat(max(0, 1 + strengths.saturation * 0.28 - strengths.skinSmoothing * 0.18 + filter.saturation))
+            let contrast = CGFloat(1 + strengths.contrast * 0.20)
+            let saturation = CGFloat(max(0, 1 + strengths.saturation * 0.28 + filter.saturation))
 
-            output = output.applyingFilter(
-                "CIColorControls",
-                parameters: [
-                    kCIInputBrightnessKey: brightness,
-                    kCIInputContrastKey: contrast,
-                    kCIInputSaturationKey: saturation
-                ]
-            )
+            if brightness != 0 || contrast != 1 || saturation != 1 {
+                output = output.applyingFilter(
+                    "CIColorControls",
+                    parameters: [
+                        kCIInputBrightnessKey: brightness,
+                        kCIInputContrastKey: contrast,
+                        kCIInputSaturationKey: saturation
+                    ]
+                )
+            }
 
             let redBias = CGFloat(strengths.skinRosy * 0.08 + strengths.temperature * 0.04 + strengths.tint * 0.02 + filter.redBias)
             let greenBias = CGFloat(strengths.skinWhitening * 0.02 + strengths.tint * 0.03 + filter.greenBias)
             let blueBias = CGFloat(-strengths.temperature * 0.04 + filter.blueBias)
 
-            output = output.applyingFilter(
-                "CIColorMatrix",
-                parameters: [
-                    "inputRVector": CIVector(x: 1, y: 0, z: 0, w: 0),
-                    "inputGVector": CIVector(x: 0, y: 1, z: 0, w: 0),
-                    "inputBVector": CIVector(x: 0, y: 0, z: 1, w: 0),
-                    "inputAVector": CIVector(x: 0, y: 0, z: 0, w: 1),
-                    "inputBiasVector": CIVector(x: redBias, y: greenBias, z: blueBias, w: 0)
-                ]
-            )
+            if redBias != 0 || greenBias != 0 || blueBias != 0 {
+                output = output.applyingFilter(
+                    "CIColorMatrix",
+                    parameters: [
+                        "inputRVector": CIVector(x: 1, y: 0, z: 0, w: 0),
+                        "inputGVector": CIVector(x: 0, y: 1, z: 0, w: 0),
+                        "inputBVector": CIVector(x: 0, y: 0, z: 1, w: 0),
+                        "inputAVector": CIVector(x: 0, y: 0, z: 0, w: 1),
+                        "inputBiasVector": CIVector(x: redBias, y: greenBias, z: blueBias, w: 0)
+                    ]
+                )
+            }
 
             if strengths.highlight != 0 || strengths.shadow != 0 {
                 let luminance = image.applyingFilter(
@@ -248,12 +273,12 @@ public enum BeautyColorEffectPipeline {
         var b = Float(blue) / 255
         let luminance = 0.299 * r + 0.587 * g + 0.114 * b
 
-        let saturationScale = max(0, 1 + strengths.saturation * 0.28 - strengths.skinSmoothing * 0.18 + filter.saturation)
+        let saturationScale = max(0, 1 + strengths.saturation * 0.28 + filter.saturation)
         r = luminance + (r - luminance) * saturationScale
         g = luminance + (g - luminance) * saturationScale
         b = luminance + (b - luminance) * saturationScale
 
-        let contrastScale = 1 + strengths.contrast * 0.22 + strengths.skinSharpen * 0.18
+        let contrastScale = 1 + strengths.contrast * 0.22
         r = (r - 0.5) * contrastScale + 0.5
         g = (g - 0.5) * contrastScale + 0.5
         b = (b - 0.5) * contrastScale + 0.5
@@ -278,14 +303,6 @@ public enum BeautyColorEffectPipeline {
             r += strengths.shadow * 0.08
             g += strengths.shadow * 0.08
             b += strengths.shadow * 0.08
-        }
-
-        let smoothing = strengths.skinSmoothing * 0.16
-        if smoothing > 0 {
-            let skinLuminance = 0.299 * r + 0.587 * g + 0.114 * b
-            r = r * (1 - smoothing) + skinLuminance * smoothing
-            g = g * (1 - smoothing) + skinLuminance * smoothing
-            b = b * (1 - smoothing) + skinLuminance * smoothing
         }
 
         return (

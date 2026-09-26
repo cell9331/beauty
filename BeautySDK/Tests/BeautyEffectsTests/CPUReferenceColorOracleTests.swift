@@ -30,7 +30,7 @@ final class CPUReferenceColorOracleTests: XCTestCase {
         let baseline = try render(fixture: fixture, parameters: BeautyParameters())
         let baselineSummary = summary(of: rgba(fromBGRA: baseline))
         let rows = colorRows()
-        XCTAssertEqual(rows.count, 14)
+        XCTAssertEqual(rows.count, 12)
 
         for row in rows {
             let output = try render(fixture: fixture, parameters: row.parameters(0.8))
@@ -132,10 +132,8 @@ final class CPUReferenceColorOracleTests: XCTestCase {
 
     private func colorRows() -> [ColorRow] {
         [
-            ColorRow(name: "skinSmoothing", parameters: { BeautyParameters(skinSmoothing: $0) }) { before, after in after.chroma < before.chroma },
             ColorRow(name: "skinWhitening", parameters: { BeautyParameters(skinWhitening: $0) }) { before, after in after.luminance > before.luminance },
             ColorRow(name: "skinRosy", parameters: { BeautyParameters(skinRosy: $0) }) { before, after in after.redExcess > before.redExcess },
-            ColorRow(name: "skinSharpen", parameters: { BeautyParameters(skinSharpen: $0) }) { before, after in after.channelSpread > before.channelSpread },
             ColorRow(name: "brightness", parameters: { BeautyParameters(brightness: $0) }) { before, after in after.luminance > before.luminance },
             ColorRow(name: "contrast", parameters: { BeautyParameters(contrast: $0) }) { before, after in after.channelSpread > before.channelSpread },
             ColorRow(name: "saturation", parameters: { BeautyParameters(saturation: $0) }) { before, after in after.chroma > before.chroma },
