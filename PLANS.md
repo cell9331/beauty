@@ -31,7 +31,20 @@
 
 ## 3. Active
 
-当前无 Active 修复计划。
+### A-2026-09-26-remaining-sdk-effects-and-risks
+
+- Status: active。所有者要求在现有 owner-local SDK 边界内逐项完成本账本剩余效果、配置与条件性风险。每项先固定独立语义、正负例、目标/保护区、元数据、确定性和 typed failure 验收，再修改实现；完成一项即记录对应验证，不以其他项的通过代替。历史回执与归档只读。
+- [x] 校正 `.planning/STATE.md` 的现行 FACE-01 描述，保留 v1.23 签名快照的历史含义。未跟踪的 `.gsd/dispatch-isolation-sentinel.json`、`.planning/milestone.lock` 和旧 Phase 96 计划/尝试日志属于工作流材料；当前任务不删除或覆盖。`git diff --check` 通过。
+- [ ] FUTURE-04：扩充 FACE-01 发丝/耳侧、复杂光照、更多肤色和多样生成肖像的方向与保护区验收；不把有限输入结果写成人口泛化或商业质量。
+- [ ] 去脂：保持 provisional 安全边界，固定生成正负例及原尺寸视觉/像素目标，改进 `upperEyelidFullnessReduction` 实际效果。
+- [ ] FUTURE-05：逐字段定义并实现七项配置的调用语义和可重复测试；对没有编码输入的 `maximumInputByteCount` 先明确适用入口，不虚构已有文件解码路径。
+- [ ] FUTURE-07：证明现有 Metal 几何点数在公开可达输入中的上界，或将超限组合拆分为安全的有界执行；保留 typed failure 回归。
+- [ ] FUTURE-08：为纹理滤镜固定非面部低对比负例与大图资源预算，实施满足契约的局部保护和资源上界。
+- [ ] 比例「小头」：定义独立于现有 `faceSmall` 的中性比例语义和像素验收，达到后再调整 taxonomy 的 `partial` 状态。
+- [ ] 3D 塑颜：分别定义并实现「对称」「上下」「左右」「倾斜」四项中性整体几何控制。
+- [ ] 比例：分别定义并实现「头包脸」「颅顶」「额头」「中庭」「人中」「下庭」「短脸」七项控制。
+- [ ] 脸型：分别定义并实现「去双下巴」「去双下巴 Pro」「发际线」三项局部效果，先确认合用的 request-local 语义支撑与资源授权。
+- [ ] 每项效果经公开输入/输出像素与元数据验收后更新 taxonomy、产品/设计/安全/可靠性 owner；最终运行 archive-first 完整 no-skip SwiftPM 门禁。
 
 ## 4. Completed
 

@@ -15,20 +15,24 @@ progress:
 
 # Project State
 
-Current owner policy (2026-09-24):
+Current owner policy (updated 2026-09-26):
 [generated portrait-like positives and negatives can satisfy SDK effect
 acceptance](../docs/IMAGE_EFFECT_ACCEPTANCE.md). Genuine human photos are
 optional and cannot block a current or future milestone. The historical
-v1.23/v1.24 receipt scopes below are unchanged; FACE-01 remains open for a
-qualified effect-direction oracle, which may use generated images.
+v1.23/v1.24 receipt scopes below are unchanged. The later FACE-01 repair
+passed its predeclared generated-portrait effect oracle and is `implemented`
+at the current owner-local SDK scope; see [current taxonomy](../docs/SDK_EFFECT_TAXONOMY.md)
+and [execution ledger](../PLANS.md). Its broader portrait coverage remains
+future quality work.
 
 The frontmatter above tracks the completed bounded
 [v1.24 去脂效果改进](V1.24-UPPER-EYELID-CURRENT.md) milestone. The separately
 authorized [v1.23 FACE-01 follow-up](V1.23-FACE01-CURRENT.md) has a
 [verified synthetic-mechanics-only COMPLETE](qualifications/v1.23-synthetic/attempt-20260924T045750Z-9429627d/COMPLETE.json)
 at source identity `ec2589298925422dc6c3dfc65a68285caea4b6bdd913dffb3c0821673c6d3319`.
-It has not earned natural-portrait effectiveness or taxonomy promotion. No
-historical Phase 90/95 receipt is reopened by that work.
+That signed snapshot did not earn natural-portrait effectiveness or taxonomy
+promotion at its own source identity. The subsequent repair noted above does
+not reopen the historical Phase 90/95 receipts.
 
 ## Project Reference
 
