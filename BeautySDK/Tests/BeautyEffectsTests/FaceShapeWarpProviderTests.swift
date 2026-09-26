@@ -306,6 +306,26 @@ final class FaceShapeWarpProviderTests: XCTestCase {
         ).wholeFaceTilt.isEmpty)
     }
 
+    func testFaceShorteningUsesTwoBoundedOpposingPointsAndExitsOnMissingContour() {
+        let provider = FaceShapeWarpProvider()
+        let points = provider.fieldEmissions(
+            face: .fixture,
+            strengths: strengths(faceShortening: BeautySafetyCaps.faceShortening)
+        ).faceShortening
+        XCTAssertEqual(points.count, 2)
+        XCTAssertGreaterThan(points[0].target.y, points[0].source.y)
+        XCTAssertLessThan(points[1].target.y, points[1].source.y)
+        XCTAssertTrue(points.allSatisfy { point in
+            (0...1).contains(point.source.x) && (0...1).contains(point.source.y) &&
+                (0...1).contains(point.target.x) && (0...1).contains(point.target.y) &&
+                point.radius > 0 && point.strength <= BeautySafetyCaps.faceShortening
+        })
+        XCTAssertTrue(provider.fieldEmissions(
+            face: .missingContour,
+            strengths: strengths(faceShortening: BeautySafetyCaps.faceShortening)
+        ).faceShortening.isEmpty)
+    }
+
     func testFaceShapeOutputsAreDeterministicClampedAndProportionAdjacent() {
         let face = FaceGeometry.fixture
         let provider = FaceShapeWarpProvider()
@@ -886,6 +906,7 @@ final class FaceShapeWarpProviderTests: XCTestCase {
         wholeFaceYPosition: Float = 0,
         wholeFaceXPosition: Float = 0,
         wholeFaceTilt: Float = 0,
+        faceShortening: Float = 0,
         faceVShape: Float = 0,
         jawSlim: Float = 0,
         chinLength: Float = 0,
@@ -909,6 +930,7 @@ final class FaceShapeWarpProviderTests: XCTestCase {
             max(wholeFaceTilt, -BeautySafetyCaps.wholeFaceTilt),
             BeautySafetyCaps.wholeFaceTilt
         )
+        strengths.faceShortening = min(max(faceShortening, 0), BeautySafetyCaps.faceShortening)
         strengths.faceVShape = min(faceVShape, BeautySafetyCaps.faceVShape)
         strengths.jawSlim = min(jawSlim, BeautySafetyCaps.jawSlim)
         strengths.chinLength = min(max(chinLength, -BeautySafetyCaps.chinLength), BeautySafetyCaps.chinLength)

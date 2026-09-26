@@ -21,6 +21,7 @@ public enum BeautyEffectResolver {
             normalized.wholeFaceYPosition,
             normalized.wholeFaceXPosition,
             normalized.wholeFaceTilt,
+            normalized.faceShortening,
             normalized.faceVShape,
             normalized.jawSlim,
             normalized.chinLength,
@@ -162,6 +163,11 @@ public enum BeautyEffectResolver {
             cap: BeautySafetyCaps.wholeFaceTilt,
             cappedCount: &cappedCount
         )
+        strengths.faceShortening = capUnit(
+            normalized.faceShortening,
+            cap: BeautySafetyCaps.faceShortening,
+            cappedCount: &cappedCount
+        )
         strengths.faceVShape = capUnit(normalized.faceVShape, cap: BeautySafetyCaps.faceVShape, cappedCount: &cappedCount)
         strengths.jawSlim = capUnit(normalized.jawSlim, cap: BeautySafetyCaps.jawSlim, cappedCount: &cappedCount)
         strengths.chinLength = capSigned(normalized.chinLength, cap: BeautySafetyCaps.chinLength, cappedCount: &cappedCount)
@@ -264,6 +270,7 @@ public enum BeautyEffectResolver {
             strengths.wholeFaceYPosition,
             strengths.wholeFaceXPosition,
             strengths.wholeFaceTilt,
+            strengths.faceShortening,
             strengths.faceVShape,
             strengths.jawSlim,
             strengths.chinLength,
@@ -327,6 +334,7 @@ public enum BeautyEffectResolver {
             strengths.wholeFaceYPosition,
             strengths.wholeFaceXPosition,
             strengths.wholeFaceTilt,
+            strengths.faceShortening,
             strengths.faceVShape,
             strengths.jawSlim,
             strengths.chinLength,
@@ -429,6 +437,7 @@ public enum BeautyEffectResolver {
             strengths.wholeFaceYPosition,
             strengths.wholeFaceXPosition,
             strengths.wholeFaceTilt,
+            strengths.faceShortening,
             strengths.faceVShape,
             strengths.jawSlim,
             strengths.chinLength,
@@ -820,7 +829,7 @@ public enum BeautyEffectResolver {
     }
 
     private static let geometryFieldNames = [
-        "faceSlim", "faceSmall", "wholeFaceYPosition", "wholeFaceXPosition", "wholeFaceTilt", "faceVShape", "jawSlim", "chinLength",
+        "faceSlim", "faceSmall", "wholeFaceYPosition", "wholeFaceXPosition", "wholeFaceTilt", "faceShortening", "faceVShape", "jawSlim", "chinLength",
         "faceContourSmooth", "templeFullness", "cheekboneSlim", "chinTaper",
         "eyeSize", "eyeDistance", "eyeYPosition", "eyeTailLift", "eyeHeight",
         "eyeLength", "upperEyelidLift", "pupilSize", "gazeCorrection",
@@ -912,6 +921,7 @@ public enum BeautyEffectResolver {
         strengths.wholeFaceYPosition = 0
         strengths.wholeFaceXPosition = 0
         strengths.wholeFaceTilt = 0
+        strengths.faceShortening = 0
         strengths.faceContourSmooth = 0
         strengths.templeFullness = 0
         strengths.cheekboneSlim = 0
@@ -924,6 +934,7 @@ public enum BeautyEffectResolver {
         strengths.wholeFaceYPosition *= scale
         strengths.wholeFaceXPosition *= scale
         strengths.wholeFaceTilt *= scale
+        strengths.faceShortening *= scale
         strengths.faceVShape *= scale
         strengths.jawSlim *= scale
         strengths.chinLength *= scale

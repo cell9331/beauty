@@ -1,5 +1,12 @@
 # SECURITY.md
 
+## 2026-09-27 short-face input boundary
+
+`faceShortening` uses only request-local selected-face bounds and contour
+validity, with finite unit-bounded source and target points. It stores no
+landmarks, masks, pixels, fixture paths, or generated images in diagnostics
+or durable evidence and adds no file, model, network, or distribution route.
+
 ## 2026-09-27 texture budget and cool-region guard
 
 The encoded-image texture cap is checked from declared dimensions before

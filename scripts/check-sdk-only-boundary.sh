@@ -36,13 +36,13 @@ for token in (
         raise SystemExit(f"taxonomy is missing boundary token: {token}")
 
 source_fields = re.findall(r"^\s*public var ([A-Za-z][A-Za-z0-9]*):", source, re.MULTILINE)
-if len(source_fields) != 65 or len(set(source_fields)) != 65:
-    raise SystemExit(f"expected exact 65-field BeautyParameters source, found {len(source_fields)}")
+if len(source_fields) != 66 or len(set(source_fields)) != 66:
+    raise SystemExit(f"expected exact 66-field BeautyParameters source, found {len(source_fields)}")
 inventory = taxonomy.split("<!-- SDK_PARAMETER_INVENTORY_BEGIN -->", 1)[1].split(
     "<!-- SDK_PARAMETER_INVENTORY_END -->", 1
 )[0]
 documented_fields = re.findall(r"`([A-Za-z][A-Za-z0-9]*)`", inventory)
-if set(documented_fields) != set(source_fields) or len(documented_fields) != 65:
+if set(documented_fields) != set(source_fields) or len(documented_fields) != 66:
     missing = sorted(set(source_fields) - set(documented_fields))
     extra = sorted(set(documented_fields) - set(source_fields))
     raise SystemExit(
@@ -55,7 +55,7 @@ expected = [
     ("比例", "小头", "partial", "faceSmall"), ("比例", "头包脸", "future", "—"),
     ("比例", "颅顶", "future", "—"), ("比例", "额头", "future", "—"),
     ("比例", "中庭", "future", "—"), ("比例", "人中", "future", "—"),
-    ("比例", "下庭", "future", "—"), ("比例", "短脸", "future", "—"),
+    ("比例", "下庭", "future", "—"), ("比例", "短脸", "partial", "faceShortening"),
     ("脸型", "脸宽", "implemented", "faceSlim"), ("脸型", "小脸", "implemented", "faceSmall"),
     ("脸型", "面部流畅", "implemented", "faceContourSmooth"),
     ("脸型", "太阳穴", "implemented", "templeFullness"),

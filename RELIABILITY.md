@@ -1,5 +1,12 @@
 # RELIABILITY.md
 
+## 2026-09-27 short-face recovery
+
+Face shortening derives two points per request from validated face support
+and retains no geometry between calls. Missing, malformed, or insufficiently
+tall support exits unchanged. Oversized input keeps the existing typed
+failure, and a later valid request succeeds.
+
 ## 2026-09-27 texture request resource ceiling
 
 The texture admission cap is 8,388,608 pixels. The decoded and pixel-buffer

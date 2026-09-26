@@ -65,6 +65,8 @@
   - 「左右」候选契约：`wholeFaceXPosition` 为独立签名强度，零值源图一致；正值在图像坐标中向右、负值向左。仅对已选人脸执行有界二维局部位移，不能称为深度或三维网格。先固定生成标记的正反方向至少 1 像素、远背景/alpha/extent、四方向和输入镜像、neutral/repeat、无脸退出及 typed failure/recovery；参数、Codable、冲突缩放、Metal 点预算和 renderer inventory 均须回归。更多肖像验收前 taxonomy 最多 `partial`。
   - 进行中：新增公开字段、解析/冲突缩放、face-shape 有界水平点与正负 renderer case。实现前公开测试因字段不存在按预期编译失败；实现后新公开像素 `4/0/0`。当前清单的 40 条失败均来自旧 63 字段或 77 renderer case 数量断言，已按 64/79 现行数量修正并保留 Phase 95 的 62 字段冻结投影；参数、renderer、资源、provider 和当前 Metal 点组合聚焦 `137/0/0`，post-archive SDK boundary 通过。首次完整门禁在遗漏的配置测试旧 63 字段断言停止，补正后配置专项 `20/0/0`；最终完整 archive-first no-skip `984/0/0`、8 opt-in、0 skip。taxonomy 保留 `partial`，更多肖像仍待验收。
 - [ ] 比例：分别定义并实现「头包脸」「颅顶」「额头」「中庭」「人中」「下庭」「短脸」七项控制。
+  - 「短脸」候选契约：独立正向 `faceShortening`，零值逐像素保留；对足够纵长的已选脸框，上额与下巴两个源区沿图像纵轴相向移动，中心参考区和远背景保持，整体可测上下标记距离缩短。以有界二维 Warp 点实现，不能称为头骨缩短或三维形变。先用内存生成标记固定方向/负例/保护区、方向镜像、重复、无脸、alpha/extent 与 typed failure，再接参数解析、冲突缩放和 CPU/Metal 同源点；更广肖像证据前 taxonomy 至多 `partial`。
+  - 「短脸」已接入独立公开字段、有效强度上限 `0.30`、脸框纵横比保护、两点相向局部变形及 CPU/Metal 共享点源。生成公开像素、参数/Codable、方向镜像、neutral/repeat、中心/远背景/alpha/extent、无脸与 typed failure/recovery `3/0/0`，当前参数/资源/renderer/provider/Metal 清单聚焦 `90/0/0`。完整 archive-first no-skip `1012/0/0`、8 opt-in、0 skip；taxonomy 仅升至二维 `partial`，仍需自然肖像覆盖。
 - [ ] 脸型：分别定义并实现「去双下巴」「去双下巴 Pro」「发际线」三项局部效果，先确认合用的 request-local 语义支撑与资源授权。
 - [ ] 每项效果经公开输入/输出像素与元数据验收后更新 taxonomy、产品/设计/安全/可靠性 owner；最终运行 archive-first 完整 no-skip SwiftPM 门禁。
 

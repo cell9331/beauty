@@ -6,6 +6,7 @@ struct FaceShapeWarpFieldEmissions: Equatable, Sendable {
     let wholeFaceYPosition: [WarpControlPoint]
     let wholeFaceXPosition: [WarpControlPoint]
     let wholeFaceTilt: [WarpControlPoint]
+    let faceShortening: [WarpControlPoint]
     let faceVShape: [WarpControlPoint]
     let jawSlim: [WarpControlPoint]
     let faceContourSmooth: [WarpControlPoint]
@@ -13,7 +14,7 @@ struct FaceShapeWarpFieldEmissions: Equatable, Sendable {
     let cheekboneSlim: [WarpControlPoint]
 
     var points: [WarpControlPoint] {
-        faceSlim + faceSmall + wholeFaceYPosition + wholeFaceXPosition + wholeFaceTilt + faceVShape + jawSlim +
+        faceSlim + faceSmall + wholeFaceYPosition + wholeFaceXPosition + wholeFaceTilt + faceShortening + faceVShape + jawSlim +
             faceContourSmooth + templeFullness + cheekboneSlim
     }
 
@@ -29,6 +30,9 @@ struct FaceShapeWarpFieldEmissions: Equatable, Sendable {
         }
         if strengths.wholeFaceTilt != 0, wholeFaceTilt.isEmpty {
             sanitized.wholeFaceTilt = 0
+        }
+        if strengths.faceShortening != 0, faceShortening.isEmpty {
+            sanitized.faceShortening = 0
         }
         if strengths.faceVShape != 0, faceVShape.isEmpty { sanitized.faceVShape = 0 }
         if strengths.jawSlim != 0, jawSlim.isEmpty { sanitized.jawSlim = 0 }
@@ -79,6 +83,9 @@ struct FaceShapeWarpProvider: WarpControlPointProvider {
                 : [],
             wholeFaceTilt: hasLegacyContour
                 ? wholeFaceTiltPoints(face: face, strength: strengths.wholeFaceTilt)
+                : [],
+            faceShortening: hasLegacyContour
+                ? faceShorteningPoints(face: face, strength: strengths.faceShortening)
                 : [],
             faceVShape: hasLegacyContour && strengths.faceVShape > 0
                 ? lowerFacePoints(
@@ -243,6 +250,40 @@ struct FaceShapeWarpProvider: WarpControlPointProvider {
             ))
         }
         return points
+    }
+
+    private func faceShorteningPoints(face: FaceGeometry, strength: Float) -> [WarpControlPoint] {
+        guard strength.isFinite, strength > Float.ulpOfOne,
+              strength <= BeautySafetyCaps.faceShortening,
+              face.bounds.width.isFinite, face.bounds.height.isFinite,
+              face.bounds.width > 0, face.bounds.height > 0,
+              face.bounds.height / face.bounds.width >= 1.25,
+              face.faceContour.allSatisfy({ point in
+                  point.x.isFinite && point.y.isFinite &&
+                      (0...1).contains(point.x) && (0...1).contains(point.y)
+              })
+        else { return [] }
+        let bounds = face.bounds
+        let upper = SIMD2<Float>(bounds.midX, bounds.minY + bounds.height * 0.24)
+        let lower = SIMD2<Float>(bounds.midX, bounds.maxY - bounds.height * 0.12)
+        let distance = bounds.height * 0.08 * strength / BeautySafetyCaps.faceShortening
+        let radius = min(1, max(bounds.width, bounds.height) * 0.16)
+        guard radius.isFinite, radius >= 0.001,
+              (0...1).contains(upper.x), (0...1).contains(upper.y),
+              (0...1).contains(lower.x), (0...1).contains(lower.y),
+              (0...1).contains(upper.y + distance),
+              (0...1).contains(lower.y - distance)
+        else { return [] }
+        return [
+            WarpControlPoint(
+                source: upper, target: SIMD2<Float>(upper.x, upper.y + distance),
+                radius: radius, strength: strength, falloff: 2
+            ),
+            WarpControlPoint(
+                source: lower, target: SIMD2<Float>(lower.x, lower.y - distance),
+                radius: radius, strength: strength, falloff: 2
+            ),
+        ]
     }
 
     private func lowerFacePoints(

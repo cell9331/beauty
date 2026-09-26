@@ -1,5 +1,13 @@
 # PRODUCT_SENSE.md
 
+## 2026-09-27 short-face owner-local control
+
+`比例 / 短脸` has an independent `faceShortening` parameter. Generated upper
+and lower markers move toward one another through the public still-image
+path; a center marker, distant background, and alpha remain protected.
+Neutral, missing-face, orientation, mirror, repetition, and failure recovery
+are checked. Taxonomy remains `partial` pending broader portrait acceptance.
+
 ## 2026-09-27 texture protection and size limit
 
 On generated portraits with lighter or deeper skin, smoothing and sharpening

@@ -1,5 +1,15 @@
 # DESIGN.md
 
+## 2026-09-27 short-face control contract
+
+`faceShortening` is positive only, neutral at zero, and capped at `0.30`.
+For a selected face with a valid unit contour and height-to-width ratio at
+least `1.25`, two centerline points at 24% and 88% of its face-box height
+move toward each other by up to 8% of that height. Their radius is 16% of
+the larger face-box dimension, bounded to one, with falloff two. Invalid or
+missing support emits no points. Existing conflict scaling applies. This is
+a local two-dimensional proportion warp, not a skull or depth transform.
+
 ## 2026-09-27 texture cool-region and resource contract
 
 An active `skinSmoothing` or `skinSharpen` request admits at most 8,388,608

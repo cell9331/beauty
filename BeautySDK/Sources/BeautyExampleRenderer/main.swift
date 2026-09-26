@@ -115,6 +115,11 @@ let cases = [
         parameters: BeautyParameters(wholeFaceTilt: -0.30)
     ),
     RenderCase(
+        id: "faceShortening_0p30",
+        displayName: "faceShortening 0.30",
+        parameters: BeautyParameters(faceShortening: 0.30)
+    ),
+    RenderCase(
         id: "chinLength_plus0p30",
         displayName: "chinLength +0.30",
         parameters: BeautyParameters(chinLength: 0.30)

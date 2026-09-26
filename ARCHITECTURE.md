@@ -1,5 +1,12 @@
 # ARCHITECTURE.md
 
+## 2026-09-27 short-face proportion control
+
+`faceShortening` follows the existing public parameter, effect resolver,
+face-shape provider, and shared CPU/Metal geometry point path. It emits two
+bounded points for a selected face with valid contour and a sufficiently tall
+bounding box. No new detector, shader, target, backend, or model is added.
+
 ## 2026-09-27 texture resource admission
 
 The existing texture pipeline keeps its CPU-owned implementation and shared

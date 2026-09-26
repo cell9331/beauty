@@ -81,6 +81,8 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
     /// Signed bounded image-plane tilt of the selected face area.
     /// Positive values rotate clockwise in canonical image coordinates.
     public var wholeFaceTilt: Float
+    /// Positive-only bounded vertical compression of a sufficiently tall selected face.
+    public var faceShortening: Float
 
     enum CodingKeys: String, CodingKey {
         case skinSmoothing
@@ -148,6 +150,7 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
         case wholeFaceYPosition
         case wholeFaceXPosition
         case wholeFaceTilt
+        case faceShortening
     }
 
     public init(
@@ -215,7 +218,8 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
         upperEyelidFullnessReduction: Float = 0,
         wholeFaceYPosition: Float = 0,
         wholeFaceXPosition: Float = 0,
-        wholeFaceTilt: Float = 0
+        wholeFaceTilt: Float = 0,
+        faceShortening: Float = 0
     ) {
         self.skinSmoothing = Self.clampUnit(skinSmoothing)
         self.skinWhitening = Self.clampUnit(skinWhitening)
@@ -289,6 +293,7 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
         self.wholeFaceYPosition = Self.clampSigned(wholeFaceYPosition)
         self.wholeFaceXPosition = Self.clampSigned(wholeFaceXPosition)
         self.wholeFaceTilt = Self.clampSigned(wholeFaceTilt)
+        self.faceShortening = Self.clampUnit(faceShortening)
     }
 
     public init(from decoder: Decoder) throws {
@@ -358,7 +363,8 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
             upperEyelidFullnessReduction: try container.decodeFloatIfPresent(.upperEyelidFullnessReduction),
             wholeFaceYPosition: try container.decodeFloatIfPresent(.wholeFaceYPosition),
             wholeFaceXPosition: try container.decodeFloatIfPresent(.wholeFaceXPosition),
-            wholeFaceTilt: try container.decodeFloatIfPresent(.wholeFaceTilt)
+            wholeFaceTilt: try container.decodeFloatIfPresent(.wholeFaceTilt),
+            faceShortening: try container.decodeFloatIfPresent(.faceShortening)
         )
     }
 
@@ -428,7 +434,8 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
             upperEyelidFullnessReduction: upperEyelidFullnessReduction,
             wholeFaceYPosition: wholeFaceYPosition,
             wholeFaceXPosition: wholeFaceXPosition,
-            wholeFaceTilt: wholeFaceTilt
+            wholeFaceTilt: wholeFaceTilt,
+            faceShortening: faceShortening
         )
     }
 

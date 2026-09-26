@@ -1,5 +1,19 @@
 # QUALITY_SCORE.md
 
+## 2026-09-27 short-face generated marker acceptance
+
+The independent public `faceShortening` control moves upper and lower
+generated markers toward each other while preserving a central marker,
+distant background, extent and alpha. Neutral, repeated output, missing face,
+four orientations, input mirror, Codable normalization/defaults and typed
+pixel-limit failure/recovery pass `3/0/0`. The face-shape provider checks
+opposing bounded points and missing-contour exit; current parameter, renderer,
+resource, compatibility, geometry and integration focused suites pass
+`90/0/0`. The archive-first full no-skip gate passes `1012/0/0`, eight
+opt-ins and zero skips. These generated-input results do not establish a
+three-dimensional or broad portrait-quality effect; taxonomy remains
+`partial`.
+
 ## 2026-09-27 texture negative and resource-budget probes
 
 A generated portrait with a low-contrast cool background first failed the

@@ -223,6 +223,7 @@ package struct BeautyBackendRequest: @unchecked Sendable {
             plan.effectiveStrengths.filterIntensity,
             plan.effectiveStrengths.faceSlim,
             plan.effectiveStrengths.faceSmall,
+            plan.effectiveStrengths.faceShortening,
             plan.effectiveStrengths.faceVShape,
             plan.effectiveStrengths.jawSlim,
             plan.effectiveStrengths.faceContourSmooth,
