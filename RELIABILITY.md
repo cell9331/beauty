@@ -1,5 +1,17 @@
 # RELIABILITY.md
 
+## 2026-09-27 texture request resource ceiling
+
+The texture admission cap is 8,388,608 pixels. The decoded and pixel-buffer
+public facades reject an oversized active texture request before a texture
+raster is allocated; the encoded facade checks declared dimensions before
+decode and decoded dimensions again after decode. The backend request repeats
+the cap for package callers. The CPU still-image texture step may own three
+packed RGBA8 buffers, bounded to 96 MiB together at this cap; Core Image,
+system allocator peaks and additional Metal-selected backend buffers are not
+measured. The rule is per request and failure does not retain image data or
+poison a later request.
+
 ## 2026-09-27 dense geometry capacity recovery
 
 A 288-point admitted still-image combination no longer fails solely because

@@ -1,5 +1,13 @@
 # ARCHITECTURE.md
 
+## 2026-09-27 texture resource admission
+
+The existing texture pipeline keeps its CPU-owned implementation and shared
+CPU/Metal-selected output route. A package texture budget is checked at the
+public decoded, encoded-declaration and pixel-buffer facades and again at the
+backend request boundary. No new detector, mask, shader, model, target or
+backend is introduced.
+
 ## 2026-09-27 dense geometry capacity route
 
 The public still-image facade checks the aggregate selected-face point count

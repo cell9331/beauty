@@ -191,6 +191,11 @@ package struct BeautyBackendRequest: @unchecked Sendable {
             throw BeautyError.invalidInput
         }
 
+        guard !BeautySkinTexturePipeline.isActive(plan) ||
+                pixelCount <= BeautyTextureResourceBudget.maximumPixelCount else {
+            throw BeautyError.invalidInput
+        }
+
         if let compositionSummary {
             guard canonicalImage != nil,
                   nonNegativeAndBounded(compositionSummary.acceptedUnitCount),

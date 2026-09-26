@@ -90,6 +90,11 @@ public final class BeautyEngine {
             maximumPixelCount: configuration.maximumInputPixelCount
         )
         let validated = try BeautySDKResources.validate(parameters: parameters)
+        guard BeautyTextureResourceBudget.admits(
+            parameters: validated,
+            width: CVPixelBufferGetWidth(pixelBuffer),
+            height: CVPixelBufferGetHeight(pixelBuffer)
+        ) else { throw BeautyError.invalidInput }
         let plan = BeautyEffectResolver.resolve(parameters: validated)
         let request = try BeautyBackendRequest(
             policy: backendPolicy,
@@ -153,11 +158,21 @@ public final class BeautyEngine {
                   height: declaredHeight,
                   maximumPixelCount: configuration.maximumInputPixelCount
               ),
+              BeautyTextureResourceBudget.admits(
+                  parameters: parameters,
+                  width: declaredWidth,
+                  height: declaredHeight
+              ),
               let decoded = CGImageSourceCreateImageAtIndex(source, 0, nil),
               Self.dimensionsAreWithinPixelLimit(
                   width: decoded.width,
                   height: decoded.height,
                   maximumPixelCount: configuration.maximumInputPixelCount
+              ),
+              BeautyTextureResourceBudget.admits(
+                  parameters: parameters,
+                  width: decoded.width,
+                  height: decoded.height
               )
         else {
             throw BeautyError.invalidInput
@@ -220,6 +235,12 @@ public final class BeautyEngine {
             maximumPixelCount: configuration.maximumInputPixelCount
         )
         let validated = try BeautySDKResources.validate(parameters: parameters)
+        guard let dimensions = BeautyBackendRequest.checkedDimensions(for: image.extent),
+              BeautyTextureResourceBudget.admits(
+                  parameters: validated,
+                  width: dimensions.width,
+                  height: dimensions.height
+              ) else { throw BeautyError.invalidInput }
 
         let productionAdmission = BeautyEffectResolver.localRetouchAdmission(
             parameters: validated

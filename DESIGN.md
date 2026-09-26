@@ -1,5 +1,20 @@
 # DESIGN.md
 
+## 2026-09-27 texture cool-region and resource contract
+
+An active `skinSmoothing` or `skinSharpen` request admits at most 8,388,608
+pixels, independent of the general 50,000,000-pixel input ceiling. Larger
+decoded images, encoded-image declarations, decoded encoded images and pixel
+buffers return typed `invalidInput` before texture raster allocation. Neutral
+or unrelated effects retain the general limit. The current still-image
+texture implementation can own up to three RGBA8 buffers, at most 96 MiB in
+total at this cap; Core Image and system allocations are outside that bound.
+For each otherwise eligible opaque texture pixel, the transform now leaves it
+source-exact when `red + 8 < green` or `red + 8 < blue`. This protects the
+specified cool low-contrast background negative without changing the existing
+local edge, alpha, quality-mode and gain rules. It is a chromatic guard, not
+face segmentation; other non-face colors may still be processed.
+
 ## 2026-09-27 Metal geometry capacity contract
 
 When a public still-image request selects `.gpu`, the actual Metal executor

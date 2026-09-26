@@ -75,10 +75,36 @@ final class BeautyEncodedInputLimitTests: XCTestCase {
         ))
     }
 
-    private func generatedPNG() throws -> Data {
+    func testEncodedTexturePixelBudgetRejectsLargeDeclaredImageThenRecovers() throws {
+        let encoded = try generatedPNG(width: 2049, height: 4096)
+        let source = try XCTUnwrap(CGImageSourceCreateWithData(encoded as CFData, nil))
+        let properties = try XCTUnwrap(CGImageSourceCopyPropertiesAtIndex(
+            source, 0, nil
+        ) as? [CFString: Any])
+        XCTAssertEqual((properties[kCGImagePropertyPixelWidth] as? NSNumber)?.intValue, 2049)
+        XCTAssertEqual((properties[kCGImagePropertyPixelHeight] as? NSNumber)?.intValue, 4096)
+        let engine = try BeautyEngine(configuration: .init(
+            maximumInputByteCount: encoded.count
+        ))
+        let metadata = BeautyInputMetadata(orientation: .up, source: .testFixture)
+        XCTAssertThrowsError(try engine.processResult(
+            encodedImageData: encoded, metadata: metadata,
+            parameters: BeautyParameters(skinSmoothing: 1)
+        )) { error in
+            XCTAssertEqual(error as? BeautyError, .invalidInput)
+        }
+        XCTAssertNoThrow(try engine.processResult(
+            encodedImageData: try generatedPNG(), metadata: metadata,
+            parameters: BeautyParameters(skinSmoothing: 1)
+        ))
+    }
+
+    private func generatedPNG(width: Int? = nil, height: Int? = nil) throws -> Data {
+        let width = width ?? size
+        let height = height ?? size
         let space = try XCTUnwrap(CGColorSpace(name: CGColorSpace.sRGB))
         let image = CIImage(color: CIColor(red: 0.35, green: 0.25, blue: 0.2))
-            .cropped(to: CGRect(x: 0, y: 0, width: size, height: size))
+            .cropped(to: CGRect(x: 0, y: 0, width: width, height: height))
         let context = CIContext(options: [.workingColorSpace: space, .outputColorSpace: space])
         let cgImage = try XCTUnwrap(context.createCGImage(image, from: image.extent))
         let buffer = NSMutableData()

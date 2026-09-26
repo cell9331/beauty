@@ -1,5 +1,15 @@
 # PRODUCT_SENSE.md
 
+## 2026-09-27 texture protection and size limit
+
+On generated portraits with lighter or deeper skin, smoothing and sharpening
+still change cheek texture while a cool low-contrast background stays exact.
+The SDK continues to operate without an anatomical skin mask, so warm
+non-face texture can still change. A texture request above 8,388,608 pixels
+now fails typed before processing; the same engine accepts a later small
+request. Owners can process a larger image without these texture controls or
+provide a smaller input. No device throughput or total-memory claim follows.
+
 ## 2026-09-27 dense geometry on a GPU-selected still image
 
 An owner-local host selecting `.gpu` can combine face controls even when a

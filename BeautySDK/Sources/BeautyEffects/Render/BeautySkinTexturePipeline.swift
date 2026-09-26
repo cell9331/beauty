@@ -2,6 +2,25 @@ import CoreGraphics
 import CoreImage
 import BeautyCore
 
+/// The current texture implementation owns up to three RGBA8 rasters on the
+/// still-image path. Keep their aggregate byte count at or below 96 MiB.
+package enum BeautyTextureResourceBudget {
+    package static let maximumPixelCount = 8_388_608
+
+    package static func admits(
+        parameters: BeautyParameters, width: Int, height: Int
+    ) -> Bool {
+        let normalized = parameters.normalized()
+        guard normalized.skinSmoothing > 0 || normalized.skinSharpen > 0 else {
+            return true
+        }
+        guard width > 0, height > 0,
+              width <= maximumPixelCount / height
+        else { return false }
+        return width * height <= maximumPixelCount
+    }
+}
+
 /// One request-local spatial transform shared by CPU and Metal-selected paths.
 /// The immutable source owns every neighborhood sample; only luminance detail
 /// moves, so the operation cannot act as a saturation or global contrast proxy.
@@ -23,7 +42,7 @@ enum BeautySkinTexturePipeline {
         let height = dimensions.height
         let pixelCount = width.multipliedReportingOverflow(by: height)
         guard !pixelCount.overflow,
-              pixelCount.partialValue <= BeautyConfiguration.defaultMaximumInputPixelCount
+              pixelCount.partialValue <= BeautyTextureResourceBudget.maximumPixelCount
         else { return image }
         let colorSpace = image.colorSpace ?? CGColorSpace(name: CGColorSpace.sRGB)!
         let context = CIContext(options: [
@@ -62,7 +81,9 @@ enum BeautySkinTexturePipeline {
         let radius = weights.count / 2
         guard isActive(plan), width >= weights.count, height >= weights.count else { return source }
         let pixelCount = width.multipliedReportingOverflow(by: height)
-        guard !pixelCount.overflow else { return source }
+        guard !pixelCount.overflow,
+              pixelCount.partialValue <= BeautyTextureResourceBudget.maximumPixelCount
+        else { return source }
         let byteCount = pixelCount.partialValue.multipliedReportingOverflow(by: 4)
         guard !byteCount.overflow, source.count == byteCount.partialValue else { return source }
         let strengths = plan.effectiveStrengths
@@ -78,6 +99,10 @@ enum BeautySkinTexturePipeline {
                 let red = Int(source[offset])
                 let green = Int(source[offset + 1])
                 let blue = Int(source[offset + 2])
+                // Cool, low-contrast regions can satisfy the local edge gate
+                // while being unrelated to skin. Keep them source-exact. This
+                // is a narrow color guard, not anatomical segmentation.
+                guard red + 8 >= green, red + 8 >= blue else { continue }
                 var weightedLuminance = 0
                 var protectedEdge = false
                 for dy in -radius...radius {

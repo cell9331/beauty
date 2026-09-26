@@ -1,5 +1,14 @@
 # SECURITY.md
 
+## 2026-09-27 texture budget and cool-region guard
+
+The encoded-image texture cap is checked from declared dimensions before
+decoding, then checked against decoded dimensions. The same bound applies to
+decoded still images and pixel buffers. The cool-region decision uses only
+the admitted source RGB channels within the request; it stores no segmentation
+map or diagnostic pixels. A cool background negative is protected, while the
+absence of face semantics remains an explicit limitation.
+
 ## 2026-09-27 geometry capacity preflight
 
 The capacity decision reads only request-local validated face support and

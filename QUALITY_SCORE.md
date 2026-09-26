@@ -1,5 +1,21 @@
 # QUALITY_SCORE.md
 
+## 2026-09-27 texture negative and resource-budget probes
+
+A generated portrait with a low-contrast cool background first failed the
+public source-exact protection assertion with 132 changed background pixels
+for each texture control. The guarded version passes on lighter and deeper
+skin positives for smoothing and sharpening, with zero protected background
+changes and alpha preserved. A lazy 2049×4096 texture input now fails typed
+before rasterization, while a 2048×4096 backend request is admitted and a
+later small public request recovers. A generated encoded PNG with declared
+2049×4096 dimensions also fails typed before decode and a valid small encoded
+request succeeds afterward. The generated texture suite passes `8/0/0`;
+backend contract, encoded and texture focused suites pass `24/0/0`.
+The guard does not prove all non-face colors are protected and no total memory
+or device performance result is asserted. Complete archive-first no-skip
+passes `1008/0/0`, all eight opt-ins and zero skips.
+
 ## 2026-09-27 dense geometry capacity evidence
 
 An admitted 16-point paired-brow observation and 46 requested geometry controls
@@ -10,8 +26,8 @@ normal request has no fallback metric. Direct Metal still-image submission
 continues to return typed `invalidInput`, as does the retained row-protection
 case. Capacity, Metal geometry and backend routing focused suites pass
 `20/0/0`; backend-neutral, Metal feature/runtime and SDK-only static gates and
-their self-tests pass. Full archive-first no-skip remains to be run for this
-change.
+their self-tests pass. Complete archive-first no-skip passes `1004/0/0`, all
+eight opt-ins and zero skips.
 
 ## 2026-09-27 whole-face tilt generated marker probe
 

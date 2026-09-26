@@ -122,6 +122,65 @@ final class GeneratedSkinTexturePublicOracleTests: XCTestCase {
         XCTAssertTrue(alpha(candidate) == alpha(positive))
     }
 
+    func testLowContrastCoolBackgroundIsProtectedWhileCheekTextureChanges() throws {
+        for deepSkin in [false, true] {
+            let source = portraitFixture(
+                textured: true, backgroundTextured: true, deepSkin: deepSkin
+            )
+            for parameters in [
+                BeautyParameters(skinSmoothing: 1),
+                BeautyParameters(skinSharpen: 1),
+            ] {
+                let output = try render(source, parameters: parameters)
+                var cheekChanges = 0
+                var backgroundChanges = 0
+                for y in 30..<45 {
+                    for x in 2..<12 {
+                        let offset = (y * width + x) * 4
+                        if Array(source[offset..<(offset + 3)]) !=
+                            Array(output[offset..<(offset + 3)]) {
+                            backgroundChanges += 1
+                        }
+                    }
+                    for x in 22..<28 {
+                        let offset = (y * width + x) * 4
+                        if Array(source[offset..<(offset + 3)]) !=
+                            Array(output[offset..<(offset + 3)]) {
+                            cheekChanges += 1
+                        }
+                    }
+                }
+                XCTAssertEqual(backgroundChanges, 0)
+                XCTAssertGreaterThan(cheekChanges, 0)
+                XCTAssertEqual(alpha(output), alpha(source))
+            }
+        }
+    }
+
+    func testOversizedTextureInputFailsTypedBeforeRenderingAndEngineRecovers() throws {
+        let oversized = CIImage(color: CIColor(
+            red: 0.6, green: 0.5, blue: 0.4
+        )).cropped(to: CGRect(x: 0, y: 0, width: 2049, height: 4096))
+        let engine = try BeautyEngine(configuration: .default)
+        for parameters in [
+            BeautyParameters(skinSmoothing: 1),
+            BeautyParameters(skinSharpen: 1),
+        ] {
+            XCTAssertThrowsError(try engine.processResult(
+                image: oversized, metadata: metadata, parameters: parameters
+            )) { error in
+                XCTAssertEqual(error as? BeautyError, .invalidInput)
+            }
+        }
+        let small = fixture(.textured)
+        let recovered = try engine.processResult(
+            image: makeImage(small), metadata: metadata,
+            parameters: BeautyParameters(skinSmoothing: 1)
+        )
+        XCTAssertLessThan(textureDeviation(bytes(recovered.output, extent: recovered.output.extent)),
+                          textureDeviation(small) * 0.65)
+    }
+
     private enum Kind { case textured, softEdge, flat }
     private enum Region { case target, protected, translucent }
 
@@ -151,7 +210,9 @@ final class GeneratedSkinTexturePublicOracleTests: XCTestCase {
         return result
     }
 
-    private func portraitFixture(textured: Bool) -> [UInt8] {
+    private func portraitFixture(
+        textured: Bool, backgroundTextured: Bool = false, deepSkin: Bool = false
+    ) -> [UInt8] {
         var result = [UInt8](repeating: 0, count: width * height * 4)
         for y in 0..<height {
             for x in 0..<width {
@@ -166,11 +227,21 @@ final class GeneratedSkinTexturePublicOracleTests: XCTestCase {
                 let noise = textured && cheek
                     ? ((x / 2 + y / 2).isMultiple(of: 2) ? 10 : -10) : 0
                 let rgb: (Int, Int, Int)
-                if !insideFace { rgb = (35, 45, 65) }
+                if !insideFace {
+                    let backgroundNoise = backgroundTextured &&
+                        ((x / 2 + y / 2).isMultiple(of: 2)) ? 5 : -5
+                    rgb = backgroundTextured
+                        ? (74 + backgroundNoise, 94 + backgroundNoise, 114 + backgroundNoise)
+                        : (35, 45, 65)
+                }
                 else if y < 20 { rgb = (32, 28, 26) }
                 else if leftEye || rightEye { rgb = (50, 40, 38) }
                 else if mouth { rgb = (125, 63, 70) }
-                else { rgb = (170 + noise, 125 + noise, 110 + noise) }
+                else {
+                    rgb = deepSkin
+                        ? (84 + noise, 58 + noise, 46 + noise)
+                        : (170 + noise, 125 + noise, 110 + noise)
+                }
                 let offset = (y * width + x) * 4
                 result[offset] = UInt8(rgb.0)
                 result[offset + 1] = UInt8(rgb.1)

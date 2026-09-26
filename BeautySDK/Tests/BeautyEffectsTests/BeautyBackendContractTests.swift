@@ -9,6 +9,34 @@ import XCTest
 @testable import BeautyEffects
 
 final class BeautyBackendContractTests: XCTestCase {
+    func testTextureRequestHasIndependentEightMepixelResourceCeiling() throws {
+        let metadata = Self.metadata()
+        func image(_ width: Int, _ height: Int) -> CIImage {
+            CIImage(color: CIColor(red: 0.6, green: 0.5, blue: 0.4))
+                .cropped(to: CGRect(x: 0, y: 0, width: width, height: height))
+        }
+        for parameters in [
+            BeautyParameters(skinSmoothing: 1),
+            BeautyParameters(skinSharpen: 1),
+        ] {
+            let plan = BeautyEffectResolver.resolve(parameters: parameters)
+            XCTAssertNoThrow(try BeautyBackendRequest(
+                input: .stillImage(image(2048, 4096)), metadata: metadata,
+                plan: plan
+            ))
+            XCTAssertThrowsError(try BeautyBackendRequest(
+                input: .stillImage(image(2049, 4096)), metadata: metadata,
+                plan: plan
+            )) { error in
+                XCTAssertEqual(error as? BeautyError, .invalidInput)
+            }
+        }
+        XCTAssertNoThrow(try BeautyBackendRequest(
+            input: .stillImage(image(2049, 4096)), metadata: metadata,
+            plan: BeautyEffectPlan()
+        ))
+    }
+
     func testValidStillImageRequestCarriesCanonicalCarrierAndAggregateResult() throws {
         let metadata = Self.metadata()
         let canonical = try Self.canonical(width: 2, height: 1, metadata: metadata)
