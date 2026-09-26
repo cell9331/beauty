@@ -61,7 +61,7 @@ final class BeautyMetalGeometryPassTests: XCTestCase {
     func testGeneratedInventoryUsesOneUnifiedFiniteBoundedPointSource() {
         let face = FaceGeometry.phase46AsymmetricComplete
         let rows = geometryRows()
-        XCTAssertEqual(rows.count, 46)
+        XCTAssertEqual(rows.count, 47)
         XCTAssertEqual(Set(rows.map(\.name)).count, rows.count)
 
         for row in rows {
@@ -276,6 +276,7 @@ final class BeautyMetalGeometryPassTests: XCTestCase {
             row("faceSlim", \.faceSlim), row("faceSmall", \.faceSmall),
             row("wholeFaceYPosition", \.wholeFaceYPosition, signed: true), row("faceVShape", \.faceVShape),
             row("wholeFaceXPosition", \.wholeFaceXPosition, signed: true),
+            row("wholeFaceTilt", \.wholeFaceTilt, signed: true),
             row("jawSlim", \.jawSlim), row("chinLength", \.chinLength, signed: true), row("faceContourSmooth", \.faceContourSmooth),
             row("templeFullness", \.templeFullness), row("cheekboneSlim", \.cheekboneSlim), row("chinTaper", \.chinTaper),
             row("eyeSize", \.eyeSize), row("eyeDistance", \.eyeDistance, signed: true), row("eyeYPosition", \.eyeYPosition, signed: true),

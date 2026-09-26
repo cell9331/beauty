@@ -279,6 +279,33 @@ final class FaceShapeWarpProviderTests: XCTestCase {
         ).wholeFaceXPosition.isEmpty)
     }
 
+    func testWholeFaceTiltUsesFourBoundedCardinalPointsAndMissingContourExits() {
+        let provider = FaceShapeWarpProvider()
+        let clockwise = provider.fieldEmissions(
+            face: .fixture,
+            strengths: strengths(wholeFaceTilt: BeautySafetyCaps.wholeFaceTilt)
+        ).wholeFaceTilt
+        let counterclockwise = provider.fieldEmissions(
+            face: .fixture,
+            strengths: strengths(wholeFaceTilt: -BeautySafetyCaps.wholeFaceTilt)
+        ).wholeFaceTilt
+        XCTAssertEqual(clockwise.count, 4)
+        XCTAssertEqual(counterclockwise.count, 4)
+        XCTAssertEqual(clockwise.map(\.source), counterclockwise.map(\.source))
+        XCTAssertGreaterThan(clockwise[0].target.x, clockwise[0].source.x)
+        XCTAssertLessThan(counterclockwise[0].target.x, counterclockwise[0].source.x)
+        XCTAssertLessThan(clockwise[3].target.y, clockwise[3].source.y)
+        XCTAssertGreaterThan(counterclockwise[3].target.y, counterclockwise[3].source.y)
+        XCTAssertTrue(clockwise.allSatisfy { point in
+            (0...1).contains(point.target.x) && (0...1).contains(point.target.y) &&
+                point.radius > 0 && point.strength <= BeautySafetyCaps.wholeFaceTilt
+        })
+        XCTAssertTrue(provider.fieldEmissions(
+            face: .missingContour,
+            strengths: strengths(wholeFaceTilt: BeautySafetyCaps.wholeFaceTilt)
+        ).wholeFaceTilt.isEmpty)
+    }
+
     func testFaceShapeOutputsAreDeterministicClampedAndProportionAdjacent() {
         let face = FaceGeometry.fixture
         let provider = FaceShapeWarpProvider()
@@ -858,6 +885,7 @@ final class FaceShapeWarpProviderTests: XCTestCase {
         faceSmall: Float = 0,
         wholeFaceYPosition: Float = 0,
         wholeFaceXPosition: Float = 0,
+        wholeFaceTilt: Float = 0,
         faceVShape: Float = 0,
         jawSlim: Float = 0,
         chinLength: Float = 0,
@@ -876,6 +904,10 @@ final class FaceShapeWarpProviderTests: XCTestCase {
         strengths.wholeFaceXPosition = min(
             max(wholeFaceXPosition, -BeautySafetyCaps.wholeFaceXPosition),
             BeautySafetyCaps.wholeFaceXPosition
+        )
+        strengths.wholeFaceTilt = min(
+            max(wholeFaceTilt, -BeautySafetyCaps.wholeFaceTilt),
+            BeautySafetyCaps.wholeFaceTilt
         )
         strengths.faceVShape = min(faceVShape, BeautySafetyCaps.faceVShape)
         strengths.jawSlim = min(jawSlim, BeautySafetyCaps.jawSlim)

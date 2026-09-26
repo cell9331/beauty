@@ -1,5 +1,16 @@
 # DESIGN.md
 
+## 2026-09-27 whole-face tilt contract
+
+`wholeFaceTilt` is signed with neutral zero and an effective cap of `±0.30`.
+At that cap, four cardinal points around the selected face center rotate by
+`±0.12` radians in canonical image coordinates. Their radius is bounded by
+`0.38 × max(face width, face height)` and falloff is two. Positive is clockwise
+in image coordinates; negative reverses it. Missing or invalid contour support
+exits unchanged. Existing geometry conflict scaling applies. The control is a
+two-dimensional image-plane warp and does not represent three-dimensional
+head pose.
+
 ## 2026-09-26 debug and log-level result contract
 
 Successful public `processResult` results carry a closed array of

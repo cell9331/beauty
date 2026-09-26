@@ -1,5 +1,12 @@
 # ARCHITECTURE.md
 
+## 2026-09-27 whole-face image-plane tilt
+
+`wholeFaceTilt` follows the existing public parameter, resolver, face-shape
+provider and unified CPU/Metal geometry route. Four bounded cardinal points
+rotate the selected face region around its validated bounds center. No depth
+input, model, shader, target or backend is added.
+
 ## 2026-09-26 result-local diagnostic events
 
 `BeautyDiagnosticCode` and `BeautyDiagnosticEvent` are closed BeautyCore

@@ -1,5 +1,19 @@
 # QUALITY_SCORE.md
 
+## 2026-09-27 whole-face tilt generated marker probe
+
+The public in-memory `128×128` marker test fixes positive clockwise and
+negative counterclockwise movement at two differently colored sites. Neutral,
+repeat, extent, alpha, distant-background, four orientations, input mirror,
+missing-face and typed pixel-limit failure/recovery pass `3/0/0`. The
+face-shape provider suite passes `21/0/0`; the current 47-control Metal
+inventory and combined-point checks pass `7/0/0`. The public field's Codable
+normalization and old-payload neutral default are covered. The larger
+renderer and upper-eyelid integration filter passes `53/0/0` after current
+inventory counts are updated. The complete archive-first no-skip gate passes
+`1001/0/0`, with eight opt-ins and zero skips. Broader portrait visual evidence is still
+required to promote the 3D taxonomy row beyond `partial`.
+
 ## 2026-09-26 diagnostic level focused evidence
 
 Preimplementation public tests failed to compile because the closed event

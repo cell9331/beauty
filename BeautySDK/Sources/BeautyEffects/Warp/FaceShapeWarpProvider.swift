@@ -1,8 +1,11 @@
+import Foundation
+
 struct FaceShapeWarpFieldEmissions: Equatable, Sendable {
     let faceSlim: [WarpControlPoint]
     let faceSmall: [WarpControlPoint]
     let wholeFaceYPosition: [WarpControlPoint]
     let wholeFaceXPosition: [WarpControlPoint]
+    let wholeFaceTilt: [WarpControlPoint]
     let faceVShape: [WarpControlPoint]
     let jawSlim: [WarpControlPoint]
     let faceContourSmooth: [WarpControlPoint]
@@ -10,7 +13,7 @@ struct FaceShapeWarpFieldEmissions: Equatable, Sendable {
     let cheekboneSlim: [WarpControlPoint]
 
     var points: [WarpControlPoint] {
-        faceSlim + faceSmall + wholeFaceYPosition + wholeFaceXPosition + faceVShape + jawSlim +
+        faceSlim + faceSmall + wholeFaceYPosition + wholeFaceXPosition + wholeFaceTilt + faceVShape + jawSlim +
             faceContourSmooth + templeFullness + cheekboneSlim
     }
 
@@ -23,6 +26,9 @@ struct FaceShapeWarpFieldEmissions: Equatable, Sendable {
         }
         if strengths.wholeFaceXPosition != 0, wholeFaceXPosition.isEmpty {
             sanitized.wholeFaceXPosition = 0
+        }
+        if strengths.wholeFaceTilt != 0, wholeFaceTilt.isEmpty {
+            sanitized.wholeFaceTilt = 0
         }
         if strengths.faceVShape != 0, faceVShape.isEmpty { sanitized.faceVShape = 0 }
         if strengths.jawSlim != 0, jawSlim.isEmpty { sanitized.jawSlim = 0 }
@@ -70,6 +76,9 @@ struct FaceShapeWarpProvider: WarpControlPointProvider {
                 : [],
             wholeFaceXPosition: hasLegacyContour
                 ? wholeFaceXPositionPoints(face: face, strength: strengths.wholeFaceXPosition)
+                : [],
+            wholeFaceTilt: hasLegacyContour
+                ? wholeFaceTiltPoints(face: face, strength: strengths.wholeFaceTilt)
                 : [],
             faceVShape: hasLegacyContour && strengths.faceVShape > 0
                 ? lowerFacePoints(
@@ -187,6 +196,53 @@ struct FaceShapeWarpProvider: WarpControlPointProvider {
             source: source, target: target, radius: radius,
             strength: abs(strength), falloff: 2
         )]
+    }
+
+    private func wholeFaceTiltPoints(face: FaceGeometry, strength: Float) -> [WarpControlPoint] {
+        guard strength.isFinite,
+              abs(strength) > Float.ulpOfOne,
+              abs(strength) <= BeautySafetyCaps.wholeFaceTilt,
+              face.bounds.width.isFinite, face.bounds.height.isFinite,
+              face.bounds.width > 0, face.bounds.height > 0,
+              face.faceContour.allSatisfy({ point in
+                  point.x.isFinite && point.y.isFinite &&
+                      (0...1).contains(point.x) && (0...1).contains(point.y)
+              })
+        else { return [] }
+        let center = face.bounds.center
+        let dx = face.bounds.width * 0.27
+        let dy = face.bounds.height * 0.27
+        let angle = Double(strength / BeautySafetyCaps.wholeFaceTilt) * 0.12
+        let cosine = Float(cos(angle))
+        let sine = Float(sin(angle))
+        let radius = min(1, max(face.bounds.width, face.bounds.height) * 0.38)
+        guard center.x.isFinite, center.y.isFinite,
+              (0...1).contains(center.x), (0...1).contains(center.y),
+              radius.isFinite, radius >= 0.001
+        else { return [] }
+        let offsets = [
+            SIMD2<Float>(0, -dy), SIMD2<Float>(dx, 0),
+            SIMD2<Float>(0, dy), SIMD2<Float>(-dx, 0),
+        ]
+        var points: [WarpControlPoint] = []
+        for offset in offsets {
+            let source = center + offset
+            let rotated = SIMD2<Float>(
+                cosine * offset.x - sine * offset.y,
+                sine * offset.x + cosine * offset.y
+            )
+            let target = center + rotated
+            guard source.x.isFinite, source.y.isFinite,
+                  target.x.isFinite, target.y.isFinite,
+                  (0...1).contains(source.x), (0...1).contains(source.y),
+                  (0...1).contains(target.x), (0...1).contains(target.y)
+            else { return [] }
+            points.append(WarpControlPoint(
+                source: source, target: target, radius: radius,
+                strength: abs(strength), falloff: 2
+            ))
+        }
+        return points
     }
 
     private func lowerFacePoints(

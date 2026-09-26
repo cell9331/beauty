@@ -46,7 +46,7 @@ final class BeautyConfigurationTests: XCTestCase {
         )
         XCTAssertNil(object["renderBackend"])
         XCTAssertNil(object["backend"])
-        XCTAssertEqual(object.count, 64)
+        XCTAssertEqual(object.count, 65)
     }
 
     func testSDK02DefaultConfigurationIsSafeForRelease() {

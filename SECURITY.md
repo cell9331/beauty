@@ -1,5 +1,13 @@
 # SECURITY.md
 
+## 2026-09-27 whole-face tilt input boundary
+
+`wholeFaceTilt` consumes request-local selected-face bounds and contour
+validity through the existing geometry path. It adds no persistent landmarks,
+pixels or mask, and no file, network, model or external distribution route.
+Generated marker pixels remain inside tests; durable evidence contains only
+aggregate assertions and results.
+
 ## 2026-09-26 closed diagnostic vocabulary
 
 Result diagnostics use a closed enum with three fixed codes and the existing

@@ -1,5 +1,12 @@
 # RELIABILITY.md
 
+## 2026-09-27 whole-face tilt recovery
+
+Tilt is resolved per request from validated selected-face support. An absent
+contour produces no tilt points, and no geometry is cached between calls.
+Signed targets are bounded inside the unit image. An oversized input retains
+the existing typed failure; a later valid request still succeeds.
+
 ## 2026-09-26 diagnostic filtering and recovery
 
 The `logLevel` verbosity threshold is applied after each successful public

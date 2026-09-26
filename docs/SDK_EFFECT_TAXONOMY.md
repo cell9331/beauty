@@ -40,14 +40,14 @@ contract without renaming or aliasing unsupported behavior.
 
 ## Current public parameter inventory
 
-The current contract contains exactly 64 stored fields: 63 numeric controls and
+The current contract contains exactly 65 stored fields: 64 numeric controls and
 the optional `filterId`. Unit controls normalize to `0...1`; signed controls
 normalize to `-1...1`; `filterId` is an optional logical resource identifier.
 
 <!-- SDK_PARAMETER_INVENTORY_BEGIN -->
 - Skin: `skinSmoothing`, `skinWhitening`, `skinRosy`, `skinSharpen`
 - Global tone: `brightness`, `contrast`, `saturation`, `temperature`, `tint`, `exposure`, `highlight`, `shadow`
-- Face: `faceSlim`, `faceSmall`, `wholeFaceYPosition`, `wholeFaceXPosition`, `faceVShape`, `jawSlim`, `chinLength`, `faceContourSmooth`, `templeFullness`, `cheekboneSlim`, `chinTaper`
+- Face: `faceSlim`, `faceSmall`, `wholeFaceYPosition`, `wholeFaceXPosition`, `wholeFaceTilt`, `faceVShape`, `jawSlim`, `chinLength`, `faceContourSmooth`, `templeFullness`, `cheekboneSlim`, `chinTaper`
 - Eyes: `eyeSize`, `eyeDistance`, `eyeYPosition`, `eyeTailLift`, `eyeHeight`, `eyeLength`, `upperEyelidLift`, `pupilSize`, `gazeCorrection`, `lowerEyelidDrop`, `eyeTilt`, `innerCornerOpen`, `outerCornerOpen`, `eyeSymmetry`
 - Eyebrows: `eyebrowYPosition`, `eyebrowThickness`, `eyebrowLength`, `eyebrowSpacing`, `eyebrowHeadSpacing`, `eyebrowTilt`, `eyebrowPeakDefinition`
 - Nose: `noseSlim`, `noseWingSlim`, `noseTipSize`, `noseBridge`, `noseRootNarrowing`, `noseTipLift`
@@ -101,7 +101,7 @@ names and visual organization are intentionally omitted from the active contract
 | 3D塑颜 | 对称 | future | — | Requires a new neutral whole-face geometry contract. |
 | 3D塑颜 | 上下 | partial | `wholeFaceYPosition` | Signed bounded image-space whole-face displacement passes generated public pixels and complete no-skip; this is not depth or a 3D mesh effect. Broader portrait evidence remains pending. |
 | 3D塑颜 | 左右 | partial | `wholeFaceXPosition` | Signed bounded image-space horizontal displacement passes generated public pixel direction and protection checks; it is not depth or a 3D mesh effect. Broader portrait evidence remains pending. |
-| 3D塑颜 | 倾斜 | future | — | Requires a new neutral whole-face geometry contract. |
+| 3D塑颜 | 倾斜 | partial | `wholeFaceTilt` | Signed bounded image-plane rotation passes generated public marker direction and exterior protection tests; it is not depth or a 3D mesh effect. Broader portrait evidence remains pending. |
 | 比例 | 小头 | partial | `faceSmall` | Existing small-face behavior is related but not an independently complete proportion control. |
 | 比例 | 头包脸 | future | — | No current neutral parameter. |
 | 比例 | 颅顶 | future | — | No current neutral parameter. |

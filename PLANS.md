@@ -58,6 +58,8 @@
 - [ ] FUTURE-08：为纹理滤镜固定非面部低对比负例与大图资源预算，实施满足契约的局部保护和资源上界。
 - [ ] 比例「小头」：定义独立于现有 `faceSmall` 的中性比例语义和像素验收，达到后再调整 taxonomy 的 `partial` 状态。
 - [ ] 3D 塑颜：分别定义并实现「对称」「上下」「左右」「倾斜」四项中性整体几何控制。
+  - 「倾斜」候选契约：新增 `wholeFaceTilt` 签名字段，零值源图一致；正值在规范图像坐标中局部顺时针，负值逆时针。以脸框中心和四个有界局部锚点构成二维图像平面旋转，不宣称三维头部姿态或深度。先固定顶部与左侧两个不同颜色生成标记的正反移动、远背景/alpha/extent、重复、缺脸退出和 Codable 中性兼容，再接入 resolver、冲突缩放与 CPU/Metal 共享几何。此公开验收在未实现字段时按预期编译失败；更多肖像证据前 taxonomy 至多 `partial`。
+  - 「倾斜」当前进度：新字段、解析/冲突缩放、四点有界旋转、renderer 正负案例和当前清单已接入。公开生成标记方向、方向/镜像、neutral、repeat、外部/alpha、无脸和 typed failure/recovery `3/0/0`，provider `21/0/0`，Metal 47 行点预算 `7/0/0`，renderer/去脂集成过滤 `53/0/0`。首次完整门禁发现一个旧 64 字段断言并已更新为 65；最终完整 archive-first no-skip `1001/0/0`、8 opt-in、0 skip，各专项与 SDK-only 边界通过。当前 taxonomy 仅记二维 `partial`，不认定 3D 姿态或广泛肖像效果。
   - 首项「上下」候选契约：公开 `wholeFaceYPosition` 签名强度，零值源图一致；正值在图像坐标中向下、负值向上。使用已选人脸的有界局部像素变形，不宣称深度/三维网格。生成脸部标记正反方向须沿期望方向移动至少 1 像素，图像远背景与 alpha 保持，缺失/无效人脸按现有 face-shape 规则退出；方向镜像、元数据、重复性、组合和 typed failure 按公开 SDK 路径验收。若所有者要求真正三维效果，替换此候选契约，不用二维结果冒充。
   - 进行中：`wholeFaceYPosition` 已接入公开参数、解析、冲突缩放和 face-shape 点，正负两项 renderer case。公开生成标记 `4/0/0`，含参数/Codable、正反方向、四方向×输入镜像、neutral、repeat、extent、远背景/alpha、无脸和 typed failure/recovery；provider `19/0/0`、Metal 几何 `7/0/0` 覆盖有界点及当前 45 行组合；post-archive SDK 边界通过。首次完整 no-skip 发现九项旧 62/75 当前清单断言，已保留 Phase 95 冻结投影并修正当前清单，相关聚焦 `55/0/0`；最终完整 no-skip `977/0/0`、8 opt-in、0 skip，archive-first 及所有专项通过。当前只对这组二维像素授予方向证据，taxonomy 标为 `partial`；更多肖像仍待验收。
   - 「左右」候选契约：`wholeFaceXPosition` 为独立签名强度，零值源图一致；正值在图像坐标中向右、负值向左。仅对已选人脸执行有界二维局部位移，不能称为深度或三维网格。先固定生成标记的正反方向至少 1 像素、远背景/alpha/extent、四方向和输入镜像、neutral/repeat、无脸退出及 typed failure/recovery；参数、Codable、冲突缩放、Metal 点预算和 renderer inventory 均须回归。更多肖像验收前 taxonomy 最多 `partial`。

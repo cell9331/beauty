@@ -1,5 +1,14 @@
 # PRODUCT_SENSE.md
 
+## 2026-09-27 whole-face tilt owner-local control
+
+`3D塑颜 / 倾斜` has an independent `wholeFaceTilt` control. On an in-memory
+generated face marker, signed strengths rotate two different colored regions
+in opposite directions through the public still-image path. Neutral, distant
+background, alpha, missing-face and typed-failure recovery are checked. The
+taxonomy remains `partial` pending broader portrait acceptance; these results
+do not establish a depth effect or general visual quality.
+
 ## 2026-09-26 owner-local diagnostics
 
 `logLevel` now selects bounded event verbosity on `BeautyResult.diagnostics`;
