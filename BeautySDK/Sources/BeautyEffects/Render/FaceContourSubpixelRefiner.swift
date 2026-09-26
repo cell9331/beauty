@@ -4,6 +4,12 @@ import BeautyDetection
 /// Request-local raster alignment of the observed lateral contour. It reads
 /// every sample from the immutable input and never retains pixels or support.
 enum FaceContourSubpixelRefiner {
+    struct Refinement {
+        let bytes: [UInt8]
+        let protectedLeft: Bool
+        let protectedRight: Bool
+    }
+
     private enum BoundaryDetection {
         case found(Float, Int)
         case ambiguous
@@ -18,38 +24,54 @@ enum FaceContourSubpixelRefiner {
         face: FaceGeometry,
         strength: Float
     ) -> [UInt8] {
-        guard width > 1, height > 1 else { return source }
+        refineWithProtection(source, width: width, height: height, face: face, strength: strength).bytes
+    }
+
+    static func refineWithProtection(
+        _ source: [UInt8],
+        width: Int,
+        height: Int,
+        face: FaceGeometry,
+        strength: Float
+    ) -> Refinement {
+        let identity = Refinement(bytes: source, protectedLeft: false, protectedRight: false)
+        guard width > 1, height > 1 else { return identity }
         let pixels = width.multipliedReportingOverflow(by: height)
-        guard !pixels.overflow else { return source }
+        guard !pixels.overflow else { return identity }
         let byteCount = pixels.partialValue.multipliedReportingOverflow(by: 4)
         guard !byteCount.overflow,
               source.count == byteCount.partialValue,
               strength.isFinite, strength > 0,
               let contour = face.observedFaceSupport?.contour,
               let runs = FaceContourLateralRuns.make(from: contour)
-        else { return source }
+        else { return identity }
 
         let requested = min(1, strength / BeautySafetyCaps.faceContourSmooth)
-        guard requested.isFinite, requested > 0 else { return source }
+        guard requested.isFinite, requested > 0 else { return identity }
         var strengths = BeautyEffectiveStrengths()
         strengths.faceContourSmooth = strength
         guard !FaceShapeWarpProvider().fieldEmissions(
             face: face,
             strengths: strengths
-        ).faceContourSmooth.isEmpty else { return source }
+        ).faceContourSmooth.isEmpty else { return identity }
         var result = source
+        var protectedLeft = false
+        var protectedRight = false
         let outerRadius = 14
         let feather = 6.0 as Float
         let endpointTaper = 20.0 as Float
 
         for (runIndex, run) in runs.enumerated() {
-            guard let first = run.ordered.first, let last = run.ordered.last else { return source }
+            guard let first = run.ordered.first, let last = run.ordered.last else { return identity }
             let isLeftSide = runIndex == 0
+            var protected = false
             if refineObservedBoundary(
                 source, result: &result, width: width, height: height,
                 faceWidth: face.bounds.width, run: run,
-                isLeftSide: isLeftSide, requested: requested
+                isLeftSide: isLeftSide, requested: requested,
+                protected: &protected
             ) {
+                if isLeftSide { protectedLeft = protected } else { protectedRight = protected }
                 continue
             }
             var segment = 0
@@ -63,7 +85,7 @@ enum FaceContourSubpixelRefiner {
                 let upper = run.ordered[segment + 1]
                 let progress = (y - lower.y) / (upper.y - lower.y)
                 let continuousCenter = (lower.x + (upper.x - lower.x) * progress) * Float(width)
-                guard continuousCenter.isFinite else { return source }
+                guard continuousCenter.isFinite else { return identity }
                 let roundedCenter = Int(continuousCenter.rounded())
                 let fractionalShift = strongBoundaryShift(
                     source,
@@ -109,7 +131,11 @@ enum FaceContourSubpixelRefiner {
                 }
             }
         }
-        return result
+        return Refinement(
+            bytes: result,
+            protectedLeft: protectedLeft,
+            protectedRight: protectedRight
+        )
     }
 
     /// Vision's sparse contour can sit well inside the visible cheek boundary.
@@ -120,7 +146,8 @@ enum FaceContourSubpixelRefiner {
         _ source: [UInt8], result: inout [UInt8],
         width: Int, height: Int, faceWidth: Float,
         run: FaceContourLateralRuns.Run, isLeftSide: Bool,
-        requested: Float
+        requested: Float,
+        protected: inout Bool
     ) -> Bool {
         guard let first = run.ordered.first, let last = run.ordered.last,
               faceWidth.isFinite, faceWidth > 0 else { return false }
@@ -145,6 +172,7 @@ enum FaceContourSubpixelRefiner {
         var directions = [Int?](repeating: nil, count: end - start)
         var ambiguousRows = 0
         var weakRows = 0
+        var boundedHairRows = 0
         var segment = 0
         for row in start..<end {
             let y = (Float(row) + 0.5) / Float(height)
@@ -157,6 +185,34 @@ enum FaceContourSubpixelRefiner {
             let center = (lower.x + (upper.x - lower.x) * progress) * Float(width)
             guard center.isFinite else { return false }
             centers[row - start] = center
+            if row >= activeStart && row < activeEnd {
+                let rounded = Int(center.rounded())
+                let lowerHair = max(0, rounded - searchRadius)
+                let upperHair = min(width - 1, rounded + searchRadius)
+                let hair = (lowerHair...upperHair).contains(where: { column in
+                    let offset = (row * width + column) * 4
+                    guard max(source[offset], source[offset + 1], source[offset + 2]) < 70 else { return false }
+                    let inward = isLeftSide ? 1 : -1
+                    return (1...4).contains(where: { multiple in
+                        let reference = column + inward * min(32, max(8, width / 40)) * multiple
+                        guard reference >= 0, reference < width else { return false }
+                        let sample = (row * width + reference) * 4
+                        return Int(source[sample]) - Int(source[sample + 2]) >= 18 &&
+                            max(source[sample], source[sample + 1], source[sample + 2]) >= 90
+                    })
+                })
+                if hair && (lowerHair...upperHair).contains(where: { column in
+                    let offset = (row * width + column) * 4
+                    guard max(source[offset], source[offset + 1], source[offset + 2]) < 70 else { return false }
+                    return (1...4).contains(where: { multiple in
+                        let distance = min(16, max(4, width / 80)) * multiple
+                        guard column - distance >= 0, column + distance < width else { return false }
+                        let outer = (row * width + column - distance) * 4
+                        let inner = (row * width + column + distance) * 4
+                        return min(source[outer], source[inner]) >= 90
+                    })
+                }) { boundedHairRows += 1 }
+            }
             let boundary = strongOuterBoundary(
                 source, width: width, row: row,
                 center: Int(center.rounded()), searchRadius: searchRadius,
@@ -172,6 +228,13 @@ enum FaceContourSubpixelRefiner {
                 if row >= activeStart && row < activeEnd { weakRows += 1 }
             case .unavailable: break
             }
+        }
+        // A compact dark band bounded by brighter pixels can be foreground
+        // hair crossing a chromatic cheek edge. With many such rows, neither
+        // the broad edge pass nor a contour-centered fallback is safe.
+        if boundedHairRows >= max(20, (activeEnd - activeStart) / 8) {
+            protected = true
+            return true
         }
         // Many competing edges make the entire side unsafe to infer. Do not
         // fall back to a point-center shift that could follow one of them.
@@ -259,7 +322,8 @@ enum FaceContourSubpixelRefiner {
 
     private static func strongOuterBoundary(
         _ source: [UInt8], width: Int, row: Int,
-        center: Int, searchRadius: Int, isLeftSide: Bool
+        center: Int, searchRadius: Int,
+        isLeftSide: Bool
     ) -> BoundaryDetection {
         let lower = max(4, center - searchRadius)
         let upper = min(width - 5, center + searchRadius)
@@ -287,7 +351,11 @@ enum FaceContourSubpixelRefiner {
         guard let strongest = candidates.max(by: { $0.contrast < $1.contrast })
         else { return .unavailable }
         guard strongest.contrast >= 24 else {
-            return strongest.contrast >= 4 ? .weak : .unavailable
+            return chromaticOuterBoundary(
+                source, width: width, row: row, center: center,
+                searchRadius: searchRadius,
+                isLeftSide: isLeftSide
+            ) ?? (strongest.contrast >= 4 ? .weak : .unavailable)
         }
         let competing = candidates.filter {
             abs($0.column - strongest.column) >= 8 &&
@@ -302,11 +370,25 @@ enum FaceContourSubpixelRefiner {
             let outward = { (column: Int) in
                 isLeftSide ? column <= center - 4 : column >= center + 4
             }
-            return outward(strongest.column) && competing.contains(where: { outward($0.column) })
+            let original: BoundaryDetection = outward(strongest.column) &&
+                competing.contains(where: { outward($0.column) })
                 ? .ambiguous : .unavailable
+            // Two individually strong RGB edges can be a second silhouette or
+            // an occluder even if a blurred hue signal merges them. Keep the
+            // existing fail-closed result in that case.
+            guard strongest.contrast < 40 else { return original }
+            return chromaticOuterBoundary(
+                source, width: width, row: row, center: center,
+                searchRadius: searchRadius,
+                isLeftSide: isLeftSide
+            ) ?? original
         }
         guard isLeftSide ? strongest.column <= center + 8 : strongest.column >= center - 8 else {
-            return .unavailable
+            return chromaticOuterBoundary(
+                source, width: width, row: row, center: center,
+                searchRadius: searchRadius,
+                isLeftSide: isLeftSide
+            ) ?? .unavailable
         }
         // Either background can be lighter. The calling run admits only one
         // coherent contrast direction across its lower-cheek rows.
@@ -320,8 +402,68 @@ enum FaceContourSubpixelRefiner {
             sum + Int(source[after + offset * 4]) + Int(source[after + offset * 4 + 1]) +
                 Int(source[after + offset * 4 + 2])
         }
-        guard beforeLight != afterLight else { return .unavailable }
+        guard beforeLight != afterLight else {
+            return chromaticOuterBoundary(
+                source, width: width, row: row, center: center,
+                searchRadius: searchRadius,
+                isLeftSide: isLeftSide
+            ) ?? .unavailable
+        }
         return .found(Float(strongest.column) + 0.5, afterLight > beforeLight ? 1 : -1)
+    }
+
+    /// Fallback for source edges whose hue separates face and background while
+    /// their averaged RGB brightness is too weak or locally textured. Both
+    /// prototypes and the unique crossing come from the current source row.
+    private static func chromaticOuterBoundary(
+        _ source: [UInt8], width: Int, row: Int,
+        center: Int, searchRadius: Int,
+        isLeftSide: Bool
+    ) -> BoundaryDetection? {
+        let lower = max(4, center - searchRadius)
+        let upper = min(width - 5, center + searchRadius)
+        guard lower + 2 < upper else { return nil }
+        let innerX = min(width - 3, max(2, center + (isLeftSide ? 24 : -24)))
+        let outerX = min(width - 3, max(2,
+            center + (isLeftSide ? -(searchRadius + 24) : searchRadius + 24)
+        ))
+        let inside = chroma(source, width: width, row: row, column: innerX)
+        let outside = chroma(source, width: width, row: row, column: outerX)
+        let separation = inside - outside
+        guard abs(separation) >= 20 else { return nil }
+
+        let midpoint = (inside + outside) / 2
+        let polarity = separation > 0 ? 1 : -1
+        func score(_ column: Int) -> Int {
+            (chroma(source, width: width, row: row, column: column) - midpoint) * polarity
+        }
+        var crossings: [Int] = []
+        for column in (lower + 1)..<upper {
+            let exterior = isLeftSide ? column - 1 : column + 1
+            if score(exterior) < 0 && score(column) >= 0 {
+                crossings.append(column)
+            }
+        }
+        guard let boundary = isLeftSide ? crossings.min() : crossings.max() else { return nil }
+        guard crossings.allSatisfy({ abs($0 - boundary) < 4 }) else {
+            return .ambiguous
+        }
+        guard isLeftSide ? boundary <= center + 8 : boundary >= center - 8 else {
+            return nil
+        }
+        return .found(Float(boundary) + 0.5, polarity)
+    }
+
+    private static func chroma(
+        _ source: [UInt8], width: Int, row: Int, column: Int
+    ) -> Int {
+        let base = (row * width + column) * 4
+        var difference = 0
+        for offset in -2...2 {
+            difference += Int(source[base + offset * 4]) -
+                Int(source[base + offset * 4 + 2])
+        }
+        return difference / 5
     }
 
     /// A single high-contrast edge near the observed contour reveals which
@@ -363,4 +505,5 @@ enum FaceContourSubpixelRefiner {
         guard shift.isFinite, abs(shift) <= 1.5 else { return nil }
         return shift
     }
+
 }

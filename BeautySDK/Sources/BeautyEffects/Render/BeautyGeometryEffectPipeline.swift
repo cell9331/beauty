@@ -12,6 +12,24 @@ enum BeautyGeometryEffectPipeline {
         return controlPoints(for: plan.effectiveStrengths, face: face)
     }
 
+    static func controlPoints(
+        for plan: BeautyEffectPlan,
+        face: FaceGeometry,
+        protectedLeftContour: Bool,
+        protectedRightContour: Bool
+    ) -> [WarpControlPoint] {
+        let controls = controlPoints(for: plan, face: face)
+        guard protectedLeftContour || protectedRightContour else { return controls }
+        let contourPoints = FaceShapeWarpProvider().fieldEmissions(
+            face: face, strengths: plan.effectiveStrengths
+        ).faceContourSmooth
+        return controls.filter { point in
+            guard contourPoints.contains(point) else { return true }
+            return point.source.x < face.bounds.midX
+                ? !protectedLeftContour : !protectedRightContour
+        }
+    }
+
     static func controlPoints(for strengths: BeautyEffectiveStrengths, face: FaceGeometry) -> [WarpControlPoint] {
         FaceShapeWarpProvider().makeControlPoints(face: face, strengths: strengths).points +
             ChinWarpProvider().makeControlPoints(face: face, strengths: strengths).points +
@@ -80,8 +98,7 @@ enum BeautyGeometryEffectPipeline {
         colorSpace: CGColorSpace,
         onRasterize: (() -> Void)? = nil
     ) -> CIImage {
-        let points = controlPoints(for: plan, face: face).compactMap(RenderableWarpPoint.init)
-        guard !points.isEmpty else {
+        guard !controlPoints(for: plan, face: face).isEmpty else {
             return image.cropped(to: image.extent)
         }
 
@@ -117,14 +134,22 @@ enum BeautyGeometryEffectPipeline {
             )
         }
 
-        let alignedSource = FaceContourSubpixelRefiner.refine(
+        let refinement = FaceContourSubpixelRefiner.refineWithProtection(
             source,
             width: width,
             height: height,
             face: face,
             strength: plan.effectiveStrengths.faceContourSmooth
         )
-        let output = warpedRGBABytes(alignedSource, width: width, height: height, points: points)
+        let alignedSource = refinement.bytes
+        let points = controlPoints(
+            for: plan, face: face,
+            protectedLeftContour: refinement.protectedLeft,
+            protectedRightContour: refinement.protectedRight
+        ).compactMap(RenderableWarpPoint.init)
+        let output = warpedRGBABytes(
+            alignedSource, width: width, height: height, points: points
+        )
         let data = Data(output)
         let warped = CIImage(
             bitmapData: data,

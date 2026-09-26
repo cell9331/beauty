@@ -57,6 +57,19 @@ pass `55/0/0`. The final archive-first no-skip gate passes `977/0/0`, all
 eight opt-ins and zero skips. Taxonomy remains `partial` while broader
 generated portrait acceptance is pending.
 
+## 2026-09-26 FACE-01 second generated portrait closeout
+
+The second frozen natural-style generated portrait oracle passes without
+changing source identity, ROI or thresholds. Right roughness `5.150→4.206`
+versus a `≤4.635` gate; smooth-negative right `3.194→3.194`; target/total
+changes `7802/7802`; both hair and protected-region counts zero; neutral,
+repeat and alpha pass. Code-generated chroma boundaries and short/sustained
+hair positive and protection tests cover source-local and whole-side behavior.
+The shared CPU/Metal point filter keeps the unobstructed side active. FACE-01
+focused suites pass `23/0/0`; the complete archive-first no-skip script exits
+zero with all eight opt-ins and no skipped tests. This evidence is limited to
+the generated inputs and does not establish population or device quality.
+
 ## 2026-09-26 FACE-01 expanded generated boundary checks
 
 Three skin-color rough/smooth pairs, opposite left/right background lightness,

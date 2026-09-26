@@ -40,6 +40,15 @@ public metrics or durable diagnostics. Missing or invalid support fails the
 field closed. The new control does not add a model, network, file input,
 permission, or distribution path.
 
+## 2026-09-26 FACE-01 chromatic contour trust boundary
+
+The color fallback uses only current request pixels and requires a coherent
+source-row edge. A sustained compact dark band can suppress the affected side
+before CPU or Metal geometry submission; no observed contour, mask, hair
+pixels or side decision enters public diagnostics or persistent evidence.
+The frozen portrait oracle records aggregate checks only. This adds no model,
+network, file input or distribution path.
+
 ## 2026-09-26 FACE-01 occluding hair boundary
 
 Short dark bands crossing the cheek are treated as competing source edges

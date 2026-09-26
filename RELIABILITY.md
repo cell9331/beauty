@@ -43,6 +43,17 @@ geometry conflict scaling, Metal point budget, extent/alpha result checks,
 and typed invalid-input recovery. No request state or device performance
 claim is added.
 
+## 2026-09-26 FACE-01 chromatic edge and side recovery
+
+Weak RGB brightness edges can use a coherent source-row chroma crossing;
+strong competing edges retain the earlier fail-closed result. A sustained
+compact dark occlusion closes its observed lateral run, and both still-image
+backends remove the corresponding `faceContourSmooth` points before geometry
+execution. The opposite side and unrelated controls remain eligible. The
+request-local side flags and pixels are not retained or logged. Generated
+single-side and repeated-output tests, the frozen second portrait oracle, and
+the full archive-first no-skip gate pass with zero skips.
+
 ## 2026-09-26 FACE-01 hair-row recovery
 
 The source-edge search now rejects a second edge at least eight columns away

@@ -179,9 +179,9 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
             bytes, width: dimensions.width, height: dimensions.height, plan: plan,
             renderQuality: renderQuality
         )
-        let alignedBytes: [UInt8]
+        let refinement: FaceContourSubpixelRefiner.Refinement?
         if let selectedFaceSupport {
-            alignedBytes = FaceContourSubpixelRefiner.refine(
+            refinement = FaceContourSubpixelRefiner.refineWithProtection(
                 texturedBytes,
                 width: dimensions.width,
                 height: dimensions.height,
@@ -189,8 +189,9 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
                 strength: plan.effectiveStrengths.faceContourSmooth
             )
         } else {
-            alignedBytes = texturedBytes
+            refinement = nil
         }
+        let alignedBytes = refinement?.bytes ?? texturedBytes
 
         let renderedBytes = try invokeRuntime(
             width: dimensions.width,
@@ -201,7 +202,9 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
                 selectedFaceSupport: selectedFaceSupport,
                 compositionSummary: compositionSummary,
                 hasCPUComposedCarrier: canonicalImage != nil,
-                inputKind: .stillImage
+                inputKind: .stillImage,
+                protectedLeftContour: refinement?.protectedLeft ?? false,
+                protectedRightContour: refinement?.protectedRight ?? false
             )
         )
         guard let colorSpace = CGColorSpace(name: CGColorSpace.sRGB) else {
@@ -281,7 +284,9 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
         selectedFaceSupport: BeautyFaceObservation?,
         compositionSummary: BeautyLocalRetouchCompositionSummary?,
         hasCPUComposedCarrier: Bool,
-        inputKind: BeautyMetalColorInputKind
+        inputKind: BeautyMetalColorInputKind,
+        protectedLeftContour: Bool = false,
+        protectedRightContour: Bool = false
     ) throws -> [BeautyMetalPass] {
         var passes: [BeautyMetalPass] = []
         if compositionSummary != nil {
@@ -302,7 +307,11 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
         let lipRequested = plan.activeDomains.contains(.lipColor) && strengths.lipColor > 0
         let lipEnvelope = lipRequested ? face.flatMap(lipEnvelope) : nil
         let geometryPoints = face.map {
-            BeautyGeometryEffectPipeline.controlPoints(for: plan, face: $0)
+            BeautyGeometryEffectPipeline.controlPoints(
+                for: plan, face: $0,
+                protectedLeftContour: protectedLeftContour,
+                protectedRightContour: protectedRightContour
+            )
         } ?? []
         let geometry = try Self.makeGeometryPass(points: geometryPoints)
         guard globalColor || lipEnvelope != nil || geometry != nil || !passes.isEmpty else {

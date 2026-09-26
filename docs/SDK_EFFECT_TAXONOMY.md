@@ -112,7 +112,7 @@ names and visual organization are intentionally omitted from the active contract
 | 比例 | 短脸 | future | — | No current neutral parameter. |
 | 脸型 | 脸宽 | implemented | `faceSlim` | Bounded contour narrowing. |
 | 脸型 | 小脸 | implemented | `faceSmall` | Bounded small-face geometry. |
-| 脸型 | 面部流畅 | implemented | `faceContourSmooth` | The repaired lower-cheek source-edge alignment passes the predeclared public CPU oracle on a natural-style generated rough/smooth pair: bilateral roughness improves, the smooth negative stays within tolerance, and target, protection, neutral, repeat, and alpha checks pass. Code-generated dark-background positives also improve; weak, contradictory, or ambiguous outward edges fail closed. This owner-local generated-input result does not qualify real-person populations, devices, or commercial visual quality. |
+| 脸型 | 面部流畅 | implemented | `faceContourSmooth` | The lower-cheek source-edge alignment passes two predeclared public CPU generated-portrait rough/smooth oracles, including a deep-skin, oblique-light, cheek-crossing-hair pair. Code-generated skin tones, opposing light, chromatic boundaries and short/sustained dark occlusion cover direction and protected regions. Weak or contradictory edges fail closed; a sustained occlusion closes only its affected contour side in both CPU and Metal point selection. Neutral, repeat, alpha and target/protection checks pass for these inputs. This owner-local evidence does not qualify real-person populations, devices or commercial visual quality. |
 | 脸型 | 太阳穴 | implemented | `templeFullness` | Upper-lateral contour geometry. |
 | 脸型 | 颧骨 | implemented | `cheekboneSlim` | Mid-lateral contour geometry. |
 | 脸型 | 下巴长短 | implemented | `chinLength` | Signed chin-length geometry. |

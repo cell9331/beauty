@@ -1,5 +1,6 @@
 import Foundation
 import XCTest
+import BeautyCore
 @testable import BeautyEffects
 
 final class ObservedCheekBoundaryRefinementTests: XCTestCase {
@@ -251,6 +252,89 @@ final class ObservedCheekBoundaryRefinementTests: XCTestCase {
         })
     }
 
+    func testChromaDominantSoftBoundaryImprovesWithoutGlobalColorShift() throws {
+        let background: (UInt8, UInt8, UInt8) = (93, 95, 96)
+        let skin: (UInt8, UInt8, UInt8) = (115, 85, 65)
+        let source = try image(wavy: true, background: background, skin: skin)
+        let smooth = try image(wavy: false, background: background, skin: skin)
+        let output = FaceContourSubpixelRefiner.refine(
+            source, width: width, height: height, face: face, strength: 0.25
+        )
+        let smoothOutput = FaceContourSubpixelRefiner.refine(
+            smooth, width: width, height: height, face: face, strength: 0.25
+        )
+        for left in [true, false] {
+            let before = try roughness(source, left: left)
+            let after = try roughness(output, left: left)
+            XCTAssertGreaterThan(before, 0.5)
+            XCTAssertLessThan(after, before * 0.90)
+            XCTAssertLessThanOrEqual(
+                try roughness(smoothOutput, left: left),
+                try roughness(smooth, left: left) * 1.10
+            )
+        }
+        XCTAssertEqual(changed(source, output) { x, y in
+            y < Int(0.50 * Double(height)) ||
+                (0.44..<0.56).contains(Double(x) / Double(width)) ||
+                x < width / 8 || x >= width * 7 / 8
+        }, 0)
+        XCTAssertTrue(stride(from: 3, to: source.count, by: 4).allSatisfy {
+            source[$0] == output[$0]
+        })
+    }
+
+    func testChromaDominantBoundaryKeepsDarkHairRowsExact() throws {
+        let hairRows = 456..<472
+        let source = try image(
+            wavy: true, background: (93, 95, 96), skin: (115, 85, 65),
+            hairRows: hairRows
+        )
+        let output = FaceContourSubpixelRefiner.refine(
+            source, width: width, height: height, face: face, strength: 0.25
+        )
+        XCTAssertEqual(changed(source, output) { _, y in hairRows.contains(y) }, 0)
+        XCTAssertGreaterThan(changed(source, output) { _, y in
+            (472..<528).contains(y)
+        }, 0)
+    }
+
+    func testSustainedDarkHairBandClosesChromaticContourRun() throws {
+        let source = try image(
+            wavy: true, background: (93, 95, 96), skin: (115, 85, 65),
+            hairRows: 424..<528
+        )
+        let output = FaceContourSubpixelRefiner.refine(
+            source, width: width, height: height, face: face, strength: 0.25
+        )
+        XCTAssertEqual(output, source)
+    }
+
+    func testProtectedContourSideDropsOnlyItsGeometryControls() throws {
+        let source = try image(
+            wavy: true, background: (93, 95, 96), skin: (115, 85, 65),
+            hairRows: 424..<528, hairOnLeftOnly: true
+        )
+        let refinement = FaceContourSubpixelRefiner.refineWithProtection(
+            source, width: width, height: height, face: face, strength: 0.25
+        )
+        XCTAssertTrue(refinement.protectedLeft)
+        XCTAssertFalse(refinement.protectedRight)
+
+        let plan = BeautyEffectResolver.resolve(
+            parameters: BeautyParameters(faceContourSmooth: 0.25),
+            faceGeometry: face
+        )
+        let points = BeautyGeometryEffectPipeline.controlPoints(
+            for: plan, face: face,
+            protectedLeftContour: refinement.protectedLeft,
+            protectedRightContour: refinement.protectedRight
+        )
+        XCTAssertFalse(points.isEmpty)
+        XCTAssertTrue(points.allSatisfy { $0.source.x >= face.bounds.midX })
+        XCTAssertGreaterThan(changed(source, refinement.bytes) { x, _ in x >= width / 2 }, 0)
+        XCTAssertEqual(changed(source, refinement.bytes) { x, _ in x < width / 2 }, 0)
+    }
+
     private func image(
         wavy: Bool,
         competingEdges: Bool = false,
@@ -260,7 +344,8 @@ final class ObservedCheekBoundaryRefinementTests: XCTestCase {
         skin: (UInt8, UInt8, UInt8) = (170, 120, 105),
         rightBackground: (UInt8, UInt8, UInt8)? = nil,
         rightSkin: (UInt8, UInt8, UInt8)? = nil,
-        hairRows: Range<Int>? = nil
+        hairRows: Range<Int>? = nil,
+        hairOnLeftOnly: Bool = false
     ) throws -> [UInt8] {
         let runs = try XCTUnwrap(FaceContourLateralRuns.make(
             from: try XCTUnwrap(face.observedFaceSupport?.contour)
@@ -281,7 +366,7 @@ final class ObservedCheekBoundaryRefinementTests: XCTestCase {
                 )
                 let hair = hairRows?.contains(row) == true && (
                     left.map { x >= $0 - 10 && x <= $0 + 12 } == true ||
-                    right.map { x >= $0 - 12 && x <= $0 + 10 } == true
+                    (!hairOnLeftOnly && right.map { x >= $0 - 12 && x <= $0 + 10 } == true)
                 )
                 let i = (row * width + column) * 4
                 if hair {

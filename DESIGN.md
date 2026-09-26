@@ -89,6 +89,18 @@ one, and falloff two. Missing or invalid face support removes this field;
 stale support is neutral and reused non-eye geometry is halved. This is a
 bounded two-dimensional raster warp, not a three-dimensional head transform.
 
+## 2026-09-26 FACE-01 chromatic boundary and sustained occlusion
+
+The opaque lower-cheek refiner may use a source-row red-minus-blue crossing
+when the RGB brightness edge is weak or locally textured. It requires two
+separated source chroma prototypes and one coherent outward crossing; strong
+competing RGB edges still fail closed. A sustained compact dark band bounded
+by brighter pixels closes the affected lateral run. The refiner returns that
+request-local side decision with its pixels, and both CPU and Metal omit only
+that side's `faceContourSmooth` geometry controls. A short isolated hair band
+continues to close locally without blocking supported neighboring rows.
+The scalar, cap, other geometry controls and public result shape are unchanged.
+
 ## 2026-09-26 FACE-01 short hair occlusion follow-up
 
 The source-edge refiner now treats a second edge at least eight columns from

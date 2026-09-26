@@ -43,6 +43,16 @@ exact, and a typed oversized-input failure does not affect the next request.
 The control is image-space geometry only; current generated-marker evidence
 does not establish true 3D shape or broad portrait visual quality.
 
+## 2026-09-26 FACE-01 second generated portrait acceptance
+
+A second predeclared natural-style generated rough/smooth pair, with deep skin,
+oblique light and cheek-crossing hair, now passes the public CPU pixel oracle.
+The rough right cheek improves at the fixed threshold; the smooth negative,
+hair, center, far background, neutral, repeat and alpha checks pass. A long
+hair occlusion can safely leave one side unchanged while the unobstructed side
+continues. This is owner-local evidence for the tested inputs, not a claim
+about a population, real-device behavior or commercial visual quality.
+
 ## 2026-09-26 FACE-01 additional generated coverage
 
 Code-generated deep, medium, and light cheek colors pass bilateral roughness
