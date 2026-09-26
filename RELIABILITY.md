@@ -1,5 +1,33 @@
 # RELIABILITY.md
 
+## 2026-09-26 FACE-01 lower-cheek recovery and bounds
+
+The follow-up robustness gate verifies a dark background rough-positive,
+coherent weak contrast, short opaque occlusion, and conflicting rowwise
+brightness directions. The dark-background edge can use the same bounded
+correction as the light-background edge. Weak or contradictory direction
+evidence fails the whole side closed; a short double-edge occlusion remains
+source-exact on its rows without suppressing supported neighbors. Tests keep
+center/background, alpha, and repeatability assertions. No per-row pixels or
+observed coordinates are logged.
+
+The shared still-image refiner can scan a bounded 48-column neighborhood
+around each observed lateral row when Vision support is offset from the
+visible cheek. It admits the wider pass only with a coherent strong source
+edge across at least two thirds of the lower-cheek interval; competing
+outward edges on many rows make that side source-exact. If the wider pass is
+unavailable, the previous fractional correction remains available. The wider
+pass caps displacement at six pixels and its band radius at 32 columns, reads only
+immutable opaque source samples, preserves alpha, and never retains image
+data. The upper ear/temple junction is excluded from wide correction.
+
+In-memory positive, smooth-negative, competing-edge, and transparent-row
+regressions exercise these branches. The frozen generated portrait oracle
+exercises output direction, containment, protection, neutral identity, repeat,
+and alpha through the public CPU renderer. Existing tests cover typed
+invalid-support recovery and CPU/Metal still-image use of the shared step.
+These host results do not qualify device latency, memory, or sustained load.
+
 ## Current image-fixture recovery policy (2026-09-24)
 
 The complete no-skip wrapper now permits a generated Vision fixture file name
@@ -29,6 +57,8 @@ the canonicalizer retains its own bound check. A Metal geometry plan exceeding
 discarding geometry; a subsequent valid request remains independently usable.
 Still-image selective highlights/shadows use built-in Core Image filters and
 retain the existing bounded tone coefficient.
+`maximumInputByteCount` remains a normalized Codable value only; the current
+public API has no encoded-byte input on which to enforce it.
 
 ## v1.24 upper-eyelid bounded correction
 

@@ -1,5 +1,76 @@
 # QUALITY_SCORE.md
 
+## 2026-09-26 FACE-01 source-boundary repair
+
+The follow-up robustness suite initially reproduced two defects: a dark
+background rough-positive did not improve, and weak contrast changed
+protected upper rows. An additional alternating-light adversarial input
+reproduced a 339-pixel fail-closed leak. The shared refiner now accepts either
+coherent brightness direction, treats coherent weak contrast and conflicting
+directions as side-local no-ops, and skips short opaque double-edge rows.
+The eight in-memory boundary tests and the original eight FACE-01 focused
+tests pass. The unchanged natural-style generated-pair oracle still passes
+with its original aggregates. The archive-first no-skip gate returned zero,
+with all SDK-owned prechecks passing, eight opt-ins executed and zero skips;
+`git diff --check` also passed. The evidence and remaining scope are recorded
+in `PLANS.md`.
+
+The previously frozen natural-style generated-pair public CPU oracle passes
+without changing its inputs or thresholds. Positive left/right cheek
+roughness changed `6.106/6.731 → 4.000/5.050` pixels; smooth-negative
+`2.806/2.638 → 2.431/2.356` remains within the 110% ceiling. Target/total
+changed pixels match at `15821/15821` and `9069/9069`; protected regions
+remain `0/0`. Neutral, repeat, alpha, and boundedness checks pass. The prior
+failed probe below remains the historical baseline. New in-memory rough,
+smooth, competing-edge, and transparent-row tests pass `4/0/0`; existing
+FACE-01 frozen focused tests pass `8/0/0` after the ambiguity correction.
+The archive-first `bash scripts/run-no-skip-swiftpm.sh` gate returned zero:
+all SDK-owned prechecks and the full SwiftPM run passed, all eight opt-ins
+executed, and no tests were skipped. `git diff --check` passed. Generated
+images remain ignored local inputs, and only aggregates are recorded.
+
+## 2026-09-25 FACE-01 generated natural-style portrait effect probe
+
+A fictional rough-positive/smooth-negative pair passed source-only admission
+under a frozen cheek-edge metric (positive left/right `6.106/6.731`; negative
+`2.806/2.638`). The public CPU renderer produced neutral, candidate and repeat
+outputs for both inputs. Neutral and repeat bytes and alpha passed. The frozen
+effect oracle failed: positive roughness was `6.106/6.838` instead of at most
+90% of source on each side; negative `2.837/2.700` remained within the 110%
+non-worsening ceiling. Protected center/far-background changes were zero, but
+target coverage was `10315/11142` and `8820/10037`, below the fixed 95% floor.
+The result is a reproduced natural-style generated-input effect failure, not a
+suite regression or a taxonomy promotion. The source-registered oracle is
+`scripts/check-face01-generated-effect.swift`; generated images stay ignored
+and local. SDK-only post-archive boundary and `git diff --check` pass. Full
+archive-first no-skip was not run after this failed effect gate.
+
+## 2026-09-25 FACE-01 stylized public-path oracle
+
+New in-memory code-generated face positives and negatives use public
+`BeautyEngine.processResult` with test-only detection support. A predeclared
+source-fixed edge metric improves from `0.651` to `0.173` pixels on the rough
+positive; the straight-edge negative remains source-exact. Neutral identity,
+repeatability, target/exterior/central/background checks, alpha, extent, current
+legacy CI color metadata, and redacted diagnostics pass. The two new tests pass
+2/0/0; running them with the eight existing FACE-01 tests passes 10/0/0. The
+source is a stylized polygonal face; no natural-style portrait visual effect or
+taxonomy promotion follows. The older v1.23 runner keeps its frozen eight-test
+filter unchanged.
+
+## 2026-09-25 Metal public-combination budget regression
+
+The 43 GPU-supported public geometry controls fit the retained 256-point
+Metal pass in two representative complete supports: the generated asymmetric
+face uses 115 combined points (119 summed single-control points), and the
+ordinary complete observation uses 102 (102 summed). Positive and negative
+signed settings both fit. The package regression verifies the pass retains all
+points and the available GPU produces changed, repeatable output with exact
+alpha; the separate synthetic 257-point rejection still returns a typed error.
+`BeautyMetalGeometryPassTests` passed 7/0/0 and the SDK-owned Metal feature
+preflight passed with Metal available, 37/0/0 and zero skips. This does not
+prove a global upper bound for every observation or qualify device performance.
+
 ## 2026-09-24 replaceable generated fixtures in the complete gate
 
 The archive-first no-skip wrapper now accepts an owner-authorized generated

@@ -105,7 +105,7 @@ names and visual organization are intentionally omitted from the active contract
 | 比例 | 短脸 | future | — | No current neutral parameter. |
 | 脸型 | 脸宽 | implemented | `faceSlim` | Bounded contour narrowing. |
 | 脸型 | 小脸 | implemented | `faceSmall` | Bounded small-face geometry. |
-| 脸型 | 面部流畅 | partial | `faceContourSmooth` | Existing v1.23 generated inputs proved mechanics but did not establish a rough-positive/smooth-negative contour improvement. New qualifying generated portraits are eligible for effect acceptance; a genuine human source is not required. |
+| 脸型 | 面部流畅 | implemented | `faceContourSmooth` | The repaired lower-cheek source-edge alignment passes the predeclared public CPU oracle on a natural-style generated rough/smooth pair: bilateral roughness improves, the smooth negative stays within tolerance, and target, protection, neutral, repeat, and alpha checks pass. Code-generated dark-background positives also improve; weak, contradictory, or ambiguous outward edges fail closed. This owner-local generated-input result does not qualify real-person populations, devices, or commercial visual quality. |
 | 脸型 | 太阳穴 | implemented | `templeFullness` | Upper-lateral contour geometry. |
 | 脸型 | 颧骨 | implemented | `cheekboneSlim` | Mid-lateral contour geometry. |
 | 脸型 | 下巴长短 | implemented | `chinLength` | Signed chin-length geometry. |
@@ -187,7 +187,7 @@ surface is 62 fields, five presets, and 75 renderer cases.
 `implemented` is an owner-local engineering status only and never authorizes
 external distribution or commercial release.
 
-## Phase 90 Chin Repair and Contour Deferral
+## Historical Phase 90 Chin Repair and Contour Deferral
 
 Phase 90 preserves the taxonomy distinction between one proven repair and one
 deferred field:
@@ -197,12 +197,13 @@ deferred field:
   90-02, including exact `0.25` cap, neutral/deterministic behavior, locality,
   protected regions, and field-local recovery through the existing owner-local
   still-image facades.
-- `faceContourSmooth` / `面部流畅` remains `partial`. The public field stays
-  owner-local and callable with its current source-unchanged, fail-closed
+- `faceContourSmooth` / `面部流畅` was `partial` at Phase 90 close. The public
+  field stayed owner-local and callable with its then-unchanged, fail-closed
   behavior. Revision 22 classified only `prior_stop_not_reproduced` with zero
   render/oracle invocations; it is diagnostic-only and supplies no semantic,
   repair, effectiveness, or GREEN authority. No revision 23 is authorized.
-  Further repair is FUTURE-04 under a separately authorized milestone.
+  Further repair was tracked as FUTURE-04 and is now addressed by the
+  2026-09-26 generated-portrait acceptance described in the current row.
 
 The current inventory remains exactly 62 stored fields, five presets, and 75
 renderer cases. Both public still-image facades, the CPU-reference/selectable-
@@ -288,25 +289,24 @@ lifecycle coverage does not establish semantic effectiveness for all faces or
 orientations. Phase95 private portraits/final65/full no-skip, optional device
 feedback, commercial quality and distribution claims remain separate.
 
-## v1.23 FACE-01 Current Status
+## Historical v1.23 FACE-01 Snapshot
 
 The old Phase 90 `completed-deferred` record remains true for its snapshot.
-The later owner-authorized FACE-01 candidate now passes the unchanged generated
+At v1.23 close, the owner-authorized FACE-01 candidate passed the unchanged generated
 `+16 Q16` gate, with source-exact neutral behavior, bounded lateral changes,
-protected-region stability, and public-facade pixels. It is still `partial`:
+protected-region stability, and public-facade pixels. It was still `partial` then:
 the one available natural portrait produced a bounded target-area pixel signal
 but no measured contour-direction gain or clear visual improvement. The old
 portrait comparator's fixed generated-image FACE-01 ROIs do not localize that
 portrait, and a source-admitted exploratory ROI still measured `0 Q16` gain.
 An independent generated silhouette edge oracle exposed a second raster
 alignment that worsened under the first candidate. A bounded source-edge
-correction now passes both generated alignments and leaves a straight-side
-negative unchanged. The field stays `partial` because the existing portrait
-pair did not demonstrate rough-positive improvement and smooth-negative
-non-worsening; a new qualifying generated pair is eligible.
+correction passed both generated alignments and left a straight-side negative
+unchanged. The field stayed `partial` because the existing portrait pair had not
+demonstrated rough-positive improvement and smooth-negative non-worsening.
 The owner-directed [v1.23 qualification](../.planning/V1.23-FACE01-CURRENT.md)
-uses two fictional generated portraits for a bounded synthetic-mechanics
-completion claim. Their render and repeat results provide no natural-portrait
-direction credit. A rough-positive/smooth-negative effect target remains open,
-and generated portraits may satisfy it under the current policy. No historical
-receipt or FACE-01 threshold is changed.
+used two fictional generated portraits for a bounded synthetic-mechanics
+completion claim. Their render and repeat results gave no natural-portrait
+direction credit. The later 2026-09-26 generated rough-positive/smooth-negative
+acceptance is recorded in the current taxonomy row and `PLANS.md`; it did not
+change any historical receipt or FACE-01 threshold.

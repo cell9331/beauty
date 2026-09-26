@@ -1,5 +1,39 @@
 # DESIGN.md
 
+## 2026-09-26 FACE-01 source-boundary repair
+
+The subsequent edge-robustness pass admits either background/skin brightness
+order, but requires one contrast direction across at least two thirds of the
+active cheek rows. Rows with the opposite direction cannot contribute to the
+smoothing neighborhood. A well-observed contradictory direction, or coherent
+subthreshold contrast, exits the side without applying the old point-centered
+fallback. Short opaque double-edge occlusions leave their rows source-exact
+while independently supported neighboring cheek rows can still improve.
+These decisions remain internal to the existing bounded still-image pass.
+
+The owner-local `faceContourSmooth` scalar and its `0.25` cap are unchanged.
+For opaque still images, the shared CPU/Metal preprocessing step now checks
+up to 48 columns around each observed lateral contour row for a single strong
+outer source edge. A qualifying run needs coherent detections on at least two
+thirds of its lower-cheek rows and a mean observed-to-source gap of at least
+2.5 pixels. An admitted wide pass leaves the upper ear/temple portion
+untouched by this raster preprocessor.
+The lower cheek edge is smoothed over at most 24 neighboring rows, with a
+maximum six-pixel shift and a feathered band with at most a 32-column radius. Reads use
+immutable source pixels; alpha and nonopaque sampling are protected.
+Competing edges on many rows fail the whole side closed. If the wider edge is
+unavailable, the earlier bounded subpixel step remains the fallback. These
+Unresolved support may receive only the earlier correction. No new public
+parameter or Metal shader is involved.
+
+The fixed generated natural-style positive and negative inputs now pass the
+predeclared public CPU output oracle: both rough sides improve, the smooth
+negative does not worsen, and target containment, protected regions, neutral,
+repeat, and alpha pass. Existing public tests provide orientation, extent,
+color metadata, typed failure/recovery, and CPU/Metal still-image coverage.
+The acceptance is confined to these generated inputs and package-host paths;
+it does not establish population-wide or device performance.
+
 ## Current image-effect acceptance design (2026-09-24)
 
 Generated portrait-like positives and negatives are valid source inputs for
@@ -22,6 +56,9 @@ execution controls. They remain Codable compatibility fields pending a
 separately scoped implementation. Input pixel configuration is clamped to the
 backend's 50,000,000-pixel ceiling. Decoding an EXIF orientation outside 1–8
 fails, rather than changing the image to `.up`.
+`maximumInputByteCount` is also a retained Codable field: the public SDK
+receives decoded images or pixel buffers, and does not enforce an encoded-input
+byte limit.
 
 ## v1.24 owner-local upper-eyelid relief adjustment (2026-09-24)
 
@@ -411,7 +448,7 @@ SDK 以稳定、可预测的方式输出处理后的图像。SDK、模型和权�
 | `enablePerformanceLog` | `Bool` | 保留字段；当前不采样性能日志。 |
 | `enableDebugMode` | `Bool` | 保留字段；当前不输出调试信息。 |
 | `logLevel` | `BeautyLogLevel` | 保留字段；当前不控制日志。 |
-| `maximumInputByteCount` | `Int` | 编码图像输入上限；默认 `33_554_432`（32 MiB）。 |
+| `maximumInputByteCount` | `Int` | 保留的编码输入字节上限字段，默认 `33_554_432`（32 MiB）；当前公开入口不接收编码字节，故不执行该上限。 |
 | `maximumInputPixelCount` | `Int` | 解码图像与像素缓冲区的像素数上限；默认且最高 `50_000_000`。 |
 | `renderBackend` | `BeautyRenderBackend` | 执行策略；精确为 `.cpu` 或 `.gpu`，默认 `.cpu`。 |
 
@@ -422,7 +459,7 @@ SDK 以稳定、可预测的方式输出处理后的图像。SDK、模型和权�
 - 不能包含宿主 UI 框架或宿主 App 状态。
 - 图像方向、输入镜像、预览镜像是逐帧输入状态，不放入全局 configuration。
 - 两个输入上限都是尾部默认参数；非正自定义值回落到各自默认值，旧 JSON 缺少两个 key 时通过显式 `decodeIfPresent` 得到相同默认值。像素数自定义值大于 50,000,000 时压到该硬上限。
-- 上限是拒绝边界而非处理策略：精确命中上限继续当前行为，超过上限返回 `BeautyError.invalidInput`；SDK 不借此缩放、降采样或重解释 `preferredProcessingSize`。
+- 当前执行的像素数上限是拒绝边界而非处理策略：精确命中上限继续当前行为，超过上限返回 `BeautyError.invalidInput`；SDK 不借此缩放、降采样或重解释 `preferredProcessingSize`。保留的 `maximumInputByteCount` 只做值归一化与 Codable 往返，不参与此输入检查。
 - `renderBackend` 是执行策略而非逐帧美颜参数；新建配置和缺少该 key 的旧 Codable payload 都确定性解码为 `.cpu`。显式 `.gpu` 只经 `BeautyBackendFactory` 构造 package Metal backend；不可用时终止为 `.metalUnavailable`，不回退 CPU。已有 Engine 的配置快照不可变，package-only injection 仅用于测试。
 - `maximumFaceCount` 保留原有检测选择上限和 Codable 字段，不承诺对全部选中人脸渲染效果。当前 `BeautyEngine` 为效果与局部支持只消费所选主脸；扩大到多脸效果须单独定义所有权、重叠和像素验收。
 
@@ -1990,5 +2027,7 @@ pixel-alignment cases and leaves straight sides unchanged. That proves those
 generated staircase mechanisms, not natural portrait contour
 quality. The one currently available smooth portrait yielded target-area pixel
 changes but `0 Q16` contour gain under a source-admitted exploratory ROI.
-Taxonomy remains `partial` pending the v1.23 positive/negative qualification
-defined in [.planning/V1.23-FACE01-CURRENT.md](.planning/V1.23-FACE01-CURRENT.md).
+Taxonomy remained `partial` at v1.23 close, pending the positive/negative
+qualification defined in [.planning/V1.23-FACE01-CURRENT.md](.planning/V1.23-FACE01-CURRENT.md).
+The 2026-09-26 repair and generated-pair oracle above supersede that current
+status without changing the historical v1.23 evidence.

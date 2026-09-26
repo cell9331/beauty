@@ -20,6 +20,20 @@ private let phase46ObservedContour = [
     CoordinatePoint(x: 0.9500, y: 0.766_666_667),
 ]
 
+private let smoothObservedContour = [
+    CoordinatePoint(x: 0.05, y: 0.733_333_333),
+    CoordinatePoint(x: 0.05, y: 0.600_000_000),
+    CoordinatePoint(x: 0.05, y: 0.466_666_667),
+    CoordinatePoint(x: 0.05, y: 0.300_000_000),
+    CoordinatePoint(x: 0.05, y: 0.116_666_667),
+    CoordinatePoint(x: 0.50, y: 0.000_000_000),
+    CoordinatePoint(x: 0.95, y: 0.150_000_000),
+    CoordinatePoint(x: 0.95, y: 0.333_333_333),
+    CoordinatePoint(x: 0.95, y: 0.516_666_667),
+    CoordinatePoint(x: 0.95, y: 0.650_000_000),
+    CoordinatePoint(x: 0.95, y: 0.766_666_667),
+]
+
 private let phase46ObservedMedianLine = [
     CoordinatePoint(x: 0.4500, y: 0.833_333_333),
     CoordinatePoint(x: 0.4875, y: 0.416_666_667),
@@ -212,6 +226,7 @@ private func phase91GazeObservation(
     case phase93RegisteredNose
     case phase93MissingNose
     case usableFace
+    case smoothObservedFaceContour
     case missingObservedFaceContour
     case malformedObservedFaceContour
     case pairedObservedEyebrows
@@ -321,6 +336,20 @@ private func phase91GazeObservation(
                         landmarks: .complete,
                         observedFaceSupport: BeautyObservedFaceSupport(
                             contour: phase46ObservedContour,
+                            medianLine: phase46ObservedMedianLine
+                        )
+                    )
+                ]
+            case .smoothObservedFaceContour:
+                return [
+                    VisionDetectionObservation(
+                        stableID: "fixture-smooth-face-contour",
+                        confidence: 0.96,
+                        normalizedArea: 0.24,
+                        visionBounds: CoordinateRect(x: 0.30, y: 0.20, width: 0.40, height: 0.60),
+                        landmarks: .complete,
+                        observedFaceSupport: BeautyObservedFaceSupport(
+                            contour: smoothObservedContour,
                             medianLine: phase46ObservedMedianLine
                         )
                     )

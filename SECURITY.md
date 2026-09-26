@@ -1,5 +1,21 @@
 # SECURITY.md
 
+## 2026-09-26 FACE-01 source-edge trust boundary
+
+Both bright and dark backgrounds can qualify, but a side must show a coherent
+edge direction. Coherent weak contrast and contradictory row directions now
+fail closed instead of entering the older point-centered fallback. A short
+opaque double-edge occlusion is skipped locally. These checks use request-local
+pixels and do not add persistent diagnostics.
+
+The wider cheek correction treats input pixels as untrusted evidence. It
+accepts only a coherent opaque outer edge near fresh observed lateral support,
+clips all scans and samples to image bounds, and rejects competing outward
+edges for the entire side. It does not persist source pixels, contours,
+support coordinates, or generated media. Ambiguous or unsupported images
+retain the established bounded local behavior or source-exact output.
+Generated portrait verification records aggregate results only.
+
 ## Current generated-image trust boundary (2026-09-24)
 
 The current no-skip gate accepts a generated Vision portrait only as a regular,
@@ -24,6 +40,9 @@ Codable initialization. Fractional or nonfinite still-image dimensions are
 rejected before expensive detection. Metal geometry exceeding its 256-point
 payload budget fails closed. No raw pixels, landmarks, or private fixture
 locators are added to persistent diagnostics.
+`maximumInputByteCount` is a retained configuration field, not an enforced
+decoded-input guard. A caller that reads encoded image files must bound their
+size before decoding; the SDK enforces the decoded pixel limit at its facade.
 
 ## v1.24 upper-eyelid change boundary
 

@@ -83,6 +83,68 @@ final class BeautyMetalGeometryPassTests: XCTestCase {
         }
     }
 
+    func testCombinedPublicGeometryControlsFitMetalPointBudget() throws {
+        let observation = BeautyFaceObservation(
+            imageBounds: .init(x: 0.1, y: 0.1, width: 0.8, height: 0.8),
+            landmarks: .complete
+        )
+        let faces = [
+            FaceGeometry.phase46AsymmetricComplete,
+            BeautyFaceGeometryAdapter.makeGeometry(from: observation),
+        ]
+        let rows = geometryRows().filter { $0.name != "noseRootNarrowing" }
+        for (faceIndex, face) in faces.enumerated() {
+            let singlePointTotal = rows.reduce(0) { total, row in
+                var single = BeautyParameters()
+                single[keyPath: row.keyPath] = 0.8
+                let plan = BeautyEffectResolver.resolve(parameters: single, faceGeometry: face)
+                return total + BeautyGeometryEffectPipeline.controlPoints(for: plan, face: face).count
+            }
+            XCTAssertLessThanOrEqual(
+                singlePointTotal,
+                BeautyMetalGeometryParameters.maximumPointCount,
+                "face=\(faceIndex), singlePointTotal=\(singlePointTotal)"
+            )
+
+            for signedDirection: Float in [0.8, -0.8] {
+                var parameters = BeautyParameters()
+                for row in rows {
+                    parameters[keyPath: row.keyPath] = row.signed ? signedDirection : 0.8
+                }
+                let plan = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: face)
+                let points = BeautyGeometryEffectPipeline.controlPoints(for: plan, face: face)
+                XCTAssertFalse(points.isEmpty)
+                XCTAssertLessThanOrEqual(points.count, singlePointTotal)
+                XCTAssertLessThanOrEqual(
+                    points.count,
+                    BeautyMetalGeometryParameters.maximumPointCount,
+                    "face=\(faceIndex), signedDirection=\(signedDirection), points=\(points.count)"
+                )
+                let pass = try XCTUnwrap(BeautyMetalBackend.makeGeometryPass(points: points))
+                guard case .geometry(let parameters) = pass else {
+                    return XCTFail("Combined controls did not produce a geometry pass")
+                }
+                XCTAssertEqual(parameters.points.count, points.count)
+            }
+        }
+
+        guard let runtime = makeRuntime() else { return }
+        var parameters = BeautyParameters()
+        for row in rows {
+            parameters[keyPath: row.keyPath] = 0.8
+        }
+        let plan = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: faces[1])
+        let fixture = geometryFixture(width: 96, height: 96)
+        let request = try makeRequest(fixture: fixture, plan: plan, observation: observation)
+        let backend = BeautyMetalBackend(runtime: runtime)
+        let first = try rgba(backend.execute(request))
+        let repeated = try rgba(backend.execute(request))
+        XCTAssertNotEqual(first, fixture.rgba8)
+        XCTAssertEqual(repeated, first)
+        XCTAssertEqual(stride(from: 3, to: first.count, by: 4).map { first[$0] },
+                       stride(from: 3, to: fixture.rgba8.count, by: 4).map { fixture.rgba8[$0] })
+    }
+
     func testMetalGeometryMatchesCPUDirectionLocalityAndAlpha() throws {
         guard let runtime = makeRuntime() else { return }
         let fixture = geometryFixture(width: 96, height: 96)

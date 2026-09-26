@@ -1,5 +1,30 @@
 # PRODUCT_SENSE.md
 
+## 2026-09-26 FACE-01 generated portrait acceptance
+
+The follow-up code-generated robustness checks now cover a dark background
+rough-positive, a low-contrast negative, and a short opaque occlusion. The
+dark-background cheek improves under the same fixed two-sided direction
+threshold; low or conflicting contrast is intentionally source-exact, and the
+occluded rows remain unchanged while neighboring cheek rows can improve.
+These additions narrow known lighting/occlusion risks without claiming broad
+portrait or physical-device qualification.
+
+`faceContourSmooth` now uses an opaque still-image lower-cheek source-edge
+alignment when the observed contour sits inside a visible, unambiguous
+silhouette. The owner-local public scalar and neutral/default behavior are
+unchanged. The previously failing, source-qualified natural-style generated
+rough-positive/smooth-negative pair passes its predeclared public CPU effect
+oracle on the repaired code: the rough cheeks improve on both sides, the
+smooth negative stays within its non-worsening bound, and target/protection,
+alpha, neutral, and repeat checks pass. The output was also inspected at
+original size for obvious ear/temple artifacts. This is owner-local generated
+portrait acceptance for the tested effect and does not establish behavior
+across real people or device and commercial visual quality.
+
+The dated failed probe and older stylized evidence below remain historical
+records for their source versions.
+
 > Current SDK product and acceptance contract. Historical application journeys
 > remain in archived milestone evidence and the verified legacy ZIPs.
 
@@ -16,9 +41,19 @@ effect-direction, negative, protection, pixel/metadata, repeatability, and
 recovery oracle. Genuine human portraits are optional feedback and cannot
 block completion or taxonomy promotion solely by being unavailable. The older
 v1.23 generated pair proved rendering and determinism, but did not contain a
-qualified rough-positive/smooth-negative effect comparison; that specific
-effect evidence is still to be produced and may also be generated. See
+qualified rough-positive/smooth-negative effect comparison. A later generated
+natural-style pair met source-only admission, but its predeclared public CPU
+effect oracle failed: the rough positive's cheek boundary did not improve on
+both sides and change containment missed its fixed target threshold. It is a
+concrete repair input, not effect acceptance. See
 [`docs/IMAGE_EFFECT_ACCEPTANCE.md`](docs/IMAGE_EFFECT_ACCEPTANCE.md).
+
+A later code-generated stylized face now passes a source-fixed public Engine
+rough-boundary metric (`0.651→0.173` pixels) and a straight-edge negative that
+remains source-exact. The rendered source is visibly a simplified polygonal
+face, so those checks alone did not establish a natural-style portrait looking
+smoother. The 2026-09-26 repair and generated-pair review above now supply the
+owner-local effect acceptance.
 
 ## 2026-09-24 SDK audit repair boundary
 
@@ -28,6 +63,8 @@ alter saturation and contrast; callers should not expect actual texture
 smoothing or edge sharpening. Configuration fields for processing size, frame
 interval, quality, and diagnostic logging are retained for Codable compatibility
 but do not change rendering. Invalid serialized orientation is rejected.
+The retained `maximumInputByteCount` does not impose a limit on decoded-image
+or pixel-buffer inputs; callers must apply any encoded-file limit before decoding.
 Oversized Metal geometry fails explicitly rather than dropping the requested
 effect. These changes do not establish natural-portrait visual quality.
 
@@ -594,15 +631,16 @@ deterministic lateral pixel changes, central/background preservation, alpha,
 extent, and valid-invalid-valid recovery. The CPU and selectable Metal
 still-image paths share the bounded contour adjustment.
 
-The current natural portrait is already smooth. Its changed pixels were
+The v1.23 portrait was already smooth. Its changed pixels were
 localized by a source-only exploratory contour ROI, but neither a measurable
 contour gain nor an obvious visual improvement was established. The field
-therefore remains `partial` in the taxonomy. On 2026-09-24 the owner chose two
+therefore remained `partial` at v1.23 close. On 2026-09-24 the owner chose two
 fictional generated portraits for a bounded synthetic-mechanics qualification.
 Their public CPU renders can check neutral identity, repeatability, alpha, and
 that the control changes pixels; they cannot establish contour improvement on
 natural portraits. An appropriate rough-contour positive example and smooth
-negative control remain necessary before this candidate can be described as a
-completed contour-smoothing experience; both may be generated portraits.
+negative control were still necessary at that point; both could be generated
+portraits. The 2026-09-26 repaired output above passes that generated-pair
+effect check.
 This does not require a physical iPhone or imply population, performance,
 commercial quality, release, or distribution readiness.

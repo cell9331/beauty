@@ -31,9 +31,49 @@
 
 ## 3. Active
 
-当前无 Active 计划。
+当前无 Active 修复计划。
 
 ## 4. Completed
+
+### C-2026-09-26-face-contour-edge-robustness
+
+- Status: completed；承接 FUTURE-04 后续覆盖，用内存生成的深色背景、低对比、短局部遮挡和交替明暗输入验证脸侧预处理。不改公开参数、已冻结的自然风格肖像 oracle 或历史证据。
+- 预先固定深色背景粗糙正例双侧各改善至少 10%；低对比输入粗糙度不得增加超过 10%、重复一致；16 行双外缘遮挡行源图一致、未遮挡下脸侧仍有变化；同侧明暗方向冲突须源图一致。三者及适用的安全例均检查中心/远背景和 alpha。测量用双侧 72 行、10 行间隔二阶差分，按红通道源图中点判别边缘；生成像素只在测试中存在。
+- 初次 7 项中深色正例没有改善，深色/低对比保护区有 139/85 个变化像素；遮挡通过。另固定的方向冲突例先复现 339 个变化像素。生产代码现接受一致的双向明暗边界，弱边缘或方向冲突整侧退出，短遮挡行局部跳过，且排除不同方向邻行参与平滑。新增 4 项连同先前 4 项 `8/0/0`；旧 FACE-01 过滤 `8/0/0`，含公开 facade、方向镜像、错误恢复和 CPU/Metal 测试。
+- 最终源码重渲染原自然风格生成正负例及重复输出，冻结 oracle 再次通过，正例左右 `6.106/6.731 → 4.000/5.050`、负例 `2.806/2.638 → 2.431/2.356`、保护区 0，全部聚合值与上一修复相同。完整 `bash scripts/run-no-skip-swiftpm.sh` 返回 0，archive-first 与 SDK-owned 专项通过，8 项 opt-in 全执行、0 skip；`git diff --check` 通过。更新设计、产品、可靠性、安全、质量和 taxonomy 说明；整理提交时将 taxonomy 的 v1.23 FACE-01 段落明确标为历史快照，不改历史回执。未宣称复杂发丝、更多肤色、人口泛化或设备/商业资格。
+
+### C-2026-09-26-face-contour-generated-portrait-repair
+
+- Status: completed；保持 2026-09-25 生成正负例、源身份、测量区域与效果阈值不变，修复 FACE-01 在公开 CPU 路径上脸侧边界几乎不动的问题。冻结 oracle SHA-256 `dbe66d760f9b5969b24b516739d86aa0dac25029457cf93ad4572e3298a3d6fe`。
+- Vision 观测轮廓与源图边界在正例双侧 200 行平均绝对差约 12.16/5.36 像素、最大约 38.31/25.02；旧强边缘仅搜索中心附近四对像素。新预处理在下脸侧有界搜索源外缘、按行平滑并限制位移；耳/太阳穴排除在宽修正外，双外缘歧义整侧退出，透明采样保持不动。一次旧夹具回归发现宽搜索误判跨中心纹理，收紧为同侧、相距至少 8 像素的竞争外缘；不改公开参数、冻结门槛或 `Warp.metal`。
+- 最终源码的公开 CPU neutral/candidate/repeat 在两张冻结生成肖像上通过原效果 oracle：正例左右粗糙度 `6.106/6.731 → 4.000/5.050`，负例 `2.806/2.638 → 2.431/2.356`；正负例目标/总变化像素 `15821/15821`、`9069/9069`，保护区 `0/0`，neutral、重复、alpha、有界性均通过。原尺寸检查未见明显耳侧破损；只对这些生成输入与固定 ROI 授予 owner-local 效果信用，不推断人口泛化或商业视觉质量。
+- 新增内存生成的粗糙正例、平滑负例、竞争边缘和透明行 4 项回归 `4/0/0`；保留旧 FACE-01 方向、保护、alpha、确定性、方向镜像、CPU/Metal 和错误恢复 8 项测试 `8/0/0`。完整 `bash scripts/run-no-skip-swiftpm.sh` 返回 0，archive-first 边界及全部专项检查通过，8 项 opt-in 全执行、0 skip；`git diff --check` 通过。生成图留在本地忽略输入目录，持久文本仅存聚合量。根据当前生成图片验收政策，taxonomy `面部流畅` 提升为 `implemented`；历史 v1.23/2026-09-25 失败证据不改。
+
+### C-2026-09-25-face-contour-generated-portrait-effect-probe
+
+- Status: completed（效果验收失败，FUTURE-04 继续开放）。在看候选输出前生成并目视筛选同一虚构成人的自然风格粗糙脸侧正例/平滑负例，固定两张本地忽略输入的 SHA-256、`1254×1254`、双侧 `y=700..<900` 的源图边缘估计与 20 行间隔二阶差分、源图入选门槛、目标/保护区、正例至少 10% 改善及负例至多 10% 恶化门槛。`scripts/check-face01-generated-effect.swift` 的验收逻辑在首个效果输出前冻结；图片不写入版本库或持久证据。
+- 源图入选通过：正例左/右粗糙度 `6.106/6.731`，负例 `2.806/2.638` 像素。公开 CPU `BeautyExampleRenderer` 分别运行 neutral、FACE-01 与重复 FACE-01；neutral 源图一致、重复一致、alpha 一致。效果输出正例 `6.106/6.838`，没有达到双侧 `≤0.90×源值`；负例 `2.837/2.700`，满足不超过 `1.10×源值`。正例目标变化 `10315/11142` 总变化像素、负例 `8820/10037`，均低于预定的 95% 目标覆盖；中心与远背景保护区均为 0。固定 oracle 正确返回 fail，不授予效果信用。
+- 源边缘诊断（输出后，仅解释失败，不修改 oracle）：正例 200 行中左/右分别仅 20/33 行的测得边界移动，且每行主要只移动 1 像素；负例反而为 51/57 行。当前控制点来自 Vision 观测轮廓、水平位移上限仅面宽 `0.004`，亚像素强边缘搜索只查看观测中心附近四对像素。推断当前支撑/边界对齐与本例实际脸侧起伏不匹配；尚未证明具体哪一级造成全部失败。未改生产算法或旧阈值，taxonomy 维持 `partial`。
+- 验证：源图入选脚本 pass；公开 CPU 三次渲染各 2/2 成功；固定效果脚本 fail 且输出聚合诊断；SDK-only post-archive boundary 与 `git diff --check` 通过。首次渲染被会话沙箱中的 macOS 图像/Vision 服务限制为 `render_failed`，获得正常本地服务权限后的三次重跑均成功；它不是本次效果失败的产品原因。因效果首关未通过，未运行本次完整 no-skip，也未签发/推广效果；历史 `951/0/0` 与此前聚焦测试不充当本次效果证明。下一步应先设计源边界到 Vision 支撑的局部对齐及安全门，再用同一冻结输入/阈值回归；若更改验收契约，须另立独立理由与新输入，不能基于本次输出调低门槛。
+
+### C-2026-09-25-face-contour-stylized-public-oracle
+
+- Status: completed（仅扩充公开路径的代码生成边界证据，FUTURE-04 效果信用仍开放）。在查看候选输出前，固定 `1000×1000` named-sRGB opaque 的折线脸侧正例与直线脸侧负例、左右 `y=0.40...0.68` 强边缘二阶差分粗糙度、中央与远背景保护区、正例源值 `>0.5` 且候选 `<源值/2`、负例 `≤源值+0.05` 的门槛。通过测试专用检测支撑走公开 `BeautyEngine.processResult`；未修改生产算法。
+- 正例边缘粗糙度约 `0.651→0.173` 像素，目标发生变化，neutral/source 一致、重复输出一致，中央/背景及目标外 RGB 不变，alpha、extent、现行 legacy CI DeviceRGB 输出契约和脱敏诊断通过。平滑负例源粗糙度 `<0.1`，候选源图完全一致；原有 malformed-support/recovery 与方向镜像测试继续覆盖 typed recovery。输入是人工绘制的简化脸形，视觉检查仍呈卡通折线轮廓，亚像素指标下降不足以证明自然肖像视觉上“面部流畅”；taxonomy 保留 `partial`。
+- 新测试独立放在 `GeneratedContourPublicOracleTests`，历史 `FaceContourSmooth` 过滤仍为原 8 项，避免改动 v1.23 冻结 runner 的计数/回执。聚焦新测试 `2/0/0`，原 8 项与新 2 项合跑 `10/0/0`；其中原冻结生成夹具单项约 9.5 分钟。SDK-only post-archive boundary 与 `git diff --check` 通过。未运行 archive-first 完整 no-skip；生成图仅在测试内构造，未写入仓库证据。
+
+### C-2026-09-25-metal-combination-budget-reproduction
+
+- Status: completed（条件性风险已缩小，未复现公开组合超限）。43 个当前 GPU 可用几何公开控件（排除既有 raster cutoff 明确要求 CPU 的 `noseRootNarrowing`）同向启用时，现有完整生成面部支撑产生 115 点、单控件点数和为 119；普通完整观测支撑产生 102 点、单控件点数和为 102。双向参数正负取值均在 256 点内，几何 pass 保留全部点。
+- 新增组合回归，除预算外还在可用 Metal 上检查公开参数组合经后端输出非原图、重复输出一致和 alpha 保持；保留合成 257 点的 typed rejection 测试。因这两种支撑均未触达上限，没有改动生产几何算法或 Metal API。
+- 验证：`BeautyMetalGeometryPassTests` 7/0/0；SDK-owned `check-metal-feature-passes.sh` 在正常 SwiftPM 缓存权限下通过，Metal available、37/0/0、0 skip；`git diff --check` 通过。首次专项门禁在会话沙箱内因 SwiftPM manifest/module cache 子进程权限中止，未计为产品测试失败。未运行完整 no-skip 门禁，当前结果不扩展到未枚举的观测支撑或真实设备表现。
+
+### C-2026-09-25-audit-checklist-reconciliation
+
+- Status: completed；逐项核对旧审计清单与当前源码。2026-09-24 的审计修复已覆盖静态图高光/阴影、EXIF 非法值、像素硬上限、非整数 extent 前置拒绝、Metal 超 256 点显式失败、过期 Phase 96 脚本和 taxonomy 状态。
+- 本次补正遗漏的 `maximumInputByteCount` 声明：当前公开 SDK 仅接收已解码图像或像素缓冲区，此字段不限制编码文件大小；源码注释及设计、产品、安全、可靠性文档明确预留语义，编码文件读取方须在解码前自行限流。
+- 剩余效果与风险仍按 FUTURE-04/05/06/07、`upperEyelidFullnessReduction` provisional 状态和 taxonomy 的 partial/future 行记录，不把回归测试通过解释为真人像、设备或商业视觉质量签发。
+- 验证：聚焦 SwiftPM 五个测试类 `32/0/0`（含当前 Metal 可用路径），另跑 Engine 与静态图皮肤/色调两个测试类 `25/0/0`；过期 Phase 96 脚本调用返回 `phase96_superseded` / exit 2；`git diff --check` 通过。本次改动仅为源码注释和文档，未重跑完整 no-skip 门禁；此前 `951/0/0` 为 2026-09-24 已记录的独立结果。
 
 ### C-2026-09-24-generated-fixture-gate
 
@@ -4674,9 +4714,10 @@ Outcome:
 
 ## 5. Tech Debt
 
-- FUTURE-04：`faceContourSmooth` 的粗糙脸侧正例改善和平滑负例不恶化尚未被现有回执证明。后续可用有权本地使用的生成肖像完成完整效果验收：源图先行登记目标/保护区，检查方向、负例、不恶化、重复性及公开输出，再按结果更新 taxonomy。真人图片可选，不得成为计划推进或签发的硬前提；现有两张生成图仅因缺少上述效果断言而维持原回执范围。
-- FUTURE-05：`preferredProcessingSize`、`detectionFrameInterval`、`renderQuality`、`enablePerformanceLog`、`enableDebugMode`、`logLevel` 当前只保留 Codable 配置，不驱动处理或日志。若将来需要这些行为，应逐项制定输入、性能、日志隐私和可重复测试契约；目前文档和源码注释明确说明未实现。
+- FUTURE-04 后续覆盖：2026-09-25 自然风格生成肖像的冻结失败已由 2026-09-26 有界源边界对齐修复；原输入和阈值下公开 CPU 正负例、目标/保护区、neutral、repeat、alpha 已通过。后续代码生成测试还覆盖深色背景正例、低对比保护、短局部遮挡和明暗方向冲突；弱或矛盾证据按当前规则退出。taxonomy 的 owner-local 状态据生成输入证据提升，不追溯改写 v1.23 历史回执。未覆盖发丝/耳侧、复杂光照、更多肤色或大量不同肖像；真人图片和真实设备仍为可选补充，不是当前完成门禁。人口泛化、设备性能和商业视觉质量未经证明。
+- FUTURE-05：`preferredProcessingSize`、`detectionFrameInterval`、`renderQuality`、`enablePerformanceLog`、`enableDebugMode`、`logLevel`、`maximumInputByteCount` 当前只保留 Codable 配置，不驱动处理、日志或编码字节限流。若将来需要这些行为，应逐项制定输入、性能、日志隐私和可重复测试契约；目前文档和源码注释明确说明未实现。
 - FUTURE-06：`skinSmoothing` 与 `skinSharpen` 目前是饱和度/对比度代理，不构成真正的纹理平滑或边缘锐化。若提升语义，另立算法范围并用目标纹理、保护区、alpha、色彩空间和 CPU/Metal 一致性测试验收；本次只校正声明。
+- FUTURE-07：Metal 几何组合超过 256 个点现已显式返回 `BeautyError.invalidInput`，不再静默跳过效果。公开 43 控件组合在两种现有完整生成/观测支撑上分别为 115/102 点，已通过实际 GPU 输出回归，原条件性风险在这些输入上未复现。尚无覆盖所有 Vision 观测形状及所有强度的全局点数上界证明；仅在发现可达超限公开组合时，再决定是否拆分或收紧组合契约，不把该未证风险写成已发生的用户故障。
 
 ### Phase 95 evidence-chain follow-up (2026-09-13 historical finding)
 
