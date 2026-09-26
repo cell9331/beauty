@@ -1,5 +1,15 @@
 # RELIABILITY.md
 
+## 2026-09-26 whole-face vertical bounds and recovery
+
+The new signed field caps at `±0.30` and emits at most one finite, unit-bounded
+face-shape point after checking face bounds and contour coordinates. Missing,
+stale, invalid, or out-of-image support leaves it neutral; reused non-eye
+geometry retains the existing half-scale policy. It shares the existing
+geometry conflict scaling, Metal point budget, extent/alpha result checks,
+and typed invalid-input recovery. No request state or device performance
+claim is added.
+
 ## 2026-09-26 FACE-01 hair-row recovery
 
 The source-edge search now rejects a second edge at least eight columns away

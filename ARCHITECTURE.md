@@ -1,5 +1,13 @@
 # ARCHITECTURE.md
 
+## 2026-09-26 whole-face vertical image control
+
+The owner-local `wholeFaceYPosition` field uses the existing parameter,
+resolver, face-shape warp provider, CPU still-image and Metal geometry routes.
+It adds one bounded control point from the selected request-local face bounds;
+there is no new target, model, depth estimate, shader, backend, UI, or public
+biometric payload. The SDK-owned renderer exposes both signed directions.
+
 ## 2026-09-26 skin texture path
 
 `BeautyEffects` now owns one request-local 5×5 luminance-detail transform for

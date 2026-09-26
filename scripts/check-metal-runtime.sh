@@ -218,7 +218,7 @@ if tests.count("resourceCountersForTesting") < 4:
     raise SystemExit("cleanup behavior is not exercised by focused tests")
 
 parameter_fields = re.findall(r"^\s*public var ([A-Za-z][A-Za-z0-9]*):", text[parameters_source], re.MULTILINE)
-if len(parameter_fields) != 62 or len(set(parameter_fields)) != 62:
+if len(parameter_fields) != 63 or len(set(parameter_fields)) != 63:
     raise SystemExit("BeautyParameters inventory changed")
 configuration_fields = re.findall(r"^\s*public var ([A-Za-z][A-Za-z0-9]*):", text[configuration_source], re.MULTILINE)
 if len(configuration_fields) != 11 or len(set(configuration_fields)) != 11:
@@ -231,7 +231,7 @@ if [item.get("id") for item in manifest.get("presets", [])] != [
     "natural", "clear", "refined", "male-natural", "id-photo-natural"
 ]:
     raise SystemExit("preset inventory changed")
-if len(re.findall(r"^\s*RenderCase\(", text[renderer_source], re.MULTILINE)) != 75:
+if len(re.findall(r"^\s*RenderCase\(", text[renderer_source], re.MULTILINE)) != 77:
     raise SystemExit("renderer case inventory changed")
 
 metal_sources = []

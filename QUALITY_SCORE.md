@@ -1,5 +1,22 @@
 # QUALITY_SCORE.md
 
+## 2026-09-26 whole-face vertical generated marker probe
+
+The new public still-image test uses an in-memory `128×128` opaque sRGB marker
+and an existing synthetic selected-face detector. It asserts signed centroid
+motion greater than one pixel in each direction, neutral identity, repeat,
+far-background and alpha protection, extent and detection metadata, source-
+exact missing-face behavior, and typed oversized-input recovery. Parameter
+normalization/Codable compatibility and four orientation × two input-mirror
+variants also pass in the four focused public tests (`4/0/0`). Face-shape
+provider `19/0/0` and Metal geometry `7/0/0` cover signed emission and the
+45-row bounded combination on the two existing generated/observed supports.
+Archive-first boundary passes. The first complete no-skip run found nine old
+current-inventory assertions (62 fields/75 cases); focused repaired suites
+pass `55/0/0`. The final archive-first no-skip gate passes `977/0/0`, all
+eight opt-ins and zero skips. Taxonomy remains `partial` while broader
+generated portrait acceptance is pending.
+
 ## 2026-09-26 FACE-01 expanded generated boundary checks
 
 Three skin-color rough/smooth pairs, opposite left/right background lightness,
@@ -13,8 +30,15 @@ changes: rough-positive left/right `6.106/6.731 → 4.000/5.044`,
 smooth-negative `2.806/2.638 → 2.431/2.331`, target/total changes
 `15825/15825` and `9059/9059`, protected changes `0/0`, with neutral,
 repeat and alpha passing. The added color/occlusion inputs are generated
-silhouettes, so more portrait variety remains open. Full no-skip has not yet
-run for this follow-up.
+silhouettes, so more portrait variety remains open. A second natural-style
+generated pair with deep skin, oblique light and cheek-crossing hair passes
+source admission on the measurable right side (`5.150` rough positive versus
+`3.194` smooth negative), then fails the frozen public CPU effect oracle:
+right roughness remains `5.150` and 62 dark-hair pixels change on the left.
+Neutral, repeat, alpha and smooth-negative checks pass. The new failed probe
+does not revoke the earlier pair's bounded result; FUTURE-04 stays open.
+The current tree's complete archive-first no-skip gate passes `977/0/0`,
+eight opt-ins and zero skips independently of this new effect failure.
 
 ## 2026-09-26 FUTURE-06 generated texture evidence
 

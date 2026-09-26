@@ -1,5 +1,16 @@
 # DESIGN.md
 
+## 2026-09-26 whole-face vertical image contract
+
+`wholeFaceYPosition` is a signed public field with neutral zero and effective
+cap `±0.30`. Positive moves the selected face area downward in canonical
+image coordinates and negative moves it upward. The provider emits one point
+at the validated face-bounds center with target displacement at the cap of
+`0.035 × face height`, radius `0.60 × max(face width, face height)` capped at
+one, and falloff two. Missing or invalid face support removes this field;
+stale support is neutral and reused non-eye geometry is halved. This is a
+bounded two-dimensional raster warp, not a three-dimensional head transform.
+
 ## 2026-09-26 FACE-01 short hair occlusion follow-up
 
 The source-edge refiner now treats a second edge at least eight columns from

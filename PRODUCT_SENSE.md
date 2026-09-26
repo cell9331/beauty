@@ -1,5 +1,15 @@
 # PRODUCT_SENSE.md
 
+## 2026-09-26 whole-face vertical owner-local control
+
+The `3D塑颜 / 上下` taxonomy row has a new `wholeFaceYPosition` candidate.
+It moves a generated face-center marker downward for positive input and
+upward for negative input through the public still-image SDK path. Neutral,
+repeat, distant-background and alpha checks pass; a missing face is source-
+exact, and a typed oversized-input failure does not affect the next request.
+The control is image-space geometry only; current generated-marker evidence
+does not establish true 3D shape or broad portrait visual quality.
+
 ## 2026-09-26 FACE-01 additional generated coverage
 
 Code-generated deep, medium, and light cheek colors pass bilateral roughness

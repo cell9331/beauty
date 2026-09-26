@@ -40,14 +40,14 @@ contract without renaming or aliasing unsupported behavior.
 
 ## Current public parameter inventory
 
-The current contract contains exactly 62 stored fields: 61 numeric controls and
+The current contract contains exactly 63 stored fields: 62 numeric controls and
 the optional `filterId`. Unit controls normalize to `0...1`; signed controls
 normalize to `-1...1`; `filterId` is an optional logical resource identifier.
 
 <!-- SDK_PARAMETER_INVENTORY_BEGIN -->
 - Skin: `skinSmoothing`, `skinWhitening`, `skinRosy`, `skinSharpen`
 - Global tone: `brightness`, `contrast`, `saturation`, `temperature`, `tint`, `exposure`, `highlight`, `shadow`
-- Face: `faceSlim`, `faceSmall`, `faceVShape`, `jawSlim`, `chinLength`, `faceContourSmooth`, `templeFullness`, `cheekboneSlim`, `chinTaper`
+- Face: `faceSlim`, `faceSmall`, `wholeFaceYPosition`, `faceVShape`, `jawSlim`, `chinLength`, `faceContourSmooth`, `templeFullness`, `cheekboneSlim`, `chinTaper`
 - Eyes: `eyeSize`, `eyeDistance`, `eyeYPosition`, `eyeTailLift`, `eyeHeight`, `eyeLength`, `upperEyelidLift`, `pupilSize`, `gazeCorrection`, `lowerEyelidDrop`, `eyeTilt`, `innerCornerOpen`, `outerCornerOpen`, `eyeSymmetry`
 - Eyebrows: `eyebrowYPosition`, `eyebrowThickness`, `eyebrowLength`, `eyebrowSpacing`, `eyebrowHeadSpacing`, `eyebrowTilt`, `eyebrowPeakDefinition`
 - Nose: `noseSlim`, `noseWingSlim`, `noseTipSize`, `noseBridge`, `noseRootNarrowing`, `noseTipLift`
@@ -60,8 +60,8 @@ normalize to `-1...1`; `filterId` is an optional logical resource identifier.
 filter on admitted opaque, low-contrast neighborhoods. Generated skin-colored
 cheek and soft-edge positives, flat negatives, and protected facial features
 pass owner-local public-pixel tests. This is not face segmentation or a claim
-about all real skin, hair, devices, or commercial visual quality. The 62-field
-public inventory and existing control caps are unchanged.
+about all real skin, hair, devices, or commercial visual quality. The four
+skin-control fields and their caps are unchanged.
 
 `lipColor` is color-only and is not evidence for geometric `丰唇` (`lipPlump`).
 `teethWhitening`, `scleraRednessReduction`, and
@@ -99,7 +99,7 @@ names and visual organization are intentionally omitted from the active contract
 | Group | Control | Status | Canonical SDK parameter | Scope note |
 | --- | --- | --- | --- | --- |
 | 3D塑颜 | 对称 | future | — | Requires a new neutral whole-face geometry contract. |
-| 3D塑颜 | 上下 | future | — | Requires a new neutral whole-face geometry contract. |
+| 3D塑颜 | 上下 | partial | `wholeFaceYPosition` | Signed bounded image-space whole-face displacement passes generated public pixels and complete no-skip; this is not depth or a 3D mesh effect. Broader portrait evidence remains pending. |
 | 3D塑颜 | 左右 | future | — | Requires a new neutral whole-face geometry contract. |
 | 3D塑颜 | 倾斜 | future | — | Requires a new neutral whole-face geometry contract. |
 | 比例 | 小头 | partial | `faceSmall` | Existing small-face behavior is related but not an independently complete proportion control. |
@@ -163,16 +163,17 @@ names and visual organization are intentionally omitted from the active contract
 | 眉毛 | 眉峰 | implemented | `eyebrowPeakDefinition` | Bounded interior-apex geometry. |
 <!-- SDK_LEGACY_TAXONOMY_END -->
 
-Branch status remains conservative: `3D塑颜` is future; `比例` and `脸型` are
+Branch status remains conservative: `3D塑颜`, `比例`, and `脸型` are
 partial; `眼睛`, `嘴唇`, `鼻子`, and `眉毛` are implemented at SDK-core
-scope. `脸型` is partial because double-chin and hairline semantic-region work is
+scope. `3D塑颜` has only a bounded image-space vertical control so far; `脸型`
+is partial because double-chin and hairline semantic-region work is
 future. The `眼睛` branch is implemented with the explicit provisional-quality
 caveat on `去脂`; this does not establish commercial visual quality.
 
 ## Non-legacy SDK groups
 
 - Skin owns smoothing, whitening, rosy tone, and sharpening. Current smoothing
-  and sharpening are saturation/contrast proxies, not spatial texture filters.
+  and sharpening use bounded spatial luminance-detail filters.
 - Global tone owns brightness, contrast, saturation, temperature, tint,
   exposure, highlights, and shadows. Still-image highlights and shadows now
   apply the bounded selective lift to bright and dark source-luminance regions.
@@ -190,7 +191,7 @@ degradation coverage, and public-facade output evidence where applicable. Do not
 promote from archived UI presence, a disabled control, provider-only mechanics,
 or a future plan. The Phase-79 archive continues to record exact 61-field,
 five-preset, 74-case absence at its historical close. The current owner-accepted
-surface is 62 fields, five presets, and 75 renderer cases.
+surface is 63 fields, five presets, and 77 renderer cases.
 `implemented` is an owner-local engineering status only and never authorizes
 external distribution or commercial release.
 
@@ -212,8 +213,8 @@ deferred field:
   Further repair was tracked as FUTURE-04 and is now addressed by the
   2026-09-26 generated-portrait acceptance described in the current row.
 
-The current inventory remains exactly 62 stored fields, five presets, and 75
-renderer cases. Both public still-image facades, the CPU-reference/selectable-
+At Phase 90 close, the inventory remained 62 stored fields, five presets, and
+75 renderer cases. Both public still-image facades, the CPU-reference/selectable-
 GPU policy, retained `Warp.metal`, request-local privacy, SDK-only owner use,
 and non-distribution boundary remain unchanged. Phase 95 owns the direct chin
 precision/tie residual, the clean 65-output seven-effective-plus-one-deferred

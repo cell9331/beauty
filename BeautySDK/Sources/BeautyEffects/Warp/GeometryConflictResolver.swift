@@ -23,6 +23,7 @@ struct GeometryConflictResolver: Sendable {
         var weakened = strengths
         weakened.faceSlim *= scale
         weakened.faceSmall *= scale
+        weakened.wholeFaceYPosition *= scale
         weakened.faceVShape *= scale
         weakened.jawSlim *= scale
         weakened.chinLength *= scale
@@ -85,6 +86,7 @@ struct GeometryConflictResolver: Sendable {
         let fields: [Float] = [
             strengths.faceSlim,
             strengths.faceSmall,
+            abs(strengths.wholeFaceYPosition),
             strengths.faceVShape,
             strengths.jawSlim,
             abs(strengths.chinLength),
@@ -135,6 +137,7 @@ struct GeometryConflictResolver: Sendable {
         [
             strengths.faceSlim,
             strengths.faceSmall,
+            abs(strengths.wholeFaceYPosition),
             strengths.faceVShape,
             strengths.jawSlim,
             abs(strengths.chinLength),

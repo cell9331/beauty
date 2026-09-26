@@ -1,5 +1,13 @@
 # SECURITY.md
 
+## 2026-09-26 whole-face vertical input boundary
+
+`wholeFaceYPosition` uses validated, request-local selected-face bounds and
+the existing face contour. It emits no raw support, coordinates, or pixels in
+public metrics or durable diagnostics. Missing or invalid support fails the
+field closed. The new control does not add a model, network, file input,
+permission, or distribution path.
+
 ## 2026-09-26 FACE-01 occluding hair boundary
 
 Short dark bands crossing the cheek are treated as competing source edges

@@ -10,12 +10,16 @@ final class RepairedControlCompatibilityTests: XCTestCase {
         return try String(contentsOf: root.appendingPathComponent(relative), encoding: .utf8)
     }
 
-    func testCodableHasExactly62FrozenFields() throws {
+    func testCodableRetains62FrozenFieldsWithAppendedWholeFaceControl() throws {
         let value = BeautyParameters(chinTaper: 0.2, filterId: "soft_clean", filterIntensity: 0.25)
         let data = try JSONEncoder().encode(value)
         let object = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])
-        XCTAssertEqual(object.count, 62, "P95C_CODABLE_COUNT")
-        XCTAssertEqual(Set(object.keys), Set(RepairedControlCompatibilityFixture.fieldNames), "P95C_CODABLE_KEYS")
+        XCTAssertEqual(object.count, 63, "current Codable count")
+        XCTAssertEqual(object["wholeFaceYPosition"] as? Double, 0, "new field stays neutral")
+        var frozenProjection = object
+        frozenProjection.removeValue(forKey: "wholeFaceYPosition")
+        XCTAssertEqual(frozenProjection.count, 62, "P95C_CODABLE_COUNT")
+        XCTAssertEqual(Set(frozenProjection.keys), Set(RepairedControlCompatibilityFixture.fieldNames), "P95C_CODABLE_KEYS")
         XCTAssertEqual(try JSONDecoder().decode(BeautyParameters.self, from: data), value, "P95C_CODABLE_ROUNDTRIP")
     }
 

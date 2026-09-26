@@ -36,13 +36,13 @@ for token in (
         raise SystemExit(f"taxonomy is missing boundary token: {token}")
 
 source_fields = re.findall(r"^\s*public var ([A-Za-z][A-Za-z0-9]*):", source, re.MULTILINE)
-if len(source_fields) != 62 or len(set(source_fields)) != 62:
-    raise SystemExit(f"expected exact 62-field BeautyParameters source, found {len(source_fields)}")
+if len(source_fields) != 63 or len(set(source_fields)) != 63:
+    raise SystemExit(f"expected exact 63-field BeautyParameters source, found {len(source_fields)}")
 inventory = taxonomy.split("<!-- SDK_PARAMETER_INVENTORY_BEGIN -->", 1)[1].split(
     "<!-- SDK_PARAMETER_INVENTORY_END -->", 1
 )[0]
 documented_fields = re.findall(r"`([A-Za-z][A-Za-z0-9]*)`", inventory)
-if set(documented_fields) != set(source_fields) or len(documented_fields) != 62:
+if set(documented_fields) != set(source_fields) or len(documented_fields) != 63:
     missing = sorted(set(source_fields) - set(documented_fields))
     extra = sorted(set(documented_fields) - set(source_fields))
     raise SystemExit(
@@ -50,7 +50,7 @@ if set(documented_fields) != set(source_fields) or len(documented_fields) != 62:
     )
 
 expected = [
-    ("3D塑颜", "对称", "future", "—"), ("3D塑颜", "上下", "future", "—"),
+    ("3D塑颜", "对称", "future", "—"), ("3D塑颜", "上下", "partial", "wholeFaceYPosition"),
     ("3D塑颜", "左右", "future", "—"), ("3D塑颜", "倾斜", "future", "—"),
     ("比例", "小头", "partial", "faceSmall"), ("比例", "头包脸", "future", "—"),
     ("比例", "颅顶", "future", "—"), ("比例", "额头", "future", "—"),

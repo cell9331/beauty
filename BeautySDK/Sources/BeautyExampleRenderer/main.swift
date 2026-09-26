@@ -85,6 +85,16 @@ let cases = [
         parameters: BeautyParameters(faceSmall: 0.35)
     ),
     RenderCase(
+        id: "wholeFaceYPosition_plus0p30",
+        displayName: "wholeFaceYPosition +0.30",
+        parameters: BeautyParameters(wholeFaceYPosition: 0.30)
+    ),
+    RenderCase(
+        id: "wholeFaceYPosition_minus0p30",
+        displayName: "wholeFaceYPosition -0.30",
+        parameters: BeautyParameters(wholeFaceYPosition: -0.30)
+    ),
+    RenderCase(
         id: "chinLength_plus0p30",
         displayName: "chinLength +0.30",
         parameters: BeautyParameters(chinLength: 0.30)
