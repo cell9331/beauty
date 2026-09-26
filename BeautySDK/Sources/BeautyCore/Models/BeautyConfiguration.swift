@@ -21,7 +21,8 @@ public struct BeautyConfiguration: Codable, Equatable, Sendable {
     public var detectionFrameInterval: Int
     /// Reserved Codable field; the current renderer does not switch quality modes.
     public var renderQuality: BeautyRenderQuality
-    /// Reserved Codable field; the current SDK does not emit performance logs.
+    /// Adds a bounded synchronous-facade duration to successful `processResult` metrics.
+    /// No system or persistent log is emitted; deferred CIImage evaluation is excluded.
     public var enablePerformanceLog: Bool
     /// Reserved Codable field; the current SDK does not emit debug output.
     public var enableDebugMode: Bool

@@ -1,5 +1,17 @@
 # DESIGN.md
 
+## 2026-09-26 performance-log configuration contract
+
+When `enablePerformanceLog` is true, a successful public `processResult`
+adds finite nonnegative `beauty.performance.facadeElapsedMilliseconds` to
+`BeautyResult.metrics`. It measures synchronous facade time with a monotonic
+clock; Core Image evaluation deferred until a caller renders the returned
+`CIImage` is excluded. The encoded entry starts before byte admission and
+overrides its delegated still-image metric to include decode. With the flag
+false, no key is added. Output pixels, warnings, detection summary and typed
+failure behavior are unchanged. Convenience `process` methods return only the
+output and therefore do not expose the metric. No system log is written.
+
 ## 2026-09-26 whole-face horizontal image contract
 
 `wholeFaceXPosition` is a signed public field with neutral zero and effective
@@ -119,10 +131,11 @@ pixels respectively, with the same bounded `0.08 × strength` lift used by the
 pixel-buffer and Metal paths. At this audit date, `skinSmoothing` reduced color
 saturation and `skinSharpen` increased color contrast; the 2026-09-26 contract
 above supersedes those proxy semantics.
-The renderer does not use `preferredProcessingSize`, `detectionFrameInterval`,
-`renderQuality`, `enablePerformanceLog`, `enableDebugMode`, or `logLevel` as
-execution controls. They remain Codable compatibility fields pending a
-separately scoped implementation. Input pixel configuration is clamped to the
+At this audit date, the renderer did not use `preferredProcessingSize`,
+`detectionFrameInterval`, `renderQuality`, `enablePerformanceLog`,
+`enableDebugMode`, or `logLevel` as execution controls. The current
+`enablePerformanceLog` result contract is above; the other five fields remain
+Codable compatibility fields. Input pixel configuration is clamped to the
 backend's 50,000,000-pixel ceiling. Decoding an EXIF orientation outside 1–8
 fails, rather than changing the image to `.up`.
 At this audit date, `maximumInputByteCount` was a retained Codable field with
@@ -513,7 +526,7 @@ SDK 以稳定、可预测的方式输出处理后的图像。SDK、模型和权�
 | `enableFaceTracking` | `Bool` | 是否启用跨帧跟踪和平滑。 |
 | `detectionFrameInterval` | `Int` | 保留字段；当前不按帧降频。 |
 | `renderQuality` | `BeautyRenderQuality` | 保留字段；当前不切换质量等级。 |
-| `enablePerformanceLog` | `Bool` | 保留字段；当前不采样性能日志。 |
+| `enablePerformanceLog` | `Bool` | 成功的 `processResult` 在 `metrics` 附加同步 facade 耗时；不写系统或持久日志。 |
 | `enableDebugMode` | `Bool` | 保留字段；当前不输出调试信息。 |
 | `logLevel` | `BeautyLogLevel` | 保留字段；当前不控制日志。 |
 | `maximumInputByteCount` | `Int` | 内存编码单帧图像入口的字节上限，默认 `33_554_432`（32 MiB）；已解码入口不适用。 |

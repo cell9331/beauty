@@ -1,5 +1,12 @@
 # SECURITY.md
 
+## 2026-09-26 opt-in performance metric
+
+`enablePerformanceLog` emits only one finite nonnegative elapsed-time number
+in a successful in-memory result. It never emits raw pixels, masks, landmarks,
+encoded bytes, paths, input identifiers or framework diagnostics, and it adds
+no persistent or OS logging sink.
+
 ## 2026-09-26 whole-face horizontal bounds
 
 `wholeFaceXPosition` uses only the request-local selected-face geometry,

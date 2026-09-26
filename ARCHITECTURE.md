@@ -1,5 +1,13 @@
 # ARCHITECTURE.md
 
+## 2026-09-26 request-local performance metric
+
+`enablePerformanceLog` adds one result-local numeric metric through the
+existing `BeautyResult.metrics` boundary. The engine uses a monotonic clock
+around each public `processResult` facade and retains no timer or input data
+between requests. Encoded input includes byte preflight and decode. No new
+target, logger sink, OS log, or persistence path is added.
+
 ## 2026-09-26 whole-face horizontal image control
 
 The owner-local `wholeFaceXPosition` field follows the existing public

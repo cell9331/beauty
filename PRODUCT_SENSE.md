@@ -1,5 +1,13 @@
 # PRODUCT_SENSE.md
 
+## 2026-09-26 owner-local performance result
+
+The owner-local host can opt into a per-request synchronous facade duration
+with `enablePerformanceLog` and read it from `BeautyResult.metrics` on
+`processResult`. The measurement helps compare local calls without storing
+images or paths. For `CIImage` output it excludes later caller-triggered
+rendering, so it is not a total image-processing or device-performance claim.
+
 ## 2026-09-26 owner-local horizontal face control
 
 `3D塑颜 / 左右` now has an independent `wholeFaceXPosition` owner-local control.

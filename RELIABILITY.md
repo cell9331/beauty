@@ -1,5 +1,14 @@
 # RELIABILITY.md
 
+## 2026-09-26 opt-in performance timing
+
+The monotonic timer starts before each public result facade's synchronous
+admission work. Encoded input includes its decode phase; nested still-image
+timing is replaced with the outer value. Invalid requests keep their typed
+error and produce no successful metric; later requests recover. Disabled
+timing leaves the original metrics and pixels unchanged. Deferred `CIImage`
+evaluation is outside the measurement.
+
 ## 2026-09-26 whole-face horizontal recovery
 
 The signed horizontal face point is absent for missing or malformed face

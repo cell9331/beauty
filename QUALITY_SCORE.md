@@ -1,5 +1,15 @@
 # QUALITY_SCORE.md
 
+## 2026-09-26 performance-result focused evidence
+
+Two public tests cover disabled/enabled metrics on `CIImage`, in-memory encoded
+PNG and `CVPixelBuffer` entries, compare actual output bytes, require finite
+nonnegative duration, and check typed invalid-input recovery. The frozen
+preimplementation tests failed four missing-metric assertions; implementation
+passes `2/0/0`. The key was named for synchronous facade scope after the red
+run because Core Image can evaluate pixels after return. Full archive-first
+no-skip passes `986/0/0`, eight opt-ins, zero skips.
+
 ## 2026-09-26 whole-face horizontal generated marker probe
 
 The public in-memory `128×128` opaque sRGB marker moves over one pixel right

@@ -1,6 +1,7 @@
 import CoreGraphics
 import CoreImage
 import CoreVideo
+import Dispatch
 import Foundation
 import ImageIO
 import BeautyCore
@@ -81,6 +82,8 @@ public final class BeautyEngine {
         metadata: BeautyInputMetadata,
         parameters: BeautyParameters
     ) throws -> BeautyResult<CVPixelBuffer> {
+        let performanceStart = configuration.enablePerformanceLog
+            ? DispatchTime.now().uptimeNanoseconds : nil
         localRetouchTestingHooks?.prepareForFacadeInvocation()
         try Self.validate(
             pixelBuffer: pixelBuffer,
@@ -95,12 +98,12 @@ public final class BeautyEngine {
             plan: plan
         )
         let backendResult = try backendExecutor.execute(request)
-        return BeautyResult(
+        return withPerformanceMetric(BeautyResult(
             output: try Self.pixelBufferOutput(from: backendResult),
             warnings: plan.warnings,
             metrics: plan.metrics,
             detectionSummary: initialDetectionSummary
-        )
+        ), since: performanceStart)
     }
 
     /// Returns an SDK-created image value that is readable for the current processing result lifecycle.
@@ -130,6 +133,8 @@ public final class BeautyEngine {
         metadata: BeautyInputMetadata,
         parameters: BeautyParameters
     ) throws -> BeautyResult<CIImage> {
+        let performanceStart = configuration.enablePerformanceLog
+            ? DispatchTime.now().uptimeNanoseconds : nil
         guard !encodedImageData.isEmpty,
               configuration.maximumInputByteCount > 0,
               encodedImageData.count <= configuration.maximumInputByteCount,
@@ -158,7 +163,10 @@ public final class BeautyEngine {
         }
         let colorSpace = decoded.colorSpace ?? CGColorSpace(name: CGColorSpace.sRGB)!
         let image = CIImage(cgImage: decoded, options: [.colorSpace: colorSpace])
-        return try processResult(image: image, metadata: metadata, parameters: parameters)
+        return try withPerformanceMetric(
+            processResult(image: image, metadata: metadata, parameters: parameters),
+            since: performanceStart
+        )
     }
 
     public func processResult(
@@ -166,6 +174,8 @@ public final class BeautyEngine {
         metadata: BeautyInputMetadata,
         parameters: BeautyParameters
     ) throws -> BeautyResult<CIImage> {
+        let performanceStart = configuration.enablePerformanceLog
+            ? DispatchTime.now().uptimeNanoseconds : nil
         localRetouchTestingHooks?.prepareForFacadeInvocation()
         if backendPolicy == .metal {
             try stillImageCanonicalizer.preflightOpaqueBoundedRGBForMetalStillImage(
@@ -189,11 +199,11 @@ public final class BeautyEngine {
             : productionAdmission
 
         guard admission.isEmpty == false else {
-            return try legacyStillImageResult(
+            return try withPerformanceMetric(legacyStillImageResult(
                 image: image,
                 metadata: metadata,
                 parameters: validated
-            )
+            ), since: performanceStart)
         }
 
         localRetouchTestingHooks?.beginStillRequest()
@@ -322,11 +332,25 @@ public final class BeautyEngine {
                 colorSpace: sRGB
             )
         }
-        return BeautyResult(
+        return withPerformanceMetric(BeautyResult(
             output: try Self.stillImageOutput(from: backendResult),
             warnings: route.plan.warnings,
             metrics: route.plan.metrics,
             detectionSummary: route.detectionSummary
+        ), since: performanceStart)
+    }
+
+    private func withPerformanceMetric<Output>(
+        _ result: BeautyResult<Output>, since start: UInt64?
+    ) -> BeautyResult<Output> {
+        guard let start else { return result }
+        let end = DispatchTime.now().uptimeNanoseconds
+        let milliseconds = end >= start ? Double(end - start) / 1_000_000 : 0
+        var metrics = result.metrics
+        metrics["beauty.performance.facadeElapsedMilliseconds"] = milliseconds
+        return BeautyResult(
+            output: result.output, warnings: result.warnings,
+            metrics: metrics, detectionSummary: result.detectionSummary
         )
     }
 

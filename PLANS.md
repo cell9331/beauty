@@ -41,7 +41,9 @@
   - 曾试验按邻域色度区分深发丝与脸侧的候选，旧 FACE-01 聚焦测试虽通过 `11/0/0`，新自然风格肖像右侧仍无改善且发丝变化扩大至 507 像素；候选已完全撤回，冻结失败输入和阈值保留。此失败不计为 FUTURE-04 完成。
 - [ ] 去脂：保持 provisional 安全边界，固定生成正负例及原尺寸视觉/像素目标，改进 `upperEyelidFullnessReduction` 实际效果。
 - [ ] FUTURE-05：逐字段定义并实现七项配置的调用语义和可重复测试；对没有编码输入的 `maximumInputByteCount` 先明确适用入口，不虚构已有文件解码路径。
-  - `maximumInputByteCount` 已新增仅接收内存编码单帧图像的公开入口：先按编码字节和图像声明尺寸拒绝超限，再解码、复核实际像素尺寸并交给原静态图路径。已解码 CIImage 与 CVPixelBuffer 入口仍只受像素上限约束；不读取文件。32×32 内存 PNG 的恰好上限、超限、像素超限、畸形输入、恢复、输出像素/extent/alpha/重复性和配置变更聚焦 `12/0/0`。完整 archive-first no-skip `979/0/0`、8 opt-in、0 skip；其余六字段仍未实现。
+  - `maximumInputByteCount` 已新增仅接收内存编码单帧图像的公开入口：先按编码字节和图像声明尺寸拒绝超限，再解码、复核实际像素尺寸并交给原静态图路径。已解码 CIImage 与 CVPixelBuffer 入口仍只受像素上限约束；不读取文件。32×32 内存 PNG 的恰好上限、超限、像素超限、畸形输入、恢复、输出像素/extent/alpha/重复性和配置变更聚焦 `12/0/0`。该次完整 archive-first no-skip `979/0/0`、8 opt-in、0 skip。
+  - `enablePerformanceLog` 候选契约：开启时仅在成功的公开 `processResult` 的 `metrics` 中附加同步 facade 耗时 `beauty.performance.facadeElapsedMilliseconds`（单调时钟、有限且非负）；延迟 CIImage 像素求值不在测量内。不写系统日志、不保留输入或诊断内容。关闭时不增加此键；同一像素请求前后输出仍相同。编码入口耗时从字节检查起算，已解码静态图和像素缓冲区入口从其各自前置检查起算；失败仍返回原 typed error，无成功结果。先用公开入口测试固定此行为。
+  - 上述性能字段已在三类 `processResult` 入口实现：先固定的两项测试因缺失指标出现四条失败断言；实现后聚焦 `2/0/0`、Engine/配置/路由组合 `39/0/0`，含源/输出像素一致、失败恢复。名称在红灯后明确为同步 facade 范围，避免把延迟 CIImage 求值计入。完整 archive-first no-skip `986/0/0`、8 opt-in、0 skip；其余五字段仍未实现。
 - [ ] FUTURE-07：证明现有 Metal 几何点数在公开可达输入中的上界，或将超限组合拆分为安全的有界执行；保留 typed failure 回归。
 - [ ] FUTURE-08：为纹理滤镜固定非面部低对比负例与大图资源预算，实施满足契约的局部保护和资源上界。
 - [ ] 比例「小头」：定义独立于现有 `faceSmall` 的中性比例语义和像素验收，达到后再调整 taxonomy 的 `partial` 状态。
