@@ -40,12 +40,19 @@
   - 新自然风格生成正负例在同一虚构成人的深肤色、斜光和发丝条件下，先经源图预检入选（右侧粗糙度 `5.150/3.194`）；修复前公开 CPU 探针失败：正例右侧仍为 `5.150`，左侧暗发丝保护区变化 62 像素。neutral/repeat/alpha 通过，负例未恶化。源身份、ROI 与阈值固定在 `scripts/check-face01-diversity-effect.swift`，图片只保留在忽略的本地输入目录。下一步修复复杂光照方向判断和发丝行回退，不用旧肖像通过替代新失败。
   - 曾试验按邻域色度区分深发丝与脸侧的候选，旧 FACE-01 聚焦测试虽通过 `11/0/0`，新自然风格肖像右侧仍无改善且发丝变化扩大至 507 像素；候选已完全撤回，冻结失败输入和阈值保留。此失败不计为 FUTURE-04 完成。
 - [ ] 去脂：保持 provisional 安全边界，固定生成正负例及原尺寸视觉/像素目标，改进 `upperEyelidFullnessReduction` 实际效果。
-- [ ] FUTURE-05：逐字段定义并实现七项配置的调用语义和可重复测试；对没有编码输入的 `maximumInputByteCount` 先明确适用入口，不虚构已有文件解码路径。
+- [x] FUTURE-05：逐字段定义并实现七项配置的调用语义和可重复测试；为 `maximumInputByteCount` 新增明确的内存编码单帧入口，不虚构文件解码路径。
   - `maximumInputByteCount` 已新增仅接收内存编码单帧图像的公开入口：先按编码字节和图像声明尺寸拒绝超限，再解码、复核实际像素尺寸并交给原静态图路径。已解码 CIImage 与 CVPixelBuffer 入口仍只受像素上限约束；不读取文件。32×32 内存 PNG 的恰好上限、超限、像素超限、畸形输入、恢复、输出像素/extent/alpha/重复性和配置变更聚焦 `12/0/0`。该次完整 archive-first no-skip `979/0/0`、8 opt-in、0 skip。
   - `enablePerformanceLog` 候选契约：开启时仅在成功的公开 `processResult` 的 `metrics` 中附加同步 facade 耗时 `beauty.performance.facadeElapsedMilliseconds`（单调时钟、有限且非负）；延迟 CIImage 像素求值不在测量内。不写系统日志、不保留输入或诊断内容。关闭时不增加此键；同一像素请求前后输出仍相同。编码入口耗时从字节检查起算，已解码静态图和像素缓冲区入口从其各自前置检查起算；失败仍返回原 typed error，无成功结果。先用公开入口测试固定此行为。
   - 上述性能字段已在三类 `processResult` 入口实现：先固定的两项测试因缺失指标出现四条失败断言；实现后聚焦 `2/0/0`、Engine/配置/路由组合 `39/0/0`，含源/输出像素一致、失败恢复。名称在红灯后明确为同步 facade 范围，避免把延迟 CIImage 求值计入。完整 archive-first no-skip `986/0/0`、8 opt-in、0 skip；其余五字段仍未实现。
   - `logLevel` 与 `enableDebugMode` 候选契约：成功的 `processResult` 附带只含固定代码与级别的内存诊断事件，不写系统或持久日志。`.none` 与 `.error` 对成功结果无事件；`.warning` 仅在原 warning 非空时给一项聚合事件；`.info` 再给请求完成事件；`.debug` 且 `enableDebugMode=true` 再给后端执行阶段事件。关闭 debug 时不产生 debug 级事件。失败仍是 typed throw，无成功结果；事件不含输入内容、参数值、像素、支持区或路径。三类公开入口、级别过滤、像素不变、确定性和失败恢复先用测试固定。
   - 这两项已接入 `BeautyResult.diagnostics` 固定枚举与公开三入口。先固定的验收因事件类型不存在按预期编译失败；实现后级别矩阵、warning 聚合、debug 门、事件顺序、重复、CIImage/编码/像素缓冲区输出、typed failure/recovery 与 Sendable 聚焦 `7/0/0`，含 facade/配置组合 `43/0/0`。完整 archive-first no-skip `988/0/0`、8 opt-in、0 skip；剩余 `preferredProcessingSize`、`detectionFrameInterval`、`renderQuality` 三项。
+  - `renderQuality` 候选契约：只影响已启用 `skinSmoothing`/`skinSharpen` 时的空间纹理邻域，不改无纹理请求、其他参数或后端选择。`.performance` 用 3×3、`.balanced` 保留当前 5×5、`.quality` 用 7×7 对称归一化权重；同一源图高频脸颊平滑的偏差应按 performance > balanced > quality 排序，平坦/硬边/透明保护区不变，alpha、extent、方向/镜像、重复性和 typed failure 不变。CPU 与 Metal 选择路径必须用同一 request-local 质量值和像素算法；不宣称设备性能或商业视觉质量。先固定生成像素正负例与保护区，再改实现。
+  - `renderQuality` 已按上述闭合三模式接入后端请求与同一 CPU 空间纹理实现。预实现公开测试重现模式输出相同的失败；修正 Core Image 基准及硬边保护区 ROI 后，生成 80×80 像素正负例、严格强度排序、neutral/重复/alpha、typed pixel-limit 恢复及可用 Metal 对齐聚焦 `2/0/0`。旧 SDK-only 静态白名单先拦下测试中的现有 `.gpu` 选择器，已按测试内容 SHA-256 精确登记；随后质量单项树完整 archive-first no-skip `990/0/0`、8 opt-in、0 skip。后续 `preferredProcessingSize` 更改另需最终门禁；`detectionFrameInterval` 尚未实现。
+  - `preferredProcessingSize` 候选契约：仅限制发生人脸检测时送入 Vision 的 sRGB 栅格最大宽高；保持纵横比、不放大、不改变原始输入的像素上限校验、最终输出尺寸、方向或镜像元数据。值经既有有限正数校验后低于 1 像素时向上夹到 1 像素。没有检测需求或未设置时保留原路径；只用公开配置快照驱动。先固定生成色块的 Vision 输入尺寸、方向/镜像、平移 extent、无放大、无效值回退及配置传递，再改实现。不声称速度收益。
+  - `preferredProcessingSize` 已在原图像素入界后接入 Vision sRGB 检测栅格；预实现测试因输入字段不存在按预期编译失败，生成色块 12×8→6×4、平移 extent、方向/镜像、无放大、1×1 夹限、配置传递聚焦 `1/0/0`；Vision 专项 `36/0/3 skipped`（未开启 opt-in）。最终证据见下方当前树完整门禁；较早的 `990/0/0` 门禁仅覆盖质量模式。
+  - `detectionFrameInterval` 候选契约：只在新增显式 `frameIndex ≥ 0`、source 为 camera/video 的 CIImage 连续帧入口生效。`frameIndex % interval == 0` 的人脸意图运行正常检测，其余帧不请求检测、不复用旧人脸，受影响的人脸效果安全退出并报固定 `.detectionInterval` 原因；不需要人脸的色彩/纹理请求照常执行。无帧序号的现有静态入口始终逐次检测；interval 非正初始化/解码/变更归一化为 1，不根据 Engine 调用次数隐式推断序列。先固定检测调用数、结果摘要、源图保护/输出尺寸、neutral、方向/镜像、typed 无效序号/来源和恢复，再实现。此行为不声称平滑跨帧视觉质量。
+  - `detectionFrameInterval` 已接入显式 frameIndex 静态 CIImage 入口；7 帧 interval=3 的生成渐变像素与注入检测器验证 0/3/6 检测、其余帧无检测且全图与 neutral 一致，固定 skip 摘要、legacy 不受影响、无脸色彩正常执行、错误序号/来源 typed failure 及恢复。首次测试因复用只采样左上 1 像素的旧 helper 误判效果未变，改为完整 96×96 sRGB 像素比较后新测试 `2/0/0`，联合 preferred 聚焦 `3/0/0`；最终完整门禁见下行。
+  - 配置综合聚焦测试 `50/0/3 skipped`（普通运行未启用三项 opt-in）；随后当前七字段代码树完整 archive-first no-skip `993/0/0`、8 opt-in、0 skip，全部 SDK-owned 前置检查通过。生成测试与固定枚举诊断不授予设备性能、画质泛化或外部分发声明。
 - [ ] FUTURE-07：证明现有 Metal 几何点数在公开可达输入中的上界，或将超限组合拆分为安全的有界执行；保留 typed failure 回归。
 - [ ] FUTURE-08：为纹理滤镜固定非面部低对比负例与大图资源预算，实施满足契约的局部保护和资源上界。
 - [ ] 比例「小头」：定义独立于现有 `faceSmall` 的中性比例语义和像素验收，达到后再调整 taxonomy 的 `partial` 状态。
@@ -4747,7 +4754,6 @@ Outcome:
 ## 5. Tech Debt
 
 - FUTURE-04 后续覆盖：2026-09-25 自然风格生成肖像的冻结失败已由 2026-09-26 有界源边界对齐修复；原输入和阈值下公开 CPU 正负例、目标/保护区、neutral、repeat、alpha 已通过。后续代码生成测试还覆盖深色背景正例、低对比保护、短局部遮挡和明暗方向冲突；弱或矛盾证据按当前规则退出。taxonomy 的 owner-local 状态据生成输入证据提升，不追溯改写 v1.23 历史回执。未覆盖发丝/耳侧、复杂光照、更多肤色或大量不同肖像；真人图片和真实设备仍为可选补充，不是当前完成门禁。人口泛化、设备性能和商业视觉质量未经证明。
-- FUTURE-05：`preferredProcessingSize`、`detectionFrameInterval`、`renderQuality`、`enablePerformanceLog`、`enableDebugMode`、`logLevel`、`maximumInputByteCount` 当前只保留 Codable 配置，不驱动处理、日志或编码字节限流。若将来需要这些行为，应逐项制定输入、性能、日志隐私和可重复测试契约；目前文档和源码注释明确说明未实现。
 - FUTURE-06：已由 `C-2026-09-26-future06-skin-texture` 完成有界空间纹理语义和生成像素验收；2026-09-24 审计时仅有饱和度/对比度代理的旧判断保留为历史事实。皮肤语义分割、真人泛化和设备性能均未签发。
 - FUTURE-07：Metal 几何组合超过 256 个点现已显式返回 `BeautyError.invalidInput`，不再静默跳过效果。公开 43 控件组合在两种现有完整生成/观测支撑上分别为 115/102 点，已通过实际 GPU 输出回归，原条件性风险在这些输入上未复现。尚无覆盖所有 Vision 观测形状及所有强度的全局点数上界证明；仅在发现可达超限公开组合时，再决定是否拆分或收紧组合契约，不把该未证风险写成已发生的用户故障。
 - FUTURE-08：当前纹理滤镜无需人脸支撑，也没有皮肤语义分割；满足低对比门槛的非面部纹理仍可能变化。5×5 CPU 处理及额外源/结果 raster 的大图吞吐、峰值内存和设备耗电尚未测量。仅在需要更强局部保护或具体性能预算时，另立输入、保护区和资源验收契约；不影响本次生成输入的有界效果信用。

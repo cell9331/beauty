@@ -95,7 +95,8 @@ public final class BeautyEngine {
             policy: backendPolicy,
             input: .pixelBuffer(pixelBuffer),
             metadata: metadata,
-            plan: plan
+            plan: plan,
+            renderQuality: configuration.renderQuality
         )
         let backendResult = try backendExecutor.execute(request)
         return withConfiguredResultMetadata(BeautyResult(
@@ -174,6 +175,37 @@ public final class BeautyEngine {
         metadata: BeautyInputMetadata,
         parameters: BeautyParameters
     ) throws -> BeautyResult<CIImage> {
+        try processStillImageResult(
+            image: image, metadata: metadata, parameters: parameters,
+            frameIndex: nil
+        )
+    }
+
+    /// Processes one explicitly indexed camera/video image. Frames that are
+    /// not scheduled for detection fail closed for face-dependent effects;
+    /// no prior face support is reused across frames.
+    public func processResult(
+        image: CIImage,
+        metadata: BeautyInputMetadata,
+        frameIndex: Int,
+        parameters: BeautyParameters
+    ) throws -> BeautyResult<CIImage> {
+        guard frameIndex >= 0,
+              metadata.source == .camera || metadata.source == .video else {
+            throw BeautyError.invalidInput
+        }
+        return try processStillImageResult(
+            image: image, metadata: metadata, parameters: parameters,
+            frameIndex: frameIndex
+        )
+    }
+
+    private func processStillImageResult(
+        image: CIImage,
+        metadata: BeautyInputMetadata,
+        parameters: BeautyParameters,
+        frameIndex: Int?
+    ) throws -> BeautyResult<CIImage> {
         let performanceStart = configuration.enablePerformanceLog
             ? DispatchTime.now().uptimeNanoseconds : nil
         localRetouchTestingHooks?.prepareForFacadeInvocation()
@@ -202,7 +234,8 @@ public final class BeautyEngine {
             return try withConfiguredResultMetadata(legacyStillImageResult(
                 image: image,
                 metadata: metadata,
-                parameters: validated
+                parameters: validated,
+                skipDetectionForInterval: skipsDetection(frameIndex)
             ), since: performanceStart)
         }
 
@@ -223,7 +256,8 @@ public final class BeautyEngine {
             metadata: canonical.metadata,
             imageExtent: CGSize(width: canonical.width, height: canonical.height),
             parameters: validated,
-            requiresLocalSupport: true
+            requiresLocalSupport: true,
+            skipDetectionForInterval: skipsDetection(frameIndex)
         )
 
         if localRetouchTestingHooks?.consumeMalformedRequest() == true {
@@ -321,6 +355,7 @@ public final class BeautyEngine {
             input: .stillImage(renderCarrier.ciImage),
             metadata: renderCarrier.metadata,
             plan: route.plan,
+            renderQuality: configuration.renderQuality,
             selectedFaceSupport: requestContext.selectedFaceObservation,
             canonicalImage: renderCarrier,
             compositionSummary: compositionSummary
@@ -370,13 +405,15 @@ public final class BeautyEngine {
     private func legacyStillImageResult(
         image: CIImage,
         metadata: BeautyInputMetadata,
-        parameters: BeautyParameters
+        parameters: BeautyParameters,
+        skipDetectionForInterval: Bool = false
     ) throws -> BeautyResult<CIImage> {
         let route = resolveStillImageGeometry(
             image: image,
             metadata: metadata,
             imageExtent: image.extent.size,
-            parameters: parameters
+            parameters: parameters,
+            skipDetectionForInterval: skipDetectionForInterval
         )
         localRetouchTestingHooks?.record(.render)
         let request = try BeautyBackendRequest(
@@ -384,6 +421,7 @@ public final class BeautyEngine {
             input: .stillImage(image),
             metadata: metadata,
             plan: route.plan,
+            renderQuality: configuration.renderQuality,
             selectedFaceSupport: route.selectedFaceObservation
         )
         let backendResult = try backendExecutor.execute(request)
@@ -425,6 +463,11 @@ public final class BeautyEngine {
 
     var initialDetectionSummary: BeautyDetectionSummary {
         configuration.enableFaceTracking ? .notRun : .disabled
+    }
+
+    private func skipsDetection(_ frameIndex: Int?) -> Bool {
+        guard let frameIndex else { return false }
+        return !frameIndex.isMultiple(of: configuration.detectionFrameInterval)
     }
 
     private static func validate(image: CIImage, maximumPixelCount: Int) throws {

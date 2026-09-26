@@ -39,9 +39,25 @@ It adds one bounded control point from the selected request-local face bounds;
 there is no new target, model, depth estimate, shader, backend, UI, or public
 biometric payload. The SDK-owned renderer exposes both signed directions.
 
+## 2026-09-26 explicit detection cadence
+
+An indexed camera/video CIImage facade passes a scheduling decision into the
+existing geometry route. Off-cycle calls resolve without selected face support
+and report a fixed skip reason; no observation cache, tracker, new backend,
+shader, or output format is introduced. Unindexed still-image calls keep their
+existing detection path.
+
+## 2026-09-26 preferred Vision detection size
+
+`preferredProcessingSize` now reaches `VisionFaceDetectionInput` through the
+existing engine/detector configuration path. Vision materializes a bounded
+working raster only for detection; the source carrier and backend still render
+at admitted original dimensions. No new target, cache, or output resize path
+was added.
+
 ## 2026-09-26 skin texture path
 
-`BeautyEffects` now owns one request-local 5×5 luminance-detail transform for
+`BeautyEffects` now owns one request-local luminance-detail transform for
 `skinSmoothing` and `skinSharpen`. CPU still-image and pixel-buffer paths call
 it before their existing color/geometry work; the Metal-selected executor
 applies the same CPU transform to admitted RGBA8 bytes before its retained
@@ -49,6 +65,8 @@ passes. This preserves one effect definition without adding a Metal shader,
 backend, model, public parameter, detector dependency, or target. The Metal
 selection still runs through the existing runtime for other passes and output
 conversion; it is not a claim that texture work executes on the GPU.
+The facade snapshots `renderQuality` into the backend request; both backend
+selections use the same 3×3, 5×5, or 7×7 CPU-owned spatial implementation.
 
 ## Current image acceptance input boundary (2026-09-24)
 

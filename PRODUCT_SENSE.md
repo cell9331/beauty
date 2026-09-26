@@ -54,7 +54,31 @@ predeclared natural-style generated portrait pair continues to pass through
 the public CPU renderer. More varied portrait hair, lighting, and skin
 appearance remain to be qualified before broader coverage is claimed.
 
+## 2026-09-26 explicit detection frame interval
+
+The new indexed camera/video CIImage entry accepts `frameIndex ≥ 0`. With
+`detectionFrameInterval = n`, face-dependent effects request detection on
+indices divisible by `n`; intervening frames return a skipped detection
+summary with the fixed `detectionInterval` reason and leave those effects off.
+Color and texture controls continue. Unindexed still-image calls continue to
+detect each time. This explicit cadence is suitable only when a host accepts
+the visible fail-closed gaps; it does not interpolate or reuse face positions.
+
+## 2026-09-26 preferred Vision detection size
+
+An owner-local host can set `preferredProcessingSize` to limit the image sent
+to face detection while retaining the original output size. It has no effect
+on requests that do not need a face. A smaller detection raster may alter which
+landmarks Vision finds; no claim of faster or more accurate detection follows
+without device measurements.
+
 ## 2026-09-26 generated skin-texture acceptance
+
+`renderQuality` now selects the texture footprint when smoothing or sharpening
+is active: performance 3×3, balanced 5×5, quality 7×7. On the generated
+high-frequency cheek positive, smoothing increases in that order. A neutral
+request and other controls do not change with this setting. The names describe
+the neighborhood choice, not measured device speed or broad portrait quality.
 
 `skinSmoothing` now reduces fine luminance variation in an admitted opaque
 neighborhood; `skinSharpen` increases a moderate soft-edge gradient. A uniform

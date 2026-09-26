@@ -16,7 +16,8 @@ extension BeautyEngine {
         metadata: BeautyInputMetadata,
         imageExtent: CGSize,
         parameters: BeautyParameters,
-        requiresLocalSupport: Bool = false
+        requiresLocalSupport: Bool = false,
+        skipDetectionForInterval: Bool = false
     ) -> BeautyEngineGeometryRoute {
         let requiresFaceGeometry = BeautyEffectResolver.requiresFaceGeometry(parameters: parameters)
         guard requiresFaceGeometry || requiresLocalSupport else {
@@ -39,6 +40,22 @@ extension BeautyEngine {
                     geometryRequired: requiresFaceGeometry
                 ),
                 detectionSummary: .disabled,
+                selectedFaceObservation: nil
+            )
+        }
+
+        if skipDetectionForInterval {
+            let summary = BeautyDetectionSummary(
+                availability: .skipped, reasons: [.detectionInterval]
+            )
+            let plan = BeautyEffectResolver.resolve(
+                parameters: parameters, selectedFaceObservation: nil
+            )
+            return BeautyEngineGeometryRoute(
+                plan: withDetectionMetrics(
+                    plan, summary: summary, geometryRequired: requiresFaceGeometry
+                ),
+                detectionSummary: summary,
                 selectedFaceObservation: nil
             )
         }

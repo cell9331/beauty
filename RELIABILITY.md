@@ -55,10 +55,28 @@ class, public facade orientation/recovery tests, and frozen generated portrait
 oracle pass. No extra allocation, retained state, or diagnostic pixel content
 was introduced.
 
+## 2026-09-26 indexed frame interval recovery
+
+The explicit camera/video frame index selects detection by modulo of a
+positive normalized interval; it does not depend on prior calls. Invalid
+indices and source kinds fail with `BeautyError.invalidInput` before detector
+work. Off-cycle face work has a deterministic `.skipped` summary and fixed
+`.detectionInterval` reason, with no retained support; the next scheduled
+frame can detect normally. Unindexed still images preserve their prior route.
+
+## 2026-09-26 preferred Vision detection bounds
+
+`preferredProcessingSize` bounds the Vision raster but does not relax the
+original image's typed pixel-limit rejection. Invalid or absent sizes retain
+the unscaled detector path after initialization, decoding, or mutation
+normalization. Downsampling
+keeps at least one pixel per axis and never upscales. Detection failure still
+uses the existing skipped-support behavior; output dimensions stay unchanged.
+
 ## 2026-09-26 skin-texture bounds and recovery
 
-The spatial stage samples immutable request-local RGBA8 pixels within a 5×5
-footprint and writes each result once. It checks input dimensions and byte
+The spatial stage samples immutable request-local RGBA8 pixels within a 3×3,
+5×5, or 7×7 footprint and writes each result once. It checks input dimensions and byte
 products before allocating for the direct CI path; the public facade still
 rejects invalid extents and configured pixel-limit violations with typed
 `BeautyError.invalidInput`. Nonopaque centers or neighboring pixels, strong
@@ -67,7 +85,7 @@ neutral plan avoids this stage. Identical input and plan produce identical
 output; a failed request does not retain a prior neighborhood or output.
 
 This CPU-owned stage also runs when Metal is selected, before retained GPU
-passes. Its worst-case work is 25 neighbor samples per pixel and it can hold
+passes. Its worst-case work is 49 neighbor samples per pixel and it can hold
 both source and result rasters while Core Image or the backend owns other
 buffers. No physical-device latency, peak-memory, sustained-load or power
 measurement has been made for this new behavior. Large-image throughput and

@@ -35,6 +35,34 @@ combined geometry uses the existing conflict scale. Orientation and input
 mirror are request metadata. This is bounded 2D image-space displacement,
 not a depth or three-dimensional mesh claim.
 
+## 2026-09-26 explicit detection frame interval
+
+The new `processResult(image:metadata:frameIndex:parameters:)` entry accepts
+only nonnegative indices with camera or video metadata. When face support is
+required, indices divisible by `detectionFrameInterval` run the existing
+detector. Other indices do not call Vision, do not borrow prior support, and
+return `.skipped` with `.detectionInterval`; face-dependent effects fail closed.
+Color/texture work without face demand runs normally. The existing unindexed
+entry continues detecting every face-dependent call. The interval normalizes
+to at least one on initialization, decoding, and mutation. No frame is inferred
+from wall time or engine invocation count, and no tracking-quality claim is
+made for skipped frames.
+
+## 2026-09-26 preferred detection raster size
+
+`preferredProcessingSize` is an optional finite positive maximum width and
+height for the sRGB raster passed to Vision when face support is requested.
+Invalid values normalize to `nil` at initialization, decoding, and later
+mutation.
+After the original input passes its pixel limit, the detector uses one
+aspect-preserving scale at or below one and rounds dimensions down, clamping
+each to at least one pixel. It translates a nonzero source extent to the
+detection raster's origin without rotating or mirroring pixels; original
+orientation and input-mirror metadata still go through Vision and the mapper.
+The public output retains its original dimensions and extent. Without a
+requested face operation or configured size, no detection resize occurs.
+This config does not assert a speed or detection-accuracy improvement.
+
 ## 2026-09-26 encoded input byte-limit contract
 
 `maximumInputByteCount` is now enforced by the new owner-local
@@ -73,6 +101,17 @@ and light skin colors and opposite lighting on the two sides retain the
 existing rough-positive and smooth-negative direction bounds. The earlier
 frozen natural-style pair still passes its unchanged public CPU oracle.
 
+## 2026-09-26 render quality semantics
+
+The engine snapshots `renderQuality` with the rest of `BeautyConfiguration`.
+An active `skinSmoothing` or `skinSharpen` request passes it through one backend
+request into the shared texture transform. `.performance` uses normalized
+separable weights `[1, 2, 1]` (3×3), `.balanced` retains `[1, 2, 3, 2, 1]`
+(5×5), and `.quality` uses `[1, 2, 3, 4, 3, 2, 1]` (7×7). Each mode keeps the
+same edge, alpha, RGB-distance, gain and clipping rules. The neutral plan and
+other effects do not use this setting. This is an algorithm selection contract,
+not a measured latency or visual quality guarantee.
+
 ## 2026-09-26 FUTURE-06 skin texture semantics
 
 `skinSmoothing` and `skinSharpen` retain their public unit parameters and
@@ -90,7 +129,8 @@ images and pixel buffers. It requires no face detection and has no semantic
 skin mask: qualifying low-contrast texture outside a face can also change.
 The generated portrait oracle protects its dark hair, eyes, mouth and distant
 background; this is evidence for those inputs, not a general segmentation
-promise. Images smaller than the 5×5 footprint are neutral for these controls.
+promise. Images smaller than the configured footprint are neutral for these
+controls.
 
 ## 2026-09-26 FACE-01 source-boundary repair
 
@@ -146,8 +186,9 @@ above supersedes those proxy semantics.
 At this audit date, the renderer did not use `preferredProcessingSize`,
 `detectionFrameInterval`, `renderQuality`, `enablePerformanceLog`,
 `enableDebugMode`, or `logLevel` as execution controls. The current
-`enablePerformanceLog`, `enableDebugMode`, and `logLevel` result contracts are
-above; the other three fields remain Codable compatibility fields. Input
+`enablePerformanceLog`, `enableDebugMode`, `logLevel`, `renderQuality`,
+`preferredProcessingSize`, and `detectionFrameInterval` contracts are above.
+Input
 pixel configuration is clamped to the backend's 50,000,000-pixel ceiling.
 Decoding an EXIF orientation outside 1–8
 fails, rather than changing the image to `.up`.
@@ -534,11 +575,11 @@ SDK 以稳定、可预测的方式输出处理后的图像。SDK、模型和权�
 
 | Field | Type | Meaning |
 | --- | --- | --- |
-| `preferredProcessingSize` | `CGSize?` | 保留的期望处理尺寸字段；当前不缩放输入。 |
+| `preferredProcessingSize` | `CGSize?` | 限制 Vision 检测栅格的最大宽高；原图与最终输出不缩放。 |
 | `maximumFaceCount` | `Int` | 检测器每次最多选入的人脸数量；当前公开效果路径仅使用所选主脸。 |
 | `enableFaceTracking` | `Bool` | 是否启用跨帧跟踪和平滑。 |
-| `detectionFrameInterval` | `Int` | 保留字段；当前不按帧降频。 |
-| `renderQuality` | `BeautyRenderQuality` | 保留字段；当前不切换质量等级。 |
+| `detectionFrameInterval` | `Int` | 显式 frameIndex 的 camera/video CIImage 入口按序号检测；其余帧人脸效果安全退出。 |
+| `renderQuality` | `BeautyRenderQuality` | 启用皮肤空间纹理时选 3×3、5×5 或 7×7 邻域；默认 balanced 保留原 5×5。 |
 | `enablePerformanceLog` | `Bool` | 成功的 `processResult` 在 `metrics` 附加同步 facade 耗时；不写系统或持久日志。 |
 | `enableDebugMode` | `Bool` | `.debug` 级别时允许固定的后端阶段事件，不含输入内容。 |
 | `logLevel` | `BeautyLogLevel` | 成功结果的固定代码诊断事件最高详细等级；不写系统日志。 |
@@ -553,7 +594,7 @@ SDK 以稳定、可预测的方式输出处理后的图像。SDK、模型和权�
 - 不能包含宿主 UI 框架或宿主 App 状态。
 - 图像方向、输入镜像、预览镜像是逐帧输入状态，不放入全局 configuration。
 - 两个输入上限都是尾部默认参数；非正自定义值回落到各自默认值，旧 JSON 缺少两个 key 时通过显式 `decodeIfPresent` 得到相同默认值。像素数自定义值大于 50,000,000 时压到该硬上限。
-- 当前执行的像素数上限是拒绝边界而非处理策略：精确命中上限继续当前行为，超过上限返回 `BeautyError.invalidInput`；SDK 不借此缩放、降采样或重解释 `preferredProcessingSize`。编码入口先执行 `maximumInputByteCount`，已解码入口不检查该值。
+- 当前执行的像素数上限是拒绝边界而非处理策略：精确命中上限继续当前行为，超过上限返回 `BeautyError.invalidInput`；`preferredProcessingSize` 只影响已经入界的 Vision 检测栅格，不缩放渲染输出。编码入口先执行 `maximumInputByteCount`，已解码入口不检查该值。
 - `renderBackend` 是执行策略而非逐帧美颜参数；新建配置和缺少该 key 的旧 Codable payload 都确定性解码为 `.cpu`。显式 `.gpu` 只经 `BeautyBackendFactory` 构造 package Metal backend；不可用时终止为 `.metalUnavailable`，不回退 CPU。已有 Engine 的配置快照不可变，package-only injection 仅用于测试。
 - `maximumFaceCount` 保留原有检测选择上限和 Codable 字段，不承诺对全部选中人脸渲染效果。当前 `BeautyEngine` 为效果与局部支持只消费所选主脸；扩大到多脸效果须单独定义所有权、重叠和像素验收。
 

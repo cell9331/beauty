@@ -156,19 +156,22 @@ package struct VisionFaceDetectionInput: @unchecked Sendable {
     package let previewExtent: CGSize?
     package let stillImage: CIImage?
     package let maximumPixelCount: Int
+    package let preferredProcessingSize: CGSize?
 
     package init(
         metadata: BeautyInputMetadata,
         imageExtent: CGSize,
         previewExtent: CGSize? = nil,
         stillImage: CIImage? = nil,
-        maximumPixelCount: Int = BeautyConfiguration.default.maximumInputPixelCount
+        maximumPixelCount: Int = BeautyConfiguration.default.maximumInputPixelCount,
+        preferredProcessingSize: CGSize? = nil
     ) {
         self.metadata = metadata
         self.imageExtent = imageExtent
         self.previewExtent = previewExtent
         self.stillImage = stillImage
         self.maximumPixelCount = maximumPixelCount
+        self.preferredProcessingSize = preferredProcessingSize
     }
 }
 
@@ -249,7 +252,8 @@ package struct VisionFaceDetector: Sendable {
                     imageExtent: imageExtent,
                     previewExtent: previewExtent,
                     stillImage: image,
-                    maximumPixelCount: configuration.maximumInputPixelCount
+                    maximumPixelCount: configuration.maximumInputPixelCount,
+                    preferredProcessingSize: configuration.preferredProcessingSize
                 )
             )
             return summarize(
@@ -1105,11 +1109,10 @@ package struct VisionFaceDetector: Sendable {
         }
     }
 
-    // Detection and source-only image validation must inspect the same rendered
-    // RGB image. Letting Vision render the lazy CIImage chooses a different
-    // color-conversion path and can move an anatomical ownership boundary.
-    // This is only the Vision input: the raw facade's output and metadata policy
-    // remain unchanged, including orientation handling in CoordinateMapper.
+    // Vision uses an explicit sRGB raster rather than its own lazy CIImage
+    // conversion. An optional bounded detection scale changes only this
+    // request-local raster; the original input admission, output dimensions,
+    // and CoordinateMapper orientation/mirror policy remain unchanged.
     static func canonicalStillImageInput(
         _ input: VisionFaceDetectionInput
     ) throws -> (image: CGImage, orientation: CGImagePropertyOrientation) {
@@ -1129,7 +1132,33 @@ package struct VisionFaceDetector: Sendable {
             .workingColorSpace: sRGB,
             .outputColorSpace: sRGB,
         ])
-        guard let raster = context.createCGImage(image, from: image.extent) else {
+        let detectionImage: CIImage
+        let detectionExtent: CGRect
+        if let preferred = input.preferredProcessingSize {
+            guard preferred.width.isFinite, preferred.height.isFinite,
+                  preferred.width > 0, preferred.height > 0 else {
+                throw Failure.detectorUnavailable
+            }
+            let scale = min(
+                1, preferred.width / image.extent.width,
+                preferred.height / image.extent.height
+            )
+            let targetWidth = max(1, Int((image.extent.width * scale).rounded(.down)))
+            let targetHeight = max(1, Int((image.extent.height * scale).rounded(.down)))
+            detectionExtent = CGRect(x: 0, y: 0, width: targetWidth, height: targetHeight)
+            detectionImage = image
+                .transformed(by: CGAffineTransform(
+                    translationX: -image.extent.minX, y: -image.extent.minY
+                ))
+                .transformed(by: CGAffineTransform(
+                    scaleX: CGFloat(targetWidth) / image.extent.width,
+                    y: CGFloat(targetHeight) / image.extent.height
+                ))
+        } else {
+            detectionImage = image
+            detectionExtent = image.extent
+        }
+        guard let raster = context.createCGImage(detectionImage, from: detectionExtent) else {
             throw Failure.detectorUnavailable
         }
         // Do not orient or mirror pixels here: Vision and the existing mapper

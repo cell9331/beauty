@@ -587,6 +587,8 @@ allowed_backend_paths = {
 # exact inspected bytes, not their paths in perpetuity; any change must be
 # reviewed again. No production source or new GPU declaration is admitted.
 cpu_test_backend_hashes = {
+    "BeautySDK/Tests/BeautyCoreTests/BeautyRenderQualityPublicTests.swift":
+        "0a0f4b4b9d97913176815c59def9386c8f8c4129f595625299165d08221c77fd",
     "BeautySDK/Tests/BeautyCoreTests/BeautyEngineMouthNegativeTests.swift":
         "f6bf8d3c9ce59ce25ac09c9e0b4147a61e5e54d9e397abfd6ee35c2b4e4cc65a",
     "BeautySDK/Tests/BeautyCoreTests/BeautyEngineMouthLifecycleTests.swift":

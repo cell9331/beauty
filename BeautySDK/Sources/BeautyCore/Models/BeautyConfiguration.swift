@@ -13,13 +13,24 @@ public struct BeautyConfiguration: Codable, Equatable, Sendable {
     public static let defaultMaximumInputByteCount = 33_554_432
     public static let defaultMaximumInputPixelCount = 50_000_000
 
-    /// Reserved Codable field; the current SDK does not resize processing inputs.
-    public var preferredProcessingSize: CGSize?
+    /// Maximum width and height of the optional Vision detection raster.
+    /// The admitted source and final output keep their original dimensions.
+    public var preferredProcessingSize: CGSize? {
+        didSet {
+            preferredProcessingSize = Self.validProcessingSize(preferredProcessingSize)
+        }
+    }
     public var maximumFaceCount: Int
     public var enableFaceTracking: Bool
-    /// Reserved Codable field; the current SDK does not schedule frame detection.
-    public var detectionFrameInterval: Int
-    /// Reserved Codable field; the current renderer does not switch quality modes.
+    /// Detection cadence for the explicit indexed camera/video CIImage entry.
+    /// Unindexed still-image calls always request face support when needed.
+    public var detectionFrameInterval: Int {
+        didSet {
+            detectionFrameInterval = max(1, detectionFrameInterval)
+        }
+    }
+    /// Selects the skin-texture footprint: 3×3, 5×5, or 7×7 when active.
+    /// Other effects and neutral rendering do not depend on this field.
     public var renderQuality: BeautyRenderQuality
     /// Adds a bounded synchronous-facade duration to successful `processResult` metrics.
     /// No system or persistent log is emitted; deferred CIImage evaluation is excluded.

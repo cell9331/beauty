@@ -80,7 +80,45 @@ does not revoke the earlier pair's bounded result; FUTURE-04 stays open.
 The current tree's complete archive-first no-skip gate passes `977/0/0`,
 eight opt-ins and zero skips independently of this new effect failure.
 
+## 2026-09-26 indexed frame interval evidence
+
+The public SPI-backed test fixes seven explicit frame indices at interval
+three and checks detector invocation count, scheduled/skip summaries, no-face
+color path, unindexed compatibility, invalid index/source typed failures,
+interval mutation normalization, and recovery. It compares all generated
+96×96 sRGB output pixels on scheduled and skipped frames. The first oracle
+used a legacy helper that sampled only the upper-left pixel and was corrected
+before acceptance; focused `2/0/0`, combined with preferred-size `3/0/0`.
+This establishes cadence and fail-closed routing, not perceptual video
+continuity. The complete current config tree passed archive-first no-skip
+`993/0/0`, eight opt-ins and zero skips.
+
+## 2026-09-26 preferred Vision detection-size evidence
+
+The preferred detection-size test was fixed before implementation and initially
+failed to compile because Vision's input had no such field. A generated 12×8
+two-color raster now checks 6×4 detection, translated source extent,
+orientation/mirror metadata, no upscaling, 1×1 lower bound and configuration
+propagation, including invalid post-init mutation normalization. The initial
+version focused `1/0/0`; the mutation check and full gate remain pending. The
+wider Vision suite was `36/0/3` without the
+full gate's opt-ins. The complete current config tree passed archive-first
+no-skip `993/0/0`, eight opt-ins and zero skips.
+
 ## 2026-09-26 FUTURE-06 generated texture evidence
+
+The `renderQuality` public generated 80×80 texture oracle was fixed before
+implementation and failed while modes were identical. It now asserts strict
+source/performance/balanced/quality smoothing order, flat negative neutrality,
+protected hard boundary and alpha, neutral identity, repetition, typed
+pixel-limit recovery, and CPU/available-Metal byte parity. Focused test result:
+`2/0/0`. This verifies the configured spatial choice on generated input;
+there is no physical-device throughput or broad visual quality evidence.
+The quality-only tree passed complete archive-first no-skip `990/0/0`, eight
+opt-ins and zero skips. The first attempt stopped at the legacy static
+backend-path allowlist for the new test's existing `.gpu` selector; its reviewed
+test bytes are now pinned by SHA-256 in that boundary checker. The subsequent
+full run passed. The later preferred-size change needs its own final gate.
 
 The new public generated-image oracle fixes a checker-textured cheek positive,
 a moderate soft-edge positive, flat and hard-edge negatives, alpha and distant

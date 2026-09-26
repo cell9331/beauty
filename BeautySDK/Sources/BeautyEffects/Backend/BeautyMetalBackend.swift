@@ -60,6 +60,7 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
                 output = .pixelBuffer(try execute(
                     pixelBuffer: pixelBuffer,
                     plan: request.plan,
+                    renderQuality: request.renderQuality,
                     selectedFaceSupport: request.selectedFaceSupport,
                     compositionSummary: request.compositionSummary,
                     canonicalImage: request.canonicalImage
@@ -69,6 +70,7 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
                     stillImage: image,
                     canonicalImage: request.canonicalImage,
                     plan: request.plan,
+                    renderQuality: request.renderQuality,
                     selectedFaceSupport: request.selectedFaceSupport,
                     compositionSummary: request.compositionSummary
                 ))
@@ -108,6 +110,7 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
     private func execute(
         pixelBuffer: CVPixelBuffer,
         plan: BeautyEffectPlan,
+        renderQuality: BeautyRenderQuality,
         selectedFaceSupport: BeautyFaceObservation?,
         compositionSummary: BeautyLocalRetouchCompositionSummary?,
         canonicalImage: BeautyCanonicalStillImage?
@@ -126,7 +129,8 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
         let rowBytes = try packedRowBytes(width: width)
         let sourceBytes = try read(pixelBuffer: pixelBuffer, width: width, height: height, rowBytes: rowBytes)
         let rgbaBytes = BeautySkinTexturePipeline.applyRGBA(
-            bgraToRgba(sourceBytes), width: width, height: height, plan: plan
+            bgraToRgba(sourceBytes), width: width, height: height, plan: plan,
+            renderQuality: renderQuality
         )
         let renderedRGBA = try invokeRuntime(
             width: width,
@@ -150,6 +154,7 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
         stillImage image: CIImage,
         canonicalImage: BeautyCanonicalStillImage?,
         plan: BeautyEffectPlan,
+        renderQuality: BeautyRenderQuality,
         selectedFaceSupport: BeautyFaceObservation?,
         compositionSummary: BeautyLocalRetouchCompositionSummary?
     ) throws -> CIImage {
@@ -171,7 +176,8 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
         }
 
         let texturedBytes = BeautySkinTexturePipeline.applyRGBA(
-            bytes, width: dimensions.width, height: dimensions.height, plan: plan
+            bytes, width: dimensions.width, height: dimensions.height, plan: plan,
+            renderQuality: renderQuality
         )
         let alignedBytes: [UInt8]
         if let selectedFaceSupport {

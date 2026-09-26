@@ -94,6 +94,7 @@ package struct BeautyBackendRequest: @unchecked Sendable {
     package let input: BeautyBackendInput
     package let metadata: BeautyInputMetadata
     package let plan: BeautyEffectPlan
+    package let renderQuality: BeautyRenderQuality
     package let selectedFaceSupport: BeautyFaceObservation?
     package let canonicalImage: BeautyCanonicalStillImage?
     package let compositionSummary: BeautyLocalRetouchCompositionSummary?
@@ -103,6 +104,7 @@ package struct BeautyBackendRequest: @unchecked Sendable {
         input: BeautyBackendInput,
         metadata: BeautyInputMetadata,
         plan: BeautyEffectPlan,
+        renderQuality: BeautyRenderQuality = .balanced,
         selectedFaceSupport: BeautyFaceObservation? = nil,
         canonicalImage: BeautyCanonicalStillImage? = nil,
         compositionSummary: BeautyLocalRetouchCompositionSummary? = nil
@@ -123,6 +125,7 @@ package struct BeautyBackendRequest: @unchecked Sendable {
         self.input = input
         self.metadata = metadata
         self.plan = plan
+        self.renderQuality = renderQuality
         self.selectedFaceSupport = selectedFaceSupport
         self.canonicalImage = canonicalImage
         self.compositionSummary = compositionSummary

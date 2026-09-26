@@ -17,7 +17,8 @@ package struct BeautyCPUBackend: BeautyBackendExecutor, Sendable {
             output = .pixelBuffer(
                 try BeautyColorEffectPipeline.apply(
                     to: pixelBuffer,
-                    plan: request.plan
+                    plan: request.plan,
+                    renderQuality: request.renderQuality
                 )
             )
         case .stillImage(let image):
@@ -26,12 +27,14 @@ package struct BeautyCPUBackend: BeautyBackendExecutor, Sendable {
                 rendered = BeautyColorEffectPipeline.apply(
                     to: canonicalImage,
                     plan: request.plan,
+                    renderQuality: request.renderQuality,
                     selectedFaceObservation: request.selectedFaceSupport
                 )
             } else {
                 rendered = BeautyColorEffectPipeline.apply(
                     to: image,
                     plan: request.plan,
+                    renderQuality: request.renderQuality,
                     selectedFaceObservation: request.selectedFaceSupport
                 )
             }

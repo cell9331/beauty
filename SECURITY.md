@@ -48,6 +48,21 @@ fail closed locally; neighboring accepted rows still use request-local source
 pixels. Generated tests and the frozen portrait oracle persist only aggregate
 results, never the hair pixels or observed contour coordinates.
 
+## 2026-09-26 indexed frame detection boundary
+
+The frame interval never reuses raw landmarks or masks across frames. An
+off-cycle face-dependent request has no selected support and cannot retouch a
+different face using stale coordinates. Validation rejects negative frame
+indices and non-camera/video metadata before processing; the public reason is
+a fixed enum and contains no frame pixels or coordinates.
+
+## 2026-09-26 preferred Vision detection boundary
+
+`preferredProcessingSize` is applied only after the source pixel count is
+admitted. It cannot turn an oversized original into an accepted request. The
+smaller Vision raster is request-local, carries the same redacted support
+boundary, and is not exposed in persistent diagnostics.
+
 ## 2026-09-26 skin-texture input boundary
 
 The texture transform reads decoded pixels only inside the admitted request,
@@ -58,6 +73,9 @@ regions. They are not a skin classifier: an unprotected low-contrast background
 may be edited. Generated inputs stay in memory; durable evidence records only
 aggregate assertions and test outcomes. No model, network, permission, public
 raw-pixel API, or private fixture locator was added.
+`renderQuality` is a closed three-case enum. It only changes the bounded
+request-local neighborhood radius from one to three pixels. It does not add a
+source, output channel, persistent cache, or pixel-bearing diagnostic.
 
 ## 2026-09-26 FACE-01 source-edge trust boundary
 

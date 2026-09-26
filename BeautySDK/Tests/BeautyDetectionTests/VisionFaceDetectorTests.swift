@@ -675,6 +675,72 @@ final class VisionFaceDetectorTests: XCTestCase {
         }
     }
 
+    func testPreferredProcessingSizeBoundsDetectionRasterWithoutChangingMetadata() throws {
+        let colorSpace = try XCTUnwrap(CGColorSpace(name: CGColorSpace.sRGB))
+        let bytes = (0..<(12 * 8)).flatMap { index -> [UInt8] in
+            index % 12 < 6 ? [220, 30, 40, 255] : [30, 40, 220, 255]
+        }
+        let original = CIImage(
+            bitmapData: Data(bytes), bytesPerRow: 12 * 4,
+            size: CGSize(width: 12, height: 8), format: .RGBA8,
+            colorSpace: colorSpace
+        )
+        let metadata = BeautyInputMetadata(
+            orientation: .leftMirrored, isInputMirrored: true, source: .testFixture
+        )
+        let context = CIContext(options: [
+            .workingColorSpace: colorSpace, .outputColorSpace: colorSpace
+        ])
+        for image in [original, original.transformed(by: .init(translationX: 7, y: -3))] {
+            let input = VisionFaceDetectionInput(
+                metadata: metadata, imageExtent: image.extent.size,
+                stillImage: image, maximumPixelCount: 96,
+                preferredProcessingSize: CGSize(width: 6, height: 4)
+            )
+            let raster = try VisionFaceDetector.canonicalStillImageInput(input)
+            XCTAssertEqual(raster.orientation, CGImagePropertyOrientation.leftMirrored)
+            XCTAssertEqual(raster.image.width, 6)
+            XCTAssertEqual(raster.image.height, 4)
+            let result = canonicalTestBytes(
+                CIImage(cgImage: raster.image), context: context, colorSpace: colorSpace
+            )
+            let left = (1 * 6 + 0) * 4
+            let right = (1 * 6 + 5) * 4
+            XCTAssertGreaterThan(Int(result[left]), Int(result[left + 2]) + 100)
+            XCTAssertGreaterThan(Int(result[right + 2]), Int(result[right]) + 100)
+            XCTAssertEqual(result[left + 3], 255)
+            XCTAssertEqual(result[right + 3], 255)
+        }
+        let unconstrained = try VisionFaceDetector.canonicalStillImageInput(
+            .init(metadata: metadata, imageExtent: original.extent.size,
+                  stillImage: original, preferredProcessingSize: CGSize(width: 24, height: 24))
+        )
+        XCTAssertEqual(unconstrained.image.width, 12)
+        XCTAssertEqual(unconstrained.image.height, 8)
+        let tiny = try VisionFaceDetector.canonicalStillImageInput(
+            .init(metadata: metadata, imageExtent: original.extent.size,
+                  stillImage: original, preferredProcessingSize: CGSize(width: 0.2, height: 0.2))
+        )
+        XCTAssertEqual(tiny.image.width, 1)
+        XCTAssertEqual(tiny.image.height, 1)
+
+        var mutableConfiguration = BeautyConfiguration(
+            preferredProcessingSize: CGSize(width: 6, height: 4)
+        )
+        mutableConfiguration.preferredProcessingSize = CGSize(width: CGFloat.nan, height: 4)
+        XCTAssertNil(mutableConfiguration.preferredProcessingSize)
+        mutableConfiguration.preferredProcessingSize = CGSize(width: 6, height: 4)
+
+        var detector = VisionFaceDetector(observationProvider: { input in
+            XCTAssertEqual(input.preferredProcessingSize, CGSize(width: 6, height: 4))
+            return []
+        })
+        _ = detector.detect(
+            image: original, metadata: metadata, imageExtent: original.extent.size,
+            configuration: mutableConfiguration
+        )
+    }
+
     func testCanonicalVisionRasterRejectsInvalidOrUnboundedCropsBeforeAllocation() throws {
         let source = CIImage(color: .white)
         let finite = source.cropped(to: CGRect(x: 0, y: 0, width: 3, height: 2))

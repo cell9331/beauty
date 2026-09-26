@@ -18,6 +18,7 @@ public enum DetectionDegradationReason: String, Codable, Equatable, Sendable {
     case faceLimitApplied
     case detectorUnavailable
     case detectionTimedOut
+    case detectionInterval
     case mappingFailed
     case orientationMetadataMissing
 }

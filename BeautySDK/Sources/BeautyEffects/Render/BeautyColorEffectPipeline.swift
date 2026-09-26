@@ -5,11 +5,17 @@ import BeautyCore
 import BeautyDetection
 
 public enum BeautyColorEffectPipeline {
-    public static func apply(to pixelBuffer: CVPixelBuffer, plan: BeautyEffectPlan) throws -> CVPixelBuffer {
-        try apply(to: pixelBuffer, plan: plan, face: nil)
+    public static func apply(
+        to pixelBuffer: CVPixelBuffer, plan: BeautyEffectPlan,
+        renderQuality: BeautyRenderQuality = .balanced
+    ) throws -> CVPixelBuffer {
+        try apply(to: pixelBuffer, plan: plan, renderQuality: renderQuality, face: nil)
     }
 
-    static func apply(to pixelBuffer: CVPixelBuffer, plan: BeautyEffectPlan, face: FaceGeometry?) throws -> CVPixelBuffer {
+    static func apply(
+        to pixelBuffer: CVPixelBuffer, plan: BeautyEffectPlan,
+        renderQuality: BeautyRenderQuality = .balanced, face: FaceGeometry?
+    ) throws -> CVPixelBuffer {
         let width = CVPixelBufferGetWidth(pixelBuffer)
         let height = CVPixelBufferGetHeight(pixelBuffer)
         let pixelFormat = CVPixelBufferGetPixelFormatType(pixelBuffer)
@@ -73,7 +79,8 @@ public enum BeautyColorEffectPipeline {
                 }
             }
             textureBytes = BeautySkinTexturePipeline.applyRGBA(
-                packed, width: width, height: height, plan: plan
+                packed, width: width, height: height, plan: plan,
+                renderQuality: renderQuality
             )
         } else {
             textureBytes = nil
@@ -114,22 +121,27 @@ public enum BeautyColorEffectPipeline {
         return output
     }
 
-    public static func apply(to image: CIImage, plan: BeautyEffectPlan) -> CIImage {
-        apply(to: image, plan: plan, face: nil)
+    public static func apply(
+        to image: CIImage, plan: BeautyEffectPlan,
+        renderQuality: BeautyRenderQuality = .balanced
+    ) -> CIImage {
+        apply(to: image, plan: plan, renderQuality: renderQuality, face: nil)
     }
 
     package static func apply(
         to image: CIImage,
         plan: BeautyEffectPlan,
+        renderQuality: BeautyRenderQuality = .balanced,
         selectedFaceObservation: BeautyFaceObservation?
     ) -> CIImage {
         let face = selectedFaceObservation.map(BeautyFaceGeometryAdapter.makeGeometry(from:))
-        return apply(to: image, plan: plan, face: face)
+        return apply(to: image, plan: plan, renderQuality: renderQuality, face: face)
     }
 
     package static func apply(
         to canonicalImage: BeautyCanonicalStillImage,
         plan: BeautyEffectPlan,
+        renderQuality: BeautyRenderQuality = .balanced,
         selectedFaceObservation: BeautyFaceObservation?,
         onCanonicalRasterize: ((BeautyCanonicalStillImage, CGColorSpace) -> Void)? = nil
     ) -> CIImage {
@@ -137,6 +149,7 @@ public enum BeautyColorEffectPipeline {
         var output = applyColorEffects(
             to: canonicalImage.ciImage,
             plan: plan,
+            renderQuality: renderQuality,
             face: face
         )
 
@@ -153,8 +166,13 @@ public enum BeautyColorEffectPipeline {
         return output.cropped(to: canonicalImage.ciImage.extent)
     }
 
-    static func apply(to image: CIImage, plan: BeautyEffectPlan, face: FaceGeometry?) -> CIImage {
-        var output = applyColorEffects(to: image, plan: plan, face: face)
+    static func apply(
+        to image: CIImage, plan: BeautyEffectPlan,
+        renderQuality: BeautyRenderQuality = .balanced, face: FaceGeometry?
+    ) -> CIImage {
+        var output = applyColorEffects(
+            to: image, plan: plan, renderQuality: renderQuality, face: face
+        )
 
         if let face {
             output = BeautyGeometryEffectPipeline.applyMVPProxy(to: output, plan: plan, face: face)
@@ -166,9 +184,12 @@ public enum BeautyColorEffectPipeline {
     private static func applyColorEffects(
         to image: CIImage,
         plan: BeautyEffectPlan,
+        renderQuality: BeautyRenderQuality,
         face: FaceGeometry?
     ) -> CIImage {
-        var output = BeautySkinTexturePipeline.apply(to: image, plan: plan)
+        var output = BeautySkinTexturePipeline.apply(
+            to: image, plan: plan, renderQuality: renderQuality
+        )
 
         if plan.hasVisibleColorOutput {
             let strengths = plan.effectiveStrengths
