@@ -1,5 +1,18 @@
 # DESIGN.md
 
+## 2026-09-27 Metal geometry capacity contract
+
+When a public still-image request selects `.gpu`, the actual Metal executor
+preflights the final request-local geometry point set. If it exceeds 256 and
+has no row-restricted point, the facade executes the entire plan once through
+the CPU reference backend and adds
+`beauty.backend.cpuGeometryCapacityFallback = 1` to result metrics. In-limit
+requests have no such key. No point is dropped, strength changed, or second
+detector pass made. Row-restricted controls retain their existing Metal typed
+failure, and direct package-only Metal backend calls still reject over-capacity
+point payloads. This is a bounded execution choice, not a global proof that
+all admitted landmark shapes fit the Metal uniform.
+
 ## 2026-09-27 whole-face tilt contract
 
 `wholeFaceTilt` is signed with neutral zero and an effective cap of `±0.30`.

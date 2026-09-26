@@ -80,8 +80,12 @@ package = schema_text[schema_sources[4]]
 
 if "BeautyColorEffectPipeline.apply" in engine:
     raise SystemExit("facade directly dispatches a retained pipeline")
-if len(re.findall(r"BeautyBackendRequest", engine)) < 3 or len(re.findall(r"backendExecutor\.execute", engine)) != 3:
-    raise SystemExit("facade does not dispatch both input families through one executor")
+if len(re.findall(r"BeautyBackendRequest", engine)) < 3 or len(re.findall(r"backendExecutor\.execute", engine)) != 2:
+    raise SystemExit("facade does not dispatch admitted inputs through the backend boundary")
+if (engine.count("executeStillImageWithinGeometryBudget(request)") != 2
+        or "BeautyGeometryPointBudget.requiresCPU" not in engine
+        or "BeautyCPUBackend().execute(cpuRequest)" not in engine):
+    raise SystemExit("bounded still-image geometry capacity route is missing")
 if "BeautyCPUBackend" not in cpu or "BeautyBackendExecutor" not in cpu:
     raise SystemExit("CPU executor declaration is missing")
 if not re.search(r"package protocol\s+BeautyBackendExecutor", contract):

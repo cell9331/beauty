@@ -360,7 +360,7 @@ public final class BeautyEngine {
             canonicalImage: renderCarrier,
             compositionSummary: compositionSummary
         )
-        let backendResult = try backendExecutor.execute(request)
+        let (backendResult, usedCapacityFallback) = try executeStillImageWithinGeometryBudget(request)
         if let sRGB = CGColorSpace(name: CGColorSpace.sRGB) {
             localRetouchTestingHooks?.recordCanonicalRasterize(
                 carrier: renderCarrier,
@@ -370,7 +370,7 @@ public final class BeautyEngine {
         return withConfiguredResultMetadata(BeautyResult(
             output: try Self.stillImageOutput(from: backendResult),
             warnings: route.plan.warnings,
-            metrics: route.plan.metrics,
+            metrics: metrics(route.plan.metrics, usedCapacityFallback: usedCapacityFallback),
             detectionSummary: route.detectionSummary
         ), since: performanceStart)
     }
@@ -402,6 +402,40 @@ public final class BeautyEngine {
         )
     }
 
+    private func executeStillImageWithinGeometryBudget(
+        _ request: BeautyBackendRequest
+    ) throws -> (BeautyBackendResult, Bool) {
+        guard request.policy == .metal,
+              backendExecutor is BeautyMetalBackend,
+              let observation = request.selectedFaceSupport,
+              BeautyGeometryPointBudget.requiresCPU(
+                  plan: request.plan, observation: observation
+              )
+        else {
+            return (try backendExecutor.execute(request), false)
+        }
+        let cpuRequest = try BeautyBackendRequest(
+            policy: .cpu,
+            input: request.input,
+            metadata: request.metadata,
+            plan: request.plan,
+            renderQuality: request.renderQuality,
+            selectedFaceSupport: observation,
+            canonicalImage: request.canonicalImage,
+            compositionSummary: request.compositionSummary
+        )
+        return (try BeautyCPUBackend().execute(cpuRequest), true)
+    }
+
+    private func metrics(
+        _ original: [String: Double], usedCapacityFallback: Bool
+    ) -> [String: Double] {
+        guard usedCapacityFallback else { return original }
+        var result = original
+        result["beauty.backend.cpuGeometryCapacityFallback"] = 1
+        return result
+    }
+
     private func legacyStillImageResult(
         image: CIImage,
         metadata: BeautyInputMetadata,
@@ -424,11 +458,11 @@ public final class BeautyEngine {
             renderQuality: configuration.renderQuality,
             selectedFaceSupport: route.selectedFaceObservation
         )
-        let backendResult = try backendExecutor.execute(request)
+        let (backendResult, usedCapacityFallback) = try executeStillImageWithinGeometryBudget(request)
         return BeautyResult(
             output: try Self.stillImageOutput(from: backendResult),
             warnings: route.plan.warnings,
-            metrics: route.plan.metrics,
+            metrics: metrics(route.plan.metrics, usedCapacityFallback: usedCapacityFallback),
             detectionSummary: route.detectionSummary
         )
     }

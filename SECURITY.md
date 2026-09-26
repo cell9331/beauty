@@ -1,5 +1,13 @@
 # SECURITY.md
 
+## 2026-09-27 geometry capacity preflight
+
+The capacity decision reads only request-local validated face support and
+retains no point array. Its public evidence is a fixed numeric metric, never
+landmarks, masks, raw pixels or source paths. The CPU route uses the already
+admitted source and the same SDK-only backend contract; it adds no resource,
+model, network or external distribution boundary.
+
 ## 2026-09-27 whole-face tilt input boundary
 
 `wholeFaceTilt` consumes request-local selected-face bounds and contour

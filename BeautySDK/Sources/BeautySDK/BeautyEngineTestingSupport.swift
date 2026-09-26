@@ -233,6 +233,7 @@ private func phase91GazeObservation(
     case leftOnlyObservedEyebrow
     case rightOnlyObservedEyebrow
     case phase92PairedObservedEyebrows
+    case denseObservedEyebrows
     case phase92LeftOnlyObservedEyebrow
     case phase92RightOnlyObservedEyebrow
     case missingObservedEyebrows
@@ -436,6 +437,24 @@ private func phase91GazeObservation(
                         )
                     )
                 ]
+            case .denseObservedEyebrows:
+                func brow(_ left: Bool) -> [CoordinatePoint] {
+                    (0..<16).map { index in
+                        let progress = Double(index) / 15
+                        return CoordinatePoint(
+                            x: left ? 0.40 - 0.25 * progress : 0.60 + 0.25 * progress,
+                            y: 0.70 - 0.05 * (4 * progress * (1 - progress))
+                        )
+                    }
+                }
+                return [VisionDetectionObservation(
+                    stableID: "dense-brow-point-budget-fixture",
+                    confidence: 0.96,
+                    normalizedArea: 0.64,
+                    visionBounds: CoordinateRect(x: 0.10, y: 0.10, width: 0.80, height: 0.80),
+                    landmarks: .complete,
+                    observedEyebrowSupport: .init(left: brow(true), right: brow(false))
+                )]
             case .phase92LeftOnlyObservedEyebrow:
                 return [
                     VisionDetectionObservation(

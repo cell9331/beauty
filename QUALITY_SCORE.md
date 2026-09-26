@@ -1,5 +1,18 @@
 # QUALITY_SCORE.md
 
+## 2026-09-27 dense geometry capacity evidence
+
+An admitted 16-point paired-brow observation and 46 requested geometry controls
+produce 288 points, above Metal's 256-point bound. A public GPU-selected
+still-image request uses the capacity metric and renders exactly the same
+generated pixels as the CPU reference without dropping the controls; a later
+normal request has no fallback metric. Direct Metal still-image submission
+continues to return typed `invalidInput`, as does the retained row-protection
+case. Capacity, Metal geometry and backend routing focused suites pass
+`20/0/0`; backend-neutral, Metal feature/runtime and SDK-only static gates and
+their self-tests pass. Full archive-first no-skip remains to be run for this
+change.
+
 ## 2026-09-27 whole-face tilt generated marker probe
 
 The public in-memory `128×128` marker test fixes positive clockwise and

@@ -1,3 +1,5 @@
+import CoreGraphics
+import CoreImage
 import CoreVideo
 import Foundation
 import Metal
@@ -8,6 +10,65 @@ import BeautyRender
 @testable import BeautyEffects
 
 final class BeautyMetalGeometryPassTests: XCTestCase {
+    func testDensePublicSupportCanExceedMetalPointBudget() {
+        let (observation, face, plan) = densePublicGeometry()
+        XCTAssertEqual(face.observedEyebrowSupport?.left?.points.count, 16)
+        XCTAssertEqual(face.observedEyebrowSupport?.right?.points.count, 16)
+        XCTAssertNotNil(observation.observedEyebrowSupport)
+        let points = BeautyGeometryEffectPipeline.controlPoints(for: plan, face: face)
+        XCTAssertGreaterThan(points.count, BeautyMetalGeometryParameters.maximumPointCount)
+    }
+
+    func testDenseDirectMetalRequestRemainsTypedWhileFacadeCanRouteCPU() throws {
+        guard let runtime = makeRuntime() else { return }
+        let (observation, face, plan) = densePublicGeometry()
+        let points = BeautyGeometryEffectPipeline.controlPoints(for: plan, face: face)
+        XCTAssertGreaterThan(points.count, BeautyMetalGeometryParameters.maximumPointCount)
+        XCTAssertTrue(points.allSatisfy { $0.exclusiveMaximumY == nil })
+        XCTAssertTrue(BeautyGeometryPointBudget.requiresCPU(
+            plan: plan, observation: observation
+        ))
+        let fixture = geometryFixture(width: 64, height: 64)
+        let colorSpace = try XCTUnwrap(CGColorSpace(name: CGColorSpace.sRGB))
+        let image = CIImage(
+            bitmapData: Data(fixture.rgba8), bytesPerRow: fixture.width * 4,
+            size: CGSize(width: fixture.width, height: fixture.height),
+            format: .RGBA8, colorSpace: colorSpace
+        )
+        let metadata = BeautyInputMetadata(orientation: .up, source: .testFixture)
+        let request = try BeautyBackendRequest(
+            policy: .metal, input: .stillImage(image), metadata: metadata,
+            plan: plan, selectedFaceSupport: observation
+        )
+        XCTAssertThrowsError(try BeautyMetalBackend(runtime: runtime).execute(request)) {
+            XCTAssertEqual($0 as? BeautyError, .invalidInput)
+        }
+    }
+
+    private func densePublicGeometry() -> (BeautyFaceObservation, FaceGeometry, BeautyEffectPlan) {
+        func brow(_ left: Bool) -> [CoordinatePoint] {
+            (0..<16).map { index in
+                let progress = Double(index) / 15
+                return CoordinatePoint(
+                    x: left ? 0.42 - 0.20 * progress : 0.58 + 0.20 * progress,
+                    y: 0.34 + 0.04 * (4 * progress * (1 - progress))
+                )
+            }
+        }
+        let observation = BeautyFaceObservation(
+            imageBounds: .init(x: 0.1, y: 0.1, width: 0.8, height: 0.8),
+            landmarks: .complete,
+            observedEyebrowSupport: .init(left: brow(true), right: brow(false))
+        )
+        let face = BeautyFaceGeometryAdapter.makeGeometry(from: observation)
+        var parameters = BeautyParameters()
+        for row in geometryRows() where row.name != "noseRootNarrowing" {
+            parameters[keyPath: row.keyPath] = 0.8
+        }
+        let plan = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: face)
+        return (observation, face, plan)
+    }
+
     func testCombinedPointBudgetRejectsInsteadOfSilentlyDroppingGeometry() {
         let point = WarpControlPoint(
             source: SIMD2<Float>(0.4, 0.5),

@@ -1,5 +1,14 @@
 # PRODUCT_SENSE.md
 
+## 2026-09-27 dense geometry on a GPU-selected still image
+
+An owner-local host selecting `.gpu` can combine face controls even when a
+valid observed landmark shape yields more than 256 geometry points. The SDK
+renders that whole still-image plan on CPU and reports the fixed capacity
+metric. A generated 288-point double-brow case has source-exact CPU parity;
+the next ordinary request keeps the GPU route. Hosts should treat `.gpu` as
+a preferred execution route for this rare combination, not a latency promise.
+
 ## 2026-09-27 whole-face tilt owner-local control
 
 `3D塑颜 / 倾斜` has an independent `wholeFaceTilt` control. On an in-memory

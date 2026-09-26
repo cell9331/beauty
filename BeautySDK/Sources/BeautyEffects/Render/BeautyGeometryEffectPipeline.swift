@@ -2,6 +2,23 @@ import CoreGraphics
 import CoreImage
 import Foundation
 import BeautyCore
+import BeautyDetection
+import BeautyRender
+
+/// The public facade uses this aggregate-only preflight before a Metal
+/// still-image request. The retained shader stays strictly bounded at 256
+/// points; an over-capacity whole plan can run on the CPU reference route.
+package enum BeautyGeometryPointBudget {
+    package static func requiresCPU(
+        plan: BeautyEffectPlan,
+        observation: BeautyFaceObservation
+    ) -> Bool {
+        let face = BeautyFaceGeometryAdapter.makeGeometry(from: observation)
+        let points = BeautyGeometryEffectPipeline.controlPoints(for: plan, face: face)
+        return points.count > BeautyMetalGeometryParameters.maximumPointCount
+            && points.allSatisfy { $0.exclusiveMaximumY == nil }
+    }
+}
 
 enum BeautyGeometryEffectPipeline {
     static func controlPoints(for plan: BeautyEffectPlan, face: FaceGeometry) -> [WarpControlPoint] {

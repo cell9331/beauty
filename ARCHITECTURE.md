@@ -1,5 +1,16 @@
 # ARCHITECTURE.md
 
+## 2026-09-27 dense geometry capacity route
+
+The public still-image facade checks the aggregate selected-face point count
+before submitting to the retained Metal executor. A plan exceeding its
+256-point uniform capacity runs through the existing CPU reference executor
+with the same immutable plan, request-local observation and composed carrier.
+The Metal executor and shader remain strict and unchanged; construction and
+runtime errors are not retried. The public pixel-buffer path has no selected
+face support and retains its existing backend selection. A fixed aggregate
+result metric reports the capacity route, without exposing point coordinates.
+
 ## 2026-09-27 whole-face image-plane tilt
 
 `wholeFaceTilt` follows the existing public parameter, resolver, face-shape

@@ -1,5 +1,15 @@
 # RELIABILITY.md
 
+## 2026-09-27 dense geometry capacity recovery
+
+A 288-point admitted still-image combination no longer fails solely because
+the Metal uniform holds 256 points. The facade chooses the existing CPU
+reference executor before GPU submission; it never retries a failed Metal
+runtime call or silently truncates points. The CPU request remains subject to
+the admitted image-pixel limit. Direct Metal calls and row-restricted geometry
+retain their typed errors. GPU device throughput, large-image CPU time and
+energy are unmeasured; no performance qualification follows.
+
 ## 2026-09-27 whole-face tilt recovery
 
 Tilt is resolved per request from validated selected-face support. An absent

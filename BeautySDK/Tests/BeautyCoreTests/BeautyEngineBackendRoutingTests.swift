@@ -1,8 +1,11 @@
+import CoreGraphics
 import CoreImage
 import CoreVideo
+import Foundation
 import XCTest
 import BeautyCore
-@testable import BeautySDK
+import BeautyDetection
+@_spi(Testing) @testable import BeautySDK
 @testable import BeautyEffects
 
 final class BeautyEngineBackendRoutingTests: XCTestCase {
@@ -338,5 +341,89 @@ private final class CallCounter: @unchecked Sendable {
         lock.lock()
         storage += 1
         lock.unlock()
+    }
+}
+
+final class BeautyMetalGeometryCapacityTests: XCTestCase {
+    func testPublicDenseGeometryPreservesAllControlsViaCPUCapacityPath() throws {
+        let width = 64
+        let height = 64
+        let colorSpace = try XCTUnwrap(CGColorSpace(name: CGColorSpace.sRGB))
+        let source = (0..<(width * height)).flatMap { index -> [UInt8] in
+            let x = index % width
+            let y = index / width
+            return [UInt8((x * 7 + y * 3) % 256), UInt8((x * 2 + y * 5) % 256),
+                    UInt8((x * 11 + y * 13) % 256), 255]
+        }
+        let image = CIImage(
+            bitmapData: Data(source), bytesPerRow: width * 4,
+            size: CGSize(width: width, height: height), format: .RGBA8,
+            colorSpace: colorSpace
+        )
+        let metadata = BeautyInputMetadata(orientation: .up, source: .testFixture)
+        let fields = [
+            "faceSlim", "faceSmall", "wholeFaceYPosition", "wholeFaceXPosition", "wholeFaceTilt",
+            "faceVShape", "jawSlim", "chinLength", "faceContourSmooth", "templeFullness",
+            "cheekboneSlim", "chinTaper", "eyeSize", "eyeDistance", "eyeYPosition",
+            "eyeTailLift", "eyeHeight", "eyeLength", "upperEyelidLift", "pupilSize",
+            "gazeCorrection", "lowerEyelidDrop", "eyeTilt", "innerCornerOpen",
+            "outerCornerOpen", "eyeSymmetry", "eyebrowYPosition", "eyebrowThickness",
+            "eyebrowLength", "eyebrowSpacing", "eyebrowHeadSpacing", "eyebrowTilt",
+            "eyebrowPeakDefinition", "noseSlim", "noseWingSlim", "noseTipSize",
+            "noseBridge", "noseTipLift", "mouthSize", "mouthWidth", "smile",
+            "mouthYPosition", "mouthTilt", "mouthXPosition", "lipPeakDefinition", "lipPlump",
+        ]
+        var encoded = try XCTUnwrap(JSONSerialization.jsonObject(
+            with: JSONEncoder().encode(BeautyParameters())
+        ) as? [String: Any])
+        for field in fields { encoded[field] = 0.8 }
+        let parameters = try JSONDecoder().decode(
+            BeautyParameters.self, from: JSONSerialization.data(withJSONObject: encoded)
+        )
+        func engine(_ backend: BeautyRenderBackend) throws -> BeautyEngine {
+            let provider = SDKTestingFaceDetectionProvider([.denseObservedEyebrows])
+            let executor: BeautyBackendExecutor = backend == .gpu
+                ? try BeautyMetalBackend() : BeautyCPUBackend()
+            return try BeautyEngine(
+                configuration: BeautyConfiguration(renderBackend: backend),
+                faceDetector: VisionFaceDetector(
+                    observationProvider: provider.makeObservationProvider()
+                ),
+                backendExecutor: executor
+            )
+        }
+        let cpu = try engine(.cpu)
+        let gpu: BeautyEngine
+        do {
+            gpu = try engine(.gpu)
+        } catch BeautyError.metalUnavailable {
+            return
+        }
+        let expected = try cpu.processResult(image: image, metadata: metadata, parameters: parameters)
+        let actual = try gpu.processResult(image: image, metadata: metadata, parameters: parameters)
+        func bytes(_ output: CIImage) -> [UInt8] {
+            var pixels = [UInt8](repeating: 0, count: source.count)
+            CIContext().render(
+                output, toBitmap: &pixels, rowBytes: width * 4,
+                bounds: image.extent, format: .RGBA8, colorSpace: colorSpace
+            )
+            return pixels
+        }
+        XCTAssertEqual(actual.output.extent, image.extent)
+        let actualBytes = bytes(actual.output)
+        XCTAssertEqual(actualBytes, bytes(expected.output))
+        XCTAssertNotEqual(actualBytes, source)
+        XCTAssertNil(expected.metrics["beauty.backend.cpuGeometryCapacityFallback"])
+        XCTAssertEqual(actual.metrics["beauty.backend.cpuGeometryCapacityFallback"], 1,
+                       "aggregate metrics: \(actual.metrics)")
+        XCTAssertTrue(stride(from: 3, to: source.count, by: 4).allSatisfy {
+            actualBytes[$0] == 255
+        })
+        let recovered = try gpu.processResult(
+            image: image, metadata: metadata,
+            parameters: BeautyParameters(faceSmall: 0.3)
+        )
+        XCTAssertNil(recovered.metrics["beauty.backend.cpuGeometryCapacityFallback"])
+        XCTAssertEqual(recovered.output.extent, image.extent)
     }
 }
