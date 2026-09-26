@@ -1,5 +1,15 @@
 # QUALITY_SCORE.md
 
+## 2026-09-26 whole-face horizontal generated marker probe
+
+The public in-memory `128×128` opaque sRGB marker moves over one pixel right
+and left at the signed cap. The four-direction and input-mirror metadata
+matrix keeps the signed pair distinct, with exact exterior, extent and alpha.
+Neutral, repeated, no-face and typed pixel-limit failure/recovery pass `4/0/0`.
+The focused parameter, renderer, resource, provider and current Metal point
+inventory suite passes `137/0/0`; post-archive SDK boundary passes. The full
+archive-first no-skip gate passes `984/0/0`, eight opt-ins, zero skips.
+
 ## 2026-09-26 encoded byte-limit focused evidence
 
 A generated in-memory `32×32` PNG at the exact configured byte limit produces

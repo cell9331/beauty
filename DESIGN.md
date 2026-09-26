@@ -1,5 +1,16 @@
 # DESIGN.md
 
+## 2026-09-26 whole-face horizontal image contract
+
+`wholeFaceXPosition` is a signed public field with neutral zero and effective
+cap `±0.30`. Positive moves the selected face area right in canonical image
+coordinates, negative left. One point centered on the selected face moves by
+at most `0.035 × face width`; radius is `0.60 × max(face width, face height)`
+within unit bounds. Missing or invalid face contour exits unchanged, and
+combined geometry uses the existing conflict scale. Orientation and input
+mirror are request metadata. This is bounded 2D image-space displacement,
+not a depth or three-dimensional mesh claim.
+
 ## 2026-09-26 encoded input byte-limit contract
 
 `maximumInputByteCount` is now enforced by the new owner-local

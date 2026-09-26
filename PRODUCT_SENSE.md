@@ -1,5 +1,13 @@
 # PRODUCT_SENSE.md
 
+## 2026-09-26 owner-local horizontal face control
+
+`3D塑颜 / 左右` now has an independent `wholeFaceXPosition` owner-local control.
+Positive and negative strengths move a generated face marker in opposite
+horizontal directions while leaving distant background and alpha unchanged.
+The taxonomy remains `partial` until broader portrait evidence exists; the
+result does not establish a depth effect or commercial visual quality.
+
 ## 2026-09-26 owner-local encoded image entry
 
 The local host can now pass one encoded still image as in-memory `Data` to

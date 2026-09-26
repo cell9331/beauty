@@ -1,5 +1,12 @@
 # ARCHITECTURE.md
 
+## 2026-09-26 whole-face horizontal image control
+
+The owner-local `wholeFaceXPosition` field follows the existing public
+parameter, resolver, face-shape provider, and unified CPU/Metal geometry
+point route. It adds one bounded point only when the selected face has valid
+contour support; there is no new target, shader, depth input, or model.
+
 ## 2026-09-26 encoded still-image facade
 
 `BeautyEngine.processResult(encodedImageData:metadata:parameters:)` decodes

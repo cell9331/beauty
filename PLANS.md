@@ -48,6 +48,8 @@
 - [ ] 3D 塑颜：分别定义并实现「对称」「上下」「左右」「倾斜」四项中性整体几何控制。
   - 首项「上下」候选契约：公开 `wholeFaceYPosition` 签名强度，零值源图一致；正值在图像坐标中向下、负值向上。使用已选人脸的有界局部像素变形，不宣称深度/三维网格。生成脸部标记正反方向须沿期望方向移动至少 1 像素，图像远背景与 alpha 保持，缺失/无效人脸按现有 face-shape 规则退出；方向镜像、元数据、重复性、组合和 typed failure 按公开 SDK 路径验收。若所有者要求真正三维效果，替换此候选契约，不用二维结果冒充。
   - 进行中：`wholeFaceYPosition` 已接入公开参数、解析、冲突缩放和 face-shape 点，正负两项 renderer case。公开生成标记 `4/0/0`，含参数/Codable、正反方向、四方向×输入镜像、neutral、repeat、extent、远背景/alpha、无脸和 typed failure/recovery；provider `19/0/0`、Metal 几何 `7/0/0` 覆盖有界点及当前 45 行组合；post-archive SDK 边界通过。首次完整 no-skip 发现九项旧 62/75 当前清单断言，已保留 Phase 95 冻结投影并修正当前清单，相关聚焦 `55/0/0`；最终完整 no-skip `977/0/0`、8 opt-in、0 skip，archive-first 及所有专项通过。当前只对这组二维像素授予方向证据，taxonomy 标为 `partial`；更多肖像仍待验收。
+  - 「左右」候选契约：`wholeFaceXPosition` 为独立签名强度，零值源图一致；正值在图像坐标中向右、负值向左。仅对已选人脸执行有界二维局部位移，不能称为深度或三维网格。先固定生成标记的正反方向至少 1 像素、远背景/alpha/extent、四方向和输入镜像、neutral/repeat、无脸退出及 typed failure/recovery；参数、Codable、冲突缩放、Metal 点预算和 renderer inventory 均须回归。更多肖像验收前 taxonomy 最多 `partial`。
+  - 进行中：新增公开字段、解析/冲突缩放、face-shape 有界水平点与正负 renderer case。实现前公开测试因字段不存在按预期编译失败；实现后新公开像素 `4/0/0`。当前清单的 40 条失败均来自旧 63 字段或 77 renderer case 数量断言，已按 64/79 现行数量修正并保留 Phase 95 的 62 字段冻结投影；参数、renderer、资源、provider 和当前 Metal 点组合聚焦 `137/0/0`，post-archive SDK boundary 通过。首次完整门禁在遗漏的配置测试旧 63 字段断言停止，补正后配置专项 `20/0/0`；最终完整 archive-first no-skip `984/0/0`、8 opt-in、0 skip。taxonomy 保留 `partial`，更多肖像仍待验收。
 - [ ] 比例：分别定义并实现「头包脸」「颅顶」「额头」「中庭」「人中」「下庭」「短脸」七项控制。
 - [ ] 脸型：分别定义并实现「去双下巴」「去双下巴 Pro」「发际线」三项局部效果，先确认合用的 request-local 语义支撑与资源授权。
 - [ ] 每项效果经公开输入/输出像素与元数据验收后更新 taxonomy、产品/设计/安全/可靠性 owner；最终运行 archive-first 完整 no-skip SwiftPM 门禁。

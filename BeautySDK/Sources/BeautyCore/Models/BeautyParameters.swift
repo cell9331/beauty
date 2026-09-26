@@ -75,6 +75,9 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
     /// Signed bounded image-space translation of the selected whole-face area.
     /// Positive values move downward in the canonical image coordinate space.
     public var wholeFaceYPosition: Float
+    /// Signed bounded image-space translation of the selected whole-face area.
+    /// Positive values move rightward in the canonical image coordinate space.
+    public var wholeFaceXPosition: Float
 
     enum CodingKeys: String, CodingKey {
         case skinSmoothing
@@ -140,6 +143,7 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
         case scleraRednessReduction
         case upperEyelidFullnessReduction
         case wholeFaceYPosition
+        case wholeFaceXPosition
     }
 
     public init(
@@ -205,7 +209,8 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
         teethWhitening: Float = 0,
         scleraRednessReduction: Float = 0,
         upperEyelidFullnessReduction: Float = 0,
-        wholeFaceYPosition: Float = 0
+        wholeFaceYPosition: Float = 0,
+        wholeFaceXPosition: Float = 0
     ) {
         self.skinSmoothing = Self.clampUnit(skinSmoothing)
         self.skinWhitening = Self.clampUnit(skinWhitening)
@@ -277,6 +282,7 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
         self.scleraRednessReduction = Self.clampUnit(scleraRednessReduction)
         self.upperEyelidFullnessReduction = Self.clampUnit(upperEyelidFullnessReduction)
         self.wholeFaceYPosition = Self.clampSigned(wholeFaceYPosition)
+        self.wholeFaceXPosition = Self.clampSigned(wholeFaceXPosition)
     }
 
     public init(from decoder: Decoder) throws {
@@ -344,7 +350,8 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
             teethWhitening: try container.decodeFloatIfPresent(.teethWhitening),
             scleraRednessReduction: try container.decodeFloatIfPresent(.scleraRednessReduction),
             upperEyelidFullnessReduction: try container.decodeFloatIfPresent(.upperEyelidFullnessReduction),
-            wholeFaceYPosition: try container.decodeFloatIfPresent(.wholeFaceYPosition)
+            wholeFaceYPosition: try container.decodeFloatIfPresent(.wholeFaceYPosition),
+            wholeFaceXPosition: try container.decodeFloatIfPresent(.wholeFaceXPosition)
         )
     }
 
@@ -412,7 +419,8 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
             teethWhitening: teethWhitening,
             scleraRednessReduction: scleraRednessReduction,
             upperEyelidFullnessReduction: upperEyelidFullnessReduction,
-            wholeFaceYPosition: wholeFaceYPosition
+            wholeFaceYPosition: wholeFaceYPosition,
+            wholeFaceXPosition: wholeFaceXPosition
         )
     }
 

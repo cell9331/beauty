@@ -1,5 +1,12 @@
 # RELIABILITY.md
 
+## 2026-09-26 whole-face horizontal recovery
+
+The signed horizontal face point is absent for missing or malformed face
+support; a later valid request still produces the requested direction. The
+existing combined-strength scale and Metal geometry point validation apply.
+Neutral input is source exact; repeated valid requests are deterministic.
+
 ## 2026-09-26 encoded input failure and recovery
 
 The encoded `Data` facade performs bounded byte and pixel preflight, then

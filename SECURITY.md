@@ -1,5 +1,12 @@
 # SECURITY.md
 
+## 2026-09-26 whole-face horizontal bounds
+
+`wholeFaceXPosition` uses only the request-local selected-face geometry,
+finite unit-bounded coordinates, a capped displacement and one bounded warp
+point. Invalid contour or target support fails closed without retaining
+landmarks, masks, pixels or private fixture locations.
+
 ## 2026-09-26 encoded input admission
 
 The new in-memory encoded still-image entry checks `Data.count` before any

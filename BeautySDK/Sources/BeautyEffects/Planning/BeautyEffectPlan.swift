@@ -39,6 +39,7 @@ public struct BeautyEffectiveStrengths: Equatable, Sendable {
     public var faceSlim: Float = 0
     public var faceSmall: Float = 0
     public var wholeFaceYPosition: Float = 0
+    public var wholeFaceXPosition: Float = 0
     public var faceVShape: Float = 0
     public var jawSlim: Float = 0
     public var chinLength: Float = 0
