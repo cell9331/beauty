@@ -1,5 +1,57 @@
 # QUALITY_SCORE.md
 
+## 2026-09-27 active qualification verification
+
+The current checkout passes the archive-first no-skip gate: `1037/0/0`, all
+eight opt-ins executed, zero skips, and SDK-owned archive, boundary, backend,
+Metal, consumer and CPU-reference checks passed. The result verifies the
+implemented two-dimensional and texture contracts. It does not close the 15
+partial effects' feature-specific portrait semantics or the provisional
+upper-eyelid visual gap recorded below.
+
+## 2026-09-27 upper-eyelid generated source admission
+
+A new frozen 1145×1374 generated positive/negative pair yields one usable
+selected face per image and exact neutral/repeated output. Both eyes on both
+images fail the existing semantic approval and remain source-exact, so the
+predeclared positive effect oracle correctly fails at `0/0` changed upper-lid
+targets. The source pair lacks a clean positive-versus-negative residual
+separation: the positive means are negative and a negative eye has the larger
+localized score. No threshold, algorithm, or claim was changed to force a
+pass. This pair is diagnostic only; the provisional visual-quality gap remains.
+
+## 2026-09-27 image-plane portrait schematic coverage
+
+Two code-generated 128×128 portrait schematics with distinct skin values,
+hair cap, eye/nose/mouth features and source-fixed region markers now exercise
+all 15 partial controls through public still-image pixels. Head-boundary cases
+pass `1/0/0`; the whole-face, vertical-proportion, chin and symmetry group
+passes `3/0/0`. Direction, exterior/alpha/extent, neutral, repeat and no-face
+assertions complement the existing per-control provider, orientation/mirror,
+Codable and typed-failure tests. These schematic marker results do not prove
+3D structure, hair segmentation, submental fat removal or broad portrait
+naturalness; taxonomy remains `partial` pending feature-specific semantic
+evidence.
+
+The frozen natural-style generated pair was also rendered for all 15 controls
+as a source-suitability diagnostic. Both images preserved alpha and distant
+background. Thirteen cases changed pixels on both; symmetry was source-exact
+on the designated positive and changed the negative, while face shortening
+was source-exact on both. The pair was not source-qualified for asymmetry or
+face-height eligibility before rendering, and changed-pixel counts are not
+semantic acceptance. No taxonomy promotion is credited from this batch.
+
+## 2026-09-27 in-face saturated decoration regression
+
+A frozen code-generated 7×7 high-chroma warm decoration inside one cheek
+initially changed all nine checked core pixels under both smoothing and
+sharpening. A conservative source-RGB upper-chroma guard makes that core
+source-exact while the opposite cheek still changes; alpha and repeated
+outputs remain exact. The existing generated texture suite passes `12/0/0`;
+the new decoration regression passes `1/0/0`.
+This distinguishes the tested saturation band only and does not establish
+semantic skin segmentation or protection of skin-colored objects.
+
 ## 2026-09-27 face-bounded texture regression
 
 Generated public still-image tests use an injected request-local face and
@@ -971,8 +1023,8 @@ launch, external distribution, or release-readiness authority.
 | --- | ---: | --- | --- |
 | Root owners | 4 | Current contracts consistently name SDK-only SwiftPM ownership and archive-only UI history. | Keep owners synchronized with code/tests. |
 | SDK package | 4 | One public library, one SDK-owned renderer, six internal/library targets, no remote dependency. | Preserve facade and dependency direction. |
-| Tests | 4 | 81 SwiftPM test files including public upper-eyelid facade pixel/metadata/failure coverage; historical gate counts remain labeled historical. | Preserve deterministic pixel/metadata oracles; physical-iPhone feedback is optional and non-blocking. |
-| Repository consumer / CLI | 4 | Public-surface-only local-path fixture observes generated RGBA bytes/dimensions; compiled renderer covers 75-case discovery, reconciled reports, typed failures, and render/encode seams. | Preserve archive → boundary → consumer → no-skip ordering. |
+| Tests | 4 | 133 SwiftPM test files including public upper-eyelid facade pixel/metadata/failure coverage; historical gate counts remain labeled historical. | Preserve deterministic pixel/metadata oracles; physical-iPhone feedback is optional and non-blocking. |
+| Repository consumer / CLI | 4 | Public-surface-only local-path fixture observes generated RGBA bytes/dimensions; compiled renderer covers 99-case discovery, reconciled reports, typed failures, and render/encode seams. | Preserve archive → boundary → consumer → no-skip ordering. |
 | Archive integrity | 4 | Code-owned ZIP/manifest anchors, exact 45/26 inventories, bounded streamed extraction, frozen-retirement rollback, and safe restore self-tests pass. | Verify before every full closeout. |
 | SDK-only boundary | 4 | Retired roots are absent; scanner rejects symlinks, restored application/UI sources, stale current owners/maps, tracked media, application artifacts, retained-shader drift, and backend/API drift. | Keep scanner fail-closed. |
 | Security | 4 | Local-first input/resource/privacy and request-local local-retouch ownership are test-backed. | Reopen for any new trust boundary. |
@@ -991,14 +1043,14 @@ are excluded by the owner-only distribution contract.
 
 | Inventory | Value |
 | --- | ---: |
-| Swift source files | 76 |
-| SwiftPM test files | 81 |
-| Swift source lines | 18,857 |
-| SwiftPM test lines | 36,008 |
-| Public `BeautyParameters` stored fields | 62 |
+| Swift source files | 80 |
+| SwiftPM test files | 133 |
+| Swift source lines | 22,501 |
+| SwiftPM test lines | 50,239 |
+| Public `BeautyParameters` stored fields | 77 |
 | `BeautyConfiguration` stored fields | 11 |
 | Built-in neutral presets | 5 |
-| Renderer cases | 75 |
+| Renderer cases | 99 |
 | Documented mandatory opt-ins | 8 |
 | Legacy archive bundles | 2 |
 

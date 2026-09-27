@@ -1,24 +1,27 @@
 # Beauty
 
-## Current effect-image policy (2026-09-24)
+## Current effect-image policy (2026-09-27)
 
 The owner permits [generated portrait effect acceptance](../docs/IMAGE_EFFECT_ACCEPTANCE.md).
 For current and future SDK work, genuine human portraits are optional, not a
-completion, taxonomy, or next-milestone gate. `faceContourSmooth` still needs
-a convincing rough-positive/smooth-negative direction and protection oracle;
-both inputs may be generated. Earlier genuine-bundle requirements and signed
-receipts below describe their dated historical scope and do not govern new
-effect qualifications. No device, population, or commercial claim follows.
+completion, taxonomy, or next-milestone gate. The later FACE-01 repair passed
+predeclared generated-portrait positive/negative direction and protection
+oracles; `faceContourSmooth` is now `implemented` at the bounded owner-local
+SDK scope in the [current taxonomy](../docs/SDK_EFFECT_TAXONOMY.md). Earlier
+genuine-bundle requirements and signed receipts below describe their dated
+historical scope and do not govern new effect qualifications. No device,
+population, or commercial claim follows.
 
-Current work (2026-09-24): [v1.24 去脂效果改进](V1.24-UPPER-EYELID-CURRENT.md)
-is completed for a bounded generated-input pixel improvement. No next
-milestone is active.
-The separately authorized [v1.23 FACE-01 contour follow-up](V1.23-FACE01-CURRENT.md)
-has a completed synthetic-mechanics-only receipt. A qualified contour-effect
-positive/negative demonstration remains open under FUTURE-04; taxonomy stays
-`partial` for lack of that effect evidence, not for lack of genuine images.
-The v1.22 completion statements below describe their historical signed
-snapshot and later mapping-follow-up qualification.
+Current work (2026-09-27): the completed owner-local remaining-effects record
+in [`PLANS.md`](../PLANS.md) reached 77 parameter fields, 99 renderer cases
+and a 1032/0/0 archive-first no-skip gate. The active qualification follow-up
+in that ledger addresses the remaining evidence and documentation gaps.
+Fifteen taxonomy rows remain `partial` for their stated image-plane/semantic
+limits. The completed
+[v1.24 去脂效果改进](V1.24-UPPER-EYELID-CURRENT.md) and
+[v1.23 FACE-01 contour follow-up](V1.23-FACE01-CURRENT.md) retain their
+original narrower receipts. The v1.22 completion statements below describe
+their historical signed snapshot and later mapping-follow-up qualification.
 
 v1.22 completed 2026-09-23: 7/7 phases, 33/33 plans, 11/11 active requirements; [verified COMPLETE](phases/95-compatibility-and-sdk-only-closeout/95-COMPLETE.json).
 Actual portrait: 65/65 outputs, 2 reconciled runs, seven effective directions and one deferred/partial direction. Current safety 1/0/0, compatibility 4/0/0, archive-first full SwiftPM 937/0/0; all 8 opt-ins accounted for.
@@ -206,7 +209,7 @@ gate passes 800/0/0. The missing genuine evidence is the explicit reason for
 `mechanics-only-not-promotion`, exact 61/5/74 public absence, `去脂 = future`,
 and `眼睛 = partial`.
 
-## Current State
+## Historical v1.22 state (2026-09-23)
 
 **Latest completed milestone:** v1.22 Non-Local Facial Effect Repairs,
 completed 2026-09-23 at its signed Phase95 snapshot. The later face-mapping

@@ -11,6 +11,10 @@ coarse face-relative eye/lid and lip rectangles are now excluded, while
 non-skin content elsewhere inside it may still qualify for the existing
 color and edge filter. No feature mask, model, weight, network, or external
 distribution path is added.
+The source-RGB admission also rejects strongly saturated warm pixels using
+fixed per-channel bounds. A generated cheek decoration negative is exact for
+both texture controls while an opposite cheek target changes. Skin-colored
+non-skin content remains outside this guard's distinguishable scope.
 
 ## 2026-09-27 vertical proportion input boundary
 
