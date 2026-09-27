@@ -59,7 +59,10 @@ normalize to `-1...1`; `filterId` is an optional logical resource identifier.
 `skinSmoothing` and `skinSharpen` now use a bounded spatial luminance-detail
 filter on admitted opaque, low-contrast neighborhoods. Generated skin-colored
 cheek and soft-edge positives, flat negatives, and protected facial features
-pass owner-local public-pixel tests. This is not face segmentation or a claim
+pass owner-local public-pixel tests. The 2026-09-27 public route additionally
+requires a fresh selected face and confines texture to a conservative interior
+ellipse; generated cool and warm background negatives stay source-exact, and
+no-face texture requests fail closed. This is not skin segmentation or a claim
 about all real skin, hair, devices, or commercial visual quality. The four
 skin-control fields and their caps are unchanged.
 

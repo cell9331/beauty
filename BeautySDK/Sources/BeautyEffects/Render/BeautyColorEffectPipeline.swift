@@ -14,7 +14,8 @@ public enum BeautyColorEffectPipeline {
 
     static func apply(
         to pixelBuffer: CVPixelBuffer, plan: BeautyEffectPlan,
-        renderQuality: BeautyRenderQuality = .balanced, face: FaceGeometry?
+        renderQuality: BeautyRenderQuality = .balanced, face: FaceGeometry?,
+        textureFaceBounds: CoordinateRect? = nil
     ) throws -> CVPixelBuffer {
         let width = CVPixelBufferGetWidth(pixelBuffer)
         let height = CVPixelBufferGetHeight(pixelBuffer)
@@ -65,7 +66,8 @@ public enum BeautyColorEffectPipeline {
         let outputBytesPerRow = CVPixelBufferGetBytesPerRow(output)
         let bytesPerPixel = 4
         let textureBytes: [UInt8]?
-        if BeautySkinTexturePipeline.isActive(plan) {
+        if BeautySkinTexturePipeline.isActive(plan),
+           BeautySkinTexturePipeline.admits(faceBounds: textureFaceBounds) {
             var packed = [UInt8](repeating: 0, count: width * height * 4)
             for row in 0..<height {
                 let sourceRow = sourceBase.advanced(by: row * sourceBytesPerRow).assumingMemoryBound(to: UInt8.self)
@@ -80,7 +82,7 @@ public enum BeautyColorEffectPipeline {
             }
             textureBytes = BeautySkinTexturePipeline.applyRGBA(
                 packed, width: width, height: height, plan: plan,
-                renderQuality: renderQuality
+                renderQuality: renderQuality, faceBounds: textureFaceBounds
             )
         } else {
             textureBytes = nil
@@ -135,7 +137,8 @@ public enum BeautyColorEffectPipeline {
         selectedFaceObservation: BeautyFaceObservation?
     ) -> CIImage {
         let face = selectedFaceObservation.map(BeautyFaceGeometryAdapter.makeGeometry(from:))
-        return apply(to: image, plan: plan, renderQuality: renderQuality, face: face)
+        return apply(to: image, plan: plan, renderQuality: renderQuality,
+                     face: face, textureFaceBounds: selectedFaceObservation?.imageBounds)
     }
 
     package static func apply(
@@ -150,7 +153,8 @@ public enum BeautyColorEffectPipeline {
             to: canonicalImage.ciImage,
             plan: plan,
             renderQuality: renderQuality,
-            face: face
+            face: face,
+            textureFaceBounds: selectedFaceObservation?.imageBounds
         )
 
         if let face {
@@ -168,10 +172,12 @@ public enum BeautyColorEffectPipeline {
 
     static func apply(
         to image: CIImage, plan: BeautyEffectPlan,
-        renderQuality: BeautyRenderQuality = .balanced, face: FaceGeometry?
+        renderQuality: BeautyRenderQuality = .balanced, face: FaceGeometry?,
+        textureFaceBounds: CoordinateRect? = nil
     ) -> CIImage {
         var output = applyColorEffects(
-            to: image, plan: plan, renderQuality: renderQuality, face: face
+            to: image, plan: plan, renderQuality: renderQuality,
+            face: face, textureFaceBounds: textureFaceBounds
         )
 
         if let face {
@@ -185,10 +191,12 @@ public enum BeautyColorEffectPipeline {
         to image: CIImage,
         plan: BeautyEffectPlan,
         renderQuality: BeautyRenderQuality,
-        face: FaceGeometry?
+        face: FaceGeometry?,
+        textureFaceBounds: CoordinateRect?
     ) -> CIImage {
         var output = BeautySkinTexturePipeline.apply(
-            to: image, plan: plan, renderQuality: renderQuality
+            to: image, plan: plan, renderQuality: renderQuality,
+            faceBounds: textureFaceBounds
         )
 
         if plan.hasVisibleColorOutput {

@@ -20,7 +20,9 @@ extension BeautyEngine {
         skipDetectionForInterval: Bool = false
     ) -> BeautyEngineGeometryRoute {
         let requiresFaceGeometry = BeautyEffectResolver.requiresFaceGeometry(parameters: parameters)
-        guard requiresFaceGeometry || requiresLocalSupport else {
+        let normalized = parameters.normalized()
+        let requiresTextureSupport = normalized.skinSmoothing > 0 || normalized.skinSharpen > 0
+        guard requiresFaceGeometry || requiresLocalSupport || requiresTextureSupport else {
             return BeautyEngineGeometryRoute(
                 plan: BeautyEffectResolver.resolve(parameters: parameters),
                 detectionSummary: initialDetectionSummary,
@@ -69,7 +71,7 @@ extension BeautyEngine {
         case (false, true):
             purpose = .localSupport
         case (false, false):
-            preconditionFailure("detection purpose requires geometry or local support")
+            purpose = .geometry
         }
 
         let detection = faceDetector.detect(

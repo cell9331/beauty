@@ -95,20 +95,39 @@ public final class BeautyEngine {
             width: CVPixelBufferGetWidth(pixelBuffer),
             height: CVPixelBufferGetHeight(pixelBuffer)
         ) else { throw BeautyError.invalidInput }
-        let plan = BeautyEffectResolver.resolve(parameters: validated)
+        let normalized = validated.normalized()
+        let needsTextureFace = normalized.skinSmoothing > 0 || normalized.skinSharpen > 0
+        let textureDetection: VisionFaceDetectionResult? = needsTextureFace
+            ? faceDetector.detect(
+                image: CIImage(cvPixelBuffer: pixelBuffer),
+                metadata: metadata,
+                imageExtent: CGSize(
+                    width: CVPixelBufferGetWidth(pixelBuffer),
+                    height: CVPixelBufferGetHeight(pixelBuffer)
+                ),
+                configuration: configuration,
+                purpose: .geometry
+            ) : nil
+        let plan = needsTextureFace && !BeautyEffectResolver.requiresFaceGeometry(parameters: validated)
+            ? BeautyEffectResolver.resolve(
+                parameters: validated,
+                selectedFaceObservation: textureDetection?.observations.first
+            )
+            : BeautyEffectResolver.resolve(parameters: validated)
         let request = try BeautyBackendRequest(
             policy: backendPolicy,
             input: .pixelBuffer(pixelBuffer),
             metadata: metadata,
             plan: plan,
-            renderQuality: configuration.renderQuality
+            renderQuality: configuration.renderQuality,
+            textureFaceBounds: textureDetection?.observations.first?.imageBounds
         )
         let backendResult = try backendExecutor.execute(request)
         return withConfiguredResultMetadata(BeautyResult(
             output: try Self.pixelBufferOutput(from: backendResult),
             warnings: plan.warnings,
             metrics: plan.metrics,
-            detectionSummary: initialDetectionSummary
+            detectionSummary: textureDetection?.summary ?? initialDetectionSummary
         ), since: performanceStart)
     }
 
@@ -442,6 +461,7 @@ public final class BeautyEngine {
             plan: request.plan,
             renderQuality: request.renderQuality,
             selectedFaceSupport: observation,
+            textureFaceBounds: request.textureFaceBounds,
             canonicalImage: request.canonicalImage,
             compositionSummary: request.compositionSummary
         )

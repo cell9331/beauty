@@ -49,9 +49,13 @@ are checked. Taxonomy remains `partial` pending broader portrait acceptance.
 ## 2026-09-27 texture protection and size limit
 
 On generated portraits with lighter or deeper skin, smoothing and sharpening
-still change cheek texture while a cool low-contrast background stays exact.
-The SDK continues to operate without an anatomical skin mask, so warm
-non-face texture can still change. A texture request above 8,388,608 pixels
+still change cheek texture while cool and warm low-contrast backgrounds outside
+the selected face stay exact. Texture now requests fresh face detection on
+still images and pixel buffers, and exits unchanged without usable support;
+other color controls remain available. The conservative face-interior ellipse
+is not anatomical skin segmentation, so similarly colored non-skin content
+inside that envelope remains a quality limitation. A texture request above
+8,388,608 pixels
 now fails typed before processing; the same engine accepts a later small
 request. Owners can process a larger image without these texture controls or
 provide a smaller input. No device throughput or total-memory claim follows.
@@ -144,8 +148,9 @@ The new indexed camera/video CIImage entry accepts `frameIndex ≥ 0`. With
 `detectionFrameInterval = n`, face-dependent effects request detection on
 indices divisible by `n`; intervening frames return a skipped detection
 summary with the fixed `detectionInterval` reason and leave those effects off.
-Color and texture controls continue. Unindexed still-image calls continue to
-detect each time. This explicit cadence is suitable only when a host accepts
+Other color controls continue; texture is source-exact on skipped frames
+because it requires fresh face support. Unindexed still-image calls continue
+to detect each time. This explicit cadence is suitable only when a host accepts
 the visible fail-closed gaps; it does not interpolate or reuse face positions.
 
 ## 2026-09-26 preferred Vision detection size
@@ -164,7 +169,7 @@ high-frequency cheek positive, smoothing increases in that order. A neutral
 request and other controls do not change with this setting. The names describe
 the neighborhood choice, not measured device speed or broad portrait quality.
 
-`skinSmoothing` now reduces fine luminance variation in an admitted opaque
+At this dated stage, `skinSmoothing` reduced fine luminance variation in an admitted opaque
 neighborhood; `skinSharpen` increases a moderate soft-edge gradient. A uniform
 color stays uniform, and hard color boundaries are guarded. The owner-local
 public still-image tests use code-generated textured and flat cheek regions,
@@ -172,9 +177,10 @@ soft-edge positives, and a portrait-like source with eyes, hair, mouth and
 background protections. They assert effect direction, neutral identity,
 repeatability, extent, orientation/mirroring, sRGB and Display P3 behavior,
 alpha, and typed pixel-limit recovery. CPU and Metal-selected buffer/still
-outputs meet the generated pixel-delta contract. These controls do not detect
-skin or promise an anatomical mask; low-contrast non-face texture may also
-change. No real-person or device visual-quality claim follows from this set.
+outputs met the generated pixel-delta contract. The current face-support rule
+above supersedes this stage's face-free route. These controls still do not
+promise an anatomical skin mask. No real-person or device visual-quality claim
+follows from this set.
 
 ## 2026-09-26 FACE-01 generated portrait acceptance
 

@@ -62,6 +62,7 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
                     plan: request.plan,
                     renderQuality: request.renderQuality,
                     selectedFaceSupport: request.selectedFaceSupport,
+                    textureFaceBounds: request.textureFaceBounds,
                     compositionSummary: request.compositionSummary,
                     canonicalImage: request.canonicalImage
                 ))
@@ -112,6 +113,7 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
         plan: BeautyEffectPlan,
         renderQuality: BeautyRenderQuality,
         selectedFaceSupport: BeautyFaceObservation?,
+        textureFaceBounds: CoordinateRect?,
         compositionSummary: BeautyLocalRetouchCompositionSummary?,
         canonicalImage: BeautyCanonicalStillImage?
     ) throws -> CVPixelBuffer {
@@ -130,7 +132,8 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
         let sourceBytes = try read(pixelBuffer: pixelBuffer, width: width, height: height, rowBytes: rowBytes)
         let rgbaBytes = BeautySkinTexturePipeline.applyRGBA(
             bgraToRgba(sourceBytes), width: width, height: height, plan: plan,
-            renderQuality: renderQuality
+            renderQuality: renderQuality,
+            faceBounds: textureFaceBounds
         )
         let renderedRGBA = try invokeRuntime(
             width: width,
@@ -177,7 +180,8 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
 
         let texturedBytes = BeautySkinTexturePipeline.applyRGBA(
             bytes, width: dimensions.width, height: dimensions.height, plan: plan,
-            renderQuality: renderQuality
+            renderQuality: renderQuality,
+            faceBounds: selectedFaceSupport?.imageBounds
         )
         let refinement: FaceContourSubpixelRefiner.Refinement?
         if let selectedFaceSupport {

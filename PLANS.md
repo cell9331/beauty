@@ -58,6 +58,8 @@
   - 配置综合聚焦测试 `50/0/3 skipped`（普通运行未启用三项 opt-in）；随后当前七字段代码树完整 archive-first no-skip `993/0/0`、8 opt-in、0 skip，全部 SDK-owned 前置检查通过。生成测试与固定枚举诊断不授予设备性能、画质泛化或外部分发声明。
 - [x] FUTURE-07：公开 still-image 的可达 16 点双眉及 46 项几何组合实际产生 288 点，超过 Metal 256 点上限。已在 facade 对完整点集做 request-local 容量预检；无行限制点的超限组合一次性走现有 CPU reference backend，保留全部几何及公开固定容量指标，直接 Metal 和行限制点仍 typed failure。公开 CPU/GPU 生成像素完全一致，后续普通 GPU 请求恢复；相关聚焦 `20/0/0`，backend-neutral、Metal feature/runtime、SDK-only 静态门禁及 self-test 通过。完整 archive-first no-skip `1004/0/0`、8 opt-in、0 skip；不宣称所有脸型点数均小于 256 或设备性能。
 - [ ] FUTURE-08：纹理滤镜已新增代码生成的冷色低对比非面部负例，旧实现每个控制在保护区改变 132 像素；窄色彩保护后深浅肤色目标仍变化、冷色背景 0 变化，生成纹理 suite `8/0/0`。活跃纹理请求另设 8,388,608 像素上限，编码声明前置、解码/像素缓冲区和 backend request 复核，超限 typed `invalidInput`、随后小图恢复；生成的大尺寸编码 PNG 声明预检及恢复通过，backend/encoded/texture 聚焦 `24/0/0`。完整 archive-first no-skip `1008/0/0`、8 opt-in、0 skip。CPU 静态图纹理步骤拥有的三个 RGBA8 buffer 合计至多 96 MiB，Core Image/系统、Metal 附加 buffer 峰值及设备性能未测。暖色等非面部低对比纹理仍可能变化，需继续引入可信局部语义或更完整负例，故保留未完成。
+  - 现已让公开静态图和像素缓冲区的活跃纹理请求获取本次 Vision 人脸，CPU/Metal 共用其人脸框内部 `0.43×` 椭圆处理域；缺脸、禁用或跳帧时纹理源图一致，其他色彩控制独立。生成暖色低对比背景和深浅脸颊目标验收通过，静态图与像素缓冲区正例、负例、alpha、方向镜像、重复、typed 上限/恢复及可用 GPU 对齐聚焦纹理 suite `11/0/0`，含同一 Engine 缺脸/有脸/缺脸、禁用检测和索引跳帧；相关检测/质量/Engine suite `39/0/1 skipped`（未启用 opt-in）。无解剖皮肤分割，脸域内部相似颜色的非皮肤内容仍可能变化；不作设备时间或总峰值内存声明。
+  - 首次广域诊断（暂跳过慢速性能专项）只发现此前 77 字段新增后残留的配置/预设测试旧 68 字段断言；已修正，配置和资源目录 `25/0/0`。post-archive SDK-only boundary 已通过，完整 no-skip 留待所有改动后运行。
 - [ ] 比例「小头」：定义独立于现有 `faceSmall` 的中性比例语义和像素验收，达到后再调整 taxonomy 的 `partial` 状态。
   - `headSmall` 已作为独立于 `faceSmall` 的正向四点二维局部缩小控制接入，生成公开标记方向、保护区、neutral/no-face/方向镜像/repeat/Codable/typed failure 聚焦 `2/0/0`；更广肖像、真实头发与颅骨语义前 taxonomy 保持 `partial`。
 - [ ] 3D 塑颜：分别定义并实现「对称」「上下」「左右」「倾斜」四项中性整体几何控制。

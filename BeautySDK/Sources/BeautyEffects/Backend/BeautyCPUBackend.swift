@@ -18,7 +18,9 @@ package struct BeautyCPUBackend: BeautyBackendExecutor, Sendable {
                 try BeautyColorEffectPipeline.apply(
                     to: pixelBuffer,
                     plan: request.plan,
-                    renderQuality: request.renderQuality
+                    renderQuality: request.renderQuality,
+                    face: nil,
+                    textureFaceBounds: request.textureFaceBounds
                 )
             )
         case .stillImage(let image):

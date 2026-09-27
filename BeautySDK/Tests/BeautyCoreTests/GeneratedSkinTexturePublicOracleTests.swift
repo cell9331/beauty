@@ -1,8 +1,9 @@
 import CoreGraphics
 import CoreImage
+import CoreVideo
 import ImageIO
 import XCTest
-import BeautySDK
+@_spi(Testing) import BeautySDK
 
 /// FUTURE-06 source-fixed generated-image oracle. All regions and thresholds
 /// were selected before replacing the saturation/contrast proxy algorithm.
@@ -54,7 +55,7 @@ final class GeneratedSkinTexturePublicOracleTests: XCTestCase {
     func testNamedSRGBExtentAndTypedPixelLimitRecovery() throws {
         let source = fixture(.textured)
         let image = makeImage(source).transformed(by: CGAffineTransform(translationX: 7, y: -3))
-        let engine = try BeautyEngine(configuration: .default)
+        let engine = try textureEngine()
         let result = try engine.processResult(
             image: image, metadata: metadata,
             parameters: BeautyParameters(skinSmoothing: 1)
@@ -63,7 +64,7 @@ final class GeneratedSkinTexturePublicOracleTests: XCTestCase {
         XCTAssertEqual(result.output.colorSpace?.name, CGColorSpace(name: CGColorSpace.sRGB)?.name)
         XCTAssertLessThan(textureDeviation(bytes(result.output, extent: image.extent)), textureDeviation(source) * 0.65)
 
-        let limitedEngine = try BeautyEngine(configuration: BeautyConfiguration(maximumInputPixelCount: 4_095))
+        let limitedEngine = try textureEngine(.init(maximumInputPixelCount: 4_095))
         XCTAssertThrowsError(try limitedEngine.processResult(
             image: makeImage(source), metadata: metadata,
             parameters: BeautyParameters(skinSharpen: 1)
@@ -81,10 +82,10 @@ final class GeneratedSkinTexturePublicOracleTests: XCTestCase {
                 let metadata = BeautyInputMetadata(
                     orientation: orientation, isInputMirrored: mirrored, source: .testFixture
                 )
-                let neutral = try BeautyEngine(configuration: .default).processResult(
+                let neutral = try textureEngine().processResult(
                     image: image, metadata: metadata, parameters: .init()
                 )
-                let candidate = try BeautyEngine(configuration: .default).processResult(
+                let candidate = try textureEngine().processResult(
                     image: image, metadata: metadata,
                     parameters: BeautyParameters(skinSmoothing: 1)
                 )
@@ -99,7 +100,7 @@ final class GeneratedSkinTexturePublicOracleTests: XCTestCase {
 
         let p3 = try XCTUnwrap(CGColorSpace(name: CGColorSpace.displayP3))
         let p3Image = makeImage(source, colorSpace: p3)
-        let candidate = try BeautyEngine(configuration: .default).processResult(
+        let candidate = try textureEngine().processResult(
             image: p3Image, metadata: metadata,
             parameters: BeautyParameters(skinSmoothing: 1)
         )
@@ -157,11 +158,140 @@ final class GeneratedSkinTexturePublicOracleTests: XCTestCase {
         }
     }
 
+    func testWarmTexturedBackgroundStaysExactWithFaceSupportAndNoFaceFailsClosed() throws {
+        let source = portraitFixture(textured: true, backgroundTextured: true,
+                                     backgroundWarm: true)
+        for parameters in [BeautyParameters(skinSmoothing: 1),
+                           BeautyParameters(skinSharpen: 1)] {
+            let output = try render(source, parameters: parameters)
+            var cheekChanges = 0
+            var backgroundChanges = 0
+            for y in 30..<45 {
+                for x in 2..<12 {
+                    let offset = (y * width + x) * 4
+                    if Array(source[offset..<(offset + 3)]) !=
+                        Array(output[offset..<(offset + 3)]) { backgroundChanges += 1 }
+                }
+                for x in 22..<28 {
+                    let offset = (y * width + x) * 4
+                    if Array(source[offset..<(offset + 3)]) !=
+                        Array(output[offset..<(offset + 3)]) { cheekChanges += 1 }
+                }
+            }
+            XCTAssertEqual(backgroundChanges, 0)
+            XCTAssertGreaterThan(cheekChanges, 0)
+            XCTAssertTrue(alpha(output) == alpha(source))
+
+            let noFace = try BeautyEngine(
+                faceDetectionProvider: SDKTestingFaceDetectionProvider([.noFace])
+            ).processResult(image: makeImage(source), metadata: metadata,
+                            parameters: parameters)
+            XCTAssertEqual(bytes(noFace.output, extent: noFace.output.extent), source)
+        }
+    }
+
+    func testPixelBufferTextureUsesFreshFaceAndProtectsWarmBackground() throws {
+        let source = portraitFixture(textured: true, backgroundTextured: true,
+                                     backgroundWarm: true)
+        var bgra: [UInt8] = []
+        bgra.reserveCapacity(source.count)
+        for offset in stride(from: 0, to: source.count, by: 4) {
+            bgra.append(source[offset + 2])
+            bgra.append(source[offset + 1])
+            bgra.append(source[offset])
+            bgra.append(source[offset + 3])
+        }
+        let input = try PixelBufferFixtures.makeBGRA(width: width, height: height, bytes: bgra)
+        let metadata = BeautyInputMetadata(orientation: .up, source: .camera)
+        let parameters = BeautyParameters(skinSmoothing: 1)
+        let cpu = try textureEngine().processResult(
+            pixelBuffer: input, metadata: metadata, parameters: parameters
+        )
+        let output = try PixelBufferFixtures.bytes(from: cpu.output)
+        var cheekChanges = 0
+        for y in 30..<45 {
+            for x in 2..<12 {
+                let offset = (y * width + x) * 4
+                XCTAssertEqual(Array(output[offset..<(offset + 4)]),
+                               Array(bgra[offset..<(offset + 4)]))
+            }
+            for x in 22..<28 {
+                let offset = (y * width + x) * 4
+                if Array(output[offset..<(offset + 3)]) !=
+                    Array(bgra[offset..<(offset + 3)]) { cheekChanges += 1 }
+            }
+        }
+        XCTAssertGreaterThan(cheekChanges, 0)
+        XCTAssertEqual(cpu.detectionSummary?.availability, .usable)
+        let combined = try textureEngine().processResult(
+            pixelBuffer: input, metadata: metadata,
+            parameters: BeautyParameters(skinSmoothing: 1, faceSmall: 1)
+        )
+        XCTAssertEqual(try PixelBufferFixtures.bytes(from: combined.output), output,
+                       "pixel-buffer texture support must not enable still-image geometry")
+
+        let noFace = try BeautyEngine(
+            faceDetectionProvider: SDKTestingFaceDetectionProvider([.noFace])
+        ).processResult(pixelBuffer: input, metadata: metadata, parameters: parameters)
+        XCTAssertEqual(try PixelBufferFixtures.bytes(from: noFace.output), bgra)
+        XCTAssertEqual(noFace.detectionSummary?.availability, .noFace)
+
+        if let gpu = try? textureEngine(.init(renderBackend: .gpu)) {
+            let metal = try gpu.processResult(
+                pixelBuffer: input, metadata: metadata, parameters: parameters
+            )
+            let metalBytes = try PixelBufferFixtures.bytes(from: metal.output)
+            XCTAssertLessThanOrEqual(zip(output, metalBytes).map {
+                abs(Int($0) - Int($1))
+            }.max() ?? .max, 2)
+        }
+    }
+
+    func testTextureSupportDoesNotLeakBetweenRequestsOrSkippedFrames() throws {
+        let source = portraitFixture(textured: true, backgroundTextured: true,
+                                     backgroundWarm: true)
+        let image = makeImage(source)
+        let parameters = BeautyParameters(skinSmoothing: 1)
+        let provider = SDKTestingFaceDetectionProvider([.noFace, .textureFace, .noFace])
+        let engine = try BeautyEngine(faceDetectionProvider: provider)
+        let outputs = try (0..<3).map { _ in
+            try engine.processResult(image: image, metadata: metadata,
+                                     parameters: parameters)
+        }
+        XCTAssertEqual(bytes(outputs[0].output, extent: image.extent), source)
+        XCTAssertNotEqual(bytes(outputs[1].output, extent: image.extent), source)
+        XCTAssertEqual(bytes(outputs[2].output, extent: image.extent), source)
+        XCTAssertEqual(provider.invocationCount, 3)
+
+        let disabled = try BeautyEngine(configuration: .init(enableFaceTracking: false))
+        let disabledOutput = try disabled.processResult(
+            image: image, metadata: metadata, parameters: parameters
+        )
+        XCTAssertEqual(bytes(disabledOutput.output, extent: image.extent), source)
+        XCTAssertEqual(disabledOutput.detectionSummary?.availability, .disabled)
+
+        let indexedProvider = SDKTestingFaceDetectionProvider([.textureFace])
+        let indexed = try BeautyEngine(
+            configuration: .init(detectionFrameInterval: 2),
+            faceDetectionProvider: indexedProvider
+        )
+        let video = BeautyInputMetadata(orientation: .up, source: .video)
+        let admitted = try indexed.processResult(
+            image: image, metadata: video, frameIndex: 0, parameters: parameters
+        )
+        let skipped = try indexed.processResult(
+            image: image, metadata: video, frameIndex: 1, parameters: parameters
+        )
+        XCTAssertNotEqual(bytes(admitted.output, extent: image.extent), source)
+        XCTAssertEqual(bytes(skipped.output, extent: image.extent), source)
+        XCTAssertEqual(indexedProvider.invocationCount, 1)
+    }
+
     func testOversizedTextureInputFailsTypedBeforeRenderingAndEngineRecovers() throws {
         let oversized = CIImage(color: CIColor(
             red: 0.6, green: 0.5, blue: 0.4
         )).cropped(to: CGRect(x: 0, y: 0, width: 2049, height: 4096))
-        let engine = try BeautyEngine(configuration: .default)
+        let engine = try textureEngine()
         for parameters in [
             BeautyParameters(skinSmoothing: 1),
             BeautyParameters(skinSharpen: 1),
@@ -211,7 +341,8 @@ final class GeneratedSkinTexturePublicOracleTests: XCTestCase {
     }
 
     private func portraitFixture(
-        textured: Bool, backgroundTextured: Bool = false, deepSkin: Bool = false
+        textured: Bool, backgroundTextured: Bool = false, deepSkin: Bool = false,
+        backgroundWarm: Bool = false
     ) -> [UInt8] {
         var result = [UInt8](repeating: 0, count: width * height * 4)
         for y in 0..<height {
@@ -231,7 +362,9 @@ final class GeneratedSkinTexturePublicOracleTests: XCTestCase {
                     let backgroundNoise = backgroundTextured &&
                         ((x / 2 + y / 2).isMultiple(of: 2)) ? 5 : -5
                     rgb = backgroundTextured
-                        ? (74 + backgroundNoise, 94 + backgroundNoise, 114 + backgroundNoise)
+                        ? (backgroundWarm
+                            ? (134 + backgroundNoise, 94 + backgroundNoise, 74 + backgroundNoise)
+                            : (74 + backgroundNoise, 94 + backgroundNoise, 114 + backgroundNoise))
                         : (35, 45, 65)
                 }
                 else if y < 20 { rgb = (32, 28, 26) }
@@ -291,12 +424,21 @@ final class GeneratedSkinTexturePublicOracleTests: XCTestCase {
     }
 
     private func render(_ source: [UInt8], parameters: BeautyParameters) throws -> [UInt8] {
-        let engine = try BeautyEngine(configuration: .default)
+        let engine = try textureEngine()
         let result = try engine.processResult(
             image: makeImage(source), metadata: metadata, parameters: parameters
         )
         XCTAssertEqual(result.output.extent, CGRect(x: 0, y: 0, width: width, height: height))
         return bytes(result.output, extent: result.output.extent)
+    }
+
+    private func textureEngine(
+        _ configuration: BeautyConfiguration = .default
+    ) throws -> BeautyEngine {
+        try BeautyEngine(
+            configuration: configuration,
+            faceDetectionProvider: SDKTestingFaceDetectionProvider([.textureFace])
+        )
     }
 
     private func bytes(

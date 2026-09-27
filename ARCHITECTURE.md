@@ -1,5 +1,17 @@
 # ARCHITECTURE.md
 
+## 2026-09-27 request-local texture face support
+
+An active skin texture request now uses the existing Vision detector in the
+public still-image or pixel-buffer facade. The selected request-local face
+bounds reach the shared CPU-owned texture stage through the existing backend
+request; CPU and Metal-selected paths use the same conservative interior
+ellipse. No observation is cached across requests or frames. Missing or
+disabled detection leaves texture source-exact, while unrelated color work
+continues. The direct public color pipeline has no detector and therefore
+cannot authorize texture without supplied package-internal face support. No
+new model, shader, target, backend, or persistent mask is introduced.
+
 ## 2026-09-27 symmetry and lower-chin controls
 
 `wholeFaceSymmetry`, `doubleChinReduction` and `doubleChinReductionPro`

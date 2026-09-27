@@ -226,6 +226,7 @@ private func phase91GazeObservation(
     case phase93RegisteredNose
     case phase93MissingNose
     case usableFace
+    case textureFace
     case smoothObservedFaceContour
     case missingObservedFaceContour
     case malformedObservedFaceContour
@@ -327,6 +328,14 @@ private func phase91GazeObservation(
                     )
                 )]
             // Phase93 nose fixture end
+            case .textureFace:
+                return [VisionDetectionObservation(
+                    stableID: "texture-face-fixture",
+                    confidence: 0.96,
+                    normalizedArea: 0.49,
+                    visionBounds: CoordinateRect(x: 0.15, y: 0.15, width: 0.70, height: 0.70),
+                    landmarks: .complete
+                )]
             case .usableFace:
                 return [
                     VisionDetectionObservation(

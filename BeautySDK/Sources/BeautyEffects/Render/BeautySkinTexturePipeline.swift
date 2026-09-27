@@ -1,6 +1,7 @@
 import CoreGraphics
 import CoreImage
 import BeautyCore
+import BeautyDetection
 
 /// The current texture implementation owns up to three RGBA8 rasters on the
 /// still-image path. Keep their aggregate byte count at or below 96 MiB.
@@ -30,11 +31,19 @@ enum BeautySkinTexturePipeline {
         return strengths.skinSmoothing > 0 || strengths.skinSharpen > 0
     }
 
+    static func admits(faceBounds: CoordinateRect?) -> Bool {
+        guard let faceBounds else { return false }
+        return faceBounds.isFinite && faceBounds.width > 0 && faceBounds.height > 0
+            && faceBounds.minX >= 0 && faceBounds.minY >= 0
+            && faceBounds.maxX <= 1 && faceBounds.maxY <= 1
+    }
+
     static func apply(
         to image: CIImage, plan: BeautyEffectPlan,
-        renderQuality: BeautyRenderQuality = .balanced
+        renderQuality: BeautyRenderQuality = .balanced,
+        faceBounds: CoordinateRect? = nil
     ) -> CIImage {
-        guard isActive(plan) else { return image }
+        guard isActive(plan), admits(faceBounds: faceBounds) else { return image }
         let extent = image.extent
         guard let dimensions = BeautyBackendRequest.checkedDimensions(for: extent),
               dimensions.width >= 3, dimensions.height >= 3 else { return image }
@@ -56,7 +65,7 @@ enum BeautySkinTexturePipeline {
         )
         let result = applyRGBA(
             source, width: width, height: height, plan: plan,
-            renderQuality: renderQuality
+            renderQuality: renderQuality, faceBounds: faceBounds
         )
         let output = CIImage(
             bitmapData: Data(result), bytesPerRow: width * 4,
@@ -70,7 +79,8 @@ enum BeautySkinTexturePipeline {
 
     static func applyRGBA(
         _ source: [UInt8], width: Int, height: Int, plan: BeautyEffectPlan,
-        renderQuality: BeautyRenderQuality = .balanced
+        renderQuality: BeautyRenderQuality = .balanced,
+        faceBounds: CoordinateRect? = nil
     ) -> [UInt8] {
         let weights: [Int]
         switch renderQuality {
@@ -79,7 +89,9 @@ enum BeautySkinTexturePipeline {
         case .quality: weights = [1, 2, 3, 4, 3, 2, 1]
         }
         let radius = weights.count / 2
-        guard isActive(plan), width >= weights.count, height >= weights.count else { return source }
+        guard isActive(plan), width >= weights.count, height >= weights.count,
+              admits(faceBounds: faceBounds), let faceBounds
+        else { return source }
         let pixelCount = width.multipliedReportingOverflow(by: height)
         guard !pixelCount.overflow,
               pixelCount.partialValue <= BeautyTextureResourceBudget.maximumPixelCount
@@ -91,9 +103,19 @@ enum BeautySkinTexturePipeline {
             Double(strengths.skinSmoothing) * 1.5
         guard gain != 0 else { return source }
         let divisor = Double(weights.reduce(0, +) * weights.reduce(0, +))
+        let centerX = (faceBounds.minX + faceBounds.width / 2) * Double(width) - 0.5
+        let centerY = (faceBounds.minY + faceBounds.height / 2) * Double(height) - 0.5
+        let radiusX = faceBounds.width * 0.43 * Double(width)
+        let radiusY = faceBounds.height * 0.43 * Double(height)
         var result = source
         for y in radius..<(height - radius) {
-            for x in radius..<(width - radius) {
+            let localY = (Double(y) - centerY) / radiusY
+            guard abs(localY) <= 1 else { continue }
+            let halfRowWidth = radiusX * sqrt(max(0, 1 - localY * localY))
+            let minimumColumn = max(radius, Int(ceil(centerX - halfRowWidth)))
+            let maximumColumn = min(width - radius - 1, Int(floor(centerX + halfRowWidth)))
+            guard minimumColumn <= maximumColumn else { continue }
+            for x in minimumColumn...maximumColumn {
                 let offset = (y * width + x) * 4
                 guard source[offset + 3] == 255 else { continue }
                 let red = Int(source[offset])

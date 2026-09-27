@@ -96,6 +96,7 @@ package struct BeautyBackendRequest: @unchecked Sendable {
     package let plan: BeautyEffectPlan
     package let renderQuality: BeautyRenderQuality
     package let selectedFaceSupport: BeautyFaceObservation?
+    package let textureFaceBounds: CoordinateRect?
     package let canonicalImage: BeautyCanonicalStillImage?
     package let compositionSummary: BeautyLocalRetouchCompositionSummary?
 
@@ -106,6 +107,7 @@ package struct BeautyBackendRequest: @unchecked Sendable {
         plan: BeautyEffectPlan,
         renderQuality: BeautyRenderQuality = .balanced,
         selectedFaceSupport: BeautyFaceObservation? = nil,
+        textureFaceBounds: CoordinateRect? = nil,
         canonicalImage: BeautyCanonicalStillImage? = nil,
         compositionSummary: BeautyLocalRetouchCompositionSummary? = nil
     ) throws {
@@ -127,6 +129,7 @@ package struct BeautyBackendRequest: @unchecked Sendable {
         self.plan = plan
         self.renderQuality = renderQuality
         self.selectedFaceSupport = selectedFaceSupport
+        self.textureFaceBounds = textureFaceBounds ?? selectedFaceSupport?.imageBounds
         self.canonicalImage = canonicalImage
         self.compositionSummary = compositionSummary
     }

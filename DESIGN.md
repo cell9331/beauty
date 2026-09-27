@@ -598,6 +598,18 @@ retain an explicit empty carrier instead of turning into nil template absence.
 > “future” 和数量只对该历史节点有效。无 Phase 限定的模型摘要与本文最后的
 > post-v1.15 contract 才描述当前工作树。
 
+## 2026-09-27 face-bounded spatial skin texture
+
+An active `skinSmoothing` or `skinSharpen` request obtains a fresh selected
+Vision face observation in public still-image and pixel-buffer processing.
+Only pixels inside an ellipse with radii `0.43 ×` the observed face-bounds
+width and height can enter the existing opaque/color/edge texture filter.
+Missing, disabled, invalid, or interval-skipped face support makes the texture
+stage source-exact; other color controls keep their existing route. The
+ellipse is a conservative processing envelope, not a skin segmentation mask.
+The texture resource cap and render-quality kernels remain unchanged. Older
+dated descriptions of face-free texture describe the pre-repair behavior.
+
 ## Current Post-Archive Audit Status
 
 The 2026-09-27 provisional upper-eyelid source-relief gate accepts either

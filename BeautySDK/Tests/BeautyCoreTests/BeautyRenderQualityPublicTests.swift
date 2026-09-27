@@ -2,7 +2,7 @@ import CoreGraphics
 import CoreImage
 import Foundation
 import XCTest
-import BeautySDK
+@_spi(Testing) import BeautySDK
 
 final class BeautyRenderQualityPublicTests: XCTestCase {
     private let size = 80
@@ -14,7 +14,7 @@ final class BeautyRenderQualityPublicTests: XCTestCase {
         let parameters = BeautyParameters(skinSmoothing: 0.5)
         let modes: [BeautyRenderQuality] = [.performance, .balanced, .quality]
         let outputs = try modes.map { mode -> [UInt8] in
-            let engine = try BeautyEngine(configuration: .init(renderQuality: mode))
+            let engine = try textureEngine(.init(renderQuality: mode))
             let neutral = rgba(try engine.processResult(
                 image: image, metadata: metadata, parameters: .init()
             ).output)
@@ -35,7 +35,7 @@ final class BeautyRenderQualityPublicTests: XCTestCase {
 
         let flat = flatNegative()
         for mode in modes {
-            let engine = try BeautyEngine(configuration: .init(renderQuality: mode))
+            let engine = try textureEngine(.init(renderQuality: mode))
             let flatImage = makeImage(flat)
             XCTAssertEqual(rgba(try engine.processResult(
                 image: flatImage, metadata: metadata, parameters: parameters
@@ -52,11 +52,11 @@ final class BeautyRenderQualityPublicTests: XCTestCase {
         let source = textured()
         let image = makeImage(source)
         let parameters = BeautyParameters(skinSmoothing: 0.5)
-        let cpu = try BeautyEngine(configuration: .init(renderQuality: .quality))
+        let cpu = try textureEngine(.init(renderQuality: .quality))
         let cpuOutput = rgba(try cpu.processResult(
             image: image, metadata: metadata, parameters: parameters
         ).output)
-        let limited = try BeautyEngine(configuration: .init(
+        let limited = try textureEngine(.init(
             renderQuality: .quality, maximumInputPixelCount: size * size - 1
         ))
         XCTAssertThrowsError(try limited.processResult(
@@ -70,7 +70,7 @@ final class BeautyRenderQualityPublicTests: XCTestCase {
 
         let gpu: BeautyEngine
         do {
-            gpu = try BeautyEngine(configuration: .init(
+            gpu = try textureEngine(.init(
                 renderQuality: .quality, renderBackend: .gpu
             ))
         } catch BeautyError.metalUnavailable {
@@ -89,6 +89,13 @@ final class BeautyRenderQualityPublicTests: XCTestCase {
     }
 
     private func textured() -> [UInt8] { fixture(textured: true) }
+
+    private func textureEngine(_ configuration: BeautyConfiguration) throws -> BeautyEngine {
+        try BeautyEngine(
+            configuration: configuration,
+            faceDetectionProvider: SDKTestingFaceDetectionProvider([.textureFace])
+        )
+    }
     private func flatNegative() -> [UInt8] { fixture(textured: false) }
 
     private func fixture(textured: Bool) -> [UInt8] {

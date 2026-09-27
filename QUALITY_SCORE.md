@@ -1,5 +1,20 @@
 # QUALITY_SCORE.md
 
+## 2026-09-27 face-bounded texture regression
+
+Generated public still-image tests use an injected request-local face and
+show that smoothing and sharpening change cheek targets while cool and warm
+textured backgrounds outside its interior ellipse stay exact. A no-face
+request is source-exact for texture; the public BGRA pixel-buffer test checks
+fresh face support, warm-background protection, no-face exit, and available
+CPU/Metal parity. Same-engine missing/present/missing, disabled detection and
+indexed skipped-frame recovery are checked. The generated suite passes `11/0/0`; related detection,
+quality-mode, and engine suites pass `39/0/1 skipped` without opt-ins. A broad
+diagnostic run excluding the slow performance suite found only stale 68-field
+assertions after the preceding 77-field additions; the repaired configuration
+and preset suites pass `25/0/0`. Full archive-first no-skip remains pending.
+This envelope does not prove anatomical skin segmentation or device performance.
+
 ## 2026-09-27 provisional upper-eyelid mixed-lighting gate
 
 The generated source-relief positive has a central mean below the old 3.5

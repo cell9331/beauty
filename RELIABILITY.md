@@ -1,5 +1,16 @@
 # RELIABILITY.md
 
+## 2026-09-27 texture detection and recovery
+
+Still-image and pixel-buffer texture requests use only face bounds selected
+for that request. No-face, disabled, malformed, or scheduled skipped detection
+leaves the texture contribution source-exact, with no stale face reuse; a later
+supported request on the same engine can apply texture normally. Other color
+controls remain independent. The row-bounded ellipse loop visits only the
+conservative face interior before the existing alpha, color, and edge checks.
+The earlier texture pixel cap still bounds allocation; Vision and Core Image
+memory and physical-device speed remain unmeasured.
+
 ## 2026-09-27 vertical proportion recovery
 
 Forehead and midface points are derived from the selected face for each

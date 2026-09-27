@@ -1,5 +1,15 @@
 # SECURITY.md
 
+## 2026-09-27 texture face-support boundary
+
+An active public texture request now admits pixels only inside a conservative
+ellipse from the current selected face bounds. Missing, invalid, disabled or
+skipped support yields no texture edit; the engine does not reuse prior face
+locations. Bounds and source pixels remain request-local and never enter
+diagnostics or persistent evidence. The envelope is not skin segmentation:
+non-skin content inside it may still qualify for the existing color and edge
+filter. No model, weight, network, or external distribution path is added.
+
 ## 2026-09-27 vertical proportion input boundary
 
 The two new controls use only finite, unit-bounded request-local face bounds
@@ -20,8 +30,8 @@ The encoded-image texture cap is checked from declared dimensions before
 decoding, then checked against decoded dimensions. The same bound applies to
 decoded still images and pixel buffers. The cool-region decision uses only
 the admitted source RGB channels within the request; it stores no segmentation
-map or diagnostic pixels. A cool background negative is protected, while the
-absence of face semantics remains an explicit limitation.
+map or diagnostic pixels. The later face-support gate above supersedes this
+stage's face-free background behavior.
 
 ## 2026-09-27 geometry capacity preflight
 

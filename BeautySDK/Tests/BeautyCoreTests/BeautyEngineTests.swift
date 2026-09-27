@@ -116,7 +116,7 @@ final class BeautyEngineTests: XCTestCase {
         XCTAssertEqual(result.metrics["beauty.effects.cappedCount"], 1)
     }
 
-    func testSKIN02FacadeNoDetectionUniformSkinRemainsUnchanged() throws {
+    func testSKIN02FacadeNoFaceUniformSkinRemainsUnchanged() throws {
         let image = CIImage(color: CIColor(red: 0.70, green: 0.31, blue: 0.19, alpha: 1))
             .cropped(to: CGRect(x: 0, y: 0, width: 1, height: 1))
         let engine = try BeautyEngine(configuration: .default)
@@ -129,11 +129,11 @@ final class BeautyEngineTests: XCTestCase {
 
         XCTAssertEqual(result.output.extent, image.extent)
         XCTAssertEqual(try PixelBufferFixtures.rgbaBytes(from: result.output), try PixelBufferFixtures.rgbaBytes(from: image))
-        XCTAssertEqual(result.metrics["beauty.effects.activeCount"], 1)
-        XCTAssertEqual(result.detectionSummary?.availability, .notRun)
+        XCTAssertEqual(result.metrics["beauty.effects.activeCount"], 0)
+        XCTAssertEqual(result.detectionSummary?.availability, .noFace)
     }
 
-    func testSKIN02FacadeNoDetectionBasicSkinReturnsRedactedMetadata() throws {
+    func testSKIN02FacadeNoFaceBasicSkinReturnsRedactedMetadata() throws {
         let image = CIImage(color: CIColor(red: 0.38, green: 0.32, blue: 0.27, alpha: 1))
             .cropped(to: CGRect(x: 0, y: 0, width: 1, height: 1))
         let engine = try BeautyEngine(configuration: .default)
@@ -146,7 +146,7 @@ final class BeautyEngineTests: XCTestCase {
 
         XCTAssertTrue(result.warnings.contains { $0.code == "beauty_strength_capped" })
         XCTAssertEqual(result.metrics["beauty.effects.cappedCount"], 1)
-        XCTAssertEqual(result.detectionSummary?.availability, .notRun)
+        XCTAssertEqual(result.detectionSummary?.availability, .noFace)
 
         let combined = (
             result.warnings.map { "\($0.code) \($0.message)" } +

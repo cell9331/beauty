@@ -315,7 +315,7 @@ final class BeautyEngineGeometryFacadeTests: XCTestCase {
         assertRedacted(result)
     }
 
-    func testNoGeometryStillImageParametersDoNotRunDetection() throws {
+    func testOnlyFaceDependentTextureTriggersDetectionWithoutGeometry() throws {
         let provider = SDKTestingFaceDetectionProvider([.usableFace])
         let engine = try BeautyEngine(faceDetectionProvider: provider)
         let inputs = [
@@ -331,11 +331,16 @@ final class BeautyEngineGeometryFacadeTests: XCTestCase {
                 metadata: BeautyInputMetadata(orientation: .up, source: .photo),
                 parameters: parameters
             )
-            XCTAssertEqual(result.detectionSummary?.availability, .notRun)
-            XCTAssertNil(result.metrics["beauty.detection.geometryRequired"])
+            if parameters.skinSmoothing > 0 {
+                XCTAssertEqual(result.detectionSummary?.availability, .usable)
+                XCTAssertEqual(result.metrics["beauty.detection.geometryRequired"], 0)
+            } else {
+                XCTAssertEqual(result.detectionSummary?.availability, .notRun)
+                XCTAssertNil(result.metrics["beauty.detection.geometryRequired"])
+            }
         }
 
-        XCTAssertEqual(provider.invocationCount, 0)
+        XCTAssertEqual(provider.invocationCount, 1)
     }
 
     func testDisabledTrackingAvoidsDetectorAndSkipsFaceDependentDomains() throws {
