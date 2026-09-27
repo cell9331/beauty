@@ -1,5 +1,14 @@
 # PRODUCT_SENSE.md
 
+## 2026-09-27 forehead and midface owner-local controls
+
+`比例 / 额头` and `比例 / 中庭` now have separate signed parameters. On generated
+input each moves its own marker in opposite directions for positive and
+negative strengths while preserving the other marked region, far background
+and alpha. Neutral, mirror/orientation, no-face, repeat and failure recovery
+are checked. Taxonomy remains `partial` pending broader portrait evidence;
+these controls make no three-dimensional quality claim.
+
 ## 2026-09-27 short-face owner-local control
 
 `比例 / 短脸` has an independent `faceShortening` parameter. Generated upper

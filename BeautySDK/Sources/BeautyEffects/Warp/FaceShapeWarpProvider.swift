@@ -7,6 +7,8 @@ struct FaceShapeWarpFieldEmissions: Equatable, Sendable {
     let wholeFaceXPosition: [WarpControlPoint]
     let wholeFaceTilt: [WarpControlPoint]
     let faceShortening: [WarpControlPoint]
+    let foreheadHeight: [WarpControlPoint]
+    let midfaceLength: [WarpControlPoint]
     let faceVShape: [WarpControlPoint]
     let jawSlim: [WarpControlPoint]
     let faceContourSmooth: [WarpControlPoint]
@@ -14,7 +16,7 @@ struct FaceShapeWarpFieldEmissions: Equatable, Sendable {
     let cheekboneSlim: [WarpControlPoint]
 
     var points: [WarpControlPoint] {
-        faceSlim + faceSmall + wholeFaceYPosition + wholeFaceXPosition + wholeFaceTilt + faceShortening + faceVShape + jawSlim +
+        faceSlim + faceSmall + wholeFaceYPosition + wholeFaceXPosition + wholeFaceTilt + faceShortening + foreheadHeight + midfaceLength + faceVShape + jawSlim +
             faceContourSmooth + templeFullness + cheekboneSlim
     }
 
@@ -33,6 +35,12 @@ struct FaceShapeWarpFieldEmissions: Equatable, Sendable {
         }
         if strengths.faceShortening != 0, faceShortening.isEmpty {
             sanitized.faceShortening = 0
+        }
+        if strengths.foreheadHeight != 0, foreheadHeight.isEmpty {
+            sanitized.foreheadHeight = 0
+        }
+        if strengths.midfaceLength != 0, midfaceLength.isEmpty {
+            sanitized.midfaceLength = 0
         }
         if strengths.faceVShape != 0, faceVShape.isEmpty { sanitized.faceVShape = 0 }
         if strengths.jawSlim != 0, jawSlim.isEmpty { sanitized.jawSlim = 0 }
@@ -86,6 +94,18 @@ struct FaceShapeWarpProvider: WarpControlPointProvider {
                 : [],
             faceShortening: hasLegacyContour
                 ? faceShorteningPoints(face: face, strength: strengths.faceShortening)
+                : [],
+            foreheadHeight: hasLegacyContour
+                ? verticalRegionPoint(face: face, strength: strengths.foreheadHeight,
+                                      cap: BeautySafetyCaps.foreheadHeight,
+                                      yFraction: 0.17, movementFraction: -0.06,
+                                      radiusFraction: 0.16)
+                : [],
+            midfaceLength: hasLegacyContour
+                ? verticalRegionPoint(face: face, strength: strengths.midfaceLength,
+                                      cap: BeautySafetyCaps.midfaceLength,
+                                      yFraction: 0.52, movementFraction: 0.055,
+                                      radiusFraction: 0.14)
                 : [],
             faceVShape: hasLegacyContour && strengths.faceVShape > 0
                 ? lowerFacePoints(
@@ -284,6 +304,34 @@ struct FaceShapeWarpProvider: WarpControlPointProvider {
                 radius: radius, strength: strength, falloff: 2
             ),
         ]
+    }
+
+    private func verticalRegionPoint(
+        face: FaceGeometry, strength: Float, cap: Float,
+        yFraction: Float, movementFraction: Float, radiusFraction: Float
+    ) -> [WarpControlPoint] {
+        guard strength.isFinite, abs(strength) > Float.ulpOfOne,
+              abs(strength) <= cap,
+              face.bounds.width.isFinite, face.bounds.height.isFinite,
+              face.bounds.width > 0, face.bounds.height > 0,
+              face.faceContour.allSatisfy({ point in
+                  point.x.isFinite && point.y.isFinite &&
+                      (0...1).contains(point.x) && (0...1).contains(point.y)
+              })
+        else { return [] }
+        let bounds = face.bounds
+        let source = SIMD2<Float>(bounds.midX, bounds.minY + bounds.height * yFraction)
+        let target = SIMD2<Float>(
+            source.x, source.y + bounds.height * movementFraction * strength / cap
+        )
+        let radius = min(1, max(bounds.width, bounds.height) * radiusFraction)
+        guard (0...1).contains(source.x), (0...1).contains(source.y),
+              (0...1).contains(target.y), radius.isFinite, radius >= 0.001
+        else { return [] }
+        return [WarpControlPoint(
+            source: source, target: target, radius: radius,
+            strength: abs(strength), falloff: 2
+        )]
     }
 
     private func lowerFacePoints(

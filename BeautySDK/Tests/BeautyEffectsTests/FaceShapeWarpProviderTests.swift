@@ -326,6 +326,36 @@ final class FaceShapeWarpProviderTests: XCTestCase {
         ).faceShortening.isEmpty)
     }
 
+    func testForeheadAndMidfaceUseIndependentSignedBoundedPoints() {
+        let provider = FaceShapeWarpProvider()
+        for (name, positive, negative) in [
+            ("forehead", strengths(foreheadHeight: 0.30), strengths(foreheadHeight: -0.30)),
+            ("midface", strengths(midfaceLength: 0.30), strengths(midfaceLength: -0.30)),
+        ] {
+            let plus = provider.fieldEmissions(face: .fixture, strengths: positive)
+            let minus = provider.fieldEmissions(face: .fixture, strengths: negative)
+            let positivePoints = name == "forehead" ? plus.foreheadHeight : plus.midfaceLength
+            let negativePoints = name == "forehead" ? minus.foreheadHeight : minus.midfaceLength
+            XCTAssertEqual(positivePoints.count, 1)
+            XCTAssertEqual(negativePoints.count, 1)
+            XCTAssertEqual(positivePoints[0].source, negativePoints[0].source)
+            XCTAssertEqual(positivePoints[0].target.x, positivePoints[0].source.x)
+            XCTAssertEqual(negativePoints[0].target.x, negativePoints[0].source.x)
+            let expectedSign: Float = name == "forehead" ? -1 : 1
+            XCTAssertGreaterThan(
+                (positivePoints[0].target.y - positivePoints[0].source.y) * expectedSign, 0
+            )
+            XCTAssertLessThan(
+                (negativePoints[0].target.y - negativePoints[0].source.y) * expectedSign, 0
+            )
+            XCTAssertTrue(positivePoints.allSatisfy { point in
+                (0...1).contains(point.target.y) && point.radius > 0
+            })
+            let absent = provider.fieldEmissions(face: .missingContour, strengths: positive)
+            XCTAssertTrue((name == "forehead" ? absent.foreheadHeight : absent.midfaceLength).isEmpty)
+        }
+    }
+
     func testFaceShapeOutputsAreDeterministicClampedAndProportionAdjacent() {
         let face = FaceGeometry.fixture
         let provider = FaceShapeWarpProvider()
@@ -907,6 +937,8 @@ final class FaceShapeWarpProviderTests: XCTestCase {
         wholeFaceXPosition: Float = 0,
         wholeFaceTilt: Float = 0,
         faceShortening: Float = 0,
+        foreheadHeight: Float = 0,
+        midfaceLength: Float = 0,
         faceVShape: Float = 0,
         jawSlim: Float = 0,
         chinLength: Float = 0,
@@ -931,6 +963,12 @@ final class FaceShapeWarpProviderTests: XCTestCase {
             BeautySafetyCaps.wholeFaceTilt
         )
         strengths.faceShortening = min(max(faceShortening, 0), BeautySafetyCaps.faceShortening)
+        strengths.foreheadHeight = min(
+            max(foreheadHeight, -BeautySafetyCaps.foreheadHeight), BeautySafetyCaps.foreheadHeight
+        )
+        strengths.midfaceLength = min(
+            max(midfaceLength, -BeautySafetyCaps.midfaceLength), BeautySafetyCaps.midfaceLength
+        )
         strengths.faceVShape = min(faceVShape, BeautySafetyCaps.faceVShape)
         strengths.jawSlim = min(jawSlim, BeautySafetyCaps.jawSlim)
         strengths.chinLength = min(max(chinLength, -BeautySafetyCaps.chinLength), BeautySafetyCaps.chinLength)

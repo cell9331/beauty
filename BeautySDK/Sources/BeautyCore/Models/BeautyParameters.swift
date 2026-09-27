@@ -83,6 +83,10 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
     public var wholeFaceTilt: Float
     /// Positive-only bounded vertical compression of a sufficiently tall selected face.
     public var faceShortening: Float
+    /// Signed bounded forehead-region height adjustment in image coordinates.
+    public var foreheadHeight: Float
+    /// Signed bounded midface-region length adjustment in image coordinates.
+    public var midfaceLength: Float
 
     enum CodingKeys: String, CodingKey {
         case skinSmoothing
@@ -151,6 +155,8 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
         case wholeFaceXPosition
         case wholeFaceTilt
         case faceShortening
+        case foreheadHeight
+        case midfaceLength
     }
 
     public init(
@@ -219,7 +225,9 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
         wholeFaceYPosition: Float = 0,
         wholeFaceXPosition: Float = 0,
         wholeFaceTilt: Float = 0,
-        faceShortening: Float = 0
+        faceShortening: Float = 0,
+        foreheadHeight: Float = 0,
+        midfaceLength: Float = 0
     ) {
         self.skinSmoothing = Self.clampUnit(skinSmoothing)
         self.skinWhitening = Self.clampUnit(skinWhitening)
@@ -294,6 +302,8 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
         self.wholeFaceXPosition = Self.clampSigned(wholeFaceXPosition)
         self.wholeFaceTilt = Self.clampSigned(wholeFaceTilt)
         self.faceShortening = Self.clampUnit(faceShortening)
+        self.foreheadHeight = Self.clampSigned(foreheadHeight)
+        self.midfaceLength = Self.clampSigned(midfaceLength)
     }
 
     public init(from decoder: Decoder) throws {
@@ -364,7 +374,9 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
             wholeFaceYPosition: try container.decodeFloatIfPresent(.wholeFaceYPosition),
             wholeFaceXPosition: try container.decodeFloatIfPresent(.wholeFaceXPosition),
             wholeFaceTilt: try container.decodeFloatIfPresent(.wholeFaceTilt),
-            faceShortening: try container.decodeFloatIfPresent(.faceShortening)
+            faceShortening: try container.decodeFloatIfPresent(.faceShortening),
+            foreheadHeight: try container.decodeFloatIfPresent(.foreheadHeight),
+            midfaceLength: try container.decodeFloatIfPresent(.midfaceLength)
         )
     }
 
@@ -435,7 +447,9 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
             wholeFaceYPosition: wholeFaceYPosition,
             wholeFaceXPosition: wholeFaceXPosition,
             wholeFaceTilt: wholeFaceTilt,
-            faceShortening: faceShortening
+            faceShortening: faceShortening,
+            foreheadHeight: foreheadHeight,
+            midfaceLength: midfaceLength
         )
     }
 

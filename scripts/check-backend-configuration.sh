@@ -166,7 +166,7 @@ if "renderBackend" in text["parameters"]:
     raise SystemExit("backend policy leaked into BeautyParameters")
 parameters = re.findall(r"^\s*public var ([A-Za-z][A-Za-z0-9]*):", text["parameters"], re.MULTILINE)
 configuration_fields = re.findall(r"^\s*public var ([A-Za-z][A-Za-z0-9]*):", text["configuration"], re.MULTILINE)
-if len(parameters) != 66 or len(set(parameters)) != 66:
+if len(parameters) != 68 or len(set(parameters)) != 68:
     raise SystemExit("BeautyParameters inventory changed")
 if len(configuration_fields) != 11 or len(set(configuration_fields)) != 11:
     raise SystemExit("BeautyConfiguration inventory must be 11 fields")
@@ -237,7 +237,7 @@ if [item.get("id") for item in manifest.get("presets", [])] != [
     "natural", "clear", "refined", "male-natural", "id-photo-natural"
 ]:
     raise SystemExit("preset inventory changed")
-if len(re.findall(r"^\s*RenderCase\(", text["renderer"], re.MULTILINE)) != 82:
+if len(re.findall(r"^\s*RenderCase\(", text["renderer"], re.MULTILINE)) != 86:
     raise SystemExit("renderer case inventory changed")
 
 for forbidden in ("UIKit", "SwiftUI", "AVCapture", "UIApplication", "NSApplication", "URLSession", "Network"):

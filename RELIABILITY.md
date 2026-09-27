@@ -1,5 +1,12 @@
 # RELIABILITY.md
 
+## 2026-09-27 vertical proportion recovery
+
+Forehead and midface points are derived from the selected face for each
+request and retained nowhere afterward. Missing or malformed contour support
+exits unchanged. Oversized input keeps the existing typed failure, and a
+later valid request succeeds through the same engine.
+
 ## 2026-09-27 short-face recovery
 
 Face shortening derives two points per request from validated face support

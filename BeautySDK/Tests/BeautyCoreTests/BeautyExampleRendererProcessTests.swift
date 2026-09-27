@@ -17,6 +17,8 @@ final class BeautyExampleRendererProcessTests: XCTestCase {
         "faceSmall_0p35", "wholeFaceYPosition_plus0p30", "wholeFaceYPosition_minus0p30",
         "wholeFaceXPosition_plus0p30", "wholeFaceXPosition_minus0p30",
         "wholeFaceTilt_plus0p30", "wholeFaceTilt_minus0p30", "faceShortening_0p30",
+        "foreheadHeight_plus0p30", "foreheadHeight_minus0p30",
+        "midfaceLength_plus0p30", "midfaceLength_minus0p30",
         "chinLength_plus0p30", "chinLength_minus0p30", "faceVShape_0p35",
         "jawSlim_0p35", "faceContourSmooth_0p25", "templeFullness_0p25", "cheekboneSlim_0p25",
         "chinTaper_0p25", "eyeSize_0p35", "eyeDistance_plus0p25", "eyeDistance_minus0p25",
@@ -57,7 +59,7 @@ final class BeautyExampleRendererProcessTests: XCTestCase {
         let list = try JSONDecoder().decode(CaseList.self, from: firstList.stdout)
         XCTAssertEqual(list.schemaVersion, "beauty.example-renderer.cases.v1")
         XCTAssertEqual(list.cases, Self.expectedCases)
-        XCTAssertEqual(Set(list.cases).count, 82)
+        XCTAssertEqual(Set(list.cases).count, 86)
 
         let first = try makeFixtureTree(extension: "png")
         defer { removeTree(first.root) }

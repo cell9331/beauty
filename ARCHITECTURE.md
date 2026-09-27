@@ -1,5 +1,12 @@
 # ARCHITECTURE.md
 
+## 2026-09-27 forehead and midface proportion controls
+
+`foreheadHeight` and `midfaceLength` append independent signed parameters to
+the existing resolver and face-shape provider. Each uses one bounded
+request-local control point in the shared CPU/Metal geometry route. No new
+target, detector, shader, model, or backend is introduced.
+
 ## 2026-09-27 short-face proportion control
 
 `faceShortening` follows the existing public parameter, effect resolver,

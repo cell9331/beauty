@@ -67,6 +67,8 @@
 - [ ] 比例：分别定义并实现「头包脸」「颅顶」「额头」「中庭」「人中」「下庭」「短脸」七项控制。
   - 「短脸」候选契约：独立正向 `faceShortening`，零值逐像素保留；对足够纵长的已选脸框，上额与下巴两个源区沿图像纵轴相向移动，中心参考区和远背景保持，整体可测上下标记距离缩短。以有界二维 Warp 点实现，不能称为头骨缩短或三维形变。先用内存生成标记固定方向/负例/保护区、方向镜像、重复、无脸、alpha/extent 与 typed failure，再接参数解析、冲突缩放和 CPU/Metal 同源点；更广肖像证据前 taxonomy 至多 `partial`。
   - 「短脸」已接入独立公开字段、有效强度上限 `0.30`、脸框纵横比保护、两点相向局部变形及 CPU/Metal 共享点源。生成公开像素、参数/Codable、方向镜像、neutral/repeat、中心/远背景/alpha/extent、无脸与 typed failure/recovery `3/0/0`，当前参数/资源/renderer/provider/Metal 清单聚焦 `90/0/0`。完整 archive-first no-skip `1012/0/0`、8 opt-in、0 skip；taxonomy 仅升至二维 `partial`，仍需自然肖像覆盖。
+  - 「额头」「中庭」候选契约：独立签名 `foreheadHeight` 与 `midfaceLength`，零值源图一致；前者正值将脸框上部中央局部区域上移，负值下移，后者正值将眉眼与鼻部之间的中段局部区域下移，负值上移。仅在已选有效脸框与 contour 内发出各自有界二维控制点，不声称头骨结构或三维比例。先用三色内存生成图锁定两处标记的正反方向、互不串扰的保护标记、远背景/alpha/extent、方向镜像、重复、缺脸、Codable 与 typed failure，然后接入 resolver、冲突缩放、CPU/Metal 共享点和当前清单。更广肖像验收前 taxonomy 至多 `partial`。
+  - 「额头」「中庭」已接入独立公开签名字段、`±0.30` 有效上限和共享 CPU/Metal 点源。预实现公开测试按预期因字段缺失失败，接入后两处标记的正反方向、互相保护、远背景/alpha/extent、四方向×镜像、neutral/repeat、缺脸、Codable 与 typed failure/recovery `4/0/0`。当前清单/renderer/provider/Metal 聚焦组合 152 项仅有一条旧 66 字段断言失败，修正后去脂集成 `5/0/0`，SDK-only post-archive 边界通过；完整 archive-first no-skip `1017/0/0`、8 opt-in、0 skip。taxonomy 仅记二维 `partial`，尚无自然肖像泛化证据。
 - [ ] 脸型：分别定义并实现「去双下巴」「去双下巴 Pro」「发际线」三项局部效果，先确认合用的 request-local 语义支撑与资源授权。
 - [ ] 每项效果经公开输入/输出像素与元数据验收后更新 taxonomy、产品/设计/安全/可靠性 owner；最终运行 archive-first 完整 no-skip SwiftPM 门禁。
 

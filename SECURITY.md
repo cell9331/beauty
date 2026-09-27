@@ -1,5 +1,12 @@
 # SECURITY.md
 
+## 2026-09-27 vertical proportion input boundary
+
+The two new controls use only finite, unit-bounded request-local face bounds
+and contour validation. No landmarks, masks, generated pixels, or private
+fixture locations enter diagnostics or durable evidence. No resource, model,
+network or distribution route is added.
+
 ## 2026-09-27 short-face input boundary
 
 `faceShortening` uses only request-local selected-face bounds and contour

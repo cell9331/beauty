@@ -1,5 +1,18 @@
 # QUALITY_SCORE.md
 
+## 2026-09-27 forehead and midface generated marker acceptance
+
+The independent `foreheadHeight` and `midfaceLength` public controls move
+their respective generated markers in both signed directions while leaving
+the other marker, a third protection marker, distant background and alpha
+unchanged. Neutral, repeat, missing face, four orientations, input mirror,
+Codable defaults and typed pixel-limit recovery pass `4/0/0`. Parameter,
+resource, renderer, Metal geometry, face-provider and compatibility suites
+pass; one old current-field-count assertion in the upper-eyelid integration
+suite was corrected and its five tests pass `5/0/0`. The archive-first full
+no-skip gate passes `1017/0/0`, eight opt-ins and zero skips. These inputs
+support only bounded image-plane behavior; taxonomy remains `partial`.
+
 ## 2026-09-27 short-face generated marker acceptance
 
 The independent public `faceShortening` control moves upper and lower

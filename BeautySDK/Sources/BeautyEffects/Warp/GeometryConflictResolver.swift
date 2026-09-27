@@ -27,6 +27,8 @@ struct GeometryConflictResolver: Sendable {
         weakened.wholeFaceXPosition *= scale
         weakened.wholeFaceTilt *= scale
         weakened.faceShortening *= scale
+        weakened.foreheadHeight *= scale
+        weakened.midfaceLength *= scale
         weakened.faceVShape *= scale
         weakened.jawSlim *= scale
         weakened.chinLength *= scale
@@ -93,6 +95,8 @@ struct GeometryConflictResolver: Sendable {
             abs(strengths.wholeFaceXPosition),
             abs(strengths.wholeFaceTilt),
             strengths.faceShortening,
+            abs(strengths.foreheadHeight),
+            abs(strengths.midfaceLength),
             strengths.faceVShape,
             strengths.jawSlim,
             abs(strengths.chinLength),
@@ -147,6 +151,8 @@ struct GeometryConflictResolver: Sendable {
             abs(strengths.wholeFaceXPosition),
             abs(strengths.wholeFaceTilt),
             strengths.faceShortening,
+            abs(strengths.foreheadHeight),
+            abs(strengths.midfaceLength),
             strengths.faceVShape,
             strengths.jawSlim,
             abs(strengths.chinLength),

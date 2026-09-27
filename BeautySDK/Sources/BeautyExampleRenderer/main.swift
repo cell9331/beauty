@@ -120,6 +120,26 @@ let cases = [
         parameters: BeautyParameters(faceShortening: 0.30)
     ),
     RenderCase(
+        id: "foreheadHeight_plus0p30",
+        displayName: "foreheadHeight +0.30",
+        parameters: BeautyParameters(foreheadHeight: 0.30)
+    ),
+    RenderCase(
+        id: "foreheadHeight_minus0p30",
+        displayName: "foreheadHeight -0.30",
+        parameters: BeautyParameters(foreheadHeight: -0.30)
+    ),
+    RenderCase(
+        id: "midfaceLength_plus0p30",
+        displayName: "midfaceLength +0.30",
+        parameters: BeautyParameters(midfaceLength: 0.30)
+    ),
+    RenderCase(
+        id: "midfaceLength_minus0p30",
+        displayName: "midfaceLength -0.30",
+        parameters: BeautyParameters(midfaceLength: -0.30)
+    ),
+    RenderCase(
         id: "chinLength_plus0p30",
         displayName: "chinLength +0.30",
         parameters: BeautyParameters(chinLength: 0.30)

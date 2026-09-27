@@ -1,5 +1,17 @@
 # DESIGN.md
 
+## 2026-09-27 forehead and midface image-plane contract
+
+Both controls are signed, neutral at zero and capped at `±0.30`. On valid
+selected-face contour support, `foreheadHeight` places one point at 17% of
+face-box height and moves it upward for positive input by up to 6% of that
+height. `midfaceLength` places one point at 52% and moves it downward for
+positive input by up to 5.5%. Negative values reverse those directions.
+Radii are 16% and 14% of the larger face-box dimension, respectively, with
+falloff two. Missing or invalid support emits no point; existing combined
+geometry scaling applies. These are bounded local image-plane movements, not
+anatomical depth or skull changes.
+
 ## 2026-09-27 short-face control contract
 
 `faceShortening` is positive only, neutral at zero, and capped at `0.30`.
