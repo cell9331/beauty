@@ -91,6 +91,14 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
     public var philtrumLength: Float
     /// Signed bounded mouth-to-chin image-plane spacing adjustment.
     public var lowerFaceLength: Float
+    /// Positive-only bounded image-plane shrink of the selected upper and lower head area.
+    public var headSmall: Float
+    /// Positive-only bounded expansion of the selected upper-lateral head area.
+    public var headWrap: Float
+    /// Signed bounded image-plane movement of a crown-adjacent region.
+    public var cranialCrownHeight: Float
+    /// Signed bounded image-plane movement of two upper-face boundary regions.
+    public var hairlineHeight: Float
 
     enum CodingKeys: String, CodingKey {
         case skinSmoothing
@@ -163,6 +171,10 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
         case midfaceLength
         case philtrumLength
         case lowerFaceLength
+        case headSmall
+        case headWrap
+        case cranialCrownHeight
+        case hairlineHeight
     }
 
     public init(
@@ -235,7 +247,11 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
         foreheadHeight: Float = 0,
         midfaceLength: Float = 0,
         philtrumLength: Float = 0,
-        lowerFaceLength: Float = 0
+        lowerFaceLength: Float = 0,
+        headSmall: Float = 0,
+        headWrap: Float = 0,
+        cranialCrownHeight: Float = 0,
+        hairlineHeight: Float = 0
     ) {
         self.skinSmoothing = Self.clampUnit(skinSmoothing)
         self.skinWhitening = Self.clampUnit(skinWhitening)
@@ -314,6 +330,10 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
         self.midfaceLength = Self.clampSigned(midfaceLength)
         self.philtrumLength = Self.clampSigned(philtrumLength)
         self.lowerFaceLength = Self.clampSigned(lowerFaceLength)
+        self.headSmall = Self.clampUnit(headSmall)
+        self.headWrap = Self.clampUnit(headWrap)
+        self.cranialCrownHeight = Self.clampSigned(cranialCrownHeight)
+        self.hairlineHeight = Self.clampSigned(hairlineHeight)
     }
 
     public init(from decoder: Decoder) throws {
@@ -388,7 +408,11 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
             foreheadHeight: try container.decodeFloatIfPresent(.foreheadHeight),
             midfaceLength: try container.decodeFloatIfPresent(.midfaceLength),
             philtrumLength: try container.decodeFloatIfPresent(.philtrumLength),
-            lowerFaceLength: try container.decodeFloatIfPresent(.lowerFaceLength)
+            lowerFaceLength: try container.decodeFloatIfPresent(.lowerFaceLength),
+            headSmall: try container.decodeFloatIfPresent(.headSmall),
+            headWrap: try container.decodeFloatIfPresent(.headWrap),
+            cranialCrownHeight: try container.decodeFloatIfPresent(.cranialCrownHeight),
+            hairlineHeight: try container.decodeFloatIfPresent(.hairlineHeight)
         )
     }
 
@@ -463,7 +487,11 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
             foreheadHeight: foreheadHeight,
             midfaceLength: midfaceLength,
             philtrumLength: philtrumLength,
-            lowerFaceLength: lowerFaceLength
+            lowerFaceLength: lowerFaceLength,
+            headSmall: headSmall,
+            headWrap: headWrap,
+            cranialCrownHeight: cranialCrownHeight,
+            hairlineHeight: hairlineHeight
         )
     }
 

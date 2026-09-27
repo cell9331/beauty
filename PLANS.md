@@ -57,6 +57,7 @@
 - [x] FUTURE-07：公开 still-image 的可达 16 点双眉及 46 项几何组合实际产生 288 点，超过 Metal 256 点上限。已在 facade 对完整点集做 request-local 容量预检；无行限制点的超限组合一次性走现有 CPU reference backend，保留全部几何及公开固定容量指标，直接 Metal 和行限制点仍 typed failure。公开 CPU/GPU 生成像素完全一致，后续普通 GPU 请求恢复；相关聚焦 `20/0/0`，backend-neutral、Metal feature/runtime、SDK-only 静态门禁及 self-test 通过。完整 archive-first no-skip `1004/0/0`、8 opt-in、0 skip；不宣称所有脸型点数均小于 256 或设备性能。
 - [ ] FUTURE-08：纹理滤镜已新增代码生成的冷色低对比非面部负例，旧实现每个控制在保护区改变 132 像素；窄色彩保护后深浅肤色目标仍变化、冷色背景 0 变化，生成纹理 suite `8/0/0`。活跃纹理请求另设 8,388,608 像素上限，编码声明前置、解码/像素缓冲区和 backend request 复核，超限 typed `invalidInput`、随后小图恢复；生成的大尺寸编码 PNG 声明预检及恢复通过，backend/encoded/texture 聚焦 `24/0/0`。完整 archive-first no-skip `1008/0/0`、8 opt-in、0 skip。CPU 静态图纹理步骤拥有的三个 RGBA8 buffer 合计至多 96 MiB，Core Image/系统、Metal 附加 buffer 峰值及设备性能未测。暖色等非面部低对比纹理仍可能变化，需继续引入可信局部语义或更完整负例，故保留未完成。
 - [ ] 比例「小头」：定义独立于现有 `faceSmall` 的中性比例语义和像素验收，达到后再调整 taxonomy 的 `partial` 状态。
+  - `headSmall` 已作为独立于 `faceSmall` 的正向四点二维局部缩小控制接入，生成公开标记方向、保护区、neutral/no-face/方向镜像/repeat/Codable/typed failure 聚焦 `2/0/0`；更广肖像、真实头发与颅骨语义前 taxonomy 保持 `partial`。
 - [ ] 3D 塑颜：分别定义并实现「对称」「上下」「左右」「倾斜」四项中性整体几何控制。
   - 「倾斜」候选契约：新增 `wholeFaceTilt` 签名字段，零值源图一致；正值在规范图像坐标中局部顺时针，负值逆时针。以脸框中心和四个有界局部锚点构成二维图像平面旋转，不宣称三维头部姿态或深度。先固定顶部与左侧两个不同颜色生成标记的正反移动、远背景/alpha/extent、重复、缺脸退出和 Codable 中性兼容，再接入 resolver、冲突缩放与 CPU/Metal 共享几何。此公开验收在未实现字段时按预期编译失败；更多肖像证据前 taxonomy 至多 `partial`。
   - 「倾斜」当前进度：新字段、解析/冲突缩放、四点有界旋转、renderer 正负案例和当前清单已接入。公开生成标记方向、方向/镜像、neutral、repeat、外部/alpha、无脸和 typed failure/recovery `3/0/0`，provider `21/0/0`，Metal 47 行点预算 `7/0/0`，renderer/去脂集成过滤 `53/0/0`。首次完整门禁发现一个旧 64 字段断言并已更新为 65；最终完整 archive-first no-skip `1001/0/0`、8 opt-in、0 skip，各专项与 SDK-only 边界通过。当前 taxonomy 仅记二维 `partial`，不认定 3D 姿态或广泛肖像效果。
@@ -69,8 +70,11 @@
   - 「短脸」已接入独立公开字段、有效强度上限 `0.30`、脸框纵横比保护、两点相向局部变形及 CPU/Metal 共享点源。生成公开像素、参数/Codable、方向镜像、neutral/repeat、中心/远背景/alpha/extent、无脸与 typed failure/recovery `3/0/0`，当前参数/资源/renderer/provider/Metal 清单聚焦 `90/0/0`。完整 archive-first no-skip `1012/0/0`、8 opt-in、0 skip；taxonomy 仅升至二维 `partial`，仍需自然肖像覆盖。
   - 「额头」「中庭」候选契约：独立签名 `foreheadHeight` 与 `midfaceLength`，零值源图一致；前者正值将脸框上部中央局部区域上移，负值下移，后者正值将眉眼与鼻部之间的中段局部区域下移，负值上移。仅在已选有效脸框与 contour 内发出各自有界二维控制点，不声称头骨结构或三维比例。先用三色内存生成图锁定两处标记的正反方向、互不串扰的保护标记、远背景/alpha/extent、方向镜像、重复、缺脸、Codable 与 typed failure，然后接入 resolver、冲突缩放、CPU/Metal 共享点和当前清单。更广肖像验收前 taxonomy 至多 `partial`。
   - 「额头」「中庭」已接入独立公开签名字段、`±0.30` 有效上限和共享 CPU/Metal 点源。预实现公开测试按预期因字段缺失失败，接入后两处标记的正反方向、互相保护、远背景/alpha/extent、四方向×镜像、neutral/repeat、缺脸、Codable 与 typed failure/recovery `4/0/0`。当前清单/renderer/provider/Metal 聚焦组合 152 项仅有一条旧 66 字段断言失败，修正后去脂集成 `5/0/0`，SDK-only post-archive 边界通过；完整 archive-first no-skip `1017/0/0`、8 opt-in、0 skip。taxonomy 仅记二维 `partial`，尚无自然肖像泛化证据。
+  - 「头包脸」「颅顶」各自新增 `headWrap`、`cranialCrownHeight` 有界上侧二维局部点，前者正值左右外移、后者正负值上下移动。生成公开标记及保护区/元数据/失败恢复 `2/0/0`，provider 有界点和缺脸退出 `1/0/0`；无头发分割与颅骨语义，taxonomy 均暂记 `partial`。
   - 「人中」「下庭」按所有者选择的独立二维像素口径，新增签名 `philtrumLength` 和 `lowerFaceLength`；前者仅在有效鼻尖—上唇间距中发点，后者仅在嘴唇—下巴间距中发点，正值向下、负值向上。目标标记正负方向、相互保护、远背景/alpha/extent、四方向×镜像、neutral/repeat、缺脸、旧 JSON 默认值及 typed failure/recovery 公开测试 `2/0/0`，provider `1/0/0`、参数清单 `50/0/0`、旧字段投影 `4/0/0`、renderer 回归 `24/0/0`。taxonomy 暂记二维 `partial`；更广肖像及最终 no-skip 尚待完成。
 - [ ] 脸型：分别定义并实现「去双下巴」「去双下巴 Pro」「发际线」三项局部效果，先确认合用的 request-local 语义支撑与资源授权。
+  - 「发际线」按独立二维边界点口径新增 `hairlineHeight`，两侧上脸点随签名强度反向移动。生成公开标记方向、外部与中央保护、alpha/extent、镜像/方向、neutral/no-face/repeat/Codable/typed failure `2/0/0`；不声称已识别真实发际线，taxonomy 暂记 `partial`。
+  - 现行 Metal 几何组合清单已纳入上述六个新参数行，聚焦 `9/0/0`；当前 74 字段参数、96 渲染案例、公开像素和旧字段投影聚焦 `94/0/0`，post-archive SDK 边界通过。完整 no-skip 留待全项收敛后运行。
 - [ ] 每项效果经公开输入/输出像素与元数据验收后更新 taxonomy、产品/设计/安全/可靠性 owner；最终运行 archive-first 完整 no-skip SwiftPM 门禁。
 
 ## 4. Completed

@@ -1,5 +1,12 @@
 # ARCHITECTURE.md
 
+## 2026-09-27 head-region proportion controls
+
+`headSmall`, `headWrap`, `cranialCrownHeight` and `hairlineHeight` append
+independent scalar parameters to the existing face-shape provider and shared
+CPU/Metal point route. No new target, detector, segmentation resource, shader,
+model or backend is introduced.
+
 ## 2026-09-27 philtrum and lower-face proportion controls
 
 `philtrumLength` and `lowerFaceLength` append separate signed parameters to

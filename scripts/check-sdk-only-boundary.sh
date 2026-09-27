@@ -36,13 +36,13 @@ for token in (
         raise SystemExit(f"taxonomy is missing boundary token: {token}")
 
 source_fields = re.findall(r"^\s*public var ([A-Za-z][A-Za-z0-9]*):", source, re.MULTILINE)
-if len(source_fields) != 70 or len(set(source_fields)) != 70:
-    raise SystemExit(f"expected exact 70-field BeautyParameters source, found {len(source_fields)}")
+if len(source_fields) != 74 or len(set(source_fields)) != 74:
+    raise SystemExit(f"expected exact 74-field BeautyParameters source, found {len(source_fields)}")
 inventory = taxonomy.split("<!-- SDK_PARAMETER_INVENTORY_BEGIN -->", 1)[1].split(
     "<!-- SDK_PARAMETER_INVENTORY_END -->", 1
 )[0]
 documented_fields = re.findall(r"`([A-Za-z][A-Za-z0-9]*)`", inventory)
-if set(documented_fields) != set(source_fields) or len(documented_fields) != 70:
+if set(documented_fields) != set(source_fields) or len(documented_fields) != 74:
     missing = sorted(set(source_fields) - set(documented_fields))
     extra = sorted(set(documented_fields) - set(source_fields))
     raise SystemExit(
@@ -52,8 +52,8 @@ if set(documented_fields) != set(source_fields) or len(documented_fields) != 70:
 expected = [
     ("3D塑颜", "对称", "future", "—"), ("3D塑颜", "上下", "partial", "wholeFaceYPosition"),
     ("3D塑颜", "左右", "partial", "wholeFaceXPosition"), ("3D塑颜", "倾斜", "partial", "wholeFaceTilt"),
-    ("比例", "小头", "partial", "faceSmall"), ("比例", "头包脸", "future", "—"),
-    ("比例", "颅顶", "future", "—"), ("比例", "额头", "partial", "foreheadHeight"),
+    ("比例", "小头", "partial", "headSmall"), ("比例", "头包脸", "partial", "headWrap"),
+    ("比例", "颅顶", "partial", "cranialCrownHeight"), ("比例", "额头", "partial", "foreheadHeight"),
     ("比例", "中庭", "partial", "midfaceLength"), ("比例", "人中", "partial", "philtrumLength"),
     ("比例", "下庭", "partial", "lowerFaceLength"), ("比例", "短脸", "partial", "faceShortening"),
     ("脸型", "脸宽", "implemented", "faceSlim"), ("脸型", "小脸", "implemented", "faceSmall"),
@@ -64,7 +64,7 @@ expected = [
     ("脸型", "去双下巴", "future", "—"), ("脸型", "去双下巴 Pro", "future", "—"),
     ("脸型", "尖下巴", "implemented", "chinTaper"), ("脸型", "V脸", "implemented", "faceVShape"),
     ("脸型", "下颌角", "implemented", "jawSlim"), ("脸型", "下颌线", "implemented", "jawSlim"),
-    ("脸型", "发际线", "future", "—"),
+    ("脸型", "发际线", "partial", "hairlineHeight"),
     ("眼睛", "大小", "implemented", "eyeSize"), ("眼睛", "上下", "implemented", "eyeYPosition"),
     ("眼睛", "眼高", "implemented", "eyeHeight"), ("眼睛", "长度", "implemented", "eyeLength"),
     ("眼睛", "眼距", "implemented", "eyeDistance"), ("眼睛", "去脂", "implemented", "upperEyelidFullnessReduction"),

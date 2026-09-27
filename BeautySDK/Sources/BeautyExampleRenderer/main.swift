@@ -160,6 +160,36 @@ let cases = [
         parameters: BeautyParameters(lowerFaceLength: -0.30)
     ),
     RenderCase(
+        id: "headSmall_0p30",
+        displayName: "headSmall 0.30",
+        parameters: BeautyParameters(headSmall: 0.30)
+    ),
+    RenderCase(
+        id: "headWrap_0p25",
+        displayName: "headWrap 0.25",
+        parameters: BeautyParameters(headWrap: 0.25)
+    ),
+    RenderCase(
+        id: "cranialCrownHeight_plus0p25",
+        displayName: "cranialCrownHeight +0.25",
+        parameters: BeautyParameters(cranialCrownHeight: 0.25)
+    ),
+    RenderCase(
+        id: "cranialCrownHeight_minus0p25",
+        displayName: "cranialCrownHeight -0.25",
+        parameters: BeautyParameters(cranialCrownHeight: -0.25)
+    ),
+    RenderCase(
+        id: "hairlineHeight_plus0p25",
+        displayName: "hairlineHeight +0.25",
+        parameters: BeautyParameters(hairlineHeight: 0.25)
+    ),
+    RenderCase(
+        id: "hairlineHeight_minus0p25",
+        displayName: "hairlineHeight -0.25",
+        parameters: BeautyParameters(hairlineHeight: -0.25)
+    ),
+    RenderCase(
         id: "chinLength_plus0p30",
         displayName: "chinLength +0.30",
         parameters: BeautyParameters(chinLength: 0.30)

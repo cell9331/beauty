@@ -1,5 +1,15 @@
 # PRODUCT_SENSE.md
 
+## 2026-09-27 head-region owner-local controls
+
+`比例 / 小头`, `比例 / 头包脸`, `比例 / 颅顶` and `脸型 / 发际线` now map to four
+independent public parameters. Generated markers move in the documented
+direction through the public still-image path while a separate central
+marker, image exterior and alpha remain protected. Neutral, no-face,
+orientation/mirror, repeat, Codable defaults and typed failure recovery pass.
+All four taxonomy rows remain `partial`; hair silhouette, true skull geometry
+and realistic hairline reconstruction await broader portrait evidence.
+
 ## 2026-09-27 philtrum and lower-face owner-local controls
 
 `比例 / 人中` and `比例 / 下庭` now have independent signed parameters. Each

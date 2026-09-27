@@ -386,6 +386,61 @@ final class FaceShapeWarpProviderTests: XCTestCase {
         XCTAssertTrue(absent.lowerFaceLength.isEmpty)
     }
 
+    func testHeadRegionControlsEmitDistinctBoundedPoints() {
+        let provider = FaceShapeWarpProvider()
+        let small = provider.fieldEmissions(face: .fixture, strengths: strengths(headSmall: 0.3))
+            .headSmall
+        XCTAssertEqual(small.count, 4)
+        XCTAssertGreaterThan(small[0].target.x, small[0].source.x)
+        XCTAssertLessThan(small[1].target.x, small[1].source.x)
+        XCTAssertGreaterThan(small[2].target.y, small[2].source.y)
+        XCTAssertLessThan(small[3].target.y, small[3].source.y)
+
+        let wrap = provider.fieldEmissions(face: .fixture, strengths: strengths(headWrap: 0.25))
+            .headWrap
+        XCTAssertEqual(wrap.count, 2)
+        XCTAssertLessThan(wrap[0].target.x, wrap[0].source.x)
+        XCTAssertGreaterThan(wrap[1].target.x, wrap[1].source.x)
+
+        let crownUp = provider.fieldEmissions(
+            face: .fixture, strengths: strengths(cranialCrownHeight: 0.25)
+        ).cranialCrownHeight
+        let crownDown = provider.fieldEmissions(
+            face: .fixture, strengths: strengths(cranialCrownHeight: -0.25)
+        ).cranialCrownHeight
+        XCTAssertEqual(crownUp.count, 1)
+        XCTAssertEqual(crownDown.count, 1)
+        XCTAssertLessThan(crownUp[0].target.y, crownUp[0].source.y)
+        XCTAssertGreaterThan(crownDown[0].target.y, crownDown[0].source.y)
+
+        let hairlineDown = provider.fieldEmissions(
+            face: .fixture, strengths: strengths(hairlineHeight: 0.25)
+        ).hairlineHeight
+        let hairlineUp = provider.fieldEmissions(
+            face: .fixture, strengths: strengths(hairlineHeight: -0.25)
+        ).hairlineHeight
+        XCTAssertEqual(hairlineDown.count, 2)
+        XCTAssertEqual(hairlineUp.count, 2)
+        XCTAssertTrue(hairlineDown.allSatisfy { $0.target.y > $0.source.y })
+        XCTAssertTrue(hairlineUp.allSatisfy { $0.target.y < $0.source.y })
+
+        let combined = small + wrap + crownUp + crownDown + hairlineDown + hairlineUp
+        XCTAssertTrue(combined.allSatisfy { point in
+            (0...1).contains(point.source.x) && (0...1).contains(point.source.y) &&
+                (0...1).contains(point.target.x) && (0...1).contains(point.target.y) &&
+                point.radius > 0 && point.strength <= 0.3
+        })
+        let absent = provider.fieldEmissions(
+            face: .missingContour,
+            strengths: strengths(headSmall: 0.3, headWrap: 0.25,
+                                 cranialCrownHeight: 0.25, hairlineHeight: 0.25)
+        )
+        XCTAssertTrue(absent.headSmall.isEmpty)
+        XCTAssertTrue(absent.headWrap.isEmpty)
+        XCTAssertTrue(absent.cranialCrownHeight.isEmpty)
+        XCTAssertTrue(absent.hairlineHeight.isEmpty)
+    }
+
     func testFaceShapeOutputsAreDeterministicClampedAndProportionAdjacent() {
         let face = FaceGeometry.fixture
         let provider = FaceShapeWarpProvider()
@@ -971,6 +1026,10 @@ final class FaceShapeWarpProviderTests: XCTestCase {
         midfaceLength: Float = 0,
         philtrumLength: Float = 0,
         lowerFaceLength: Float = 0,
+        headSmall: Float = 0,
+        headWrap: Float = 0,
+        cranialCrownHeight: Float = 0,
+        hairlineHeight: Float = 0,
         faceVShape: Float = 0,
         jawSlim: Float = 0,
         chinLength: Float = 0,
@@ -1006,6 +1065,15 @@ final class FaceShapeWarpProviderTests: XCTestCase {
         )
         strengths.lowerFaceLength = min(
             max(lowerFaceLength, -BeautySafetyCaps.lowerFaceLength), BeautySafetyCaps.lowerFaceLength
+        )
+        strengths.headSmall = min(max(headSmall, 0), BeautySafetyCaps.headSmall)
+        strengths.headWrap = min(max(headWrap, 0), BeautySafetyCaps.headWrap)
+        strengths.cranialCrownHeight = min(
+            max(cranialCrownHeight, -BeautySafetyCaps.cranialCrownHeight),
+            BeautySafetyCaps.cranialCrownHeight
+        )
+        strengths.hairlineHeight = min(
+            max(hairlineHeight, -BeautySafetyCaps.hairlineHeight), BeautySafetyCaps.hairlineHeight
         )
         strengths.faceVShape = min(faceVShape, BeautySafetyCaps.faceVShape)
         strengths.jawSlim = min(jawSlim, BeautySafetyCaps.jawSlim)

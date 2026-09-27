@@ -1,5 +1,17 @@
 # QUALITY_SCORE.md
 
+## 2026-09-27 head-region generated-pixel acceptance
+
+`headSmall`, `headWrap`, `cranialCrownHeight` and `hairlineHeight` pass
+independent public generated-marker direction and protection tests `2/0/0`.
+Provider point count, polarity, unit bounds, and missing-contour exit pass
+`1/0/0`; existing Metal geometry matrix passes `9/0/0` with the six new
+signed/unit parameter rows from the lower vertical and head-region work.
+Neutral, no-face, four orientations, input mirror, repeated output,
+Codable defaults, alpha and typed pixel-limit recovery are included. Full
+no-skip closeout remains pending for the active plan. Taxonomy stays
+`partial` without hair or skull semantic qualification.
+
 ## 2026-09-27 lower vertical generated-pixel acceptance
 
 `philtrumLength` and `lowerFaceLength` independently move generated target

@@ -1,5 +1,18 @@
 # DESIGN.md
 
+## 2026-09-27 head-region image-plane contract
+
+The positive-only `headSmall` and `headWrap` controls are capped at `0.30`
+and `0.25`; signed `cranialCrownHeight` and `hairlineHeight` are capped at
+`±0.25`. `headSmall` draws four bounded points inward around the upper and
+lower selected face box. `headWrap` expands two upper-lateral points outward.
+Positive `cranialCrownHeight` moves one crown-adjacent central point upward;
+positive `hairlineHeight` moves two upper-face boundary points downward.
+Negative signed values reverse direction. All require a valid selected face
+contour and unit source/target coordinates; otherwise they emit no points.
+These points do not segment hair, reconstruct a skull, or establish the true
+hairline. Combined geometry scaling remains in force.
+
 ## 2026-09-27 lower vertical proportion contract
 
 `philtrumLength` and `lowerFaceLength` are signed, neutral at zero and

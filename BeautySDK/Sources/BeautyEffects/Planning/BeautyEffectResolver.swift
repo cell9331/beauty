@@ -26,6 +26,10 @@ public enum BeautyEffectResolver {
             normalized.midfaceLength,
             normalized.philtrumLength,
             normalized.lowerFaceLength,
+            normalized.headSmall,
+            normalized.headWrap,
+            normalized.cranialCrownHeight,
+            normalized.hairlineHeight,
             normalized.faceVShape,
             normalized.jawSlim,
             normalized.chinLength,
@@ -192,6 +196,26 @@ public enum BeautyEffectResolver {
             cap: BeautySafetyCaps.lowerFaceLength,
             cappedCount: &cappedCount
         )
+        strengths.headSmall = capUnit(
+            normalized.headSmall,
+            cap: BeautySafetyCaps.headSmall,
+            cappedCount: &cappedCount
+        )
+        strengths.headWrap = capUnit(
+            normalized.headWrap,
+            cap: BeautySafetyCaps.headWrap,
+            cappedCount: &cappedCount
+        )
+        strengths.cranialCrownHeight = capSigned(
+            normalized.cranialCrownHeight,
+            cap: BeautySafetyCaps.cranialCrownHeight,
+            cappedCount: &cappedCount
+        )
+        strengths.hairlineHeight = capSigned(
+            normalized.hairlineHeight,
+            cap: BeautySafetyCaps.hairlineHeight,
+            cappedCount: &cappedCount
+        )
         strengths.faceVShape = capUnit(normalized.faceVShape, cap: BeautySafetyCaps.faceVShape, cappedCount: &cappedCount)
         strengths.jawSlim = capUnit(normalized.jawSlim, cap: BeautySafetyCaps.jawSlim, cappedCount: &cappedCount)
         strengths.chinLength = capSigned(normalized.chinLength, cap: BeautySafetyCaps.chinLength, cappedCount: &cappedCount)
@@ -299,6 +323,10 @@ public enum BeautyEffectResolver {
             strengths.midfaceLength,
             strengths.philtrumLength,
             strengths.lowerFaceLength,
+            strengths.headSmall,
+            strengths.headWrap,
+            strengths.cranialCrownHeight,
+            strengths.hairlineHeight,
             strengths.faceVShape,
             strengths.jawSlim,
             strengths.chinLength,
@@ -367,6 +395,10 @@ public enum BeautyEffectResolver {
             strengths.midfaceLength,
             strengths.philtrumLength,
             strengths.lowerFaceLength,
+            strengths.headSmall,
+            strengths.headWrap,
+            strengths.cranialCrownHeight,
+            strengths.hairlineHeight,
             strengths.faceVShape,
             strengths.jawSlim,
             strengths.chinLength,
@@ -474,6 +506,10 @@ public enum BeautyEffectResolver {
             strengths.midfaceLength,
             strengths.philtrumLength,
             strengths.lowerFaceLength,
+            strengths.headSmall,
+            strengths.headWrap,
+            strengths.cranialCrownHeight,
+            strengths.hairlineHeight,
             strengths.faceVShape,
             strengths.jawSlim,
             strengths.chinLength,
@@ -865,7 +901,7 @@ public enum BeautyEffectResolver {
     }
 
     private static let geometryFieldNames = [
-        "faceSlim", "faceSmall", "wholeFaceYPosition", "wholeFaceXPosition", "wholeFaceTilt", "faceShortening", "foreheadHeight", "midfaceLength", "philtrumLength", "lowerFaceLength", "faceVShape", "jawSlim", "chinLength",
+        "faceSlim", "faceSmall", "wholeFaceYPosition", "wholeFaceXPosition", "wholeFaceTilt", "faceShortening", "foreheadHeight", "midfaceLength", "philtrumLength", "lowerFaceLength", "headSmall", "headWrap", "cranialCrownHeight", "hairlineHeight", "faceVShape", "jawSlim", "chinLength",
         "faceContourSmooth", "templeFullness", "cheekboneSlim", "chinTaper",
         "eyeSize", "eyeDistance", "eyeYPosition", "eyeTailLift", "eyeHeight",
         "eyeLength", "upperEyelidLift", "pupilSize", "gazeCorrection",
@@ -962,6 +998,10 @@ public enum BeautyEffectResolver {
         strengths.midfaceLength = 0
         strengths.philtrumLength = 0
         strengths.lowerFaceLength = 0
+        strengths.headSmall = 0
+        strengths.headWrap = 0
+        strengths.cranialCrownHeight = 0
+        strengths.hairlineHeight = 0
         strengths.faceContourSmooth = 0
         strengths.templeFullness = 0
         strengths.cheekboneSlim = 0
@@ -979,6 +1019,10 @@ public enum BeautyEffectResolver {
         strengths.midfaceLength *= scale
         strengths.philtrumLength *= scale
         strengths.lowerFaceLength *= scale
+        strengths.headSmall *= scale
+        strengths.headWrap *= scale
+        strengths.cranialCrownHeight *= scale
+        strengths.hairlineHeight *= scale
         strengths.faceVShape *= scale
         strengths.jawSlim *= scale
         strengths.chinLength *= scale
