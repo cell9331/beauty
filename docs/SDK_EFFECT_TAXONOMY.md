@@ -81,6 +81,9 @@ not a claim that a new blinded review was run. The visual result is explicitly
 known to be weak and is future quality work. v1.24 adjusts the same bounded
 internal relief gain and records a generated half-strength pixel improvement;
 it does not promote natural-portrait or commercial visual-quality claims.
+The 2026-09-27 localized convexity fallback additionally reaches a previously
+rejected eye on one generated natural-style mixed-lighting portrait. It stays
+within the same provisional status and bounded source-relief contract.
 
 Internal `BeautyExperimentalUpperEyelid*` names remain unchanged to preserve
 provenance. The current route uses the existing source-derived relief analyzer,

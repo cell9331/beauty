@@ -139,6 +139,35 @@ final class BeautyUpperEyelidFullnessEditorTests: XCTestCase {
         XCTAssertTrue(result.proposalsByEye.isEmpty)
     }
 
+    func testMixedLightingKeepsLocalizedConvexReliefWithoutApprovingPlanarPeer() throws {
+        let positive = try reliefFixture(bulgeMagnitude: 0, localizedBulgeMagnitude: 35,
+                                         oppositeShadowMagnitude: 90)
+        let model = try XCTUnwrap(BeautyExperimentalUpperEyelidReliefModel.analyze(
+            source: positive.source, pixels: positive.pixels
+        ))
+        XCTAssertLessThan(model.centralConvexityScore,
+                          BeautyExperimentalUpperEyelidReliefModel.minimumConvexityScore)
+        XCTAssertTrue(model.isFullnessSupported)
+        XCTAssertGreaterThanOrEqual(model.localizedConvexityScore,
+                                    BeautyExperimentalUpperEyelidReliefModel.minimumLocalizedConvexityScore)
+        let edit = BeautyExperimentalUpperEyelidReliefEditor.edit(
+            source: positive.source, support: support(leftPixels: positive.pixels), strength: 1
+        )
+        XCTAssertEqual(edit.summary.acceptedEyeCount, 1)
+        XCTAssertLessThanOrEqual(edit.summary.maximumAbsoluteChannelDelta, 16)
+        let owner = BeautyLocalRetouchCompositionOwner(source: positive.source)
+        let composed = try owner.compose(edit.makeUnits(using: owner)).canonicalImage
+        let after = try XCTUnwrap(BeautyExperimentalUpperEyelidReliefModel.analyze(
+            source: composed, pixels: positive.pixels
+        ))
+        XCTAssertLessThan(after.localizedConvexityScore, model.localizedConvexityScore * 0.85)
+        let negative = try reliefFixture(bulgeMagnitude: 0, includeCreaseDetail: true)
+        let negativeModel = try XCTUnwrap(BeautyExperimentalUpperEyelidReliefModel.analyze(
+            source: negative.source, pixels: negative.pixels
+        ))
+        XCTAssertFalse(negativeModel.isFullnessSupported)
+    }
+
     func testRejectedExperimentalSemanticOwnerApprovesGeneratedReliefAndRejectsPlanarPeer() throws {
         let positive = try reliefFixture(bulgeMagnitude: 24)
         let negative = try reliefFixture(bulgeMagnitude: 0)
@@ -266,6 +295,8 @@ final class BeautyUpperEyelidFullnessEditorTests: XCTestCase {
     private func reliefFixture(
         bulgeMagnitude: Int = 22,
         includeCreaseDetail: Bool = false,
+        localizedBulgeMagnitude: Int = 0,
+        oppositeShadowMagnitude: Int = 0,
         width: Int = 161,
         height: Int = 81
     ) throws -> (
@@ -295,7 +326,15 @@ final class BeautyUpperEyelidFullnessEditorTests: XCTestCase {
                     : 0
                 let texture = ((x * 17 + y * 13) % 7) - 3
                 let crease = includeCreaseDetail && y == 21 && (13...47).contains(x) ? -12 : 0
-                let base = 88 + x / 3 + y / 4 + bulge + texture + crease
+                let lobeDistance = pow((Double(x) - 37) / 8, 2) +
+                    pow((Double(y) - 15) / 6, 2)
+                let localizedBulge = Int((Double(localizedBulgeMagnitude) *
+                    exp(-lobeDistance / 2)).rounded())
+                let shadowDistance = pow((Double(x) - 17) / 8, 2) +
+                    pow((Double(y) - 15) / 6, 2)
+                let oppositeShadow = Int((Double(oppositeShadowMagnitude) *
+                    exp(-shadowDistance / 2)).rounded())
+                let base = 88 + x / 3 + y / 4 + bulge + localizedBulge + texture + crease - oppositeShadow
                 bytes.append(UInt8(clamping: base + 22))
                 bytes.append(UInt8(clamping: base + 10))
                 bytes.append(UInt8(clamping: base))

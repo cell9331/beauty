@@ -3,8 +3,7 @@ import BeautyDetection
 import Foundation
 
 /// Source-derived relief model used by the provisional owner-local `去脂`
-/// route. Its bounded safety mechanics are retained, while its weak visual
-/// result remains an explicitly documented quality limitation.
+/// route. Its bounded safety mechanics are retained.
 package struct BeautyExperimentalUpperEyelidReliefModel: Sendable {
     package struct Sample: Equatable, Sendable {
         package let pixelIndex: Int
@@ -17,16 +16,24 @@ package struct BeautyExperimentalUpperEyelidReliefModel: Sendable {
     }
 
     package static let minimumConvexityScore = 3.5
+    package static let minimumLocalizedConvexityScore = 8.0
+    package static let minimumLocalizedPositiveFraction = 0.35
     package static let maximumAnalysisRadius = 24
     package static let boundaryAnchorMaximumWeightQ16: UInt32 = 32_768
     package static let centralMinimumWeightQ16: UInt32 = 57_344
 
     package let samples: [Sample]
     package let centralConvexityScore: Double
+    package let localizedConvexityScore: Double
+    package let localizedPositiveFraction: Double
 
     package var isFullnessSupported: Bool {
-        centralConvexityScore.isFinite
-            && centralConvexityScore >= Self.minimumConvexityScore
+        guard centralConvexityScore.isFinite else { return false }
+        if centralConvexityScore >= Self.minimumConvexityScore { return true }
+        return centralConvexityScore >= 0
+            && localizedConvexityScore.isFinite
+            && localizedConvexityScore >= Self.minimumLocalizedConvexityScore
+            && localizedPositiveFraction >= Self.minimumLocalizedPositiveFraction
     }
 
     package static func analyze(
@@ -73,6 +80,7 @@ package struct BeautyExperimentalUpperEyelidReliefModel: Sendable {
         samples.reserveCapacity(pixels.count)
         var centralWeightedResidual = 0.0
         var centralWeight = 0.0
+        var centralResiduals: [Double] = []
         for (pixel, luminance) in zip(pixels, lowFrequency) {
             let point = patch.normalizedPoint(pixelIndex: pixel.pixelIndex)
             let reference = plane.evaluate(x: point.x, y: point.y)
@@ -86,12 +94,19 @@ package struct BeautyExperimentalUpperEyelidReliefModel: Sendable {
                 let weight = Double(pixel.softWeightQ16)
                 centralWeightedResidual += sample.convexityResidual * weight
                 centralWeight += weight
+                centralResiduals.append(sample.convexityResidual)
             }
         }
-        guard centralWeight > 0 else { return nil }
+        guard centralWeight > 0, !centralResiduals.isEmpty else { return nil }
+        centralResiduals.sort()
+        let positiveCount = centralResiduals.reduce(0) {
+            $0 + ($1 >= minimumConvexityScore ? 1 : 0)
+        }
         return BeautyExperimentalUpperEyelidReliefModel(
             samples: samples,
-            centralConvexityScore: centralWeightedResidual / centralWeight
+            centralConvexityScore: centralWeightedResidual / centralWeight,
+            localizedConvexityScore: centralResiduals[centralResiduals.count * 3 / 4],
+            localizedPositiveFraction: Double(positiveCount) / Double(centralResiduals.count)
         )
     }
 

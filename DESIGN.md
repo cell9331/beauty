@@ -600,6 +600,14 @@ retain an explicit empty carrier instead of turning into nil template absence.
 
 ## Current Post-Archive Audit Status
 
+The 2026-09-27 provisional upper-eyelid source-relief gate accepts either
+central mean convexity at least 3.5, or a localized convexity pattern with
+nonnegative central mean, central upper-quartile residual at least 8, and at
+least 35% of central samples above 3.5. The existing per-eye semantic
+approval, Q16 feather, immutable-source correction and ±16 channel ceiling
+still apply. A generated mixed-lighting positive passes the localized path;
+planar lighting and fine-crease negatives remain rejected.
+
 v1.21 extends the current public snapshot with the positive-only trailing field
 `upperEyelidFullnessReduction`. The owner accepts the existing bounded v4
 source-derived relief behavior as provisional while recording weak visual

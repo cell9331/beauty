@@ -1,5 +1,16 @@
 # QUALITY_SCORE.md
 
+## 2026-09-27 provisional upper-eyelid mixed-lighting gate
+
+The generated source-relief positive has a central mean below the old 3.5
+threshold but a coherent localized convex region; the revised bounded gate
+accepts it and reduces its upper-quartile residual by at least 15%. Planar
+lighting and fine-crease negatives remain rejected (`8/0/0` focused tests).
+One generated natural-style public CPU portrait changes both upper lids with
+maximum RGB channel delta 16 and unchanged distant background. The original-
+size change remains mild, so this is a safety and coverage improvement within
+the provisional owner-local effect, not broad visual-quality qualification.
+
 ## 2026-09-27 symmetry and lower-chin generated-pixel acceptance
 
 Observed asymmetric versus symmetric contour fixtures establish that

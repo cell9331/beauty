@@ -247,6 +247,17 @@ effect. These changes do not establish natural-portrait visual quality.
 
 ## v1.24 upper-eyelid effect improvement boundary
 
+The 2026-09-27 owner-local follow-up admits a second source-derived shape:
+an upper lid can contain a coherent convex region even when mixed lighting
+pulls its whole central mean below the previous threshold. The fallback
+requires a nonnegative mean, a central upper quartile of at least 8, and at
+least 35% of central samples above the existing convexity threshold. On one
+generated natural-style portrait, the previously rejected peer eye now
+receives a bounded correction while its already supported eye and distant
+background stay unchanged. The original-size result is still visually mild;
+the owner acceptance remains provisional and does not imply broad portrait
+or commercial quality.
+
 The owner-local `upperEyelidFullnessReduction` scalar and both public
 still-image entries remain unchanged. The current internal gain adjustment
 makes a half-strength generated convex upper-lid relief metric measurably
