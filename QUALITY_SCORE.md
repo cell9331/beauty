@@ -1,5 +1,15 @@
 # QUALITY_SCORE.md
 
+## 2026-09-27 lower vertical generated-pixel acceptance
+
+`philtrumLength` and `lowerFaceLength` independently move generated target
+markers in both signed directions while the sibling marker, exterior and
+alpha stay unchanged. Public neutral, no-face, repeat, four orientations,
+input mirror, Codable and typed input-limit recovery tests pass `2/0/0`;
+provider direction passes `1/0/0`, parameter inventory `50/0/0`, legacy
+projection `4/0/0`, and renderer regression `24/0/0`. Full no-skip closeout
+remains pending for the active plan. Taxonomy stays `partial`.
+
 ## 2026-09-27 forehead and midface generated marker acceptance
 
 The independent `foreheadHeight` and `midfaceLength` public controls move

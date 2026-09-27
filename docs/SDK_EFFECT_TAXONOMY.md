@@ -40,14 +40,14 @@ contract without renaming or aliasing unsupported behavior.
 
 ## Current public parameter inventory
 
-The current contract contains exactly 68 stored fields: 67 numeric controls and
+The current contract contains exactly 70 stored fields: 69 numeric controls and
 the optional `filterId`. Unit controls normalize to `0...1`; signed controls
 normalize to `-1...1`; `filterId` is an optional logical resource identifier.
 
 <!-- SDK_PARAMETER_INVENTORY_BEGIN -->
 - Skin: `skinSmoothing`, `skinWhitening`, `skinRosy`, `skinSharpen`
 - Global tone: `brightness`, `contrast`, `saturation`, `temperature`, `tint`, `exposure`, `highlight`, `shadow`
-- Face: `faceSlim`, `faceSmall`, `wholeFaceYPosition`, `wholeFaceXPosition`, `wholeFaceTilt`, `faceShortening`, `foreheadHeight`, `midfaceLength`, `faceVShape`, `jawSlim`, `chinLength`, `faceContourSmooth`, `templeFullness`, `cheekboneSlim`, `chinTaper`
+- Face: `faceSlim`, `faceSmall`, `wholeFaceYPosition`, `wholeFaceXPosition`, `wholeFaceTilt`, `faceShortening`, `foreheadHeight`, `midfaceLength`, `philtrumLength`, `lowerFaceLength`, `faceVShape`, `jawSlim`, `chinLength`, `faceContourSmooth`, `templeFullness`, `cheekboneSlim`, `chinTaper`
 - Eyes: `eyeSize`, `eyeDistance`, `eyeYPosition`, `eyeTailLift`, `eyeHeight`, `eyeLength`, `upperEyelidLift`, `pupilSize`, `gazeCorrection`, `lowerEyelidDrop`, `eyeTilt`, `innerCornerOpen`, `outerCornerOpen`, `eyeSymmetry`
 - Eyebrows: `eyebrowYPosition`, `eyebrowThickness`, `eyebrowLength`, `eyebrowSpacing`, `eyebrowHeadSpacing`, `eyebrowTilt`, `eyebrowPeakDefinition`
 - Nose: `noseSlim`, `noseWingSlim`, `noseTipSize`, `noseBridge`, `noseRootNarrowing`, `noseTipLift`
@@ -107,8 +107,8 @@ names and visual organization are intentionally omitted from the active contract
 | 比例 | 颅顶 | future | — | No current neutral parameter. |
 | 比例 | 额头 | partial | `foreheadHeight` | Signed bounded image-plane movement of the selected face's upper central region passes generated marker direction and protection checks. This does not establish a hairline or skull-height adjustment; broader portrait evidence remains pending. |
 | 比例 | 中庭 | partial | `midfaceLength` | Signed bounded image-plane movement of the selected face's central region passes generated marker direction and protection checks. This does not establish three-dimensional facial proportion quality; broader portrait evidence remains pending. |
-| 比例 | 人中 | future | — | No current neutral parameter. |
-| 比例 | 下庭 | future | — | No current neutral parameter. |
+| 比例 | 人中 | partial | `philtrumLength` | Signed bounded image-plane movement between selected nose-tip and upper-lip landmarks passes generated public marker direction, protected-region and metadata checks. It does not establish anatomical correction across varied portraits. |
+| 比例 | 下庭 | partial | `lowerFaceLength` | Signed bounded image-plane movement between selected mouth and chin landmarks passes generated public marker direction, protected-region and metadata checks. It does not establish anatomical correction across varied portraits. |
 | 比例 | 短脸 | partial | `faceShortening` | Bounded two-point vertical compression of a sufficiently tall selected face passes generated marker direction and protection checks. This is an image-plane proportion control; broader portrait evidence remains pending. |
 | 脸型 | 脸宽 | implemented | `faceSlim` | Bounded contour narrowing. |
 | 脸型 | 小脸 | implemented | `faceSmall` | Bounded small-face geometry. |

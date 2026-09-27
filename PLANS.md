@@ -69,6 +69,7 @@
   - 「短脸」已接入独立公开字段、有效强度上限 `0.30`、脸框纵横比保护、两点相向局部变形及 CPU/Metal 共享点源。生成公开像素、参数/Codable、方向镜像、neutral/repeat、中心/远背景/alpha/extent、无脸与 typed failure/recovery `3/0/0`，当前参数/资源/renderer/provider/Metal 清单聚焦 `90/0/0`。完整 archive-first no-skip `1012/0/0`、8 opt-in、0 skip；taxonomy 仅升至二维 `partial`，仍需自然肖像覆盖。
   - 「额头」「中庭」候选契约：独立签名 `foreheadHeight` 与 `midfaceLength`，零值源图一致；前者正值将脸框上部中央局部区域上移，负值下移，后者正值将眉眼与鼻部之间的中段局部区域下移，负值上移。仅在已选有效脸框与 contour 内发出各自有界二维控制点，不声称头骨结构或三维比例。先用三色内存生成图锁定两处标记的正反方向、互不串扰的保护标记、远背景/alpha/extent、方向镜像、重复、缺脸、Codable 与 typed failure，然后接入 resolver、冲突缩放、CPU/Metal 共享点和当前清单。更广肖像验收前 taxonomy 至多 `partial`。
   - 「额头」「中庭」已接入独立公开签名字段、`±0.30` 有效上限和共享 CPU/Metal 点源。预实现公开测试按预期因字段缺失失败，接入后两处标记的正反方向、互相保护、远背景/alpha/extent、四方向×镜像、neutral/repeat、缺脸、Codable 与 typed failure/recovery `4/0/0`。当前清单/renderer/provider/Metal 聚焦组合 152 项仅有一条旧 66 字段断言失败，修正后去脂集成 `5/0/0`，SDK-only post-archive 边界通过；完整 archive-first no-skip `1017/0/0`、8 opt-in、0 skip。taxonomy 仅记二维 `partial`，尚无自然肖像泛化证据。
+  - 「人中」「下庭」按所有者选择的独立二维像素口径，新增签名 `philtrumLength` 和 `lowerFaceLength`；前者仅在有效鼻尖—上唇间距中发点，后者仅在嘴唇—下巴间距中发点，正值向下、负值向上。目标标记正负方向、相互保护、远背景/alpha/extent、四方向×镜像、neutral/repeat、缺脸、旧 JSON 默认值及 typed failure/recovery 公开测试 `2/0/0`，provider `1/0/0`、参数清单 `50/0/0`、旧字段投影 `4/0/0`、renderer 回归 `24/0/0`。taxonomy 暂记二维 `partial`；更广肖像及最终 no-skip 尚待完成。
 - [ ] 脸型：分别定义并实现「去双下巴」「去双下巴 Pro」「发际线」三项局部效果，先确认合用的 request-local 语义支撑与资源授权。
 - [ ] 每项效果经公开输入/输出像素与元数据验收后更新 taxonomy、产品/设计/安全/可靠性 owner；最终运行 archive-first 完整 no-skip SwiftPM 门禁。
 

@@ -44,6 +44,8 @@ public struct BeautyEffectiveStrengths: Equatable, Sendable {
     public var faceShortening: Float = 0
     public var foreheadHeight: Float = 0
     public var midfaceLength: Float = 0
+    public var philtrumLength: Float = 0
+    public var lowerFaceLength: Float = 0
     public var faceVShape: Float = 0
     public var jawSlim: Float = 0
     public var chinLength: Float = 0

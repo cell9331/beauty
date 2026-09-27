@@ -267,6 +267,8 @@ package struct BeautyBackendRequest: @unchecked Sendable {
             plan.effectiveStrengths.wholeFaceTilt,
             plan.effectiveStrengths.foreheadHeight,
             plan.effectiveStrengths.midfaceLength,
+            plan.effectiveStrengths.philtrumLength,
+            plan.effectiveStrengths.lowerFaceLength,
             plan.effectiveStrengths.eyeDistance,
             plan.effectiveStrengths.eyeYPosition,
             plan.effectiveStrengths.eyeTilt,

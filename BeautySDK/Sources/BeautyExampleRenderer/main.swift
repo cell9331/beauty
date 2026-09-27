@@ -140,6 +140,26 @@ let cases = [
         parameters: BeautyParameters(midfaceLength: -0.30)
     ),
     RenderCase(
+        id: "philtrumLength_plus0p30",
+        displayName: "philtrumLength +0.30",
+        parameters: BeautyParameters(philtrumLength: 0.30)
+    ),
+    RenderCase(
+        id: "philtrumLength_minus0p30",
+        displayName: "philtrumLength -0.30",
+        parameters: BeautyParameters(philtrumLength: -0.30)
+    ),
+    RenderCase(
+        id: "lowerFaceLength_plus0p30",
+        displayName: "lowerFaceLength +0.30",
+        parameters: BeautyParameters(lowerFaceLength: 0.30)
+    ),
+    RenderCase(
+        id: "lowerFaceLength_minus0p30",
+        displayName: "lowerFaceLength -0.30",
+        parameters: BeautyParameters(lowerFaceLength: -0.30)
+    ),
+    RenderCase(
         id: "chinLength_plus0p30",
         displayName: "chinLength +0.30",
         parameters: BeautyParameters(chinLength: 0.30)

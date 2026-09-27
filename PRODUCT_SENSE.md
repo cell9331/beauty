@@ -1,5 +1,14 @@
 # PRODUCT_SENSE.md
 
+## 2026-09-27 philtrum and lower-face owner-local controls
+
+`比例 / 人中` and `比例 / 下庭` now have independent signed parameters. Each
+moves a separate generated marker in both requested directions through the
+public still-image path while preserving the other marker, far background
+and alpha. Neutral, no-face, repeat, four orientations, input mirror, legacy
+Codable defaults and typed failure recovery pass. Taxonomy remains `partial`
+pending broader portrait acceptance.
+
 ## 2026-09-27 forehead and midface owner-local controls
 
 `比例 / 额头` and `比例 / 中庭` now have separate signed parameters. On generated

@@ -1,5 +1,12 @@
 # ARCHITECTURE.md
 
+## 2026-09-27 philtrum and lower-face proportion controls
+
+`philtrumLength` and `lowerFaceLength` append separate signed parameters to
+the existing resolver and face-shape provider. Landmark-bounded points use
+the shared CPU/Metal geometry route. No target, detector, shader, model, or
+backend was added.
+
 ## 2026-09-27 forehead and midface proportion controls
 
 `foreheadHeight` and `midfaceLength` append independent signed parameters to

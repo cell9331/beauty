@@ -356,6 +356,36 @@ final class FaceShapeWarpProviderTests: XCTestCase {
         }
     }
 
+    func testPhiltrumAndLowerFaceUseLandmarkBoundedIndependentGaps() {
+        let provider = FaceShapeWarpProvider()
+        for field in ["philtrum", "lowerFace"] {
+            let plus = provider.fieldEmissions(
+                face: .fixture,
+                strengths: field == "philtrum" ? strengths(philtrumLength: 0.3) :
+                    strengths(lowerFaceLength: 0.3)
+            )
+            let minus = provider.fieldEmissions(
+                face: .fixture,
+                strengths: field == "philtrum" ? strengths(philtrumLength: -0.3) :
+                    strengths(lowerFaceLength: -0.3)
+            )
+            let positive = field == "philtrum" ? plus.philtrumLength : plus.lowerFaceLength
+            let negative = field == "philtrum" ? minus.philtrumLength : minus.lowerFaceLength
+            XCTAssertEqual(positive.count, 1)
+            XCTAssertEqual(negative.count, 1)
+            XCTAssertEqual(positive[0].source, negative[0].source)
+            XCTAssertGreaterThan(positive[0].target.y, positive[0].source.y)
+            XCTAssertLessThan(negative[0].target.y, negative[0].source.y)
+            XCTAssertGreaterThan(negative[0].source.y, 0.5)
+            XCTAssertTrue(positive[0].radius > 0)
+        }
+        let absent = provider.fieldEmissions(
+            face: .missingContour, strengths: strengths(philtrumLength: 0.3, lowerFaceLength: 0.3)
+        )
+        XCTAssertTrue(absent.philtrumLength.isEmpty)
+        XCTAssertTrue(absent.lowerFaceLength.isEmpty)
+    }
+
     func testFaceShapeOutputsAreDeterministicClampedAndProportionAdjacent() {
         let face = FaceGeometry.fixture
         let provider = FaceShapeWarpProvider()
@@ -939,6 +969,8 @@ final class FaceShapeWarpProviderTests: XCTestCase {
         faceShortening: Float = 0,
         foreheadHeight: Float = 0,
         midfaceLength: Float = 0,
+        philtrumLength: Float = 0,
+        lowerFaceLength: Float = 0,
         faceVShape: Float = 0,
         jawSlim: Float = 0,
         chinLength: Float = 0,
@@ -968,6 +1000,12 @@ final class FaceShapeWarpProviderTests: XCTestCase {
         )
         strengths.midfaceLength = min(
             max(midfaceLength, -BeautySafetyCaps.midfaceLength), BeautySafetyCaps.midfaceLength
+        )
+        strengths.philtrumLength = min(
+            max(philtrumLength, -BeautySafetyCaps.philtrumLength), BeautySafetyCaps.philtrumLength
+        )
+        strengths.lowerFaceLength = min(
+            max(lowerFaceLength, -BeautySafetyCaps.lowerFaceLength), BeautySafetyCaps.lowerFaceLength
         )
         strengths.faceVShape = min(faceVShape, BeautySafetyCaps.faceVShape)
         strengths.jawSlim = min(jawSlim, BeautySafetyCaps.jawSlim)

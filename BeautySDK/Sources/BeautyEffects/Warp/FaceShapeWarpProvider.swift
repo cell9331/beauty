@@ -9,6 +9,8 @@ struct FaceShapeWarpFieldEmissions: Equatable, Sendable {
     let faceShortening: [WarpControlPoint]
     let foreheadHeight: [WarpControlPoint]
     let midfaceLength: [WarpControlPoint]
+    let philtrumLength: [WarpControlPoint]
+    let lowerFaceLength: [WarpControlPoint]
     let faceVShape: [WarpControlPoint]
     let jawSlim: [WarpControlPoint]
     let faceContourSmooth: [WarpControlPoint]
@@ -16,7 +18,7 @@ struct FaceShapeWarpFieldEmissions: Equatable, Sendable {
     let cheekboneSlim: [WarpControlPoint]
 
     var points: [WarpControlPoint] {
-        faceSlim + faceSmall + wholeFaceYPosition + wholeFaceXPosition + wholeFaceTilt + faceShortening + foreheadHeight + midfaceLength + faceVShape + jawSlim +
+        faceSlim + faceSmall + wholeFaceYPosition + wholeFaceXPosition + wholeFaceTilt + faceShortening + foreheadHeight + midfaceLength + philtrumLength + lowerFaceLength + faceVShape + jawSlim +
             faceContourSmooth + templeFullness + cheekboneSlim
     }
 
@@ -41,6 +43,12 @@ struct FaceShapeWarpFieldEmissions: Equatable, Sendable {
         }
         if strengths.midfaceLength != 0, midfaceLength.isEmpty {
             sanitized.midfaceLength = 0
+        }
+        if strengths.philtrumLength != 0, philtrumLength.isEmpty {
+            sanitized.philtrumLength = 0
+        }
+        if strengths.lowerFaceLength != 0, lowerFaceLength.isEmpty {
+            sanitized.lowerFaceLength = 0
         }
         if strengths.faceVShape != 0, faceVShape.isEmpty { sanitized.faceVShape = 0 }
         if strengths.jawSlim != 0, jawSlim.isEmpty { sanitized.jawSlim = 0 }
@@ -106,6 +114,12 @@ struct FaceShapeWarpProvider: WarpControlPointProvider {
                                       cap: BeautySafetyCaps.midfaceLength,
                                       yFraction: 0.52, movementFraction: 0.055,
                                       radiusFraction: 0.14)
+                : [],
+            philtrumLength: hasLegacyContour
+                ? philtrumPoint(face: face, strength: strengths.philtrumLength)
+                : [],
+            lowerFaceLength: hasLegacyContour
+                ? lowerFaceLengthPoint(face: face, strength: strengths.lowerFaceLength)
                 : [],
             faceVShape: hasLegacyContour && strengths.faceVShape > 0
                 ? lowerFacePoints(
@@ -325,6 +339,57 @@ struct FaceShapeWarpProvider: WarpControlPointProvider {
             source.x, source.y + bounds.height * movementFraction * strength / cap
         )
         let radius = min(1, max(bounds.width, bounds.height) * radiusFraction)
+        guard (0...1).contains(source.x), (0...1).contains(source.y),
+              (0...1).contains(target.y), radius.isFinite, radius >= 0.001
+        else { return [] }
+        return [WarpControlPoint(
+            source: source, target: target, radius: radius,
+            strength: abs(strength), falloff: 2
+        )]
+    }
+
+    private func philtrumPoint(face: FaceGeometry, strength: Float) -> [WarpControlPoint] {
+        let nose = face.noseTip.isEmpty ? face.nose : face.noseTip
+        let lips = face.upperLips.isEmpty ? face.outerLips : face.upperLips
+        guard let noseCenter = LandmarkGeometryHelper.center(of: nose),
+              let lipCenter = LandmarkGeometryHelper.center(of: lips)
+        else { return [] }
+        return verticalGapPoint(
+            face: face, upper: noseCenter, lower: lipCenter,
+            strength: strength, cap: BeautySafetyCaps.philtrumLength,
+            displacementScale: 0.65
+        )
+    }
+
+    private func lowerFaceLengthPoint(face: FaceGeometry, strength: Float) -> [WarpControlPoint] {
+        guard let lipCenter = LandmarkGeometryHelper.center(of: face.outerLips),
+              let chin = face.faceContour.max(by: { $0.y < $1.y })
+        else { return [] }
+        return verticalGapPoint(
+            face: face, upper: lipCenter, lower: chin,
+            strength: strength, cap: BeautySafetyCaps.lowerFaceLength,
+            displacementScale: 0.16
+        )
+    }
+
+    private func verticalGapPoint(
+        face: FaceGeometry, upper: SIMD2<Float>, lower: SIMD2<Float>,
+        strength: Float, cap: Float, displacementScale: Float
+    ) -> [WarpControlPoint] {
+        let gap = lower.y - upper.y
+        guard strength.isFinite, abs(strength) > Float.ulpOfOne,
+              abs(strength) <= cap,
+              gap.isFinite, gap > face.bounds.height * 0.035,
+              [upper, lower].allSatisfy({
+                  $0.x.isFinite && $0.y.isFinite &&
+                      (0...1).contains($0.x) && (0...1).contains($0.y)
+              })
+        else { return [] }
+        let source = SIMD2<Float>((upper.x + lower.x) * 0.5, (upper.y + lower.y) * 0.5)
+        let target = SIMD2<Float>(
+            source.x, source.y + gap * displacementScale * strength / cap
+        )
+        let radius = min(face.bounds.width * 0.15, gap * 1.5)
         guard (0...1).contains(source.x), (0...1).contains(source.y),
               (0...1).contains(target.y), radius.isFinite, radius >= 0.001
         else { return [] }

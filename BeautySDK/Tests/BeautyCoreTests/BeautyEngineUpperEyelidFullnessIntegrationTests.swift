@@ -38,7 +38,7 @@ final class BeautyEngineUpperEyelidFullnessIntegrationTests: XCTestCase {
         let data = try JSONEncoder().encode(parameters)
         let object = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])
         let decoded = try JSONDecoder().decode(BeautyParameters.self, from: data)
-        XCTAssertEqual(object.count, 68)
+        XCTAssertEqual(object.count, 70)
         XCTAssertEqual(
             try XCTUnwrap(object["upperEyelidFullnessReduction"] as? Double),
             0.4,
@@ -46,8 +46,8 @@ final class BeautyEngineUpperEyelidFullnessIntegrationTests: XCTestCase {
         )
         XCTAssertEqual(decoded, parameters)
         XCTAssertEqual(
-            Array(Mirror(reflecting: parameters).children.compactMap(\.label).suffix(8)),
-            ["scleraRednessReduction", "upperEyelidFullnessReduction", "wholeFaceYPosition", "wholeFaceXPosition", "wholeFaceTilt", "faceShortening", "foreheadHeight", "midfaceLength"]
+            Array(Mirror(reflecting: parameters).children.compactMap(\.label).suffix(10)),
+            ["scleraRednessReduction", "upperEyelidFullnessReduction", "wholeFaceYPosition", "wholeFaceXPosition", "wholeFaceTilt", "faceShortening", "foreheadHeight", "midfaceLength", "philtrumLength", "lowerFaceLength"]
         )
     }
 

@@ -1,5 +1,17 @@
 # DESIGN.md
 
+## 2026-09-27 lower vertical proportion contract
+
+`philtrumLength` and `lowerFaceLength` are signed, neutral at zero and
+effectively capped at `±0.30`. The former moves a local point between the
+selected nose tip and upper lip; the latter moves one between the mouth and
+lowest face-contour point. Positive values move down in canonical image
+coordinates and negative values move up. A valid unit landmark pair with a
+minimum vertical gap and contour is required. The point displacement is at
+most 65% and 16% of the respective source gap, with a bounded local radius
+and falloff two. Missing, inverted or invalid support emits no point;
+combined geometry scaling still applies. These are image-plane controls.
+
 ## 2026-09-27 forehead and midface image-plane contract
 
 Both controls are signed, neutral at zero and capped at `±0.30`. On valid
