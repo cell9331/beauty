@@ -137,10 +137,13 @@ enum BeautySkinTexturePipeline {
                 let red = Int(source[offset])
                 let green = Int(source[offset + 1])
                 let blue = Int(source[offset + 2])
-                // Cool, low-contrast regions can satisfy the local edge gate
-                // while being unrelated to skin. Keep them source-exact. This
-                // is a narrow color guard, not anatomical segmentation.
-                guard red + 8 >= green, red + 8 >= blue else { continue }
+                // Both cool regions and strongly saturated warm decorations can
+                // pass the local edge gate without being skin. Admit only the
+                // conservative chroma band covered by the generated cheek
+                // positives; this remains a color guard, not segmentation.
+                guard red + 8 >= green, red + 8 >= blue,
+                      red - green <= 80, red - blue <= 100
+                else { continue }
                 var weightedLuminance = 0
                 var protectedEdge = false
                 for dy in -radius...radius {

@@ -9,9 +9,11 @@ supported request on the same engine can apply texture normally. Other color
 controls remain independent. The row-bounded ellipse loop visits only the
 conservative face interior before the existing alpha, color, and edge checks.
 The same request-local bounds exclude fixed eye/lid and lip zones before
-neighborhood sampling. These rectangles are conservative protection regions,
-not observed feature segmentation; unusual face framing can still require
-additional evidence or protection.
+neighborhood sampling. A saturated-warm source-RGB rejection keeps the tested
+in-face decoration source-exact while the opposite cheek remains active; it
+is deterministic and uses no stored classification state. These guards are
+conservative protection regions, not observed feature segmentation; unusual
+face framing or skin-colored objects can still require additional protection.
 The earlier texture pixel cap still bounds allocation; Vision and Core Image
 memory and physical-device speed remain unmeasured.
 

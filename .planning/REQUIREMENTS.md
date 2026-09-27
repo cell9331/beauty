@@ -8,16 +8,19 @@ provenance alone. Dated v1.22 requirements below remain historical.
 Latest completed milestone: **v1.24 去脂效果改进**. Its frozen requirements and phase
 sequence are in [V1.24-UPPER-EYELID-CURRENT.md](V1.24-UPPER-EYELID-CURRENT.md).
 The v1.22 requirements below remain historical. v1.23 completed only its
-generated-input mechanics scope; FACE-01 qualifying positive/negative effect
-evidence remains FUTURE-04 and may use generated portraits.
+generated-input mechanics scope. A later repair passed predeclared generated
+portrait positive/negative effect and protection oracles; current FACE-01 is
+`implemented` at the bounded owner-local SDK scope in the
+[taxonomy](../docs/SDK_EFFECT_TAXONOMY.md). Fifteen other rows remain
+`partial` under their own image-plane and semantic limits.
 
-Current successor requirement: **FACE01-23** is the separately authorized
+Historical successor requirement: **FACE01-23** was the separately authorized
 v1.23 `faceContourSmooth` repair and qualification in
-[V1.23-FACE01-CURRENT.md](V1.23-FACE01-CURRENT.md). The candidate has passed
-the unchanged generated oracle but has not passed a meaningful positive
-portrait direction gate; its taxonomy remains `partial`. The v1.22
-requirements and FUTURE-04 wording below describe the completed historical
-scope and the source state at its closeout.
+[V1.23-FACE01-CURRENT.md](V1.23-FACE01-CURRENT.md). Its signed mechanics
+receipt did not grant portrait effectiveness. The subsequent repair and
+current taxonomy supersede that effect-status description without changing
+the v1.23 receipt. The v1.22 requirements and FUTURE-04 wording below describe
+the completed historical scope and the source state at its closeout.
 
 ## Current evidence interpretation (2026-09-23)
 

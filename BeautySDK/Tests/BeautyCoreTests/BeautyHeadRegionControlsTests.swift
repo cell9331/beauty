@@ -34,6 +34,49 @@ final class BeautyHeadRegionControlsTests: XCTestCase {
         )
     }
 
+    func testGeneratedPortraitHeadAndHairBoundariesMoveInBothSkinVariants() throws {
+        let cases: [((Int, Int), BeautyParameters, Axis, Double)] = [
+            ((45, 47), .init(headSmall: 0.30), .x, 1),
+            ((43, 37), .init(headWrap: 0.25), .x, -1),
+            ((64, 20), .init(cranialCrownHeight: 0.25), .y, -1),
+            ((64, 20), .init(cranialCrownHeight: -0.25), .y, 1),
+            ((54, 32), .init(hairlineHeight: 0.25), .y, 1),
+            ((54, 32), .init(hairlineHeight: -0.25), .y, -1),
+        ]
+        for deepSkin in [false, true] {
+            let engine = try BeautyEngine(
+                faceDetectionProvider: SDKTestingFaceDetectionProvider([.usableFace])
+            )
+            let noFace = try BeautyEngine(
+                faceDetectionProvider: SDKTestingFaceDetectionProvider([.noFace])
+            )
+            for (marker, parameters, axis, sign) in cases {
+                let source = makePortraitImage(marker: marker, deepSkin: deepSkin)
+                let original = rgba(source)
+                let beforeCenter = centroid(original, near: marker)
+                XCTAssertEqual(rgba(try engine.processResult(
+                    image: source, metadata: metadata(), parameters: .init()
+                ).output), original)
+                let result = try engine.processResult(
+                    image: source, metadata: metadata(), parameters: parameters
+                )
+                let output = rgba(result.output)
+                let afterCenter = centroid(output, near: marker)
+                let displacement = axis == .x ? afterCenter.0 - beforeCenter.0 :
+                    afterCenter.1 - beforeCenter.1
+                XCTAssertGreaterThan(displacement * sign, 0.15)
+                XCTAssertEqual(result.output.extent, source.extent)
+                assertProtection(original, output)
+                XCTAssertEqual(rgba(try engine.processResult(
+                    image: source, metadata: metadata(), parameters: parameters
+                ).output), output)
+                XCTAssertEqual(rgba(try noFace.processResult(
+                    image: source, metadata: metadata(), parameters: parameters
+                ).output), original)
+            }
+        }
+    }
+
     func testNeutralLegacyNoFaceOrientationRepeatAndTypedRecovery() throws {
         let source = makeImage(marker: (45, 47))
         let original = rgba(source)
@@ -134,6 +177,48 @@ final class BeautyHeadRegionControlsTests: XCTestCase {
                 bytes[offset] = abs(x - marker.0) <= 2 && abs(y - marker.1) <= 2 ? 240 : 30
                 bytes[offset + 1] = 40
                 bytes[offset + 2] = (62...66).contains(x) && (68...72).contains(y) ? 240 : 50
+                bytes[offset + 3] = 255
+            }
+        }
+        return CIImage(
+            bitmapData: Data(bytes), bytesPerRow: side * 4,
+            size: CGSize(width: side, height: side), format: .RGBA8,
+            colorSpace: CGColorSpace(name: CGColorSpace.sRGB)!
+        )
+    }
+
+    private func makePortraitImage(marker: (Int, Int), deepSkin: Bool) -> CIImage {
+        var bytes = [UInt8](repeating: 0, count: side * side * 4)
+        for y in 0..<side {
+            for x in 0..<side {
+                let dx = Double(x - 64) / 37
+                let dy = Double(y - 63) / 49
+                let insideHead = dx * dx + dy * dy <= 1
+                let eye = (52...55).contains(y) &&
+                    ((47...53).contains(x) || (75...81).contains(x))
+                let nose = (65...75).contains(y) && (62...66).contains(x)
+                let mouth = (83...86).contains(y) && (53...75).contains(x)
+                let skin: (UInt8, UInt8, UInt8) = deepSkin ? (90, 77, 68) : (157, 132, 116)
+                let rgb: (UInt8, UInt8, UInt8)
+                if abs(x - marker.0) <= 2 && abs(y - marker.1) <= 2 {
+                    rgb = (240, 40, 50)
+                } else if (62...66).contains(x) && (68...72).contains(y) {
+                    rgb = (30, 40, 240)
+                } else if !insideHead {
+                    rgb = (30, 40, 50)
+                } else if y < 35 {
+                    rgb = (35, 33, 32)
+                } else if eye || nose {
+                    rgb = (45, 40, 38)
+                } else if mouth {
+                    rgb = (110, 70, 75)
+                } else {
+                    rgb = skin
+                }
+                let offset = (y * side + x) * 4
+                bytes[offset] = rgb.0
+                bytes[offset + 1] = rgb.1
+                bytes[offset + 2] = rgb.2
                 bytes[offset + 3] = 255
             }
         }

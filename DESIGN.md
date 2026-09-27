@@ -68,11 +68,12 @@ buffers return typed `invalidInput` before texture raster allocation. Neutral
 or unrelated effects retain the general limit. The current still-image
 texture implementation can own up to three RGBA8 buffers, at most 96 MiB in
 total at this cap; Core Image and system allocations are outside that bound.
-For each otherwise eligible opaque texture pixel, the transform now leaves it
-source-exact when `red + 8 < green` or `red + 8 < blue`. This protects the
-specified cool low-contrast background negative without changing the existing
-local edge, alpha, quality-mode and gain rules. It is a chromatic guard, not
-face segmentation; other non-face colors may still be processed.
+For each otherwise eligible opaque texture pixel, the transform leaves it
+source-exact when `red + 8 < green`, `red + 8 < blue`, `red - green > 80`, or
+`red - blue > 100`. The upper chroma bounds additionally protect the frozen
+high-saturation warm decoration inside the face ellipse while the opposite
+cheek remains active. These are conservative source-RGB guards and not face
+or skin segmentation; skin-colored non-skin content may still be processed.
 
 ## 2026-09-27 Metal geometry capacity contract
 

@@ -64,7 +64,9 @@ requires a fresh selected face and confines texture to a conservative interior
 ellipse; generated cool and warm background negatives stay source-exact, and
 no-face texture requests fail closed. Coarse eye/lid and lip exclusion zones
 also keep generated low-contrast feature pixels exact while cheek texture
-changes. This is not skin segmentation or a claim
+changes. A saturated warm decoration within the face ellipse is also exact
+under the conservative source-RGB guard, with the opposite cheek still active.
+This is not skin segmentation or a claim
 about all real skin, hair, devices, or commercial visual quality. The four
 skin-control fields and their caps are unchanged.
 

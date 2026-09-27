@@ -9,14 +9,16 @@ Latest completed milestone: [v1.24 去脂效果改进](V1.24-UPPER-EYELID-CURREN
 Phases 97–99, with a frozen pre-edit pixel target, bounded internal
 adjustment, complete SDK gate, and independent review. The phase list below
 is the completed v1.22 historical roadmap. v1.23 is complete for generated
-mechanics only; FACE-01 qualifying rough-positive/smooth-negative effect
-evidence remains FUTURE-04 and may use generated portraits.
+mechanics only. A later repair passed predeclared generated-portrait
+rough-positive/smooth-negative direction and protection oracles; FACE-01 is
+`implemented` at the current bounded owner-local SDK scope in the
+[taxonomy](../docs/SDK_EFFECT_TAXONOMY.md).
 
-Current successor: [v1.23 FACE-01 contour follow-up](V1.23-FACE01-CURRENT.md)
-was authorized under the owner's 2026-09-23 completion request. Its remaining
-positive/negative portrait qualification is separate from this completed
-v1.22 roadmap. The historical phase list and signed receipts below are not
-reopened or overwritten.
+Historical successor: [v1.23 FACE-01 contour follow-up](V1.23-FACE01-CURRENT.md)
+was authorized under the owner's 2026-09-23 completion request. Its signed
+mechanics result remains separate from the later successful effect repair and
+this completed v1.22 roadmap. The historical phase list and signed receipts
+below are not reopened or overwritten.
 
 ## Overview
 
