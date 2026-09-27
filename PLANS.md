@@ -31,9 +31,14 @@
 
 ## 3. Active
 
-### A-2026-09-26-remaining-sdk-effects-and-risks
+无。
 
-- Status: active。所有者要求在现有 owner-local SDK 边界内逐项完成本账本剩余效果、配置与条件性风险。每项先固定独立语义、正负例、目标/保护区、元数据、确定性和 typed failure 验收，再修改实现；完成一项即记录对应验证，不以其他项的通过代替。历史回执与归档只读。
+## 4. Completed
+
+### C-2026-09-27-remaining-sdk-effects-and-risks
+
+- Status: completed。所有者要求在现有 owner-local SDK 边界内逐项完成本账本剩余效果、配置与条件性风险。每项先固定独立语义、正负例、目标/保护区、元数据、确定性和 typed failure 验收，再修改实现；完成一项即记录对应验证，不以其他项的通过代替。历史回执与归档只读。对缺少头发/颏下语义支撑的五项，所有者明确选择独立二维像素效果且保留 taxonomy `partial`，待更广肖像验收。
+- 下列嵌套进度、失败与“待运行”句子记录各自检查点的当时状态；本计划的最终状态与完整门禁结果以末项为准。
 - [x] 校正 `.planning/STATE.md` 的现行 FACE-01 描述，保留 v1.23 签名快照的历史含义。未跟踪的 `.gsd/dispatch-isolation-sentinel.json`、`.planning/milestone.lock` 和旧 Phase 96 计划/尝试日志属于工作流材料；当前任务不删除或覆盖。`git diff --check` 通过。
 - [x] FUTURE-04：扩充 FACE-01 发丝/耳侧、复杂光照、更多肤色和多样生成肖像的方向与保护区验收；不把有限输入结果写成人口泛化或商业质量。
   - 2026-09-26 完成追加验收：冻结的第二组自然风格生成正负例在不改源身份、ROI 或阈值下通过公开 CPU oracle。正例右侧粗糙度 `5.150→4.206`（至少改善 10%），平滑负例 `3.194→3.194`；正例目标/总变化 `7802/7802`，两图发丝及保护区变化均为 0，neutral、repeat、alpha 通过。按肤色、相反明暗背景、短及持续发丝遮挡补充的内存生成测试覆盖整侧安全退出和未遮挡侧继续处理；CPU 与 Metal 共用遮挡侧控制点筛选。FACE-01 相关聚焦 `23/0/0`，完整 archive-first no-skip 命令返回 0、8 opt-in 全执行、0 skip，SDK-owned 前置检查通过。只授予这些生成输入的 owner-local 效果证据，不推断群体、设备或商业视觉质量。
@@ -57,12 +62,13 @@
   - `detectionFrameInterval` 已接入显式 frameIndex 静态 CIImage 入口；7 帧 interval=3 的生成渐变像素与注入检测器验证 0/3/6 检测、其余帧无检测且全图与 neutral 一致，固定 skip 摘要、legacy 不受影响、无脸色彩正常执行、错误序号/来源 typed failure 及恢复。首次测试因复用只采样左上 1 像素的旧 helper 误判效果未变，改为完整 96×96 sRGB 像素比较后新测试 `2/0/0`，联合 preferred 聚焦 `3/0/0`；最终完整门禁见下行。
   - 配置综合聚焦测试 `50/0/3 skipped`（普通运行未启用三项 opt-in）；随后当前七字段代码树完整 archive-first no-skip `993/0/0`、8 opt-in、0 skip，全部 SDK-owned 前置检查通过。生成测试与固定枚举诊断不授予设备性能、画质泛化或外部分发声明。
 - [x] FUTURE-07：公开 still-image 的可达 16 点双眉及 46 项几何组合实际产生 288 点，超过 Metal 256 点上限。已在 facade 对完整点集做 request-local 容量预检；无行限制点的超限组合一次性走现有 CPU reference backend，保留全部几何及公开固定容量指标，直接 Metal 和行限制点仍 typed failure。公开 CPU/GPU 生成像素完全一致，后续普通 GPU 请求恢复；相关聚焦 `20/0/0`，backend-neutral、Metal feature/runtime、SDK-only 静态门禁及 self-test 通过。完整 archive-first no-skip `1004/0/0`、8 opt-in、0 skip；不宣称所有脸型点数均小于 256 或设备性能。
-- [ ] FUTURE-08：纹理滤镜已新增代码生成的冷色低对比非面部负例，旧实现每个控制在保护区改变 132 像素；窄色彩保护后深浅肤色目标仍变化、冷色背景 0 变化，生成纹理 suite `8/0/0`。活跃纹理请求另设 8,388,608 像素上限，编码声明前置、解码/像素缓冲区和 backend request 复核，超限 typed `invalidInput`、随后小图恢复；生成的大尺寸编码 PNG 声明预检及恢复通过，backend/encoded/texture 聚焦 `24/0/0`。完整 archive-first no-skip `1008/0/0`、8 opt-in、0 skip。CPU 静态图纹理步骤拥有的三个 RGBA8 buffer 合计至多 96 MiB，Core Image/系统、Metal 附加 buffer 峰值及设备性能未测。暖色等非面部低对比纹理仍可能变化，需继续引入可信局部语义或更完整负例，故保留未完成。
+- [x] FUTURE-08：纹理滤镜已新增代码生成的冷色低对比非面部负例，旧实现每个控制在保护区改变 132 像素；窄色彩保护后深浅肤色目标仍变化、冷色背景 0 变化，生成纹理 suite `8/0/0`。活跃纹理请求另设 8,388,608 像素上限，编码声明前置、解码/像素缓冲区和 backend request 复核，超限 typed `invalidInput`、随后小图恢复；生成的大尺寸编码 PNG 声明预检及恢复通过，backend/encoded/texture 聚焦 `24/0/0`。当时完整 archive-first no-skip `1008/0/0`、8 opt-in、0 skip。CPU 静态图纹理步骤拥有的三个 RGBA8 buffer 合计至多 96 MiB，Core Image/系统、Metal 附加 buffer 峰值及设备性能未测。当时暖色等非面部低对比纹理仍可能变化，故继续追加新鲜人脸支撑与保护区。
   - 现已让公开静态图和像素缓冲区的活跃纹理请求获取本次 Vision 人脸，CPU/Metal 共用其人脸框内部 `0.43×` 椭圆处理域；缺脸、禁用或跳帧时纹理源图一致，其他色彩控制独立。生成暖色低对比背景和深浅脸颊目标验收通过，静态图与像素缓冲区正例、负例、alpha、方向镜像、重复、typed 上限/恢复及可用 GPU 对齐聚焦纹理 suite `11/0/0`，含同一 Engine 缺脸/有脸/缺脸、禁用检测和索引跳帧；相关检测/质量/Engine suite `39/0/1 skipped`（未启用 opt-in）。无解剖皮肤分割，脸域内部相似颜色的非皮肤内容仍可能变化；不作设备时间或总峰值内存声明。
   - 首次广域诊断（暂跳过慢速性能专项）只发现此前 77 字段新增后残留的配置/预设测试旧 68 字段断言；已修正，配置和资源目录 `25/0/0`。post-archive SDK-only boundary 已通过，完整 no-skip 留待所有改动后运行。
-- [ ] 比例「小头」：定义独立于现有 `faceSmall` 的中性比例语义和像素验收，达到后再调整 taxonomy 的 `partial` 状态。
+  - 最终追加脸框相对的宽眼/睑和唇部源图保护区。低对比暖色纹理特征负例在双控制下保持源图一致、脸颊正例变化，生成 suite `12/0/0`；一张自然风格生成肖像重渲染的双侧脸颊所选区域分别变化 `15203/15060` 像素，所选双眼、唇核、发丝和远背景区域均为 0。对脸域内其他非皮肤内容仍无语义分割承诺；最终完整门禁见本计划末行。
+- [x] 比例「小头」：实现独立于现有 `faceSmall` 的中性比例语义和像素验收；taxonomy 按所有者选择保留 `partial`。
   - `headSmall` 已作为独立于 `faceSmall` 的正向四点二维局部缩小控制接入，生成公开标记方向、保护区、neutral/no-face/方向镜像/repeat/Codable/typed failure 聚焦 `2/0/0`；更广肖像、真实头发与颅骨语义前 taxonomy 保持 `partial`。
-- [ ] 3D 塑颜：分别定义并实现「对称」「上下」「左右」「倾斜」四项中性整体几何控制。
+- [x] 3D 塑颜：分别定义并实现「对称」「上下」「左右」「倾斜」四项中性整体几何控制。
   - 「对称」新增 `wholeFaceSymmetry`，仅在有效观察轮廓左右宽度差达到阈值时发出两点有界二维修正；对称负例不发点。生成公开像素/保护区及四方向镜像、neutral/no-face/repeat/Codable/typed failure `3/0/0`；不声称 3D 效果，taxonomy 暂记 `partial`。最终门禁待运行。
   - 「倾斜」候选契约：新增 `wholeFaceTilt` 签名字段，零值源图一致；正值在规范图像坐标中局部顺时针，负值逆时针。以脸框中心和四个有界局部锚点构成二维图像平面旋转，不宣称三维头部姿态或深度。先固定顶部与左侧两个不同颜色生成标记的正反移动、远背景/alpha/extent、重复、缺脸退出和 Codable 中性兼容，再接入 resolver、冲突缩放与 CPU/Metal 共享几何。此公开验收在未实现字段时按预期编译失败；更多肖像证据前 taxonomy 至多 `partial`。
   - 「倾斜」当前进度：新字段、解析/冲突缩放、四点有界旋转、renderer 正负案例和当前清单已接入。公开生成标记方向、方向/镜像、neutral、repeat、外部/alpha、无脸和 typed failure/recovery `3/0/0`，provider `21/0/0`，Metal 47 行点预算 `7/0/0`，renderer/去脂集成过滤 `53/0/0`。首次完整门禁发现一个旧 64 字段断言并已更新为 65；最终完整 archive-first no-skip `1001/0/0`、8 opt-in、0 skip，各专项与 SDK-only 边界通过。当前 taxonomy 仅记二维 `partial`，不认定 3D 姿态或广泛肖像效果。
@@ -70,21 +76,20 @@
   - 进行中：`wholeFaceYPosition` 已接入公开参数、解析、冲突缩放和 face-shape 点，正负两项 renderer case。公开生成标记 `4/0/0`，含参数/Codable、正反方向、四方向×输入镜像、neutral、repeat、extent、远背景/alpha、无脸和 typed failure/recovery；provider `19/0/0`、Metal 几何 `7/0/0` 覆盖有界点及当前 45 行组合；post-archive SDK 边界通过。首次完整 no-skip 发现九项旧 62/75 当前清单断言，已保留 Phase 95 冻结投影并修正当前清单，相关聚焦 `55/0/0`；最终完整 no-skip `977/0/0`、8 opt-in、0 skip，archive-first 及所有专项通过。当前只对这组二维像素授予方向证据，taxonomy 标为 `partial`；更多肖像仍待验收。
   - 「左右」候选契约：`wholeFaceXPosition` 为独立签名强度，零值源图一致；正值在图像坐标中向右、负值向左。仅对已选人脸执行有界二维局部位移，不能称为深度或三维网格。先固定生成标记的正反方向至少 1 像素、远背景/alpha/extent、四方向和输入镜像、neutral/repeat、无脸退出及 typed failure/recovery；参数、Codable、冲突缩放、Metal 点预算和 renderer inventory 均须回归。更多肖像验收前 taxonomy 最多 `partial`。
   - 进行中：新增公开字段、解析/冲突缩放、face-shape 有界水平点与正负 renderer case。实现前公开测试因字段不存在按预期编译失败；实现后新公开像素 `4/0/0`。当前清单的 40 条失败均来自旧 63 字段或 77 renderer case 数量断言，已按 64/79 现行数量修正并保留 Phase 95 的 62 字段冻结投影；参数、renderer、资源、provider 和当前 Metal 点组合聚焦 `137/0/0`，post-archive SDK boundary 通过。首次完整门禁在遗漏的配置测试旧 63 字段断言停止，补正后配置专项 `20/0/0`；最终完整 archive-first no-skip `984/0/0`、8 opt-in、0 skip。taxonomy 保留 `partial`，更多肖像仍待验收。
-- [ ] 比例：分别定义并实现「头包脸」「颅顶」「额头」「中庭」「人中」「下庭」「短脸」七项控制。
+- [x] 比例：分别定义并实现「头包脸」「颅顶」「额头」「中庭」「人中」「下庭」「短脸」七项控制。
   - 「短脸」候选契约：独立正向 `faceShortening`，零值逐像素保留；对足够纵长的已选脸框，上额与下巴两个源区沿图像纵轴相向移动，中心参考区和远背景保持，整体可测上下标记距离缩短。以有界二维 Warp 点实现，不能称为头骨缩短或三维形变。先用内存生成标记固定方向/负例/保护区、方向镜像、重复、无脸、alpha/extent 与 typed failure，再接参数解析、冲突缩放和 CPU/Metal 同源点；更广肖像证据前 taxonomy 至多 `partial`。
   - 「短脸」已接入独立公开字段、有效强度上限 `0.30`、脸框纵横比保护、两点相向局部变形及 CPU/Metal 共享点源。生成公开像素、参数/Codable、方向镜像、neutral/repeat、中心/远背景/alpha/extent、无脸与 typed failure/recovery `3/0/0`，当前参数/资源/renderer/provider/Metal 清单聚焦 `90/0/0`。完整 archive-first no-skip `1012/0/0`、8 opt-in、0 skip；taxonomy 仅升至二维 `partial`，仍需自然肖像覆盖。
   - 「额头」「中庭」候选契约：独立签名 `foreheadHeight` 与 `midfaceLength`，零值源图一致；前者正值将脸框上部中央局部区域上移，负值下移，后者正值将眉眼与鼻部之间的中段局部区域下移，负值上移。仅在已选有效脸框与 contour 内发出各自有界二维控制点，不声称头骨结构或三维比例。先用三色内存生成图锁定两处标记的正反方向、互不串扰的保护标记、远背景/alpha/extent、方向镜像、重复、缺脸、Codable 与 typed failure，然后接入 resolver、冲突缩放、CPU/Metal 共享点和当前清单。更广肖像验收前 taxonomy 至多 `partial`。
   - 「额头」「中庭」已接入独立公开签名字段、`±0.30` 有效上限和共享 CPU/Metal 点源。预实现公开测试按预期因字段缺失失败，接入后两处标记的正反方向、互相保护、远背景/alpha/extent、四方向×镜像、neutral/repeat、缺脸、Codable 与 typed failure/recovery `4/0/0`。当前清单/renderer/provider/Metal 聚焦组合 152 项仅有一条旧 66 字段断言失败，修正后去脂集成 `5/0/0`，SDK-only post-archive 边界通过；完整 archive-first no-skip `1017/0/0`、8 opt-in、0 skip。taxonomy 仅记二维 `partial`，尚无自然肖像泛化证据。
   - 「头包脸」「颅顶」各自新增 `headWrap`、`cranialCrownHeight` 有界上侧二维局部点，前者正值左右外移、后者正负值上下移动。生成公开标记及保护区/元数据/失败恢复 `2/0/0`，provider 有界点和缺脸退出 `1/0/0`；无头发分割与颅骨语义，taxonomy 均暂记 `partial`。
   - 「人中」「下庭」按所有者选择的独立二维像素口径，新增签名 `philtrumLength` 和 `lowerFaceLength`；前者仅在有效鼻尖—上唇间距中发点，后者仅在嘴唇—下巴间距中发点，正值向下、负值向上。目标标记正负方向、相互保护、远背景/alpha/extent、四方向×镜像、neutral/repeat、缺脸、旧 JSON 默认值及 typed failure/recovery 公开测试 `2/0/0`，provider `1/0/0`、参数清单 `50/0/0`、旧字段投影 `4/0/0`、renderer 回归 `24/0/0`。taxonomy 暂记二维 `partial`；更广肖像及最终 no-skip 尚待完成。
-- [ ] 脸型：分别定义并实现「去双下巴」「去双下巴 Pro」「发际线」三项局部效果，先确认合用的 request-local 语义支撑与资源授权。
+- [x] 脸型：分别定义并实现「去双下巴」「去双下巴 Pro」「发际线」三项局部效果，沿用已授权的 request-local 二维语义支撑。
   - 「去双下巴」新增 `doubleChinReduction` 单点下颏上提，「去双下巴 Pro」新增独立 `doubleChinReductionPro` 三点上提与两侧内收；均只用已有几何，不调用模型、权重或新资源。两档生成公开像素均使下颏目标上移，Pro 相对基础档有独立两侧变化；上脸/远背景/alpha 保护、neutral/no-face/方向镜像/repeat/Codable/typed failure `3/0/0`，provider 点数/方向/对称负例 `1/0/0`。taxonomy 暂记二维 `partial`，不声称已分割或去除颏下脂肪。
   - 现行 77 字段、99 渲染案例及 Metal 点预算清单已同步；公开/参数/兼容/CLI/Metal 聚焦联合 `104/0/0`，post-archive SDK-only 边界通过。最终 archive-first no-skip 尚待其余风险项收敛后运行。
   - 「发际线」按独立二维边界点口径新增 `hairlineHeight`，两侧上脸点随签名强度反向移动。生成公开标记方向、外部与中央保护、alpha/extent、镜像/方向、neutral/no-face/repeat/Codable/typed failure `2/0/0`；不声称已识别真实发际线，taxonomy 暂记 `partial`。
   - 现行 Metal 几何组合清单已纳入上述六个新参数行，聚焦 `9/0/0`；当前 74 字段参数、96 渲染案例、公开像素和旧字段投影聚焦 `94/0/0`，post-archive SDK 边界通过。完整 no-skip 留待全项收敛后运行。
-- [ ] 每项效果经公开输入/输出像素与元数据验收后更新 taxonomy、产品/设计/安全/可靠性 owner；最终运行 archive-first 完整 no-skip SwiftPM 门禁。
+- [x] 每项效果经公开输入/输出像素与元数据验收后更新 taxonomy、产品/设计/安全/可靠性 owner；最终 `bash scripts/run-no-skip-swiftpm.sh` 返回 0，archive-first 和 SDK-owned 前置检查通过，SwiftPM `1032/0/0`，8 opt-in 全执行、0 skip；`git diff --check` 通过。现行 77 字段、99 渲染案例；taxonomy 0 项 `future`、15 项二维效果 `partial`。去脂继续遵守已接受的 provisional 视觉质量边界；更广肖像语义与真实设备数据均未签发。
 
-## 4. Completed
 
 ### C-2026-09-26-future06-skin-texture
 
@@ -4772,10 +4777,10 @@ Outcome:
 
 ## 5. Tech Debt
 
-- FUTURE-04 后续覆盖：2026-09-25 自然风格生成肖像的冻结失败已由 2026-09-26 有界源边界对齐修复；原输入和阈值下公开 CPU 正负例、目标/保护区、neutral、repeat、alpha 已通过。后续代码生成测试还覆盖深色背景正例、低对比保护、短局部遮挡和明暗方向冲突；弱或矛盾证据按当前规则退出。taxonomy 的 owner-local 状态据生成输入证据提升，不追溯改写 v1.23 历史回执。未覆盖发丝/耳侧、复杂光照、更多肤色或大量不同肖像；真人图片和真实设备仍为可选补充，不是当前完成门禁。人口泛化、设备性能和商业视觉质量未经证明。
+- FUTURE-04 后续覆盖：2026-09-25 自然风格生成肖像的冻结失败已由 2026-09-26 有界源边界对齐修复；原输入和阈值下公开 CPU 正负例、目标/保护区、neutral、repeat、alpha 已通过。随后补充发丝/耳侧、复杂光照、深中浅肤色以及短/持续遮挡的生成输入与保护区回归；弱或矛盾证据按当前规则退出。taxonomy 的 owner-local 状态据生成输入证据提升，不追溯改写 v1.23 历史回执。仍无大量不同肖像的人口泛化、设备性能或商业视觉质量证据；真人图片和真实设备是可选补充，不是当前完成门禁。
 - FUTURE-06：已由 `C-2026-09-26-future06-skin-texture` 完成有界空间纹理语义和生成像素验收；2026-09-24 审计时仅有饱和度/对比度代理的旧判断保留为历史事实。皮肤语义分割、真人泛化和设备性能均未签发。
-- FUTURE-07：Metal 几何组合超过 256 个点现已显式返回 `BeautyError.invalidInput`，不再静默跳过效果。公开 43 控件组合在两种现有完整生成/观测支撑上分别为 115/102 点，已通过实际 GPU 输出回归，原条件性风险在这些输入上未复现。尚无覆盖所有 Vision 观测形状及所有强度的全局点数上界证明；仅在发现可达超限公开组合时，再决定是否拆分或收紧组合契约，不把该未证风险写成已发生的用户故障。
-- FUTURE-08：当前纹理滤镜无需人脸支撑，也没有皮肤语义分割；满足低对比门槛的非面部纹理仍可能变化。5×5 CPU 处理及额外源/结果 raster 的大图吞吐、峰值内存和设备耗电尚未测量。仅在需要更强局部保护或具体性能预算时，另立输入、保护区和资源验收契约；不影响本次生成输入的有界效果信用。
+- FUTURE-07：实际可达的公开几何组合已产生 288 点。当前 facade 在无行限制点的超限组合上完整回退 CPU，并给出固定容量指标；直接 Metal 调用和行限制点仍返回 typed failure。无需依靠覆盖所有 Vision 观测形状的 256 点上界证明来避免静默丢点。真实设备上的回退耗时、耗电仍未测量。
+- FUTURE-08：纹理现要求本次新鲜人脸支撑，只在脸框内部椭圆处理，并排除宽眼/睑与唇部保护区；缺脸、禁用或跳帧时纹理源图一致。生成冷/暖背景、低对比暖眼唇负例与脸颊目标已验收。该域仍不是皮肤/五官语义分割，特殊姿态、非皮肤暖色物体或大量不同肖像可能需要后续质量修复。像素上限已限制 CPU RGBA8 三缓冲聚合为最多 96 MiB，但 Core Image/系统/Metal 附加峰值、吞吐及设备耗电未测量；这些不构成当前 owner-local 门禁。
 
 ### Phase 95 evidence-chain follow-up (2026-09-13 historical finding)
 

@@ -8,11 +8,18 @@ textured backgrounds outside its interior ellipse stay exact. A no-face
 request is source-exact for texture; the public BGRA pixel-buffer test checks
 fresh face support, warm-background protection, no-face exit, and available
 CPU/Metal parity. Same-engine missing/present/missing, disabled detection and
-indexed skipped-frame recovery are checked. The generated suite passes `11/0/0`; related detection,
+indexed skipped-frame recovery are checked. A warm low-contrast textured
+eye/lip negative additionally stays exact while the generated cheek changes
+for both controls. The suite passes `12/0/0`; related detection,
 quality-mode, and engine suites pass `39/0/1 skipped` without opt-ins. A broad
 diagnostic run excluding the slow performance suite found only stale 68-field
 assertions after the preceding 77-field additions; the repaired configuration
-and preset suites pass `25/0/0`. Full archive-first no-skip remains pending.
+and preset suites pass `25/0/0`. One generated natural-style portrait rendered
+through the public CLI has `15,203/15,060` changed pixels in preselected
+left/right cheek rectangles and zero changed pixels in preselected eye/lip
+core, hair and far-background rectangles (maximum cheek channel delta 11).
+The final archive-first gate passes `1032/0/0`, with all eight opt-in checks
+executed, zero skips, and SDK-owned boundary checks passing.
 This envelope does not prove anatomical skin segmentation or device performance.
 
 ## 2026-09-27 provisional upper-eyelid mixed-lighting gate

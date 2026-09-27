@@ -107,6 +107,17 @@ enum BeautySkinTexturePipeline {
         let centerY = (faceBounds.minY + faceBounds.height / 2) * Double(height) - 0.5
         let radiusX = faceBounds.width * 0.43 * Double(width)
         let radiusY = faceBounds.height * 0.43 * Double(height)
+        // Keep the coarse eye/lid and lip zones source-exact even when their
+        // local color and edge texture would otherwise pass the skin guard.
+        // The bounds are intentionally broad; they are not a feature mask.
+        let eyeMinimumX = (faceBounds.minX + faceBounds.width * 0.13) * Double(width) - 0.5
+        let eyeMaximumX = (faceBounds.minX + faceBounds.width * 0.87) * Double(width) - 0.5
+        let eyeMinimumY = (faceBounds.minY + faceBounds.height * 0.21) * Double(height) - 0.5
+        let eyeMaximumY = (faceBounds.minY + faceBounds.height * 0.44) * Double(height) - 0.5
+        let mouthMinimumX = (faceBounds.minX + faceBounds.width * 0.18) * Double(width) - 0.5
+        let mouthMaximumX = (faceBounds.minX + faceBounds.width * 0.82) * Double(width) - 0.5
+        let mouthMinimumY = (faceBounds.minY + faceBounds.height * 0.66) * Double(height) - 0.5
+        let mouthMaximumY = (faceBounds.minY + faceBounds.height * 0.90) * Double(height) - 0.5
         var result = source
         for y in radius..<(height - radius) {
             let localY = (Double(y) - centerY) / radiusY
@@ -116,6 +127,11 @@ enum BeautySkinTexturePipeline {
             let maximumColumn = min(width - radius - 1, Int(floor(centerX + halfRowWidth)))
             guard minimumColumn <= maximumColumn else { continue }
             for x in minimumColumn...maximumColumn {
+                let inEyeZone = Double(y) >= eyeMinimumY && Double(y) <= eyeMaximumY &&
+                    Double(x) >= eyeMinimumX && Double(x) <= eyeMaximumX
+                let inMouthZone = Double(y) >= mouthMinimumY && Double(y) <= mouthMaximumY &&
+                    Double(x) >= mouthMinimumX && Double(x) <= mouthMaximumX
+                guard !inEyeZone, !inMouthZone else { continue }
                 let offset = (y * width + x) * 4
                 guard source[offset + 3] == 255 else { continue }
                 let red = Int(source[offset])

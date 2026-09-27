@@ -62,7 +62,9 @@ cheek and soft-edge positives, flat negatives, and protected facial features
 pass owner-local public-pixel tests. The 2026-09-27 public route additionally
 requires a fresh selected face and confines texture to a conservative interior
 ellipse; generated cool and warm background negatives stay source-exact, and
-no-face texture requests fail closed. This is not skin segmentation or a claim
+no-face texture requests fail closed. Coarse eye/lid and lip exclusion zones
+also keep generated low-contrast feature pixels exact while cheek texture
+changes. This is not skin segmentation or a claim
 about all real skin, hair, devices, or commercial visual quality. The four
 skin-control fields and their caps are unchanged.
 
@@ -171,9 +173,9 @@ names and visual organization are intentionally omitted from the active contract
 
 Branch status remains conservative: `3D塑颜`, `比例`, and `脸型` are
 partial; `眼睛`, `嘴唇`, `鼻子`, and `眉毛` are implemented at SDK-core
-scope. `3D塑颜` has bounded image-space vertical and horizontal controls so far; `脸型`
-is partial because double-chin and hairline semantic-region work is
-future. The `眼睛` branch is implemented with the explicit provisional-quality
+scope. The partial branches now have separate bounded image-plane controls
+for every listed row, but broader portrait and semantic-region acceptance
+remains outstanding. The `眼睛` branch is implemented with the explicit provisional-quality
 caveat on `去脂`; this does not establish commercial visual quality.
 
 ## Non-legacy SDK groups

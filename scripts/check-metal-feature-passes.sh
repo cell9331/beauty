@@ -192,7 +192,7 @@ for term in (
 
 parameters = re.findall(r"^\s*public var ([A-Za-z][A-Za-z0-9]*):", text["parameters"], re.MULTILINE)
 configuration = re.findall(r"^\s*public var ([A-Za-z][A-Za-z0-9]*):", text["configuration"], re.MULTILINE)
-if len(parameters) != 68 or len(set(parameters)) != 68:
+if len(parameters) != 77 or len(set(parameters)) != 77:
     raise SystemExit("BeautyParameters inventory changed")
 if len(configuration) != 11 or len(set(configuration)) != 11:
     raise SystemExit("BeautyConfiguration inventory changed")
@@ -201,7 +201,7 @@ if re.search(r"\.package\s*\(|https?://", text["package"]):
 manifest = json.loads(text["manifest"])
 if [item.get("id") for item in manifest.get("presets", [])] != ["natural", "clear", "refined", "male-natural", "id-photo-natural"]:
     raise SystemExit("preset inventory changed")
-if len(re.findall(r"^\s*RenderCase\(", text["renderer"], re.MULTILINE)) != 86:
+if len(re.findall(r"^\s*RenderCase\(", text["renderer"], re.MULTILINE)) != 99:
     raise SystemExit("renderer case inventory changed")
 
 metal_sources = sorted(

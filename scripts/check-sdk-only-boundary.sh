@@ -590,7 +590,7 @@ cpu_test_backend_hashes = {
     "BeautySDK/Tests/BeautyCoreTests/BeautyRenderQualityPublicTests.swift":
         "fb11e74e7dfefece76eefa201c19f169a437ccc9d7fd60aa8ab5563ffa8e77ca",
     "BeautySDK/Tests/BeautyCoreTests/GeneratedSkinTexturePublicOracleTests.swift":
-        "a218744e60af9cfba51761b18f500204863a1546ed4bee8dbe623cdcd7bdb9a5",
+        "f0e86db83ffe8a268cd06993a136df918785ea3a64f43feede75f5b6d3a833df",
     "BeautySDK/Tests/BeautyCoreTests/BeautyEngineMouthNegativeTests.swift":
         "f6bf8d3c9ce59ce25ac09c9e0b4147a61e5e54d9e397abfd6ee35c2b4e4cc65a",
     "BeautySDK/Tests/BeautyCoreTests/BeautyEngineMouthLifecycleTests.swift":

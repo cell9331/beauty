@@ -123,6 +123,31 @@ final class GeneratedSkinTexturePublicOracleTests: XCTestCase {
         XCTAssertTrue(alpha(candidate) == alpha(positive))
     }
 
+    func testWarmLowContrastEyeAndLipTextureStayExactWhileCheekChanges() throws {
+        let source = portraitFixture(textured: true, warmFeaturesTextured: true)
+        for parameters in [
+            BeautyParameters(skinSmoothing: 1),
+            BeautyParameters(skinSharpen: 1),
+        ] {
+            let output = try render(source, parameters: parameters)
+            func changes(_ columns: Range<Int>, _ rows: Range<Int>) -> Int {
+                rows.reduce(0) { total, y in
+                    total + columns.reduce(0) { rowTotal, x in
+                        let offset = (y * width + x) * 4
+                        return rowTotal + ((0..<3).contains {
+                            source[offset + $0] != output[offset + $0]
+                        } ? 1 : 0)
+                    }
+                }
+            }
+            XCTAssertGreaterThan(changes(22..<28, 36..<42), 0)
+            XCTAssertEqual(changes(24..<27, 26..<28), 0)
+            XCTAssertEqual(changes(38..<41, 26..<28), 0)
+            XCTAssertEqual(changes(29..<36, 48..<50), 0)
+            XCTAssertEqual(alpha(output), alpha(source))
+        }
+    }
+
     func testLowContrastCoolBackgroundIsProtectedWhileCheekTextureChanges() throws {
         for deepSkin in [false, true] {
             let source = portraitFixture(
@@ -342,7 +367,7 @@ final class GeneratedSkinTexturePublicOracleTests: XCTestCase {
 
     private func portraitFixture(
         textured: Bool, backgroundTextured: Bool = false, deepSkin: Bool = false,
-        backgroundWarm: Bool = false
+        backgroundWarm: Bool = false, warmFeaturesTextured: Bool = false
     ) -> [UInt8] {
         var result = [UInt8](repeating: 0, count: width * height * 4)
         for y in 0..<height {
@@ -368,8 +393,16 @@ final class GeneratedSkinTexturePublicOracleTests: XCTestCase {
                         : (35, 45, 65)
                 }
                 else if y < 20 { rgb = (32, 28, 26) }
-                else if leftEye || rightEye { rgb = (50, 40, 38) }
-                else if mouth { rgb = (125, 63, 70) }
+                else if leftEye || rightEye {
+                    let detail = (x / 2 + y / 2).isMultiple(of: 2) ? 5 : -5
+                    rgb = warmFeaturesTextured
+                        ? (158 + detail, 117 + detail, 103 + detail) : (50, 40, 38)
+                }
+                else if mouth {
+                    let detail = (x / 2 + y / 2).isMultiple(of: 2) ? 5 : -5
+                    rgb = warmFeaturesTextured
+                        ? (158 + detail, 117 + detail, 103 + detail) : (125, 63, 70)
+                }
                 else {
                     rgb = deepSkin
                         ? (84 + noise, 58 + noise, 46 + noise)

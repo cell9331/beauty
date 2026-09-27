@@ -53,8 +53,11 @@ still change cheek texture while cool and warm low-contrast backgrounds outside
 the selected face stay exact. Texture now requests fresh face detection on
 still images and pixel buffers, and exits unchanged without usable support;
 other color controls remain available. The conservative face-interior ellipse
-is not anatomical skin segmentation, so similarly colored non-skin content
-inside that envelope remains a quality limitation. A texture request above
+also leaves broad eye/lid and lip zones source-exact. On one generated
+natural-style portrait, both cheek targets changed while selected eye and lip
+core regions, hair and far background stayed exact. This is not anatomical
+skin segmentation, so similarly colored non-skin content elsewhere inside
+the envelope remains a quality limitation. A texture request above
 8,388,608 pixels
 now fails typed before processing; the same engine accepts a later small
 request. Owners can process a larger image without these texture controls or

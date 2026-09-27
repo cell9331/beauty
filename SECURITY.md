@@ -7,8 +7,10 @@ ellipse from the current selected face bounds. Missing, invalid, disabled or
 skipped support yields no texture edit; the engine does not reuse prior face
 locations. Bounds and source pixels remain request-local and never enter
 diagnostics or persistent evidence. The envelope is not skin segmentation:
-non-skin content inside it may still qualify for the existing color and edge
-filter. No model, weight, network, or external distribution path is added.
+coarse face-relative eye/lid and lip rectangles are now excluded, while
+non-skin content elsewhere inside it may still qualify for the existing
+color and edge filter. No feature mask, model, weight, network, or external
+distribution path is added.
 
 ## 2026-09-27 vertical proportion input boundary
 

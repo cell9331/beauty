@@ -607,6 +607,11 @@ width and height can enter the existing opaque/color/edge texture filter.
 Missing, disabled, invalid, or interval-skipped face support makes the texture
 stage source-exact; other color controls keep their existing route. The
 ellipse is a conservative processing envelope, not a skin segmentation mask.
+Within it, coarse face-relative eye/lid (`x=0.13...0.87`,
+`y=0.21...0.44`) and lip (`x=0.18...0.82`, `y=0.66...0.90`) rectangles
+are source-exact before the existing alpha, color and edge tests. These
+request-local bounds protect low-contrast warm features that pass the color
+guard; they do not locate actual eyes, lips or skin in every portrait.
 The texture resource cap and render-quality kernels remain unchanged. Older
 dated descriptions of face-free texture describe the pre-repair behavior.
 
