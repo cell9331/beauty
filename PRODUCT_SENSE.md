@@ -1,5 +1,15 @@
 # PRODUCT_SENSE.md
 
+## 2026-09-27 symmetry and lower-chin owner-local controls
+
+`3D塑颜 / 对称` now maps to `wholeFaceSymmetry`, a bounded lower-contour
+image-plane correction driven by observed asymmetry. `脸型 / 去双下巴` and its
+Pro variant have independent public parameters; both lift a generated chin
+marker, while Pro also changes paired lower flanks. Public generated pixels,
+exterior/upper-face/alpha protection, neutral, no-face, orientation/mirror,
+repeat, Codable defaults and typed failure recovery are checked. These rows
+remain taxonomy `partial`; no 3D or submental-fat effect is claimed.
+
 ## 2026-09-27 head-region owner-local controls
 
 `比例 / 小头`, `比例 / 头包脸`, `比例 / 颅顶` and `脸型 / 发际线` now map to four

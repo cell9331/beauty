@@ -441,6 +441,75 @@ final class FaceShapeWarpProviderTests: XCTestCase {
         XCTAssertTrue(absent.hairlineHeight.isEmpty)
     }
 
+    func testWholeFaceSymmetryRequiresObservedImbalanceAndChinTiersDiffer() {
+        let provider = FaceShapeWarpProvider()
+        let contour = [
+            SIMD2<Float>(0.37, 0.40), SIMD2<Float>(0.33, 0.55),
+            SIMD2<Float>(0.38, 0.68), SIMD2<Float>(0.45, 0.75),
+            SIMD2<Float>(0.55, 0.75), SIMD2<Float>(0.65, 0.68),
+            SIMD2<Float>(0.70, 0.55), SIMD2<Float>(0.63, 0.40),
+        ]
+        let asymmetric = FaceGeometry.replacingObservedFaceSupport(.init(
+            contour: contour,
+            medianLine: [SIMD2<Float>(0.5, 0.40), SIMD2<Float>(0.5, 0.75)],
+            apexIndex: nil
+        ))
+        let points = provider.fieldEmissions(
+            face: asymmetric, strengths: strengths(wholeFaceSymmetry: 0.25)
+        ).wholeFaceSymmetry
+        XCTAssertEqual(points.count, 2)
+        XCTAssertLessThan(points[0].target.x, points[0].source.x)
+        XCTAssertLessThan(points[1].target.x, points[1].source.x)
+        let targetLeftWidth = abs(Float(0.5) - points[0].target.x)
+        let targetRightWidth = abs(points[1].target.x - Float(0.5))
+        let sourceLeftWidth = abs(Float(0.5) - points[0].source.x)
+        let sourceRightWidth = abs(points[1].source.x - Float(0.5))
+        XCTAssertLessThan(abs(targetLeftWidth - targetRightWidth),
+                          abs(sourceLeftWidth - sourceRightWidth))
+        let symmetric = FaceGeometry.replacingObservedFaceSupport(.init(
+            contour: [
+                SIMD2<Float>(0.37, 0.40), SIMD2<Float>(0.30, 0.55),
+                SIMD2<Float>(0.35, 0.68), SIMD2<Float>(0.45, 0.75),
+                SIMD2<Float>(0.55, 0.75), SIMD2<Float>(0.65, 0.68),
+                SIMD2<Float>(0.70, 0.55), SIMD2<Float>(0.63, 0.40),
+            ], medianLine: [SIMD2<Float>(0.5, 0.40), SIMD2<Float>(0.5, 0.75)],
+            apexIndex: nil
+        ))
+        XCTAssertTrue(provider.fieldEmissions(
+            face: symmetric, strengths: strengths(wholeFaceSymmetry: 0.25)
+        ).wholeFaceSymmetry.isEmpty)
+        XCTAssertTrue(provider.fieldEmissions(
+            face: .fixture, strengths: strengths(wholeFaceSymmetry: 0.25)
+        ).wholeFaceSymmetry.isEmpty)
+
+        let base = provider.fieldEmissions(
+            face: .fixture, strengths: strengths(doubleChinReduction: 0.25)
+        ).doubleChinReduction
+        let pro = provider.fieldEmissions(
+            face: .fixture, strengths: strengths(doubleChinReductionPro: 0.25)
+        ).doubleChinReductionPro
+        XCTAssertEqual(base.count, 1)
+        XCTAssertEqual(pro.count, 3)
+        XCTAssertLessThan(base[0].target.y, base[0].source.y)
+        XCTAssertLessThan(pro[0].target.y, base[0].target.y)
+        XCTAssertGreaterThan(pro[1].target.x, pro[1].source.x)
+        XCTAssertLessThan(pro[2].target.x, pro[2].source.x)
+        XCTAssertTrue((points + base + pro).allSatisfy { point in
+            (0...1).contains(point.source.x) && (0...1).contains(point.source.y) &&
+                (0...1).contains(point.target.x) && (0...1).contains(point.target.y) &&
+                point.radius > 0 && point.strength <= 0.25
+        })
+        let missing = provider.fieldEmissions(
+            face: .missingContour,
+            strengths: strengths(wholeFaceSymmetry: 0.25,
+                                 doubleChinReduction: 0.25,
+                                 doubleChinReductionPro: 0.25)
+        )
+        XCTAssertTrue(missing.wholeFaceSymmetry.isEmpty)
+        XCTAssertTrue(missing.doubleChinReduction.isEmpty)
+        XCTAssertTrue(missing.doubleChinReductionPro.isEmpty)
+    }
+
     func testFaceShapeOutputsAreDeterministicClampedAndProportionAdjacent() {
         let face = FaceGeometry.fixture
         let provider = FaceShapeWarpProvider()
@@ -1030,6 +1099,9 @@ final class FaceShapeWarpProviderTests: XCTestCase {
         headWrap: Float = 0,
         cranialCrownHeight: Float = 0,
         hairlineHeight: Float = 0,
+        wholeFaceSymmetry: Float = 0,
+        doubleChinReduction: Float = 0,
+        doubleChinReductionPro: Float = 0,
         faceVShape: Float = 0,
         jawSlim: Float = 0,
         chinLength: Float = 0,
@@ -1075,6 +1147,9 @@ final class FaceShapeWarpProviderTests: XCTestCase {
         strengths.hairlineHeight = min(
             max(hairlineHeight, -BeautySafetyCaps.hairlineHeight), BeautySafetyCaps.hairlineHeight
         )
+        strengths.wholeFaceSymmetry = min(max(wholeFaceSymmetry, 0), BeautySafetyCaps.wholeFaceSymmetry)
+        strengths.doubleChinReduction = min(max(doubleChinReduction, 0), BeautySafetyCaps.doubleChinReduction)
+        strengths.doubleChinReductionPro = min(max(doubleChinReductionPro, 0), BeautySafetyCaps.doubleChinReductionPro)
         strengths.faceVShape = min(faceVShape, BeautySafetyCaps.faceVShape)
         strengths.jawSlim = min(jawSlim, BeautySafetyCaps.jawSlim)
         strengths.chinLength = min(max(chinLength, -BeautySafetyCaps.chinLength), BeautySafetyCaps.chinLength)
@@ -1472,7 +1547,7 @@ extension FaceGeometry {
         SIMD2<Float>(0.680, 0.340),
     ]
 
-    private static func replacingObservedFaceSupport(
+    fileprivate static func replacingObservedFaceSupport(
         _ observedFaceSupport: BeautyFaceSemanticSupport?
     ) -> FaceGeometry {
         FaceGeometry(

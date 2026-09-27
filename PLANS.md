@@ -59,6 +59,7 @@
 - [ ] 比例「小头」：定义独立于现有 `faceSmall` 的中性比例语义和像素验收，达到后再调整 taxonomy 的 `partial` 状态。
   - `headSmall` 已作为独立于 `faceSmall` 的正向四点二维局部缩小控制接入，生成公开标记方向、保护区、neutral/no-face/方向镜像/repeat/Codable/typed failure 聚焦 `2/0/0`；更广肖像、真实头发与颅骨语义前 taxonomy 保持 `partial`。
 - [ ] 3D 塑颜：分别定义并实现「对称」「上下」「左右」「倾斜」四项中性整体几何控制。
+  - 「对称」新增 `wholeFaceSymmetry`，仅在有效观察轮廓左右宽度差达到阈值时发出两点有界二维修正；对称负例不发点。生成公开像素/保护区及四方向镜像、neutral/no-face/repeat/Codable/typed failure `3/0/0`；不声称 3D 效果，taxonomy 暂记 `partial`。最终门禁待运行。
   - 「倾斜」候选契约：新增 `wholeFaceTilt` 签名字段，零值源图一致；正值在规范图像坐标中局部顺时针，负值逆时针。以脸框中心和四个有界局部锚点构成二维图像平面旋转，不宣称三维头部姿态或深度。先固定顶部与左侧两个不同颜色生成标记的正反移动、远背景/alpha/extent、重复、缺脸退出和 Codable 中性兼容，再接入 resolver、冲突缩放与 CPU/Metal 共享几何。此公开验收在未实现字段时按预期编译失败；更多肖像证据前 taxonomy 至多 `partial`。
   - 「倾斜」当前进度：新字段、解析/冲突缩放、四点有界旋转、renderer 正负案例和当前清单已接入。公开生成标记方向、方向/镜像、neutral、repeat、外部/alpha、无脸和 typed failure/recovery `3/0/0`，provider `21/0/0`，Metal 47 行点预算 `7/0/0`，renderer/去脂集成过滤 `53/0/0`。首次完整门禁发现一个旧 64 字段断言并已更新为 65；最终完整 archive-first no-skip `1001/0/0`、8 opt-in、0 skip，各专项与 SDK-only 边界通过。当前 taxonomy 仅记二维 `partial`，不认定 3D 姿态或广泛肖像效果。
   - 首项「上下」候选契约：公开 `wholeFaceYPosition` 签名强度，零值源图一致；正值在图像坐标中向下、负值向上。使用已选人脸的有界局部像素变形，不宣称深度/三维网格。生成脸部标记正反方向须沿期望方向移动至少 1 像素，图像远背景与 alpha 保持，缺失/无效人脸按现有 face-shape 规则退出；方向镜像、元数据、重复性、组合和 typed failure 按公开 SDK 路径验收。若所有者要求真正三维效果，替换此候选契约，不用二维结果冒充。
@@ -73,6 +74,8 @@
   - 「头包脸」「颅顶」各自新增 `headWrap`、`cranialCrownHeight` 有界上侧二维局部点，前者正值左右外移、后者正负值上下移动。生成公开标记及保护区/元数据/失败恢复 `2/0/0`，provider 有界点和缺脸退出 `1/0/0`；无头发分割与颅骨语义，taxonomy 均暂记 `partial`。
   - 「人中」「下庭」按所有者选择的独立二维像素口径，新增签名 `philtrumLength` 和 `lowerFaceLength`；前者仅在有效鼻尖—上唇间距中发点，后者仅在嘴唇—下巴间距中发点，正值向下、负值向上。目标标记正负方向、相互保护、远背景/alpha/extent、四方向×镜像、neutral/repeat、缺脸、旧 JSON 默认值及 typed failure/recovery 公开测试 `2/0/0`，provider `1/0/0`、参数清单 `50/0/0`、旧字段投影 `4/0/0`、renderer 回归 `24/0/0`。taxonomy 暂记二维 `partial`；更广肖像及最终 no-skip 尚待完成。
 - [ ] 脸型：分别定义并实现「去双下巴」「去双下巴 Pro」「发际线」三项局部效果，先确认合用的 request-local 语义支撑与资源授权。
+  - 「去双下巴」新增 `doubleChinReduction` 单点下颏上提，「去双下巴 Pro」新增独立 `doubleChinReductionPro` 三点上提与两侧内收；均只用已有几何，不调用模型、权重或新资源。两档生成公开像素均使下颏目标上移，Pro 相对基础档有独立两侧变化；上脸/远背景/alpha 保护、neutral/no-face/方向镜像/repeat/Codable/typed failure `3/0/0`，provider 点数/方向/对称负例 `1/0/0`。taxonomy 暂记二维 `partial`，不声称已分割或去除颏下脂肪。
+  - 现行 77 字段、99 渲染案例及 Metal 点预算清单已同步；公开/参数/兼容/CLI/Metal 聚焦联合 `104/0/0`，post-archive SDK-only 边界通过。最终 archive-first no-skip 尚待其余风险项收敛后运行。
   - 「发际线」按独立二维边界点口径新增 `hairlineHeight`，两侧上脸点随签名强度反向移动。生成公开标记方向、外部与中央保护、alpha/extent、镜像/方向、neutral/no-face/repeat/Codable/typed failure `2/0/0`；不声称已识别真实发际线，taxonomy 暂记 `partial`。
   - 现行 Metal 几何组合清单已纳入上述六个新参数行，聚焦 `9/0/0`；当前 74 字段参数、96 渲染案例、公开像素和旧字段投影聚焦 `94/0/0`，post-archive SDK 边界通过。完整 no-skip 留待全项收敛后运行。
 - [ ] 每项效果经公开输入/输出像素与元数据验收后更新 taxonomy、产品/设计/安全/可靠性 owner；最终运行 archive-first 完整 no-skip SwiftPM 门禁。

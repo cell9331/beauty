@@ -99,6 +99,12 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
     public var cranialCrownHeight: Float
     /// Signed bounded image-plane movement of two upper-face boundary regions.
     public var hairlineHeight: Float
+    /// Positive-only bounded image-plane contour symmetry correction.
+    public var wholeFaceSymmetry: Float
+    /// Positive-only bounded local lower-chin uplift in image coordinates.
+    public var doubleChinReduction: Float
+    /// Positive-only bounded lower-chin uplift plus paired flank narrowing.
+    public var doubleChinReductionPro: Float
 
     enum CodingKeys: String, CodingKey {
         case skinSmoothing
@@ -175,6 +181,9 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
         case headWrap
         case cranialCrownHeight
         case hairlineHeight
+        case wholeFaceSymmetry
+        case doubleChinReduction
+        case doubleChinReductionPro
     }
 
     public init(
@@ -251,7 +260,10 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
         headSmall: Float = 0,
         headWrap: Float = 0,
         cranialCrownHeight: Float = 0,
-        hairlineHeight: Float = 0
+        hairlineHeight: Float = 0,
+        wholeFaceSymmetry: Float = 0,
+        doubleChinReduction: Float = 0,
+        doubleChinReductionPro: Float = 0
     ) {
         self.skinSmoothing = Self.clampUnit(skinSmoothing)
         self.skinWhitening = Self.clampUnit(skinWhitening)
@@ -334,6 +346,9 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
         self.headWrap = Self.clampUnit(headWrap)
         self.cranialCrownHeight = Self.clampSigned(cranialCrownHeight)
         self.hairlineHeight = Self.clampSigned(hairlineHeight)
+        self.wholeFaceSymmetry = Self.clampUnit(wholeFaceSymmetry)
+        self.doubleChinReduction = Self.clampUnit(doubleChinReduction)
+        self.doubleChinReductionPro = Self.clampUnit(doubleChinReductionPro)
     }
 
     public init(from decoder: Decoder) throws {
@@ -412,7 +427,10 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
             headSmall: try container.decodeFloatIfPresent(.headSmall),
             headWrap: try container.decodeFloatIfPresent(.headWrap),
             cranialCrownHeight: try container.decodeFloatIfPresent(.cranialCrownHeight),
-            hairlineHeight: try container.decodeFloatIfPresent(.hairlineHeight)
+            hairlineHeight: try container.decodeFloatIfPresent(.hairlineHeight),
+            wholeFaceSymmetry: try container.decodeFloatIfPresent(.wholeFaceSymmetry),
+            doubleChinReduction: try container.decodeFloatIfPresent(.doubleChinReduction),
+            doubleChinReductionPro: try container.decodeFloatIfPresent(.doubleChinReductionPro)
         )
     }
 
@@ -491,7 +509,10 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
             headSmall: headSmall,
             headWrap: headWrap,
             cranialCrownHeight: cranialCrownHeight,
-            hairlineHeight: hairlineHeight
+            hairlineHeight: hairlineHeight,
+            wholeFaceSymmetry: wholeFaceSymmetry,
+            doubleChinReduction: doubleChinReduction,
+            doubleChinReductionPro: doubleChinReductionPro
         )
     }
 

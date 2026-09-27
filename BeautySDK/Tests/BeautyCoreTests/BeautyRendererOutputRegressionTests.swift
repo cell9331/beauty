@@ -36,6 +36,8 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
         "headSmall_0p30", "headWrap_0p25",
         "cranialCrownHeight_plus0p25", "cranialCrownHeight_minus0p25",
         "hairlineHeight_plus0p25", "hairlineHeight_minus0p25",
+        "wholeFaceSymmetry_0p25", "doubleChinReduction_0p25",
+        "doubleChinReductionPro_0p25",
         "chinLength_plus0p30",
         "chinLength_minus0p30",
         "faceVShape_0p35",
@@ -208,7 +210,7 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
         let peak = try rendererCaseSnippet(for: "eyebrowPeakDefinition_0p25", in: try rendererSource())
         XCTAssertTrue(peak.contains("eyebrowPeakDefinition: 0.25"))
         XCTAssertEqual(allFields.filter { peak.contains("\($0):") }, ["eyebrowPeakDefinition"])
-        XCTAssertEqual(Set(Self.expectedRendererCaseIDs).count, 96)
+        XCTAssertEqual(Set(Self.expectedRendererCaseIDs).count, 99)
         let fixtureNames = try exampleFixtureNames()
         XCTAssertEqual(fixtureNames, [
             "portraits/\(try portraitFixtureName())",
@@ -381,7 +383,7 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
             ("chinTaper_0p25", "chinTaper: 0.25"),
         ]
         let allFaceFields = [
-            "faceSlim:", "faceSmall:", "wholeFaceYPosition:", "wholeFaceXPosition:", "wholeFaceTilt:", "faceShortening:", "foreheadHeight:", "midfaceLength:", "philtrumLength:", "lowerFaceLength:", "headSmall:", "headWrap:", "cranialCrownHeight:", "hairlineHeight:", "faceVShape:", "jawSlim:", "chinLength:",
+            "faceSlim:", "faceSmall:", "wholeFaceYPosition:", "wholeFaceXPosition:", "wholeFaceTilt:", "faceShortening:", "foreheadHeight:", "midfaceLength:", "philtrumLength:", "lowerFaceLength:", "headSmall:", "headWrap:", "cranialCrownHeight:", "hairlineHeight:", "wholeFaceSymmetry:", "doubleChinReduction:", "doubleChinReductionPro:", "faceVShape:", "jawSlim:", "chinLength:",
             "faceContourSmooth:", "templeFullness:", "cheekboneSlim:", "chinTaper:",
         ]
 
@@ -400,8 +402,8 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
         }
 
         let caseIDs = rendererCaseIDs(in: source)
-        XCTAssertEqual(caseIDs.count, 96)
-        XCTAssertEqual(Set(caseIDs).count, 96)
+        XCTAssertEqual(caseIDs.count, 99)
+        XCTAssertEqual(Set(caseIDs).count, 99)
         for deferred in [
             "doubleChin", "doubleChinPro", "hairline", "foreheadHairline",
             "faceCombo", "chinWidth", "faceLift",
@@ -489,8 +491,8 @@ final class BeautyRendererOutputRegressionTests: XCTestCase {
         }
 
         let caseIDs = rendererCaseIDs(in: source)
-        XCTAssertEqual(caseIDs.count, 96)
-        XCTAssertEqual(Set(caseIDs).count, 96)
+        XCTAssertEqual(caseIDs.count, 99)
+        XCTAssertEqual(Set(caseIDs).count, 99)
         for alias in ["eyeCombo", "manualGaze", "perEyeAsymmetry"] {
             XCTAssertFalse(caseIDs.contains { $0 == alias || $0.hasPrefix("\(alias)_") })
             XCTAssertFalse(containsInitializerLabel(alias, in: source))
@@ -1096,8 +1098,8 @@ extension BeautyRendererOutputRegressionTests {
         let snippet = try rendererCaseSnippet(for: caseID, in: source)
 
         XCTAssertEqual(rendererCaseIDs(in: source), Self.expectedRendererCaseIDs)
-        XCTAssertEqual(Self.expectedRendererCaseIDs.count, 96)
-        XCTAssertEqual(Set(Self.expectedRendererCaseIDs).count, 96)
+        XCTAssertEqual(Self.expectedRendererCaseIDs.count, 99)
+        XCTAssertEqual(Set(Self.expectedRendererCaseIDs).count, 99)
         XCTAssertEqual(Self.expectedRendererCaseIDs.filter { $0 == caseID }.count, 1)
         XCTAssertTrue(snippet.contains("BeautyParameters(scleraRednessReduction: 1)"))
         XCTAssertEqual(["scleraRednessReduction:"].filter { snippet.contains($0) }, ["scleraRednessReduction:"])
@@ -1116,8 +1118,8 @@ extension BeautyRendererOutputRegressionTests {
         let snippet = try rendererCaseSnippet(for: caseID, in: source)
 
         XCTAssertEqual(rendererCaseIDs(in: source), Self.expectedRendererCaseIDs)
-        XCTAssertEqual(Self.expectedRendererCaseIDs.count, 96)
-        XCTAssertEqual(Set(Self.expectedRendererCaseIDs).count, 96)
+        XCTAssertEqual(Self.expectedRendererCaseIDs.count, 99)
+        XCTAssertEqual(Set(Self.expectedRendererCaseIDs).count, 99)
         XCTAssertEqual(Self.expectedRendererCaseIDs.filter { $0 == caseID }.count, 1)
         XCTAssertTrue(snippet.contains("BeautyParameters(teethWhitening: 1)"))
         XCTAssertEqual(["teethWhitening:"].filter { snippet.contains($0) }, ["teethWhitening:"])
@@ -1159,8 +1161,8 @@ extension BeautyRendererOutputRegressionTests {
         ]
 
         XCTAssertEqual(rendererCaseIDs(in: source), Self.expectedRendererCaseIDs)
-        XCTAssertEqual(Self.expectedRendererCaseIDs.count, 96)
-        XCTAssertEqual(Set(Self.expectedRendererCaseIDs).count, 96)
+        XCTAssertEqual(Self.expectedRendererCaseIDs.count, 99)
+        XCTAssertEqual(Set(Self.expectedRendererCaseIDs).count, 99)
         for forbidden in candidateNames {
             XCTAssertFalse(
                 Self.expectedRendererCaseIDs.contains { $0 == forbidden || $0.hasPrefix("\(forbidden)_") },
@@ -1188,8 +1190,8 @@ extension BeautyRendererOutputRegressionTests {
         let source = try rendererSource()
 
         XCTAssertEqual(rendererCaseIDs(in: source), Self.expectedRendererCaseIDs)
-        XCTAssertEqual(Self.expectedRendererCaseIDs.count, 96)
-        XCTAssertEqual(Set(Self.expectedRendererCaseIDs).count, 96)
+        XCTAssertEqual(Self.expectedRendererCaseIDs.count, 99)
+        XCTAssertEqual(Set(Self.expectedRendererCaseIDs).count, 99)
         XCTAssertTrue(Self.expectedRendererCaseIDs.contains("teethWhitening_1p00"))
         XCTAssertTrue(Self.expectedRendererCaseIDs.contains("scleraRednessReduction_1p00"))
         XCTAssertTrue(containsInitializerLabel("upperEyelidFullnessReduction", in: source))

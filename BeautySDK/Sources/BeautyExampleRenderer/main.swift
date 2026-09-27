@@ -190,6 +190,21 @@ let cases = [
         parameters: BeautyParameters(hairlineHeight: -0.25)
     ),
     RenderCase(
+        id: "wholeFaceSymmetry_0p25",
+        displayName: "wholeFaceSymmetry 0.25",
+        parameters: BeautyParameters(wholeFaceSymmetry: 0.25)
+    ),
+    RenderCase(
+        id: "doubleChinReduction_0p25",
+        displayName: "doubleChinReduction 0.25",
+        parameters: BeautyParameters(doubleChinReduction: 0.25)
+    ),
+    RenderCase(
+        id: "doubleChinReductionPro_0p25",
+        displayName: "doubleChinReductionPro 0.25",
+        parameters: BeautyParameters(doubleChinReductionPro: 0.25)
+    ),
+    RenderCase(
         id: "chinLength_plus0p30",
         displayName: "chinLength +0.30",
         parameters: BeautyParameters(chinLength: 0.30)

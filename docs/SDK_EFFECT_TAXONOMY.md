@@ -40,14 +40,14 @@ contract without renaming or aliasing unsupported behavior.
 
 ## Current public parameter inventory
 
-The current contract contains exactly 74 stored fields: 73 numeric controls and
+The current contract contains exactly 77 stored fields: 76 numeric controls and
 the optional `filterId`. Unit controls normalize to `0...1`; signed controls
 normalize to `-1...1`; `filterId` is an optional logical resource identifier.
 
 <!-- SDK_PARAMETER_INVENTORY_BEGIN -->
 - Skin: `skinSmoothing`, `skinWhitening`, `skinRosy`, `skinSharpen`
 - Global tone: `brightness`, `contrast`, `saturation`, `temperature`, `tint`, `exposure`, `highlight`, `shadow`
-- Face: `faceSlim`, `faceSmall`, `wholeFaceYPosition`, `wholeFaceXPosition`, `wholeFaceTilt`, `faceShortening`, `foreheadHeight`, `midfaceLength`, `philtrumLength`, `lowerFaceLength`, `headSmall`, `headWrap`, `cranialCrownHeight`, `hairlineHeight`, `faceVShape`, `jawSlim`, `chinLength`, `faceContourSmooth`, `templeFullness`, `cheekboneSlim`, `chinTaper`
+- Face: `faceSlim`, `faceSmall`, `wholeFaceYPosition`, `wholeFaceXPosition`, `wholeFaceTilt`, `faceShortening`, `foreheadHeight`, `midfaceLength`, `philtrumLength`, `lowerFaceLength`, `headSmall`, `headWrap`, `cranialCrownHeight`, `hairlineHeight`, `wholeFaceSymmetry`, `doubleChinReduction`, `doubleChinReductionPro`, `faceVShape`, `jawSlim`, `chinLength`, `faceContourSmooth`, `templeFullness`, `cheekboneSlim`, `chinTaper`
 - Eyes: `eyeSize`, `eyeDistance`, `eyeYPosition`, `eyeTailLift`, `eyeHeight`, `eyeLength`, `upperEyelidLift`, `pupilSize`, `gazeCorrection`, `lowerEyelidDrop`, `eyeTilt`, `innerCornerOpen`, `outerCornerOpen`, `eyeSymmetry`
 - Eyebrows: `eyebrowYPosition`, `eyebrowThickness`, `eyebrowLength`, `eyebrowSpacing`, `eyebrowHeadSpacing`, `eyebrowTilt`, `eyebrowPeakDefinition`
 - Nose: `noseSlim`, `noseWingSlim`, `noseTipSize`, `noseBridge`, `noseRootNarrowing`, `noseTipLift`
@@ -98,7 +98,7 @@ names and visual organization are intentionally omitted from the active contract
 <!-- SDK_LEGACY_TAXONOMY_BEGIN -->
 | Group | Control | Status | Canonical SDK parameter | Scope note |
 | --- | --- | --- | --- | --- |
-| 3D塑颜 | 对称 | future | — | Requires a new neutral whole-face geometry contract. |
+| 3D塑颜 | 对称 | partial | `wholeFaceSymmetry` | Observed lower-contour imbalance drives bounded paired image-plane correction; generated provider imbalance and public pixel/protection tests pass. It is not 3D geometry, and broader portrait evidence remains pending. |
 | 3D塑颜 | 上下 | partial | `wholeFaceYPosition` | Signed bounded image-space whole-face displacement passes generated public pixels and complete no-skip; this is not depth or a 3D mesh effect. Broader portrait evidence remains pending. |
 | 3D塑颜 | 左右 | partial | `wholeFaceXPosition` | Signed bounded image-space horizontal displacement passes generated public pixel direction and protection checks; it is not depth or a 3D mesh effect. Broader portrait evidence remains pending. |
 | 3D塑颜 | 倾斜 | partial | `wholeFaceTilt` | Signed bounded image-plane rotation passes generated public marker direction and exterior protection tests; it is not depth or a 3D mesh effect. Broader portrait evidence remains pending. |
@@ -116,8 +116,8 @@ names and visual organization are intentionally omitted from the active contract
 | 脸型 | 太阳穴 | implemented | `templeFullness` | Upper-lateral contour geometry. |
 | 脸型 | 颧骨 | implemented | `cheekboneSlim` | Mid-lateral contour geometry. |
 | 脸型 | 下巴长短 | implemented | `chinLength` | Signed chin-length geometry. |
-| 脸型 | 去双下巴 | future | — | Requires approved local semantic-region support. |
-| 脸型 | 去双下巴 Pro | future | — | Semantic support and compatible actual-use authorization are outside current scope. |
+| 脸型 | 去双下巴 | partial | `doubleChinReduction` | One bounded lower-chin image-plane uplift changes generated public pixels while protecting the upper face; no submental fat segmentation or anatomical removal claim. |
+| 脸型 | 去双下巴 Pro | partial | `doubleChinReductionPro` | Independent bounded lower-chin uplift plus paired flank narrowing changes generated public pixels beyond the base control. It does not use a model, weight or submental fat segmentation. |
 | 脸型 | 尖下巴 | implemented | `chinTaper` | Centerline-gated chin taper. |
 | 脸型 | V脸 | implemented | `faceVShape` | Bounded V-shape geometry. |
 | 脸型 | 下颌角 | implemented | `jawSlim` | Bounded jaw narrowing. |

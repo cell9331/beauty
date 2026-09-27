@@ -15,6 +15,9 @@ struct FaceShapeWarpFieldEmissions: Equatable, Sendable {
     let headWrap: [WarpControlPoint]
     let cranialCrownHeight: [WarpControlPoint]
     let hairlineHeight: [WarpControlPoint]
+    let wholeFaceSymmetry: [WarpControlPoint]
+    let doubleChinReduction: [WarpControlPoint]
+    let doubleChinReductionPro: [WarpControlPoint]
     let faceVShape: [WarpControlPoint]
     let jawSlim: [WarpControlPoint]
     let faceContourSmooth: [WarpControlPoint]
@@ -22,7 +25,7 @@ struct FaceShapeWarpFieldEmissions: Equatable, Sendable {
     let cheekboneSlim: [WarpControlPoint]
 
     var points: [WarpControlPoint] {
-        faceSlim + faceSmall + wholeFaceYPosition + wholeFaceXPosition + wholeFaceTilt + faceShortening + foreheadHeight + midfaceLength + philtrumLength + lowerFaceLength + headSmall + headWrap + cranialCrownHeight + hairlineHeight + faceVShape + jawSlim +
+        faceSlim + faceSmall + wholeFaceYPosition + wholeFaceXPosition + wholeFaceTilt + faceShortening + foreheadHeight + midfaceLength + philtrumLength + lowerFaceLength + headSmall + headWrap + cranialCrownHeight + hairlineHeight + wholeFaceSymmetry + doubleChinReduction + doubleChinReductionPro + faceVShape + jawSlim +
             faceContourSmooth + templeFullness + cheekboneSlim
     }
 
@@ -61,6 +64,15 @@ struct FaceShapeWarpFieldEmissions: Equatable, Sendable {
         }
         if strengths.hairlineHeight != 0, hairlineHeight.isEmpty {
             sanitized.hairlineHeight = 0
+        }
+        if strengths.wholeFaceSymmetry != 0, wholeFaceSymmetry.isEmpty {
+            sanitized.wholeFaceSymmetry = 0
+        }
+        if strengths.doubleChinReduction != 0, doubleChinReduction.isEmpty {
+            sanitized.doubleChinReduction = 0
+        }
+        if strengths.doubleChinReductionPro != 0, doubleChinReductionPro.isEmpty {
+            sanitized.doubleChinReductionPro = 0
         }
         if strengths.faceVShape != 0, faceVShape.isEmpty { sanitized.faceVShape = 0 }
         if strengths.jawSlim != 0, jawSlim.isEmpty { sanitized.jawSlim = 0 }
@@ -144,6 +156,17 @@ struct FaceShapeWarpProvider: WarpControlPointProvider {
                 : [],
             hairlineHeight: hasLegacyContour
                 ? hairlinePoints(face: face, strength: strengths.hairlineHeight)
+                : [],
+            wholeFaceSymmetry: hasLegacyContour
+                ? symmetryPoints(face: face, strength: strengths.wholeFaceSymmetry)
+                : [],
+            doubleChinReduction: hasLegacyContour
+                ? doubleChinPoints(face: face, strength: strengths.doubleChinReduction,
+                                   pro: false)
+                : [],
+            doubleChinReductionPro: hasLegacyContour
+                ? doubleChinPoints(face: face, strength: strengths.doubleChinReductionPro,
+                                   pro: true)
                 : [],
             faceVShape: hasLegacyContour && strengths.faceVShape > 0
                 ? lowerFacePoints(
@@ -490,6 +513,76 @@ struct FaceShapeWarpProvider: WarpControlPointProvider {
             (left, SIMD2<Float>(left.x, left.y + distance)),
             (right, SIMD2<Float>(right.x, right.y + distance)),
         ], radius: min(1, max(bounds.width, bounds.height) * 0.09), strength: abs(strength))
+    }
+
+    private func symmetryPoints(face: FaceGeometry, strength: Float) -> [WarpControlPoint] {
+        guard validHeadBounds(face), strength.isFinite,
+              strength > Float.ulpOfOne,
+              strength <= BeautySafetyCaps.wholeFaceSymmetry,
+              let support = face.observedFaceSupport,
+              let median = support.medianLine,
+              !median.isEmpty, median.allSatisfy({ unitPoint($0) }),
+              support.contour.count >= 6,
+              support.contour.allSatisfy({ unitPoint($0) })
+        else { return [] }
+        let bounds = face.bounds
+        let targetY = bounds.minY + bounds.height * 0.58
+        guard let axis = median.min(by: {
+            abs($0.y - targetY) < abs($1.y - targetY)
+        })?.x else { return [] }
+        let band = support.contour.filter {
+            $0.y >= bounds.minY + bounds.height * 0.42 &&
+                $0.y <= bounds.minY + bounds.height * 0.78
+        }
+        guard let left = band.filter({ $0.x < axis }).min(by: {
+            abs($0.y - targetY) < abs($1.y - targetY)
+        }), let right = band.filter({ $0.x > axis }).min(by: {
+            abs($0.y - targetY) < abs($1.y - targetY)
+        }), abs(left.y - right.y) <= bounds.height * 0.22
+        else { return [] }
+        let leftWidth = axis - left.x
+        let rightWidth = right.x - axis
+        let imbalance = leftWidth - rightWidth
+        guard imbalance.isFinite,
+              abs(imbalance) >= bounds.width * 0.006
+        else { return [] }
+        let adjustment = min(max(imbalance * 0.5, -bounds.width * 0.04),
+                             bounds.width * 0.04) * strength / BeautySafetyCaps.wholeFaceSymmetry
+        return boundedPoints([
+            (left, SIMD2<Float>(left.x + adjustment, left.y)),
+            (right, SIMD2<Float>(right.x + adjustment, right.y)),
+        ], radius: min(1, max(bounds.width, bounds.height) * 0.12), strength: strength)
+    }
+
+    private func doubleChinPoints(
+        face: FaceGeometry, strength: Float, pro: Bool
+    ) -> [WarpControlPoint] {
+        let cap = pro ? BeautySafetyCaps.doubleChinReductionPro :
+            BeautySafetyCaps.doubleChinReduction
+        guard validHeadBounds(face), strength.isFinite,
+              strength > Float.ulpOfOne, strength <= cap,
+              let chin = face.faceContour.max(by: { $0.y < $1.y }),
+              chin.y > face.bounds.minY + face.bounds.height * 0.65
+        else { return [] }
+        let bounds = face.bounds
+        let factor = strength / cap
+        let centerLift = bounds.height * (pro ? 0.065 : 0.045) * factor
+        let radius = min(1, max(bounds.width, bounds.height) * 0.14)
+        let center = (chin, SIMD2<Float>(chin.x, chin.y - centerLift))
+        guard pro else { return boundedPoints([center], radius: radius, strength: strength) }
+        let lower = face.faceContour.filter {
+            $0.y >= bounds.minY + bounds.height * 0.70 && $0.y < chin.y
+        }
+        guard let left = lower.filter({ $0.x < chin.x }).min(by: { $0.x < $1.x }),
+              let right = lower.filter({ $0.x > chin.x }).max(by: { $0.x < $1.x })
+        else { return [] }
+        let inset = bounds.width * 0.04 * factor
+        let flankLift = bounds.height * 0.025 * factor
+        return boundedPoints([
+            center,
+            (left, SIMD2<Float>(left.x + inset, left.y - flankLift)),
+            (right, SIMD2<Float>(right.x - inset, right.y - flankLift)),
+        ], radius: radius, strength: strength)
     }
 
     private func validHeadBounds(_ face: FaceGeometry) -> Bool {

@@ -50,6 +50,9 @@ public struct BeautyEffectiveStrengths: Equatable, Sendable {
     public var headWrap: Float = 0
     public var cranialCrownHeight: Float = 0
     public var hairlineHeight: Float = 0
+    public var wholeFaceSymmetry: Float = 0
+    public var doubleChinReduction: Float = 0
+    public var doubleChinReductionPro: Float = 0
     public var faceVShape: Float = 0
     public var jawSlim: Float = 0
     public var chinLength: Float = 0

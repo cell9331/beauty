@@ -19,6 +19,9 @@ enum BeautySafetyCaps {
     static let headWrap: Float = 0.25
     static let cranialCrownHeight: Float = 0.25
     static let hairlineHeight: Float = 0.25
+    static let wholeFaceSymmetry: Float = 0.25
+    static let doubleChinReduction: Float = 0.25
+    static let doubleChinReductionPro: Float = 0.25
     static let faceVShape: Float = 0.50
     static let jawSlim: Float = 0.45
     static let chinLength: Float = 0.35

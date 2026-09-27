@@ -1,5 +1,17 @@
 # DESIGN.md
 
+## 2026-09-27 symmetry and lower-chin image-plane contract
+
+The three positive-only controls are neutral at zero and capped at `0.25`.
+`wholeFaceSymmetry` requires valid observed contour and median-line support;
+it compares matched lower-side contour widths around the observed axis and
+moves two bounded points only when imbalance exceeds a face-relative floor.
+`doubleChinReduction` lifts one selected chin point. The independent Pro
+control lifts that point farther and also moves paired lower-contour flanks
+inward and upward. Invalid or missing support emits no point and existing
+combined geometry scaling applies. These are bounded image-plane warps; they
+do not identify or remove submental fat or reconstruct a 3D face.
+
 ## 2026-09-27 head-region image-plane contract
 
 The positive-only `headSmall` and `headWrap` controls are capped at `0.30`

@@ -1,5 +1,13 @@
 # ARCHITECTURE.md
 
+## 2026-09-27 symmetry and lower-chin controls
+
+`wholeFaceSymmetry`, `doubleChinReduction` and `doubleChinReductionPro`
+append owner-local parameters to the existing resolver and face-shape provider.
+Observed contour imbalance gates symmetry; the two chin tiers use different
+bounded point sets. All use the shared CPU/Metal geometry route. No detector,
+segmentation resource, model, weight, target, shader or backend was added.
+
 ## 2026-09-27 head-region proportion controls
 
 `headSmall`, `headWrap`, `cranialCrownHeight` and `hairlineHeight` append

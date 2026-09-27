@@ -1,5 +1,19 @@
 # QUALITY_SCORE.md
 
+## 2026-09-27 symmetry and lower-chin generated-pixel acceptance
+
+Observed asymmetric versus symmetric contour fixtures establish that
+`wholeFaceSymmetry` narrows measured lower-side imbalance and emits no point
+when the two sides match. The base and Pro lower-chin controls emit one and
+three bounded points respectively; the Pro source point and flanks are
+independent. Public generated checker and chin-marker output changes,
+exterior/upper-face/alpha protection, neutral, no-face, repeat, four
+orientations, input mirror, Codable and typed failure recovery pass `3/0/0`.
+Provider behavior passes `1/0/0`. Final full no-skip closeout is pending;
+parameter/renderer/compatibility/Metal and new public suites pass together
+`104/0/0`, with post-archive SDK-only boundary passing. Taxonomy stays
+`partial` without 3D or submental semantic evidence.
+
 ## 2026-09-27 head-region generated-pixel acceptance
 
 `headSmall`, `headWrap`, `cranialCrownHeight` and `hairlineHeight` pass

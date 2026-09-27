@@ -35,6 +35,9 @@ struct GeometryConflictResolver: Sendable {
         weakened.headWrap *= scale
         weakened.cranialCrownHeight *= scale
         weakened.hairlineHeight *= scale
+        weakened.wholeFaceSymmetry *= scale
+        weakened.doubleChinReduction *= scale
+        weakened.doubleChinReductionPro *= scale
         weakened.faceVShape *= scale
         weakened.jawSlim *= scale
         weakened.chinLength *= scale
@@ -109,6 +112,9 @@ struct GeometryConflictResolver: Sendable {
             strengths.headWrap,
             abs(strengths.cranialCrownHeight),
             abs(strengths.hairlineHeight),
+            strengths.wholeFaceSymmetry,
+            strengths.doubleChinReduction,
+            strengths.doubleChinReductionPro,
             strengths.faceVShape,
             strengths.jawSlim,
             abs(strengths.chinLength),
@@ -171,6 +177,9 @@ struct GeometryConflictResolver: Sendable {
             strengths.headWrap,
             abs(strengths.cranialCrownHeight),
             abs(strengths.hairlineHeight),
+            strengths.wholeFaceSymmetry,
+            strengths.doubleChinReduction,
+            strengths.doubleChinReductionPro,
             strengths.faceVShape,
             strengths.jawSlim,
             abs(strengths.chinLength),
