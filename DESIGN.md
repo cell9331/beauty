@@ -25,6 +25,13 @@ contour and unit source/target coordinates; otherwise they emit no points.
 These points do not segment hair, reconstruct a skull, or establish the true
 hairline. Combined geometry scaling remains in force.
 
+The hairline point provider also checks existing request-local observed brow
+traces. If supplied points are invalid or the highest observed brow lies within
+the paired target disks' vertical reach plus 3% of face-box height, it emits no
+hairline points for that request. This conservatively protects observed brows
+without adding a raster cutoff, backend-specific path, hair segmentation, or
+new public API.
+
 ## 2026-09-27 lower vertical proportion contract
 
 `philtrumLength` and `lowerFaceLength` are signed, neutral at zero and

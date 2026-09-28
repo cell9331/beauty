@@ -108,7 +108,7 @@ names and visual organization are intentionally omitted from the active contract
 <!-- SDK_LEGACY_TAXONOMY_BEGIN -->
 | Group | Control | Status | Canonical SDK parameter | Scope note |
 | --- | --- | --- | --- | --- |
-| 3D塑颜 | 对称 | partial | `wholeFaceSymmetry` | Observed lower-contour imbalance drives bounded paired image-plane correction; generated provider imbalance and public pixel/protection tests pass. It is not 3D geometry, and broader portrait evidence remains pending. |
+| 3D塑颜 | 对称 | partial | `wholeFaceSymmetry` | Observed lower-contour imbalance drives bounded paired image-plane correction; generated public contour markers narrow the measured side-width difference across two skin values while preserving the exterior. It is not 3D geometry, and broader portrait evidence remains pending. |
 | 3D塑颜 | 上下 | partial | `wholeFaceYPosition` | Signed bounded image-space whole-face displacement passes generated public pixels and complete no-skip; this is not depth or a 3D mesh effect. Broader portrait evidence remains pending. |
 | 3D塑颜 | 左右 | partial | `wholeFaceXPosition` | Signed bounded image-space horizontal displacement passes generated public pixel direction and protection checks; it is not depth or a 3D mesh effect. Broader portrait evidence remains pending. |
 | 3D塑颜 | 倾斜 | partial | `wholeFaceTilt` | Signed bounded image-plane rotation passes generated public marker direction and exterior protection tests; it is not depth or a 3D mesh effect. Broader portrait evidence remains pending. |
@@ -132,7 +132,7 @@ names and visual organization are intentionally omitted from the active contract
 | 脸型 | V脸 | implemented | `faceVShape` | Bounded V-shape geometry. |
 | 脸型 | 下颌角 | implemented | `jawSlim` | Bounded jaw narrowing. |
 | 脸型 | 下颌线 | implemented | `jawSlim` | Explicit alias-backed row; no distinct public parameter claim. |
-| 脸型 | 发际线 | partial | `hairlineHeight` | Signed bounded paired upper-face boundary warp passes generated marker direction and protection checks. It has no hair segmentation and does not establish actual hairline reconstruction. |
+| 脸型 | 发际线 | partial | `hairlineHeight` | Signed bounded paired upper-face boundary warp passes generated marker checks. It fails closed when existing observed brow support overlaps the target influence area; this protects the tested brow pixels but does not locate or reconstruct an actual hairline. |
 | 眼睛 | 大小 | implemented | `eyeSize` | Eye-aperture size geometry. |
 | 眼睛 | 上下 | implemented | `eyeYPosition` | Signed vertical position. |
 | 眼睛 | 眼高 | implemented | `eyeHeight` | Contour-height geometry. |

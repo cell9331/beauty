@@ -1,8 +1,33 @@
 # QUALITY_SCORE.md
 
+## 2026-09-28 contour direction and hairline diagnostic
+
+The public generated portrait schematic now measures a source-fixed
+left/right lower-contour marker width difference; `wholeFaceSymmetry` reduces
+it on two skin values. The portrait qualification suite passes `4/0/0`.
+A temporary public test counted actual dark-hair/skin boundary pixels: the
+reverse `hairlineHeight` request left the boundary unchanged on both skin
+values (`72→72`), while the existing point changed nearby brow pixels. Moving
+the point farther down passed the schematic boundary test but severely warped
+brows on full-size generated portraits. Narrower and above-face-box positions
+still made local hairline dents, so those point edits were reverted. The
+retained safety change suppresses the two points when their target influence
+reaches an observed brow, with a 3% face-height margin. The focused provider
+test passed `1/0/0`; two frozen natural-style generated portraits rendered
+through the public CPU path are source-exact for both signs (four decoded
+pixel comparisons). This is a safe exit for the tested brow-overlap path, not
+hairline localization; the existing `partial` status remains. The final
+archive-first no-skip gate passes `1039/0/0`, all eight opt-ins, and zero skips;
+SDK-owned prechecks, the focused `34/0/0`, and `git diff --check` pass.
+
+An edited generated upper-lid source with more visible bilateral fullness
+still fails source-only semantic admission in both eyes. Its mean residuals
+are negative and the earlier negative's left-eye local signal remains higher.
+No effect-output or threshold credit is taken from this candidate.
+
 ## 2026-09-27 active qualification verification
 
-The current checkout passes the archive-first no-skip gate: `1037/0/0`, all
+The 2026-09-27 checkpoint passed the archive-first no-skip gate: `1037/0/0`, all
 eight opt-ins executed, zero skips, and SDK-owned archive, boundary, backend,
 Metal, consumer and CPU-reference checks passed. The result verifies the
 implemented two-dimensional and texture contracts. It does not close the 15
@@ -1023,7 +1048,7 @@ launch, external distribution, or release-readiness authority.
 | --- | ---: | --- | --- |
 | Root owners | 4 | Current contracts consistently name SDK-only SwiftPM ownership and archive-only UI history. | Keep owners synchronized with code/tests. |
 | SDK package | 4 | One public library, one SDK-owned renderer, six internal/library targets, no remote dependency. | Preserve facade and dependency direction. |
-| Tests | 4 | 133 SwiftPM test files including public upper-eyelid facade pixel/metadata/failure coverage; historical gate counts remain labeled historical. | Preserve deterministic pixel/metadata oracles; physical-iPhone feedback is optional and non-blocking. |
+| Tests | 4 | 134 SwiftPM test files including public upper-eyelid facade pixel/metadata/failure coverage; current archive-first gate passes 1039/0/0. | Preserve deterministic pixel/metadata oracles; physical-iPhone feedback is optional and non-blocking. |
 | Repository consumer / CLI | 4 | Public-surface-only local-path fixture observes generated RGBA bytes/dimensions; compiled renderer covers 99-case discovery, reconciled reports, typed failures, and render/encode seams. | Preserve archive → boundary → consumer → no-skip ordering. |
 | Archive integrity | 4 | Code-owned ZIP/manifest anchors, exact 45/26 inventories, bounded streamed extraction, frozen-retirement rollback, and safe restore self-tests pass. | Verify before every full closeout. |
 | SDK-only boundary | 4 | Retired roots are absent; scanner rejects symlinks, restored application/UI sources, stale current owners/maps, tracked media, application artifacts, retained-shader drift, and backend/API drift. | Keep scanner fail-closed. |
@@ -1044,9 +1069,9 @@ are excluded by the owner-only distribution contract.
 | Inventory | Value |
 | --- | ---: |
 | Swift source files | 80 |
-| SwiftPM test files | 133 |
-| Swift source lines | 22,501 |
-| SwiftPM test lines | 50,239 |
+| SwiftPM test files | 134 |
+| Swift source lines | 22,510 |
+| SwiftPM test lines | 50,333 |
 | Public `BeautyParameters` stored fields | 77 |
 | `BeautyConfiguration` stored fields | 11 |
 | Built-in neutral presets | 5 |

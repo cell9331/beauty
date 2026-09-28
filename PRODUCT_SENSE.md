@@ -19,6 +19,10 @@ marker, image exterior and alpha remain protected. Neutral, no-face,
 orientation/mirror, repeat, Codable defaults and typed failure recovery pass.
 All four taxonomy rows remain `partial`; hair silhouette, true skull geometry
 and realistic hairline reconstruction await broader portrait evidence.
+When an observed eyebrow overlaps the local `hairlineHeight` warp area, that
+control emits no warp points. A hairline-only request remains source-exact on
+the tested natural-style portraits. This prevents the observed brow distortion;
+it does not locate a hairline.
 
 ## 2026-09-27 philtrum and lower-face owner-local controls
 
