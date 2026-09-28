@@ -1,5 +1,14 @@
 # RELIABILITY.md
 
+## 2026-09-28 hairline brow-overlap recovery
+
+The existing `hairlineHeight` point provider checks request-local observed
+eyebrow traces before emitting its paired points. Invalid supplied traces or
+an influence area's vertical reach meeting the observed brow with a 3%
+face-height margin make this control emit no points. A later request recomputes
+the check, unaffected by the earlier exit. Other controls in the same request
+remain independent; no new typed error, log, stored geometry, or backend is added.
+
 ## 2026-09-27 texture detection and recovery
 
 Still-image and pixel-buffer texture requests use only face bounds selected

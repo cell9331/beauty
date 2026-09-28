@@ -108,6 +108,36 @@ final class BeautyImagePlanePortraitQualificationTests: XCTestCase {
         }
     }
 
+    func testObservedAsymmetryNarrowsPublicContourMarkerWidthDifference() throws {
+        // These marker sites correspond to the two lower-contour observations
+        // nearest the source-fixed symmetry band in the injected face.
+        let axisX = 63.4
+        for deepSkin in [false, true] {
+            let source = makePortrait(markers: [
+                (42, 67, 1), (82, 77, 2),
+            ], deepSkin: deepSkin)
+            let before = rgba(source)
+            let engine = try BeautyEngine(
+                faceDetectionProvider: SDKTestingFaceDetectionProvider([.usableFace])
+            )
+            let after = rgba(try engine.processResult(
+                image: source, metadata: metadata,
+                parameters: .init(wholeFaceSymmetry: 0.25)
+            ).output)
+            let leftBefore = chromaticCentroidX(before, marker: (42, 67), channel: 1)
+            let rightBefore = chromaticCentroidX(before, marker: (82, 77), channel: 2)
+            let leftAfter = chromaticCentroidX(after, marker: (42, 67), channel: 1)
+            let rightAfter = chromaticCentroidX(after, marker: (82, 77), channel: 2)
+            let sourceImbalance = abs((axisX - leftBefore) - (rightBefore - axisX))
+            let outputImbalance = abs((axisX - leftAfter) - (rightAfter - axisX))
+            XCTAssertGreaterThan(sourceImbalance, 2)
+            XCTAssertGreaterThan(leftAfter - leftBefore, 0.3)
+            XCTAssertGreaterThan(rightAfter - rightBefore, 0.3)
+            XCTAssertLessThan(outputImbalance, sourceImbalance - 0.3)
+            assertExterior(before, after)
+        }
+    }
+
     private enum Axis { case x, y }
 
     private func assertDirection(
@@ -212,6 +242,23 @@ final class BeautyImagePlanePortraitQualificationTests: XCTestCase {
             }
         }
         return (xTotal / max(1, total), yTotal / max(1, total))
+    }
+
+    private func chromaticCentroidX(
+        _ pixels: [UInt8], marker: (Int, Int), channel: Int
+    ) -> Double {
+        var total = 0.0
+        var xTotal = 0.0
+        for y in max(0, marker.1 - 12)..<min(side, marker.1 + 13) {
+            for x in max(0, marker.0 - 12)..<min(side, marker.0 + 13) {
+                let offset = (y * side + x) * 4
+                let others = (0..<3).filter { $0 != channel }.map { Int(pixels[offset + $0]) }
+                let signal = Double(max(0, Int(pixels[offset + channel]) - (others.max() ?? 0) - 80))
+                total += signal
+                xTotal += Double(x) * signal
+            }
+        }
+        return xTotal / max(1, total)
     }
 
     private func changedPixels(

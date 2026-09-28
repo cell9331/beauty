@@ -507,12 +507,21 @@ struct FaceShapeWarpProvider: WarpControlPointProvider {
         let bounds = face.bounds
         let y = bounds.minY + bounds.height * 0.08
         let distance = bounds.height * 0.045 * strength / BeautySafetyCaps.hairlineHeight
+        let radius = min(1, max(bounds.width, bounds.height) * 0.09)
+        if let support = face.observedEyebrowSupport {
+            let browPoints = (support.left?.points ?? []) + (support.right?.points ?? [])
+            guard !browPoints.isEmpty,
+                  browPoints.allSatisfy({ unitPoint($0) }),
+                  let browTop = browPoints.map(\.y).min(),
+                  y + distance + radius < browTop - bounds.height * 0.03
+            else { return [] }
+        }
         let left = SIMD2<Float>(bounds.minX + bounds.width * 0.30, y)
         let right = SIMD2<Float>(bounds.maxX - bounds.width * 0.30, y)
         return boundedPoints([
             (left, SIMD2<Float>(left.x, left.y + distance)),
             (right, SIMD2<Float>(right.x, right.y + distance)),
-        ], radius: min(1, max(bounds.width, bounds.height) * 0.09), strength: abs(strength))
+        ], radius: radius, strength: abs(strength))
     }
 
     private func symmetryPoints(face: FaceGeometry, strength: Float) -> [WarpControlPoint] {
