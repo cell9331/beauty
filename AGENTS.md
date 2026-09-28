@@ -18,13 +18,13 @@ Spend time on thinking; you do not need to use the commentary channel to report 
 ## 2. 阅读顺序
 
 1. 先读 `AGENTS.md` 与 `PLANS.md`。
-2. 按任务类型读取对应根级 owner。
+2. 按任务类型读取对应根级 owner；`PLANS.md` 是渐进式入口，现行计划与技术债按其中链接继续读取。
 3. 再读相关代码、SwiftPM 测试与 `docs/` 背景资料。
 4. 算法/control taxonomy 以 `docs/SDK_EFFECT_TAXONOMY.md` 为当前 authority。
 5. 图片效果验收输入与声明以 `docs/IMAGE_EFFECT_ACCEPTANCE.md` 为当前 authority。
 6. 若契约变化，同步更新拥有该契约的文档。
 
-冲突优先级：代码与测试 > `PLANS.md` > 根级专项文档 > `docs/` 历史资料。
+冲突优先级：代码与测试 > `PLANS.md` 及其链接的现行计划/技术债 > 根级专项文档 > 历史分片与 `docs/` 历史资料。
 
 ## 3. 仓库地图
 
@@ -32,6 +32,8 @@ Spend time on thinking; you do not need to use the commentary channel to report 
 BeautySDK/                       Swift Package、library、renderer 与 tests
 scripts/                         SDK-owned archive/boundary/test gates
 archives/legacy-ui/              verified historical UI/Demo ZIP artifacts
+PLANS.md                         当前计划入口和按需加载导航
+plans/                           现行计划、技术债与历史记录分片
 docs/SDK_EFFECT_TAXONOMY.md      current effect/control taxonomy
 docs/                            background and historical long-form material
 .planning/                       active GSD state plus archived milestone evidence
@@ -47,7 +49,7 @@ docs/                            background and historical long-form material
 | 隐私、输入、资源、归档信任边界 | `SECURITY.md` |
 | 错误、日志、性能、恢复 | `RELIABILITY.md` |
 | SDK 使用旅程与验收 | `PRODUCT_SENSE.md` |
-| 计划与技术债 | `PLANS.md` |
+| 计划与技术债 | `PLANS.md`，再按链接读取 `plans/active/` 与 `plans/debt/current.md` |
 | 测试与质量门禁 | `QUALITY_SCORE.md` |
 | effect/control status | `docs/SDK_EFFECT_TAXONOMY.md` |
 
