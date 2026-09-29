@@ -1,5 +1,29 @@
 # QUALITY_SCORE.md
 
+## 2026-09-29 upper-eyelid visual counterexample
+
+A local, code-generated 384×384 portrait pair was visually checked before
+effect evaluation: the positive has two visible bright upper-lid domes and
+the paired negative omits them. With the existing package-only observed-eye
+support, public `processResult` changed 2434 target pixels per eye, zero
+negative pixels, zero outside the predeclared target bands, and zero alpha
+pixels; maximum channel delta was 16. The positive source's central red-channel
+contrast over the negative exceeded 15 per eye, and output center red
+decreased by more than 2. Despite these numeric passes, original-size visual
+review found a conspicuous closed oval ring around each upper lid in the
+output. This is a failed visual no-worsening result, not effect qualification.
+The one-off test and generated pixels were removed from the repository; no
+production threshold, gain, model or weight changed. This source uses injected
+eye support and does not qualify the Vision admission path.
+An additional edited, natural-style generated portrait was checked with live
+Vision before effect output: one face was found, but both eyes were rejected
+by the semantic source owner. Aggregate source scores for the original were
+central `-0.26/1.42` and localized `6.76/7.56` (left/right); the visibly fuller
+edit fell to central `-4.19/-3.15` and localized `3.94/4.00`. This one pair
+shows that visual fullness and the present luminance-convexity score need not
+move together. The edit was not passed to the effect renderer; the temporary
+diagnostic test was removed.
+
 ## 2026-09-29 request-local texture exclusion qualification
 
 The new public generated-portrait oracle proves a same-colored cheek
