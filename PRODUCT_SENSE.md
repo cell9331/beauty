@@ -393,16 +393,18 @@ effect. These changes do not establish natural-portrait visual quality.
 
 ## v1.24 upper-eyelid effect improvement boundary
 
-The 2026-09-27 owner-local follow-up admits a second source-derived shape:
-an upper lid can contain a coherent convex region even when mixed lighting
-pulls its whole central mean below the previous threshold. The fallback
+The 2026-09-27 owner-local follow-up admits a second source-derived luminance
+pattern: an upper-lid band can have a coherent positive residual even when
+mixed lighting pulls its whole central mean below the previous threshold. The fallback
 requires a nonnegative mean, a central upper quartile of at least 8, and at
 least 35% of central samples above the existing convexity threshold. On one
 generated natural-style portrait, the previously rejected peer eye now
 receives a bounded correction while its already supported eye and distant
 background stay unchanged. The original-size result is still visually mild;
 the owner acceptance remains provisional and does not imply broad portrait
-or commercial quality.
+or commercial quality. The residual is an image-space proxy, not a measurement
+of tissue volume; a later controlled generated positive exposed visible closed
+rings in the output, so visual no-worsening improvement remains unqualified.
 
 The owner-local `upperEyelidFullnessReduction` scalar and both public
 still-image entries remain unchanged. The current internal gain adjustment
@@ -435,9 +437,11 @@ superseded the earlier `去脂` deferral and accepted the existing bounded v4
 mechanics as a provisional public still-image effect. The acceptance fact is
 owner-provided; the repository does not claim that a new blinded manual review
 was executed. Current visual quality is known to be weak and remains future
-optimization work. The callable surface is 62 `BeautyParameters` fields, five
-presets, and 75 renderer cases; this does not establish device, commercial,
-packaging, shipping, launch, or release readiness.
+optimization work. At that v1.21 acceptance, the callable surface was 62
+`BeautyParameters` fields, five presets, and 75 renderer cases; the current
+inventory is 77 fields, five presets, and 99 renderer cases. Neither snapshot
+establishes device, commercial, packaging, shipping, launch, or release
+readiness.
 The final archive-first no-skip gate passed `816/0/0` with all eight opt-ins
 exactly once and zero skips.
 

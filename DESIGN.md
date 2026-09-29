@@ -1000,6 +1000,13 @@ Phase 28 completion evidence covers the existing Face Shape fields only: `faceSl
   maps once, derives per-eye brow-to-lid support from the selected observation,
   runs the existing source-derived relief analyzer/editor, and contributes
   units to the same immutable-source composition owner as teeth and sclera.
+- The analyzer's `convexityResidual` is blurred source luminance minus a fitted
+  illumination plane. Its `isFullnessSupported` name is a request-local image
+  admission heuristic, not a measurement of upper-lid tissue volume. Eye/brow
+  landmarks constrain location only. The current visual no-worsening gate remains
+  open after a generated positive showed closed rings despite numeric direction
+  and containment checks; see the
+  [primary-source review](docs/UPPER_EYELID_AND_SKIN_SEMANTICS_RESEARCH.md).
 - Missing face, missing/malformed/ambiguous support, low confidence, unsupported
   relief, invalid source, collisions, and rejected units remain source-exact at
   the smallest owned unit. Alpha, extent, metadata, determinism, and protected
@@ -2172,7 +2179,7 @@ derived model must remain in a separated non-commercial research lane.
 Without suitable data and exact fullness targets, implementation stops after
 the package-only fail-closed prediction seam and `去脂` remains future with
 exact 61/5/74 public absence. The complete design is
-[`80-LEARNED-HYBRID-DECISION.md`](.planning/phases/80-genuine-evidence-and-qualification-gate/80-LEARNED-HYBRID-DECISION.md).
+[`80-LEARNED-HYBRID-DECISION.md`](.planning/milestones/v1.19-phases/80-genuine-evidence-and-qualification-gate/80-LEARNED-HYBRID-DECISION.md).
 
 Plan 80-20 implements that stop boundary. `BeautyUpperEyelidFullnessPredicting`
 has no registered implementation. Its package-only request/result validator

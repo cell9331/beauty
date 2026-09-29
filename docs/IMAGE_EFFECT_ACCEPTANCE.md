@@ -29,10 +29,11 @@ be capable of testing the claimed effect; a changed-pixel count alone is not
 evidence of the intended direction. Use the public SDK path and assert the
 applicable output pixels, direction or visual improvement, negative behavior,
 protection, bounded change, neutral identity, repeatability, dimensions,
-orientation/mirroring, color space, alpha, and typed failure/recovery. Human
-original-detail review of generated portrait outputs may supplement objective
-metrics where visual judgment is part of the claim. Record failures honestly;
-do not weaken thresholds after viewing output.
+orientation/mirroring, color space, alpha, and typed failure/recovery. When a
+claim includes visual improvement or no worsening, inspect the output at
+original detail against a predeclared artifact/protection oracle in addition
+to numeric checks; a passing pixel count cannot override a visible artifact.
+Record failures honestly; do not weaken thresholds after viewing output.
 
 A generated portrait set that meets the feature-specific effect oracle may
 close owner-local effect acceptance and permit its taxonomy status to be

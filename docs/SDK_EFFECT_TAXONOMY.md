@@ -94,11 +94,15 @@ internal relief gain and records a generated half-strength pixel improvement;
 it does not promote natural-portrait or commercial visual-quality claims.
 The 2026-09-27 localized convexity fallback additionally reaches a previously
 rejected eye on one generated natural-style mixed-lighting portrait. It stays
-within the same provisional status and bounded source-relief contract.
+within the same provisional status and bounded image-space luminance contract.
+Subsequent generated candidates did not safely admit both eyes, and a
+controlled output showed visible upper-lid rings despite passing numeric
+target/protection checks. The visual no-worsening gate is still open; see the
+[primary-source review](UPPER_EYELID_AND_SKIN_SEMANTICS_RESEARCH.md).
 
 Internal `BeautyExperimentalUpperEyelid*` names remain unchanged to preserve
-provenance. The current route uses the existing source-derived relief analyzer,
-per-eye semantic envelope, bounded RGB correction, immutable-source
+provenance. The current route uses the existing source-derived luminance
+residual analyzer, per-eye semantic envelope, bounded RGB correction, immutable-source
 composition, and source-exact failure behavior. It adds no trained model,
 weight, dataset, network path, geometry warp, or external distribution claim.
 Future optimization may replace the internal implementation but must preserve
@@ -142,7 +146,7 @@ names and visual organization are intentionally omitted from the active contract
 | 眼睛 | 眼高 | implemented | `eyeHeight` | Contour-height geometry. |
 | 眼睛 | 长度 | implemented | `eyeLength` | Contour-length geometry. |
 | 眼睛 | 眼距 | implemented | `eyeDistance` | Signed paired spacing. |
-| 眼睛 | 去脂 | implemented | `upperEyelidFullnessReduction` | Provisional owner-accepted opaque still-image relief correction; bounded and fail-closed, with known weak visual quality. |
+| 眼睛 | 去脂 | implemented | `upperEyelidFullnessReduction` | Provisional owner-accepted opaque still-image luminance correction; bounded and fail-closed. Visual no-worsening improvement remains unqualified after a visible ring counterexample; this status records a callable owner-local behavior, not proven tissue-volume reduction. |
 | 眼睛 | 提肌 | implemented | `upperEyelidLift` | Upper-contour geometry; not `去脂`. |
 | 眼睛 | 眼瞳大小 | implemented | `pupilSize` | Requires plausible request-local pupil support. |
 | 眼睛 | 眼神矫正 | implemented | `gazeCorrection` | Per-eye request-local pupil-to-own-center correction with no peer borrowing; strict aperture containment and source-safe local rejection. |

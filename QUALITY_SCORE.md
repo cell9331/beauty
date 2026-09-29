@@ -1,5 +1,18 @@
 # QUALITY_SCORE.md
 
+## 2026-09-29 evidence and visual-gate review
+
+The [primary-source review](docs/UPPER_EYELID_AND_SKIN_SEMANTICS_RESEARCH.md)
+separates 2D eye/brow localization from fullness inference and skin/object
+segmentation. The current acceptance policy now makes original-detail artifact
+inspection mandatory when claiming visual improvement or no worsening. In a
+temporary generated-bulge diagnostic, suppressing 123 brightened proposals
+left a visible dark ring despite `9/0/0` focused numeric tests; the candidate
+and its diagnostic test were removed. The restored editor suite passes `8/0/0`.
+This review does not qualify `去脂` visual quality or unmasked same-colored
+object protection. The post-archive SDK boundary and documentation checks
+passed; the full no-skip gate was not rerun for this documentation update.
+
 ## 2026-09-29 upper-eyelid visual counterexample
 
 A local, code-generated 384×384 portrait pair was visually checked before
