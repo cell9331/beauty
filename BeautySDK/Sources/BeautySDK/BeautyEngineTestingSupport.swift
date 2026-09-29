@@ -40,6 +40,12 @@ private let phase46ObservedMedianLine = [
     CoordinatePoint(x: 0.5250, y: 0.016_666_667),
 ]
 
+private let symmetricObservedMedianLine = [
+    CoordinatePoint(x: 0.5, y: 0.833_333_333),
+    CoordinatePoint(x: 0.5, y: 0.416_666_667),
+    CoordinatePoint(x: 0.5, y: 0.016_666_667),
+]
+
 private let phase47MalformedObservedContour = [
     CoordinatePoint(x: 0.10, y: 0.20),
     CoordinatePoint(x: 0.20, y: 0.35),
@@ -226,8 +232,10 @@ private func phase91GazeObservation(
     case phase93RegisteredNose
     case phase93MissingNose
     case usableFace
+    case shortFace
     case textureFace
     case smoothObservedFaceContour
+    case symmetricObservedFaceContour
     case missingObservedFaceContour
     case malformedObservedFaceContour
     case pairedObservedEyebrows
@@ -350,6 +358,15 @@ private func phase91GazeObservation(
                         )
                     )
                 ]
+            case .shortFace:
+                return [VisionDetectionObservation(
+                    stableID: "fixture-short-face",
+                    confidence: 0.96,
+                    normalizedArea: 0.42 * 0.40,
+                    visionBounds: CoordinateRect(x: 0.29, y: 0.30,
+                                                 width: 0.42, height: 0.40),
+                    landmarks: .complete
+                )]
             case .smoothObservedFaceContour:
                 return [
                     VisionDetectionObservation(
@@ -364,6 +381,18 @@ private func phase91GazeObservation(
                         )
                     )
                 ]
+            case .symmetricObservedFaceContour:
+                return [VisionDetectionObservation(
+                    stableID: "fixture-symmetric-face-contour",
+                    confidence: 0.96,
+                    normalizedArea: 0.24,
+                    visionBounds: CoordinateRect(x: 0.30, y: 0.20, width: 0.40, height: 0.60),
+                    landmarks: .complete,
+                    observedFaceSupport: BeautyObservedFaceSupport(
+                        contour: smoothObservedContour,
+                        medianLine: symmetricObservedMedianLine
+                    )
+                )]
             case .missingObservedFaceContour:
                 return [
                     VisionDetectionObservation(

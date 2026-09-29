@@ -97,6 +97,7 @@ package struct BeautyBackendRequest: @unchecked Sendable {
     package let renderQuality: BeautyRenderQuality
     package let selectedFaceSupport: BeautyFaceObservation?
     package let textureFaceBounds: CoordinateRect?
+    package let textureExclusionMask: BeautyTextureExclusionMask?
     package let canonicalImage: BeautyCanonicalStillImage?
     package let compositionSummary: BeautyLocalRetouchCompositionSummary?
 
@@ -108,6 +109,7 @@ package struct BeautyBackendRequest: @unchecked Sendable {
         renderQuality: BeautyRenderQuality = .balanced,
         selectedFaceSupport: BeautyFaceObservation? = nil,
         textureFaceBounds: CoordinateRect? = nil,
+        textureExclusionMask: BeautyTextureExclusionMask? = nil,
         canonicalImage: BeautyCanonicalStillImage? = nil,
         compositionSummary: BeautyLocalRetouchCompositionSummary? = nil
     ) throws {
@@ -119,6 +121,7 @@ package struct BeautyBackendRequest: @unchecked Sendable {
             input: input,
             metadata: metadata,
             plan: plan,
+            textureExclusionMask: textureExclusionMask,
             canonicalImage: canonicalImage,
             compositionSummary: compositionSummary
         )
@@ -130,6 +133,7 @@ package struct BeautyBackendRequest: @unchecked Sendable {
         self.renderQuality = renderQuality
         self.selectedFaceSupport = selectedFaceSupport
         self.textureFaceBounds = textureFaceBounds ?? selectedFaceSupport?.imageBounds
+        self.textureExclusionMask = textureExclusionMask
         self.canonicalImage = canonicalImage
         self.compositionSummary = compositionSummary
     }
@@ -142,6 +146,7 @@ package struct BeautyBackendRequest: @unchecked Sendable {
         input: BeautyBackendInput,
         metadata: BeautyInputMetadata,
         plan: BeautyEffectPlan,
+        textureExclusionMask: BeautyTextureExclusionMask?,
         canonicalImage: BeautyCanonicalStillImage?,
         compositionSummary: BeautyLocalRetouchCompositionSummary?
     ) throws {
@@ -183,6 +188,11 @@ package struct BeautyBackendRequest: @unchecked Sendable {
                 }
             }
         }
+
+        guard textureExclusionMask == nil ||
+                (textureExclusionMask?.width == dimensions.width &&
+                 textureExclusionMask?.height == dimensions.height)
+        else { throw BeautyError.invalidInput }
 
         guard dimensions.width > 0,
               dimensions.height > 0,

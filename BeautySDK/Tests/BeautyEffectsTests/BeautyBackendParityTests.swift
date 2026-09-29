@@ -1,9 +1,71 @@
 import CoreImage
 import XCTest
 import BeautyCore
+import BeautyDetection
 @testable import BeautyEffects
 
 final class BeautyBackendParityTests: XCTestCase {
+    func testTextureExclusionMaskProtectsSameColorPatchOnCPUAndMetal() throws {
+        guard let metal = BeautyBackendParityFixtureFactory.makeMetalBackend() else { return }
+        let width = 32
+        let height = 32
+        var source = [UInt8](repeating: 255, count: width * height * 4)
+        for y in 0..<height {
+            for x in 0..<width {
+                let offset = (y * width + x) * 4
+                let detail = (x / 2 + y / 2).isMultiple(of: 2) ? 10 : -10
+                source[offset] = UInt8(170 + detail)
+                source[offset + 1] = UInt8(125 + detail)
+                source[offset + 2] = UInt8(110 + detail)
+            }
+        }
+        let image = CIImage(
+            bitmapData: Data(source), bytesPerRow: width * 4,
+            size: CGSize(width: width, height: height), format: .RGBA8,
+            colorSpace: CGColorSpace(name: CGColorSpace.sRGB)!
+        )
+        var maskBytes = [UInt8](repeating: 0, count: width * height)
+        for y in 14..<19 {
+            for x in 18..<23 { maskBytes[y * width + x] = 255 }
+        }
+        let mask = try BeautyTextureExclusionMask(
+            width: width, height: height, bytes: maskBytes
+        )
+        let face = BeautyFaceObservation(
+            imageBounds: CoordinateRect(x: 0.05, y: 0.05, width: 0.9, height: 0.9)
+        )
+        let plan = BeautyEffectResolver.resolve(
+            parameters: BeautyParameters(skinSmoothing: 1),
+            selectedFaceObservation: face
+        )
+        let metadata = BeautyInputMetadata(orientation: .up, source: .testFixture)
+        let cpuRequest = try BeautyBackendRequest(
+            policy: .cpu, input: .stillImage(image), metadata: metadata,
+            plan: plan, selectedFaceSupport: face, textureExclusionMask: mask
+        )
+        let gpuRequest = try BeautyBackendRequest(
+            policy: .metal, input: .stillImage(image), metadata: metadata,
+            plan: plan, selectedFaceSupport: face, textureExclusionMask: mask
+        )
+        let cpuBytes = try BeautyBackendParityFixtureFactory.rgbaBytes(
+            from: BeautyCPUBackend().execute(cpuRequest).output
+        )
+        let gpuBytes = try BeautyBackendParityFixtureFactory.rgbaBytes(
+            from: metal.execute(gpuRequest).output
+        )
+        for index in maskBytes.indices where maskBytes[index] == 255 {
+            let offset = index * 4
+            XCTAssertEqual(Array(cpuBytes[offset..<(offset + 4)]),
+                           Array(source[offset..<(offset + 4)]))
+            XCTAssertEqual(Array(gpuBytes[offset..<(offset + 4)]),
+                           Array(source[offset..<(offset + 4)]))
+        }
+        let cheekOffset = (16 * width + 12) * 4
+        XCTAssertNotEqual(cpuBytes[cheekOffset], source[cheekOffset])
+        XCTAssertNotEqual(gpuBytes[cheekOffset], source[cheekOffset])
+        XCTAssertEqual(gpuBytes, cpuBytes)
+    }
+
     func testGeneratedNeutralPixelBufferIsStructurallyAndByteIdentical() throws {
         guard let metal = BeautyBackendParityFixtureFactory.makeMetalBackend() else { return }
         let fixture = CPUReferenceFixtureFactory.opaqueColorRamp()

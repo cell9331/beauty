@@ -33,17 +33,49 @@ enum BeautyGeometryEffectPipeline {
         for plan: BeautyEffectPlan,
         face: FaceGeometry,
         protectedLeftContour: Bool,
-        protectedRightContour: Bool
+        protectedRightContour: Bool,
+        suppressHairlinePoints: Bool = false,
+        suppressSubmentalPoints: Bool = false,
+        suppressHeadWrapPoints: Bool = false,
+        suppressForeheadPoints: Bool = false,
+        suppressPhiltrumPoints: Bool = false,
+        suppressWholeFaceTranslationPoints: Bool = false
     ) -> [WarpControlPoint] {
         let controls = controlPoints(for: plan, face: face)
-        guard protectedLeftContour || protectedRightContour else { return controls }
-        let contourPoints = FaceShapeWarpProvider().fieldEmissions(
+        guard protectedLeftContour || protectedRightContour ||
+                suppressHairlinePoints || suppressSubmentalPoints ||
+                suppressHeadWrapPoints || suppressForeheadPoints ||
+                suppressPhiltrumPoints || suppressWholeFaceTranslationPoints
+        else { return controls }
+        let emissions = FaceShapeWarpProvider().fieldEmissions(
             face: face, strengths: plan.effectiveStrengths
-        ).faceContourSmooth
+        )
         return controls.filter { point in
-            guard contourPoints.contains(point) else { return true }
-            return point.source.x < face.bounds.midX
-                ? !protectedLeftContour : !protectedRightContour
+            if suppressHairlinePoints && emissions.hairlineHeight.contains(point) {
+                return false
+            }
+            if suppressSubmentalPoints &&
+                (emissions.doubleChinReduction.contains(point) ||
+                 emissions.doubleChinReductionPro.contains(point)) {
+                return false
+            }
+            if suppressHeadWrapPoints && emissions.headWrap.contains(point) {
+                return false
+            }
+            if suppressForeheadPoints && emissions.foreheadHeight.contains(point) {
+                return false
+            }
+            if suppressPhiltrumPoints && emissions.philtrumLength.contains(point) {
+                return false
+            }
+            if suppressWholeFaceTranslationPoints &&
+                (emissions.wholeFaceXPosition.contains(point) ||
+                 emissions.wholeFaceYPosition.contains(point)) {
+                return false
+            }
+            guard emissions.faceContourSmooth.contains(point) else { return true }
+            return point.source.x < face.bounds.midX ?
+                !protectedLeftContour : !protectedRightContour
         }
     }
 
@@ -158,14 +190,44 @@ enum BeautyGeometryEffectPipeline {
             face: face,
             strength: plan.effectiveStrengths.faceContourSmooth
         )
-        let alignedSource = refinement.bytes
+        let hairlineSource = HairlineBoundaryRefiner.apply(
+            refinement.bytes, width: width, height: height,
+            face: face, strength: HairlineBoundaryRefiner.combinedStrength(
+                hairline: plan.effectiveStrengths.hairlineHeight,
+                forehead: plan.effectiveStrengths.foreheadHeight
+            )
+        )
+        let alignedSource = SubmentalContourRefiner.apply(
+            hairlineSource, width: width, height: height, face: face,
+            baseStrength: plan.effectiveStrengths.doubleChinReduction,
+            proStrength: plan.effectiveStrengths.doubleChinReductionPro
+        )
+        let suppressHeadWrap = plan.effectiveStrengths.headWrap != 0 &&
+            !HairlineBoundaryRefiner.hasCoherentHairCap(
+                refinement.bytes, width: width, height: height, face: face
+            )
         let points = controlPoints(
             for: plan, face: face,
             protectedLeftContour: refinement.protectedLeft,
-            protectedRightContour: refinement.protectedRight
+            protectedRightContour: refinement.protectedRight,
+            suppressHairlinePoints: plan.effectiveStrengths.hairlineHeight != 0,
+            suppressSubmentalPoints: plan.effectiveStrengths.doubleChinReduction != 0 ||
+                plan.effectiveStrengths.doubleChinReductionPro != 0,
+            suppressHeadWrapPoints: suppressHeadWrap,
+            suppressForeheadPoints: plan.effectiveStrengths.foreheadHeight != 0,
+            suppressPhiltrumPoints: plan.effectiveStrengths.philtrumLength != 0 &&
+                !PhiltrumSourceAdmission.hasRegisteredUpperLip(
+                    refinement.bytes, width: width, height: height, face: face
+                ),
+            suppressWholeFaceTranslationPoints: true
         ).compactMap(RenderableWarpPoint.init)
-        let output = warpedRGBABytes(
+        let warpedBytes = warpedRGBABytes(
             alignedSource, width: width, height: height, points: points
+        )
+        let output = WholeFaceTranslationRefiner.apply(
+            warpedBytes, width: width, height: height, face: face,
+            xStrength: plan.effectiveStrengths.wholeFaceXPosition,
+            yStrength: plan.effectiveStrengths.wholeFaceYPosition
         )
         let data = Data(output)
         let warped = CIImage(

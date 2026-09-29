@@ -152,11 +152,13 @@ public final class BeautyEngine {
 
     /// Decodes one in-memory still image after enforcing the configured
     /// encoded-byte and declared-pixel limits. Orientation comes from
-    /// `metadata`, exactly as for the decoded-image entry.
+    /// `metadata`, exactly as for the decoded-image entry. An optional texture
+    /// exclusion mask uses the canonical upright, input-mirror-corrected grid.
     public func processResult(
         encodedImageData: Data,
         metadata: BeautyInputMetadata,
-        parameters: BeautyParameters
+        parameters: BeautyParameters,
+        textureExclusionMask: BeautyTextureExclusionMask? = nil
     ) throws -> BeautyResult<CIImage> {
         let performanceStart = configuration.enablePerformanceLog
             ? DispatchTime.now().uptimeNanoseconds : nil
@@ -199,19 +201,26 @@ public final class BeautyEngine {
         let colorSpace = decoded.colorSpace ?? CGColorSpace(name: CGColorSpace.sRGB)!
         let image = CIImage(cgImage: decoded, options: [.colorSpace: colorSpace])
         return try withConfiguredResultMetadata(
-            processResult(image: image, metadata: metadata, parameters: parameters),
+            processResult(image: image, metadata: metadata, parameters: parameters,
+                          textureExclusionMask: textureExclusionMask),
             since: performanceStart
         )
     }
 
+    /// Processes a still image with an optional request-local binary exclusion
+    /// mask for skin smoothing and sharpening. The mask must match the upright,
+    /// input-mirror-corrected image dimensions. Its protected pixels are
+    /// source-exact for the skin-texture stage only; other requested effects
+    /// retain their own contracts.
     public func processResult(
         image: CIImage,
         metadata: BeautyInputMetadata,
-        parameters: BeautyParameters
+        parameters: BeautyParameters,
+        textureExclusionMask: BeautyTextureExclusionMask? = nil
     ) throws -> BeautyResult<CIImage> {
         try processStillImageResult(
             image: image, metadata: metadata, parameters: parameters,
-            frameIndex: nil
+            frameIndex: nil, textureExclusionMask: textureExclusionMask
         )
     }
 
@@ -238,7 +247,8 @@ public final class BeautyEngine {
         image: CIImage,
         metadata: BeautyInputMetadata,
         parameters: BeautyParameters,
-        frameIndex: Int?
+        frameIndex: Int?,
+        textureExclusionMask: BeautyTextureExclusionMask? = nil
     ) throws -> BeautyResult<CIImage> {
         let performanceStart = configuration.enablePerformanceLog
             ? DispatchTime.now().uptimeNanoseconds : nil
@@ -270,7 +280,7 @@ public final class BeautyEngine {
             } ?? productionAdmission
             : productionAdmission
 
-        guard admission.isEmpty == false else {
+        guard admission.isEmpty == false || textureExclusionMask != nil else {
             return try withConfiguredResultMetadata(legacyStillImageResult(
                 image: image,
                 metadata: metadata,
@@ -288,6 +298,10 @@ public final class BeautyEngine {
             metadata: metadata,
             maximumPixelCount: configuration.maximumInputPixelCount
         )
+        guard textureExclusionMask == nil ||
+                (textureExclusionMask?.width == canonical.width &&
+                 textureExclusionMask?.height == canonical.height)
+        else { throw BeautyError.invalidInput }
         localRetouchTestingHooks?.recordCanonicalCarrier(canonical)
 
         localRetouchTestingHooks?.record(.detectAndMap)
@@ -397,6 +411,7 @@ public final class BeautyEngine {
             plan: route.plan,
             renderQuality: configuration.renderQuality,
             selectedFaceSupport: requestContext.selectedFaceObservation,
+            textureExclusionMask: textureExclusionMask,
             canonicalImage: renderCarrier,
             compositionSummary: compositionSummary
         )
@@ -462,6 +477,7 @@ public final class BeautyEngine {
             renderQuality: request.renderQuality,
             selectedFaceSupport: observation,
             textureFaceBounds: request.textureFaceBounds,
+            textureExclusionMask: request.textureExclusionMask,
             canonicalImage: request.canonicalImage,
             compositionSummary: request.compositionSummary
         )

@@ -1,5 +1,44 @@
 # SECURITY.md
 
+## 2026-09-29 texture exclusion input boundary
+
+The owner-supplied binary exclusion mask is validated for positive dimensions,
+overflow-safe byte count, `0`/`255` values and exact canonical image size.
+It exists only during the request and is absent from results, diagnostics,
+logs and persistent evidence. The mask adds no model or network call; the
+existing face detector still analyzes the input image locally. Mask coverage
+is caller-provided; an omitted object cannot acquire semantic protection from
+a color-matched source alone.
+
+## 2026-09-28 source-pixel geometry boundaries
+
+The new still-image silhouette and upper-lip admission scans use only the
+current request's raster and selected face support. Their pixel masks and
+detected coordinates are not persisted, logged or returned as public metrics.
+The strict uniform-background and chromatic-lip conditions limit false
+acceptance; unsupported input is source exact for these isolated controls.
+No model, weight, remote service or additional data source is introduced.
+
+## 2026-09-28 source-contour still-image boundary
+
+The hairline and outer-submental refiners inspect opaque source pixels only
+within the current selected face's bounded regions. Their per-column
+boundary rows and raster copies are request-local, with no cache, diagnostic
+field, file, network request, model, weight or external distribution path.
+Ambiguous source contrast or contour topology exits unchanged. The guards
+are conservative color/shape tests rather than semantic hair or fat masks;
+similar-looking forehead objects and neck clothing outside the tested
+classes remain an image-quality boundary.
+The same request-local hair-cap decision now also suppresses `headWrap`
+geometry on unsupported still-image sources. It stores no hair classification
+or image-derived detail beyond the request.
+`foreheadHeight` shares the already bounded hairline source detector and
+request-local resampler. `midfaceLength` requires nose observation and retains
+no feature coordinates or pixels beyond the request.
+The submental detector requires a continuous source-skin run, rejecting the
+tested detached collar and internal dark fold before output. This is a
+request-local appearance guard, not a stored fat or garment classifier.
+
 ## 2026-09-27 texture face-support boundary
 
 An active public texture request now admits pixels only inside a conservative
@@ -625,7 +664,7 @@ dark pixels, lashes, shadows, and foreign patches are forbidden proxies. The
 fixed `unsupported_metric` category stays transient and reaches only the
 sanitized infrastructure envelope—no anatomy or abstained-row detail persists.
 
-This owner-local boundary preserves the current 62/5/75 public inventory,
+At Phase 89 close, this owner-local boundary preserved the then-current 62/5/75 public inventory,
 still-image facades, CPU/GPU policy, and local-retouch exclusions. It grants no
 device, population, naturalness, commercial, packaging, shipping, launch,
 release-readiness, or distribution authority.
@@ -645,7 +684,7 @@ backend selector, parameter/preset key, Metal import, or new algorithm. CPU is
 the current reference. Metal resources/passes and public `.cpu`/`.gpu`
 configuration were later-phase scope. At Phase 70 the 61-field parameters, five
 neutral presets, 74-case renderer, and archive-only UI/Demo boundary remained
-unchanged; the current v1.21 surface is 62/5/75.
+unchanged; at v1.21 close the surface was 62/5/75.
 
 ## Phase 71 Metal Runtime Trust and Privacy Contract
 
@@ -846,7 +885,7 @@ evidence is aggregate only. Raw anatomy, contours, medians, coordinates,
 landmarks, masks, pixels, private fixture locators, generated media, and child
 transcripts must not enter owner documents, summaries, diagnostics, or logs.
 
-The trust surface remains exactly 62 stored parameter fields, five presets, 75
+At Phase 90 close, the trust surface had exactly 62 stored parameter fields, five presets, 75
 renderer cases, `BeautyEngine.processResult(image:metadata:parameters:)`, and
 `BeautyEngine.process(image:orientation:parameters:)`. CPU remains the
 reference; selectable GPU either succeeds through retained `Warp.metal` or

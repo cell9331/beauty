@@ -7,13 +7,17 @@ import XCTest
 final class BeautyFaceVerticalProportionTests: XCTestCase {
     private let side = 128
 
-    func testForeheadHeightMovesOnlyUpperMarkerInBothDirections() throws {
-        try assertDirection(
-            positive: .init(foreheadHeight: 0.30),
-            negative: .init(foreheadHeight: -0.30),
-            channel: 0, positiveDirection: -1,
-            protected: [(1, 62..<67), (2, 84..<89)]
-        )
+    func testForeheadHeightDoesNotTreatAnIsolatedMarkerAsHairline() throws {
+        let source = makeImage()
+        let before = rgba(source)
+        let engine = try BeautyEngine(faceDetectionProvider:
+            SDKTestingFaceDetectionProvider([.usableFace]))
+        for value in [0.30, -0.30] {
+            XCTAssertTrue(rgba(try engine.processResult(
+                image: source, metadata: metadata(),
+                parameters: BeautyParameters(foreheadHeight: Float(value))
+            ).output) == before)
+        }
     }
 
     func testMidfaceLengthMovesOnlyMiddleMarkerInBothDirections() throws {

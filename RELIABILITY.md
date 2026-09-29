@@ -1,5 +1,50 @@
 # RELIABILITY.md
 
+## 2026-09-29 texture exclusion recovery
+
+Malformed binary masks fail with typed `invalidInput`; a correctly sized mask
+for the canonical orientation remains request-local and does not affect a
+later request. The encoded-PNG entry is covered by a wrong-grid failure
+followed by a valid request on the same engine. The texture stage reads one
+immutable byte per source pixel
+and skips excluded centers, using the same CPU-owned operation on CPU and
+Metal-selected routes. The caller-provided mask adds up to one byte per
+pixel of request memory beyond the earlier three-RGBA8-buffer texture bound;
+Core Image and Metal allocations remain outside that earlier estimate.
+
+## 2026-09-28 source-qualified geometry recovery
+
+Still-image whole-face translation rejects invalid dimensions, nonopaque or
+nonuniform borders, disconnected foreground, unmatched face bounds and
+out-of-frame destination bounds by returning the source bytes. Philtrum
+source admission rejects missing or offset visible upper-lip evidence before
+point selection. Both operate on request-local bytes, emit no logs or private
+coordinates, and retain typed input failure and subsequent-request recovery.
+
+## 2026-09-28 source-contour still-image recovery
+
+The hairline and outer-submental decisions are recomputed from each admitted
+still image. Ambiguous or absent boundaries leave their contributions exact;
+a later source can qualify on the same engine. CPU and Metal-selected paths
+use the same deterministic source-resampling functions, while pixel buffers
+retain their existing point route. Each admitted raster adjustment copies one
+RGBA8 image before local row edits; combined requests may hold both copies
+briefly. The existing general pixel admission limit still applies, but these
+new copies have no separate lower pixel cap and large-image peak memory has
+not been measured. No new typed error or logging surface is introduced.
+`headWrap` reuses the same source detector on still images before admitting
+its existing geometry points. This adds a bounded per-column scan only when
+head-wrap is active; an unsupported source exits that control unchanged and
+later requests recompute admission.
+`foreheadHeight` shares the same single raster boundary pass with
+`hairlineHeight`: normalized opposing requests cancel and same-direction
+requests clamp to the hairline displacement cap. Ambiguous/no-hair input
+remains exact for that control, with no additional raster allocation.
+The submental candidate search now checks a continuous source-skin run to
+the outer edge before resampling. A detached collar or internal dark fold
+does not leave a stale candidate for a later request; this adds bounded
+per-column source reads and no new allocation or typed error.
+
 ## 2026-09-28 hairline brow-overlap recovery
 
 The existing `hairlineHeight` point provider checks request-local observed
@@ -477,9 +522,10 @@ error associated values.
 The SDK-owned renderer treats its CLI boundary as untrusted input. It rejects
 unknown flags/cases/backends, missing values, duplicate scalar arguments,
 missing/invalid input or output directories, empty or undecodable images, and
-case-insensitive duplicate output stems before crediting work. It preserves the
-  compatible 75-case current inventory (74 in the v1.16 historical snapshot) and accepts only the CPU token in v1.16; explicit
-GPU is rejected until v1.17. A requested matrix unit is credited only after an
+case-insensitive duplicate output stems before crediting work. The current CLI
+has 99 renderer cases and accepts only the CPU backend token; the SDK's selectable
+GPU backend is a separate facade contract. The v1.16 74-case inventory is a
+historical snapshot. A requested matrix unit is credited only after an
 atomic PNG write, non-empty regular-file check, ImageIO reopen, and exact input
 dimension check. Missing, partial, failed, skipped, or report-write output can
 never return zero.
@@ -968,8 +1014,8 @@ effective-plus-one-deferred publication and the complete archive-first no-skip
 closeout. Until those direct residuals run, the current comparisons are
 source-defined behavior rather than newly measured Phase 90 evidence.
 
-The compatibility surface remains 62 stored parameter fields, five presets,
-75 renderer cases, `BeautyEngine.processResult(image:metadata:parameters:)`,
+At Phase 90 close, the compatibility surface had 62 stored parameter fields,
+five presets, 75 renderer cases, `BeautyEngine.processResult(image:metadata:parameters:)`,
 and `BeautyEngine.process(image:orientation:parameters:)`. CPU stays the
 reference; selectable GPU either succeeds through unchanged retained
 `Warp.metal` or returns terminal typed `.metalUnavailable` without silent CPU

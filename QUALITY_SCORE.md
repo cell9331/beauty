@@ -1,5 +1,318 @@
 # QUALITY_SCORE.md
 
+## 2026-09-29 request-local texture exclusion qualification
+
+The new public generated-portrait oracle proves a same-colored cheek
+decoration changes without a mask and stays source-exact under a binary
+owner-supplied mask, while the opposite cheek still responds to both
+`skinSmoothing` and `skinSharpen`. Unmasked pixels match the old route,
+alpha/extent and repeat are stable, malformed bytes and wrong canonical
+dimensions fail typed, and a rotated plus input-mirrored image uses the
+canonical grid. The public encoded-PNG entry also preserves the protected
+decoration, changes the unmasked cheek, and succeeds on the same engine after
+a wrong-grid typed failure. A backend oracle proves exact protected pixels,
+remaining target change and byte-identical CPU/Metal-selected output. Focused
+tests: `BeautySkinTextureDecorationTests` 4/0/0 and mask parity 1/0/0.
+This qualifies explicit-mask protection, not automatic semantic separation.
+After the encoded-entry regression, the archive-first
+`bash scripts/run-no-skip-swiftpm.sh` passed with 1062 SwiftPM tests,
+zero failures, eight opt-ins executed and zero skipped; backend parity
+accounted for 14 focused cases. The first attempt could not write the local
+Clang cache and stopped before tests; the permitted-cache rerun above is the
+qualification result.
+
+## 2026-09-28 complete 15-control qualification gate
+
+The final archive-first `bash scripts/run-no-skip-swiftpm.sh` returned zero:
+1058 SwiftPM tests, zero failures, eight opt-ins executed and zero skips.
+SDK-only boundary self-test and post-archive check passed; `git diff --check`
+passed. The 15 formerly partial rows now have owner-local, generated-image 2D
+qualification within their individual source-admission limits. The separate
+provisional `去脂` and same-skin-colored non-skin gaps remain open.
+
+## 2026-09-28 final three source-qualified shape controls
+
+`wholeFaceYPosition` and `wholeFaceXPosition` now translate an admitted
+isolated generated portrait rigidly. Two skin values, two head proportions,
+both signs and visible hair/chin/eye/mouth direction pass. Eye and mouth widths,
+eye-center distance and foreground area remain exact; a detached collar and
+an isolated marker remain source exact. CPU/Metal bytes, neutral, no-face,
+repeat, exterior, alpha, oriented/mirrored input and translated extent checks
+pass. This closes the former 27-to-35-pixel eye-width regression in the
+admitted 2D scope.
+
+`philtrumLength` now passes two skin values and four source-aligned nose/lip
+forms in both directions after its bounded radius reaches 70% of the
+observed gap. Nose displacement stays below 0.5 pixel, mouth width within
+1 pixel and upper-face pixels exact. An 8-pixel source lip offset and an
+absent lip band exit exact on CPU and Metal. Missing nose/lip observation,
+no-face, neutral, repeat, exterior, alpha, extent and existing metadata/typed
+failure checks pass. Qualification is limited to the admitted generated-image
+2D upper-lip class.
+
+## 2026-09-28 admitted outer submental tiers
+
+A generated detached light collar first caused both still-image chin tiers to
+edit the collar despite a flat outer chin. The source detector now requires
+continuous skin from the upper search band to the selected outer edge. The
+collar and an internal dark-fold negative stay exact for both tiers on two
+skin values; CPU and Metal bytes agree. Existing two-depth positives still
+pass: base reduces center depth over 5 pixels and protrusion area over 5%,
+while Pro improves beyond base by another 1 pixel and 5% area. Upper-face,
+exterior, alpha, extent, repeat, neutral and no-face protection pass, with
+adjacent contour-column steps at most 3 pixels and existing orientation/
+mirror and typed recovery tests green. Both rows are `implemented` only for
+the admitted generated-image 2D outer-protrusion class.
+
+## 2026-09-28 lower-face variation and philtrum boundary
+
+The `lowerFaceLength` public portrait oracle spans two skin values and three
+lip/chin-height forms. Both signed requests change the visible lip-to-chin
+distance beyond 0.5 pixel; the upper lip moves less than 0.5 pixel and the
+brow-to-mouth source region stays exact. The lower contour's adjacent-column
+step stays within 3 pixels, with no-face, missing-lip, repeat, exterior,
+alpha and extent checks. Existing neutral, orientation/mirror and typed
+recovery cases pass. This qualifies the owner-local generated-image 2D row
+as `implemented`.
+
+The philtrum influence radius increased from 40% to 60% of the observed
+nose-to-upper-lip gap while retaining the visible nose protection below
+0.5 pixel on three aligned nose/lip forms. A preselected source with the lip
+at row 318 failed the signed effect oracle in one direction even after this
+change, so that row remains `partial`; the failed source was not counted as
+a passing positive.
+
+## 2026-09-28 forehead and midface proportion qualification
+
+The first 512-pixel source-fixed proportion oracle exposed 951 altered
+pixels in the broad brow-to-mouth protection band under the old forehead
+point. The still-image route now uses the hairline source-boundary detector
+with inverse sign; flat and wavy high-contrast boundary positives move in
+both directions while brow/eye/mouth pixels remain exact. Hairless and
+low-contrast negatives are exact. Opposing full-scale forehead/hairline
+requests cancel, and CPU/Metal positives and hairless negatives agree.
+
+The old midface radius changed 16 source dark brow/eye pixels despite a stable
+eye centroid. Reducing the radius from 14% to 10% of the larger face-box
+dimension retains the >0.5-pixel signed visible nose response on two skin
+and two nose-length variants. The eye-to-nose share of eye-to-lip distance
+changes by over 0.003 in the requested direction; source dark brow/eye pixels
+and the visible lip band are exact. Missing nose observation exits unchanged;
+neutral, no-face, repeat, exterior, alpha, extent and existing orientation/
+mirror and typed recovery checks pass. Both rows are `implemented` within
+their stated owner-local generated-image 2D scope.
+
+## 2026-09-28 source-matched symmetry qualification
+
+The public 1000-pixel generated contour oracle now runs both skin variants
+with the visible lower-face imbalance and injected observation aligned before
+output. At the frozen source threshold above 3 pixels, output reduces the
+left/right width difference by over 1 pixel. The matched symmetric source
+and observation stay exact. Eye and mouth regions, center, exterior and alpha
+are protected, and adjacent lower-contour row steps remain within 3 pixels;
+neutral, no-face and repeat pass. Existing orientation/mirror and typed
+recovery cases remain green. `wholeFaceSymmetry` is `implemented` for this
+owner-local 2D contour-balance effect; no depth correction is implied.
+
+## 2026-09-28 head silhouette qualification
+
+The registered 512-pixel generated portrait suite now spans two skin values
+and two head width/height shapes. `headSmall` reduces visible hair width and
+complete hair-top-to-chin span beyond the source-fixed 1-pixel threshold;
+visible eye and mouth widths change by at most 2 pixels, and the nose region
+stays exact. Signed `cranialCrownHeight` moves the visible hair top over
+1 pixel in both directions while the tested brow/eye/mouth region stays exact.
+For both controls, hair silhouette adjacent-row steps stay within 4 pixels;
+neutral, no-face, exterior, alpha, extent and repeat checks pass. Existing
+orientation/mirror and typed recovery cases remain green. The two rows are
+`implemented` for these owner-local generated-image 2D effects, with no skull
+or segmentation claim. `headWrap` also widens the visible hair band by over
+1 pixel, holds face width within 0.2 pixel, and increases the hair/face ratio
+over 0.004 on the same four portrait variants. A previously failing hairless
+negative is now exact after request-local coherent hair-cap admission; low
+contrast and short forehead-band negatives are exact too. CPU/Metal bytes
+agree for the admitted positive and hairless negative. This qualifies the
+bounded high-contrast `headWrap` still-image row as `implemented`.
+
+## 2026-09-28 admitted hairline boundary qualification
+
+The public 512-pixel generated portrait suite tests two skin values, flat
+boundaries at two heights and a five-pixel wavy boundary with both signed
+requests. Three center/lateral columns move over 1 pixel in the requested
+direction; the wavy output has no adjacent-column step over 2 pixels.
+Eyebrow, eye, mouth, exterior, alpha, extent and repeat checks pass. No-face
+and neutral requests are source-exact. Hairless, low-contrast, short dark
+forehead-band and observed-brow-overlap negatives are also source-exact.
+Existing orientation/mirror and typed recovery checks remain green. This
+qualifies `hairlineHeight` as `implemented` for the admitted high-contrast
+still-image class; light hair and general segmentation are outside that claim.
+
+## 2026-09-28 whole-face rotation and translation protection
+
+The 512-pixel registered generated portrait now checks both signed tilt
+directions on two skin values through the public still-image path. Eye-line
+and lip-line slopes rotate coherently beyond 0.8 and 0.3 pixel; crown and
+chin regions move in opposite horizontal directions beyond 0.4 pixel. The
+eye-center spacing stays within 1 pixel, and exterior, alpha, extent and
+repeat checks pass. Existing neutral, no-face, orientation/mirror and typed
+recovery cases also pass. Adding bounded upper/lower silhouette anchors closes
+the owner-local 2D `wholeFaceTilt` row as `implemented` without a 3D claim.
+
+A separate predeclared ±1-pixel feature-width oracle rejected the whole-face
+X/Y translations on the same portrait: a source 27-pixel eye sometimes became
+35 pixels wide. Their signed direction still passes, but shape preservation
+is unqualified. The failed width assertion was not kept as a green test or
+used to promote those rows.
+
+## 2026-09-28 source-fixed short-face qualification
+
+A new facial-feature protection oracle found that the four-point
+`faceShortening` path widened the visible eye region from 27 to 31 pixels
+while shortening the complete hair-top/chin span. Reducing only the upper
+inner point's maximum displacement from 8% to 3% of face-box height retains
+the original long-face shortening and 128-pixel marker thresholds. On two
+registered generated skin variants, visible eye and mouth widths now remain
+within 1 pixel, the nose region is source-exact, and exterior, alpha, extent
+and repeat checks pass. A matched short-face source/observation remains exact;
+earlier neutral, no-face, orientation/mirror and typed recovery tests also
+pass. This completes owner-local generated-image 2D qualification for this
+row, now `implemented`; it does not establish depth or population quality.
+
+## 2026-09-28 source-qualified outer submental checkpoint
+
+The point-only chin path moved a marker but barely changed a newly generated
+outer submental protrusion: source bottom 431 pixels, base 430 and Pro 431 on
+the light-skin diagnostic (deep skin 429.7/430.8). The still-image path now
+requires a source skin-to-background contour extending below the selected
+chin box. A retained public 512×512 test covers two skin values and two
+bulge depths: base reduces visible center depth by more than 5 pixels and
+protrusion area by more than 5%; Pro exceeds base by more than 1 pixel and
+another 5% area. Adjacent contour columns differ by at most 3 pixels;
+upper-face, exterior, neutral, no-face and repeat checks pass. Matched flat
+chins stay exact. The old 128-pixel chin marker tests were removed because
+they cannot establish an actual bulge. An earlier internal dark-fold source
+is outside this admitted outer-contour class and does not gain reduction
+credit. A four-case public CPU/Metal still-image parity test uses a generated
+source with both boundaries, asserts actual changes, and compares output
+bytes and extent. The backend-neutral, Metal runtime and backend-configuration
+focused gates now expect 26, 44 and 21 tests respectively. The archive-first
+`bash scripts/run-no-skip-swiftpm.sh` gate returned 0 on this code and test
+tree, with all eight opt-ins executed and zero skips.
+
+## 2026-09-28 hairline source-boundary and philtrum protection checkpoint
+
+The still-image hairline path now requires a coherent source-pixel dark cap
+and lighter forehead. A 512×512 generated portrait suite fixes two skin
+values and two source boundary heights before rendering. Both signs move the
+visible hair/skin transition by more than 1 pixel at three forehead columns;
+the brow/eye/mouth region and exterior stay source-exact. Hairless and
+hairless-with-a-short-dark-forehead-band negatives stay fully exact. Extent
+and repeat assertions pass. The older 128-pixel
+hairline marker cases were removed because an isolated marker cannot test
+this source-aware contract; headSmall/headWrap/crown cases remain.
+
+A new nose-protection assertion exposed a 6-pixel nose-boundary shift under
+the previous philtrum warp. Shrinking its displacement to 25% of the
+observed gap and radius to at most 40% of that gap retains both signed
+visible lip-gap results above 0.5 pixel while keeping the visible nose within
+0.5 pixel. A second mouth source placed eight pixels below the injected
+lip observation did not respond to the reverse request and was rejected as
+an unregistered positive. The 128-pixel philtrum marker cases, which could
+not independently protect the nose, were replaced by the stronger registered
+portrait oracle. Broader registered anatomy is still unqualified.
+
+## 2026-09-28 expanded 15-control source-fixed checkpoint
+
+The added 512×512 public generated-portrait suite fixes visible source
+qualification and thresholds before rendering. Across light and deep skin,
+`headSmall` reduces hair width and moves hair top/chin edge inward by over
+1 pixel each; `headWrap` widens the hair band by over 1 pixel while face
+reference width changes by at most 0.2 pixel and hair/face ratio rises by
+over 0.004. `cranialCrownHeight` moves the visible crown in both directions
+by over 1 pixel. `faceShortening` reduces the full visible long-face span by
+over 1 pixel, while a source- and observation-matched short-face negative
+remains exact. `philtrumLength` and `lowerFaceLength` move visible nose/lip
+and lip/chin gaps in both directions by over 0.5 pixel on a registered
+source. `wholeFaceYPosition` moves the visible hair top and chin edge in both
+directions by over 0.3 pixel; `wholeFaceXPosition` moves the face center by
+over 0.5 pixel. Extent, exterior and repeat checks accompany the passing
+cases; earlier orientation/mirror, neutral, no-face and typed failure suites
+remain in the full gate. A public symmetric observed/source portrait negative
+also remains pixel exact under `wholeFaceSymmetry`.
+
+A source-fixed submental-fold diagnostic initially included dark background
+in its measured region and was rejected. The corrected color-range measure
+excludes background: fold source area was about 2657 units, base output
+2950/2960, and Pro 3098/3105 on the two skin variants. Both controls failed
+the predeclared 5% reduction target, so neither gained effect credit. A
+five-point hairline candidate moved the center of an aligned hair boundary
+but also shifted an offset-boundary negative by 1 pixel. It was reverted;
+the retained brow-risk safety exit still applies. The failing diagnostic
+assertions were removed, with aggregate failures recorded in the active plan.
+
+The `RemainingEffectSemanticCandidateTests` suite passes `5/0/0` after the
+short-face and head-wrap additions. The final archive-first no-skip gate on
+this production/test tree returned 0 with eight opt-ins and zero skips;
+archive, SDK-only boundary, backend parity, Metal, consumer and CPU reference
+prechecks passed.
+All 15 rows remain `partial` pending their listed remaining semantic and
+protection work. No depth, hair segmentation or submental-fat inference is
+claimed.
+
+## 2026-09-28 visible-feature portrait qualification checkpoint
+
+A new public-path generated portrait oracle measures visible eye and lip
+centroids, eye-line slope, a hair/skin boundary, nose region, and crown top
+on two source-fixed skin values. The `wholeFaceYPosition` and
+`wholeFaceXPosition` single-point baseline failed the predeclared 0.4-pixel
+all-feature movement threshold in four checks, chiefly at the lip. Adding
+bounded upper and lower points made all three features pass both signed
+directions at the original threshold. Neutral, no-face, repeat, exterior,
+alpha and extent checks accompany the new tests; existing direction/mirror
+and typed-failure tests still apply. `wholeFaceTilt` passes a visible eye-line
+slope threshold of 0.8 pixel, while `foreheadHeight` and `midfaceLength`
+pass two-direction visible-boundary/nose thresholds of 0.3 pixel with a
+stable eye reference. These are two generated schematic portraits, not full
+face-silhouette or broad portrait qualification.
+
+The head-region source has visible hair width and crown top before output.
+`headSmall` yielded no width reduction against the frozen 0.3-pixel threshold;
+`headWrap` yielded about 0.154 pixel of width increase; and the negative
+`cranialCrownHeight` request left the measured crown top unchanged. Positive
+crown lift exceeded 0.3 pixel and remains a passing regression. The failed
+diagnostic assertions were removed from the committed test suite without
+lowering their thresholds or promoting any taxonomy row. All 15 remain
+`partial`; their next feature-specific positives, negatives and protection
+oracles are in the active plan. Focused public/provider tests pass `42/0/0`.
+The archive-first `bash scripts/run-no-skip-swiftpm.sh` returns 0 with all
+eight opt-ins executed and zero skips; its archive, SDK-only, backend, Metal,
+consumer and CPU-reference prechecks pass. An initial sandboxed invocation
+stopped at a SwiftPM subprocess sandbox permission error before the suite;
+the same gate passed when rerun with the required local execution permission.
+
+A subsequent source-first narrow/long generated portrait diagnostic fixed
+visible full head height, nose-to-lip gap, and mouth-to-chin gap before output.
+At the declared `0.6/0.3/0.3` pixel thresholds, `faceShortening` changed
+the measured full height by zero, positive `philtrumLength` reduced the gap
+by about `0.34/0.64` pixels across the two skin values, and positive
+`lowerFaceLength` left the visible gap unchanged. These are substantive
+failures of the tested semantic oracles, not evidence of acceptance. The
+temporary failing test was removed after recording aggregate results; no
+production thresholds or taxonomy statuses changed. The full gate above
+applied to the retained production/test code at that checkpoint.
+
+The source-only registration for a new deep-skin generated asymmetry portrait
+pins a lower-contour row with more than 3 pixels of visible side-width
+imbalance before candidate output. The public `wholeFaceSymmetry` path reduces
+the difference by more than 1 pixel; neutral, repeat, no-face, central feature
+and exterior checks pass. An earlier source row had only 2 pixels of imbalance
+and was rejected before effect credit. The public symmetric-portrait negative
+and broad contour non-worsening remain open, so the row stays `partial`.
+The new focused `GeneratedContourPublicOracleTests` suite passes `3/0/0`;
+the final archive-first no-skip gate including this test returns 0, with all
+eight opt-ins executed, zero skips, and the archive, SDK-only, backend, Metal,
+consumer and CPU-reference prechecks passing.
+
 ## 2026-09-28 contour direction and hairline diagnostic
 
 The public generated portrait schematic now measures a source-fixed

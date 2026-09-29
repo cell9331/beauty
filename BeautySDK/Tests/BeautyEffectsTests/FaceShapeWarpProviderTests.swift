@@ -231,14 +231,18 @@ final class FaceShapeWarpProviderTests: XCTestCase {
 
     func testWholeFaceYPositionHasSignedBoundedPointAndMissingContourExits() throws {
         let provider = FaceShapeWarpProvider()
-        let down = try XCTUnwrap(provider.fieldEmissions(
+        let downPoints = provider.fieldEmissions(
             face: .fixture,
             strengths: strengths(wholeFaceYPosition: BeautySafetyCaps.wholeFaceYPosition)
-        ).wholeFaceYPosition.first)
-        let up = try XCTUnwrap(provider.fieldEmissions(
+        ).wholeFaceYPosition
+        let upPoints = provider.fieldEmissions(
             face: .fixture,
             strengths: strengths(wholeFaceYPosition: -BeautySafetyCaps.wholeFaceYPosition)
-        ).wholeFaceYPosition.first)
+        ).wholeFaceYPosition
+        XCTAssertEqual(downPoints.count, 5)
+        XCTAssertEqual(upPoints.count, 5)
+        let down = try XCTUnwrap(downPoints.first)
+        let up = try XCTUnwrap(upPoints.first)
         XCTAssertEqual(down.source, up.source)
         XCTAssertEqual(down.target.x, down.source.x)
         XCTAssertGreaterThan(down.target.y, down.source.y)
@@ -248,6 +252,15 @@ final class FaceShapeWarpProviderTests: XCTestCase {
             up.source.y - up.target.y,
             accuracy: 0.000_001
         )
+        for (positive, negative) in zip(downPoints, upPoints) {
+            XCTAssertEqual(positive.source, negative.source)
+            XCTAssertEqual(positive.target.x, positive.source.x)
+            XCTAssertEqual(negative.target.x, negative.source.x)
+            XCTAssertGreaterThan(positive.target.y, positive.source.y)
+            XCTAssertLessThan(negative.target.y, negative.source.y)
+            XCTAssertTrue((0...1).contains(positive.target.y))
+            XCTAssertTrue((0...1).contains(negative.target.y))
+        }
         XCTAssertTrue(provider.fieldEmissions(
             face: .missingContour,
             strengths: strengths(wholeFaceYPosition: BeautySafetyCaps.wholeFaceYPosition)
@@ -256,14 +269,18 @@ final class FaceShapeWarpProviderTests: XCTestCase {
 
     func testWholeFaceXPositionHasSignedBoundedPointAndMissingContourExits() throws {
         let provider = FaceShapeWarpProvider()
-        let right = try XCTUnwrap(provider.fieldEmissions(
+        let rightPoints = provider.fieldEmissions(
             face: .fixture,
             strengths: strengths(wholeFaceXPosition: BeautySafetyCaps.wholeFaceXPosition)
-        ).wholeFaceXPosition.first)
-        let left = try XCTUnwrap(provider.fieldEmissions(
+        ).wholeFaceXPosition
+        let leftPoints = provider.fieldEmissions(
             face: .fixture,
             strengths: strengths(wholeFaceXPosition: -BeautySafetyCaps.wholeFaceXPosition)
-        ).wholeFaceXPosition.first)
+        ).wholeFaceXPosition
+        XCTAssertEqual(rightPoints.count, 3)
+        XCTAssertEqual(leftPoints.count, 3)
+        let right = try XCTUnwrap(rightPoints.first)
+        let left = try XCTUnwrap(leftPoints.first)
         XCTAssertEqual(right.source, left.source)
         XCTAssertEqual(right.target.y, right.source.y)
         XCTAssertGreaterThan(right.target.x, right.source.x)
@@ -273,13 +290,22 @@ final class FaceShapeWarpProviderTests: XCTestCase {
             left.source.x - left.target.x,
             accuracy: 0.000_001
         )
+        for (positive, negative) in zip(rightPoints, leftPoints) {
+            XCTAssertEqual(positive.source, negative.source)
+            XCTAssertEqual(positive.target.y, positive.source.y)
+            XCTAssertEqual(negative.target.y, negative.source.y)
+            XCTAssertGreaterThan(positive.target.x, positive.source.x)
+            XCTAssertLessThan(negative.target.x, negative.source.x)
+            XCTAssertTrue((0...1).contains(positive.target.x))
+            XCTAssertTrue((0...1).contains(negative.target.x))
+        }
         XCTAssertTrue(provider.fieldEmissions(
             face: .missingContour,
             strengths: strengths(wholeFaceXPosition: BeautySafetyCaps.wholeFaceXPosition)
         ).wholeFaceXPosition.isEmpty)
     }
 
-    func testWholeFaceTiltUsesFourBoundedCardinalPointsAndMissingContourExits() {
+    func testWholeFaceTiltUsesSixBoundedPointsAndMissingContourExits() {
         let provider = FaceShapeWarpProvider()
         let clockwise = provider.fieldEmissions(
             face: .fixture,
@@ -289,8 +315,8 @@ final class FaceShapeWarpProviderTests: XCTestCase {
             face: .fixture,
             strengths: strengths(wholeFaceTilt: -BeautySafetyCaps.wholeFaceTilt)
         ).wholeFaceTilt
-        XCTAssertEqual(clockwise.count, 4)
-        XCTAssertEqual(counterclockwise.count, 4)
+        XCTAssertEqual(clockwise.count, 6)
+        XCTAssertEqual(counterclockwise.count, 6)
         XCTAssertEqual(clockwise.map(\.source), counterclockwise.map(\.source))
         XCTAssertGreaterThan(clockwise[0].target.x, clockwise[0].source.x)
         XCTAssertLessThan(counterclockwise[0].target.x, counterclockwise[0].source.x)
@@ -312,9 +338,11 @@ final class FaceShapeWarpProviderTests: XCTestCase {
             face: .fixture,
             strengths: strengths(faceShortening: BeautySafetyCaps.faceShortening)
         ).faceShortening
-        XCTAssertEqual(points.count, 2)
+        XCTAssertEqual(points.count, 4)
         XCTAssertGreaterThan(points[0].target.y, points[0].source.y)
         XCTAssertLessThan(points[1].target.y, points[1].source.y)
+        XCTAssertGreaterThan(points[2].target.y, points[2].source.y)
+        XCTAssertLessThan(points[3].target.y, points[3].source.y)
         XCTAssertTrue(points.allSatisfy { point in
             (0...1).contains(point.source.x) && (0...1).contains(point.source.y) &&
                 (0...1).contains(point.target.x) && (0...1).contains(point.target.y) &&
@@ -390,11 +418,13 @@ final class FaceShapeWarpProviderTests: XCTestCase {
         let provider = FaceShapeWarpProvider()
         let small = provider.fieldEmissions(face: .fixture, strengths: strengths(headSmall: 0.3))
             .headSmall
-        XCTAssertEqual(small.count, 4)
+        XCTAssertEqual(small.count, 6)
         XCTAssertGreaterThan(small[0].target.x, small[0].source.x)
         XCTAssertLessThan(small[1].target.x, small[1].source.x)
         XCTAssertGreaterThan(small[2].target.y, small[2].source.y)
         XCTAssertLessThan(small[3].target.y, small[3].source.y)
+        XCTAssertGreaterThan(small[4].target.x, small[4].source.x)
+        XCTAssertLessThan(small[5].target.x, small[5].source.x)
 
         let wrap = provider.fieldEmissions(face: .fixture, strengths: strengths(headWrap: 0.25))
             .headWrap
@@ -408,8 +438,8 @@ final class FaceShapeWarpProviderTests: XCTestCase {
         let crownDown = provider.fieldEmissions(
             face: .fixture, strengths: strengths(cranialCrownHeight: -0.25)
         ).cranialCrownHeight
-        XCTAssertEqual(crownUp.count, 1)
-        XCTAssertEqual(crownDown.count, 1)
+        XCTAssertEqual(crownUp.count, 2)
+        XCTAssertEqual(crownDown.count, 2)
         XCTAssertLessThan(crownUp[0].target.y, crownUp[0].source.y)
         XCTAssertGreaterThan(crownDown[0].target.y, crownDown[0].source.y)
 

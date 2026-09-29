@@ -63,6 +63,7 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
                     renderQuality: request.renderQuality,
                     selectedFaceSupport: request.selectedFaceSupport,
                     textureFaceBounds: request.textureFaceBounds,
+                    textureExclusionMask: request.textureExclusionMask,
                     compositionSummary: request.compositionSummary,
                     canonicalImage: request.canonicalImage
                 ))
@@ -73,6 +74,7 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
                     plan: request.plan,
                     renderQuality: request.renderQuality,
                     selectedFaceSupport: request.selectedFaceSupport,
+                    textureExclusionMask: request.textureExclusionMask,
                     compositionSummary: request.compositionSummary
                 ))
             }
@@ -114,6 +116,7 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
         renderQuality: BeautyRenderQuality,
         selectedFaceSupport: BeautyFaceObservation?,
         textureFaceBounds: CoordinateRect?,
+        textureExclusionMask: BeautyTextureExclusionMask?,
         compositionSummary: BeautyLocalRetouchCompositionSummary?,
         canonicalImage: BeautyCanonicalStillImage?
     ) throws -> CVPixelBuffer {
@@ -133,7 +136,8 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
         let rgbaBytes = BeautySkinTexturePipeline.applyRGBA(
             bgraToRgba(sourceBytes), width: width, height: height, plan: plan,
             renderQuality: renderQuality,
-            faceBounds: textureFaceBounds
+            faceBounds: textureFaceBounds,
+            exclusionMask: textureExclusionMask
         )
         let renderedRGBA = try invokeRuntime(
             width: width,
@@ -159,6 +163,7 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
         plan: BeautyEffectPlan,
         renderQuality: BeautyRenderQuality,
         selectedFaceSupport: BeautyFaceObservation?,
+        textureExclusionMask: BeautyTextureExclusionMask?,
         compositionSummary: BeautyLocalRetouchCompositionSummary?
     ) throws -> CIImage {
         let extent = image.extent
@@ -181,7 +186,8 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
         let texturedBytes = BeautySkinTexturePipeline.applyRGBA(
             bytes, width: dimensions.width, height: dimensions.height, plan: plan,
             renderQuality: renderQuality,
-            faceBounds: selectedFaceSupport?.imageBounds
+            faceBounds: selectedFaceSupport?.imageBounds,
+            exclusionMask: textureExclusionMask
         )
         let refinement: FaceContourSubpixelRefiner.Refinement?
         if let selectedFaceSupport {
@@ -195,7 +201,34 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
         } else {
             refinement = nil
         }
-        let alignedBytes = refinement?.bytes ?? texturedBytes
+        let alignedBytes: [UInt8]
+        let suppressHeadWrapPoints: Bool
+        if let selectedFaceSupport {
+            let face = BeautyFaceGeometryAdapter.makeGeometry(from: selectedFaceSupport)
+            suppressHeadWrapPoints = plan.effectiveStrengths.headWrap != 0 &&
+                !HairlineBoundaryRefiner.hasCoherentHairCap(
+                    refinement?.bytes ?? texturedBytes,
+                    width: dimensions.width, height: dimensions.height, face: face
+                )
+            let hairlineBytes = HairlineBoundaryRefiner.apply(
+                refinement?.bytes ?? texturedBytes,
+                width: dimensions.width, height: dimensions.height,
+                face: face,
+                strength: HairlineBoundaryRefiner.combinedStrength(
+                    hairline: plan.effectiveStrengths.hairlineHeight,
+                    forehead: plan.effectiveStrengths.foreheadHeight
+                )
+            )
+            alignedBytes = SubmentalContourRefiner.apply(
+                hairlineBytes, width: dimensions.width, height: dimensions.height,
+                face: face,
+                baseStrength: plan.effectiveStrengths.doubleChinReduction,
+                proStrength: plan.effectiveStrengths.doubleChinReductionPro
+            )
+        } else {
+            alignedBytes = refinement?.bytes ?? texturedBytes
+            suppressHeadWrapPoints = false
+        }
 
         let renderedBytes = try invokeRuntime(
             width: dimensions.width,
@@ -208,14 +241,39 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
                 hasCPUComposedCarrier: canonicalImage != nil,
                 inputKind: .stillImage,
                 protectedLeftContour: refinement?.protectedLeft ?? false,
-                protectedRightContour: refinement?.protectedRight ?? false
+                protectedRightContour: refinement?.protectedRight ?? false,
+                suppressHairlinePoints: plan.effectiveStrengths.hairlineHeight != 0,
+                suppressSubmentalPoints: plan.effectiveStrengths.doubleChinReduction != 0 ||
+                    plan.effectiveStrengths.doubleChinReductionPro != 0,
+                suppressHeadWrapPoints: suppressHeadWrapPoints,
+                suppressForeheadPoints: plan.effectiveStrengths.foreheadHeight != 0,
+                suppressPhiltrumPoints: plan.effectiveStrengths.philtrumLength != 0 &&
+                    selectedFaceSupport.map {
+                        !PhiltrumSourceAdmission.hasRegisteredUpperLip(
+                            refinement?.bytes ?? texturedBytes,
+                            width: dimensions.width, height: dimensions.height,
+                            face: BeautyFaceGeometryAdapter.makeGeometry(from: $0)
+                        )
+                    } ?? false,
+                suppressWholeFaceTranslationPoints: true
             )
         )
+        let translatedBytes: [UInt8]
+        if let selectedFaceSupport {
+            translatedBytes = WholeFaceTranslationRefiner.apply(
+                renderedBytes, width: dimensions.width, height: dimensions.height,
+                face: BeautyFaceGeometryAdapter.makeGeometry(from: selectedFaceSupport),
+                xStrength: plan.effectiveStrengths.wholeFaceXPosition,
+                yStrength: plan.effectiveStrengths.wholeFaceYPosition
+            )
+        } else {
+            translatedBytes = renderedBytes
+        }
         guard let colorSpace = CGColorSpace(name: CGColorSpace.sRGB) else {
             throw BeautyError.unsupportedPixelFormat
         }
         let output = CIImage(
-            bitmapData: Data(renderedBytes),
+            bitmapData: Data(translatedBytes),
             bytesPerRow: dimensions.width * 4,
             size: CGSize(width: dimensions.width, height: dimensions.height),
             format: .RGBA8,
@@ -290,7 +348,13 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
         hasCPUComposedCarrier: Bool,
         inputKind: BeautyMetalColorInputKind,
         protectedLeftContour: Bool = false,
-        protectedRightContour: Bool = false
+        protectedRightContour: Bool = false,
+        suppressHairlinePoints: Bool = false,
+        suppressSubmentalPoints: Bool = false,
+        suppressHeadWrapPoints: Bool = false,
+        suppressForeheadPoints: Bool = false,
+        suppressPhiltrumPoints: Bool = false,
+        suppressWholeFaceTranslationPoints: Bool = false
     ) throws -> [BeautyMetalPass] {
         var passes: [BeautyMetalPass] = []
         if compositionSummary != nil {
@@ -314,7 +378,13 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
             BeautyGeometryEffectPipeline.controlPoints(
                 for: plan, face: $0,
                 protectedLeftContour: protectedLeftContour,
-                protectedRightContour: protectedRightContour
+                protectedRightContour: protectedRightContour,
+                suppressHairlinePoints: suppressHairlinePoints,
+                suppressSubmentalPoints: suppressSubmentalPoints,
+                suppressHeadWrapPoints: suppressHeadWrapPoints,
+                suppressForeheadPoints: suppressForeheadPoints,
+                suppressPhiltrumPoints: suppressPhiltrumPoints,
+                suppressWholeFaceTranslationPoints: suppressWholeFaceTranslationPoints
             )
         } ?? []
         let geometry = try Self.makeGeometryPass(points: geometryPoints)

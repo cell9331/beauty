@@ -133,11 +133,11 @@ struct FaceShapeWarpProvider: WarpControlPointProvider {
                                       yFraction: 0.17, movementFraction: -0.06,
                                       radiusFraction: 0.16)
                 : [],
-            midfaceLength: hasLegacyContour
+            midfaceLength: hasLegacyContour && !face.nose.isEmpty
                 ? verticalRegionPoint(face: face, strength: strengths.midfaceLength,
                                       cap: BeautySafetyCaps.midfaceLength,
                                       yFraction: 0.52, movementFraction: 0.055,
-                                      radiusFraction: 0.14)
+                                      radiusFraction: 0.10)
                 : [],
             philtrumLength: hasLegacyContour
                 ? philtrumPoint(face: face, strength: strengths.philtrumLength)
@@ -253,10 +253,34 @@ struct FaceShapeWarpProvider: WarpControlPointProvider {
               (0...1).contains(target.y),
               radius.isFinite, radius >= 0.001
         else { return [] }
-        return [WarpControlPoint(
+        let centerPoint = WarpControlPoint(
             source: source, target: target, radius: radius,
             strength: abs(strength), falloff: 2
-        )]
+        )
+        let featureRadius = min(1, max(face.bounds.width, face.bounds.height) * 0.32)
+        let featurePoints = [Float(0.35), Float(0.75)].map { fraction in
+            let featureSource = SIMD2<Float>(source.x, face.bounds.minY + face.bounds.height * fraction)
+            let featureTarget = SIMD2<Float>(featureSource.x, featureSource.y + movement)
+            return WarpControlPoint(
+                source: featureSource, target: featureTarget, radius: featureRadius,
+                strength: abs(strength), falloff: 2
+            )
+        }
+        let edgeRadius = min(1, max(face.bounds.width, face.bounds.height) * 0.16)
+        let edgePoints = [
+            face.bounds.minY - face.bounds.height * 0.01,
+            face.bounds.maxY + face.bounds.height * 0.01,
+        ].map { y in
+            WarpControlPoint(
+                source: SIMD2<Float>(source.x, y),
+                target: SIMD2<Float>(source.x, y + movement),
+                radius: edgeRadius, strength: abs(strength), falloff: 2
+            )
+        }
+        guard (featurePoints + edgePoints).allSatisfy({
+            (0...1).contains($0.source.y) && (0...1).contains($0.target.y)
+        }) else { return [] }
+        return [centerPoint] + featurePoints + edgePoints
     }
 
     private func wholeFaceXPositionPoints(face: FaceGeometry, strength: Float) -> [WarpControlPoint] {
@@ -280,10 +304,21 @@ struct FaceShapeWarpProvider: WarpControlPointProvider {
               (0...1).contains(target.x),
               radius.isFinite, radius >= 0.001
         else { return [] }
-        return [WarpControlPoint(
+        let centerPoint = WarpControlPoint(
             source: source, target: target, radius: radius,
             strength: abs(strength), falloff: 2
-        )]
+        )
+        let featureRadius = min(1, max(face.bounds.width, face.bounds.height) * 0.32)
+        let featurePoints = [Float(0.35), Float(0.75)].map { fraction in
+            let featureSource = SIMD2<Float>(source.x, face.bounds.minY + face.bounds.height * fraction)
+            let featureTarget = SIMD2<Float>(featureSource.x + movement, featureSource.y)
+            return WarpControlPoint(
+                source: featureSource, target: featureTarget, radius: featureRadius,
+                strength: abs(strength), falloff: 2
+            )
+        }
+        guard featurePoints.allSatisfy({ (0...1).contains($0.target.x) }) else { return [] }
+        return [centerPoint] + featurePoints
     }
 
     private func wholeFaceTiltPoints(face: FaceGeometry, strength: Float) -> [WarpControlPoint] {
@@ -311,9 +346,11 @@ struct FaceShapeWarpProvider: WarpControlPointProvider {
         let offsets = [
             SIMD2<Float>(0, -dy), SIMD2<Float>(dx, 0),
             SIMD2<Float>(0, dy), SIMD2<Float>(-dx, 0),
+            SIMD2<Float>(0, -face.bounds.height * 0.48),
+            SIMD2<Float>(0, face.bounds.height * 0.48),
         ]
         var points: [WarpControlPoint] = []
-        for offset in offsets {
+        for (index, offset) in offsets.enumerated() {
             let source = center + offset
             let rotated = SIMD2<Float>(
                 cosine * offset.x - sine * offset.y,
@@ -326,7 +363,8 @@ struct FaceShapeWarpProvider: WarpControlPointProvider {
                   (0...1).contains(target.x), (0...1).contains(target.y)
             else { return [] }
             points.append(WarpControlPoint(
-                source: source, target: target, radius: radius,
+                source: source, target: target,
+                radius: index < 4 ? radius : min(1, face.bounds.height * 0.18),
                 strength: abs(strength), falloff: 2
             ))
         }
@@ -345,15 +383,23 @@ struct FaceShapeWarpProvider: WarpControlPointProvider {
               })
         else { return [] }
         let bounds = face.bounds
-        let upper = SIMD2<Float>(bounds.midX, bounds.minY + bounds.height * 0.24)
-        let lower = SIMD2<Float>(bounds.midX, bounds.maxY - bounds.height * 0.12)
-        let distance = bounds.height * 0.08 * strength / BeautySafetyCaps.faceShortening
+        let upper = SIMD2<Float>(bounds.midX, bounds.minY - bounds.height * 0.01)
+        let lower = SIMD2<Float>(bounds.midX, bounds.maxY + bounds.height * 0.01)
+        let distance = bounds.height * 0.055 * strength / BeautySafetyCaps.faceShortening
+        let innerUpper = SIMD2<Float>(bounds.midX, bounds.minY + bounds.height * 0.24)
+        let innerLower = SIMD2<Float>(bounds.midX, bounds.maxY - bounds.height * 0.12)
+        let innerUpperDistance = bounds.height * 0.030 *
+            strength / BeautySafetyCaps.faceShortening
+        let innerLowerDistance = bounds.height * 0.08 *
+            strength / BeautySafetyCaps.faceShortening
         let radius = min(1, max(bounds.width, bounds.height) * 0.16)
         guard radius.isFinite, radius >= 0.001,
               (0...1).contains(upper.x), (0...1).contains(upper.y),
               (0...1).contains(lower.x), (0...1).contains(lower.y),
               (0...1).contains(upper.y + distance),
-              (0...1).contains(lower.y - distance)
+              (0...1).contains(lower.y - distance),
+              (0...1).contains(innerUpper.y + innerUpperDistance),
+              (0...1).contains(innerLower.y - innerLowerDistance)
         else { return [] }
         return [
             WarpControlPoint(
@@ -362,6 +408,16 @@ struct FaceShapeWarpProvider: WarpControlPointProvider {
             ),
             WarpControlPoint(
                 source: lower, target: SIMD2<Float>(lower.x, lower.y - distance),
+                radius: radius, strength: strength, falloff: 2
+            ),
+            WarpControlPoint(
+                source: innerUpper,
+                target: SIMD2<Float>(innerUpper.x, innerUpper.y + innerUpperDistance),
+                radius: radius, strength: strength, falloff: 2
+            ),
+            WarpControlPoint(
+                source: innerLower,
+                target: SIMD2<Float>(innerLower.x, innerLower.y - innerLowerDistance),
                 radius: radius, strength: strength, falloff: 2
             ),
         ]
@@ -404,7 +460,7 @@ struct FaceShapeWarpProvider: WarpControlPointProvider {
         return verticalGapPoint(
             face: face, upper: noseCenter, lower: lipCenter,
             strength: strength, cap: BeautySafetyCaps.philtrumLength,
-            displacementScale: 0.65
+            displacementScale: 0.25, gapRadiusScale: 0.70
         )
     }
 
@@ -412,16 +468,20 @@ struct FaceShapeWarpProvider: WarpControlPointProvider {
         guard let lipCenter = LandmarkGeometryHelper.center(of: face.outerLips),
               let chin = face.faceContour.max(by: { $0.y < $1.y })
         else { return [] }
+        let visibleChinAnchor = SIMD2<Float>(
+            chin.x, face.bounds.maxY + face.bounds.height * 0.01
+        )
         return verticalGapPoint(
-            face: face, upper: lipCenter, lower: chin,
+            face: face, upper: lipCenter, lower: visibleChinAnchor,
             strength: strength, cap: BeautySafetyCaps.lowerFaceLength,
-            displacementScale: 0.16
+            displacementScale: 0.12
         )
     }
 
     private func verticalGapPoint(
         face: FaceGeometry, upper: SIMD2<Float>, lower: SIMD2<Float>,
-        strength: Float, cap: Float, displacementScale: Float
+        strength: Float, cap: Float, displacementScale: Float,
+        gapRadiusScale: Float? = nil
     ) -> [WarpControlPoint] {
         let gap = lower.y - upper.y
         guard strength.isFinite, abs(strength) > Float.ulpOfOne,
@@ -432,11 +492,13 @@ struct FaceShapeWarpProvider: WarpControlPointProvider {
                       (0...1).contains($0.x) && (0...1).contains($0.y)
               })
         else { return [] }
-        let source = SIMD2<Float>((upper.x + lower.x) * 0.5, (upper.y + lower.y) * 0.5)
+        let source = lower
         let target = SIMD2<Float>(
             source.x, source.y + gap * displacementScale * strength / cap
         )
-        let radius = min(face.bounds.width * 0.15, gap * 1.5)
+        let radius = gapRadiusScale.map { min(face.bounds.width * 0.12, gap * $0) }
+            ?? min(max(face.bounds.width, face.bounds.height) * 0.16,
+                   max(face.bounds.width * 0.15, gap * 1.5))
         guard (0...1).contains(source.x), (0...1).contains(source.y),
               (0...1).contains(target.y), radius.isFinite, radius >= 0.001
         else { return [] }
@@ -453,17 +515,22 @@ struct FaceShapeWarpProvider: WarpControlPointProvider {
         let bounds = face.bounds
         let horizontal = bounds.width * 0.055 * strength / BeautySafetyCaps.headSmall
         let vertical = bounds.height * 0.035 * strength / BeautySafetyCaps.headSmall
-        let y = bounds.minY + bounds.height * 0.28
-        let left = SIMD2<Float>(bounds.minX + bounds.width * 0.13, y)
-        let right = SIMD2<Float>(bounds.maxX - bounds.width * 0.13, y)
-        let top = SIMD2<Float>(bounds.midX, bounds.minY + bounds.height * 0.07)
-        let chin = SIMD2<Float>(bounds.midX, bounds.maxY - bounds.height * 0.10)
-        let radius = min(1, max(bounds.width, bounds.height) * 0.15)
+        let y = bounds.minY + bounds.height * 0.15
+        let left = SIMD2<Float>(bounds.minX + bounds.width * 0.11, y)
+        let right = SIMD2<Float>(bounds.maxX - bounds.width * 0.11, y)
+        let innerY = bounds.minY + bounds.height * 0.28
+        let innerLeft = SIMD2<Float>(bounds.minX + bounds.width * 0.13, innerY)
+        let innerRight = SIMD2<Float>(bounds.maxX - bounds.width * 0.13, innerY)
+        let top = SIMD2<Float>(bounds.midX, bounds.minY - bounds.height * 0.01)
+        let chin = SIMD2<Float>(bounds.midX, bounds.maxY + bounds.height * 0.01)
+        let radius = min(1, max(bounds.width, bounds.height) * 0.16)
         return boundedPoints([
-            (left, SIMD2<Float>(left.x + horizontal, left.y)),
-            (right, SIMD2<Float>(right.x - horizontal, right.y)),
+            (innerLeft, SIMD2<Float>(innerLeft.x + horizontal, innerLeft.y)),
+            (innerRight, SIMD2<Float>(innerRight.x - horizontal, innerRight.y)),
             (top, SIMD2<Float>(top.x, top.y + vertical)),
             (chin, SIMD2<Float>(chin.x, chin.y - vertical)),
+            (left, SIMD2<Float>(left.x + horizontal, left.y)),
+            (right, SIMD2<Float>(right.x - horizontal, right.y)),
         ], radius: radius, strength: strength)
     }
 
@@ -488,13 +555,17 @@ struct FaceShapeWarpProvider: WarpControlPointProvider {
               abs(strength) <= BeautySafetyCaps.cranialCrownHeight
         else { return [] }
         let bounds = face.bounds
-        let source = SIMD2<Float>(bounds.midX, bounds.minY - bounds.height * 0.08)
+        let source = SIMD2<Float>(bounds.midX, bounds.minY - bounds.height * 0.02)
         let target = SIMD2<Float>(
             source.x,
             source.y - bounds.height * 0.035 * strength / BeautySafetyCaps.cranialCrownHeight
         )
+        let markerSource = SIMD2<Float>(bounds.midX, bounds.minY - bounds.height * 0.08)
+        let markerTarget = SIMD2<Float>(markerSource.x,
+            markerSource.y - bounds.height * 0.035 * strength / BeautySafetyCaps.cranialCrownHeight)
         return boundedPoints(
-            [(source, target)], radius: min(1, max(bounds.width, bounds.height) * 0.11),
+            [(source, target), (markerSource, markerTarget)],
+            radius: min(1, max(bounds.width, bounds.height) * 0.14),
             strength: abs(strength)
         )
     }

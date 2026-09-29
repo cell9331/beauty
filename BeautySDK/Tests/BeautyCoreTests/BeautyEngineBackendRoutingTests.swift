@@ -39,6 +39,119 @@ final class BeautyEngineBackendRoutingTests: XCTestCase {
         XCTAssertEqual(metalFactoryCalls.value, 1)
     }
 
+    func testSourceContourStillImageControlsMatchCPUAndMetal() throws {
+        let metadata = BeautyInputMetadata(orientation: .up, source: .testFixture)
+        let source = makeSourceContourPortrait()
+        let original = semanticRGBA(source)
+        let cpu = try BeautyEngine(
+            configuration: .init(renderBackend: .cpu),
+            faceDetectionProvider: SDKTestingFaceDetectionProvider([.usableFace])
+        )
+        let gpu = try BeautyEngine(
+            configuration: .init(renderBackend: .gpu),
+            faceDetectionProvider: SDKTestingFaceDetectionProvider([.usableFace])
+        )
+        for parameters in [
+            BeautyParameters(hairlineHeight: 0.25),
+            BeautyParameters(hairlineHeight: -0.25),
+            BeautyParameters(foreheadHeight: 0.30),
+            BeautyParameters(foreheadHeight: -0.30),
+            BeautyParameters(doubleChinReduction: 0.25),
+            BeautyParameters(doubleChinReductionPro: 0.25),
+            BeautyParameters(headWrap: 0.25),
+        ] {
+            let cpuResult = try cpu.processResult(
+                image: source, metadata: metadata, parameters: parameters
+            )
+            let gpuResult = try gpu.processResult(
+                image: source, metadata: metadata, parameters: parameters
+            )
+            let cpuBytes = semanticRGBA(cpuResult.output)
+            XCTAssertNotEqual(cpuBytes, original)
+            XCTAssertEqual(cpuBytes, semanticRGBA(gpuResult.output))
+            XCTAssertEqual(cpuResult.output.extent, gpuResult.output.extent)
+        }
+        let hairless = makeSourceContourPortrait(hairline: 0)
+        let hairlessBytes = semanticRGBA(hairless)
+        for parameters in [BeautyParameters(headWrap: 0.25),
+                           BeautyParameters(foreheadHeight: 0.30),
+                           BeautyParameters(foreheadHeight: -0.30)] {
+            let cpuNegative = try cpu.processResult(
+                image: hairless, metadata: metadata, parameters: parameters
+            )
+            let gpuNegative = try gpu.processResult(
+                image: hairless, metadata: metadata, parameters: parameters
+            )
+            XCTAssertTrue(semanticRGBA(cpuNegative.output) == hairlessBytes)
+            XCTAssertEqual(semanticRGBA(cpuNegative.output), semanticRGBA(gpuNegative.output))
+        }
+        for negative in [
+            makeSourceContourPortrait(bulge: false, detachedCollar: true),
+            makeSourceContourPortrait(bulge: false, internalFold: true),
+        ] {
+            let before = semanticRGBA(negative)
+            for parameters in [BeautyParameters(doubleChinReduction: 0.25),
+                               BeautyParameters(doubleChinReductionPro: 0.25)] {
+                let cpuOutput = try cpu.processResult(
+                    image: negative, metadata: metadata, parameters: parameters
+                )
+                let gpuOutput = try gpu.processResult(
+                    image: negative, metadata: metadata, parameters: parameters
+                )
+                XCTAssertTrue(semanticRGBA(cpuOutput.output) == before)
+                XCTAssertEqual(semanticRGBA(cpuOutput.output), semanticRGBA(gpuOutput.output))
+            }
+        }
+    }
+
+    private func makeSourceContourPortrait(
+        hairline: Int = 170, bulge hasBulge: Bool = true,
+        detachedCollar: Bool = false, internalFold: Bool = false
+    ) -> CIImage {
+        let side = 512
+        var bytes = [UInt8](repeating: 255, count: side * side * 4)
+        for y in 0..<side {
+            for x in 0..<side {
+                let head = pow(Double(x - 256) / 108, 2) +
+                    pow(Double(y - 256) / 160, 2) <= 1
+                let bulge = hasBulge && pow(Double(x - 256) / 42, 2) +
+                    pow(Double(y - 408) / 22, 2) <= 1
+                let rgb: (UInt8, UInt8, UInt8)
+                if detachedCollar && (435...448).contains(y) && (210...302).contains(x) {
+                    rgb = (155, 130, 112)
+                } else if !head && !bulge {
+                    rgb = (25, 40, 55)
+                } else if internalFold && (392...399).contains(y) && (230...282).contains(x) {
+                    rgb = (45, 40, 38)
+                } else if y < hairline {
+                    rgb = (28, 25, 25)
+                } else {
+                    rgb = (195, 150, 125)
+                }
+                let offset = (y * side + x) * 4
+                bytes[offset] = rgb.0
+                bytes[offset + 1] = rgb.1
+                bytes[offset + 2] = rgb.2
+            }
+        }
+        let colorSpace = CGColorSpace(name: CGColorSpace.sRGB)!
+        return CIImage(bitmapData: Data(bytes), bytesPerRow: side * 4,
+                       size: CGSize(width: side, height: side), format: .RGBA8,
+                       colorSpace: colorSpace)
+    }
+
+    private func semanticRGBA(_ image: CIImage) -> [UInt8] {
+        let colorSpace = CGColorSpace(name: CGColorSpace.sRGB)!
+        var bytes = [UInt8](repeating: 0, count: 512 * 512 * 4)
+        CIContext(options: [.workingColorSpace: colorSpace,
+                            .outputColorSpace: colorSpace]).render(
+            image, toBitmap: &bytes, rowBytes: 512 * 4,
+            bounds: CGRect(x: 0, y: 0, width: 512, height: 512),
+            format: .RGBA8, colorSpace: colorSpace
+        )
+        return bytes
+    }
+
     func testInjectedGPUEngineCarriesMetalPolicyForStillImageAndPixelBuffer() throws {
         let executor = RecordingExecutor()
         let engine = try BeautyEngine(

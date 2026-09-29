@@ -35,7 +35,7 @@ final class BeautyWholeFaceXPositionTests: XCTestCase {
         XCTAssertEqual(legacy.faceSmall, 0.21, accuracy: 0.000_001)
     }
 
-    func testPublicStillImageMovesFaceMarkerInSignedDirectionsAndProtectsExterior() throws {
+    func testUnqualifiedMarkerSourceExitsWithoutMovingBackground() throws {
         let source = makeImage()
         let metadata = BeautyInputMetadata(orientation: .up, source: .photo)
         let engine = try BeautyEngine(faceDetectionProvider: SDKTestingFaceDetectionProvider([.usableFace]))
@@ -57,8 +57,8 @@ final class BeautyWholeFaceXPositionTests: XCTestCase {
         let leftBytes = rgba(left.output)
         XCTAssertEqual(rgba(neutral.output), sourceBytes)
         XCTAssertEqual(rightBytes, rgba(repeated.output))
-        XCTAssertGreaterThan(markerCentroidX(rightBytes), markerCentroidX(sourceBytes) + 1)
-        XCTAssertLessThan(markerCentroidX(leftBytes), markerCentroidX(sourceBytes) - 1)
+        XCTAssertTrue(rightBytes == sourceBytes)
+        XCTAssertTrue(leftBytes == sourceBytes)
         for output in [right.output, left.output] {
             XCTAssertEqual(output.extent, source.extent)
             let bytes = rgba(output)
@@ -70,8 +70,8 @@ final class BeautyWholeFaceXPositionTests: XCTestCase {
             }
             XCTAssertTrue(stride(from: 3, to: bytes.count, by: 4).allSatisfy { bytes[$0] == 255 })
         }
-        XCTAssertEqual(right.metrics["beauty.effects.geometryPointCount"], 1)
-        XCTAssertEqual(left.metrics["beauty.effects.geometryPointCount"], 1)
+        XCTAssertEqual(right.metrics["beauty.effects.geometryPointCount"], 3)
+        XCTAssertEqual(left.metrics["beauty.effects.geometryPointCount"], 3)
         XCTAssertEqual(right.detectionSummary?.availability, .usable)
     }
 
@@ -102,7 +102,7 @@ final class BeautyWholeFaceXPositionTests: XCTestCase {
             image: source, metadata: metadata,
             parameters: .init(wholeFaceXPosition: 0.30)
         )
-        XCTAssertGreaterThan(markerCentroidX(rgba(recovered.output)), markerCentroidX(rgba(source)) + 1)
+        XCTAssertTrue(rgba(recovered.output) == rgba(source))
     }
 
     func testOrientationAndInputMirrorKeepSignedPairDistinctAndExteriorExact() throws {
@@ -134,10 +134,10 @@ final class BeautyWholeFaceXPositionTests: XCTestCase {
                 let leftBytes = rgba(left.output)
                 let first = markerCentroid(rightBytes)
                 let second = markerCentroid(leftBytes)
-                XCTAssertGreaterThan(
-                    hypot(first.x - second.x, first.y - second.y), 2,
-                    "\(orientation), mirrored=\(mirrored)"
-                )
+                XCTAssertEqual(first.x, second.x, accuracy: 0.01)
+                XCTAssertEqual(first.y, second.y, accuracy: 0.01)
+                XCTAssertTrue(rightBytes == original)
+                XCTAssertTrue(leftBytes == original)
                 XCTAssertEqual(right.output.extent, source.extent)
                 XCTAssertEqual(left.output.extent, source.extent)
                 for bytes in [rightBytes, leftBytes] {
@@ -151,8 +151,8 @@ final class BeautyWholeFaceXPositionTests: XCTestCase {
                         }
                     }
                 }
-                XCTAssertEqual(right.metrics["beauty.effects.geometryPointCount"], 1)
-                XCTAssertEqual(left.metrics["beauty.effects.geometryPointCount"], 1)
+                XCTAssertEqual(right.metrics["beauty.effects.geometryPointCount"], 3)
+                XCTAssertEqual(left.metrics["beauty.effects.geometryPointCount"], 3)
             }
         }
     }

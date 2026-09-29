@@ -33,36 +33,6 @@ final class BeautyFaceSymmetryAndChinTests: XCTestCase {
         ).output), before)
     }
 
-    func testChinTiersLiftCenterAndProAltersPairedFlanks() throws {
-        let source = makeImage(textured: false)
-        let before = rgba(source)
-        let engine = try BeautyEngine(
-            faceDetectionProvider: SDKTestingFaceDetectionProvider([.usableFace])
-        )
-        let base = rgba(try engine.processResult(
-            image: source, metadata: metadata(),
-            parameters: .init(doubleChinReduction: 0.25)
-        ).output)
-        let pro = rgba(try engine.processResult(
-            image: source, metadata: metadata(),
-            parameters: .init(doubleChinReductionPro: 0.25)
-        ).output)
-        let originalY = redCentroidY(before)
-        XCTAssertLessThan(redCentroidY(base), originalY - 0.25)
-        XCTAssertLessThan(redCentroidY(pro), originalY - 0.25)
-        XCTAssertGreaterThan(changedCount(base, pro, x: 35..<93, y: 82..<112), 10)
-        for after in [base, pro] {
-            assertExteriorAndAlpha(before, after)
-            for y in 74..<80 {
-                for x in 61..<67 {
-                    let offset = (y * side + x) * 4
-                    XCTAssertEqual(Array(after[offset..<(offset + 4)]),
-                                   Array(before[offset..<(offset + 4)]))
-                }
-            }
-        }
-    }
-
     func testNeutralCodableOrientationNoFaceAndTypedRecovery() throws {
         let source = makeImage(textured: false)
         let before = rgba(source)
@@ -160,20 +130,6 @@ final class BeautyFaceSymmetryAndChinTests: XCTestCase {
             format: .RGBA8, colorSpace: space
         )
         return bytes
-    }
-
-    private func redCentroidY(_ bytes: [UInt8]) -> Double {
-        var weighted = 0.0
-        var total = 0.0
-        for y in 94..<112 {
-            for x in 56..<72 {
-                let offset = (y * side + x) * 4
-                let weight = Double(max(0, Int(bytes[offset]) - Int(bytes[offset + 1]) - 40))
-                weighted += Double(y) * weight
-                total += weight
-            }
-        }
-        return weighted / max(1, total)
     }
 
     private func changedCount(_ before: [UInt8], _ after: [UInt8],

@@ -1,11 +1,135 @@
 # PRODUCT_SENSE.md
 
+## 2026-09-29 owner-supplied texture protection
+
+The owner can pass a request-local binary `BeautyTextureExclusionMask` with a
+decoded or in-memory encoded still-image `processResult` call. This lets a
+controlled host protect a
+skin-colored non-skin object when it knows the object's pixels: smoothing and
+sharpening leave those pixels exact, while eligible unmasked cheek texture
+still changes. The host supplies the mask in the upright image grid after
+input orientation and mirroring. The SDK does not discover all such objects
+automatically; other requested effects have separate protection contracts.
+
+## 2026-09-28 qualified final shape controls
+
+The owner-local still-image `wholeFaceYPosition` and `wholeFaceXPosition`
+move the complete visible generated head in signed directions while keeping
+eyes and mouth rigid. They act only when a single connected head is separated
+from a uniform background; extra foreground objects or ambiguous portraits
+remain unchanged. `philtrumLength` moves the visible upper lip relative to
+the nose in both directions when the source lip band matches the observed
+location; absent or offset bands exit unchanged. All three rows are
+`implemented` within these generated-image 2D admission ranges. No 3D
+geometry, general subject masking, or general lip segmentation is claimed.
+
+## 2026-09-28 admitted outer submental tiers
+
+`doubleChinReduction` reduces a generated continuous outer submental bulge;
+Pro reduces its visible depth and area further without a sharp chin edge.
+Two skin values and two bulge depths pass. Flat chins, internal dark folds
+without an outer protrusion, and detached light collars remain exact after
+source-continuity admission, with CPU/Metal parity and upper-face protection.
+Both rows are `implemented` for this owner-local generated-image 2D outer
+contour class. They do not identify internal fat or guarantee all neck forms.
+
+## 2026-09-28 admitted lower-face proportion
+
+`lowerFaceLength` changes the visible lip-to-chin gap in both signed
+directions on two skin values and three generated lip/chin-height forms.
+The visible upper lip, face features and distant background are protected;
+the lower contour remains continuous. Missing lip observation exits exact.
+The row is `implemented` for owner-local generated-image 2D proportion.
+`philtrumLength` now covers several aligned nose/lip forms with nose
+protection, but a small offset lip still has a one-direction no-response;
+that row remains `partial`.
+
+## 2026-09-28 admitted forehead and midface proportions
+
+Positive `foreheadHeight` now moves an observed high-contrast hair/skin
+boundary in the direction that changes its gap to the visible eyes. Flat and
+wavy generated boundaries pass both signs; brows, eyes and mouth stay exact,
+while hairless and low-contrast inputs exit unchanged. Equal opposing
+`foreheadHeight` and `hairlineHeight` requests cancel. CPU and Metal agree.
+`midfaceLength` changes the eye-to-nose share of eye-to-lip distance in both
+directions on two skin and two nose-length variants; the visible brow/eye and
+lip structures remain exact, and absent nose observation exits unchanged.
+Both rows are `implemented` for owner-local generated-image 2D proportion
+effects; neither identifies skull depth or broad population behavior.
+
+## 2026-09-28 admitted 2D facial symmetry
+
+`wholeFaceSymmetry` now has a source- and observation-matched generated
+portrait positive on two skin values: visible lower-contour width imbalance
+decreases while the eyes, mouth and central face remain unchanged. A matched
+symmetric portrait remains exact, with repeat, no-face, exterior, alpha and
+contour-continuity checks. The row is `implemented` for owner-local 2D
+contour balance; it makes no 3D face claim.
+
+## 2026-09-28 admitted head silhouette behavior
+
+`headSmall` now has generated portrait evidence for visible full-head width
+and height reduction across two skin and two head-shape variants, with eye,
+mouth and nose protection. Signed `cranialCrownHeight` changes the visible
+hair cap height in both directions while preserving the tested face interior.
+Hair silhouette continuity, neutral, no-face, exterior, alpha, repeat and
+extent are checked. These two rows are `implemented` for owner-local
+image-plane effects; neither identifies a skull or segments hair. `headWrap`
+now also improves the visible hair/face width ratio on those admitted sources,
+while hairless, low-contrast and short-forehead-band inputs stay exact after
+source hair-cap admission. Its CPU and Metal still-image results agree. That
+row is `implemented` within the same high-contrast generated-image scope.
+
+## 2026-09-28 source-contour submental behavior
+
+On a generated portrait with a coherent skin silhouette protruding below the
+selected chin box, `doubleChinReduction` now reduces visible bulge depth and
+area. Pro reduces both further. Two skin values and two protrusion depths
+pass; matched flat chins remain source-exact, and the eyes, mouth and distant
+background are protected. This owner-local class does not cover an internal
+shadow fold without a protruding outer contour. Both rows remain `partial`
+while that phenotype and broader negative/protection inputs are reviewed.
+
+## 2026-09-28 source-boundary hairline behavior
+
+For still images with a coherent dark hair cap and lighter forehead, signed
+`hairlineHeight` now moves the visible source hair/skin boundary locally.
+Two generated skin values, flat and wavy boundaries pass both directions,
+while eyes, brows and mouth remain source-exact and adjacent output columns
+stay continuous. Generated hairless, low-contrast and short forehead-band
+negatives are unchanged, as are requests with an observed brow too close to
+the effect area. This qualifies the row as `implemented` for an admitted
+high-contrast still-image class. It does not establish general hair
+segmentation or an effect on light or low-contrast hair.
+
+## 2026-09-28 generated portrait effect qualification update
+
+Source-fixed 512-pixel generated portraits now show visible full-head width
+and height reduction for `headSmall`, lateral hair widening for `headWrap`,
+bidirectional hair-top movement for `cranialCrownHeight`, and complete
+hair-top-to-chin shortening for a long-face `faceShortening` positive.
+Registered nose/lip/chin boundaries show the requested bidirectional gap
+changes for `philtrumLength` and `lowerFaceLength`. `wholeFaceYPosition`
+moves both visible hair top and chin edge, and `wholeFaceXPosition` moves
+the face center. A symmetric observed/source portrait remains unchanged under
+`wholeFaceSymmetry`. These are owner-local generated-image findings. The
+later short-face protection and negative checks qualify `faceShortening`;
+the other rows here remain `partial` while their listed gaps are tested.
+
+The earlier point-only path increased the area of a generated internal
+submental fold; the new outer-contour route above is separately qualified
+and fails closed on that non-protruding phenotype. An earlier five-point
+hairline candidate shifted an offset boundary negative and was reverted;
+the later source-boundary route is recorded above.
+
 ## 2026-09-27 symmetry and lower-chin owner-local controls
 
 `3D塑颜 / 对称` now maps to `wholeFaceSymmetry`, a bounded lower-contour
 image-plane correction driven by observed asymmetry. `脸型 / 去双下巴` and its
-Pro variant have independent public parameters; both lift a generated chin
-marker, while Pro also changes paired lower flanks. Public generated pixels,
+Pro variant have independent public parameters; their pixel-buffer/provider
+route lifts a generated chin marker, while Pro also changes paired lower
+flanks. Still-image behavior now follows the source-contour route above.
+Public generated pixels,
 exterior/upper-face/alpha protection, neutral, no-face, orientation/mirror,
 repeat, Codable defaults and typed failure recovery are checked. These rows
 remain taxonomy `partial`; no 3D or submental-fat effect is claimed.
@@ -20,9 +144,9 @@ orientation/mirror, repeat, Codable defaults and typed failure recovery pass.
 All four taxonomy rows remain `partial`; hair silhouette, true skull geometry
 and realistic hairline reconstruction await broader portrait evidence.
 When an observed eyebrow overlaps the local `hairlineHeight` warp area, that
-control emits no warp points. A hairline-only request remains source-exact on
-the tested natural-style portraits. This prevents the observed brow distortion;
-it does not locate a hairline.
+control exits unchanged. The older natural-style portraits still exit under
+this brow guard; the source-boundary route above admits a separate,
+high-contrast generated class. Neither result proves general hair segmentation.
 
 ## 2026-09-27 philtrum and lower-face owner-local controls
 
@@ -48,7 +172,10 @@ these controls make no three-dimensional quality claim.
 and lower markers move toward one another through the public still-image
 path; a center marker, distant background, and alpha remain protected.
 Neutral, missing-face, orientation, mirror, repetition, and failure recovery
-are checked. Taxonomy remains `partial` pending broader portrait acceptance.
+are checked. A later source-qualified long-face positive also shortens the
+complete visible head while retaining eye and mouth widths within 1 pixel
+and leaving the nose exact; a matched short-face negative stays exact. This
+row is now `implemented` for owner-local generated-image 2D behavior.
 
 ## 2026-09-27 texture protection and size limit
 
@@ -84,8 +211,11 @@ a preferred execution route for this rare combination, not a latency promise.
 generated face marker, signed strengths rotate two different colored regions
 in opposite directions through the public still-image path. Neutral, distant
 background, alpha, missing-face and typed-failure recovery are checked. The
-taxonomy remains `partial` pending broader portrait acceptance; these results
-do not establish a depth effect or general visual quality.
+2026-09-28 generated portrait qualification adds coherent signed eye-line,
+lip-line, crown and chin movement on two skin variants, with eye-center spacing,
+exterior, alpha, repeat and extent checks. The row is `implemented` for the
+owner-local two-dimensional image-plane effect; this does not establish a depth
+effect or general visual quality.
 
 ## 2026-09-26 owner-local diagnostics
 
@@ -106,10 +236,11 @@ rendering, so it is not a total image-processing or device-performance claim.
 ## 2026-09-26 owner-local horizontal face control
 
 `3D塑颜 / 左右` now has an independent `wholeFaceXPosition` owner-local control.
-Positive and negative strengths move a generated face marker in opposite
-horizontal directions while leaving distant background and alpha unchanged.
-The taxonomy remains `partial` until broader portrait evidence exists; the
-result does not establish a depth effect or commercial visual quality.
+Positive and negative strengths move visible eyes and mouth in the requested
+horizontal direction on two generated portrait schematics while leaving
+distant background and alpha unchanged. The taxonomy remains `partial` until
+broader portrait and silhouette evidence exists; the result does not establish
+a depth effect or commercial visual quality.
 
 ## 2026-09-26 owner-local encoded image entry
 
@@ -123,12 +254,12 @@ the next valid request remains usable. The SDK still does not read file paths.
 ## 2026-09-26 whole-face vertical owner-local control
 
 The `3D塑颜 / 上下` taxonomy row has a new `wholeFaceYPosition` candidate.
-It moves a generated face-center marker downward for positive input and
-upward for negative input through the public still-image SDK path. Neutral,
-repeat, distant-background and alpha checks pass; a missing face is source-
-exact, and a typed oversized-input failure does not affect the next request.
-The control is image-space geometry only; current generated-marker evidence
-does not establish true 3D shape or broad portrait visual quality.
+It moves visible eyes and mouth downward for positive input and upward for
+negative input on two generated portrait schematics through the public
+still-image SDK path. Neutral, repeat, distant-background and alpha checks
+pass; a missing face is source-exact, and a typed oversized-input failure does
+not affect the next request. The control is image-space geometry only; this
+evidence does not establish true 3D shape or broad portrait visual quality.
 
 ## 2026-09-26 FACE-01 second generated portrait acceptance
 

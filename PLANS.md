@@ -26,8 +26,11 @@
 
 ### [A-2026-09-27-remaining-effect-qualification](plans/active/A-2026-09-27-remaining-effect-qualification.md)
 
-- Status: `active`。15 项 `partial` 的语义验收和 provisional `去脂` 的弱效果仍待完成；已完成的保护区修复及 2026-09-28 全量门禁记录在计划正文。
-- 当前缺口：发际线缺少可靠语义支撑；`去脂` 的两组自然风格正负源未安全入选。不要把二维示意图或变化像素数记作自然肖像效果合格。
+- Status: `active`。**原 15 项 `partial` 的整组验收已完成**：逐项生成肖像正负例、方向、保护、重复、元数据与失效退出通过，taxonomy 为 15/15 限定范围 `implemented`。2026-09-28 完整 `bash scripts/run-no-skip-swiftpm.sh` 返回 0：1058 tests、0 failures、8 opt-in、0 skipped，archive-first 与 SDK 边界检查通过。本计划仍 active 仅承载另外两项质量缺口。
+- 2026-09-29 当前工作树内容复核：`BeautyParameters` 为 77 个 stored fields，renderer 为 99 cases；已校正根级 owner 与 taxonomy 中误称旧库存为“当前”的句子。完整 archive-first no-skip 门禁再次返回 0，8 opt-in、0 skip；`去脂` 视觉质量改进和同肤色非皮肤物体保护仍未完成。
+- 2026-09-29 后续修正：所有者提供正确的请求局部二值排除蒙版时，同肤色物体可在皮肤平滑/锐化阶段精确保护，公开生成图与 CPU/Metal-selected 对照通过；无蒙版的自动语义识别仍开放。又一张新生成 `去脂` 正例在效果输出之前双眼语义准入失败，未降低阈值或声称视觉质量改进。最新 archive-first no-skip 完整门禁返回 0，8 opt-in、0 skip，后端 parity 固定计数更新为 14；计划保持 active。
+- 2026-09-29 提交前复核补齐编码 PNG 蒙版保护和错误网格后的同一 engine 恢复；完整 archive-first no-skip 门禁为 SwiftPM `1062/0/0`、8 opt-in、0 skip。该结果只确认当前 SDK 工作树；`去脂` 视觉质量和无蒙版自动同肤色物体识别仍开放。
+- 当前整组验收范围：所有者本地生成图二维效果。去双下巴仅覆盖连续外轮廓隆起，不识别内部脂肪；头发与人中准入均不等于一般语义分割。`去脂` 仍是已接受的 provisional 弱效果，皮肤同色非皮肤物体仍是独立质量缺口，不计入 15 项；真人图、真机及商业质量均未作声明。
 
 ## 3A. Historical Lifecycle Ledger（历史脚本锚点）
 

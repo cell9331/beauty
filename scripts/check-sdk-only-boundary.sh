@@ -50,21 +50,21 @@ if set(documented_fields) != set(source_fields) or len(documented_fields) != 77:
     )
 
 expected = [
-    ("3D塑颜", "对称", "partial", "wholeFaceSymmetry"), ("3D塑颜", "上下", "partial", "wholeFaceYPosition"),
-    ("3D塑颜", "左右", "partial", "wholeFaceXPosition"), ("3D塑颜", "倾斜", "partial", "wholeFaceTilt"),
-    ("比例", "小头", "partial", "headSmall"), ("比例", "头包脸", "partial", "headWrap"),
-    ("比例", "颅顶", "partial", "cranialCrownHeight"), ("比例", "额头", "partial", "foreheadHeight"),
-    ("比例", "中庭", "partial", "midfaceLength"), ("比例", "人中", "partial", "philtrumLength"),
-    ("比例", "下庭", "partial", "lowerFaceLength"), ("比例", "短脸", "partial", "faceShortening"),
+    ("3D塑颜", "对称", "implemented", "wholeFaceSymmetry"), ("3D塑颜", "上下", "implemented", "wholeFaceYPosition"),
+    ("3D塑颜", "左右", "implemented", "wholeFaceXPosition"), ("3D塑颜", "倾斜", "implemented", "wholeFaceTilt"),
+    ("比例", "小头", "implemented", "headSmall"), ("比例", "头包脸", "implemented", "headWrap"),
+    ("比例", "颅顶", "implemented", "cranialCrownHeight"), ("比例", "额头", "implemented", "foreheadHeight"),
+    ("比例", "中庭", "implemented", "midfaceLength"), ("比例", "人中", "implemented", "philtrumLength"),
+    ("比例", "下庭", "implemented", "lowerFaceLength"), ("比例", "短脸", "implemented", "faceShortening"),
     ("脸型", "脸宽", "implemented", "faceSlim"), ("脸型", "小脸", "implemented", "faceSmall"),
     ("脸型", "面部流畅", "implemented", "faceContourSmooth"),
     ("脸型", "太阳穴", "implemented", "templeFullness"),
     ("脸型", "颧骨", "implemented", "cheekboneSlim"),
     ("脸型", "下巴长短", "implemented", "chinLength"),
-    ("脸型", "去双下巴", "partial", "doubleChinReduction"), ("脸型", "去双下巴 Pro", "partial", "doubleChinReductionPro"),
+    ("脸型", "去双下巴", "implemented", "doubleChinReduction"), ("脸型", "去双下巴 Pro", "implemented", "doubleChinReductionPro"),
     ("脸型", "尖下巴", "implemented", "chinTaper"), ("脸型", "V脸", "implemented", "faceVShape"),
     ("脸型", "下颌角", "implemented", "jawSlim"), ("脸型", "下颌线", "implemented", "jawSlim"),
-    ("脸型", "发际线", "partial", "hairlineHeight"),
+    ("脸型", "发际线", "implemented", "hairlineHeight"),
     ("眼睛", "大小", "implemented", "eyeSize"), ("眼睛", "上下", "implemented", "eyeYPosition"),
     ("眼睛", "眼高", "implemented", "eyeHeight"), ("眼睛", "长度", "implemented", "eyeLength"),
     ("眼睛", "眼距", "implemented", "eyeDistance"), ("眼睛", "去脂", "implemented", "upperEyelidFullnessReduction"),
@@ -582,6 +582,8 @@ allowed_backend_paths = {
     "BeautySDK/Tests/BeautyCoreTests/BeautyConfigurationTests.swift",
     "BeautySDK/Tests/BeautyCoreTests/BeautyEngineBackendRoutingTests.swift",
     "BeautySDK/Tests/BeautyCoreTests/BeautyBackendSelectionConcurrencyTests.swift",
+    # Test-only CPU/Metal byte parity for source-qualified shape controls.
+    "BeautySDK/Tests/BeautyCoreTests/RemainingEffectSemanticCandidateTests.swift",
 }
 # Later CPU-only facade regressions are not new backend APIs. Admit their
 # exact inspected bytes, not their paths in perpetuity; any change must be

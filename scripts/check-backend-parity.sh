@@ -7,7 +7,7 @@ readonly package_root="${repository_root}/BeautySDK"
 readonly maximum_output_bytes=$((16 * 1024 * 1024))
 readonly focused_filter='BeautyEffectsTests.BeautyBackendParityTests|BeautyEffectsTests.BeautyBackendSafetyParityTests|BeautyEffectsTests.BeautyBackendDeterminismParityTests|BeautyCoreTests.BeautyBackendSelectionConcurrencyTests'
 readonly unavailable_filter='BeautyCoreTests.BeautyBackendSelectionConcurrencyTests'
-readonly expected_focused_tests=13
+readonly expected_focused_tests=14
 readonly expected_unavailable_tests=2
 temporary_root=""
 

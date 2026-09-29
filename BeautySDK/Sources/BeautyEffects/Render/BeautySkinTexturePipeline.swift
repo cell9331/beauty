@@ -41,7 +41,8 @@ enum BeautySkinTexturePipeline {
     static func apply(
         to image: CIImage, plan: BeautyEffectPlan,
         renderQuality: BeautyRenderQuality = .balanced,
-        faceBounds: CoordinateRect? = nil
+        faceBounds: CoordinateRect? = nil,
+        exclusionMask: BeautyTextureExclusionMask? = nil
     ) -> CIImage {
         guard isActive(plan), admits(faceBounds: faceBounds) else { return image }
         let extent = image.extent
@@ -65,7 +66,8 @@ enum BeautySkinTexturePipeline {
         )
         let result = applyRGBA(
             source, width: width, height: height, plan: plan,
-            renderQuality: renderQuality, faceBounds: faceBounds
+            renderQuality: renderQuality, faceBounds: faceBounds,
+            exclusionMask: exclusionMask
         )
         let output = CIImage(
             bitmapData: Data(result), bytesPerRow: width * 4,
@@ -80,7 +82,8 @@ enum BeautySkinTexturePipeline {
     static func applyRGBA(
         _ source: [UInt8], width: Int, height: Int, plan: BeautyEffectPlan,
         renderQuality: BeautyRenderQuality = .balanced,
-        faceBounds: CoordinateRect? = nil
+        faceBounds: CoordinateRect? = nil,
+        exclusionMask: BeautyTextureExclusionMask? = nil
     ) -> [UInt8] {
         let weights: [Int]
         switch renderQuality {
@@ -91,6 +94,9 @@ enum BeautySkinTexturePipeline {
         let radius = weights.count / 2
         guard isActive(plan), width >= weights.count, height >= weights.count,
               admits(faceBounds: faceBounds), let faceBounds
+        else { return source }
+        guard exclusionMask == nil ||
+                (exclusionMask?.width == width && exclusionMask?.height == height)
         else { return source }
         let pixelCount = width.multipliedReportingOverflow(by: height)
         guard !pixelCount.overflow,
@@ -127,6 +133,7 @@ enum BeautySkinTexturePipeline {
             let maximumColumn = min(width - radius - 1, Int(floor(centerX + halfRowWidth)))
             guard minimumColumn <= maximumColumn else { continue }
             for x in minimumColumn...maximumColumn {
+                guard exclusionMask?.bytes[y * width + x] != 255 else { continue }
                 let inEyeZone = Double(y) >= eyeMinimumY && Double(y) <= eyeMaximumY &&
                     Double(x) >= eyeMinimumX && Double(x) <= eyeMaximumX
                 let inMouthZone = Double(y) >= mouthMinimumY && Double(y) <= mouthMaximumY &&

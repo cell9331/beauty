@@ -6,6 +6,124 @@ import XCTest
 @_spi(Testing) import BeautySDK
 
 final class GeneratedContourPublicOracleTests: XCTestCase {
+    func testObservedAsymmetryNarrowsVisiblePortraitContourDifference() throws {
+        // Source boundary is generated from the same fixed lower-contour
+        // proportions as the injected observation. The source itself must
+        // show a measurable imbalance before the candidate is rendered.
+        let width = 1_000
+        let height = 1_000
+        let row = 620
+        let axisX = 495.0
+        for deepSkin in [false, true] {
+        let source = Self.portraitLikeFixture(width: width, height: height, deepSkin: deepSkin)
+        let before = try Self.visibleSideWidths(source, row: row, width: width, axisX: axisX)
+        XCTAssertGreaterThan(abs(before.left - before.right), 3)
+        XCTAssertLessThanOrEqual(try Self.maxContourStep(source, width: width, axisX: axisX), 3)
+        let expectedLeft = try XCTUnwrap(Self.portraitEdge(y: 0.6205, right: false)) * 1_000
+        let expectedRight = try XCTUnwrap(Self.portraitEdge(y: 0.6205, right: true)) * 1_000
+        XCTAssertEqual(axisX - before.left, expectedLeft, accuracy: 2)
+        XCTAssertEqual(axisX + before.right, expectedRight, accuracy: 2)
+
+        let image = Self.image(source, width: width, height: height)
+        let metadata = BeautyInputMetadata(orientation: .up, source: .testFixture)
+        let parameters = BeautyParameters(wholeFaceSymmetry: 0.25)
+        let engine = try BeautyEngine(faceDetectionProvider: SDKTestingFaceDetectionProvider([
+            .usableFace,
+        ]))
+        let result = try engine.processResult(image: image, metadata: metadata,
+                                              parameters: parameters)
+        let output = Self.bytes(result.output, width: width, height: height)
+        let after = try Self.visibleSideWidths(output, row: row, width: width, axisX: axisX)
+        XCTAssertLessThan(abs(after.left - after.right),
+                          abs(before.left - before.right) - 1)
+        XCTAssertLessThanOrEqual(try Self.maxContourStep(output, width: width, axisX: axisX), 3)
+        XCTAssertEqual(Self.changedPixels(source, output, width: width, height: height) { x, y in
+            (390..<610).contains(x) && (405..<455).contains(y)
+        }, 0)
+        XCTAssertEqual(Self.changedPixels(source, output, width: width, height: height) { x, y in
+            (440..<560).contains(x) && (650..<690).contains(y)
+        }, 0)
+        XCTAssertTrue(stride(from: 3, to: output.count, by: 4).allSatisfy { output[$0] == 255 })
+        XCTAssertEqual(Self.bytes(try engine.processResult(
+            image: image, metadata: metadata, parameters: .init()
+        ).output, width: width, height: height), source)
+        XCTAssertEqual(Self.bytes(try engine.processResult(
+            image: image, metadata: metadata, parameters: parameters
+        ).output, width: width, height: height), output)
+        XCTAssertEqual(result.output.extent, image.extent)
+        XCTAssertEqual(Self.changedPixels(source, output, width: width, height: height) { x, _ in
+            x < 200 || x >= 800
+        }, 0)
+        XCTAssertEqual(Self.changedPixels(source, output, width: width, height: height) { x, y in
+            (460..<540).contains(x) && (390..<700).contains(y)
+        }, 0)
+        let noFace = try BeautyEngine(faceDetectionProvider: SDKTestingFaceDetectionProvider([
+            .noFace,
+        ]))
+        XCTAssertEqual(Self.bytes(try noFace.processResult(
+            image: image, metadata: metadata, parameters: parameters
+        ).output, width: width, height: height), source)
+        }
+    }
+
+    func testSymmetricObservedPortraitRemainsUnchanged() throws {
+        let width = 1_000
+        let height = 1_000
+        for deepSkin in [false, true] {
+        let source = Self.portraitLikeFixture(
+            width: width, height: height,
+            contour: Self.smoothPortraitContour, deepSkin: deepSkin
+        )
+        let before = try Self.visibleSideWidths(source, row: 620, width: width, axisX: 500)
+        XCTAssertLessThanOrEqual(abs(before.left - before.right), 1.5)
+        let image = Self.image(source, width: width, height: height)
+        let result = try BeautyEngine(faceDetectionProvider: SDKTestingFaceDetectionProvider([
+            .symmetricObservedFaceContour,
+        ])).processResult(
+            image: image,
+            metadata: BeautyInputMetadata(orientation: .up, source: .testFixture),
+            parameters: BeautyParameters(wholeFaceSymmetry: 0.25)
+        )
+        XCTAssertEqual(Self.bytes(result.output, width: width, height: height), source)
+        XCTAssertEqual(result.output.extent, image.extent)
+        }
+    }
+
+    private static func visibleSideWidths(
+        _ bytes: [UInt8], row: Int, width: Int, axisX: Double
+    ) throws -> (left: Double, right: Double) {
+        var leftEdge: Double?
+        var rightEdge: Double?
+        for column in 200..<800 {
+            let a = Double(bytes[(row * width + column) * 4])
+            let b = Double(bytes[(row * width + column + 1) * 4])
+            if a > 150 && b <= 150 {
+                leftEdge = Double(column) + (150 - a) / (b - a)
+            }
+            if a <= 150 && b > 150 {
+                rightEdge = Double(column) + (150 - a) / (b - a)
+            }
+        }
+        return (axisX - (try XCTUnwrap(leftEdge)),
+                (try XCTUnwrap(rightEdge)) - axisX)
+    }
+
+    private static func maxContourStep(
+        _ bytes: [UInt8], width: Int, axisX: Double
+    ) throws -> Double {
+        var maximum = 0.0
+        var previous: (left: Double, right: Double)?
+        for row in 550..<680 {
+            let edges = try visibleSideWidths(bytes, row: row, width: width, axisX: axisX)
+            if let previous {
+                maximum = max(maximum, abs(edges.left - previous.left),
+                              abs(edges.right - previous.right))
+            }
+            previous = edges
+        }
+        return maximum
+    }
+
     func testFACE01StylizedRoughBoundaryImprovesThroughPublicFacade() throws {
         let width = 1_000
         let height = 1_000
@@ -122,7 +240,8 @@ final class GeneratedContourPublicOracleTests: XCTestCase {
     }
 
     private static func portraitLikeFixture(
-        width: Int, height: Int, contour: [CGPoint] = portraitContour
+        width: Int, height: Int, contour: [CGPoint] = portraitContour,
+        deepSkin: Bool = false
     ) -> [UInt8] {
         var bytes = [UInt8](repeating: 255, count: width * height * 4)
         for row in 0..<height {
@@ -138,9 +257,9 @@ final class GeneratedContourPublicOracleTests: XCTestCase {
                         || (pow((x - 0.58) / 0.022, 2) + pow((y - 0.43) / 0.012, 2) < 1)
                     let mouth = pow((x - 0.5) / 0.045, 2) + pow((y - 0.67) / 0.008, 2) < 1
                     let value: UInt8 = eye || mouth ? 40 : 80
-                    bytes[offset] = value
-                    bytes[offset + 1] = eye || mouth ? 40 : 115
-                    bytes[offset + 2] = eye || mouth ? 40 : 140
+                    bytes[offset] = eye || mouth ? value : (deepSkin ? 95 : 80)
+                    bytes[offset + 1] = eye || mouth ? 40 : (deepSkin ? 75 : 115)
+                    bytes[offset + 2] = eye || mouth ? 40 : (deepSkin ? 70 : 140)
                 } else {
                     bytes[offset] = 220
                     bytes[offset + 1] = 220

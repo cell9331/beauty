@@ -7,15 +7,16 @@ import XCTest
 final class BeautyLowerVerticalProportionTests: XCTestCase {
     private let side = 128
 
-    func testSignedPhiltrumAndLowerFaceMoveIndependentGeneratedMarkers() throws {
+    func testSignedLowerFaceMovesGeneratedMarkerAndProtectsUpperMarker() throws {
         let source = makeImage()
         let original = rgba(source)
         let engine = try BeautyEngine(
             faceDetectionProvider: SDKTestingFaceDetectionProvider([.usableFace])
         )
+        // The 128-pixel upper marker is too close to the synthetic nose
+        // support for a nose-protected philtrum oracle. The registered
+        // 512-pixel portrait suite covers that visible gap and protection.
         for (channel, positive, negative, protectedRow) in [
-            (0, BeautyParameters(philtrumLength: 0.30),
-             BeautyParameters(philtrumLength: -0.30), 93),
             (1, BeautyParameters(lowerFaceLength: 0.30),
              BeautyParameters(lowerFaceLength: -0.30), 77),
         ] {

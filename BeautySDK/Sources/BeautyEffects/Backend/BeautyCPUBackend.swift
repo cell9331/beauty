@@ -20,7 +20,8 @@ package struct BeautyCPUBackend: BeautyBackendExecutor, Sendable {
                     plan: request.plan,
                     renderQuality: request.renderQuality,
                     face: nil,
-                    textureFaceBounds: request.textureFaceBounds
+                    textureFaceBounds: request.textureFaceBounds,
+                    textureExclusionMask: request.textureExclusionMask
                 )
             )
         case .stillImage(let image):
@@ -30,14 +31,16 @@ package struct BeautyCPUBackend: BeautyBackendExecutor, Sendable {
                     to: canonicalImage,
                     plan: request.plan,
                     renderQuality: request.renderQuality,
-                    selectedFaceObservation: request.selectedFaceSupport
+                    selectedFaceObservation: request.selectedFaceSupport,
+                    textureExclusionMask: request.textureExclusionMask
                 )
             } else {
                 rendered = BeautyColorEffectPipeline.apply(
                     to: image,
                     plan: request.plan,
                     renderQuality: request.renderQuality,
-                    selectedFaceObservation: request.selectedFaceSupport
+                    selectedFaceObservation: request.selectedFaceSupport,
+                    textureExclusionMask: request.textureExclusionMask
                 )
             }
             output = .stillImage(rendered)

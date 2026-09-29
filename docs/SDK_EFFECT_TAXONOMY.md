@@ -66,6 +66,10 @@ no-face texture requests fail closed. Coarse eye/lid and lip exclusion zones
 also keep generated low-contrast feature pixels exact while cheek texture
 changes. A saturated warm decoration within the face ellipse is also exact
 under the conservative source-RGB guard, with the opposite cheek still active.
+An optional owner-supplied binary still-image exclusion mask now protects
+specified same-colored non-skin pixels on both CPU and Metal-selected texture
+routes while unmasked cheek texture remains active; malformed or mismatched
+masks fail typed. The SDK does not automatically identify unmarked objects.
 This is not skin segmentation or a claim
 about all real skin, hair, devices, or commercial visual quality. The four
 skin-control fields and their caps are unchanged.
@@ -108,31 +112,31 @@ names and visual organization are intentionally omitted from the active contract
 <!-- SDK_LEGACY_TAXONOMY_BEGIN -->
 | Group | Control | Status | Canonical SDK parameter | Scope note |
 | --- | --- | --- | --- | --- |
-| 3D塑颜 | 对称 | partial | `wholeFaceSymmetry` | Observed lower-contour imbalance drives bounded paired image-plane correction; generated public contour markers narrow the measured side-width difference across two skin values while preserving the exterior. It is not 3D geometry, and broader portrait evidence remains pending. |
-| 3D塑颜 | 上下 | partial | `wholeFaceYPosition` | Signed bounded image-space whole-face displacement passes generated public pixels and complete no-skip; this is not depth or a 3D mesh effect. Broader portrait evidence remains pending. |
-| 3D塑颜 | 左右 | partial | `wholeFaceXPosition` | Signed bounded image-space horizontal displacement passes generated public pixel direction and protection checks; it is not depth or a 3D mesh effect. Broader portrait evidence remains pending. |
-| 3D塑颜 | 倾斜 | partial | `wholeFaceTilt` | Signed bounded image-plane rotation passes generated public marker direction and exterior protection tests; it is not depth or a 3D mesh effect. Broader portrait evidence remains pending. |
-| 比例 | 小头 | partial | `headSmall` | Independent bounded four-point upper/lower head-area image-plane shrink passes generated target direction and protection checks; no whole-skull or hair semantic claim. Broader portrait evidence remains pending. |
-| 比例 | 头包脸 | partial | `headWrap` | Independent bounded upper-lateral image-plane expansion passes generated target direction and protection checks; hair silhouette and true head enclosure remain unqualified. |
-| 比例 | 颅顶 | partial | `cranialCrownHeight` | Signed bounded crown-adjacent image-plane point passes generated target direction and protection checks; no skull or hair segmentation inference. |
-| 比例 | 额头 | partial | `foreheadHeight` | Signed bounded image-plane movement of the selected face's upper central region passes generated marker direction and protection checks. This does not establish a hairline or skull-height adjustment; broader portrait evidence remains pending. |
-| 比例 | 中庭 | partial | `midfaceLength` | Signed bounded image-plane movement of the selected face's central region passes generated marker direction and protection checks. This does not establish three-dimensional facial proportion quality; broader portrait evidence remains pending. |
-| 比例 | 人中 | partial | `philtrumLength` | Signed bounded image-plane movement between selected nose-tip and upper-lip landmarks passes generated public marker direction, protected-region and metadata checks. It does not establish anatomical correction across varied portraits. |
-| 比例 | 下庭 | partial | `lowerFaceLength` | Signed bounded image-plane movement between selected mouth and chin landmarks passes generated public marker direction, protected-region and metadata checks. It does not establish anatomical correction across varied portraits. |
-| 比例 | 短脸 | partial | `faceShortening` | Bounded two-point vertical compression of a sufficiently tall selected face passes generated marker direction and protection checks. This is an image-plane proportion control; broader portrait evidence remains pending. |
+| 3D塑颜 | 对称 | implemented | `wholeFaceSymmetry` | Source- and observation-matched generated asymmetric lower contours on two skin variants show visible left/right width imbalance shrinking by over 1 pixel. A matched symmetric negative stays exact; eye/mouth regions, center, exterior, alpha and adjacent-row contour continuity are protected, with neutral, repeat, no-face, orientation/mirror and typed recovery checks. Owner-local 2D contour-balance qualification only; this is not 3D geometry. |
+| 3D塑颜 | 上下 | implemented | `wholeFaceYPosition` | An admitted isolated portrait silhouette over a uniform background is translated rigidly in the image plane. Two skin and two head-shape variants move visible hair top, chin, both eyes and mouth in both signed directions; eye/mouth widths, eye spacing and foreground area stay exact. A detached foreground collar and isolated marker exit unchanged. Neutral, no-face, repeat, exterior, alpha, extent, orientation/mirror, typed recovery and CPU/Metal parity pass. Owner-local generated-image 2D scope only; no depth or 3D pose claim. |
+| 3D塑颜 | 左右 | implemented | `wholeFaceXPosition` | The same qualified still-image silhouette moves horizontally in both signed directions, carrying hair, both eyes and mouth rigidly while preserving feature widths, spacing and foreground area. Disconnected or ambiguous foreground exits unchanged; neutral, no-face, repeat, exterior, alpha, extent, orientation/mirror, typed recovery and CPU/Metal parity pass. Owner-local generated-image 2D scope only; no depth or 3D pose claim. |
+| 3D塑颜 | 倾斜 | implemented | `wholeFaceTilt` | Six bounded image-plane points coherently rotate visible eye and lip lines, crown and chin on two generated skin variants in both directions. Eye-center spacing, neutral, no-face, repeat, exterior, alpha, extent, orientation/mirror and typed recovery pass. Owner-local generated-image 2D qualification only; this is not depth or a 3D mesh effect. |
+| 比例 | 小头 | implemented | `headSmall` | Six bounded image-plane points reduce visible hair width and complete hair-top-to-chin height beyond 1 pixel on two generated skin and two head-shape variants. Eye/mouth width stays within 2 pixels, nose region exact, hair silhouette contiguous; neutral, no-face, repeat, exterior, alpha, extent, orientation/mirror and typed recovery pass. Owner-local generated-image 2D qualification only. |
+| 比例 | 头包脸 | implemented | `headWrap` | On admitted high-contrast hair-cap still images, bounded upper-lateral expansion widens the visible generated hair band beyond 1 pixel across two skin and two head-shape variants while face width stays within 0.2 pixel and the hair/face ratio rises beyond 0.004. Hair silhouette continuity and face-feature protection pass; hairless, low-contrast and short forehead-band negatives stay exact. Neutral, no-face, repeat, exterior, alpha, extent, CPU/Metal parity, orientation/mirror and typed recovery pass. Owner-local generated-image 2D scope; no general hair segmentation. |
+| 比例 | 颅顶 | implemented | `cranialCrownHeight` | Paired crown points move the visible generated hair top in both signed directions beyond 1 pixel on two skin and two head-shape variants; tested hair silhouette continuity and brow/eye/mouth protection pass. Neutral, no-face, repeat, exterior, alpha, extent, orientation/mirror and typed recovery pass. Owner-local image-plane hair-cap effect only; no skull or hair segmentation inference. |
+| 比例 | 额头 | implemented | `foreheadHeight` | On admitted high-contrast hair-cap still images, both signed requests move flat and wavy source hair/skin boundaries, changing the visible hairline-to-eye gap while keeping brow/eye/mouth pixels exact on two skin variants. Hairless and low-contrast negatives stay exact; source-boundary continuity, neutral, no-face, repeat, exterior, alpha, extent, CPU/Metal parity, orientation/mirror and typed recovery pass. Owner-local generated-image 2D forehead proportion only; no skull-height inference. |
+| 比例 | 中庭 | implemented | `midfaceLength` | Both signed requests change the visible eye-to-nose share of eye-to-lip distance beyond 0.003 on two generated skin and two nose-length variants. Source dark brow/eye pixels and visible lip band stay exact; missing nose observation, no-face and neutral stay exact, with repeat, exterior, alpha, extent, orientation/mirror and typed recovery. The influence radius is narrowed to protect observed features. Owner-local generated-image 2D proportion only. |
+| 比例 | 人中 | implemented | `philtrumLength` | A source-registered visible upper-lip band admits the bounded local still-image warp. On two skin variants and four aligned generated nose/lip forms, both signed requests change visible nose-to-lip distance beyond 0.5 pixel while nose movement stays below 0.5 pixel, mouth width within 1 pixel and brow/eye pixels exact. An 8-pixel offset lip or absent visible lip exits unchanged; missing nose/lip observation and no-face exit unchanged. Neutral, repeat, exterior, alpha, extent, orientation/mirror, typed recovery and CPU/Metal parity pass. Owner-local generated-image 2D scope; no general lip segmentation. |
+| 比例 | 下庭 | implemented | `lowerFaceLength` | On two skin values and three generated lip/chin-height forms, both signed requests change visible lip-to-chin distance beyond 0.5 pixel while visible upper lip and brow/eye/mouth source regions remain exact. Chin contour adjacent-column steps stay within 3 pixels; missing lip observation and no-face stay exact, with neutral, repeat, exterior, alpha, extent, orientation/mirror and typed recovery passing. Owner-local generated-image 2D lower-face proportion only. |
+| 比例 | 短脸 | implemented | `faceShortening` | On two source-qualified generated long-face skin variants, four bounded points shorten the complete visible hair-top-to-chin span beyond the frozen 1-pixel threshold. A matched short-face source/observation remains exact. Visible eye and mouth widths stay within 1 pixel and the nose region stays exact; exterior, alpha, neutral, repeat, orientation/mirror and typed recovery pass. This is owner-local generated-image qualification of a 2D effect, not a skull or depth claim. |
 | 脸型 | 脸宽 | implemented | `faceSlim` | Bounded contour narrowing. |
 | 脸型 | 小脸 | implemented | `faceSmall` | Bounded small-face geometry. |
 | 脸型 | 面部流畅 | implemented | `faceContourSmooth` | The lower-cheek source-edge alignment passes two predeclared public CPU generated-portrait rough/smooth oracles, including a deep-skin, oblique-light, cheek-crossing-hair pair. Code-generated skin tones, opposing light, chromatic boundaries and short/sustained dark occlusion cover direction and protected regions. Weak or contradictory edges fail closed; a sustained occlusion closes only its affected contour side in both CPU and Metal point selection. Neutral, repeat, alpha and target/protection checks pass for these inputs. This owner-local evidence does not qualify real-person populations, devices or commercial visual quality. |
 | 脸型 | 太阳穴 | implemented | `templeFullness` | Upper-lateral contour geometry. |
 | 脸型 | 颧骨 | implemented | `cheekboneSlim` | Mid-lateral contour geometry. |
 | 脸型 | 下巴长短 | implemented | `chinLength` | Signed chin-length geometry. |
-| 脸型 | 去双下巴 | partial | `doubleChinReduction` | One bounded lower-chin image-plane uplift changes generated public pixels while protecting the upper face; no submental fat segmentation or anatomical removal claim. |
-| 脸型 | 去双下巴 Pro | partial | `doubleChinReductionPro` | Independent bounded lower-chin uplift plus paired flank narrowing changes generated public pixels beyond the base control. It does not use a model, weight or submental fat segmentation. |
+| 脸型 | 去双下巴 | implemented | `doubleChinReduction` | On an admitted continuous outer submental skin protrusion, generated still-image center depth shrinks over 5 pixels and area over 5% across two skin values and two bulge depths. Flat chins, internal dark folds and detached light collars remain exact; upper face, exterior, alpha, extent, repeat, no-face, neutral, CPU/Metal parity, orientation/mirror and typed recovery pass. Owner-local generated-image 2D outer-contour class only; no internal fat identification. |
+| 脸型 | 去双下巴 Pro | implemented | `doubleChinReductionPro` | On the same admitted outer protrusions, Pro reduces center depth over 1 pixel and area over 5% further than base while adjacent contour-column steps stay within 3 pixels. The flat, internal-fold and detached-collar negatives remain exact, with upper-face protection, repeat, CPU/Metal parity and existing metadata/recovery gates. Owner-local generated-image 2D outer-contour tier only; no internal fat identification. |
 | 脸型 | 尖下巴 | implemented | `chinTaper` | Centerline-gated chin taper. |
 | 脸型 | V脸 | implemented | `faceVShape` | Bounded V-shape geometry. |
 | 脸型 | 下颌角 | implemented | `jawSlim` | Bounded jaw narrowing. |
 | 脸型 | 下颌线 | implemented | `jawSlim` | Explicit alias-backed row; no distinct public parameter claim. |
-| 脸型 | 发际线 | partial | `hairlineHeight` | Signed bounded paired upper-face boundary warp passes generated marker checks. It fails closed when existing observed brow support overlaps the target influence area; this protects the tested brow pixels but does not locate or reconstruct an actual hairline. |
+| 脸型 | 发际线 | implemented | `hairlineHeight` | On still images with a coherent high-contrast dark-hair/lighter-skin boundary, bounded signed resampling moves flat and wavy generated source boundaries in both directions on two skin variants while keeping adjacent columns continuous. Hairless, low-contrast, short forehead-decoration and observed-brow-overlap negatives remain exact; tested brow, eye, mouth, exterior, alpha, extent, repeat, orientation/mirror and typed recovery pass. Owner-local generated-image 2D qualification for this admitted class only; general hair segmentation and light-hair effects are not claimed. |
 | 眼睛 | 大小 | implemented | `eyeSize` | Eye-aperture size geometry. |
 | 眼睛 | 上下 | implemented | `eyeYPosition` | Signed vertical position. |
 | 眼睛 | 眼高 | implemented | `eyeHeight` | Contour-height geometry. |
@@ -173,12 +177,12 @@ names and visual organization are intentionally omitted from the active contract
 | 眉毛 | 眉峰 | implemented | `eyebrowPeakDefinition` | Bounded interior-apex geometry. |
 <!-- SDK_LEGACY_TAXONOMY_END -->
 
-Branch status remains conservative: `3D塑颜`, `比例`, and `脸型` are
-partial; `眼睛`, `嘴唇`, `鼻子`, and `眉毛` are implemented at SDK-core
-scope. The partial branches now have separate bounded image-plane controls
-for every listed row, but broader portrait and semantic-region acceptance
-remains outstanding. The `眼睛` branch is implemented with the explicit provisional-quality
-caveat on `去脂`; this does not establish commercial visual quality.
+Every listed control is now `implemented` at its stated owner-local scope;
+there are no current `partial` or `future` rows. The 15 controls qualified in
+September 2026 have explicit generated-image, image-plane admission limits.
+The `眼睛` branch retains the provisional-quality caveat on `去脂`, and none of
+these row statuses establishes general portrait quality, 3D geometry, device
+performance or commercial visual quality.
 
 ## Non-legacy SDK groups
 
@@ -201,7 +205,7 @@ degradation coverage, and public-facade output evidence where applicable. Do not
 promote from archived UI presence, a disabled control, provider-only mechanics,
 or a future plan. The Phase-79 archive continues to record exact 61-field,
 five-preset, 74-case absence at its historical close. The current owner-accepted
-surface is 64 fields, five presets, and 79 renderer cases.
+surface is 77 fields, five presets, and 99 renderer cases.
 `implemented` is an owner-local engineering status only and never authorizes
 external distribution or commercial release.
 

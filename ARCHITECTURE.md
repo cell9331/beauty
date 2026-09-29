@@ -1,5 +1,40 @@
 # ARCHITECTURE.md
 
+## 2026-09-29 request-local skin-texture exclusion
+
+`BeautyTextureExclusionMask` is a binary, owner-supplied still-image input on
+`BeautyEngine.processResult`. It follows canonical orientation and input
+mirroring, then travels through the backend request to the existing shared
+CPU-owned texture stage on both CPU and Metal-selected routes. The mask only
+excludes pixels from `skinSmoothing` and `skinSharpen`; it is not an automatic
+skin classifier and does not change other effects. Invalid mask dimensions
+fail typed before backend execution. No model, network, shader, target or
+persistent mask is added.
+
+## 2026-09-28 still-image source admission
+
+`BeautyGeometryEffectPipeline` and `BeautyMetalBackend` share the
+`PhiltrumSourceAdmission` and `WholeFaceTranslationRefiner` owners for
+still-image raster qualification. Both suppress the corresponding legacy
+point emissions on that route; the Metal-selected path uses the same
+request-local CPU byte refinement around its retained pass. Pixel-buffer
+geometry and the retained Metal shader contract are unchanged.
+
+## 2026-09-28 still-image source-contour routes
+
+CPU and Metal-selected still-image paths now run one request-local,
+source-pixel hair/skin boundary refiner and one lower-center skin-contour
+refiner after rasterization. Both suppress the corresponding legacy geometry
+points for still images, including when source admission fails, so ambiguous
+inputs exit unchanged. Pixel-buffer geometry retains its previous point
+route. Neither refiner holds pixels or boundary coordinates after the request
+or adds a public API, model, shader, target, or backend.
+The coherent hair-cap detector also gates `headWrap` still-image points; an
+unsupported hair source emits no head-wrap geometry on CPU or Metal.
+`foreheadHeight` shares the hairline still-image boundary pass with opposite
+sign and suppresses its legacy point on that route. `midfaceLength` remains a
+bounded point field but now requires nose support.
+
 ## 2026-09-27 request-local texture face support
 
 An active skin texture request now uses the existing Vision detector in the
@@ -23,8 +58,11 @@ segmentation resource, model, weight, target, shader or backend was added.
 ## 2026-09-27 head-region proportion controls
 
 `headSmall`, `headWrap`, `cranialCrownHeight` and `hairlineHeight` append
-independent scalar parameters to the existing face-shape provider and shared
-CPU/Metal point route. No new target, detector, segmentation resource, shader,
+independent scalar parameters to the existing face-shape provider. The first
+three retain the shared CPU/Metal point route, with still-image `headWrap`
+points admitted by the source hair-cap detector. Hairline still images use
+the request-local source-boundary route described above; pixel buffers retain
+the provider route. No new target, detector, segmentation resource, shader,
 model or backend is introduced.
 
 ## 2026-09-27 philtrum and lower-face proportion controls
@@ -37,14 +75,15 @@ backend was added.
 ## 2026-09-27 forehead and midface proportion controls
 
 `foreheadHeight` and `midfaceLength` append independent signed parameters to
-the existing resolver and face-shape provider. Each uses one bounded
-request-local control point in the shared CPU/Metal geometry route. No new
-target, detector, shader, model, or backend is introduced.
+the existing resolver and face-shape provider. Pixel buffers retain one
+bounded point each; still-image forehead requests use the request-local
+source-boundary route above, while midface keeps a narrower point field.
+No new target, detector, shader, model, or backend is introduced.
 
 ## 2026-09-27 short-face proportion control
 
 `faceShortening` follows the existing public parameter, effect resolver,
-face-shape provider, and shared CPU/Metal geometry point path. It emits two
+face-shape provider, and shared CPU/Metal geometry point path. It emits four
 bounded points for a selected face with valid contour and a sufficiently tall
 bounding box. No new detector, shader, target, backend, or model is added.
 
@@ -70,8 +109,9 @@ result metric reports the capacity route, without exposing point coordinates.
 ## 2026-09-27 whole-face image-plane tilt
 
 `wholeFaceTilt` follows the existing public parameter, resolver, face-shape
-provider and unified CPU/Metal geometry route. Four bounded cardinal points
-rotate the selected face region around its validated bounds center. No depth
+provider and unified CPU/Metal geometry route. Four bounded cardinal and two
+upper/lower silhouette points rotate the selected face region around its
+validated bounds center. No depth
 input, model, shader, target or backend is added.
 
 ## 2026-09-26 result-local diagnostic events
@@ -95,8 +135,9 @@ target, logger sink, OS log, or persistence path is added.
 
 The owner-local `wholeFaceXPosition` field follows the existing public
 parameter, resolver, face-shape provider, and unified CPU/Metal geometry
-point route. It adds one bounded point only when the selected face has valid
-contour support; there is no new target, shader, depth input, or model.
+point route. With valid selected-face contour support, the provider emits
+three bounded points covering the center and upper/lower face areas. There
+is no new target, shader, depth input, or model.
 
 ## 2026-09-26 encoded still-image facade
 
@@ -109,7 +150,7 @@ file reader, decoder dependency, or effect/backend route.
 
 The owner-local `wholeFaceYPosition` field uses the existing parameter,
 resolver, face-shape warp provider, CPU still-image and Metal geometry routes.
-It adds one bounded control point from the selected request-local face bounds;
+It emits five bounded control points from the selected request-local face bounds;
 there is no new target, model, depth estimate, shader, backend, UI, or public
 biometric payload. The SDK-owned renderer exposes both signed directions.
 

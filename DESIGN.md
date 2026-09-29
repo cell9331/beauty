@@ -1,25 +1,103 @@
 # DESIGN.md
 
+## 2026-09-29 skin-texture exclusion contract
+
+An optional `BeautyTextureExclusionMask` contains one binary byte per pixel
+in the upright, input-mirror-corrected still-image grid: `255` excludes the
+pixel from skin smoothing and sharpening, and `0` leaves the existing face,
+color and neighborhood guards in force. A supplied mask routes the still
+request through canonicalization even without local-retouch demand. The
+excluded pixel is source-exact for the texture stage; later independently
+requested color or geometry effects may still affect it. Unmasked calls keep
+their previous route and output. Width, height and byte values are validated;
+mask dimensions must equal canonical output dimensions.
+
+## 2026-09-28 source-qualified still-image geometry
+
+For still images, `wholeFaceXPosition` and `wholeFaceYPosition` share one
+request-local, integer-pixel image-plane translation of a single coherent
+portrait foreground over a uniform opaque background. The source must have a
+connected silhouette whose bounds agree with the selected face observation;
+disconnected foreground, clipped edges, nonopaque input or ambiguous
+background exits unchanged for these controls. Signed displacement is capped
+at 3.5% of observed face width/height. Their legacy control points remain on
+the pixel-buffer path; still-image point fields are suppressed to preserve
+eye/mouth widths. No 3D pose or general foreground segmentation is implied.
+
+Still-image `philtrumLength` requires a coherent chromatic upper-lip band
+within the observed upper-lip tolerance before its point is admitted. The
+influence radius is bounded by 70% of the nose-to-upper-lip gap and 12% of
+face-box width. Missing or offset source lip evidence suppresses that still
+point. The pixel-buffer point route retains its previous observation-only
+behavior. These refiners are CPU byte operations used identically before or
+after the Metal geometry pass; no new GPU backend or public parameter exists.
+
+## 2026-09-28 source-contour submental still-image contract
+
+The still-image `doubleChinReduction` and Pro controls admit only an opaque,
+coherent lower-center skin silhouette that extends at least 4.5% of the face
+box height below its selected lower edge. Both follow the source skin-to-dark
+background transition only when skin remains continuous from the upper
+candidate band to that edge; a detached light collar or internal dark fold
+fails admission. Both resample a bounded vertical band inward. Pro uses
+up to 1.55 times the base shift at the same normalized strength. A flat,
+ambiguous or missing contour remains exact, including when a request was
+otherwise geometrically eligible. CPU and Metal-selected still-image paths
+share this request-local step and suppress the older chin points; pixel-buffer
+geometry retains the prior point behavior. This targets an outer submental
+bulge class and does not identify internal fat or shadow folds.
+
+## 2026-09-28 source-boundary hairline still-image contract
+
+The same coherent dark-cap/lighter-skin source detector admits `headWrap`
+still-image geometry. Without that source support, its upper-lateral points
+are suppressed and the source stays exact. CPU and Metal-selected static
+routes share this decision; the pixel-buffer route retains its bounded point
+behavior. This makes the hair/face relation effect conditional on visible
+hair support, without claiming general hair segmentation.
+`foreheadHeight` uses the same admitted still-image boundary resampler with
+the opposite sign from `hairlineHeight`, so its positive request increases
+the visible hairline-to-eye gap. Both point fields are suppressed on the
+still-image route and their normalized signed strengths combine into one
+bounded displacement; equal opposite full-scale requests cancel. The
+pixel-buffer route retains the prior bounded forehead point.
+
+For still images, `hairlineHeight` is applied only after a coherent dark cap
+above a lighter forehead has been found in the source pixels. Every sampled
+central-forehead column must have an opaque ten-pixel dark run and a six-pixel
+lighter run with at least 35 red-channel levels at the transition; detected
+rows may vary by no more than 5% of the face-box height. The bounded signed
+vertical resampling affects only a narrow band around that source boundary
+and tapers at the horizontal ends. A hairless or ambiguous source remains
+exact. Existing observed-brow safety exit still applies, and the raster band
+stays above the observed brow. CPU and Metal-selected still-image paths use
+the same request-local raster step and suppress the older hairline points.
+The pixel-buffer path retains its prior bounded point behavior. This is a
+conservative high-contrast hairline class, not general hair segmentation.
+
 ## 2026-09-27 symmetry and lower-chin image-plane contract
 
 The three positive-only controls are neutral at zero and capped at `0.25`.
 `wholeFaceSymmetry` requires valid observed contour and median-line support;
 it compares matched lower-side contour widths around the observed axis and
 moves two bounded points only when imbalance exceeds a face-relative floor.
-`doubleChinReduction` lifts one selected chin point. The independent Pro
-control lifts that point farther and also moves paired lower-contour flanks
-inward and upward. Invalid or missing support emits no point and existing
-combined geometry scaling applies. These are bounded image-plane warps; they
-do not identify or remove submental fat or reconstruct a 3D face.
+On the pixel-buffer/provider route, `doubleChinReduction` lifts one selected
+chin point. The independent Pro control lifts that point farther and also
+moves paired lower-contour flanks inward and upward. Still images use the
+source-contour contract above. Invalid or missing support exits unchanged;
+the point route keeps existing combined geometry scaling. These are bounded
+image-plane operations; they do not identify submental fat or reconstruct a
+3D face.
 
 ## 2026-09-27 head-region image-plane contract
 
 The positive-only `headSmall` and `headWrap` controls are capped at `0.30`
 and `0.25`; signed `cranialCrownHeight` and `hairlineHeight` are capped at
-`±0.25`. `headSmall` draws four bounded points inward around the upper and
+`±0.25`. `headSmall` draws six bounded points inward around the upper and
 lower selected face box. `headWrap` expands two upper-lateral points outward.
-Positive `cranialCrownHeight` moves one crown-adjacent central point upward;
-positive `hairlineHeight` moves two upper-face boundary points downward.
+Positive `cranialCrownHeight` moves two crown-adjacent central points upward;
+the legacy hairline provider moves two upper-face points on the pixel-buffer
+route, while still images follow the source-boundary contract above.
 Negative signed values reverse direction. All require a valid selected face
 contour and unit source/target coordinates; otherwise they emit no points.
 These points do not segment hair, reconstruct a skull, or establish the true
@@ -35,33 +113,41 @@ new public API.
 ## 2026-09-27 lower vertical proportion contract
 
 `philtrumLength` and `lowerFaceLength` are signed, neutral at zero and
-effectively capped at `±0.30`. The former moves a local point between the
-selected nose tip and upper lip; the latter moves one between the mouth and
-lowest face-contour point. Positive values move down in canonical image
+effectively capped at `±0.30`. The former moves a local point at the
+selected upper lip; the latter places a point just below the selected face
+box's lower edge after validating the lip and lowest contour point.
+Positive values move down in canonical image
 coordinates and negative values move up. A valid unit landmark pair with a
 minimum vertical gap and contour is required. The point displacement is at
-most 65% and 16% of the respective source gap, with a bounded local radius
-and falloff two. Missing, inverted or invalid support emits no point;
+most 25% and 12% of the respective source gap. The philtrum radius is at
+most 60% of its observed nose-to-upper-lip gap and 12% of face-box width;
+the lower-face radius remains bounded by the face-box size. Both use falloff
+two. Missing, inverted or invalid support emits no point;
 combined geometry scaling still applies. These are image-plane controls.
 
 ## 2026-09-27 forehead and midface image-plane contract
 
-Both controls are signed, neutral at zero and capped at `±0.30`. On valid
-selected-face contour support, `foreheadHeight` places one point at 17% of
-face-box height and moves it upward for positive input by up to 6% of that
-height. `midfaceLength` places one point at 52% and moves it downward for
-positive input by up to 5.5%. Negative values reverse those directions.
-Radii are 16% and 14% of the larger face-box dimension, respectively, with
-falloff two. Missing or invalid support emits no point; existing combined
-geometry scaling applies. These are bounded local image-plane movements, not
-anatomical depth or skull changes.
+Both controls are signed, neutral at zero and capped at `±0.30`. On the
+pixel-buffer route with valid selected-face contour support,
+`foreheadHeight` places one point at 17% of face-box height and moves it
+upward for positive input by up to 6% of that height. Still images use the
+source-boundary route above. `midfaceLength` requires nose and contour
+support, places one point at 52%, and moves it downward for positive input
+by up to 5.5%. Negative values reverse those directions. Point radii are
+16% and 10% of the larger face-box dimension, respectively, with falloff
+two. Missing or invalid support emits no point; existing combined geometry
+scaling applies. These are bounded image-plane movements, not anatomical
+depth or skull changes.
 
 ## 2026-09-27 short-face control contract
 
 `faceShortening` is positive only, neutral at zero, and capped at `0.30`.
 For a selected face with a valid unit contour and height-to-width ratio at
-least `1.25`, two centerline points at 24% and 88% of its face-box height
-move toward each other by up to 8% of that height. Their radius is 16% of
+least `1.25`, two inner centerline points at 24% and 88% of its face-box
+height move toward each other by up to 3% and 8% of that height,
+respectively. The smaller upper movement protects the generated brow/eye
+separation while retaining visible full-head shortening. Two additional
+points near its upper and lower edges move inward by up to 5.5%. Their radius is 16% of
 the larger face-box dimension, bounded to one, with falloff two. Invalid or
 missing support emits no points. Existing conflict scaling applies. This is
 a local two-dimensional proportion warp, not a skull or depth transform.
@@ -98,9 +184,11 @@ all admitted landmark shapes fit the Metal uniform.
 ## 2026-09-27 whole-face tilt contract
 
 `wholeFaceTilt` is signed with neutral zero and an effective cap of `±0.30`.
-At that cap, four cardinal points around the selected face center rotate by
-`±0.12` radians in canonical image coordinates. Their radius is bounded by
-`0.38 × max(face width, face height)` and falloff is two. Positive is clockwise
+At that cap, four cardinal points around the selected face center and two
+upper/lower silhouette points rotate by `±0.12` radians in canonical image
+coordinates. The cardinal radius is bounded by
+`0.38 × max(face width, face height)`; the silhouette radius is bounded by
+`0.18 × face height`; falloff is two. Positive is clockwise
 in image coordinates; negative reverses it. Missing or invalid contour support
 exits unchanged. Existing geometry conflict scaling applies. The control is a
 two-dimensional image-plane warp and does not represent three-dimensional
@@ -134,9 +222,12 @@ output and therefore do not expose the metric. No system log is written.
 
 `wholeFaceXPosition` is a signed public field with neutral zero and effective
 cap `±0.30`. Positive moves the selected face area right in canonical image
-coordinates, negative left. One point centered on the selected face moves by
-at most `0.035 × face width`; radius is `0.60 × max(face width, face height)`
-within unit bounds. Missing or invalid face contour exits unchanged, and
+coordinates, negative left. The center point moves by at most `0.035 × face
+width` with radius `0.60 × max(face width, face height)`. Two additional points
+at 35% and 75% of the face-bounds height use the same signed displacement and
+radius `0.32 × max(face width, face height)` so visible eyes and mouth move in
+the same direction on the tested generated portraits. All three targets must
+remain in unit bounds. Missing or invalid face contour exits unchanged, and
 combined geometry uses the existing conflict scale. Orientation and input
 mirror are request metadata. This is bounded 2D image-space displacement,
 not a depth or three-dimensional mesh claim.
@@ -188,10 +279,14 @@ decoding and later mutation.
 
 `wholeFaceYPosition` is a signed public field with neutral zero and effective
 cap `±0.30`. Positive moves the selected face area downward in canonical
-image coordinates and negative moves it upward. The provider emits one point
-at the validated face-bounds center with target displacement at the cap of
-`0.035 × face height`, radius `0.60 × max(face width, face height)` capped at
-one, and falloff two. Missing or invalid face support removes this field;
+image coordinates and negative moves it upward. The center point has target
+displacement at the cap of `0.035 × face height`, radius `0.60 × max(face
+width, face height)` capped at one, and falloff two. Two more points at 35%
+and 75% of face-bounds height use the same signed displacement, falloff and
+radius `0.32 × max(face width, face height)`; the field exits if any target is
+outside unit bounds. Two edge points near the observed upper and lower box
+edge use radius `0.16 × max(face width, face height)` to carry the visible
+silhouette in both directions. Missing or invalid face support removes this field;
 stale support is neutral and reused non-eye geometry is halved. This is a
 bounded two-dimensional raster warp, not a three-dimensional head transform.
 
@@ -743,7 +838,7 @@ SDK 以稳定、可预测的方式输出处理后的图像。SDK、模型和权�
 
 ### 4.2 BeautyParameters
 
-`BeautyParameters` 是所有可调效果的唯一公共参数模型。当前模型包含精确 **62 个 stored fields = 61 个 numeric fields + `filterId`**，覆盖基础皮肤、基础颜色、脸型、眼睛、鼻子、嘴巴、眉毛、滤镜，以及尾部兼容追加的 `teethWhitening`、`scleraRednessReduction` 和 `upperEyelidFullnessReduction`。
+`BeautyParameters` 是所有可调效果的唯一公共参数模型。当前模型包含精确 **77 个 stored fields = 76 个 numeric fields + `filterId`**，覆盖基础皮肤、基础颜色、脸型、眼睛、鼻子、嘴巴、眉毛、滤镜，以及尾部兼容追加的三个局部修图字段和十五个二维脸部控制。完整字段清单以 [SDK_EFFECT_TAXONOMY.md](docs/SDK_EFFECT_TAXONOMY.md) 的当前库存为准。
 
 最低协议：
 
@@ -757,7 +852,7 @@ public struct BeautyParameters: Codable, Equatable, Sendable
 | --- | --- | --- |
 | Skin | `skinSmoothing`, `skinWhitening`, `skinRosy`, `skinSharpen` | `0.0...1.0` |
 | Color | `brightness`, `contrast`, `saturation`, `temperature`, `tint`, `exposure`, `highlight`, `shadow` | mixed |
-| Face Shape | shipped `faceSlim`, `faceSmall`, `faceVShape`, `jawSlim`, `chinLength`; new `faceContourSmooth`, `templeFullness`, `cheekboneSlim`, `chinTaper` | shipped mixed; new `0...1` |
+| Face and head | `faceSlim`, `faceSmall`, `faceVShape`, `jawSlim`, `chinLength`, `faceContourSmooth`, `templeFullness`, `cheekboneSlim`, `chinTaper`; `wholeFaceYPosition`, `wholeFaceXPosition`, `wholeFaceTilt`, `faceShortening`, `foreheadHeight`, `midfaceLength`, `philtrumLength`, `lowerFaceLength`, `headSmall`, `headWrap`, `cranialCrownHeight`, `hairlineHeight`, `wholeFaceSymmetry`, `doubleChinReduction`, `doubleChinReductionPro` | mixed signed and positive-only fields; individual caps are defined by normalization and effect contracts |
 | Eyes | shipped `eyeSize`, `eyeTailLift`: `[0, 1]`; shipped `eyeDistance`, `eyeYPosition`: `[-1, 1]`; `eyeHeight`, `eyeLength`, `upperEyelidLift`, `pupilSize`, `gazeCorrection`, `lowerEyelidDrop`, `innerCornerOpen`, `outerCornerOpen`, `eyeSymmetry`, provisional `upperEyelidFullnessReduction`: `[0, 1]`; `eyeTilt`: `[-1, 1]` | default-zero independent scalars; one signed field |
 | Nose | `noseSlim`, `noseWingSlim`, signed `noseTipSize`, `noseBridge`, `noseRootNarrowing`, `noseTipLift` | legacy mixed + new positive-only `0...1` |
 | Mouth/local retouch | `mouthSize`, `mouthWidth`, `smile`, `mouthYPosition`, `mouthTilt`, `mouthXPosition`, `lipPeakDefinition`, `lipPlump`, `lipColor`, `teethWhitening`; eye-local `scleraRednessReduction` and `upperEyelidFullnessReduction` | mixed geometry/color plus positive-only local retouch |
@@ -808,7 +903,7 @@ Phase 28 completion evidence covers the existing Face Shape fields only: `faceSl
 
 ### Phase 41 Public Eye Contract and Observed-Support Design
 
-- The ten independent additions are positive-only `eyeHeight`, `eyeLength`, `upperEyelidLift`, `pupilSize`, `gazeCorrection`, `lowerEyelidDrop`, `innerCornerOpen`, `outerCornerOpen`, and `eyeSymmetry`, plus signed `eyeTilt`. Every value defaults to zero; missing legacy 38-key JSON values and non-finite values become zero. The current Codable inventory is exactly 48 stored fields: 47 numeric fields plus `filterId`.
+- The ten independent additions are positive-only `eyeHeight`, `eyeLength`, `upperEyelidLift`, `pupilSize`, `gazeCorrection`, `lowerEyelidDrop`, `innerCornerOpen`, `outerCornerOpen`, and `eyeSymmetry`, plus signed `eyeTilt`. Every value defaults to zero; missing legacy 38-key JSON values and non-finite values become zero. The Phase 41 Codable inventory was exactly 48 stored fields: 47 numeric fields plus `filterId`.
 - `BeautyObservedEyeSupport` carries anatomical left/right contours and optional pupils as package-only, `Sendable`, request-scoped evidence. Vision points cross `CoordinateMapper` exactly once into finite closed-unit image-normalized coordinates. No pupil is synthesized when Vision omits one.
 - Before semantic support reaches the adapter, `VisionFaceDetector` requires exactly one anatomical `.left` and one `.right` contour. It maps the face-local horizontal basis through the same `CoordinateMapper` metadata, projects the mapped contour-center separation onto that axis, and accepts only a finite projection strictly greater than `0.000001`. Missing, duplicate, coincident, or side-inverted pairs are invalid; valid `.up`, `.right`, `.left`, `.down`, and input-mirrored observations preserve their original anatomical labels.
 - `BeautyFaceGeometryAdapter` canonicalizes winding-independent semantic upper/lower/inner/outer/corner/center support. Its package-private `span` is the image-normalized contour bounding width/height, and signed `tilt` is `atan2(inner.y - outer.y, abs(inner.x - outer.x)) / (pi / 2)` clamped to `-1...1`; reversed or cyclic winding does not change either value. Contours accept 6...16 input points, at least 4 unique points, relative width `0.04...0.50`, height `0.01...0.30`, and bounding area above `0.0004`. Pupils use 10% expanded containment, normalized ellipse offset at most `0.70`, and paired contour width/height ratios `0.50...2.00`. These are support-validation ceilings, not final visual-effect caps.
@@ -817,7 +912,7 @@ Phase 28 completion evidence covers the existing Face Shape fields only: `faceSl
 
 ### Phase 45 Public Face Contract and Observed-Support Design
 
-- The four independent additions are positive-only `faceContourSmooth`, `templeFullness`, `cheekboneSlim`, and `chinTaper`. Each public `Float` defaults to zero, clamps finite input to `0...1`, maps non-finite input to zero, and round-trips independently. Signed `chinLength` remains unchanged. The exact current Codable inventory is **52 stored fields: 51 numeric fields plus `filterId`**; legacy 48-key payloads and the unchanged five bundled presets decode all four missing keys as zero.
+- The four independent additions are positive-only `faceContourSmooth`, `templeFullness`, `cheekboneSlim`, and `chinTaper`. Each public `Float` defaults to zero, clamps finite input to `0...1`, maps non-finite input to zero, and round-trips independently. The Phase 45 Codable inventory was **52 stored fields: 51 numeric fields plus `filterId`**; legacy 48-key payloads and the unchanged five bundled presets decode all four missing keys as zero.
 - `BeautyObservedFaceSupport` carries actual Apple Vision `faceContour` and `medianLine` values as independently optional, package-only, immutable `Sendable` request evidence. The existing single landmarks request copies only coordinate values, preflights contour and median at fixed ceilings of 32 and 16 points, composes accepted face-local values through one request-local `CoordinateMapper`, and maps each accepted point exactly once.
 - Canonical contour traversal follows the mapper-derived face-local right axis and canonical median direction follows its down axis. Canonicalization may reverse the whole open path only; it never sorts points or changes adjacency. The same input orientation and mirror metadata drives points and axes, while preview mirroring does not alter image-normalized support.
 - Adapter validation is face-specific. Contour accepts 7...32 exact-bit-unique finite closed-unit points, relative width `0.50...1.00`, relative height `0.20...1.00`, endpoint horizontal separation at least `0.35`, and chord-perpendicular curvature at least `0.10`. Median accepts 3...16 such points, net-down projection at least `0.25`, and direction magnitude at least `0.000001`. Complete centerline eligibility additionally requires median-bottom chord position `0.15...0.85`, nearest-apex distance at most `0.40`, and at least two contour points on each apex side. These are inclusive support-validation bounds, not visual-strength caps.
@@ -826,7 +921,7 @@ Phase 28 completion evidence covers the existing Face Shape fields only: `faceSl
 
 ### Phase 49 Public Eyebrow Contract and Observed-Support Design
 
-- The seven independent additions are signed `eyebrowYPosition`, `eyebrowThickness`, `eyebrowLength`, `eyebrowSpacing`, `eyebrowHeadSpacing`, and `eyebrowTilt` in `-1...1`, plus positive-only `eyebrowPeakDefinition` in `0...1`. Every value defaults to zero, finite overflow clamps to its range, and non-finite input normalizes to zero. The Phase 49 snapshot was **59 stored fields: 58 numeric fields plus `filterId`**; the current inventory is the 62-field model above. Complete unequal values round-trip and compare independently; reset, snapshot diff, and non-mutating normalization include all seven. Removing the seven keys reconstructs the compatible legacy 52-key payload, and the unchanged five bundled presets decode seven zeros; historical 31/33/38/48/52 counts remain historical fixtures.
+- The seven independent additions are signed `eyebrowYPosition`, `eyebrowThickness`, `eyebrowLength`, `eyebrowSpacing`, `eyebrowHeadSpacing`, and `eyebrowTilt` in `-1...1`, plus positive-only `eyebrowPeakDefinition` in `0...1`. Every value defaults to zero, finite overflow clamps to its range, and non-finite input normalizes to zero. The Phase 49 snapshot was **59 stored fields: 58 numeric fields plus `filterId`**; the later local-retouch snapshot contained 62 fields, and the current inventory is listed above. Complete unequal values round-trip and compare independently; reset, snapshot diff, and non-mutating normalization include all seven. Removing the seven keys reconstructs the compatible legacy 52-key payload, and the unchanged five bundled presets decode seven zeros; historical 31/33/38/48/52 counts remain historical fixtures.
 - `VisionFaceDetector` copies actual Apple Vision `leftEyebrow` and `rightEyebrow` coordinate values from the existing selected-face landmarks request. Each side is independently preflighted as a non-empty open path with at most 16 points before mapping; rejected sides map zero eyebrow points. Accepted points pass the request-local `CoordinateMapper` exactly once, with four fixed face-axis probes used only to derive mapper-consistent right/down axes.
 - Anatomical side is decided from the mapped side centroid on the mapper-derived right axis. Phase 51 actual-image integration established that Apple Vision may return the open eyebrow region with both raw endpoints at the same anatomical end of its thick outline, so endpoint reversal alone is not an inner-to-outer centerline contract. After exactly-once mapping, accepted samples are therefore stably ordered by face-right-axis projection (left and right use opposite anatomical direction; projection ties retain provider order) before adapter validation. This preserves the exact mapped sample multiset without closing, remapping, retrying, or inferring polygon winding. Screen-axis sorting, eye contours, historical eye geometry, generated traces, and the synthetic face proxy remain prohibited as eyebrow evidence.
 - `BeautyFaceGeometryAdapter` validates each canonical side independently as an exact-bit-unique finite closed-unit open path with **4...16** points, face-relative endpoint chord **0.08...0.50**, vertical span at most **0.25**, no non-adjacent segment intersection, and projection epsilon **0.000001**. A semantic trace preserves exact canonical points, inner/outer endpoints, arithmetic center, and only a unique interior apex above epsilon; apex is optional and not Phase 49 provider eligibility. `BeautyEyebrowSemanticSupport.left/right` remain independent optionals and `pairEligible` is true only when both distinct sides survive.
