@@ -36,6 +36,41 @@ and an original-detail no-ring/no-worsening review. A candidate must preserve
 both the intended directional change and the existing fail-closed behavior.
 The owner's provisional callable API remains valid under its stated limits.
 
+### Follow-up source/output probe (2026-09-30)
+
+A locally generated 1254×1254 fictional adult source with mild visible
+viewer-left upper-lid fullness (source SHA-256
+`d0fb3f6b4a41a6ca5b8b7359b900fdf0e49118d666875d02fa693bd366e9cc74`)
+was admitted by the unchanged live Vision and semantic-owner path for **one
+eye only**. Its admitted eye had central/localized luminance residual scores
+`5.42/13.47` and positive fraction `0.625`; the other eye was rejected. A
+matched flatter-lid edit (SHA-256
+`fabc4bac1fe5c71ac4adaef225501c847a913a3144ef8ce31003c6a4fded1f7b`)
+was rejected for both eyes (`-4.05/1.97`, fraction `0.203` on the formerly
+admitted side). An intermediate, visually flatter edit still admitted that
+side (`1.50/8.99`, fraction `0.481`), so this is not evidence that the proxy
+reliably separates fullness across edits or people.
+
+Before viewing the public effect output, the intended single-eye oracle
+required at least 100 changed pixels in the admitted upper lid, no change in
+the rejected eye or outside the upper-lid region, per-channel delta at most
+16, neutral and repeat identity, preserved alpha/extent, and no visible ring
+at original detail. The first diagnostic test mapped the admitted eye to the
+wrong image half and inverted the image-buffer row direction, so its region
+assertion failed. After correcting those coordinates **based on the observed
+output**, the unchanged public `processResult` at strength 1 showed 2,983
+changed pixels in the actual admitted upper-lid region, zero on the rejected
+side or outside that region, maximum channel delta 16, and passing
+neutral/repeat and alpha/extent checks. The matched negative produced exact
+source pixels. Original-detail comparison did not show the closed ring seen
+on the earlier controlled fixture, but the effect was visually slight.
+Because the spatial oracle was corrected after output inspection, these are
+**exploratory diagnostics**, not a predeclared regional acceptance pass. A
+new independently frozen source and correctly mapped region are needed for
+that claim. This one-source, one-eye result does not qualify a stronger visual
+effect, bilateral admission, or general fullness recognition. The temporary
+diagnostics and media were not added to the repository.
+
 ## Same-colored non-skin objects
 
 | Source | Supported finding | Limit for this SDK |
