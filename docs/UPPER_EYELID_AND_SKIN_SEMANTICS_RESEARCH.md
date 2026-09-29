@@ -71,6 +71,21 @@ that claim. This one-source, one-eye result does not qualify a stronger visual
 effect, bilateral admission, or general fullness recognition. The temporary
 diagnostics and media were not added to the repository.
 
+A second independent 1254×1254 generated portrait (source SHA-256
+`f7cb05b48cc84913604f6e465c0b3670f43682d45c2a76b4bcb759ba8b1e0374`)
+visibly presented bilateral upper-lid fullness and admitted both eyes under
+unchanged live Vision (`5.31/8.39` central scores). The target/protected
+regions were fixed before any effect output. Two closely matched edits aimed
+at flatter lids remained **bilaterally admitted**: the first central scores
+rose to `8.86/12.08`, and the second remained `6.50/7.77`. The generation
+process also changed other image details, so this does not isolate a causal
+defect in the lid classifier. It does show that these visually flatter edits
+cannot serve as safe negatives for this acceptance pair. No effect output was
+viewed for this source and no production thresholds or gain were changed.
+Further source generation alone should not be counted as progress unless the
+source labels and matched negative are independently credible and the current
+semantic owner separates them before output.
+
 ## Same-colored non-skin objects
 
 | Source | Supported finding | Limit for this SDK |
