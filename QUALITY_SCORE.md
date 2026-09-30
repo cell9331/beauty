@@ -1,5 +1,22 @@
 # QUALITY_SCORE.md
 
+## 2026-09-30 upper-eyelid source and public-output probe
+
+A new generated flatter-lid candidate still admitted both eyes under live
+Vision (`4.28/4.40` central residual scores), so it was rejected as a safe
+negative before effect output. An exploratory public `processResult` probe
+paired an existing bilateral admitted positive with an independent zero-eye
+negative of another identity. Under regions and limits fixed before output,
+the positive changed 3,563/4,133 upper-lid pixels, zero outside or in alpha;
+the negative and neutral results were source exact, the repeat matched the
+first output, and maximum channel delta was 16. Original-detail inspection
+found no closed ring in that portrait but only a slight visible effect. The
+older controlled portrait still exhibits a closed ring, and the negative of
+another identity does not establish matched semantic discrimination. These
+observations do not qualify stronger visual quality or a production algorithm change. The
+temporary diagnostic tests were removed. Focused regression and boundary
+results for the restored tree are recorded in the active plan.
+
 ## 2026-09-29 evidence and visual-gate review
 
 The [primary-source review](docs/UPPER_EYELID_AND_SKIN_SEMANTICS_RESEARCH.md)

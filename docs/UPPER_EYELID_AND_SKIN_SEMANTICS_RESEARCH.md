@@ -86,6 +86,36 @@ Further source generation alone should not be counted as progress unless the
 source labels and matched negative are independently credible and the current
 semantic owner separates them before output.
 
+### Independent-negative check and bounded public probe (2026-09-30)
+
+A separately generated medium-deep-skin candidate prompted for thin, flatter
+upper lids (SHA-256
+`f942e1abda987dc50c401da25f345e19dc41610ed533687b630fbf8ffaa638e2`)
+still admitted both eyes under the unchanged live Vision path, with central
+residual scores `4.28/4.40`. The portrait retained a visible lid shelf, so it
+is not an unambiguous independent negative; it cannot close the failed matched
+negative check above. No effect output was evaluated for this candidate.
+
+For a narrower public-output probe, the previously admitted bilateral
+positive (`f7cb05b48cc84913604f6e465c0b3670f43682d45c2a76b4bcb759ba8b1e0374`)
+was paired with the independently generated zero-eye negative from the earlier
+single-eye investigation
+(`fabc4bac1fe5c71ac4adaef225501c847a913a3144ef8ce31003c6a4fded1f7b`).
+Before viewing output, both positive upper-lid regions and the remaining
+protected pixels were fixed, along with at least 100 changed pixels per eye,
+negative and protected-region source identity, maximum per-channel delta 16,
+neutral/repeat and alpha/extent identity, net darkening, and original-detail
+no-ring inspection. The unchanged public `processResult` changed `3,563` and
+`4,133` target pixels, zero outside, zero alpha and negative pixels, with
+maximum channel delta 16 and negative signed red sums on both sides. Neutral,
+repeat, and extent checks passed. Original-detail comparison showed no closed
+ring on this portrait, but the effect remained visually slight. The negative
+has a different identity and lighting, so this probe does not establish
+matched semantic discrimination. It also does not erase the earlier controlled
+portrait's visible ring. The temporary test was removed and generated media
+were never added to the repository; no production algorithm, threshold, or
+gain changed.
+
 ## Same-colored non-skin objects
 
 | Source | Supported finding | Limit for this SDK |
