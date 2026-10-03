@@ -39,10 +39,15 @@ Spike results and their original fixture outcomes remain historical.
   evidence; genuine photos are optional. Review output at original detail when
   the effect claim requires visual judgment.
 - The EasyPortrait Core ML port is research-only until the original data, checkpoint, conversion, and redistribution licenses are independently approved and pinned.
-- The spike-era recommendation to keep `去脂` future was superseded by the
-  owner's provisional owner-local API acceptance on 2026-08-25; future effect
-  work follows the current generated-image acceptance policy and fail-closed
-  implementation boundary.
+- Current `去脂` status is `suspended` (2026-10-01): default discovery/batches
+  hide it, while the scalar and explicit calls retain compatibility. Natural-
+  appearance effect qualification has failed. Do not treat the 2026-08-25
+  provisional acceptance or this spike recipe as a current effect claim or
+  instruction to continue research. Restart requires an explicit owner request
+  and a new testable approach under `docs/IMAGE_EFFECT_ACCEPTANCE.md`.
+- API compatibility, mechanical safety and effect qualification are separate
+  evidence categories. A luminance proxy does not establish eyelid fullness;
+  neither more tests nor safer output alone establishes useful effect.
 </requirements>
 
 <findings_index>
@@ -50,7 +55,7 @@ Spike results and their original fixture outcomes remain historical.
 
 | Area | Reference | Key Finding |
 | --- | --- | --- |
-| Upper-eyelid fullness | `references/upper-eyelid-fullness.md` | Preserve the tone/frequency safety lesson; owner-local provisional `去脂` now exists, and a future effect review may use qualified generated positives. |
+| Upper-eyelid fullness | `references/upper-eyelid-fullness.md` | Historical tone/frequency safety findings; current去脂 is suspended and hidden by default, with explicit API compatibility only. No automatic improvement task. |
 | Teeth whitening | `references/teeth-whitening.md` | Seeded adaptive growth improves side-tooth mechanics without dropping the fixed baseline, but licensed protected-tissue review remains mandatory. |
 | Sclera redness | `references/sclera-redness.md` | Guard each eye before scoring, feather then re-clip to the hard envelope, and verify the final transform with a color-adversarial oracle; generated positive/negative effect calibration is eligible. |
 | Still-image integration | `references/still-image-integration.md` | Normalize orientation/color once before Vision and rendering, detect once, fail locally, preserve hard containment, derive every accepted edit from the original pixel under one explicit mask owner, reject unexpected overlap, and use bounded—not topology-identical—cross-profile criteria. |

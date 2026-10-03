@@ -5,6 +5,19 @@ struct RenderCase {
     let id: String
     let displayName: String
     let parameters: BeautyParameters
+    let includedInDefaultBatch: Bool
+
+    init(
+        id: String,
+        displayName: String,
+        parameters: BeautyParameters,
+        includedInDefaultBatch: Bool = true
+    ) {
+        self.id = id
+        self.displayName = displayName
+        self.parameters = parameters
+        self.includedInDefaultBatch = includedInDefaultBatch
+    }
 }
 
 let cases = [
@@ -512,7 +525,8 @@ let cases = [
     RenderCase(
         id: "upperEyelidFullnessReduction_1p00",
         displayName: "upperEyelidFullnessReduction 1.00",
-        parameters: BeautyParameters(upperEyelidFullnessReduction: 1)
+        parameters: BeautyParameters(upperEyelidFullnessReduction: 1),
+        includedInDefaultBatch: false
     )
 ]
 

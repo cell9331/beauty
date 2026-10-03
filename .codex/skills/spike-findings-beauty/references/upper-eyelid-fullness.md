@@ -1,87 +1,46 @@
-# Upper-Eyelid Fullness
+# Upper-Eyelid Fullness: Current Boundary and Historical Findings
 
-Current policy: authorized generated portrait positives/negatives can satisfy
-owner-local effect acceptance; the genuine-photo requirement below was a 2026
-spike-era criterion and is superseded by `docs/IMAGE_EFFECT_ACCEPTANCE.md`.
+## Current disposition
 
-## Requirements
+`去脂` is `suspended` as of 2026-10-01. The SDK retains
+`upperEyelidFullnessReduction` and explicit calls for compatibility, but omits
+it from default renderer discovery/batches and recommended examples. Natural-
+appearance effect qualification has failed. See the repository's current
+`PLANS.md`, `docs/SDK_EFFECT_TAXONOMY.md` and
+`docs/UPPER_EYELID_AND_SKIN_SEMANTICS_RESEARCH.md` for the governing decision.
 
-- Treat `去脂` as upper-eyelid fullness reduction only.
-- Never implement it by forwarding to `eyeHeight`, `upperEyelidLift`, brow
-  movement, eye opening, global smoothing, eye-bag removal, or dark-circle
-  removal.
-- Keep work on still images and fail closed when paired eye/eyebrow support is
-  missing or the band is implausible.
-- For a new effect qualification, use authorized generated or genuine positive
-  and negative portraits with predeclared direction/protection checks and
-  original-detail review; a genuine-human source is optional.
+The retained mechanism performs bounded upper-lid luminance correction. Its
+brightness proxy does not reliably identify fullness on natural backgrounds;
+failed candidates that improve admission still lose most correction during
+reconstruction, while relaxing protection can reintroduce artifacts. These
+results reject the tried mechanisms, not every possible no-model method.
 
-## How to Build It
+## Rules for using this reference
 
-At the time of this spike there was no production `去脂` path. The owner later
-accepted a bounded provisional owner-local API; use current source and owner
-contracts as authority. The tone/frequency experiment below remains background
-for future improvement, and the invalidated warp remains rejected.
+- This reference creates no current implementation or training task. General
+  requests to continue do not restart去脂 development.
+- Keep explicit-call safety, zero-default compatibility and existing failure
+  behavior. Do not alias去脂 to eye opening, lid lifting, global smoothing,
+  eye-bag removal or dark-circle removal.
+- Raw landmarks, masks and pixels remain request-local and absent from
+  persisted/public diagnostics.
+- If the owner explicitly restarts the research, first define a new hypothesis,
+  applicable inputs, fixed positive/negative examples, independent effect and
+  protection criteria, and a stop condition. No learned or deterministic route
+  is preselected or promised to succeed.
+- Authorized generated portraits are eligible inputs. A failed suitable-source
+  effect test remains a failure; lack of genuine human photos is not the cause
+  or a mandatory blocker.
 
-1. Run one `VNDetectFaceLandmarksRequest` for the still image.
-2. Require at least four eye points and two eyebrow points per side.
-3. Form a support band strictly between the observed eye top and eyebrow
-   bottom. Reject a non-positive or very small gap.
-4. Feather horizontally and vertically so mask weight reaches zero at every
-   boundary.
-5. Estimate low-frequency luminance inside the band, move it toward the
-   weighted regional mean, and add the original high-frequency detail back.
-6. Preserve RGB geometry exactly. Measure texture-energy ratio, luminance
-   delta, maximum channel delta, and `changedOutsideMask`.
-7. Evaluate on licensed positives showing genuine upper-eyelid fullness and
-   negatives spanning eyelid crease types, makeup, blink, glasses, side pose,
-   expression, skin tone, and lighting. Require masked before/after human review.
+## Historical spike observations
 
-The tested support-band construction was:
+The 2026-07 tone/frequency prototype used eye/eyebrow geometry to bound a
+feathered band, altered low-frequency luminance and retained high-frequency
+detail. Texture-energy ratios of 0.9996 and 0.9866 with zero mask leakage showed
+those measured properties only; the fixtures did not prove the desired effect.
+The interior vertical warp produced ratios of 0.9305 and 0.9188 without a
+clearer fullness benefit and was rejected. These observations are not a
+current build recipe, parameter recommendation or qualification verdict.
 
-```swift
-let eyeTop = eye.map(\.y).min()!
-let eyeHeight = eye.map(\.y).max()! - eyeTop
-let browBottom = brow.map(\.y).max()!
-let gap = eyeTop - browBottom
-guard gap > max(2, eyeHeight * 0.15) else { failClosed() }
-
-let band = Band(
-    centerX: (eyeMinX + eyeMaxX) / 2,
-    radiusX: (eyeMaxX - eyeMinX) * 0.68,
-    top: browBottom + gap * 0.20,
-    bottom: eyeTop - gap * 0.05
-)
-```
-
-Treat these coefficients as spike seeds, not public constants. The experiment
-retained texture-energy ratios of 0.9996 and 0.9866 with zero mask leakage, but
-the fixtures did not prove the intended product semantic.
-
-## What to Avoid
-
-- Do not ship the tested interior vertical warp. It reduced texture-energy ratio
-  to 0.9305 and 0.9188 without a clearer fullness benefit.
-- Do not interpret eye/eyebrow landmarks as a fullness detector or diagnosis.
-- Do not use global smoothing or erase eyelid creases and natural skin detail.
-- Do not infer success from generated portraits that lack a convincing
-  target-bearing positive or an independent negative.
-- Do not expose the experimental band, landmarks, or masks in diagnostics.
-
-## Constraints
-
-- Apple Vision has eye and eyebrow geometry, not an upper-eyelid-fullness
-  semantic or a target surface.
-- Current findings cover still images only and authorize no SDK parameter.
-- The tone/frequency approach is `PARTIAL`; the tested warp is `INVALIDATED`.
-- A future learned path needs an owned or explicitly licensed dataset/model and
-  must demonstrate identity preservation, demographic robustness, naturalness,
-  cold-start cost, and device resource bounds.
-
-## Origin
-
-Synthesized from spikes: 001a, 001b
-
-Source files available in:
-`sources/001a-upper-lid-tone/`, `sources/001b-upper-lid-warp/`, and
-`sources/shared-retouch-lab/`.
+Original spike sources remain unchanged in `sources/001a-upper-lid-tone/`,
+`sources/001b-upper-lid-warp/` and `sources/shared-retouch-lab/`.

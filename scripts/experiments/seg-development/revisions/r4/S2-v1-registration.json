@@ -1,0 +1,11 @@
+{
+  "candidate": "S2-v1",
+  "candidate_sha256": "8b083b14860052bf534f1015f781c5f4fc3a9d2ea9fbba43bea9cb3a7dcd3ddc",
+  "input_freeze_sha256": "7aa9ef16a66b77dc21e3f79af2f109900b2ad5b1302c5afe0f2d4f1bfe37bcd5",
+  "method": 2,
+  "protocol_sha256": "5ed27a5749b18bee31a3a30296d9a6871057a07ade6de87c278c9d53936acc9d",
+  "reads_holdout_media": false,
+  "registered_before_evaluation": true,
+  "schema": "beauty.seg-development.registration.v1",
+  "version_within_method": 1
+}

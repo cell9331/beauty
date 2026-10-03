@@ -1176,6 +1176,12 @@ extension BeautyRendererOutputRegressionTests {
         let snippet = try rendererCaseSnippet(for: caseID, in: source)
         XCTAssertEqual(Self.expectedRendererCaseIDs.filter { $0 == caseID }.count, 1)
         XCTAssertTrue(snippet.contains("BeautyParameters(upperEyelidFullnessReduction: 1)"))
+        XCTAssertTrue(snippet.contains("includedInDefaultBatch: false"))
+        XCTAssertTrue(source.contains("includedInDefaultBatch: Bool = true"))
+        for otherCaseID in Self.expectedRendererCaseIDs where otherCaseID != caseID {
+            let otherSnippet = try rendererCaseSnippet(for: otherCaseID, in: source)
+            XCTAssertFalse(otherSnippet.contains("includedInDefaultBatch: false"), otherCaseID)
+        }
 
         for shipped in [
             "skinSmoothing_0p50", "eyeHeight_0p25", "upperEyelidLift_0p25",

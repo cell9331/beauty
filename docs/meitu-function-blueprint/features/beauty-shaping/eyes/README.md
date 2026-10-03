@@ -1,56 +1,31 @@
 # Beauty Shaping Branch: Eyes
 
-## Business Logic
+> Historical blueprint reference. Current effect status and scope are owned by [SDK_EFFECT_TAXONOMY.md](../../../../SDK_EFFECT_TAXONOMY.md). `去脂` is suspended and is not a pending completion requirement. Dated phase outcomes below retain their original scope; this page does not authorize new R&D.
 
-Eye tools include size, vertical position, eye height, length, distance, fat removal, muscle lift, pupil size, gaze correction, lower eyelid, tail lift, tilt, redness removal, inner/outer corners, and symmetry.
+## Current reading guide
 
-## Technical Core
+The SDK has fourteen independently named eye geometry controls and bounded
+still-image sclera redness reduction. See the current taxonomy for each row's
+actual scope and the root owners for its parameter and safety contracts.
 
-- SDK geometry supports size, distance, Y position, tail lift, height, length, upper/lower lid, pupil size, gaze correction, signed tilt, inner/outer corners, and symmetry.
-- Redness removal is color/region processing, not geometry only.
-- Pupil/gaze correction requires eye-region detection and stricter privacy/safety review.
-- Status: `partial`.
-- Primary owner: `BeautyEffects`.
-- Dependencies: `BeautyDetection` eye landmarks and `BeautyRender` unified warp output.
-- Current public `BeautyParameters` geometry coverage is exactly the four prior fields plus `eyeHeight`, `eyeLength`, `upperEyelidLift`, `pupilSize`, `gazeCorrection`, `lowerEyelidDrop`, signed `eyeTilt`, `innerCornerOpen`, `outerCornerOpen`, and `eyeSymmetry`.
-- Bounded SDK-core still-image `BeautyParameters.scleraRednessReduction` through public `BeautyEngine.apply` is implemented as product-facing `祛红血丝`; `去脂` remains future.
-- Evidence status: Phases 29-44 implement all fourteen geometry rows. Phases 62-64 establish independent sclera evidence/admission, guarded per-eye production, strict public output, bilateral protected-region adversarial proof, original-detail review, and canonical promotion. Phase 65 closes combined failure/privacy behavior and SAFE-06 named-sRGB facade/saved-PNG evidence. The current post-archive no-skip gate passes 650/650 with all eight opt-ins. Status remains `partial` solely because `去脂` is future.
+`去脂` is `suspended`. Its `upperEyelidFullnessReduction` field and explicit
+CLI case remain callable for compatibility; default renderer discovery and
+batches omit it. The mechanism corrects a bounded luminance signal and has not
+qualified natural-appearance fullness reduction. It is not pending routine
+parameter tuning, and a general request to continue does not restart it.
 
-## Boundary
+## Historical evidence map
 
-Do not persist eye landmarks or expose eye geometry in public debug output.
+- Phases 29–30 established public output and safety for `eyeSize`,
+  `eyeDistance`, `eyeYPosition` and `eyeTailLift`.
+- Phases 41–44 added the other ten geometry controls, their independent
+  contracts, observed support, provider transforms, output and failure checks.
+- Phases 62–65 established the separately scoped sclera evidence, per-eye
+  production, public output, protected regions and named-sRGB encoding.
+- Old branch-level `partial`, renderer inventories and Demo mappings describe
+  those snapshots only. They do not make去脂 a current unfinished milestone.
 
-## Phase 30 Existing-Parameter Closeout
-
-- `eyeSize` is positive-only `[0,1]` with exact effective cap `0.45`; `eyeTailLift` is positive-only `[0,1]` with exact cap `0.30`.
-- `eyeDistance` is signed `[-1,1]` with exact cap `0.30`; `eyeYPosition` is signed `[-1,1]` with exact cap `0.25`.
-- Both eyes are required. Missing either eye group skips the complete eye domain with `eye_inputs_missing`.
-- Reused and stale geometry also skip the complete eye domain with `eye_geometry_reused_skipped` and `eye_geometry_stale_skipped`; all four effective eye strengths become zero.
-- Warnings use fixed category-only messages and observability is aggregate-only. Raw eye geometry remains private and is neither persisted nor exposed by public diagnostics.
-- Implemented second-level rows are exactly `大小`, `上下`, `眼距`, and `眼尾上扬`. The eye branch remains partial because future tools still need separate neutral parameters/resources, safety design, and evidence.
-- Phase 29 public-facade renderer evidence is recorded in `29-EYE-RENDERER-EVIDENCE.md`; Phase 30 safety, degradation, combined, and boundary evidence is recorded in `30-EYE-SAFETY-EVIDENCE.md`.
-
-## Phase 44 Remaining-Geometry Closeout
-
-- Exactly ten independent geometry rows are added to the four prior implemented rows; `去脂` and `祛红血丝` remain future and branch `眼睛` remains `partial`.
-- Phase 41 owns scalar contract and observed support, Phase 42 owns provider transforms, Phase 43 owns public saved output, and Phase 44 owns final caps, fourteen-field degradation, 33-field/10.70 conflict arithmetic, 28-removal convergence, privacy, and boundary authorization.
-- This is SDK automated evidence, not physical-device parity, subjective naturalness, commercial approval, packaging, shipping, or launch readiness.
-
-## Phase 64 Sclera Redness Closeout
-
-- `祛红血丝` is implemented for the bounded SDK-core still-image
-  `BeautyParameters.scleraRednessReduction` route through public
-  `BeautyEngine.apply`.
-- Phase 62 independent evidence/admission and Phase 63 request-local per-eye
-  production integration are regression-preserved. Phase 64 standalone public-
-  facade output, bilateral protected-region adversarial proof, original-detail
-  review, zero-HIGH review/security, and fresh 637/0/0/8 no-skip authority are
-  carried by `64-TERMINAL-R2-SCLERA-OUTPUT-EVIDENCE.md`,
-  `64-TERMINAL-R2-REVIEW.md`, `64-TERMINAL-R2-CODE-REVIEW.md`,
-  `64-TERMINAL-R2-REVIEW-FIX.md`, `64-TERMINAL-R2-SECURITY.md`, and
-  `64-TERMINAL-R2-PRE-PROMOTION-VERIFICATION.md`. The later terminal R2
-  candidate and exact-six final transaction passed; canonical Phase 64 is
-  `passed`.
-- Renderer inventory is exactly 74, while the Demo row stays disabled and nil-
-  mapped. `去脂` remains future, so branch `眼睛` remains `partial`; Phase 65
-  closes SAFE-06 with named-sRGB facade and saved-PNG evidence.
+Current privacy rules keep eye landmarks request-local and out of persisted
+or public diagnostics. Historical evidence is indexed under
+[plans/history](../../../../../plans/history/README.md); no UI/Demo source is
+part of the active SDK-only build.

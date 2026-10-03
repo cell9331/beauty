@@ -1,5 +1,78 @@
 # DESIGN.md
 
+## 2026-10-01 suspended upper-eyelid discovery
+
+`upperEyelidFullnessReduction` remains a zero-default compatible stored/Codable
+field with its existing explicit still-image behavior. Its status is
+`suspended`: appearance remains unqualified and explicit compatibility is not
+effect qualification. The v1.25 automatic eyelid-tone and finite patch experiments
+were rejected and [closed as unmet](docs/RETOUCH_FINAL_DISPOSITION_2026-10-03.md).
+They add no runtime state or production behavior. No new integration should enable
+the suspended control by default; model/data/training work is not queued.
+The host-supplied exclusion mask retains its existing per-request ownership;
+no failed automatic result replaces or weakens an explicit mask.
+
+The renderer retains all 99 registered case identities but marks the single
+upper-eyelid case as excluded from its default batch. `--list-cases` and an
+invocation without `--case` use the same 98 default entries; explicit selection
+of the old case remains available for compatibility/diagnostics. Cleanup still
+recognizes all registered output names, so old hidden-case outputs cannot be
+mistaken for products of a new default run. No effect algorithm or API encoding
+changes as part of hiding the control.
+
+## 2026-10-01 constrained upper-eyelid correction
+
+The original box-filter/plane analyzer and its per-eye admission thresholds
+remain unchanged. Editing now derives its shape guide from a complete 3×3
+tent-filtered source neighborhood minus the existing fitted plane. The larger
+admission box no longer dictates the correction's shape: its support-truncated
+averaging can spread an off-center peak into a boundary that must stay exact.
+All source neighbors are read-only; proposals remain inside the approved eye.
+An incomplete 3×3 source neighborhood rejects that eye independently.
+
+For each supported pixel, the darkening allowance is the minimum of positive
+guided residual, positive original-luminance headroom above the plane, 16,
+and RGB headroom. A continuous full-strength marker subtracts this allowance
+times the existing Q16 feather from the guide. Eight-neighbor grayscale
+reconstruction raises the marker under the unchanged guide, backing off
+edit-created troughs while retaining the source's separating valleys.
+It never increases darkening. A deterministic descending priority queue
+finalizes each sample once. The same reconstructed correction is scaled by
+the requested strength, then encoded by choosing the nearest achievable Q16
+darkening from at most 17 integer targets. The target cannot exceed the floored
+unscaled source allowance, and its actual darkening cannot exceed the full
+reconstructed correction. Ties choose the smaller target; zero final change
+chooses zero. This fixed feasible set preserves monotonicity and the original
+full-strength pixel result without flooring two strength-scaled quantities.
+Uncapped final quantization error is at most half a byte; a binding safety cap
+can conservatively undershoot by more. Source RGB is never smoothed
+or warped, source channel differences and alpha are retained, and negative
+residuals are no longer brightened. Neutral/default/Codable behavior and the
+existing immutable-source composition owner remain unchanged.
+
+These fixes address the observed controlled-source rings, quantization and
+orientation/mirror contracts. Frozen natural inputs still exposed missed
+admission and insufficient reduction; relaxing reconstruction also restored
+undershoot/rings. A luminance residual cannot by itself identify tissue fat or
+anatomical shape. The retained bounded path is therefore compatible but
+suspended, with no claim that every no-model method is impossible.
+
+This replaces the former 1.8 gain and self-scored half-strength improvement
+target. Tests use source-defined dome/flat differences, a nonzero improvement
+floor, no undershoot or radial valley, and strength monotonicity. The numerical
+bound is relative to an estimated plane, not anatomical volume; independent
+pixel and original-detail checks are still necessary. A ridge continuing
+through the support boundary may correctly remain unchanged.
+
+The testing SPI can invoke the public metadata-bearing still-image entry and
+observe the canonical input metadata under the existing hook locks. Prepare,
+begin and reset clear that observation. It contains no pixels or geometry and
+is not a new production diagnostic. The orientation oracle uses independent
+integer storage permutations; the live Vision oracle constructs known source
+targets from source-only geometry, then calls the unmodified public engine
+with fresh real detection. It does not inject the construction geometry into
+the processing request or add a host calibration API.
+
 ## 2026-09-29 skin-texture exclusion contract
 
 An optional `BeautyTextureExclusionMask` contains one binary byte per pixel
@@ -11,6 +84,20 @@ excluded pixel is source-exact for the texture stage; later independently
 requested color or geometry effects may still affect it. Unmasked calls keep
 their previous route and output. Width, height and byte values are validated;
 mask dimensions must equal canonical output dimensions.
+
+The [frozen 2026-10-03 semantic probe](docs/TEXTURE_SEMANTIC_FEASIBILITY_2026-10-03.md)
+rejected a test-only periodicity veto; no automatic candidate entered this
+contract. Equal full observable inputs cannot guarantee conflicting skin-change
+and object-preservation outputs. General unmasked object identification is
+paused. Coarse feature guards also missed a low-contrast lip edge outside the
+face-relative lip zone; an owner mask must include such known protected pixels.
+The mask does not infer their material or anatomical meaning.
+
+The [host integration guide](docs/HOST_TEXTURE_PROTECTION.md) describes the
+object + critical-feature union, canonical grid and memory-bounded call.
+The new regression verifies that union without modifying the original failed
+object-only probe. Unmarked pixels match the no-mask texture baseline; masks
+remain request-local across orientation, PNG and subsequent requests.
 
 ## 2026-09-28 source-qualified still-image geometry
 
@@ -408,18 +495,14 @@ fails, rather than changing the image to `.up`.
 At this audit date, `maximumInputByteCount` was a retained Codable field with
 no encoded-input entry; the 2026-09-26 contract above supersedes that state.
 
-## v1.24 owner-local upper-eyelid relief adjustment (2026-09-24)
+## Historical upper-eyelid gain adjustment (2026-09-24)
 
-The pre-edit [v1.24 contract](.planning/V1.24-UPPER-EYELID-CURRENT.md)
-freezes a half-strength source/composed convexity comparison and protected
-regions. The existing `BeautyExperimentalUpperEyelidReliefEditor` changes only
-its source-derived scalar compression gain from `1.5` to `1.8`; the support
-analyzer, `3.5` applicability threshold, per-eye ownership, `±16` channel cap,
-Q16 feather, and immutable-source composition remain. On the fixed generated
-positive, the central score ratio changes from `0.4537424` to `0.3422654` at
-strength `0.5`, with no public parameter, preset, facade, backend, geometry, or
-model change. The v1.19 candidate-v4 values below describe their historical
-snapshot; they do not measure current genuine-portrait visual quality.
+v1.24 changed the earlier gain from `1.5` to `1.8` and improved its fixed
+half-strength self-score. That formula was superseded by the constrained
+correction above; the score did not establish natural-image quality. The
+original values and evidence are preserved in the
+[technical history](docs/history/upper-eyelid-technical-history-2026-10-01.md).
+This is a historical experiment, not a current gain or optimization command.
 
 ## Observed root placement and raster seam repair (2026-09-23)
 
@@ -720,22 +803,20 @@ dated descriptions of face-free texture describe the pre-repair behavior.
 
 ## Current Post-Archive Audit Status
 
-The 2026-09-27 provisional upper-eyelid source-relief gate accepts either
-central mean convexity at least 3.5, or a localized convexity pattern with
-nonnegative central mean, central upper-quartile residual at least 8, and at
-least 35% of central samples above 3.5. The existing per-eye semantic
-approval, Q16 feather, immutable-source correction and ±16 channel ceiling
-still apply. A generated mixed-lighting positive passes the localized path;
-planar lighting and fine-crease negatives remain rejected.
+The retained upper-eyelid analyzer accepts central mean residual at least
+`3.5`, or a localized pattern with nonnegative central mean, upper-quartile
+residual at least `8`, and at least `35%` of central samples at or above `3.5`.
+These are fixed image-space admission heuristics inside independent per-eye
+support, not a tissue-volume test or a promise of visible reduction. The
+original plane analyzer and the constrained editor above remain the explicit
+compatibility implementation; the control is `suspended` and default-hidden.
 
-v1.21 extends the current public snapshot with the positive-only trailing field
-`upperEyelidFullnessReduction`. The owner accepts the existing bounded v4
-source-derived relief behavior as provisional while recording weak visual
-quality for future optimization. The public value is default-zero, finite
-clamped to `0...1`, non-finite-to-zero, Codable-compatible, and still-image
-only. It does not activate the package-only learned predictor seam.
-The final archive-first no-skip gate passed `816/0/0`, all eight opt-ins exactly
-once, with zero skips.
+`upperEyelidFullnessReduction` remains default-zero, finite-clamped to `0...1`,
+non-finite-to-zero, Codable-compatible and still-image only. It does not call
+the dormant learned predictor. The v1.21 provisional acceptance and historical
+`816/0/0` gate are retained in the
+[technical history](docs/history/upper-eyelid-technical-history-2026-10-01.md);
+they do not require further optimization or override the suspension.
 
 The v1.17 archive at `afb04b4` retains its historical Phase-74 focused
 `12/0/0` and full `765/0/0` package-host evidence. The current tree has since
@@ -853,7 +934,7 @@ public struct BeautyParameters: Codable, Equatable, Sendable
 | Skin | `skinSmoothing`, `skinWhitening`, `skinRosy`, `skinSharpen` | `0.0...1.0` |
 | Color | `brightness`, `contrast`, `saturation`, `temperature`, `tint`, `exposure`, `highlight`, `shadow` | mixed |
 | Face and head | `faceSlim`, `faceSmall`, `faceVShape`, `jawSlim`, `chinLength`, `faceContourSmooth`, `templeFullness`, `cheekboneSlim`, `chinTaper`; `wholeFaceYPosition`, `wholeFaceXPosition`, `wholeFaceTilt`, `faceShortening`, `foreheadHeight`, `midfaceLength`, `philtrumLength`, `lowerFaceLength`, `headSmall`, `headWrap`, `cranialCrownHeight`, `hairlineHeight`, `wholeFaceSymmetry`, `doubleChinReduction`, `doubleChinReductionPro` | mixed signed and positive-only fields; individual caps are defined by normalization and effect contracts |
-| Eyes | shipped `eyeSize`, `eyeTailLift`: `[0, 1]`; shipped `eyeDistance`, `eyeYPosition`: `[-1, 1]`; `eyeHeight`, `eyeLength`, `upperEyelidLift`, `pupilSize`, `gazeCorrection`, `lowerEyelidDrop`, `innerCornerOpen`, `outerCornerOpen`, `eyeSymmetry`, provisional `upperEyelidFullnessReduction`: `[0, 1]`; `eyeTilt`: `[-1, 1]` | default-zero independent scalars; one signed field |
+| Eyes | shipped `eyeSize`, `eyeTailLift`: `[0, 1]`; shipped `eyeDistance`, `eyeYPosition`: `[-1, 1]`; `eyeHeight`, `eyeLength`, `upperEyelidLift`, `pupilSize`, `gazeCorrection`, `lowerEyelidDrop`, `innerCornerOpen`, `outerCornerOpen`, `eyeSymmetry`, suspended explicit-only `upperEyelidFullnessReduction`: `[0, 1]`; `eyeTilt`: `[-1, 1]` | default-zero independent scalars; one signed field |
 | Nose | `noseSlim`, `noseWingSlim`, signed `noseTipSize`, `noseBridge`, `noseRootNarrowing`, `noseTipLift` | legacy mixed + new positive-only `0...1` |
 | Mouth/local retouch | `mouthSize`, `mouthWidth`, `smile`, `mouthYPosition`, `mouthTilt`, `mouthXPosition`, `lipPeakDefinition`, `lipPlump`, `lipColor`, `teethWhitening`; eye-local `scleraRednessReduction` and `upperEyelidFullnessReduction` | mixed geometry/color plus positive-only local retouch |
 | Filter | `filterId`, `filterIntensity` | ID + `0.0...1.0` |
@@ -927,75 +1008,42 @@ Phase 28 completion evidence covers the existing Face Shape fields only: `faceSl
 - `BeautyFaceGeometryAdapter` validates each canonical side independently as an exact-bit-unique finite closed-unit open path with **4...16** points, face-relative endpoint chord **0.08...0.50**, vertical span at most **0.25**, no non-adjacent segment intersection, and projection epsilon **0.000001**. A semantic trace preserves exact canonical points, inner/outer endpoints, arithmetic center, and only a unique interior apex above epsilon; apex is optional and not Phase 49 provider eligibility. `BeautyEyebrowSemanticSupport.left/right` remain independent optionals and `pairEligible` is true only when both distinct sides survive.
 - Raw `BeautyObservedEyebrowSupport` and derived `BeautyEyebrowSemanticSupport` are immutable, package/internal, non-Codable, request-scoped values attached as `observedEyebrowSupport` on the observation and `FaceGeometry`. Phase 49 keeps every new scalar inert: no face-geometry trigger, effective strength, provider, resolver/conflict case, facade route, render/output/gallery case, Demo/UI behavior, or row promotion exists. Phase 50 owns provider and routing behavior; Phases 51-52 own output and safety/promotion.
 
-### v1.18 Phase 76 Per-Eye Semantic Support Boundary
+### Retained Upper-Eyelid Support and Composition Boundary
 
-- `BeautyUpperEyelidSemanticRequest` consumes one already-selected immutable
-  `BeautyFaceObservation` and an already-mapped image-normalized eye envelope.
-  The semantic owner never performs coordinate conversion and never treats
-  landmarks, brow geometry, aperture, crease, texture, or color as fullness
-  authority.
-- A package-only injected semantic owner must explicitly approve each eye. The
-  owner validates finite dimensions/confidence, hard containment, unique
-  in-bounds pixel ownership, and pose/occlusion rejection before returning
-  independent `.supported` or `.sourceExactNoOp` outcomes. Left and right
-  state cannot authorize, suppress, or retain the peer.
-- `VisionFaceDetector.detectWithUpperEyelidSupport` calls the existing detector
-  once, selects the first mapped observation, and calls the semantic owner once.
-  The existing `CoordinateMapper` remains the sole orientation/mirror boundary;
-  no public field, route, renderer case, preset, resource, or persistent raw
-  support surface is created. Phase 77 owns any downstream editor decision.
+- `BeautyUpperEyelidSemanticRequest` consumes one selected immutable
+  `BeautyFaceObservation` and mapped image-normalized eye/brow support. The
+  existing `CoordinateMapper` owns orientation/mirroring. Landmarks constrain
+  the permitted region; they do not identify tissue fullness.
+- The semantic owner validates each eye independently: finite dimensions and
+  confidence, a plausible brow-to-lid gap, hard containment, unique in-bounds
+  pixels, bounded Q16 weights and pose/occlusion rejection. A rejected eye
+  cannot authorize or suppress its peer. The existing source-relief analyzer
+  supplies only a brightness-proxy approval.
+- `VisionFaceDetector.detectWithUpperEyelidSupport` reuses the existing detector
+  and one selected mapped observation. Raw support remains package-only and
+  request-local. No extra detector, coordinate mapper or persisted support is
+  introduced by explicit compatibility calls.
+- `BeautyExperimentalUpperEyelidReliefEditor` emits bounded Q16 proposals and
+  aggregate summaries. `BeautyLocalRetouchCompositionOwner` remains the sole
+  owner of immutable-source binding, hard containment, protected/exterior
+  bytes, alpha/metadata and collision-to-source composition.
 
-### v1.18 Phase 77 Deterministic Fullness Editor Boundary
+### Historical v1.18 Decision Boundary
 
-- The retained historical implementation is now named
-  `BeautyExperimentalUpperEyelidReliefEditor`. At Phase 77 it consumed the Phase 76
-  per-eye support resolution plus a canonical RGBA8 source. It computes a
-  deterministic 3x3 low-frequency box average, applies a bounded additive RGB
-  correction, and carries the exact source-minus-low-frequency residual into
-  the corrected result; alpha, extent, orientation, mirror, and color metadata
-  remain source-owned.
-- The editor emits only request-local aggregate summaries and Q16 proposals.
-  Neutral strength, invalid source/support, and unsupported eyes are typed
-  outcomes. `BeautyLocalRetouchCompositionOwner` remains the sole owner of
-  source binding, hard containment, protected/exterior pixels, overlap-to-
-  source collision handling, and final output units.
-- Phase 77 adds no public parameter, preset, renderer case, facade route,
-  model, resource, or genuine efficacy claim. It proves deterministic SDK
-  mechanics only; Phase 78 owns rights-approved evaluation and promotion.
+Phases 77–79 evaluated earlier deterministic mechanics and recorded
+`mechanics-only-not-promotion`, with no public upper-eyelid field at that time
+and an archived `61/5/74` inventory. Their old editor formula, optional comparator
+and future phase assignments are not current implementation requirements.
+The archived decision remains immutable and is checked only as historical
+binding. Details and original evidence links are in the
+[technical history](docs/history/upper-eyelid-technical-history-2026-10-01.md).
 
-### v1.18 Phase 78 Candidate Decision Boundary
+### Suspended Upper-Eyelid Explicit Compatibility Contract
 
-- Phase 78 invokes the frozen Phase 75 evaluator as a child-process authority;
-  it does not duplicate or weaken manifest, rights, category, hash, metric, or
-  review admission. Missing, incomplete, malformed, rights-invalid, and
-  metadata-only evidence remain fail-closed outcomes.
-- The deterministic Phase 77 editor is the baseline mechanics candidate. An
-  optional additive-map comparator requires exact model/data/redistribution
-  approval, bounded additive output, all safety gates, and material superiority
-  before it can be admitted. No comparator is admitted in the current state.
-- The only durable decision is an aggregate report containing hashes, opaque
-  fixture IDs, counts/metrics, normalized reasons, candidate dispositions, and
-  one recommendation. With no rights-approved private bundle present, the
-  recommendation is `mechanics-only-not-promotion`; public activation remains
-  owned by Phase 79.
-
-### v1.18 Phase 79 Failing Product Branch
-
-- Phase 79 consumes `mechanics-only-not-promotion` and intentionally materializes
-  no public field, renderer case, preset, facade route, resource, package
-  dependency, or Testing SPI. The existing 61/5/74 surface is the complete
-  public contract, while the package-only mechanics remain non-authorizing.
-- The failing branch retains the CPU oracle, selected GPU route and terminal
-  `.metalUnavailable` behavior, canonical extent/orientation/mirror and named
-  sRGB metadata, exact alpha, deterministic request-local isolation, and the
-  unchanged `Warp.metal`. Genuine evidence and device/product claims remain
-  outside this SDK-only closeout.
-
-### v1.21 Provisional Upper-Eyelid Public Contract
-
-- The v1.18 branch above remains historical. v1.21 adds the trailing public
-  `Float` field `upperEyelidFullnessReduction`; zero/missing/non-finite input is
+- v1.21 introduced the public `Float` field `upperEyelidFullnessReduction`.
+  It remains in the current 77-field inventory: zero/missing/non-finite input is
   neutral, finite input clamps to `0...1`, and older payloads decode unchanged.
+  The 99-case registry retains its explicit identity; 98 default cases omit it.
 - Positive still-image intent enters `localRetouchAdmission`, canonicalizes and
   maps once, derives per-eye brow-to-lid support from the selected observation,
   runs the existing source-derived relief analyzer/editor, and contributes
@@ -1003,19 +1051,22 @@ Phase 28 completion evidence covers the existing Face Shape fields only: `faceSl
 - The analyzer's `convexityResidual` is blurred source luminance minus a fitted
   illumination plane. Its `isFullnessSupported` name is a request-local image
   admission heuristic, not a measurement of upper-lid tissue volume. Eye/brow
-  landmarks constrain location only. The current visual no-worsening gate remains
-  open after a generated positive showed closed rings despite numeric direction
-  and containment checks; see the
+  landmarks constrain location only. A generated positive showed closed rings
+  despite numeric direction and containment checks; the 2026-10-01 constrained
+  repair above clears that counterexample using independent pixel and visual
+  checks, while broader morphological discrimination remains unqualified. See the
   [primary-source review](docs/UPPER_EYELID_AND_SKIN_SEMANTICS_RESEARCH.md).
 - Missing face, missing/malformed/ambiguous support, low confidence, unsupported
-  relief, invalid source, collisions, and rejected units remain source-exact at
-  the smallest owned unit. Alpha, extent, metadata, determinism, and protected
-  exterior pixels stay under existing output contracts.
-- Internal `BeautyExperimentalUpperEyelid*` names remain to record provenance
-  and the known weak result. Owner acceptance permits current owner-local use;
-  it is not a new blinded-review, learned-model, device, commercial-quality, or
-  distribution claim. Future internal replacement must retain the public
-  neutral/Codable/fail-closed semantics.
+  relief, collisions, and rejected units remain source-exact at the smallest
+  owned unit. Public input admission errors retain their typed failures rather
+  than being reclassified as successful no-ops. Alpha, extent, metadata,
+  determinism and protected exterior pixels stay under existing output contracts.
+- Internal `BeautyExperimentalUpperEyelid*` names and the existing neutral,
+  Codable and fail-closed contracts remain for compatibility. The 2026-10-01
+  suspension supersedes the earlier provisional acceptance. Natural-image
+  effects are unqualified, and data/model/training work is paused. These facts
+  neither select a mandatory learned replacement nor prove no-model methods
+  impossible; reopening requires an explicit owner request.
 
 ### Phase 50 Independent Eyebrow Geometry Contract
 
@@ -1662,9 +1713,9 @@ These are known future design areas, not current first-version requirements:
 
 ### v1.15 Phase 59 Teeth Evidence Admission Boundary
 
-- The Phase 54 serializer is the decision authority and its canonical `teeth_whitening` row is open at exactly two eligible, reviewed, and accepted rows, zero rejected rows, and naturalness weight two. Sclera redness and upper-eyelid fullness remain independently closed; the mechanics-only candidate has zero product/admission weight.
+- The Phase 54 serializer is the decision authority and its canonical `teeth_whitening` row is open at exactly two eligible, reviewed, and accepted rows, zero rejected rows, and naturalness weight two. At that Phase 59 snapshot, sclera redness and upper-eyelid fullness were independently closed; the mechanics-only candidate has zero product/admission weight.
 - `BeautyParameters` has exactly 60 stored/CodingKey/initializer fields: 59 `Float` values plus optional `filterId`. The trailing `teethWhitening` scalar defaults to zero, decodes a missing legacy key as zero, normalizes non-finite and negative input to zero, and clamps finite positive input to `0...1`.
-- `BeautyEffectResolver.localRetouchAdmission(parameters:)` is the sole seam. Only direct `normalized.teethWhitening > 0` creates one feature-neutral `opaqueDemandCount: 1`; zero, missing, non-finite, global color, lip, geometry, Testing, alias, sibling, and `去脂` inputs create none.
+- `BeautyEffectResolver.localRetouchAdmission(parameters:)` is the sole seam. Only direct `normalized.teethWhitening > 0` creates one feature-neutral `opaqueDemandCount: 1`; zero, missing, non-finite, global color, lip, geometry, Testing, alias, sibling, and `去脂` inputs created none in that Phase 59 snapshot.
 - Compatibility remains exactly five byte-stable presets that decode teeth intent to zero, 72 renderer cases with no local-retouch case, and three disabled Demo taxonomy rows with nil control mappings.
 - Phase 59 admits intent only. It defines no provider, mask owner, transform, renderer/output behavior, Demo activation, realtime/pixel-buffer route, model/network path, sclera surface, or `去脂` proxy. Phase 60 owns provider integration and Phase 61 owns public-output/safety closeout.
 
@@ -1721,8 +1772,8 @@ Command-level evidence is recorded in [Phase 60 verification](.planning/mileston
   realtime route, or Demo mapping.
 - Product status changes exactly once: `嘴唇 | 白牙` and aggregate branch `嘴唇`
   are `implemented` at bounded SDK-core still-image scope. `眼睛` remains
-  `partial`; `祛红血丝` and `去脂` remain `future`; all three local-retouch Demo
-  rows remain disabled with nil mappings.
+  `partial`; `祛红血丝` and `去脂` were `future` in this Phase 61 snapshot, with
+  all three historical local-retouch Demo rows disabled and nil-mapped.
 - Compatibility is exactly 60 stored/CodingKey/initializer fields, five neutral
   presets, and 73 renderer cases. This status makes no population, realtime,
   device/performance, commercial, packaging, shipping, launch, or release-
@@ -1734,7 +1785,7 @@ Command-level evidence is recorded in [Phase 61 output evidence](.planning/miles
 
 - Phase 54 serialization independently holds teeth and sclera open at exact
   `2/2/2/0/2` decisions with two fixed reviews apiece; upper-eyelid fullness
-  remains exact closed. Teeth, mechanics and `去脂` contribute no sclera weight.
+  was exact closed at Phase 62. Teeth, mechanics and `去脂` contributed no sclera weight.
 - `BeautyParameters` now has exactly 61 stored/CodingKey/initializer fields:
   60 `Float` values plus optional `filterId`. The trailing
   `scleraRednessReduction` value defaults and missing-key decodes to zero,
@@ -1743,7 +1794,8 @@ Command-level evidence is recorded in [Phase 61 output evidence](.planning/miles
 - `BeautyEffectResolver.localRetouchAdmission(parameters:)` normalizes once.
   Direct positive teeth and sclera values independently add one feature-neutral
   opaque demand, yielding exact cardinalities `0/1/1/2`; aliases, global
-  effects, geometry, Testing names, Demo labels and `去脂` cannot contribute.
+  effects, geometry, Testing names, Demo labels and `去脂` contributed none in
+  the Phase 62 snapshot; this is not the current explicit-compatibility inventory.
 - Any nonempty demand count still owns one canonical still-image request.
   Sclera-only intent has no provider, support, mask, transform, composition
   unit or visible output; both intents preserve the existing teeth output.
@@ -1813,8 +1865,8 @@ Command-level evidence is recorded in [Phase 63 verification](.planning/mileston
   `BeautyEngine.apply` therefore records product-facing `祛红血丝` as
   implemented.
 - SCLERA-14 through SCLERA-18 and OUT-05 have fresh promotion-pending evidence;
-  aggregate branch `眼睛` remains `partial` solely because `去脂` remains
-  `future`. Both local-retouch eye rows stay disabled and nil-mapped in the
+  aggregate branch `眼睛` was then `partial` because `去脂` was `future`.
+  Both local-retouch eye rows were disabled and nil-mapped in the historical
   Demo. This is promotion pending terminal candidate/final verification;
   canonical `64-VERIFICATION.md` remains `gaps_found` until that bounded
   transaction completes.
@@ -1861,8 +1913,9 @@ release: non-release
   opaque-alpha policy.
 - Compatibility is exactly 61 public fields, five neutral presets, 74 renderer
   cases and three disabled nil-mapped Demo rows. `白牙` and `祛红血丝` are
-  bounded SDK-core still-image implementations; aggregate `眼睛` remains
-  `partial` solely because `去脂` remains `future`.
+  bounded SDK-core still-image implementations; the archived Phase 65
+  `眼睛: partial` / `去脂: future` status is a historical receipt, not the
+  current suspended compatibility disposition.
 - No realtime/pixel-buffer local retouch, public anatomy, model/network,
   active Demo route, device/performance/commercial approval, packaging,
   shipping, launch or release-readiness contract is added.
@@ -2070,126 +2123,35 @@ shared-instance parallel safety. No UI/Demo, device,
 performance, commercial,
 packaging, shipping, launch, or release-readiness behavior is added.
 
-## v1.19 Phase 80 Candidate-v3 Remediation Contract
+## Historical v1.19 Upper-Eyelid Candidates
 
-Candidate v1 is frozen as a failed qualification attempt. Candidate v2 changes
-the support geometry successfully but is also frozen after its real-image
-automated run exposed sign-flipping adjacent corrections and insufficient
-texture retention. Candidate v3 changes only the package-level editor while
-exact 61/5/74 public absence remains in force.
+Candidate v2 introduced the retained brow-to-lid containment and elliptical
+Q16 ceiling, but its historical image evaluation failed adjacent continuity
+and texture bounds. Candidate v3's uniform darkening passed bounded mechanics
+without perceptible reduction; candidate v4's gain-based relief correction
+also failed its frozen applicability, continuity and minimum-effect checks.
+Those old formulas and qualification commands are superseded, not alternate
+active paths. Their evidence, including the generated/private distinction, is
+preserved in the [technical history](docs/history/upper-eyelid-technical-history-2026-10-01.md).
 
-`BeautyUpperEyelidSemanticSupportOwner` now requires a valid mapped eye and the
-same-side mapped eyebrow before it creates a semantic request. The permitted
-envelope is strictly inside the plausible brow-to-eye gap: it excludes the brow,
-eye aperture, lash line, and pixels outside a horizontally expanded per-eye
-band. Missing eyebrow support, a crossed/too-small/too-large gap, insufficient
-overlap, malformed dimensions, or ambiguous side order fails closed per eye.
-Landmarks still constrain only; the independently injected semantic owner must
-approve or reject each eye.
+The 2026-08-25 learned-hybrid proposal was canceled before data/model execution
+beyond a validation seam. It is historical design material, not a chosen
+future editor, a requirement to acquire training data, or proof that a learned
+model would solve the effect. Current R&D remains suspended.
 
-The candidate-v2 support redesign is retained. An approved support is a unique list of request-local pixel indices paired with
-Q16 soft ownership. Every weight is bounded by an elliptical smoothstep ceiling
-computed from the approved hard envelope, so ownership approaches zero at all
-boundaries and cannot reproduce candidate v1's full-weight rectangle.
+## Retained Inactive Upper-Eyelid Prediction Validator
 
-Candidate v3 replaces candidate v2's independently signed per-pixel
-low-frequency corrections with one request-local negative contour correction
-per approved eye. At strength `1`, the contour center is bounded to `-10`
-sRGB8 values and remains inside the existing absolute `16` safety cap; the
-minimum source channel across the entire accepted support provides one shared
-clipping bound, so every pixel receives the same pre-feather RGB delta. The
-existing Q16 ellipse alone controls spatial falloff. This preserves source
-spatial detail and channel differences before composition, prevents adjacent
-positive/negative correction flips, and reaches immutable source smoothly at
-every curved boundary. Alpha, extent, metadata, immutable-original composition,
-and collision-to-source rules remain unchanged.
-
-This is a new mechanics baseline, not genuine qualification or public
-activation. Phase-80 candidate-v3 qualification must freeze its source/test
-binding and conditional negative/no-request metric applicability before
-inspecting new private outcomes.
-
-## v1.19 Phase 80 Candidate-v4 Relief-Flattening Contract
-
-Candidate v3 is terminal: its uniform negative contour passed automated safety
-rows but the first genuine positive review found no perceptible fullness
-reduction. Candidate v4 therefore treats `去脂` as low-frequency upper-eyelid
-relief flattening, not regional darkening. It does not move the brow, eye
-contour, aperture, lash line, or crease and does not invoke smoothing, eye-bag,
-dark-circle, geometry, warp, Metal, or public-effect routes.
-
-For each independently approved brow-to-lid support, the editor computes a
-support-local box-filtered luminance field. Low-weight feather-boundary samples
-fit an affine illumination plane, which removes global horizontal/vertical
-lighting gradients from the semantic decision. A request is applicable only
-when the high-weight center has a positive mean convexity residual of at least
-`3.5` sRGB8 luminance values. Planar lighting, fine crease detail, malformed
-support, and an unsupported peer remain typed source-exact no-ops.
-
-At active strength the editor applies `-1.5 * residual * strength`, rounded
-deterministically and clipped to `±16` and all-channel sRGB8 headroom. The same
-scalar is applied to R, G, and B, preserving channel differences and source
-high-frequency detail before the existing Q16 elliptical feather returns the
-result to immutable source pixels. Corrections vary spatially with relief;
-generated tests reject the v3 single-value contour, require central convexity
-to fall below `55%` of its source score, and retain existing metadata, alpha,
-containment, collision-to-source, determinism, and protected-region contracts.
-
-This generated baseline proved mechanics only. Candidate-v4 source and tests
-were independently frozen before private v4 output was generated; the later
-genuine automation failed before human review and made the candidate terminal.
-
-## v1.19 Phase 80 Learned-Hybrid Decision
-
-The owner deferred `去脂` on 2026-08-25 before data/model execution. The design
-below is retained as an unimplemented future option; Plan 80-20's package-only
-fail-closed seam and experimental mechanics remain, while Plans 80-21/22,
-training, resources, public API, and activation are canceled.
-
-Candidate v4 is terminal after repeatable private automated applicability,
-boundary-continuity, and minimum-relief failures. Candidates v1-v4 jointly
-reject another handcrafted tone/frequency retune: the rules either produce a
-tone artifact, fail negative ownership, overshoot, or do not create a clearly
-visible fullness reduction.
-
-The adopted future editor is one fixed-shape per-eye learned prediction with
-four outputs: calibrated applicability/uncertainty, soft target alpha, bounded
-two-channel upper-lid soft-tissue flow, and bounded one-channel low-frequency
-log-luminance residual. Vision eye/brow geometry owns crop normalization and
-hard containment only. Strength scales both admitted flow and tone; strength
-zero is byte-exact identity. Runtime resamples immutable source texture with
-the bounded flow, applies the smooth tone residual while retaining source
-high-frequency detail, and composes once against immutable source pixels.
-
-Flow is exactly zero in eye aperture, lash, iris, pupil, sclera, brow,
-protected crease, exterior, overlap, and feather-boundary pixels. Its mapped
-magnitude, gradients, and positive local Jacobian are versioned safety gates.
-Generic warp, landmark-driven warp, eye opening, brow movement, smoothing, and
-full-RGB generation remain prohibited. The model is unavailable by default and
-no proposal exists unless one actual-use-authorized, checksum-pinned Core ML
-candidate passes source/conversion parity plus private automated and blinded
-review gates.
-
-The current eight-fixture private bundle is a holdout only. Training requires
-separate identity-disjoint paired data whose subject/image, ML-training,
-retouched-derivative, target-author, retention, and local derived-model rights
-cover the actual owner-only use. Compiled-weight redistribution permission is
-not required because redistribution is prohibited; research-only data and its
-derived model must remain in a separated non-commercial research lane.
-Without suitable data and exact fullness targets, implementation stops after
-the package-only fail-closed prediction seam and `去脂` remains future with
-exact 61/5/74 public absence. The complete design is
-[`80-LEARNED-HYBRID-DECISION.md`](.planning/milestones/v1.19-phases/80-genuine-evidence-and-qualification-gate/80-LEARNED-HYBRID-DECISION.md).
-
-Plan 80-20 implements that stop boundary. `BeautyUpperEyelidFullnessPredicting`
-has no registered implementation. Its package-only request/result validator
-requires canonical source layout, finite in-bounds containment, unique support,
-protected/support separation, exact side/sample ownership, applicability
-confidence `>= 0.80`, uncertainty `<= 0.20`, feather weights `<= 4096` to carry
-exact zero alpha/flow/tone, displacement magnitude `<= 2%` of the smaller image
-dimension, adjacent flow delta `<= 0.75` source pixel, tone magnitude `<= 0.08`,
-adjacent tone delta `<= 0.04`, and local Jacobian determinant `>= 0.25`. Invalid
-or absent inference produces an aggregate per-eye rejection and no proposal.
+`BeautyUpperEyelidFullnessPredicting` has no registered implementation and is
+not used by the explicit public compatibility route. Its package-only validator
+still requires canonical source layout, finite in-bounds containment, unique
+support, protected/support separation and exact side/sample ownership.
+It validates confidence `>= 0.80`, uncertainty `<= 0.20`, exact zero alpha/flow/tone
+at feather weights `<= 4096`, displacement magnitude `<= 2%` of the smaller
+image dimension, adjacent flow delta `<= 0.75` source pixel, tone magnitude
+`<= 0.08`, adjacent tone delta `<= 0.04`, and local Jacobian determinant `>= 0.25`.
+Invalid or absent inference returns aggregate per-eye rejection and no proposal.
+These retained safety checks do not register a model, imply current inference,
+or authorize data, training, weights or resource work.
 
 ## Phase 90 Chin Repair and Contour Deferral Design Contract
 

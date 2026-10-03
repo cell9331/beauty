@@ -1,6 +1,8 @@
 # Example Image Validation
 
-This is the local visual-output gate for current public-facade renderer evidence.
+> Historical blueprint reference. Current effect status and scope are owned by [SDK_EFFECT_TAXONOMY.md](../SDK_EFFECT_TAXONOMY.md). `去脂` is suspended and is not a pending completion requirement. Dated phase outcomes below retain their original scope; this page does not authorize new R&D.
+
+This page preserves historical renderer examples and phase-specific output evidence. The current acceptance policy defines the live effect gate.
 
 ## Purpose
 
@@ -14,9 +16,9 @@ non-worsening as well as pixels and metadata. See
 [current acceptance policy](../IMAGE_EFFECT_ACCEPTANCE.md). Commands and
 phase-numbered evidence below preserve their historical input/output paths.
 
-This validates the current skin, color, filter, geometry, face-shape, eye, face, eyebrow, teeth-whitening, and sclera-redness-reduction public-facade output paths without adding SwiftUI screens or product routes.
+The dated results below cover their then-current skin, color, filter, geometry, teeth and sclera paths; they do not certify later code snapshots.
 
-Phase-numbered evidence summaries below are time-bounded historical records. The live renderer source and the `Current Built-In Cases` table own the present case inventory and current status statements.
+For the current default inventory, use the live renderer `--list-cases`; explicit compatibility cases are recorded in the current taxonomy and renderer source. The table below is a historical inventory and is not a current case-count gate.
 
 ## Command
 
@@ -30,7 +32,7 @@ swift run --package-path BeautySDK BeautyExampleRenderer \
   --case skinWhitening_0p50
 ```
 
-Run all built-in cases:
+Run the current default batch (suspended compatibility cases are omitted):
 
 ```bash
 DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer \
@@ -137,7 +139,7 @@ python3 .planning/milestones/v1.13-phases/51-public-facade-eyebrow-output-eviden
 - Phase 51 command results and the fourteen-file original-detail review are recorded in `.planning/milestones/v1.13-phases/51-public-facade-eyebrow-output-evidence/51-EYEBROW-OUTPUT-EVIDENCE.md`.
 - The Phase 51 helper verifies exactly 72 e6 portrait outputs, thirteen separate no-face comparisons, 13/13 visibility/locality, 6/6 signed direction, 21/21 family distinction, and 40/40 portrait direct comparisons. The complete output and gallery inventories are each exactly 144 ignored, untracked, unstaged, disposable PNGs.
 
-## Current Built-In Cases
+## Historical Built-In Cases
 
 These cases are limited to effects that currently produce visible image output through `BeautyEngine.processResult(image:)`:
 
@@ -280,10 +282,10 @@ Face-shape, eye, nose, mouth, eyebrow, and 3D sculpt branches already have inter
 
 Phase 19 strengthens provider, resolver, cap, degradation, and redaction XCTest evidence for current public shaping fields. That evidence remains internal partial evidence only.
 
-Current status boundaries:
+Historical status boundaries at that snapshot (current status uses the taxonomy):
 
 - `3D塑颜` remains `blocked-by-geometry-output`.
-- `比例`, `脸型`, and `眼睛` remain `partial`; the current eye gap is `去脂`, while bounded sclera redness reduction is implemented. Exact SDK-core `嘴唇` and six-row SDK-core `鼻子` are `implemented`.
+- At that snapshot, `比例`, `脸型`, and `眼睛` were `partial`; sclera, mouth and nose had their separately scoped qualification. Today去脂 is suspended, not a required continuation of this image-validation plan.
 - Exact seven-row SDK-core `眉毛` is `implemented`; all other unpromoted branches remain `future`. The v1.13 audit subsequently passed and archive/cleanup completed. This scoped branch status still implies no SwiftUI/Demo UI, physical-device, commercial-naturalness, optimized-performance, packaging, shipping, launch, or release-readiness evidence.
 - Phase 27 proves only the shared geometry output foundation with `faceShapeCombo_0p35`.
 - Phase 28 completes only the scoped `脸型` rows `脸宽`, `小脸`, `下巴长短`, `V脸`, `下颌角`, and alias-backed `下颌线`; branch-level `脸型` stays `partial`.
@@ -299,7 +301,7 @@ Current status boundaries:
 - This is output evidence only. It does not promote `大小`, `鼻翼`, `鼻梁`, or `鼻尖`; Phase 32 owns safety and exact four-row promotion. `山根`, `提升`, and branch-level `鼻子` remain partial/future.
 - No Demo UI, public field, dependency, network/cloud, commercial path, tracked PNG baseline, device parity, commercial approval, broad parity, packaging, launch, or whole-branch claim is added.
 
-Before any geometry-heavy branch or second-level tool is marked visually complete, this public facade validation path must produce same-dimension, watermarked saved outputs from the same `example-images/input` fixtures through `BeautyExampleRenderer`, with tool-specific evidence recorded in the owning phase.
+That historical phase used same-dimension watermarked saved outputs from its fixed fixtures. New effect qualification follows the current acceptance policy and the claimed effect, not this old fixture or watermark recipe.
 
 ## Verification Commands
 
@@ -409,7 +411,7 @@ Phase 30 closes the safety and status gates for the existing-public-parameter ey
 
 - The unchanged public-facade matrix has exactly 55 cases × 7 fixtures = 385 ignored, untracked outputs. Strict evidence passes 385/385 decode/dimensions, 66/66 visibility, 6/6 direct tilt, 60/60 semantic distinctions, 132/132 portrait comparisons, and 11/11 no-face no-ops.
 - The authoritative post-`6e4704e` gaze proof is the package-internal aggregate pupil-to-own-center reduction; the helper's image-only mirror/dark-core inference remains rejected.
-- Exactly ten remaining geometry rows are promoted. `去脂` and `祛红血丝` remain future and branch `眼睛` remains `partial`.
+- Exactly ten remaining geometry rows are promoted. At the Phase 44 snapshot, the two local-retouch rows had not yet been qualified. This dated result creates no current去脂 task.
 - Output/gallery files remain ignored and untracked. This automated evidence does not establish subjective naturalness, physical-device parity, commercial approval, packaging, shipping, or launch readiness.
 
 ## Phase 48 Face Safety and Promotion Evidence

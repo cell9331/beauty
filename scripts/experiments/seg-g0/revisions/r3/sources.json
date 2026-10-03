@@ -1,0 +1,50 @@
+{
+  "D01": {
+    "author_sha256": "e6e76db86cfe4769aeba710800601bebd40d0793b95cfdd1093d16bff93115f7",
+    "family": "F-D01",
+    "origin": "independently_generated_fictional_portrait",
+    "source_sha256": "4770728dcab8c731e42ef8e3552cee5336e8376508e45cf86f7949758d348c34",
+    "status": "input_controls_pending",
+    "usage": "owner_local_validation"
+  },
+  "D02": {
+    "author_sha256": "926954786ef4501d69ea9e8790b5f55b2f45e51a6efd49adc1e71f8a9b37b465",
+    "family": "F-D02",
+    "origin": "independently_generated_fictional_portrait",
+    "source_sha256": "0ce98bfc6466d9d2270941da34ad263c3bc77365792b0f9f163fa42520c79185",
+    "status": "input_controls_pending",
+    "usage": "owner_local_validation"
+  },
+  "D03": {
+    "author_sha256": "328ac9011a8a18618c50ccbfc5e88d810c608c58ef78af62ea980031f9d8c815",
+    "family": "F-D03",
+    "origin": "independently_generated_fictional_portrait",
+    "source_sha256": "02212131d3def6bda11708455824d5d1a577d2ade6d721f0d9e9e33b1607e2f5",
+    "status": "input_controls_pending",
+    "usage": "owner_local_validation"
+  },
+  "D04": {
+    "author_sha256": "8bf720e9f0c7222df3e0011d5e05f49755559ed5a645af5a0df5a080c64927ab",
+    "family": "F-D04",
+    "origin": "independently_generated_fictional_portrait",
+    "source_sha256": "d7035c8d53d0dcb7d2d8d9e08134fc27e91f9c3f9b210b7f25d05704ad810072",
+    "status": "input_controls_pending",
+    "usage": "owner_local_validation"
+  },
+  "D05": {
+    "author_sha256": "23a17f6b0f9ec88ab67126b3f1ceb0eba3fedce9dca076b104c24bb471606d15",
+    "family": "F-D05",
+    "origin": "independently_generated_fictional_portrait",
+    "source_sha256": "4a81a187f82f046726b09391ba938fcb947518f0536c91af192590bfb6825cf8",
+    "status": "input_controls_pending",
+    "usage": "owner_local_validation"
+  },
+  "D06": {
+    "author_sha256": "0e72e43e160837895cbf76b486b6dd157c2c07969e7e3b2e90dae81dc3f36e9b",
+    "family": "F-D06",
+    "origin": "independently_generated_fictional_portrait",
+    "source_sha256": "e82f29e6b11484128661dfa1c0914a21e4cc0d2f3042b3251cee7ff09bb74a4f",
+    "status": "input_controls_pending",
+    "usage": "owner_local_validation"
+  }
+}

@@ -67,10 +67,11 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
     public var filterIntensity: Float
     public var teethWhitening: Float
     public var scleraRednessReduction: Float
-    /// Owner-local, positive-only upper-eyelid fullness reduction for opaque still images.
+    /// Suspended upper-eyelid control, retained for existing explicit owner-local calls.
     ///
-    /// The current implementation is intentionally conservative and may produce a subtle
-    /// result. Missing or unsuitable per-eye support remains source-exact.
+    /// Natural-portrait effectiveness is unqualified. Leave this at zero in new
+    /// integrations. Its opaque-still behavior, normalization and Codable key remain
+    /// compatible; missing or unsuitable per-eye support remains source-exact.
     public var upperEyelidFullnessReduction: Float
     /// Signed bounded image-space translation of the selected whole-face area.
     /// Positive values move downward in the canonical image coordinate space.

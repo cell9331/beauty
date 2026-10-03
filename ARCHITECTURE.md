@@ -1,5 +1,31 @@
 # ARCHITECTURE.md
 
+## 2026-10-03 current batch validation
+
+The [current batch tool](docs/CURRENT_BATCH_VALIDATION.md) lives in
+`scripts/current-batch/`, outside production targets. Python builds and calls the
+existing CPU renderer; a standalone Swift/Core Image helper checks decoded pixels.
+An independent ordered manifest owns 98 default identities and one compatibility-only
+identity, checked against source registration and actual CLI discovery. Each input
+runs twice in a fresh ignored directory. No library, parameter, dependency, backend
+or historical wrapper changes are involved; this tool does not qualify new effects.
+
+## 2026-10-01 upper-eyelid availability disposition
+
+The SDK-only SwiftPM architecture and all 77 parameter fields remain intact.
+The upper-eyelid control is suspended and hidden from the renderer's default
+discovery/batch: 98 default cases, with all 99 registered identities retained
+for explicit compatibility calls. This is a CLI availability policy, not a
+new effect backend or an application UI change. Explicit compatibility does
+not qualify natural-image effects. The hiding disposition remains complete.
+The v1.25 automatic eyelid/patch candidates ran only in disposable SwiftPM copies
+and were rejected. [Terminal closure](docs/RETOUCH_FINAL_DISPOSITION_2026-10-03.md)
+adds no library target, dependency, model, API, shader or backend. The remaining
+EYE diagnostic sources and aggregate receipts live in
+`scripts/experiments/retouch-terminal/`; they are research artifacts, not a
+production integration. Both automatic goals are closed as unmet; no candidate
+or model admission work is queued. See [PLANS.md](PLANS.md).
+
 ## 2026-09-29 request-local skin-texture exclusion
 
 `BeautyTextureExclusionMask` is a binary, owner-supplied still-image input on
@@ -215,15 +241,16 @@ registered 65-case gate and its execution-bound completion receipt.
 
 ## Current Post-Archive Audit Status
 
-v1.21 adds one owner-local public scalar and route without changing target or
-dependency direction: `upperEyelidFullnessReduction` enters the existing
-canonicalize-once, detect/map-once, request-local per-eye semantic support,
-immutable-source composition, and render-once still-image path. The owner
-accepts the current bounded v4 result as provisional despite weak visual
-quality. No trained model, resource, network, Metal pass, retained shader, UI,
-or pixel-buffer route was added.
-The final archive-first no-skip gate passed `816/0/0` with eight opt-ins
-exactly once and zero skips.
+The suspended `upperEyelidFullnessReduction` compatibility route retains the
+existing canonicalize-once, detect/map-once, request-local per-eye support,
+immutable-source composition and render-once still-image path. Its source
+luminance residual is an admission proxy, not tissue-fat or anatomical truth.
+Natural-image effectiveness remains unqualified; passing mechanics and safety
+tests does not change that status. No trained model, resource, network, Metal
+pass, retained shader change, UI or pixel-buffer route belongs to this control.
+The v1.21 provisional acceptance and `816/0/0` gate are
+[historical records](docs/history/upper-eyelid-technical-history-2026-10-01.md),
+not the current product disposition.
 
 v1.17 was historically completed and archived at `afb04b4`; its frozen
 Phase-74 record reports focused `12/0/0` and full `765/0/0` execution on a
@@ -278,15 +305,24 @@ The retired application/UI trees are historical artifacts under
 `archives/legacy-ui/`. They are not dependencies, source examples, current
 requirements, or completion evidence. `FRONTEND.md` owns this redirect.
 
-Current source/test inventory, excluding `.build`:
+The dated source/test inventory is recorded once in the
+[2026-10-01 project audit](docs/PROJECT_STATUS_AUDIT_2026-10-01.md).
+It counts the current working tree (including uncommitted Swift files), not
+only HEAD. To recompute file/line totals without `.build`:
 
-| Inventory | Count |
-| --- | ---: |
-| Swift source files | 79 |
-| SwiftPM test files | 118 |
-| Swift source lines | 20,867 |
-| SwiftPM test lines | 46,441 |
-| `BeautyConfiguration` stored fields | 11 |
+```bash
+python3 - <<'PY'
+from pathlib import Path
+for root in ('BeautySDK/Sources', 'BeautySDK/Tests'):
+    files = sorted(Path(root).rglob('*.swift'))
+    lines = sum(len(p.read_text().splitlines()) for p in files)
+    print(root, 'files=', len(files), 'lines=', lines)
+PY
+```
+
+`BeautyConfiguration` has 11 stored fields; the package graph is owned by
+`BeautySDK/Package.swift`. Dynamic source/test totals are dated observations,
+not fixed architecture invariants.
 
 ## 2. Top-Level Invariants
 
@@ -304,7 +340,7 @@ Current source/test inventory, excluding `.build`:
 | A10 | v1.16 historically retained CPU/Core Image behavior and pinned shader bytes without a public Metal API; the current package exposes `.cpu`/`.gpu` policy while keeping the Metal runtime package-internal and CPU as the reference. |
 | A11 | The repository-owned consumer fixture and CLI observe only owner-local public-surface results, bounded identities, and typed aggregate outcomes; executable-internal failure seams are test machinery, not public API. |
 | A12 | `BeautyResult<Output>` is `Sendable` only when `Output: Sendable`; public concurrency tests cover compile-time acceptance and a complete async task hop without making arbitrary payloads transferable. |
-| A13 | Provisional upper-eyelid fullness reuses the existing local-retouch owner chain, preserves independent per-eye failure and collision-to-source behavior, and exports only a scalar—not support geometry, masks, or experimental types. |
+| A13 | Suspended upper-eyelid explicit compatibility reuses the local-retouch owner chain, preserves independent per-eye failure and collision-to-source behavior, and exports only its existing scalar. Default discovery/batch stays hidden; compatibility does not imply qualified natural-image effects. |
 
 ## 3. Products and Targets
 
@@ -330,7 +366,7 @@ BeautyExampleRenderer public-product command-line consumer
 | `BeautyResources` | bundled manifest/presets and identifier validation | arbitrary external path loading |
 | `BeautyEffects` | resolver, safety caps, geometry/color pipelines, local-retouch providers/transforms/composition | public facade, application controls |
 | `BeautySDK` | stable host facade, immutable `BeautyBackendFactory` selection, and request-local policy propagation | support-region export, application lifecycle |
-| `BeautyExampleRenderer` | public-facade fixture input/output validation, deterministic 75-case discovery, and typed report aggregation | internal-target imports, public backend selection, product claims from generated media |
+| `BeautyExampleRenderer` | public-facade fixture input/output validation, deterministic 98-case default discovery, 99 registered explicit selections, and typed report aggregation | internal-target imports, public backend selection, product claims from generated media |
 
 The package declares no remote dependency. New dependencies, models, resource
 downloads, or network behavior require explicit security/licensing review.
@@ -342,7 +378,8 @@ bytes/dimensions; it is an integration fixture, not a third-party consumer, SDK
 target, distribution artifact, or public release promise.
 `BeautyExampleRenderer` accepts the compatible `--input`, `--output`, `--case`,
 and `--no-watermark` flags, requires a pre-existing output directory, and
-preserves the exact 75-case catalog. Public backend selection is owned by
+preserves registered case identities while hiding suspended entries from
+default discovery and batches. Public backend selection is owned by
 `BeautyConfiguration`; the CLI remains a public-product consumer and does not
 create a second backend-policy surface.
 
@@ -385,14 +422,13 @@ existing foundation types or resource filenames.
 
 ## 5. Effect and Privacy Ownership
 
-- `docs/SDK_EFFECT_TAXONOMY.md` is the exact 62-field taxonomy authority.
+- `docs/SDK_EFFECT_TAXONOMY.md` owns current status for the 77-field parameter inventory.
 - `BeautyParameters` is the public contract; archived labels/layout never create
   a field, alias, provider, or product claim.
-- `teethWhitening`, `scleraRednessReduction`, and provisional
-  `upperEyelidFullnessReduction` are bounded opaque still-image controls. The
-  `去脂` route reuses candidate-v4 package mechanics by explicit owner decision
-  and cannot proxy through eye/brow movement, smoothing,
-  generic/landmark-driven warp, or a Metal route.
+- `teethWhitening` and `scleraRednessReduction` remain bounded opaque still-image
+  controls. Suspended `upperEyelidFullnessReduction` retains explicit compatible
+  access to the package experimental implementation. It cannot proxy through
+  eye/brow movement, smoothing, generic/landmark-driven warp or a new Metal route.
 - Raw masks, landmarks, pupil positions, tooth/eye geometry, candidate pixels,
   and private fixture locations are request-local implementation details.
 - Generated output remains ignored and disposable; committed evidence is
@@ -407,48 +443,29 @@ collision-to-source ownership, and request recovery. The generated preflight
 opt-ins and the single full SwiftPM child; it records only aggregate pass
 counts. The current CPU/Core Image implementation remains the permanent reference.
 
-Candidate-v4 upper-eyelid mechanics added one package-only `BeautyEffects`
-analysis stage between semantic support and original-pixel composition. Its
-frozen private automation failures remain historical quality evidence. v1.21
-does not rewrite those results; the owner accepts the same bounded mechanics as
-a provisional current product path and carries its weak visual result as debt.
+Upper-eyelid analysis remains package-only in `BeautyEffects`, between per-eye
+support and original-pixel composition. The retained plane/residual analyzer,
+source-bounded reconstruction and quantization fixes address measured image
+mechanics. They do not recover tissue volume or establish useful natural-image
+reduction; this distinction is why the explicit route is retained as suspended
+compatibility rather than a current recommended effect.
 
-## 5A. Learned Upper-Eyelid Boundary
+## 5A. Dormant Upper-Eyelid Prediction Seam
 
-The learned/data boundary remains dormant. The current public facade route is
-the no-model source-derived v4 path; there is no model resource, Core ML import,
-dataset, weight, download, or training work. Restarting a learned replacement
-requires a new explicit milestone and may not remove or silently change the
-neutral/Codable/fail-closed public parameter contract.
+`BeautyUpperEyelidFullnessPredicting` has no registered implementation. Its
+package-only request/result types and independent validator remain in
+`BeautyEffects`; the explicit compatibility facade does not call this seam.
+Missing or invalid predictions emit no proposal. There is no active Core ML
+import, model resource, dataset, weight, download or training pipeline for it.
 
-Plan 80-19 adopts an on-device learned hybrid as the only implementation route
-that may later qualify as visibly obvious `去脂`. The model is trained only from
-owned data or data explicitly licensed for the project's actual owner-local,
-non-distributed research/training use and predicts independent
-per-eye applicability/uncertainty, soft support, bounded upper-lid soft-tissue
-flow, and a low-frequency log-luminance residual. Apple Vision locates and
-normalizes each crop but does not own the fullness semantic.
-
-The learned flow is a narrow local-retouch exception, not a new public or
-generic geometry pipeline: it cannot move eye contour/aperture, brow, lashes,
-iris/sclera, or protected crease detail, and it does not modify retained
-`Warp.metal`. `BeautyDetection` owns one mapped observation, `BeautyResources`
-will own a checksum-pinned bundled Core ML resource only after license/model
-admission, and `BeautyEffects` now owns request-local prediction request/result
-types plus independent validation. Missing or invalid models and predictions
-fail closed before any proposal. No learned route, Core ML import, or model
-resource is active; the distinct v1.21 public route does not invoke this seam.
-
-Any admitted model and compiled resource remain inside the owner-controlled
-environment. A dataset restricted to non-commercial research may contribute
-only to a correspondingly non-commercial local research candidate; it cannot
-authorize commercial use or later distribution. Redistribution rights are not
-a current entry gate because redistribution is prohibited by the project
-contract, but any future scope change must re-audit every input and derived
-weight before use.
-
-The full data/model/runtime/qualification authority is
-[`80-LEARNED-HYBRID-DECISION.md`](.planning/phases/80-genuine-evidence-and-qualification-gate/80-LEARNED-HYBRID-DECISION.md).
+The 2026-08-25 learned-hybrid proposal was not implemented beyond this validation
+seam. Its proposed resource ownership, flow and qualification sequence are
+[historical design material](docs/history/upper-eyelid-technical-history-2026-10-01.md),
+not the only permitted future architecture or an outstanding implementation
+requirement. The failed candidates do not prove all no-model methods impossible
+or learned methods sufficient. Only an explicit owner request can reopen R&D;
+any new design would still owe compatibility, evidence and actual-use rights
+review under the current repository policies.
 
 ## 6. Archive Boundary
 
@@ -487,7 +504,7 @@ bash scripts/run-no-skip-swiftpm.sh
 The generated CPU preflight must pass with nonzero focused execution and zero
 generated skips without reading tracked portrait media. Private/native-Vision
 fixtures remain ignored, explicit opt-ins and cannot lend success to the
-generated suite. The final wrapper must preserve one bounded SwiftPM child output, execute all eight
+generated suite. The final wrapper must preserve one bounded SwiftPM child output, execute all nine
 documented opt-ins, and reject failure, skip, or zero execution. These gates do
 not establish device, performance-budget, commercial, packaging, shipping,
 launch, or release readiness.

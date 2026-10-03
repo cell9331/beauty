@@ -19,6 +19,7 @@ readonly expected_opt_in_tests=(
   "testIntegrationLocalAuthorizedPortraitFitsLockedEyebrowValidationEnvelope"
   "testAuthorizedPositiveAndNegativeStayWithinFrozenAggregateBounds"
   "testAuthorizedPairSupportsFullScleraExpansionFromFrozenFocalAnchor"
+  "testAuthorizedCalibratedLuminancePairThroughLiveVisionAndPublicFacade"
 )
 
 if [[ "${1:-}" == "--self-test" ]]; then
@@ -176,4 +177,4 @@ python3 "${transcript_checker}" "${checker_arguments[@]}" || {
   exit 1
 }
 
-echo "no_skip_swiftpm_passed opt_in_tests=8 skipped_tests=0"
+echo "no_skip_swiftpm_passed opt_in_tests=9 skipped_tests=0"

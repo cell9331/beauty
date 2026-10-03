@@ -1,0 +1,146 @@
+{
+  "D01": {
+    "author_sha256": "ac97289105c3adc5521656b67c3f3448e161c85a9e376b6893c5cb77842eff47",
+    "family": "F-D01",
+    "origin": "independently_generated_fictional_portrait",
+    "set": "development",
+    "source_sha256": "4770728dcab8c731e42ef8e3552cee5336e8376508e45cf86f7949758d348c34",
+    "usage": "owner_local_validation"
+  },
+  "D02": {
+    "author_sha256": "9a945d42aaa11a06e13070027fd9beb39df14fe4a4a71310c6a05a13da1aaf9b",
+    "family": "F-D02",
+    "origin": "independently_generated_fictional_portrait",
+    "set": "development",
+    "source_sha256": "0ce98bfc6466d9d2270941da34ad263c3bc77365792b0f9f163fa42520c79185",
+    "usage": "owner_local_validation"
+  },
+  "D03": {
+    "author_sha256": "ea56b6726828e727ff96d8b8ad7631f2bbdbe369cbae9f0cd1a60ddc338cf13f",
+    "family": "F-D03",
+    "origin": "independently_generated_fictional_portrait",
+    "set": "development",
+    "source_sha256": "02212131d3def6bda11708455824d5d1a577d2ade6d721f0d9e9e33b1607e2f5",
+    "usage": "owner_local_validation"
+  },
+  "D04": {
+    "author_sha256": "3c10c8ebeca56864f6f868526d9a9af786ad101291264ed8367e663258de57d1",
+    "family": "F-D04",
+    "origin": "independently_generated_fictional_portrait",
+    "set": "development",
+    "source_sha256": "d7035c8d53d0dcb7d2d8d9e08134fc27e91f9c3f9b210b7f25d05704ad810072",
+    "usage": "owner_local_validation"
+  },
+  "D05": {
+    "author_sha256": "bec3e8209c3dbb93f21611c89e12ae9a6abd74101c880d46e7053446b3a38f72",
+    "family": "F-D05",
+    "origin": "independently_generated_fictional_portrait",
+    "set": "development",
+    "source_sha256": "4a81a187f82f046726b09391ba938fcb947518f0536c91af192590bfb6825cf8",
+    "usage": "owner_local_validation"
+  },
+  "D06": {
+    "author_sha256": "56e65c8511cf276880cbde088955b5394f9c8a96153f3a4ddba18749c931db6f",
+    "family": "F-D06",
+    "origin": "independently_generated_fictional_portrait",
+    "set": "development",
+    "source_sha256": "e82f29e6b11484128661dfa1c0914a21e4cc0d2f3042b3251cee7ff09bb74a4f",
+    "usage": "owner_local_validation"
+  },
+  "H01": {
+    "author_sha256": "1081882585abc896cc793ae4942d353c71fc2ecf4bff108a6e94655dd9b7327e",
+    "family": "F-H01",
+    "origin": "independently_generated_fictional_portrait",
+    "set": "holdout",
+    "source_sha256": "e69b876bf0fa08fb151e8a8c66c8274fc9a62abf6f2b499bdc713c62b83a8bbf",
+    "usage": "owner_local_validation"
+  },
+  "H02": {
+    "author_sha256": "4b8438eda59fdea14b8ab1afb9bfcf2d02572a0f73a1105c64a761f689b69ed2",
+    "family": "F-H02",
+    "origin": "independently_generated_fictional_portrait",
+    "set": "holdout",
+    "source_sha256": "7136fb46620f5fb89f5df4f5ccba332592e90e58376b3780ed8fbef339deea78",
+    "usage": "owner_local_validation"
+  },
+  "H03": {
+    "author_sha256": "547b75c7e6366b6c9cc9e94e752e1f1386722112c958644d6c3b1fda84ff7cdf",
+    "family": "F-H03",
+    "origin": "independently_generated_fictional_portrait",
+    "set": "holdout",
+    "source_sha256": "f79eef4e42a3c4067643163f15351e3c62329bcda423e123996f8ece01a0f624",
+    "usage": "owner_local_validation"
+  },
+  "H04": {
+    "author_sha256": "5e6a9f697ac25bccd2127b5d59514ff2ed90ff98901e5e2ce929dbf4beaa79b2",
+    "family": "F-H04",
+    "origin": "independently_generated_fictional_portrait",
+    "set": "holdout",
+    "source_sha256": "d24902c52294d78415a94f4585c2ba72e8c91c5b95341ae094c007d60d156c79",
+    "usage": "owner_local_validation"
+  },
+  "H05": {
+    "author_sha256": "26f19e1e2940e44c9c697732a279f0dd4e69a461152c6711bd55e2a632d0ad1b",
+    "family": "F-H05",
+    "origin": "independently_generated_fictional_portrait",
+    "set": "holdout",
+    "source_sha256": "ca8a6f144d17cfecc1d61fe4532a68d6ec588eba971909e98a90b500c9923f2d",
+    "usage": "owner_local_validation"
+  },
+  "H06": {
+    "author_sha256": "26b60f448ba67571bf9bb248ce43f92d55327bd5950d4fa10b2eb64ced2d4b83",
+    "family": "F-H06",
+    "origin": "independently_generated_fictional_portrait",
+    "set": "holdout",
+    "source_sha256": "3271db549c502f994573b79486e2658d5aadb5b7259df783417afaf539755c42",
+    "usage": "owner_local_validation"
+  },
+  "R01": {
+    "author_sha256": "a8ed3d1ef9c2692cde6822d94becac1fe455a38b5f46e876c8258c63c5d3105c",
+    "family": "SEG-F-R01",
+    "origin": "procedural_nonportrait",
+    "set": "rejection",
+    "source_sha256": null,
+    "usage": "owner_local_validation"
+  },
+  "R02": {
+    "author_sha256": "ffc2d3dbef7b05209aea894d506499b8d2f9a394ed3125b60bfa89df447a8589",
+    "family": "SEG-F-R02",
+    "origin": "independently_generated_fictional_portrait",
+    "set": "rejection",
+    "source_sha256": "a6af96d8781aa86d22ec5828243617471f86d166f9a59201e28c3df06c08e5ae",
+    "usage": "owner_local_validation"
+  },
+  "R03": {
+    "author_sha256": "180aa6e9720a3ca2f3077ee5f59a67f54e6be9c581474c6546404beb242a350a",
+    "family": "SEG-F-R03",
+    "origin": "independently_generated_fictional_portrait",
+    "set": "rejection",
+    "source_sha256": "9d6e21da2868194f836d80f4bd1acb97872bacaf90206e7968fe3ffa94493d59",
+    "usage": "owner_local_validation"
+  },
+  "R04": {
+    "author_sha256": "a176b53691712a808cd25db7f35515778cfdce825eb57fc8ea3fe81c00d01bbf",
+    "family": "SEG-F-R04",
+    "origin": "independently_generated_fictional_portrait",
+    "set": "rejection",
+    "source_sha256": "5bd974f171d8b7a21c47ef0524061850784461b181f7f87a08a1930246fb58b3",
+    "usage": "owner_local_validation"
+  },
+  "R05": {
+    "author_sha256": "883fcfa6c84e722fc899fe3c5102e751a9af39d81a67fe3e5d03c14a2da6ef87",
+    "family": "SEG-F-R05",
+    "origin": "independently_generated_fictional_portrait",
+    "set": "rejection",
+    "source_sha256": "b28b6d682d07f4efc87208e70f8adf69884087e4d2a404f10c59ad1ac8e627b6",
+    "usage": "owner_local_validation"
+  },
+  "R06": {
+    "author_sha256": "2a680f1eff7a0e4a9f22aa2470078b72e7d0957ef9c6d4c2b7a1dfcd947d30d1",
+    "family": "SEG-F-R06",
+    "origin": "independently_generated_fictional_portrait",
+    "set": "rejection",
+    "source_sha256": "12c1370b3155ff79571a3dcdcc2ae95d37a09b20c155a7867180f38ac4dde719",
+    "usage": "owner_local_validation"
+  }
+}

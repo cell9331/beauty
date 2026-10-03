@@ -4,6 +4,15 @@
 **Boundary:** SDK-only SwiftPM repository
 **Policy Sync:** 2026-08-25
 
+**Snapshot status (clarified 2026-10-01):** This is a dated analysis, not a
+current inventory, task list or contract. All uses of current/latest/active
+below refer to the analysis/policy-sync dates above; file counts, CLI catalogs,
+gate denominators, effect statuses and future-work descriptions may be stale.
+Use [PLANS.md](../../PLANS.md), its current plan/debt links and root owners for
+execution; use [taxonomy](../../docs/SDK_EFFECT_TAXONOMY.md) for effects and
+[the dated project audit](../../docs/PROJECT_STATUS_AUDIT_2026-10-01.md) for
+the latest recorded inventory. Recompute dynamic counts before relying on them.
+
 **Distribution:** The tree supports the owner's local hosts and validation
 tools only. Its Swift `public` surface is not a third-party distribution or
 customer-delivery boundary.

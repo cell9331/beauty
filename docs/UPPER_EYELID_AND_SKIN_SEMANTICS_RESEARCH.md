@@ -1,12 +1,101 @@
-# Upper-eyelid and skin-object evidence review (2026-09-29)
+# Upper-eyelid and skin-object evidence review (2026-10-01)
 
-This note supports the current [effect taxonomy](SDK_EFFECT_TAXONOMY.md),
-[image acceptance policy](IMAGE_EFFECT_ACCEPTANCE.md), and
-[active plan](../plans/active/A-2026-09-27-remaining-effect-qualification.md).
-It records what primary sources establish and what must still be demonstrated
-by this SDK's actual input and output. It does not change historical receipts.
+## Current routing after terminal closure (2026-10-03)
 
-## Upper-eyelid fullness
+The owner reopened both problems and later requested continuous finite work with
+an explicit stop at the capability boundary. [Final disposition](RETOUCH_FINAL_DISPOSITION_2026-10-03.md)
+records two methods/four rejected versions per branch and closure with unmet
+objectives. [Industry comparison](RETOUCH_INDUSTRY_DECISION_2026-10-03.md) records
+available assisted/model routes without pretending they were executed here.
+The dated review below preserves earlier evidence. It does not reopen development;
+[PLANS](../PLANS.md) owns current status.
+
+## Current routing after explicit restart (2026-10-03)
+
+The owner subsequently reopened research/planning for both problems in v1.25.
+The [primary-source comparison](RETOUCH_RESEARCH_AND_V1_25_2026-10-03.md) provides
+background; the subsequent owner-authorized [R2 MVP contract](RETOUCH_MVP_REQUIREMENTS.md)
+and PLANS own the narrowed automatic tone/patch scope. Production availability/
+qualification is unchanged. The dated
+review below preserves the earlier evidence and suspension decision; it does
+not cancel the new explicit authorization or prove a new candidate works.
+
+This note separates established findings from unproven claims for the current
+[effect taxonomy](SDK_EFFECT_TAXONOMY.md) and
+[image acceptance policy](IMAGE_EFFECT_ACCEPTANCE.md). Upper-eyelid and
+same-colored object protection are independent questions. Earlier source
+probes and candidate receipts are retained in the
+[historical experiment record](history/upper-eyelid-experiments-2026-10-01.md).
+
+Historical 2026-10-03 follow-up before the later R2 restart: the [finite texture-semantic probe](TEXTURE_SEMANTIC_FEASIBILITY_2026-10-03.md)
+rejected its single source-periodicity candidate. General unmasked object
+identification is unqualified and paused; explicit masks remain supported.
+A new low-contrast lip outside coarse feature guards also failed protection
+and remains unfixed. The skin-object review below retains its original date;
+the follow-up and PLANS own current disposition. Upper-eyelid research stays
+suspended.
+
+## Upper-eyelid fullness: development suspended
+
+The current upper-eyelid work is stopped and the control is hidden from default
+CLI discovery, batches and recommended examples. Existing explicit SDK calls
+and safety regressions remain for compatibility. Natural-image effect quality
+is unresolved; retaining that API does not make it a recommended or visually
+qualified feature. New research requires an explicit owner request to reopen
+with a new testable hypothesis. There is no active instruction to continue
+tuning the current approach.
+
+### What the local evidence establishes
+
+The implementation uses a blurred luminance residual relative to a fitted
+background and bounded per-eye RGB correction. This is an **image-space
+brightness proxy**, not a measurement of eyelid fat, shape, depth or volume.
+A fuller-looking generated source can have a lower production score. In the
+frozen natural-background challenge, adding the same known brightness dome to
+both lids still admits only one eye; holding geometry fixed does not fix that
+separation. The failed positive keeps its original label and threshold.
+
+The earlier ring failure had a separate editing cause: excessive correction
+could drive a positive shoulder below its reference while leaving the capped
+bright center positive. Blurred spill and a test scored by the same production
+analyzer further obscured the defect. Independent matched-flat bounds, a
+source-guided reconstructed correction and bounded Q16 quantization now pass
+the retained artifact checks and original-detail ring reproducer. The
+reconstruction operator follows the grayscale concept described by
+[Vincent (1993)](https://telin.ugent.be/~sanja/StudentProj/Literature/vincent-93.pdf);
+that method does not supply eyelid semantics.
+
+The retained coverage includes 13 fixed luminance sources at four strengths,
+matched flat/concave negatives, 32 orientation/mirror combinations, and a
+calibrated luminance target through real Vision and the public facade. The
+calibration creates visible color blocks and removes natural variation.
+These results establish bounded pixel and integration behavior, not natural
+appearance, texture fidelity, anatomical recognition or generalization to
+arbitrary lighting and makeup.
+
+Background-fit candidates exposed an additional bottleneck. Raw-affine and
+spatial/color references could admit both positive eyes and reject both
+natural controls, yet full-strength central reduction was only 4.34%/5.02%
+and 4.85%/2.20%, respectively, against the frozen 20% minimum. Pixel-matched
+diagnostics showed that most available correction was lost in reconstruction,
+with complete central support and much smaller Q16 loss. Relaxing propagation
+created dark undershoot, radial artifacts and unwanted continuous-ridge edits.
+A quadratic background fit also removed an existing narrow positive and
+falsely admitted a natural negative. All tried candidates were rejected; the
+validated model and repaired editor were restored. This is evidence against
+those candidates, not a proof that all processing without a learned model is
+impossible.
+
+The final **1072-test, zero-failure, nine-opt-in, zero-skip** gate verifies the
+retained engineering and compatibility contracts. Separately, the unchanged
+[frozen natural challenge](../scripts/experiments/upper-eyelid-natural-challenge/README.md)
+returns **one test, two failures, zero skips and exit 1**: the restored model
+admits one positive eye instead of two, then its source guard stops execution.
+That red result is preserved outside the normal gate without an expected
+failure or weakened oracle. Detailed scope and results are in
+[QUALITY_SCORE](../QUALITY_SCORE.md).
+
+### What the existing primary sources establish
 
 | Source | Supported finding | Limit for this SDK |
 | --- | --- | --- |
@@ -15,106 +104,11 @@ by this SDK's actual input and output. It does not change historical receipts.
 | [Guo et al., upper-eyelid 3D area and volume reliability (2023)](https://pubmed.ncbi.nlm.nih.gov/36915328/) | In 44 adults with 3D surface images, standardized area measurement was reliable, while direct single-3D-image volume measurement had poor intramethod reliability. | The study did **not** test this SDK or ordinary single 2D photos. It cautions against equating a 2D brightness score with measured volume. |
 | [Durand and Dorsey, bilateral base/detail processing (2002)](https://people.csail.mit.edu/fredo/PUBLI/Siggraph2002/DurandBilateral.pdf) and [Paris, Hasinoff and Kautz, local Laplacian filters (2011)](https://people.csail.mit.edu/sparis/publi/2011/siggraph/) | Edge-aware tonal processing is designed to preserve detail and avoid halos near strong boundaries. | These are image-processing methods, not upper-lid effect validation. The rings observed in this SDK's generated output are a local finding; the papers only motivate an edge/artifact oracle and candidate design. |
 
-The current implementation tests a blurred luminance residual against a fitted
-plane, then applies bounded RGB corrections within a per-eye feather. That is
-an **image-space proxy**, not a measurement of eyelid fat, tissue depth, or
-volume. In the current frozen investigations, four natural-style generated
-positives did not safely admit both eyes. One source with more visible fullness
-had a *lower* residual score than its prior version. A controlled positive did
-admit and pass numeric target/protection checks, but original-size review found
-closed rings around both upper lids. Therefore neither a lower source threshold
-nor a larger correction gain has evidence for a visual-quality claim.
-In a separate, temporary package-only diagnostic on the existing generated
-bulge fixture, eliminating all positive RGB corrections removed 123 brightened
-proposal pixels but the visible dark ring persisted. Existing focused numeric
-tests passed for that candidate; its visual result failed, so the change and
-temporary test were removed. This does not isolate the ring's complete cause.
-
-Before changing production behavior, freeze a qualified positive/negative
-source pair, the eye and protected regions, neutral and typed-failure checks,
-and an original-detail no-ring/no-worsening review. A candidate must preserve
-both the intended directional change and the existing fail-closed behavior.
-The owner's provisional callable API remains valid under its stated limits.
-
-### Follow-up source/output probe (2026-09-30)
-
-A locally generated 1254×1254 fictional adult source with mild visible
-viewer-left upper-lid fullness (source SHA-256
-`d0fb3f6b4a41a6ca5b8b7359b900fdf0e49118d666875d02fa693bd366e9cc74`)
-was admitted by the unchanged live Vision and semantic-owner path for **one
-eye only**. Its admitted eye had central/localized luminance residual scores
-`5.42/13.47` and positive fraction `0.625`; the other eye was rejected. A
-matched flatter-lid edit (SHA-256
-`fabc4bac1fe5c71ac4adaef225501c847a913a3144ef8ce31003c6a4fded1f7b`)
-was rejected for both eyes (`-4.05/1.97`, fraction `0.203` on the formerly
-admitted side). An intermediate, visually flatter edit still admitted that
-side (`1.50/8.99`, fraction `0.481`), so this is not evidence that the proxy
-reliably separates fullness across edits or people.
-
-Before viewing the public effect output, the intended single-eye oracle
-required at least 100 changed pixels in the admitted upper lid, no change in
-the rejected eye or outside the upper-lid region, per-channel delta at most
-16, neutral and repeat identity, preserved alpha/extent, and no visible ring
-at original detail. The first diagnostic test mapped the admitted eye to the
-wrong image half and inverted the image-buffer row direction, so its region
-assertion failed. After correcting those coordinates **based on the observed
-output**, the unchanged public `processResult` at strength 1 showed 2,983
-changed pixels in the actual admitted upper-lid region, zero on the rejected
-side or outside that region, maximum channel delta 16, and passing
-neutral/repeat and alpha/extent checks. The matched negative produced exact
-source pixels. Original-detail comparison did not show the closed ring seen
-on the earlier controlled fixture, but the effect was visually slight.
-Because the spatial oracle was corrected after output inspection, these are
-**exploratory diagnostics**, not a predeclared regional acceptance pass. A
-new independently frozen source and correctly mapped region are needed for
-that claim. This one-source, one-eye result does not qualify a stronger visual
-effect, bilateral admission, or general fullness recognition. The temporary
-diagnostics and media were not added to the repository.
-
-A second independent 1254×1254 generated portrait (source SHA-256
-`f7cb05b48cc84913604f6e465c0b3670f43682d45c2a76b4bcb759ba8b1e0374`)
-visibly presented bilateral upper-lid fullness and admitted both eyes under
-unchanged live Vision (`5.31/8.39` central scores). The target/protected
-regions were fixed before any effect output. Two closely matched edits aimed
-at flatter lids remained **bilaterally admitted**: the first central scores
-rose to `8.86/12.08`, and the second remained `6.50/7.77`. The generation
-process also changed other image details, so this does not isolate a causal
-defect in the lid classifier. It does show that these visually flatter edits
-cannot serve as safe negatives for this acceptance pair. No effect output was
-viewed for this source and no production thresholds or gain were changed.
-Further source generation alone should not be counted as progress unless the
-source labels and matched negative are independently credible and the current
-semantic owner separates them before output.
-
-### Independent-negative check and bounded public probe (2026-09-30)
-
-A separately generated medium-deep-skin candidate prompted for thin, flatter
-upper lids (SHA-256
-`f942e1abda987dc50c401da25f345e19dc41610ed533687b630fbf8ffaa638e2`)
-still admitted both eyes under the unchanged live Vision path, with central
-residual scores `4.28/4.40`. The portrait retained a visible lid shelf, so it
-is not an unambiguous independent negative; it cannot close the failed matched
-negative check above. No effect output was evaluated for this candidate.
-
-For a narrower public-output probe, the previously admitted bilateral
-positive (`f7cb05b48cc84913604f6e465c0b3670f43682d45c2a76b4bcb759ba8b1e0374`)
-was paired with the independently generated zero-eye negative from the earlier
-single-eye investigation
-(`fabc4bac1fe5c71ac4adaef225501c847a913a3144ef8ce31003c6a4fded1f7b`).
-Before viewing output, both positive upper-lid regions and the remaining
-protected pixels were fixed, along with at least 100 changed pixels per eye,
-negative and protected-region source identity, maximum per-channel delta 16,
-neutral/repeat and alpha/extent identity, net darkening, and original-detail
-no-ring inspection. The unchanged public `processResult` changed `3,563` and
-`4,133` target pixels, zero outside, zero alpha and negative pixels, with
-maximum channel delta 16 and negative signed red sums on both sides. Neutral,
-repeat, and extent checks passed. Original-detail comparison showed no closed
-ring on this portrait, but the effect remained visually slight. The negative
-has a different identity and lighting, so this probe does not establish
-matched semantic discrimination. It also does not erase the earlier controlled
-portrait's visible ring. The temporary test was removed and generated media
-were never added to the repository; no production algorithm, threshold, or
-gain changed.
+Single-image shape/lighting ambiguity explains why a luminance score cannot
+serve as its own anatomical ground truth. It does not establish that this
+particular edit is impossible, nor does an edge-aware filtering method prove
+that a candidate meets the frozen effect and artifact requirements. No new
+data, training, model or weight work follows from this review.
 
 ## Same-colored non-skin objects
 

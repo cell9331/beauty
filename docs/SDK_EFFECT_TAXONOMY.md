@@ -4,6 +4,35 @@ This is the current SDK-owned authority for supported effect grouping and the
 legacy `美型 / 五官` control vocabulary. It is intentionally independent of the
 archived application and UI-reference source trees.
 
+## Current upper-eyelid disposition (2026-10-03)
+
+`去脂` is `suspended`. It retains an explicit-call-compatible implementation
+of bounded upper-eyelid luminance correction, not fat identification or tissue
+volume reduction. The brightness proxy does not reliably identify the intended
+condition. Tested candidates that admitted a fixed natural-background target
+still provided insufficient reduction after reconstruction; loosening the
+constraint produced artifacts. No natural-appearance applicability range is
+qualified, and there is no demonstrated basis for calling the route merely
+unfinished tuning. Generated images remain eligible acceptance inputs.
+
+The owner hid this case from default renderer batches, `--list-cases`, help
+and recommended examples in 2026-10-01. The explicitly reopened v1.25 automatic
+eyelid-tone and patch-protection branches each exhausted two methods/four versions
+without qualification. They are now [closed as unmet](RETOUCH_FINAL_DISPOSITION_2026-10-03.md)
+under the owner's terminal instruction; neither is queued for automatic continuation.
+The 77 public fields, 99 registered cases and 98 default/discoverable cases remain.
+Explicit `--case upperEyelidFullnessReduction_1p00` remains compatible.
+No row or inventory count is promoted. Compatibility, hiding, research closure and
+retained safety tests do not confer effect qualification.
+
+Only an explicit owner restart can authorize new development, with a
+falsifiable hypothesis, fixed positive/negative inputs, joint effect and
+protection checks, and a termination rule. No model architecture or eventual
+success is presumed. General requests to continue do not reopen this work.
+The [product contract](../PRODUCT_SENSE.md) retains historical references;
+the [research record](UPPER_EYELID_AND_SKIN_SEMANTICS_RESEARCH.md) records the
+findings. No external application UI is changed by this SDK-only disposition.
+
 ## Boundary
 
 The [current image-effect acceptance policy](IMAGE_EFFECT_ACCEPTANCE.md)
@@ -28,11 +57,16 @@ contract, model/weight distribution, commercial launch, or release approval.
 Status has exactly these meanings:
 
 - `implemented`: SDK behavior exists, relevant safety/degradation tests pass,
-  and public-facade output evidence exists when the effect changes pixels.
+  and an independent public-facade oracle verifies the intended effect and
+  protection together within the stated input range.
 - `partial`: some SDK capability maps to the concept, but the exact branch or
   reference control is not independently complete.
 - `future`: no current SDK implementation claim; promotion requires a separately
   scoped owner-local contract, implementation, and evidence.
+- `suspended`: normal discovery/batch presentation is stopped by owner decision
+  and no qualified effect is currently recommended. An existing implementation
+  and explicit-call compatibility may remain. An explicit scoped research
+  restart is recorded in PLANS separately and grants no effect qualification.
 
 Appearance in this document never creates a public API. The public contract is
 `BeautyParameters` in `BeautyCore`; this file maps product taxonomy onto that
@@ -70,6 +104,15 @@ An optional owner-supplied binary still-image exclusion mask now protects
 specified same-colored non-skin pixels on both CPU and Metal-selected texture
 routes while unmasked cheek texture remains active; malformed or mismatched
 masks fail typed. The SDK does not automatically identify unmarked objects.
+The [2026-10-03 finite feasibility probe](TEXTURE_SEMANTIC_FEASIBILITY_2026-10-03.md)
+rejected its only automatic candidate and initially paused general unmasked
+object identification. The subsequent v1.25 patch-domain repair rejected four versions and closed as
+unmet; no automatic detector is integrated or queued. A low-contrast lip extending outside the coarse exclusion also
+failed; arbitrary lip pixels are not guaranteed by these guards and may need an
+explicit owner mask. The [host union guide](HOST_TEXTURE_PROTECTION.md) now
+verifies this explicit object + lip workflow using the same generated source;
+it supplies additional host information rather than an automatic classifier.
+Existing bounded skin-control qualifications remain valid.
 This is not skin segmentation or a claim
 about all real skin, hair, devices, or commercial visual quality. The four
 skin-control fields and their caps are unchanged.
@@ -77,36 +120,16 @@ skin-control fields and their caps are unchanged.
 `lipColor` is color-only and is not evidence for geometric `丰唇` (`lipPlump`).
 `teethWhitening`, `scleraRednessReduction`, and
 `upperEyelidFullnessReduction` are bounded opaque still-image local-retouch
-controls. None implies realtime/pixel-buffer support. `去脂` must not alias
+controls; the upper-eyelid control is now suspended with explicit-call
+compatibility retained. None implies realtime/pixel-buffer support. `去脂` must not alias
 `eyeHeight`, `upperEyelidLift`, brow movement, eye opening, eye-bag removal,
 dark-circle removal, or global smoothing. Request-local masks and face geometry
 are implementation details, not taxonomy entries or public diagnostics.
 
-The v1.18 Phase-78/79 decision remains immutable historical evidence that the
-then-current 61/5/74 surface did not promote the mechanics candidate. The owner
-first deferred further work on 2026-08-25, then superseded that current-product
-decision later the same day: the bounded v4 mechanics are accepted as a
-provisional owner-local `去脂` implementation and are callable through
-`upperEyelidFullnessReduction`. This is an owner-provided acceptance decision,
-not a claim that a new blinded review was run. The visual result is explicitly
-known to be weak and is future quality work. v1.24 adjusts the same bounded
-internal relief gain and records a generated half-strength pixel improvement;
-it does not promote natural-portrait or commercial visual-quality claims.
-The 2026-09-27 localized convexity fallback additionally reaches a previously
-rejected eye on one generated natural-style mixed-lighting portrait. It stays
-within the same provisional status and bounded image-space luminance contract.
-Subsequent generated candidates did not safely admit both eyes, and a
-controlled output showed visible upper-lid rings despite passing numeric
-target/protection checks. The visual no-worsening gate is still open; see the
-[primary-source review](UPPER_EYELID_AND_SKIN_SEMANTICS_RESEARCH.md).
-
-Internal `BeautyExperimentalUpperEyelid*` names remain unchanged to preserve
-provenance. The current route uses the existing source-derived luminance
-residual analyzer, per-eye semantic envelope, bounded RGB correction, immutable-source
-composition, and source-exact failure behavior. It adds no trained model,
-weight, dataset, network path, geometry warp, or external distribution claim.
-Future optimization may replace the internal implementation but must preserve
-the public field's neutral/default/Codable and fail-closed contract.
+Internal `BeautyExperimentalUpperEyelid*` names and the public field's
+neutral/default/Codable and fail-closed compatibility remain. The current
+upper-eyelid disposition above owns its status; earlier mechanics receipts
+are not a promise of natural-portrait quality.
 
 ## Legacy shaping and facial-feature mapping
 
@@ -146,7 +169,7 @@ names and visual organization are intentionally omitted from the active contract
 | 眼睛 | 眼高 | implemented | `eyeHeight` | Contour-height geometry. |
 | 眼睛 | 长度 | implemented | `eyeLength` | Contour-length geometry. |
 | 眼睛 | 眼距 | implemented | `eyeDistance` | Signed paired spacing. |
-| 眼睛 | 去脂 | implemented | `upperEyelidFullnessReduction` | Provisional owner-accepted opaque still-image luminance correction; bounded and fail-closed. Visual no-worsening improvement remains unqualified after a visible ring counterexample; this status records a callable owner-local behavior, not proven tissue-volume reduction. |
+| 眼睛 | 去脂 | suspended | `upperEyelidFullnessReduction` | Bounded upper-eyelid luminance correction retained for explicit-call compatibility. No qualified natural-appearance range or fat/tissue identification. Default renderer presentation is suspended; v1.25 bounded research closed with unmet objectives; no automatic continuation. API, safety and research evidence do not qualify the effect. |
 | 眼睛 | 提肌 | implemented | `upperEyelidLift` | Upper-contour geometry; not `去脂`. |
 | 眼睛 | 眼瞳大小 | implemented | `pupilSize` | Requires plausible request-local pupil support. |
 | 眼睛 | 眼神矫正 | implemented | `gazeCorrection` | Per-eye request-local pupil-to-own-center correction with no peer borrowing; strict aperture containment and source-safe local rejection. |
@@ -181,12 +204,12 @@ names and visual organization are intentionally omitted from the active contract
 | 眉毛 | 眉峰 | implemented | `eyebrowPeakDefinition` | Bounded interior-apex geometry. |
 <!-- SDK_LEGACY_TAXONOMY_END -->
 
-Every listed control is now `implemented` at its stated owner-local scope;
-there are no current `partial` or `future` rows. The 15 controls qualified in
-September 2026 have explicit generated-image, image-plane admission limits.
-The `眼睛` branch retains the provisional-quality caveat on `去脂`, and none of
-these row statuses establishes general portrait quality, 3D geometry, device
-performance or commercial visual quality.
+Of the 63 listed rows, 62 are `implemented` at their stated owner-local scope
+and `去脂` is `suspended`; there are no current `partial` or `future` rows.
+The 15 controls qualified in September 2026 retain their explicit
+generated-image, image-plane admission limits. None of these row statuses
+establishes general portrait quality, 3D geometry, device performance or
+commercial visual quality.
 
 ## Non-legacy SDK groups
 
@@ -203,13 +226,17 @@ editor organization are application/product surfaces and have no SDK mapping.
 
 ## Update rule
 
-Update this file in the same change that adds, removes, renames, or promotes a
+Update this file in the same change that adds, removes, renames, promotes, or suspends a
 public effect. A row becomes `implemented` only with SDK behavior, safety and
-degradation coverage, and public-facade output evidence where applicable. Do not
+degradation coverage, and independent public-facade effect/protection evidence
+within its stated scope. API availability or safe pixel changes alone cannot
+promote a row. Do not
 promote from archived UI presence, a disabled control, provider-only mechanics,
 or a future plan. The Phase-79 archive continues to record exact 61-field,
 five-preset, 74-case absence at its historical close. The current owner-accepted
-surface is 77 fields, five presets, and 99 renderer cases.
+surface is 77 fields and five presets, with 99 registered renderer cases and
+98 in the default/discoverable catalog. The hidden case remains available by
+explicit name for diagnostic compatibility.
 `implemented` is an owner-local engineering status only and never authorizes
 external distribution or commercial release.
 

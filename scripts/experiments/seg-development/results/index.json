@@ -1,0 +1,37 @@
+{
+  "g1": false,
+  "holdout_candidate_evaluations": 0,
+  "results": {
+    "S1-v1.json": {
+      "sha256": "6ce7aa580544d197e0ce6264c203571a9a7d464b13e1d4d22846daf7ad8d0b16",
+      "source_snapshot": "revisions/r3"
+    },
+    "S1-v2.json": {
+      "sha256": "d91589a0ce0f298b2d9385a7b6efb2478f87cea4ae6954ee76919f273a6f4cb1",
+      "source_snapshot": "revisions/r3"
+    },
+    "S2-v1.json": {
+      "sha256": "6460ca1c0e5b71486f5c056b906a02c2e66d8f9a7fb67677b3e47e5ab733a6e5",
+      "source_snapshot": "revisions/r4"
+    },
+    "S2-v2.json": {
+      "sha256": "f66e1a911657eafc2e32dca03f4c646371d108ce77fc4363d2f16df916ce77ed",
+      "source_snapshot": "revisions/r4"
+    },
+    "baseline-r3.json": {
+      "sha256": "83e2876cf74bc7ee1bbdc54ba8d6cd62472854b6f99454cc958cb16fcff3afee",
+      "source_snapshot": "revisions/r3"
+    },
+    "baseline.json": {
+      "sha256": "0bed0284ec2f7e630e88889e7602f94bb5e9189a51a18dcb48879be34e8cd86f",
+      "source_snapshot": "revisions/r4"
+    },
+    "protection-diagnostic.json": {
+      "sha256": "0948891e48d9780e23a8cc4d48f5ed4227b1b193cfefb6c702ee8ce63b80e6b1"
+    }
+  },
+  "schema": "beauty.seg-development.results.v1",
+  "seg_branch": "stopped_unqualified",
+  "seg_methods_used": 2,
+  "seg_versions_used": 4
+}

@@ -1,0 +1,152 @@
+{
+  "bindings": {
+    "README.md": "a3b157ce9fadf3b868d4408ca6c94313b7338eaccd46a72f33df39b2276601a8",
+    "SegG0Tests.swift": "9157ec5d2352f1254e5ae2ec8b484e84827c03e0009fbccb238d5273a424eb2d",
+    "package": "540e729524cf2d2f0bcc1ed1d47a6b4a7927957adae881f1e99c24830103a694",
+    "run.py": "7e5929ffe19f2449f9b732cc6efb39712896ddee29076c316e45dcfe69bc6064",
+    "texture_source": "ea8be31ebaf6d0b32458b8092cd838bc0fad378a8b898fab30675c6a0a47369a"
+  },
+  "execution": {
+    "complete": true,
+    "diagnostic_lines": [
+      159
+    ],
+    "failures": 8,
+    "id": "SEG-D01",
+    "kind": "execution",
+    "passed": false,
+    "report_complete": true,
+    "swift_exit": 1,
+    "tests_started": 1
+  },
+  "rows": [
+    {
+      "coverage": 0.6399595857539783,
+      "direction": 0.4172459252477958,
+      "excluded": 0,
+      "hard": 0,
+      "id": "SEG-D01-negative",
+      "kind": "control",
+      "numeric": true,
+      "side": 1024,
+      "smoothing": true,
+      "source_variation": 0.01825764201377267
+    },
+    {
+      "coverage": 0.6399595857539783,
+      "direction": 0.543732120183495,
+      "excluded": 0,
+      "hard": 0,
+      "id": "SEG-D01-negative",
+      "kind": "control",
+      "numeric": true,
+      "side": 1024,
+      "smoothing": false,
+      "source_variation": 0.01825764201377267
+    },
+    {
+      "id": "SEG-D01-negative",
+      "kind": "input",
+      "object_pixels": 0,
+      "rgba_sha256": "1f3460a0011fccc050a9fbeeea3b6e80436bb465c51b6dedf17f802c60bdc992",
+      "side": 1024,
+      "skin_pixels": 19795
+    },
+    {
+      "coverage": 0.6968826907301067,
+      "direction": 0.4905031860024611,
+      "excluded": 0,
+      "hard": 0,
+      "id": "SEG-D01-negative",
+      "kind": "control",
+      "numeric": true,
+      "side": 512,
+      "smoothing": true,
+      "source_variation": 0.016454692714169612
+    },
+    {
+      "coverage": 0.6968826907301067,
+      "direction": 0.6540015845968843,
+      "excluded": 0,
+      "hard": 0,
+      "id": "SEG-D01-negative",
+      "kind": "control",
+      "numeric": true,
+      "side": 512,
+      "smoothing": false,
+      "source_variation": 0.016454692714169612
+    },
+    {
+      "id": "SEG-D01-negative",
+      "kind": "input",
+      "object_pixels": 0,
+      "rgba_sha256": "f3c89c5c73ca431de18cb176fc703718c5ea9d0f044684e337bcb4c90dd85c20",
+      "side": 512,
+      "skin_pixels": 4876
+    },
+    {
+      "coverage": 0.639780577001219,
+      "direction": 0.405563108546948,
+      "excluded": 0,
+      "hard": 0,
+      "id": "SEG-D01-positive",
+      "kind": "control",
+      "numeric": true,
+      "side": 1024,
+      "smoothing": true,
+      "source_variation": 0.017743931122785203
+    },
+    {
+      "coverage": 0.639780577001219,
+      "direction": 0.5293509649108312,
+      "excluded": 0,
+      "hard": 0,
+      "id": "SEG-D01-positive",
+      "kind": "control",
+      "numeric": true,
+      "side": 1024,
+      "smoothing": false,
+      "source_variation": 0.017743931122785203
+    },
+    {
+      "id": "SEG-D01-positive",
+      "kind": "input",
+      "object_pixels": 5881,
+      "rgba_sha256": "ab70ba5bad9c1ac461f8edb2bbf8a3ce67fd0b581bd94dc9403878025a158c69",
+      "side": 1024,
+      "skin_pixels": 9844
+    },
+    {
+      "coverage": 0.6283839212469237,
+      "direction": 0.4141733293997951,
+      "excluded": 0,
+      "hard": 0,
+      "id": "SEG-D01-positive",
+      "kind": "control",
+      "numeric": true,
+      "side": 512,
+      "smoothing": true,
+      "source_variation": 0.01589158965344564
+    },
+    {
+      "coverage": 0.6283839212469237,
+      "direction": 0.5572747521326058,
+      "excluded": 0,
+      "hard": 0,
+      "id": "SEG-D01-positive",
+      "kind": "control",
+      "numeric": true,
+      "side": 512,
+      "smoothing": false,
+      "source_variation": 0.01589158965344564
+    },
+    {
+      "id": "SEG-D01-positive",
+      "kind": "input",
+      "object_pixels": 1517,
+      "rgba_sha256": "f8c40ab67ac538f59380b19bed0eda064533294051add7f2e11adacb4736246c",
+      "side": 512,
+      "skin_pixels": 2438
+    }
+  ]
+}

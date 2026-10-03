@@ -1,55 +1,62 @@
 ---
 gsd_state_version: "1.0"
-milestone: v1.24
-milestone_name: 去脂效果改进
-status: completed
-last_updated: "2026-09-24T06:14:45Z"
-last_activity: 2026-09-24
+milestone: v1.25
+milestone_name: 上睑外观与皮肤语义修复
+current_phase: 100
+current_phase_name: Freeze observable domains and independent oracles
+status: in_progress
+stopped_at: Current batch tool verified; EYE G0 preparation next; SEG stopped unqualified
+last_updated: "2026-10-03T13:47:03.214677+00:00"
+last_activity: 2026-10-03
+last_activity_desc: BAT25-01/02 verified; 17 tool tests and actual repeated 98-case batches; EYE G0 pending
+state_head: a305d1a1319b511c882af7d3c3460867cd49fa0a
 progress:
-  total_phases: 3
-  completed_phases: 3
+  total_phases: 6
+  completed_phases: 0
   total_plans: 0
   completed_plans: 0
-  percent: 100
+  percent: 0
 ---
 
 # Project State
 
-Current owner policy (updated 2026-09-26):
-[generated portrait-like positives and negatives can satisfy SDK effect
-acceptance](../docs/IMAGE_EFFECT_ACCEPTANCE.md). Genuine human photos are
-optional and cannot block a current or future milestone. The historical
-v1.23/v1.24 receipt scopes below are unchanged. The later FACE-01 repair
-passed its predeclared generated-portrait effect oracle and is `implemented`
-at the current owner-local SDK scope; see [current taxonomy](../docs/SDK_EFFECT_TAXONOMY.md)
-and [execution ledger](../PLANS.md). Its broader portrait coverage remains
-future quality work.
+## Current execution route (2026-10-03)
 
-The frontmatter above tracks the completed bounded
-[v1.24 去脂效果改进](V1.24-UPPER-EYELID-CURRENT.md) milestone. The separately
-authorized [v1.23 FACE-01 follow-up](V1.23-FACE01-CURRENT.md) has a
-[verified synthetic-mechanics-only COMPLETE](qualifications/v1.23-synthetic/attempt-20260924T045750Z-9429627d/COMPLETE.json)
-at source identity `ec2589298925422dc6c3dfc65a68285caea4b6bdd913dffb3c0821673c6d3319`.
-That signed snapshot did not earn natural-portrait effectiveness or taxonomy
-promotion at its own source identity. The subsequent repair noted above does
-not reopen the historical Phase 90/95 receipts.
+v1.25 R2 has explicit owner authorization for a small feasibility pilot after
+requirements and G0 design. Read [PLANS](../PLANS.md), the
+[pilot protocol](../scripts/experiments/retouch-mvp-pilot/README.md) and
+[MVP contract](../docs/RETOUCH_MVP_REQUIREMENTS.md). Controls must pass before
+bounded isolated candidates. No full G0, holdout use, production integration,
+model downloads or training is authorized by this pilot. The owner then continued
+SEG G0 preparation: [complete controls and freeze](../docs/SEG_G0_FREEZE_2026-10-03.md)
+passed 20/0/0 with 96 texture comparisons. Thirty SEG cases are frozen; thirty
+EYE cases remain not_prepared; the later independent batch tool completes 2 of 16 requirements.
+
+The [completed pilot](../docs/RETOUCH_MVP_PILOT_2026-10-03.md) passed controls 2/0/0
+and completed candidate measurement 2/0/0; its runner returned 1 for the EYE
+effect failure. SEG passed 12 positive/6 negative variants of one procedural family.
+E1-v1 failed the second eye and first-eye detail limit and stops this round.
+Subsequent [SEG development](../docs/SEG_DEVELOPMENT_2026-10-03.md) exhausted two
+methods/four versions, all rejected; SEG stops unqualified. EYE still has one used
+method/version and needs its G0. The [current batch tool](../docs/CURRENT_BATCH_VALIDATION.md)
+passed 17/0/0 and actual 98-case repeated output/missing-oracle controls; BAT25-01/02
+are verified, while Phase104 integration remains pending. Next is EYE input/reference preparation. Holdout access was limited to G0 controls;
+candidate holdout evaluations remain zero. No model or production integration ran.
+
+Both automatic branches remain required, narrowed to eyelid tone correction
+and visible-boundary skin-colored patches. Host assistance is not an accepted
+substitute. Branches can qualify and be delivered independently. No original
+fat-reduction status is promoted by the new tone target. Production remains
+77 fields, 99/98 cases and 62 implemented bounded rows plus one suspended row.
+Latest full gate is the prior 1076/0/0, 9 opt-ins; latest focused existing-path
+recheck is 5/0/0. Existing phases/receipts and frozen failures stay read-only.
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (updated 2026-09-24)
-
-**Core value:** The project owner's local iOS host can integrate `BeautySDK`
-and get natural, controllable real-time and still-image beauty processing
-without distributing the SDK, model, or weights.
-**Latest result:** [v1.24 bounded upper-eyelid relief improvement](V1.24-UPPER-EYELID-CURRENT.md);
-v1.23 synthetic mechanics and v1.22 remain historical signed snapshots.
-
-## Current Position
-
-Phase: 99 (SDK closeout and independent review) — COMPLETE
-Plans: Phases 97–99 completed inline under the v1.24 current contract.
-Status: Completed for bounded generated-input mechanics improvement
-Last activity: 2026-09-24 — Final archive-first no-skip SDK gate and independent review passed; natural-portrait visual quality remains unproven.
+Current owner-local execution: [PLANS.md](../PLANS.md).
+Generated-input acceptance: [IMAGE_EFFECT_ACCEPTANCE.md](../docs/IMAGE_EFFECT_ACCEPTANCE.md).
+Genuine portraits and physical devices are optional supplements; broader
+population, device and commercial quality remain unclaimed.
 
 ## Performance Metrics
 
@@ -81,8 +88,10 @@ roadmaps.
 
 ### Decisions
 
-Current scope and evidence are in V1.24-UPPER-EYELID-CURRENT.md. The dated records below
-retain historical context; their superseded next-step/approval language is not a new blocker.
+Current scope and next steps are in [PLANS.md](../PLANS.md). The dated records
+below, including their deferred-item table, retain historical context; their
+superseded next-step/approval language and partial statuses are not current
+blockers. V1.24-UPPER-EYELID-CURRENT.md records its completed historical scope.
 
 ### Roadmap Evolution
 
@@ -392,7 +401,7 @@ retain historical context; their superseded next-step/approval language is not a
 
 None found under `.planning/todos/pending/`.
 
-### Blockers/Concerns
+### Historical v1.22 Blockers/Concerns
 
 No unresolved blocker remains within the completed v1.22 scope. FACE-01/faceContourSmooth remains explicitly deferred/partial under FUTURE-04, without effectiveness credit. The repaired observed paired-eye root uses CPU; retained Metal rejects its unsupported private raster cutoff with typed invalidInput before submission and recovers for later supported requests. This is owner-local SDK validation, with no device, population, commercial quality, packaging, shipping, launch, release-readiness or distribution claim. No owner annotation or device action remains. Phase96 is absorbed into95-03, and no next milestone is started.
 Authorized portraits and detailed outputs remain owner-local and outside durable evidence.
@@ -414,7 +423,7 @@ Authorized portraits and detailed outputs remain owner-local and outside durable
 
 - [Historical, resolved by reviewed gate amendment] Phase 93 plan 93-01 checkpoint: Task 1 complete; Task 2 has exact old-root RED 3 discovered / 2 passed / 1 expected failure / 0 skips. begin 1 stopped before admission because the frozen gate replaces root literals across unrelated regression fixtures. Attempts started 0/2; adapter/provider remain baseline exact. Gate and baseline binding amendment requires orchestrator disposition; no later plan or pixel scoring ran.
 
-## Deferred Items
+## Historical Deferred Items
 
 ### Historical Phase 93 plan 02 checkpoint — 2026-09-10
 
@@ -433,16 +442,25 @@ Plan 93-02 is complete, 2/2 tasks. Fresh current-gate registration 4/0/0, metric
 
 ## Session Continuity
 
-### Current completion handoff — 2026-09-23
+### Current handoff — 2026-10-03
 
-Last session: 2026-09-23
-Stopped at: v1.22 completed; no active next milestone or unresolved root diagnosis
-Resume file: .planning/phases/95-compatibility-and-sdk-only-closeout/95-COMPLETE.json (read-only verification, no diagnostic continuation)
+Last session: 2026-10-03
+Stopped at: Current batch tool verified (BAT25-01/02); EYE G0 not_prepared, E1-v1 rejected; SEG stopped
+Resume entry: [PLANS](../PLANS.md), then current batch result, G0 design and active plan
+Next: Prepare EYE G0 before remaining candidates. Do not restart SEG or promote qualification; BAT25-01/02 are complete.
+Current instruction allows isolated feasibility work; no production algorithm, model download,
+training or automatic unhide has been performed. R1 requirement/roadmap snapshots
+preserve the original scope. Historical lock, phase directories and receipts stay intact.
 
-v1.22 completed 2026-09-23: 7/7 phases, 33/33 plans, 11/11 active requirements; [verified COMPLETE](phases/95-compatibility-and-sdk-only-closeout/95-COMPLETE.json).
-No resumption of historical Phase95 diagnosis, manual annotation, or retired Phase96 scripts is pending.
-Use `python3 scripts/check-phase95-closeout.py verify-complete` for read-only receipt validation.
-COMPLETE SHA256: `33b49fee25b4156b8a947ac437822ac33f7e5473a61ed74b1015c393035862d4`; normative input digest: `56d33c8d9ddfbd6899287feeac501139d6ea1bac05250ca8982fa861482ed6f0`.
+### Historical v1.22 completion handoff — 2026-09-23
+
+The [Phase95 COMPLETE](phases/95-compatibility-and-sdk-only-closeout/95-COMPLETE.json)
+records 7/7 phases, 33/33 plans and 11/11 requirements at its signed source
+snapshot. COMPLETE SHA256:
+`33b49fee25b4156b8a947ac437822ac33f7e5473a61ed74b1015c393035862d4`;
+normative input digest:
+`56d33c8d9ddfbd6899287feeac501139d6ea1bac05250ca8982fa861482ed6f0`.
+The old read-only verifier is historical and is not the current resume entry.
 
 ### Historical session records — not current instructions
 
@@ -493,3 +511,10 @@ All six plans complete. MOUTH-01 is complete under current CHECKS41/41 and indep
 No owner file changed after final qualification binding. PLANS intentionally remains its sealed conditional verifying snapshot, with current completion determined by the valid receipt. Phase95 is the remaining milestone phase and has not started: private portraits/final65/full no-skip and device/commercial/distribution claims are not credited here. User config/state-cache/runtime/lock changes remain untouched.
 
 <!-- beauty-v122-complete-sha256: 33b49fee25b4156b8a947ac437822ac33f7e5473a61ed74b1015c393035862d4 -->
+
+## Current Position
+
+Phase: 100 of 105 (v1.25: 1 of 6) — Freeze observable domains and independent oracles
+Plan: Not started
+Status: BAT25-01/02 verified (2/16); EYE G0 pending; SEG stopped without G1
+Last activity: 2026-10-03 — Current batch tool verified; 7 passed/91 declared abstentions; missing-oracle control 1/97; no production changes

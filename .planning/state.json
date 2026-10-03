@@ -1,28 +1,43 @@
 {
   "contract": "1.0.0",
   "flavor": "core",
-  "milestone": "v1.24",
+  "milestone": "v1.25 — 上睑外观与皮肤语义修复",
   "phases": [
     {
-      "number": "97",
-      "name": "Freeze Upper-Eyelid Baseline and Pixel Oracle",
-      "status": "complete"
+      "number": "100",
+      "name": "Freeze observable domains and independent oracles",
+      "status": "in_progress"
     },
     {
-      "number": "98",
-      "name": "Bounded Internal Relief Adjustment",
-      "status": "complete"
+      "number": "101",
+      "name": "Qualify candidate sources and local feasibility",
+      "status": "in_progress"
     },
     {
-      "number": "99",
-      "name": "SDK Closeout and Independent Review",
-      "status": "complete"
+      "number": "102",
+      "name": "Repair automatic skin, occlusion and lip protection",
+      "status": "pending"
+    },
+    {
+      "number": "103",
+      "name": "Repair controlled upper-eyelid appearance",
+      "status": "pending"
+    },
+    {
+      "number": "104",
+      "name": "Integrate accepted routes and current batch validation",
+      "status": "in_progress"
+    },
+    {
+      "number": "105",
+      "name": "Verify compatibility, effects and current documentation",
+      "status": "pending"
     }
   ],
   "next": {
-    "command": "/gsd:new-milestone",
-    "label": "Select a new milestone",
-    "reason": "v1.24 bounded mechanics scope is complete"
+    "command": "/gsd:plan-phase 100",
+    "label": "Prepare EYE G0 independent references and controls",
+    "reason": "BAT25-01/02 verified; integration still needs branch G2. SEG budget exhausted/stopped with no G1 or holdout. EYE retains one used method/version and requires its own G0 before remaining candidates."
   },
-  "updated_at": "2026-09-24T06:14:45Z"
+  "updated_at": "2026-10-03T13:47:03.214677+00:00"
 }

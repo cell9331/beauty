@@ -19,6 +19,7 @@ EXPECTED_OPT_IN_TESTS = (
     "testIntegrationLocalAuthorizedPortraitFitsLockedEyebrowValidationEnvelope",
     "testAuthorizedPositiveAndNegativeStayWithinFrozenAggregateBounds",
     "testAuthorizedPairSupportsFullScleraExpansionFromFrozenFocalAnchor",
+    "testAuthorizedCalibratedLuminancePairThroughLiveVisionAndPublicFacade",
 )
 EXPECTED_OPT_IN_ENV = (
     "BEAUTYSDK_RUN_VISION_INTEGRATION_TESTS=1",
@@ -82,7 +83,7 @@ def validate_source(source: str) -> list[str]:
         if source.count(assignment) != 1:
             reasons.append("wrapper.fixture-override")
             break
-    if source.count('echo "no_skip_swiftpm_passed opt_in_tests=8 skipped_tests=0"') != 1:
+    if source.count('echo "no_skip_swiftpm_passed opt_in_tests=9 skipped_tests=0"') != 1:
         reasons.append("wrapper.aggregate-output")
     return sorted(set(reasons))
 
@@ -112,6 +113,8 @@ def self_test(source: str) -> tuple[int, int]:
         ),
         source + "\nswift test --package-path BeautySDK\n",
         source.replace(EXPECTED_OPT_IN_TESTS[0], "removed-opt-in", 1),
+        source.replace(EXPECTED_OPT_IN_TESTS[-1], "removed-upper-eyelid-opt-in", 1),
+        source.replace("opt_in_tests=9 skipped_tests=0", "opt_in_tests=8 skipped_tests=0", 1),
         source.replace(EXPECTED_OPT_IN_ENV[0], "REMOVED_OPT_IN=1", 1),
         source.replace("${PHASE59_TEETH_BUNDLE:-", "${REMOVED_TEETH_BUNDLE:-", 1),
         source.replace(

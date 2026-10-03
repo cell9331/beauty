@@ -41,7 +41,7 @@ final class BeautyExampleRendererProcessTests: XCTestCase {
         "mouthWidth_plus0p35", "mouthWidth_minus0p35", "smile_0p50", "lipColor_0p50",
         "mouthYPosition_plus0p25", "mouthYPosition_minus0p25", "mouthTilt_plus0p25", "mouthTilt_minus0p25",
         "mouthXPosition_plus0p25", "mouthXPosition_minus0p25", "lipPeakDefinition_0p25", "lipPlump_0p25",
-        "teethWhitening_1p00", "scleraRednessReduction_1p00", "upperEyelidFullnessReduction_1p00"
+        "teethWhitening_1p00", "scleraRednessReduction_1p00"
     ]
 
     private nonisolated(unsafe) static var cachedExecutable: URL?
@@ -66,7 +66,8 @@ final class BeautyExampleRendererProcessTests: XCTestCase {
         let list = try JSONDecoder().decode(CaseList.self, from: firstList.stdout)
         XCTAssertEqual(list.schemaVersion, "beauty.example-renderer.cases.v1")
         XCTAssertEqual(list.cases, Self.expectedCases)
-        XCTAssertEqual(Set(list.cases).count, 99)
+        XCTAssertEqual(Set(list.cases).count, 98)
+        XCTAssertFalse(list.cases.contains("upperEyelidFullnessReduction_1p00"))
 
         let first = try makeFixtureTree(extension: "png")
         defer { removeTree(first.root) }
@@ -91,6 +92,67 @@ final class BeautyExampleRendererProcessTests: XCTestCase {
         let report = try decodeReport(firstReport)
         assertSuccessful(report)
         assertPrivacySafe(firstRun.stdout + firstRun.stderr + firstReport, temporaryRoot: first.root)
+    }
+
+    func testCompiledRendererDefaultBatchOmitsHiddenCompatibilityCase() throws {
+        let executable = try rendererExecutable()
+        let tree = try makeFixtureTree(extension: "png")
+        defer { removeTree(tree.root) }
+        let hiddenCaseID = "upperEyelidFullnessReduction_1p00"
+        let staleOutput = tree.output.appendingPathComponent("old__\(hiddenCaseID).png")
+        try Data("stale output".utf8).write(to: staleOutput)
+        let result = try run(
+            executable,
+            arguments: ["--input", tree.input.path, "--output", tree.output.path,
+                        "--backend", "cpu", "--no-watermark"],
+            environment: ["BEAUTY_EXAMPLE_RENDERER_FAILURE": "render"]
+        )
+        assertDiagnostic(result, code: "render_failed")
+        let reportData = try Data(contentsOf: tree.output.appendingPathComponent(Self.reportName))
+        let report = try decodeReport(reportData)
+        XCTAssertEqual(report.requested, 98)
+        XCTAssertEqual(report.succeeded, 0)
+        XCTAssertEqual(report.failed, 98)
+        XCTAssertEqual(report.skipped, 0)
+        XCTAssertEqual(report.caseIDs, Self.expectedCases)
+        XCTAssertEqual(report.outputs.map(\.caseID), Self.expectedCases)
+        XCTAssertFalse(report.caseIDs.contains(hiddenCaseID))
+        XCTAssertTrue(report.outputs.allSatisfy { $0.status == "failed" && $0.failureCode == "render_failed" })
+        XCTAssertFalse(FileManager.default.fileExists(atPath: staleOutput.path))
+        XCTAssertFalse(hasPNG(in: tree.output))
+        assertPrivacySafe(result.stdout + result.stderr + reportData, temporaryRoot: tree.root)
+
+        let help = try run(executable, arguments: ["--help"])
+        XCTAssertEqual(help.status, 0)
+        let helpText = String(decoding: help.stdout, as: UTF8.self)
+        XCTAssertTrue(helpText.contains("default cases"))
+        XCTAssertFalse(helpText.contains(hiddenCaseID))
+        XCTAssertFalse(helpText.contains("--all"))
+    }
+
+    func testCompiledRendererExplicitUpperEyelidCompatibilityCaseStillRenders() throws {
+        let executable = try rendererExecutable()
+        let tree = try makeFixtureTree(extension: "png", createImage: false)
+        defer { removeTree(tree.root) }
+        try writeOpaquePNG(to: tree.input.appendingPathComponent("portrait.png"))
+        let caseID = "upperEyelidFullnessReduction_1p00"
+        let result = try run(executable, arguments: [
+            "--input", tree.input.path, "--output", tree.output.path,
+            "--case", caseID, "--backend", "cpu", "--no-watermark"
+        ])
+        XCTAssertEqual(result.status, 0)
+        // Live Vision can emit framework information on stderr. The real
+        // exit code, successful report and output below own compatibility;
+        // stderr still participates in the existing privacy assertion.
+        let reportData = try Data(contentsOf: tree.output.appendingPathComponent(Self.reportName))
+        let report = try decodeReport(reportData)
+        assertSuccessful(report)
+        XCTAssertEqual(report.caseIDs, [caseID])
+        XCTAssertEqual(report.outputs.first?.caseID, caseID)
+        let outputID = "portrait__\(caseID).png"
+        XCTAssertEqual(report.outputs.first?.outputID, outputID)
+        XCTAssertFalse(try Data(contentsOf: tree.output.appendingPathComponent(outputID)).isEmpty)
+        assertPrivacySafe(result.stdout + result.stderr + reportData, temporaryRoot: tree.root)
     }
 
     func testCompiledRendererBindsOnlyExactSuccessfulGazeAggregate() throws {
@@ -480,6 +542,22 @@ final class BeautyExampleRendererProcessTests: XCTestCase {
     }
 
     private func writePNG(to url: URL) throws { try writeImage(to: url, type: "public.png") }
+
+    private func writeOpaquePNG(to url: URL) throws {
+        // Local retouch requires opaque input. Keep the existing transparent
+        // fixture used by the other renderer tests unchanged.
+        guard let colorSpace = CGColorSpace(name: CGColorSpace.sRGB),
+              let context = CGContext(data: nil, width: 64, height: 48, bitsPerComponent: 8, bytesPerRow: 256,
+                                       space: colorSpace, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
+        else { throw ProcessTestError.fixture("opaque image context") }
+        context.setFillColor(red: 0.625, green: 0.5, blue: 0.4375, alpha: 1)
+        context.fill(CGRect(x: 0, y: 0, width: 64, height: 48))
+        guard let image = context.makeImage(),
+              let destination = CGImageDestinationCreateWithURL(url as CFURL, "public.png" as CFString, 1, nil)
+        else { throw ProcessTestError.fixture("opaque image encoder") }
+        CGImageDestinationAddImage(destination, image, [kCGImagePropertyColorModel: "RGB"] as CFDictionary)
+        guard CGImageDestinationFinalize(destination) else { throw ProcessTestError.fixture("opaque image write") }
+    }
     private func writeJPEG(to url: URL) throws { try writeImage(to: url, type: "public.jpeg") }
 
     private func writeImage(to url: URL, type: String) throws {

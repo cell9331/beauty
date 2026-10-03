@@ -28,7 +28,7 @@ if not parameters_path.is_file() or parameters_path.is_symlink():
 taxonomy = taxonomy_path.read_text(encoding="utf-8")
 source = parameters_path.read_text(encoding="utf-8")
 for token in (
-    "implemented", "partial", "future", "visual layout", "application lifecycle",
+    "implemented", "partial", "future", "suspended", "visual layout", "application lifecycle",
     "SDK_PARAMETER_INVENTORY_BEGIN", "SDK_PARAMETER_INVENTORY_END",
     "SDK_LEGACY_TAXONOMY_BEGIN", "SDK_LEGACY_TAXONOMY_END",
 ):
@@ -67,7 +67,7 @@ expected = [
     ("脸型", "发际线", "implemented", "hairlineHeight"),
     ("眼睛", "大小", "implemented", "eyeSize"), ("眼睛", "上下", "implemented", "eyeYPosition"),
     ("眼睛", "眼高", "implemented", "eyeHeight"), ("眼睛", "长度", "implemented", "eyeLength"),
-    ("眼睛", "眼距", "implemented", "eyeDistance"), ("眼睛", "去脂", "implemented", "upperEyelidFullnessReduction"),
+    ("眼睛", "眼距", "implemented", "eyeDistance"), ("眼睛", "去脂", "suspended", "upperEyelidFullnessReduction"),
     ("眼睛", "提肌", "implemented", "upperEyelidLift"),
     ("眼睛", "眼瞳大小", "implemented", "pupilSize"),
     ("眼睛", "眼神矫正", "implemented", "gazeCorrection"),
@@ -585,10 +585,12 @@ allowed_backend_paths = {
     # Test-only CPU/Metal byte parity for source-qualified shape controls.
     "BeautySDK/Tests/BeautyCoreTests/RemainingEffectSemanticCandidateTests.swift",
 }
-# Later CPU-only facade regressions are not new backend APIs. Admit their
+# Later facade regressions using existing backend settings are not new APIs. Admit their
 # exact inspected bytes, not their paths in perpetuity; any change must be
 # reviewed again. No production source or new GPU declaration is admitted.
-cpu_test_backend_hashes = {
+audited_test_backend_hashes = {
+    "BeautySDK/Tests/BeautyCoreTests/BeautyUpperEyelidLiveVisionTests.swift":
+        "86dcfa39949c7da35f1a8f16485265a67a5cea26a1797dd84e1a54970bbe5a20",
     "BeautySDK/Tests/BeautyCoreTests/BeautyRenderQualityPublicTests.swift":
         "fb11e74e7dfefece76eefa201c19f169a437ccc9d7fd60aa8ab5563ffa8e77ca",
     "BeautySDK/Tests/BeautyCoreTests/GeneratedSkinTexturePublicOracleTests.swift":
@@ -600,13 +602,18 @@ cpu_test_backend_hashes = {
     "BeautySDK/Tests/BeautyCoreTests/RepairedControlSafetyTests.swift":
         "342f7baeed85577a367a8c1fea0c51a4c7b7d77db07cfb3806cf28c899ccc6ac",
 }
+# Owner-supplied object/lip masks exercise the existing CPU-owned texture
+# stage with CPU and GPU-selected settings; only these audited test bytes pass.
+audited_test_backend_hashes[
+    "BeautySDK/Tests/BeautyCoreTests/BeautySkinTextureHostProtectionTests.swift"
+] = "d88c1ef8eb25a5f2bfc2fb3f75a52f2d33782e6324ffbe6757361d2145e4c890"
 for base in (root / "BeautySDK/Sources", root / "BeautySDK/Tests"):
     if not base.exists():
         continue
     for path in base.rglob("*.swift"):
         match = backend_pattern.search(path.read_text(encoding="utf-8", errors="replace"))
         if match and path.relative_to(root).as_posix() not in allowed_backend_paths:
-            expected = cpu_test_backend_hashes.get(path.relative_to(root).as_posix())
+            expected = audited_test_backend_hashes.get(path.relative_to(root).as_posix())
             if expected and hashlib.sha256(path.read_bytes()).hexdigest() == expected:
                 continue
             raise SystemExit(f"v1.16 GPU API/backend drift in {path.relative_to(root)}: {match.group(0)}")
@@ -850,7 +857,7 @@ PY
     printf '%s\n' 'enum BeautyRenderBackend { case gpu }' > "$fixture/BeautySDK/Sources/Backend.swift"
     expect_failure validate_post_archive "$fixture"
     rm "$fixture/BeautySDK/Sources/Backend.swift"
-    for cpu_test in BeautyEngineMouthNegativeTests BeautyEngineMouthLifecycleTests RepairedControlSafetyTests; do
+    for cpu_test in BeautyEngineMouthNegativeTests BeautyEngineMouthLifecycleTests RepairedControlSafetyTests BeautyUpperEyelidLiveVisionTests BeautySkinTextureHostProtectionTests; do
         cp "$PROJECT_ROOT/BeautySDK/Tests/BeautyCoreTests/$cpu_test.swift" \
             "$fixture/BeautySDK/Tests/BeautyCoreTests/$cpu_test.swift"
         validate_post_archive "$fixture" >/dev/null

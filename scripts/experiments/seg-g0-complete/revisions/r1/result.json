@@ -1,0 +1,15 @@
+{
+  "status": "runner_failed_before_receipt",
+  "exit": 2,
+  "complete": false,
+  "failure_code": "io_or_internal_failure",
+  "exported_review_images": 156,
+  "counts_not_accepted": true,
+  "candidates_run": 0,
+  "bindings": {
+    "run.py": "cb9bfc17876aeacad04fd7bb2b13e903818f6542eb8cd712cfead0959388b30c",
+    "SegG0Tests.swift": "609815b06b6d4231636fd3a0e779afe287e50777c020a5a69f024ab743dae7e7",
+    "README.md": "2385c0c98561f9b21a6825fac61e5ab9a692ada7a4227faa2a0a5f16b1a51f85",
+    "sources.json": "4f643f72175f499858c8a731cbfc28704dfa2fe078f3690a9e09f4b263c01a14"
+  }
+}

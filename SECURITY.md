@@ -1,5 +1,81 @@
 # SECURITY.md
 
+## 2026-10-03 terminal research boundary
+
+The final EYE diagnostic reused existing authorized local inputs in disposable
+package copies. Candidates receive only source pixels, strength and fresh Vision
+eye support; references and evaluation regions remain isolated in test code.
+Images and annotations stay ignored/private; durable receipts retain logical IDs,
+hashes and bounded aggregate metrics only. Child transcripts are not persisted.
+No third-party model was downloaded or executed, and no image was uploaded.
+Both automatic routes are [closed as unmet](docs/RETOUCH_FINAL_DISPOSITION_2026-10-03.md);
+reading industry sources is not authorization to acquire assets or train models.
+
+## 2026-10-03 current batch local inputs
+
+The [current batch tool](docs/CURRENT_BATCH_VALIDATION.md) accepts explicit local
+suites only, with at most four digest-bound upright opaque 8-bit sRGB PNGs, each
+at most 16 MiB and 1,048,576 pixels. Repository-local media/suites must be ignored;
+regular-file checks reject symlinks and unexpected files. These owner-local checks
+do not establish an adversarial concurrent-filesystem sandbox. Regions are used
+only by the comparator, never supplied to the renderer. Staged images stay local.
+Transient request files and renderer reports are removed; durable receipts contain
+logical IDs, hashes, counts and bounded metrics, without regions, private locators
+or raw child transcripts. Child output is bounded in memory and never printed.
+No external assets, network requests, third-party code or production API is added.
+
+## 2026-10-01 suspended upper-eyelid fixture boundary
+
+The effect is `suspended` and default-hidden. Existing explicit calls and safety
+regressions remain; their availability does not qualify natural-image effects.
+The luminance proxy is not tissue-fat or shape truth. On 2026-10-03 the owner
+explicitly reopened literature/open-code research and
+repair planning in v1.25. Pretrained candidates require separate source, license,
+actual-use and local-feasibility checks before asset use. No image upload, model
+download/execution, training, fine-tuning or new runtime access happened in this
+planning step. R2 [MVP acceptance](docs/RETOUCH_MVP_REQUIREMENTS.md) requires
+local independent references and protected-region truth before candidates, grouped
+by source family with no development/holdout leakage. These private inputs and
+annotations stay ignored; durable records contain only logical IDs, hashes and
+aggregates. A correct oracle mask must never become an automatic request input.
+SEG inputs were subsequently created under the owner-authorized G0 work and
+[30 cases are frozen](docs/SEG_G0_FREEZE_2026-10-03.md); EYE inputs remain unprepared.
+The full EYE G0 remains unprepared and is no longer scheduled after terminal
+failure. Seventeen independently generated fictional portraits and one procedural source
+are for owner-local validation only. Source/annotation hashes and regular-file
+checks precede isolated loading. Review media stays in a fresh Git-ignored private
+directory; durable receipts contain no media, regions, private locators or child
+transcripts. Holdouts were used for G0 controls only, never candidate tuning. See
+[research boundaries](docs/RETOUCH_RESEARCH_AND_V1_25_2026-10-03.md).
+
+The subsequent [SEG development](docs/SEG_DEVELOPMENT_2026-10-03.md) read only the
+six frozen development families; candidate holdout and reject media were not loaded.
+Pure candidate files accept canonical pixels/dimensions and actual face bounds;
+S2 additionally receives the current request's existing private face observation.
+No truth masks, IDs, groups, paths, second detector call or external asset enters
+the automatic candidate. The adapter exists only in disposable package copies.
+Durable receipts and source snapshots contain aggregates/hashes only. The four
+versions are rejected and the SEG budget is exhausted; production remains unchanged.
+
+The new live Vision regression uses an owner-authorized generated portrait
+and a second previously authorized natural-style negative, both kept in the
+ignored local fixture directory. The test binds each input's separate
+SHA-256 and a 16 MiB input limit, accepts only a local `.png` basename, rejects
+symbolic-link resolution and reports fixed fixture errors. Source geometry,
+calibration pixels and intermediate masks remain request-local; the permanent
+test exports no media. Repository evidence contains only the logical fixture
+identity, recipe and aggregate assertions. Fixture calibration is not an SDK
+input feature and adds no production file, network or model access.
+
+The separate [natural-background challenge](scripts/experiments/upper-eyelid-natural-challenge/README.md)
+copies only these two hash-verified, bounded, Git-ignored fixtures into a
+disposable local package. It rejects source/ancestor symbolic links, disables
+media export and fixture overrides, and never injects a test into the working
+tree. Child output stays in a bounded private memory buffer; only aggregate
+counts/status and fixed error codes are printed. Temporary copies are removed
+on normal completion, failure or handled interruption. The immutable Swift
+recipe is durable; image bytes and child transcripts are not.
+
 ## 2026-09-29 texture exclusion input boundary
 
 The owner-supplied binary exclusion mask is validated for positive dimensions,
@@ -224,14 +300,13 @@ At that audit date, `maximumInputByteCount` was not an enforced decoded-input
 guard; the host had to bound encoded files. The new in-memory entry above
 checks its encoded bytes; the SDK still does not read file paths.
 
-## v1.24 upper-eyelid change boundary
+## Historical upper-eyelid change boundary (2026-09-24)
 
-The editor changes one package-only correction gain inside already approved
-per-eye support. It does not admit new pixels or eyes, widen a hard envelope,
-alter alpha, add a model/network path, or expose source RGB, masks, landmarks,
-private fixture locations, or per-pixel diagnostics. Existing source-exact
-rejection and collision behavior remains the trust boundary. Durable v1.24
-evidence records aggregate ratios and test counts only.
+The v1.24 gain experiment did not expand per-eye support, expose raw fields or
+add a model/network path. Its gain is superseded, while the request-local and
+immutable-source trust boundaries remain. The aggregate-only historical
+record is preserved in the [technical history](docs/history/upper-eyelid-technical-history-2026-10-01.md);
+it is not authorization to continue effect work.
 
 ## Cross-face mapping isolation (2026-09-23)
 
@@ -348,14 +423,15 @@ retains actual measured protection values instead of inventing zero maxima.
 
 ## Current Post-Archive Audit Status
 
-v1.21 activates the existing no-model upper-eyelid mechanics through one
-owner-local scalar. This adds no external trust boundary: support, semantic
-envelopes, pixels, proposals, and editor summaries stay package-only and
-request-local; only `upperEyelidFullnessReduction` crosses the public boundary.
-The owner accepts weak current visual quality, while the security posture
-continues to fail closed on missing or untrusted per-eye support.
-The final archive-first no-skip gate passed `816/0/0` with every opt-in exactly
-once and zero skips.
+The suspended upper-eyelid explicit compatibility route retains one owner-local
+scalar and the existing trust boundary. Support, envelopes, pixels, proposals
+and editor summaries remain package-only and request-local; only
+`upperEyelidFullnessReduction` crosses the public parameter boundary. Missing
+or untrusted per-eye support fails closed, but this containment does not prove
+correct anatomical selection or effective natural-image reduction. The earlier
+v1.21 provisional acceptance and `816/0/0` gate are
+[historical records](docs/history/upper-eyelid-technical-history-2026-10-01.md),
+not the current effect disposition.
 
 The v1.17 archive at `afb04b4` preserves historical Metal-available evidence
 (focused `12/0/0`, full `765/0/0`). Post-archive remediation has restored public
@@ -414,7 +490,7 @@ research-only data and derived models cannot supply that permission.
 | Generated CPU oracle → gate | regular in-tree Swift sources, in-memory fixtures, no media/location/private diagnostics, CPU-only tokens, bounded focused execution |
 | Automated image input/output oracle → milestone | generated in-memory or rights-approved ignored-local input, actual pixel/metadata assertions, temporary output, aggregate-only durable result; no physical-device dependency |
 | Public generic result → concurrency boundary | `BeautyResult` is `Sendable` only when `Output: Sendable`; public field-preserving transfer is tested, while unconditional generic sendability is rejected by the boundary mutation self-test |
-| Upper-eyelid public intent → experimental mechanics | positive finite scalar only; selected request-local observation; per-eye brow/eye envelope; source-derived relief approval; bounded channel deltas; immutable-source composition; no model/network/persistent anatomy |
+| Suspended upper-eyelid explicit intent → retained experimental mechanics | positive finite scalar only; selected request-local observation; per-eye brow/eye envelope; source-derived relief approval; bounded channel deltas; immutable-source composition; no model/network/persistent anatomy |
 
 ## 3. Archive Entry and Extraction Safety
 
@@ -514,20 +590,21 @@ artifact.
 - Teeth coverage remains fixed to its qualified inner aperture. Sclera work
   preserves iris, pupil, highlight, lash/lid, skin, caruncle, exterior, alpha,
   and colored-interior protections.
-- Provisional `去脂` is exposed only as `upperEyelidFullnessReduction` and
-  cannot alias existing eye, brow, smoothing, eye-bag, or dark-circle behavior.
-  Internal experimental names and weak-effect history are not public support or
-  efficacy claims.
+- Suspended `去脂` retains explicit compatibility only through
+  `upperEyelidFullnessReduction`; default renderer discovery/batch omits it.
+  It cannot alias eye, brow, smoothing, eye-bag or dark-circle behavior.
+  Its brightness-proxy approval, experimental names and retained safety tests
+  are not tissue/shape truth or natural-image efficacy claims.
 - Phase 76 support remains package-only and request-local. A mapped eye envelope
   can constrain ownership but cannot authorize fullness; an injected semantic
-  owner must approve each eye independently. Missing, malformed, ambiguous,
+  owner must approve each eye's image-space edit independently. Missing, malformed, ambiguous,
   closed, blinking, occluded, non-finite, duplicate, out-of-bounds, or
   outside-envelope support returns a typed source-exact no-op.
 - The single-observation support handoff calls Vision once and releases support
   after the request. Descriptions and mirrors contain only aggregate status,
   confidence, counts, and reason codes; raw support arrays, coordinates,
   landmarks, masks, pixels, and private locators never enter durable evidence.
-- Phase 77’s editor accepts only independently approved per-eye support and
+- The retained editor accepts only independently approved per-eye support and
   clamps every source-safe channel delta before proposal emission. It never
   writes raw pixels or masks to diagnostics, and rejected eyes remain
   source-exact without affecting an eligible peer.
@@ -767,103 +844,51 @@ release equivalence. UI/Demo,
 simulator/device, performance, commercial, packaging, shipping, launch, and
 release-readiness claims remain outside the trust boundary.
 
-## v1.19 Phase 80 Candidate-v3 Support Trust Boundary
+## Retained Upper-Eyelid Support and Relief Trust Boundary
 
-Candidate v2 narrowed upper-eyelid ownership from an eye-aligned rectangle to a
-same-side brow-to-lid permitted band. The resolver rejects missing/malformed
-brows, implausible or crossed gaps, insufficient horizontal overlap, malformed
-dimensions, duplicate pixels, invalid Q16 weights, and pixels or hard envelopes
-outside the permitted region. A semantic owner remains mandatory; eye/brow
-landmarks and the feather helper cannot authorize fullness by themselves.
+The same-side brow-to-lid envelope rejects missing/malformed brows, implausible
+or crossed gaps, insufficient horizontal overlap, invalid dimensions, duplicate
+pixels and out-of-envelope support. Every accepted pixel carries request-local
+Q16 ownership no greater than its elliptical feather ceiling. An independent
+per-eye owner remains mandatory; landmark placement alone cannot approve an edit.
 
-Every accepted pixel carries request-local soft ownership no greater than its
-elliptical boundary ceiling. Weights, masks, landmarks, raw pixels, stable IDs,
-and support geometry have no Codable/public surface and are released with the
-request. Diagnostics expose only side/status/confidence/reason and aggregate
-pixel counts. The immutable-source composer still owns exterior/protected
-bytes, alpha, foreign/duplicate units, and collision-to-source behavior.
+The retained analyzer's luminance samples, integral arrays, fitted plane and
+scores remain package-only, non-Codable and request-local. The editor may read
+complete 3×3 source neighborhoods, including protected neighbors, to guide
+corrections; those reads do not authorize proposals outside the approved eye.
+No derived field is cached, logged, exported or sent to a model/network service.
+The current brightness proxy can admit only within the existing envelope and
+pose/occlusion guards; it cannot infer fat, expand support, move geometry or
+authorize the peer eye. Low scores and malformed support fail closed.
 
-Candidate v3 retains that ownership boundary and changes only the editor's
-request-local correction: one shared, non-positive, clipping-safe scalar is
-used for the accepted eye before Q16 feathering. This removes the v2 path where
-neighboring source-derived corrections could flip sign while preserving the
-same fail-closed ownership and immutable-source composer.
+`BeautyLocalRetouchCompositionOwner` still owns exterior/protected bytes,
+alpha/metadata, foreign or duplicate units and collision-to-source behavior.
+Historical candidate-v3/v4 formulas and failed evidence are summarized in the
+[technical history](docs/history/upper-eyelid-technical-history-2026-10-01.md).
+Their old public-absence statements describe archived milestones; the explicit
+compatibility API exists and remains subject to these trust boundaries.
 
-The rejected v1 private bundle/review and the automated-failed v2 bundle remain external. Durable remediation
-evidence contains only fixed test counts, normalized dispositions, and public
-inventory facts; it does not retain private paths, media, geometry, metric rows,
-rights details, reviewer identity, or freeform text.
+## Inactive Upper-Eyelid Prediction Trust Boundary
 
-## v1.19 Phase 80 Candidate-v4 Relief Trust Boundary
+The 2026-08-25 learned proposal did not create a model resource, Core ML route,
+training pipeline or external access. The package-only prediction validator is
+retained without a registered predictor; the explicit compatibility facade
+uses the separate no-model implementation. The inactive validator checks
+canonical bytes, dimensions, containment, unique support and protected/support disjointness
+before any injected predictor call, then checks side, finite scores, exact
+sample ownership, alpha ceiling, boundary zero, bounded/smooth flow and tone,
+and positive local Jacobian. Invalid or absent predictions return aggregate
+rejection and no proposal. Raw tensors, crops, geometry and pixels remain
+request-local and absent from public/Codable diagnostics.
 
-Candidate v4 reads source RGB only for the already admitted request-local
-brow-to-lid support. Its derived luminance samples, integral arrays, fitted
-plane, convexity score, corrections, and pixel proposals are non-Codable,
-package-only values released with the request. They are not logged, cached,
-exported, embedded in decisions, or sent to a model or network service.
-
-Source-derived relief may authorize applicability only inside the independent
-eye/brow envelope and existing pose/occlusion guards. It cannot expand support,
-move geometry, authorize a peer eye, or create a public `去脂` route. Malformed
-dimensions, duplicate/out-of-bounds pixels, invalid weights, unsolved planes,
-and sub-threshold or negative relief fail closed. Immutable-source composition
-continues to own exterior, protected, alpha, foreign, duplicate, and collision
-pixels.
-
-Public web examples are concept references only. They are not downloaded into
-the repository, used as fixtures or training data, or credited as qualification
-evidence. Only the previously authorized private originals entered the frozen
-external v4 gate; its terminal durable record remains aggregate-only.
-
-## v1.19 Learned Upper-Eyelid Model Trust Boundary
-
-Candidates v1-v4 are terminal and their source-derived scores cannot authorize
-an owner-local edit. Plan 80-19 admits a learned model only after data rights
-explicitly cover the actual owner-only use: ML research/training, retouched
-derivatives, target-author ownership, retention, and local derived-model use.
-Compiled-weight redistribution rights are not a current gate because model
-distribution is prohibited. FFHQR, PPR10K, or another non-commercial/research-
-limited corpus may enter only an isolated non-commercial local research path
-under its upstream terms; it cannot authorize commercial use, external transfer,
-or a future distributed checkpoint and still does not supply the exact
-upper-eyelid-fullness targets required for qualification.
-
-The future model resource is owner-local only, versioned, checksum-pinned, size-
-reviewed, and centrally resolved; caller paths, remote downloads, dynamic model
-replacement, and unknown third-party weights are rejected. The model receives
-only request-local canonical per-eye RGB plus permitted/protected priors. Crops,
-tensors, landmarks, masks, flow, tone, confidence, uncertainty, and pixels are
-released with the request and never enter Codable/public diagnostics or durable
-evidence. Durable records allow only aggregate counts, normalized dispositions,
-tool/model digests, and license-approval status.
-
-Any later proposal to monetize, publish, deliver to a customer, register a
-package, ship an App, or transfer a model/weight invalidates the current license
-admission and requires a new audit of every portrait, target, annotation,
-checkpoint, derivative, and resource.
-
-Prediction validation fails closed on resource absence or mismatch, unsupported
-platform, compilation failure, malformed shape, NaN/Inf, low confidence, high
-uncertainty, out-of-support alpha/flow/tone, non-zero protected/boundary flow,
-excess displacement, or fold-over risk. Eye aperture, lash, iris/pupil, sclera,
-brow, protected crease, exterior, overlap, and alpha remain immutable-source
-owned. The learned field never enters the public geometry pipeline or retained
-`Warp.metal`.
-
-Plan 80-20 implements the no-model portion of this boundary without importing
-Core ML or adding a resource. Requests independently validate canonical bytes,
-dimensions, containment, unique support, and protected/support disjointness
-before any predictor call. Predictions validate side, finite scores, exact
-sample ownership, alpha ceiling, feather-boundary zero, bounded/smooth flow,
-positive local Jacobian, and bounded/smooth tone. Diagnostics expose only side,
-normalized reason, and accepted sample count; validated tensors remain request-
-local. The rejected heuristic is available only under explicit
-`BeautyExperimentalUpperEyelid*` package names and has no public/facade route.
-
-The owner canceled the remaining `去脂` data/model path on 2026-08-25. No
-portrait corpus, target, checkpoint, compiled weight, or model resource is to
-be admitted under v1.19; retained experimental source does not reopen any
-privacy or resource boundary. A future retry requires a new explicit audit.
+There is no current task to obtain portraits, labels, checkpoints or weights.
+The historical learned-only recommendation and qualification workflow are not
+current authority; failed candidates do not prove every no-model method
+impossible or authorize a replacement model. An explicit owner request would
+need a new scoped design and actual-use rights review. Existing owner-local
+restrictions still prohibit external transfer and prevent research-only terms
+from being treated as general commercial permission. Historical source material
+is linked from the [technical history](docs/history/upper-eyelid-technical-history-2026-10-01.md).
 
 ## Phase 90 Chin Repair and Contour Deferral Trust Boundary
 

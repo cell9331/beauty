@@ -1,0 +1,207 @@
+{
+  "all_candidates_failed": true,
+  "bindings": {
+    "Candidates.swift": "e07ba7ca838581c29af5d110119ee76314c3ebc755f2f1bc6964f901defe965e",
+    "Evaluation.swift": "ed85ce12344c99bcc7947fcd73e8c902efcb3e49a61a5b0d1cb65b9d234f68e8",
+    "README.md": "1591445e09d68807a43cf3021934e3cac649503f421dc65dcec3021abe0aa0f7",
+    "TerminalTests.swift": "863b9a3944aefa2e8680d7062cf7dd566af3cfdb7b540b82848d4c41ed8ef43d",
+    "child_runner": "66efda273bbf10684a9ecfb74a6f41c9bd7b9b50dc6a25d3c2212ac286c89d14",
+    "fixture_runner": "6f4a07637edf8fd2d13331036759e83f04d120edc0d4658cfb5b5b9ddf6bdd36",
+    "frozen_pilot": "59ca3eb338120cbf7f971d5bdb0b021b4f33262bc832004a859159eaf8d6001c",
+    "run.py": "35fa12ce7befd75ea2106f5deeea1be0b11891374a690b624cb862f4f2d53359",
+    "sdk_source_tree": "6a007ec300caa641c66c9e953b865b66eada0a53bdf243bf6dd8b49109d00bf0"
+  },
+  "diagnostic_lines": [],
+  "execution_valid": true,
+  "exit_code": 1,
+  "expected_tests": 3,
+  "qualified": false,
+  "rows": [
+    {
+      "hard": 0,
+      "hp": [
+        0,
+        0
+      ],
+      "improvement": [
+        0,
+        0
+      ],
+      "kind": "candidate",
+      "mode": "E1-v2",
+      "numeric": false,
+      "output_sha256": "bbaeb0e553e02a5a5b225541eccd50a28beaa9f1e9e9a738a6ace64999448d77",
+      "reference_sha256": "50913e61399efbadf7615e54133fff5cdd9c4170a39faaea526a2e39af6c6013",
+      "reversal": 0,
+      "source_sha256": "bbaeb0e553e02a5a5b225541eccd50a28beaa9f1e9e9a738a6ace64999448d77",
+      "strength": 0.5
+    },
+    {
+      "hard": 0,
+      "hp": [
+        0,
+        0
+      ],
+      "improvement": [
+        0,
+        0
+      ],
+      "kind": "candidate",
+      "mode": "E1-v2",
+      "numeric": false,
+      "output_sha256": "bbaeb0e553e02a5a5b225541eccd50a28beaa9f1e9e9a738a6ace64999448d77",
+      "reference_sha256": "50913e61399efbadf7615e54133fff5cdd9c4170a39faaea526a2e39af6c6013",
+      "reversal": 0,
+      "source_sha256": "bbaeb0e553e02a5a5b225541eccd50a28beaa9f1e9e9a738a6ace64999448d77",
+      "strength": 1
+    },
+    {
+      "case_id": "N01",
+      "changed_pixels": 0,
+      "kind": "negative",
+      "mode": "E1-v2",
+      "output_sha256": "50913e61399efbadf7615e54133fff5cdd9c4170a39faaea526a2e39af6c6013",
+      "source_sha256": "50913e61399efbadf7615e54133fff5cdd9c4170a39faaea526a2e39af6c6013"
+    },
+    {
+      "case_id": "N02",
+      "changed_pixels": 0,
+      "kind": "negative",
+      "mode": "E1-v2",
+      "output_sha256": "3978a2f28c77a563963331a877618477096846640e37b7f3eb263ab3d4a16022",
+      "source_sha256": "3978a2f28c77a563963331a877618477096846640e37b7f3eb263ab3d4a16022"
+    },
+    {
+      "kind": "outcome",
+      "mode": "E1-v2",
+      "negative_changes": 0,
+      "numeric": false,
+      "visual": "not_qualified"
+    },
+    {
+      "hard": 0,
+      "hp": [
+        0,
+        0
+      ],
+      "improvement": [
+        0,
+        0
+      ],
+      "kind": "candidate",
+      "mode": "E2-v1",
+      "numeric": false,
+      "output_sha256": "bbaeb0e553e02a5a5b225541eccd50a28beaa9f1e9e9a738a6ace64999448d77",
+      "reference_sha256": "50913e61399efbadf7615e54133fff5cdd9c4170a39faaea526a2e39af6c6013",
+      "reversal": 0,
+      "source_sha256": "bbaeb0e553e02a5a5b225541eccd50a28beaa9f1e9e9a738a6ace64999448d77",
+      "strength": 0.5
+    },
+    {
+      "hard": 0,
+      "hp": [
+        0.007246045488789597,
+        0
+      ],
+      "improvement": [
+        0.0025785278949835844,
+        0
+      ],
+      "kind": "candidate",
+      "mode": "E2-v1",
+      "numeric": false,
+      "output_sha256": "14aceac370bf33ef4d8ecf2975c09037a91ad854436a9ed747567248ddd2168a",
+      "reference_sha256": "50913e61399efbadf7615e54133fff5cdd9c4170a39faaea526a2e39af6c6013",
+      "reversal": 0,
+      "source_sha256": "bbaeb0e553e02a5a5b225541eccd50a28beaa9f1e9e9a738a6ace64999448d77",
+      "strength": 1
+    },
+    {
+      "case_id": "N01",
+      "changed_pixels": 0,
+      "kind": "negative",
+      "mode": "E2-v1",
+      "output_sha256": "50913e61399efbadf7615e54133fff5cdd9c4170a39faaea526a2e39af6c6013",
+      "source_sha256": "50913e61399efbadf7615e54133fff5cdd9c4170a39faaea526a2e39af6c6013"
+    },
+    {
+      "case_id": "N02",
+      "changed_pixels": 45,
+      "kind": "negative",
+      "mode": "E2-v1",
+      "output_sha256": "7e5fef482b7df4f8f60d2b85f14473ee2b04d407633ce75ebbacb6410b679a35",
+      "source_sha256": "3978a2f28c77a563963331a877618477096846640e37b7f3eb263ab3d4a16022"
+    },
+    {
+      "kind": "outcome",
+      "mode": "E2-v1",
+      "negative_changes": 1,
+      "numeric": false,
+      "visual": "not_qualified"
+    },
+    {
+      "hard": 0,
+      "hp": [
+        0,
+        0
+      ],
+      "improvement": [
+        0,
+        0
+      ],
+      "kind": "candidate",
+      "mode": "E2-v2",
+      "numeric": false,
+      "output_sha256": "bbaeb0e553e02a5a5b225541eccd50a28beaa9f1e9e9a738a6ace64999448d77",
+      "reference_sha256": "50913e61399efbadf7615e54133fff5cdd9c4170a39faaea526a2e39af6c6013",
+      "reversal": 0,
+      "source_sha256": "bbaeb0e553e02a5a5b225541eccd50a28beaa9f1e9e9a738a6ace64999448d77",
+      "strength": 0.5
+    },
+    {
+      "hard": 0,
+      "hp": [
+        0,
+        0
+      ],
+      "improvement": [
+        0,
+        0
+      ],
+      "kind": "candidate",
+      "mode": "E2-v2",
+      "numeric": false,
+      "output_sha256": "bbaeb0e553e02a5a5b225541eccd50a28beaa9f1e9e9a738a6ace64999448d77",
+      "reference_sha256": "50913e61399efbadf7615e54133fff5cdd9c4170a39faaea526a2e39af6c6013",
+      "reversal": 0,
+      "source_sha256": "bbaeb0e553e02a5a5b225541eccd50a28beaa9f1e9e9a738a6ace64999448d77",
+      "strength": 1
+    },
+    {
+      "case_id": "N01",
+      "changed_pixels": 0,
+      "kind": "negative",
+      "mode": "E2-v2",
+      "output_sha256": "50913e61399efbadf7615e54133fff5cdd9c4170a39faaea526a2e39af6c6013",
+      "source_sha256": "50913e61399efbadf7615e54133fff5cdd9c4170a39faaea526a2e39af6c6013"
+    },
+    {
+      "case_id": "N02",
+      "changed_pixels": 37,
+      "kind": "negative",
+      "mode": "E2-v2",
+      "output_sha256": "180dadba3a4249a9f9b11601cb3050839f5a047e2223a4128d40fc6cbb45c933",
+      "source_sha256": "3978a2f28c77a563963331a877618477096846640e37b7f3eb263ab3d4a16022"
+    },
+    {
+      "kind": "outcome",
+      "mode": "E2-v2",
+      "negative_changes": 1,
+      "numeric": false,
+      "visual": "not_qualified"
+    }
+  ],
+  "schema": "beauty.retouch-terminal.v1",
+  "stage": "candidates",
+  "swift_exit": 0
+}

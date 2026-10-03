@@ -1,0 +1,15 @@
+{
+  "bindings": {
+    "inventory.json": "4012456be300bd5198cb64b7acd7c4b800b6191ec5aec6da1c7417eb348dd817",
+    "pixels.swift": "ba9ba3f788b54ea61e9401e5f9736c0616e244d668d2c37902fda68adf332d02",
+    "run.py": "d3b920f618e5915fe4478ff6dec097c772c9e8eb7f8a739e9405dd33d626748f",
+    "test_batch.py": "ea7c241db2e5b586aa4e773465291862eb76626ae80d3ffc8bb491570fdae2e9"
+  },
+  "claim": "tool_contract_only",
+  "failures": 0,
+  "native_file_cases": 3,
+  "native_pixel_controls": 8,
+  "schema": "beauty.current-batch.tool-verification.v1",
+  "skips": 0,
+  "tests": 16
+}

@@ -1,5 +1,55 @@
 # PRODUCT_SENSE.md
 
+## Current owner-local batch validation (2026-10-03)
+
+Use `python3 -B scripts/current-batch/run.py` for the current default inventory
+and declared pixel checks; [suite examples and result meanings](scripts/current-batch/README.md)
+cover custom local inputs. The built-in input is a no-face control, not a portrait
+quality assessment. Missing oracles are explicitly unverified. The old 75-case
+wrapper remains historical and is not the current integration entry point.
+
+## Current upper-eyelid disposition (2026-10-03)
+
+`去脂` remains `suspended`, unqualified and default-hidden. The owner-authorized
+v1.25 attempt narrowed the target to automatic eyelid tone correction and
+visible-boundary skin-colored patch protection. Both exhausted their original
+two-method/four-version budgets without qualification. Under the owner's latest
+stop-at-the-boundary instruction, the [terminal disposition](docs/RETOUCH_FINAL_DISPOSITION_2026-10-03.md)
+closes both as undelivered, with no automatic continuation. No tone effect or
+automatic object detector is newly available. Hiding and compatibility do not
+count as implementing either automatic goal.
+
+The retained implementation performs bounded upper-eyelid luminance correction
+inside observed per-eye support. It does not identify fat or measure tissue
+volume. Its brightness-based admission can confuse lighting with the target;
+on the fixed natural-background challenge, admitting both eyes in a candidate
+still left too little effective correction after reconstruction. Loosening
+that constraint restored visible artifacts. Controlled dome/flat, protection
+and calibrated live Vision tests prove their stated pixel behavior, not a
+usable natural-portrait effect. Generated provenance is not the cause of the
+failure, and further parameter tuning is not known to solve it. The
+[research record](docs/UPPER_EYELID_AND_SKIN_SEMANTICS_RESEARCH.md) and
+[quality evidence](QUALITY_SCORE.md) retain the concrete results.
+
+The 77-field API retains `upperEyelidFullnessReduction`, its zero default,
+range, Codable behavior, explicit still-image calls and safety regressions.
+API compatibility does not mean effect acceptance. Of 99 registered renderer
+cases, 98 appear in the default catalog and batch. The old
+`--case upperEyelidFullnessReduction_1p00` remains an explicit diagnostic call;
+omitting `--case` selects the default batch. Older wrappers with frozen
+inventories are historical artifacts, not guaranteed current entry points.
+This repository has no active application UI to hide.
+
+The restart and terminal closure are recorded in [PLANS](PLANS.md). Reopening
+requires an explicit owner request with new scope and a falsifiable hypothesis
+or new information/resources. General requests to continue do not restart it;
+no learned architecture, need for self-training or eventual success is presumed.
+
+The [v1.21 public activation](plans/history/completed-04.md#c-2026-08-25-v1-21-provisional-upper-eyelid-public-activation),
+[v1.24 mechanics receipt](.planning/V1.24-UPPER-EYELID-CURRENT.md) and
+[earlier failing-branch receipt](.planning/milestones/v1.18-phases/79-conditional-productization-and-sdk-only-closeout/79-VERIFICATION.md)
+remain historical evidence, not current effect approval or development orders.
+
 ## 2026-09-29 owner-supplied texture protection
 
 The owner can pass a request-local binary `BeautyTextureExclusionMask` with a
@@ -11,179 +61,62 @@ still changes. The host supplies the mask in the upright image grid after
 input orientation and mirroring. The SDK does not discover all such objects
 automatically; other requested effects have separate protection contracts.
 
-## 2026-09-28 qualified final shape controls
+The [2026-10-03 finite feasibility probe](docs/TEXTURE_SEMANTIC_FEASIBILITY_2026-10-03.md)
+rejected the single source-periodicity candidate: it also stopped valid skin
+texture. General unmasked automatic object protection remains unqualified. The subsequent v1.25 finite patch-domain repair also rejected all four versions
+and is now closed without automatic delivery. Host masks remain an assisted
+capability; they are not credited as automatic recognition. No arbitrary-object or universal unknown-input
+rejection guarantee is made, and identical-observation ambiguity remains.
+The existing eye/lip zones are coarse guards, not anatomical segmentation;
+a new deep-skin low-contrast lip outside that zone failed exact protection.
+Known critical feature pixels must also be included in the host mask when exact
+texture preservation is required. The failed probe remains separate from
+bounded SDK acceptance. The [host integration guide](docs/HOST_TEXTURE_PROTECTION.md)
+and new public-path regression now verify the object + complete lip union on
+that same generated source: both stay exact while the other cheek meets the
+frozen smoothing/sharpening direction thresholds. This supplies independent
+host information; coarse automatic feature protection remains unqualified.
 
-The owner-local still-image `wholeFaceYPosition` and `wholeFaceXPosition`
-move the complete visible generated head in signed directions while keeping
-eyes and mouth rigid. They act only when a single connected head is separated
-from a uniform background; extra foreground objects or ambiguous portraits
-remain unchanged. `philtrumLength` moves the visible upper lip relative to
-the nose in both directions when the source lip band matches the observed
-location; absent or offset bands exit unchanged. All three rows are
-`implemented` within these generated-image 2D admission ranges. No 3D
-geometry, general subject masking, or general lip segmentation is claimed.
+## Current qualified 2D shape controls (2026-10-01)
 
-## 2026-09-28 admitted outer submental tiers
+The original 15 additional controls are `implemented` within the owner-local
+generated-image domains below. The [final qualification table](plans/history/2026-10/A-2026-09-27-remaining-effect-qualification.md)
+owns detailed positive/negative/protection evidence; [taxonomy](docs/SDK_EFFECT_TAXONOMY.md)
+owns each status. Unsupported image classes remain limitations rather than
+uncompleted requirements for these bounded qualifications.
 
-`doubleChinReduction` reduces a generated continuous outer submental bulge;
-Pro reduces its visible depth and area further without a sharp chin edge.
-Two skin values and two bulge depths pass. Flat chins, internal dark folds
-without an outer protrusion, and detached light collars remain exact after
-source-continuity admission, with CPU/Metal parity and upper-face protection.
-Both rows are `implemented` for this owner-local generated-image 2D outer
-contour class. They do not identify internal fat or guarantee all neck forms.
+| Controls | Qualified still-image behavior and admission boundary |
+| --- | --- |
+| `wholeFaceXPosition`, `wholeFaceYPosition` | Signed rigid translation of one connected visible head against a uniform background, preserving eye/mouth widths, eye spacing and foreground area. Detached foreground objects or ambiguous support exit source-exact. |
+| `wholeFaceTilt` | Signed 2D movement of eye/lip lines, crown and chin on the tested generated portraits, with eye-spacing and exterior protection. No depth estimate is supplied. |
+| `wholeFaceSymmetry` | Reduction of source/observation-matched lower-contour width imbalance; symmetric negatives remain exact, with eye/mouth/central-face protection. |
+| `headSmall`, `headWrap`, `cranialCrownHeight` | Visible full-head reduction, increased hair/face width ratio, and signed visible hair-cap height changes respectively. Tested hair continuity and feature protection apply; headWrap requires a coherent high-contrast hair cap and rejects hairless/low-contrast/short-band negatives. |
+| `hairlineHeight`, `foreheadHeight` | Signed source hair/skin-boundary displacement and its inverse forehead-gap change. High-contrast dark-hair/light-skin flat and wavy boundaries are admitted; hairless, low-contrast and brow-overlap negatives exit exact. Equal opposing requests cancel. |
+| `midfaceLength`, `philtrumLength`, `lowerFaceLength` | Signed visible eye/nose, nose/upper-lip and lip/chin proportion changes with feature protection. Philtrum requires registered source/observed upper-lip support; missing or offset lip bands exit exact. Missing required nose/lip observations also exit exact. |
+| `faceShortening` | Full visible head shortening on matched long-face positives; matched short-face negatives remain exact, with eye/mouth width and nose protection. |
+| `doubleChinReduction`, `doubleChinReductionPro` | Reduction of a continuous outer submental skin bulge, with additional depth/area reduction for Pro. Flat chins, internal shadow folds without an outer bulge and detached light collars remain exact. |
 
-## 2026-09-28 admitted lower-face proportion
+These are image-plane effects. General hair/lip/skin segmentation, skull-depth
+measurement and internal-fat recognition have not been qualified. Neutral,
+repeatability, metadata, protection and typed-failure checks apply as listed in
+the owning qualification record; source admission can deliberately return an
+unchanged image. Pixel-buffer/provider mechanics do not extend the qualified
+still-image domain.
 
-`lowerFaceLength` changes the visible lip-to-chin gap in both signed
-directions on two skin values and three generated lip/chin-height forms.
-The visible upper lip, face features and distant background are protected;
-the lower contour remains continuous. Missing lip observation exits exact.
-The row is `implemented` for owner-local generated-image 2D proportion.
-`philtrumLength` now covers several aligned nose/lip forms with nose
-protection, but a small offset lip still has a one-direction no-response;
-that row remains `partial`.
-
-## 2026-09-28 admitted forehead and midface proportions
-
-Positive `foreheadHeight` now moves an observed high-contrast hair/skin
-boundary in the direction that changes its gap to the visible eyes. Flat and
-wavy generated boundaries pass both signs; brows, eyes and mouth stay exact,
-while hairless and low-contrast inputs exit unchanged. Equal opposing
-`foreheadHeight` and `hairlineHeight` requests cancel. CPU and Metal agree.
-`midfaceLength` changes the eye-to-nose share of eye-to-lip distance in both
-directions on two skin and two nose-length variants; the visible brow/eye and
-lip structures remain exact, and absent nose observation exits unchanged.
-Both rows are `implemented` for owner-local generated-image 2D proportion
-effects; neither identifies skull depth or broad population behavior.
-
-## 2026-09-28 admitted 2D facial symmetry
-
-`wholeFaceSymmetry` now has a source- and observation-matched generated
-portrait positive on two skin values: visible lower-contour width imbalance
-decreases while the eyes, mouth and central face remain unchanged. A matched
-symmetric portrait remains exact, with repeat, no-face, exterior, alpha and
-contour-continuity checks. The row is `implemented` for owner-local 2D
-contour balance; it makes no 3D face claim.
-
-## 2026-09-28 admitted head silhouette behavior
-
-`headSmall` now has generated portrait evidence for visible full-head width
-and height reduction across two skin and two head-shape variants, with eye,
-mouth and nose protection. Signed `cranialCrownHeight` changes the visible
-hair cap height in both directions while preserving the tested face interior.
-Hair silhouette continuity, neutral, no-face, exterior, alpha, repeat and
-extent are checked. These two rows are `implemented` for owner-local
-image-plane effects; neither identifies a skull or segments hair. `headWrap`
-now also improves the visible hair/face width ratio on those admitted sources,
-while hairless, low-contrast and short-forehead-band inputs stay exact after
-source hair-cap admission. Its CPU and Metal still-image results agree. That
-row is `implemented` within the same high-contrast generated-image scope.
-
-## 2026-09-28 source-contour submental behavior
-
-On a generated portrait with a coherent skin silhouette protruding below the
-selected chin box, `doubleChinReduction` now reduces visible bulge depth and
-area. Pro reduces both further. Two skin values and two protrusion depths
-pass; matched flat chins remain source-exact, and the eyes, mouth and distant
-background are protected. This owner-local class does not cover an internal
-shadow fold without a protruding outer contour. Both rows remain `partial`
-while that phenotype and broader negative/protection inputs are reviewed.
-
-## 2026-09-28 source-boundary hairline behavior
-
-For still images with a coherent dark hair cap and lighter forehead, signed
-`hairlineHeight` now moves the visible source hair/skin boundary locally.
-Two generated skin values, flat and wavy boundaries pass both directions,
-while eyes, brows and mouth remain source-exact and adjacent output columns
-stay continuous. Generated hairless, low-contrast and short forehead-band
-negatives are unchanged, as are requests with an observed brow too close to
-the effect area. This qualifies the row as `implemented` for an admitted
-high-contrast still-image class. It does not establish general hair
-segmentation or an effect on light or low-contrast hair.
-
-## 2026-09-28 generated portrait effect qualification update
-
-Source-fixed 512-pixel generated portraits now show visible full-head width
-and height reduction for `headSmall`, lateral hair widening for `headWrap`,
-bidirectional hair-top movement for `cranialCrownHeight`, and complete
-hair-top-to-chin shortening for a long-face `faceShortening` positive.
-Registered nose/lip/chin boundaries show the requested bidirectional gap
-changes for `philtrumLength` and `lowerFaceLength`. `wholeFaceYPosition`
-moves both visible hair top and chin edge, and `wholeFaceXPosition` moves
-the face center. A symmetric observed/source portrait remains unchanged under
-`wholeFaceSymmetry`. These are owner-local generated-image findings. The
-later short-face protection and negative checks qualify `faceShortening`;
-the other rows here remain `partial` while their listed gaps are tested.
-
-The earlier point-only path increased the area of a generated internal
-submental fold; the new outer-contour route above is separately qualified
-and fails closed on that non-protruding phenotype. An earlier five-point
-hairline candidate shifted an offset boundary negative and was reverted;
-the later source-boundary route is recorded above.
-
-## 2026-09-27 symmetry and lower-chin owner-local controls
-
-`3D塑颜 / 对称` now maps to `wholeFaceSymmetry`, a bounded lower-contour
-image-plane correction driven by observed asymmetry. `脸型 / 去双下巴` and its
-Pro variant have independent public parameters; their pixel-buffer/provider
-route lifts a generated chin marker, while Pro also changes paired lower
-flanks. Still-image behavior now follows the source-contour route above.
-Public generated pixels,
-exterior/upper-face/alpha protection, neutral, no-face, orientation/mirror,
-repeat, Codable defaults and typed failure recovery are checked. These rows
-remain taxonomy `partial`; no 3D or submental-fat effect is claimed.
-
-## 2026-09-27 head-region owner-local controls
-
-`比例 / 小头`, `比例 / 头包脸`, `比例 / 颅顶` and `脸型 / 发际线` now map to four
-independent public parameters. Generated markers move in the documented
-direction through the public still-image path while a separate central
-marker, image exterior and alpha remain protected. Neutral, no-face,
-orientation/mirror, repeat, Codable defaults and typed failure recovery pass.
-All four taxonomy rows remain `partial`; hair silhouette, true skull geometry
-and realistic hairline reconstruction await broader portrait evidence.
-When an observed eyebrow overlaps the local `hairlineHeight` warp area, that
-control exits unchanged. The older natural-style portraits still exit under
-this brow guard; the source-boundary route above admits a separate,
-high-contrast generated class. Neither result proves general hair segmentation.
-
-## 2026-09-27 philtrum and lower-face owner-local controls
-
-`比例 / 人中` and `比例 / 下庭` now have independent signed parameters. Each
-moves a separate generated marker in both requested directions through the
-public still-image path while preserving the other marker, far background
-and alpha. Neutral, no-face, repeat, four orientations, input mirror, legacy
-Codable defaults and typed failure recovery pass. Taxonomy remains `partial`
-pending broader portrait acceptance.
-
-## 2026-09-27 forehead and midface owner-local controls
-
-`比例 / 额头` and `比例 / 中庭` now have separate signed parameters. On generated
-input each moves its own marker in opposite directions for positive and
-negative strengths while preserving the other marked region, far background
-and alpha. Neutral, mirror/orientation, no-face, repeat and failure recovery
-are checked. Taxonomy remains `partial` pending broader portrait evidence;
-these controls make no three-dimensional quality claim.
-
-## 2026-09-27 short-face owner-local control
-
-`比例 / 短脸` has an independent `faceShortening` parameter. Generated upper
-and lower markers move toward one another through the public still-image
-path; a center marker, distant background, and alpha remain protected.
-Neutral, missing-face, orientation, mirror, repetition, and failure recovery
-are checked. A later source-qualified long-face positive also shortens the
-complete visible head while retaining eye and mouth widths within 1 pixel
-and leaving the nose exact; a matched short-face negative stays exact. This
-row is now `implemented` for owner-local generated-image 2D behavior.
+The [earlier product narrative](docs/history/product-effect-qualification-snapshot-2026-10-01.md)
+preserves intermediate partial states and withdrawn candidates for traceability.
+They are not current pending work.
 
 ## 2026-09-27 texture protection and size limit
 
 On generated portraits with lighter or deeper skin, smoothing and sharpening
 still change cheek texture while cool and warm low-contrast backgrounds outside
 the selected face stay exact. Texture now requests fresh face detection on
-still images and pixel buffers, and exits unchanged without usable support;
-other color controls remain available. The conservative face-interior ellipse
+still images and pixel buffers, and exits unchanged without usable support.
+When a texture combination requests detection and no usable face is returned,
+the resolver skips the entire skin domain, including combined whitening/rosy;
+independent color-domain adjustments and filters remain available. Whitening/rosy
+alone retain their existing no-detection route. The conservative face-interior ellipse
 also leaves broad eye/lid and lip zones source-exact. On one generated
 natural-style portrait, both cheek targets changed while selected eye and lip
 core regions, hair and far background stayed exact. This is not anatomical
@@ -205,17 +138,12 @@ metric. A generated 288-point double-brow case has source-exact CPU parity;
 the next ordinary request keeps the GPU route. Hosts should treat `.gpu` as
 a preferred execution route for this rare combination, not a latency promise.
 
-## 2026-09-27 whole-face tilt owner-local control
+## Whole-face tilt integration
 
-`3D塑颜 / 倾斜` has an independent `wholeFaceTilt` control. On an in-memory
-generated face marker, signed strengths rotate two different colored regions
-in opposite directions through the public still-image path. Neutral, distant
-background, alpha, missing-face and typed-failure recovery are checked. The
-2026-09-28 generated portrait qualification adds coherent signed eye-line,
-lip-line, crown and chin movement on two skin variants, with eye-center spacing,
-exterior, alpha, repeat and extent checks. The row is `implemented` for the
-owner-local two-dimensional image-plane effect; this does not establish a depth
-effect or general visual quality.
+Use the signed `wholeFaceTilt` field under the qualified 2D contract above.
+The generated-marker and later generated-portrait checks cover direction,
+eye/lip/crown/chin coherence, exterior, alpha, repeatability and typed recovery.
+They do not establish depth geometry or general visual quality.
 
 ## 2026-09-26 owner-local diagnostics
 
@@ -233,14 +161,11 @@ with `enablePerformanceLog` and read it from `BeautyResult.metrics` on
 images or paths. For `CIImage` output it excludes later caller-triggered
 rendering, so it is not a total image-processing or device-performance claim.
 
-## 2026-09-26 owner-local horizontal face control
+## Whole-face horizontal integration
 
-`3D塑颜 / 左右` now has an independent `wholeFaceXPosition` owner-local control.
-Positive and negative strengths move visible eyes and mouth in the requested
-horizontal direction on two generated portrait schematics while leaving
-distant background and alpha unchanged. The taxonomy remains `partial` until
-broader portrait and silhouette evidence exists; the result does not establish
-a depth effect or commercial visual quality.
+Use signed `wholeFaceXPosition` for the source-admitted rigid still-image
+translation described above. The current bounded row is `implemented`;
+earlier marker-only partial status is retained in the historical excerpt.
 
 ## 2026-09-26 owner-local encoded image entry
 
@@ -251,15 +176,11 @@ continues through the same still-image effects and result metadata as an
 already decoded `CIImage`. Malformed or oversized input returns a typed error;
 the next valid request remains usable. The SDK still does not read file paths.
 
-## 2026-09-26 whole-face vertical owner-local control
+## Whole-face vertical integration
 
-The `3D塑颜 / 上下` taxonomy row has a new `wholeFaceYPosition` candidate.
-It moves visible eyes and mouth downward for positive input and upward for
-negative input on two generated portrait schematics through the public
-still-image SDK path. Neutral, repeat, distant-background and alpha checks
-pass; a missing face is source-exact, and a typed oversized-input failure does
-not affect the next request. The control is image-space geometry only; this
-evidence does not establish true 3D shape or broad portrait visual quality.
+Use signed `wholeFaceYPosition` for the source-admitted rigid still-image
+translation described above. Missing or ambiguous head support remains exact,
+and typed input failure does not prevent the next valid request.
 
 ## 2026-09-26 FACE-01 second generated portrait acceptance
 
@@ -391,34 +312,10 @@ before decoding. The new in-memory entry above now checks encoded bytes.
 Oversized Metal geometry fails explicitly rather than dropping the requested
 effect. These changes do not establish natural-portrait visual quality.
 
-## v1.24 upper-eyelid effect improvement boundary
+## Historical Post-Archive Acceptance Results
 
-The 2026-09-27 owner-local follow-up admits a second source-derived luminance
-pattern: an upper-lid band can have a coherent positive residual even when
-mixed lighting pulls its whole central mean below the previous threshold. The fallback
-requires a nonnegative mean, a central upper quartile of at least 8, and at
-least 35% of central samples above the existing convexity threshold. On one
-generated natural-style portrait, the previously rejected peer eye now
-receives a bounded correction while its already supported eye and distant
-background stay unchanged. The original-size result is still visually mild;
-the owner acceptance remains provisional and does not imply broad portrait
-or commercial quality. The residual is an image-space proxy, not a measurement
-of tissue volume; a later controlled generated positive exposed visible closed
-rings in the output, so visual no-worsening improvement remains unqualified.
-
-The owner-local `upperEyelidFullnessReduction` scalar and both public
-still-image entries remain unchanged. The current internal gain adjustment
-makes a half-strength generated convex upper-lid relief metric measurably
-stronger (`0.4537424 → 0.3422654` of source score); public pixel tests check
-both entries, repeatability, bounded channel changes, protected border and
-alpha. This is a bounded mechanics improvement, not a finding that a real
-person's eyelid looks less full. The prior owner acceptance remains
-provisional with known weak visual quality until suitable owner-authorized
-generated or genuine positive/negative portraits pass a predeclared
-effect-direction and original-detail review. A genuine-human source is not
-required.
-
-## Current Post-Archive Acceptance Status
+The dated gate counts in this section are historical checkpoints, not the
+latest full-test denominator. Current checkpoint routing is in PLANS.md.
 
 The v1.22 observed paired-eye `noseRootNarrowing` repair uses the CPU backend.
 Its private raster-row protection is unsupported by the retained Metal geometry
@@ -432,16 +329,9 @@ was established by its execution-bound Phase95 COMPLETE receipt and
 source/tests, and `verify-complete` now returns `review_missing_or_stale` for
 the current tree; the prior receipt is historical rather than current-code
 qualification.
-On 2026-08-25 the owner
-superseded the earlier `去脂` deferral and accepted the existing bounded v4
-mechanics as a provisional public still-image effect. The acceptance fact is
-owner-provided; the repository does not claim that a new blinded manual review
-was executed. Current visual quality is known to be weak and remains future
-optimization work. At that v1.21 acceptance, the callable surface was 62
-`BeautyParameters` fields, five presets, and 75 renderer cases; the current
-inventory is 77 fields, five presets, and 99 renderer cases. Neither snapshot
-establishes device, commercial, packaging, shipping, launch, or release
-readiness.
+At v1.21 acceptance, the callable surface was 62 `BeautyParameters` fields,
+five presets and 75 renderer cases. That historical inventory does not replace
+the current taxonomy or establish device, commercial or release qualification.
 The final archive-first no-skip gate passed `816/0/0` with all eight opt-ins
 exactly once and zero skips.
 
@@ -489,8 +379,8 @@ Core promise:
 - defaults are no-op, failures are typed, and degradation is visible through
   redacted warnings/aggregate metrics;
 - processing remains local by default; and
-- effect behavior stays natural, bounded, deterministic, and independently
-  testable.
+- effect behavior is bounded, deterministic and independently testable, with
+  appearance claims limited to qualified inputs.
 
 `BeautyConfiguration.maximumFaceCount` caps the detector's selected faces; it
 does not activate multi-face rendering. The current still-image effect route
@@ -505,7 +395,7 @@ maintainer creates a clean local-path SwiftPM consumer
 → imports only BeautySDK and generates a neutral RGBA input
 → observes real public-facade bytes and dimensions
 → runs BeautyExampleRenderer against explicit input/output directories
-→ discovers the exact 75-case catalog and reads the versioned aggregate report
+→ discovers the current non-suspended case catalog and reads the versioned aggregate report
 → receives typed non-zero diagnostics for invalid or incomplete work
 ```
 
@@ -519,12 +409,14 @@ device journey and does not promote generated media as product evidence.
   fixtures, and derived data remain inside the owner-controlled environment.
   External users, customer integrations, public package registries, sales,
   monetization, and distribution are outside the product contract.
-- `docs/SDK_EFFECT_TAXONOMY.md` owns exact implemented/partial/future status and
-  the 62-field mapping.
+- `docs/SDK_EFFECT_TAXONOMY.md` owns exact implemented/partial/future/suspended
+  status and the complete 77-field mapping.
 - Historical UI layout, navigation, controls, badges, screenshots, and lifecycle
   do not establish SDK support or current acceptance.
-- Bounded opaque still-image `teethWhitening`, `scleraRednessReduction`, and
-  provisional `upperEyelidFullnessReduction` are independently callable.
+- Bounded opaque still-image `teethWhitening` and `scleraRednessReduction` are
+  independently callable. Suspended `upperEyelidFullnessReduction` retains
+  explicit-call compatibility but is omitted from normal renderer discovery
+  and batch selection.
 - New semantic-mask features, new algorithms, trained models, and realtime
   local retouch remain outside current acceptance. Phase-74 generated parity is historical;
   current acceptance is limited to the verified bounded repairs, without a
@@ -536,7 +428,7 @@ device journey and does not promote generated media as product evidence.
 
 ## 2.1 Owner-Local Still-Image Retouch Call
 
-The three implemented local-retouch controls are directly callable from the
+The two active local-retouch controls below are directly callable from the
 owner-controlled host. A minimal photo path is:
 
 ```swift
@@ -551,8 +443,7 @@ let metadata = BeautyInputMetadata(
 )
 let parameters = BeautyParameters(
     teethWhitening: 0.65,
-    scleraRednessReduction: 0.55,
-    upperEyelidFullnessReduction: 0.60
+    scleraRednessReduction: 0.55
 )
 let result = try engine.processResult(
     image: inputCIImage,
@@ -563,7 +454,7 @@ let outputCIImage = result.output
 ```
 
 `BeautyEngine.process(image:orientation:parameters:)` is the shorter equivalent
-when the host only needs the output image. All three controls are positive-only,
+when the host only needs the output image. These controls are positive-only,
 default to zero, and clamp finite strengths to `0...1`. Zero strength is a
 source-preserving no-op. The supported local-retouch path is an opaque bounded
 still `CIImage` with `BeautyInputSource.photo`; transparent input is rejected,
@@ -573,11 +464,9 @@ before returning a result. Callers serialize access to one `BeautyEngine`
 instance; independent instances may run concurrently.
 
 This is an owner-local integration contract, not a third-party distribution or
-release claim. `upperEyelidFullnessReduction` routes `去脂` through the existing
-per-eye semantic envelope and bounded relief editor. Missing or untrusted
-support is source-exact. The internal result is currently subtle/weak by owner
-decision and may improve later; it must not be substituted by `eyeHeight`,
-`upperEyelidLift`, a generic warp, smoothing, or an unrestricted dark patch.
+release claim. Suspended `upperEyelidFullnessReduction` is intentionally
+absent from this normal-use example; its compatibility and effect limits are
+defined in the current upper-eyelid disposition above.
 
 ## 3. Primary User Journey
 
@@ -623,9 +512,10 @@ Acceptance:
   portrait-effect positive/negative oracle. Permission for local use, frozen
   assertions, and automated SDK execution still apply; genuine portraits are
   optional and separate from physical-device testing.
-- Teeth, sclera, and upper-eyelid mechanics remain independent evidence paths.
-  The owner's provisional `去脂` acceptance does not retroactively rewrite the
-  failed v1.18/v1.19 qualification records.
+- API compatibility, mechanical safety and effect qualification are separate
+  obligations. A callable field or safe pixel change does not prove the intended
+  effect. An unverified route must not be presented as an available effect
+  needing only optimization; see the [acceptance policy](docs/IMAGE_EFFECT_ACCEPTANCE.md).
 
 ## 5. Current Verification Contract
 
@@ -638,7 +528,7 @@ bash scripts/check-swiftpm-consumer.sh
 bash scripts/run-no-skip-swiftpm.sh
 ```
 
-The mandatory no-skip gate must execute all eight opt-ins with zero failures,
+The mandatory no-skip gate must execute all nine opt-ins with zero failures,
 zero skips, and a nonzero denominator. Archive integrity and the SDK-only static
 boundary are part of the same acceptance conjunction.
 
@@ -776,52 +666,6 @@ historical matrix does not establish broad current CPU/GPU equivalence. It does
 not promote UI/Demo,
 simulator/device, performance, commercial, packaging, shipping, launch, or
 release readiness.
-
-## v1.18 Phase 79 Failing-Branch Acceptance
-
-The Phase-78 aggregate recommendation is `mechanics-only-not-promotion`.
-Therefore the owner's local host sees the unchanged public contract: 61
-`BeautyParameters` fields, five neutral presets, and 74 renderer cases. The
-package-only per-eye support and deterministic fullness editor are reusable
-mechanics evidence, not a public `去脂` control, route, Testing SPI, preset key,
-or efficacy claim. The taxonomy remains `眼睛: partial` and `去脂: future`.
-
-Candidate v3 confirmed the product distinction: making the upper-lid band
-slightly darker is not a successful `去脂` result when a reviewer cannot see the
-lid become flatter or less puffy. Candidate v4 then failed applicability,
-boundary, and minimum-relief automation on genuine inputs. These outcomes end
-the hand-authored tone/frequency route rather than inviting another threshold
-retune.
-
-The owner-local product may use the name `去脂` only for a learned, bounded local result that
-is clearly flatter and less bulky while preserving eye opening, brow position,
-lashes, iris/sclera, protected crease detail, identity, and skin texture. The
-adopted route combines a small upper-lid soft-tissue flow with a low-frequency
-tone residual and fails closed per eye. If the project keeps absolute geometry
-identity or cannot supply paired training data authorized for the actual
-owner-only use, the honest effect is only subtle
-`upperEyelidReliefSoftening`; `去脂` remains future and no owner-local public
-field or inert route is permitted. Research-only data and derived weights stay
-in a separated non-commercial local research lane and may not be repurposed for
-commercial use or distribution.
-
-Plan 80-20 deliberately adds no visible output. It renames the rejected editor
-and semantic analyzer as experimental and makes the new model owner unavailable
-by default. This is a product correction: a safe no-op is preferable to showing
-another dark patch while the rights-approved learned model does not yet exist.
-
-On 2026-08-25 the owner canceled the remaining `去脂` work. This is a deliberate
-future deferral, not a blocker: the experimental code stays package-only, no
-model or public control will be added, and the independently completed
-`teethWhitening` and `scleraRednessReduction` still-image journeys are unchanged.
-
-This branch is accepted only on SDK-owned evidence: exact public absence,
-canonical extent/orientation/mirror and named-sRGB metadata preservation,
-alpha and request-local failure isolation, CPU-reference authority, explicit
-GPU selection or typed `.metalUnavailable`, and the archive-first no-skip gate.
-It does not establish genuine efficacy, naturalness, device performance,
-thermal/battery behavior, commercial visual approval, packaging, shipping,
-launch, or release readiness.
 
 ## Phase 90 Chin Repair and Contour Deferral Owner Journey
 

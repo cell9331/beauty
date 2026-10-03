@@ -1,0 +1,16 @@
+{
+  "additional_g1_checks": "visual; rejection; old_full_lip_regression; applicable_common_gates",
+  "candidate": "S1-v1",
+  "candidate_receives_truth": false,
+  "candidate_sha256": "3501d1a997484b7313cd1e4313f6c09378d48db92b64a88764047d390514fde0",
+  "evaluation_type": "unchanged_existing_version_on_formal_development",
+  "input_freeze_sha256": "7aa9ef16a66b77dc21e3f79af2f109900b2ad5b1302c5afe0f2d4f1bfe37bcd5",
+  "maximum_methods": 2,
+  "maximum_versions_per_method": 2,
+  "methods_used_before_this_evaluation": 1,
+  "numeric_selection": "all_12_cases_all_2_scales_all_2_effects; positive_at_least_4_of_6_with_strata; negative_6_of_6; no_hard_failures",
+  "original_function_sha256": "6aff4b6f94008118aed582db2565742d726ffafb86596b991fa07bc9ea339a95",
+  "reads_holdout_media": false,
+  "schema": "beauty.seg-development.registration.v1",
+  "versions_used_before_this_evaluation": 1
+}

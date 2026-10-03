@@ -19,10 +19,10 @@ Spend time on thinking; you do not need to use the commentary channel to report 
 
 1. 先读 `AGENTS.md` 与 `PLANS.md`。
 2. 按任务类型读取对应根级 owner；`PLANS.md` 是渐进式入口，现行计划与技术债按其中链接继续读取。
-3. 再读相关代码、SwiftPM 测试与 `docs/` 背景资料。
+3. 再读相关代码、SwiftPM 测试与 `docs/` 背景资料；`docs/history/` 只保留历史证据，不产生当前任务。
 4. 算法/control taxonomy 以 `docs/SDK_EFFECT_TAXONOMY.md` 为当前 authority。
 5. 图片效果验收输入与声明以 `docs/IMAGE_EFFECT_ACCEPTANCE.md` 为当前 authority。
-6. 若契约变化，同步更新拥有该契约的文档。
+6. 若契约变化，同步更新拥有该契约的文档，替换失效的当前声明；不要持续叠加互相覆盖的补丁说明。接口兼容、工程安全与效果资格分别记录。
 
 冲突优先级：代码与测试 > `PLANS.md` 及其链接的现行计划/技术债 > 根级专项文档 > 历史分片与 `docs/` 历史资料。
 
@@ -67,11 +67,21 @@ docs/                            background and historical long-form material
 - 不把归档内容解压回仓库；恢复只进入新建临时目录，并先运行归档验证。
 - 不把 raw masks、landmarks、pixels、private fixture locators 或 child transcripts 写入持久证据。
 - v1.16 不修改 retained `Warp.metal`、不新增 Metal/GPU API/backend 或新算法。
-- `去脂` 于 2026-08-25 由所有者接受为效果偏弱但可用的 provisional
-  owner-local API：保留现有 `BeautyExperimentalUpperEyelid*` 内部命名与
-  fail-closed 安全边界，通过 `upperEyelidFullnessReduction` 公开调用。当前不继续
-  数据、训练、模型或权重工作；未来可优化内部效果，但不得把现状描述为商业视觉
-  质量、设备资格或外部分发批准。
+- `去脂` 当前为 `suspended`：有界上睑亮度修正不等于脂肪/形态识别，自然外观
+  效果未合格；2026-10-01 默认隐藏。保留 `upperEyelidFullnessReduction` 的字段、
+  默认零值、Codable、显式调用、`BeautyExperimentalUpperEyelid*` 内部实现和安全
+  测试；默认 renderer 清单/批量与常用示例不推荐或启用它。
+- 2026-10-03 所有者重开并降低初版标准后，EYE光影与SEG同色贴片自动分支各自
+  2方法×2版本均未合格。按所有者最新“连续执行、到能力边界即停止、本里程碑
+  结束旧问题”的指示，以 `closed_with_unmet_objectives` 结束v1.25，详见
+  [最终处置](docs/RETOUCH_FINAL_DISPOSITION_2026-10-03.md)与
+  [R3终局范围](docs/RETOUCH_TERMINAL_SCOPE_2026-10-03.md)。未交付不冒充实现；
+  同色物体/完整唇部保护仅保留现有host显式蒙版能力，自动保护缺口公开记录。
+  两条失败路线不再列为active、下一轮G0或默认后续任务。一般“继续/下一步”
+  不恢复研发；重开须所有者明确新范围与新假设/信息/资源，不能重置本轮预算。
+  历史provisional接受、R1/R2研究和原待办不覆盖终局处置。没有预授权模型下载、
+  训练、微调、数据采集或分发；未执行模型不能被写成已经失败。
+
 - 数据、模型和权重的许可证必须覆盖实际的所有者内部用途；“自用、不分发”
   不自动等于“允许商业使用”。research-only 数据及派生模型只能进入隔离的
   非商业研究/评估路径。device、SDK 商业化、monetization、packaging、shipping、

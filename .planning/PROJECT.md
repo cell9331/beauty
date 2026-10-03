@@ -1,31 +1,49 @@
 # Beauty
 
-## Current effect-image policy (2026-09-27)
+## Current project status (2026-10-03)
 
-The owner permits [generated portrait effect acceptance](../docs/IMAGE_EFFECT_ACCEPTANCE.md).
-For current and future SDK work, genuine human portraits are optional, not a
-completion, taxonomy, or next-milestone gate. The later FACE-01 repair passed
-predeclared generated-portrait positive/negative direction and protection
-oracles; `faceContourSmooth` is now `implemented` at the bounded owner-local
-SDK scope in the [current taxonomy](../docs/SDK_EFFECT_TAXONOMY.md). Earlier
-genuine-bundle requirements and signed receipts below describe their dated
-historical scope and do not govern new effect qualifications. No device,
-population, or commercial claim follows.
+[PLANS](../PLANS.md) owns execution. v1.25 completed a bounded development pilot, revision R2 after
+owner-authorized lower initial expectations and a documentation-first request.
+The [MVP contract](../docs/RETOUCH_MVP_REQUIREMENTS.md) defines prospective
+criteria; SEG inputs/oracles are frozen, EYE is not ready and no candidate is qualified.
+The [pilot result](../docs/RETOUCH_MVP_PILOT_2026-10-03.md) supports further SEG
+input preparation on the visible-boundary route; E1-v1 failed and stops this round.
+[SEG G0 freeze](../docs/SEG_G0_FREEZE_2026-10-03.md) passed 20/0/0 and 96 texture
+controls: thirty cases frozen, sixty input rasters; thirty EYE cases not_prepared.
+[SEG development](../docs/SEG_DEVELOPMENT_2026-10-03.md) then rejected all four
+versions in two methods; its budget is exhausted and this branch stops without G1.
+EYE remains at one used method/version, with its own G0 still pending. The independent
+[current batch tool](../docs/CURRENT_BATCH_VALIDATION.md) passed 17/0/0 and actual
+98-case repeated runs, completing BAT25-01/02. Next is EYE input/reference preparation. Holdouts
+were accessed for G0 controls only; candidate holdout evaluations remain zero.
+Production remains 77 fields, 99 registered / 98 default cases, 62 implemented
+bounded rows and one suspended upper-eyelid row. Host masks remain supported.
 
-Current work (2026-09-27): the completed owner-local remaining-effects record
-in [`PLANS.md`](../PLANS.md) reached 77 parameter fields, 99 renderer cases
-and a 1032/0/0 archive-first no-skip gate. The active qualification follow-up
-in that ledger addresses the remaining evidence and documentation gaps.
-Fifteen taxonomy rows remain `partial` for their stated image-plane/semantic
-limits. The completed
-[v1.24 去脂效果改进](V1.24-UPPER-EYELID-CURRENT.md) and
-[v1.23 FACE-01 contour follow-up](V1.23-FACE01-CURRENT.md) retain their
-original narrower receipts. The v1.22 completion statements below describe
-their historical signed snapshot and later mapping-follow-up qualification.
+Latest full SDK gate remains the preceding 1076/0/0 with 9 opt-ins. The latest
+focused recheck was 5/0/0 (host mask and calibrated upper-eyelid evidence only).
+Historical failures retain their original meaning. Generated inputs are eligible;
+genuine portraits and physical devices remain optional.
 
-v1.22 completed 2026-09-23: 7/7 phases, 33/33 plans, 11/11 active requirements; [verified COMPLETE](phases/95-compatibility-and-sdk-only-closeout/95-COMPLETE.json).
-Actual portrait: 65/65 outputs, 2 reconciled runs, seven effective directions and one deferred/partial direction. Current safety 1/0/0, compatibility 4/0/0, archive-first full SwiftPM 937/0/0; all 8 opt-ins accounted for.
-FACE-01/faceContourSmooth remains explicitly deferred/partial under FUTURE-04, without effectiveness credit. The repaired observed paired-eye root uses CPU; retained Metal rejects its unsupported private raster cutoff with typed invalidInput before submission and recovers for later supported requests. This is owner-local SDK validation, with no device, population, commercial quality, packaging, shipping, launch, release-readiness or distribution claim. No owner annotation or device action remains. Phase96 is absorbed into95-03, and no next milestone is started.
+## Current Milestone: v1.25 上睑外观与皮肤语义修复
+
+**R2 Goal:** 分别交付自动上睑轻量光影修饰、可见边界同色贴片保护初版；有界
+覆盖/误差，独立效果与保护共同通过。未来强去脂和任意物体识别不属初版门禁。
+
+**Target features:**
+- EYE 光影实验能力，不声称组织或结构去脂，不自动提升旧 suspended 行。
+- SEG 自动贴片保护、有限完整唇回归、明确拒绝例；host 辅助不计自动成功。
+- 分支独立交付、当前库存批量工具和接入代码实际全量验收。
+
+6 phases (100–105), 2 verified / 14 pending requirements: [requirements R2](REQUIREMENTS.md),
+[roadmap R2](ROADMAP.md). SEG G0 is complete; EYE still needs inputs/references/
+controls under the [G0 design](../docs/RETOUCH_G0_VALIDATION_PLAN.md). The owner has explicitly
+authorized a small feasibility pilot, including isolated inputs/verifiers/candidates.
+The pilot does not pass full G0, consume holdouts or authorize production integration.
+No universal unknown-input detection guarantee; no training, fine-tuning, UI,
+new GPU backend, implicit network or external distribution. Pretrained assets
+are optional and require source/license/local-runtime admission. Budget and
+one-time holdout policy are in the MVP contract. Failed branches stop without
+blocking independent delivery or being mislabeled complete.
 
 ## What This Is
 
@@ -45,7 +63,14 @@ The project owner's local iOS host can integrate `BeautySDK` and get natural,
 controllable, real-time and still-image beauty processing through a stable
 modular facade without distributing the SDK or its model resources.
 
-## Latest Completed Milestone: v1.24 去脂效果改进
+## Historical completed milestone records
+
+The dated milestone sections through the historical SDK-first sequence below
+retain their original goals, statuses and receipts. Words such as current,
+active, next, partial and future in those sections describe that snapshot;
+they do not override the current summary or create execution instructions.
+
+### v1.24 去脂效果改进 — bounded mechanics, completed 2026-09-24
 
 **Goal:** Improve the existing owner-local upper-eyelid relief edit by a
 predeclared, observable half-strength pixel metric while retaining its hard
@@ -274,7 +299,7 @@ source/test lines. The active v1.21 SDK-only tree contains 76 Swift source files
 / 18,857 source lines and 81 SwiftPM test files / 36,008 test lines, excluding
 `.build` and archive contents.
 
-## Planned SDK-First Milestone Sequence
+## Historical SDK-First Milestone Sequence
 
 1. **v1.16 SDK-Only Foundation and CPU Reference** — completed 2026-08-15 with verified legacy archive/source removal, SwiftPM-only validation, CPU oracles, and conditional sendability.
 2. **v1.17 Dual CPU/GPU Metal Rendering** — preserve the CPU reference backend; add Metal runtime, color/skin, geometry, and local-retouch passes; then expose `BeautyConfiguration.renderBackend` with `.cpu` and `.gpu`, defaulting old and missing-key configurations to `.cpu` and failing explicitly when requested Metal is unavailable.
@@ -609,6 +634,16 @@ For any future semantic-masking milestone, a bundled Core ML resource must be lo
 
 ## Requirements
 
+### Active in v1.25
+
+- [ ] Independent observable scope / target and rights-gated candidate comparison (RSC25, SEG25-01, EYE25-01).
+- [ ] R2 visible-boundary patch / complete lip protection and light eyelid-tone correction (SEG25-02/03, LIP25, EYE25-02/03), with independent branch qualification.
+- [x] Current independent inventory and per-case batch validation (BAT25-01/02).
+- [ ] Accepted-route integration, fresh verification and owner documentation (INT25, VFY25, DOC25).
+
+The historical requirements below retain their original milestone scope; they
+are not a second active queue. Current IDs/traceability are in REQUIREMENTS.md.
+
 ### Active in v1.22
 
 - [x] Retain the completed `chinTaper` repair as independently detectable,
@@ -830,20 +865,17 @@ The verified SDK-only slice implements exactly `大小`, `宽度`, and `微笑`.
 - Persisting or exposing teeth masks, sclera masks, vein-like descriptors, pupil positions, or raw face geometry - all local support remains private and request-scoped.
 - Transparent-input local retouch, HDR/gain-map support, new silent multi-face selection, third-party/Core ML weights, and tracked portrait/output media - each needs separately approved ownership, policy, licensing, and evidence.
 
-## Next Milestone Goals
+## Next work (2026-10-03)
 
-Current and future milestone sequence:
-
-- **Next milestone:** not yet selected. The current provisional owner-local
-  `去脂` field exists. Any further effect qualification requires a scoped
-  objective, suitable owner-authorized generated or genuine positive/negative
-  inputs, a qualified method, and predeclared effect/protection review; a
-  genuine-human bundle is not required.
-- **Future Hairline and Semantic Masking:** approved local semantic-region foundation plus `发际线`.
-- **Future Double-Chin and Facial-Feature Closeout:** `去双下巴`, `去双下巴 Pro`, and a later narrow taxonomy audit.
-- **Other shaping groups:** `比例` and `3D塑颜` remain outside this narrow facial-feature sequence.
-- **Deferred Meitu Product Areas:** Home/discovery, style resources, AI/background, video/body, gallery/account, search, premium access, commerce, and account authorization planning.
-- **Distribution:** SDK packaging, compatibility matrix, binary distribution, resource-pack trust model, and commercial integration docs.
+The owner has explicitly authorized a small development pilot. Follow
+[PLANS](../PLANS.md) and the [active plan](../plans/active/A-2026-10-03-v1-25-retouch-repair.md)
+for its bounded controls/candidate evaluation. It does not replace full Phase 100
+inputs, references and G0 controls, or confer effect qualification. Preserve the
+normative thresholds and stop rules; do not restart scope interviews or treat
+written criteria as completed input preparation.
+Then license/local-feasibility screening precedes any candidate asset use.
+Old v1.22–v1.24 phases and failing probe recipes stay at their original identity;
+generic old phase directions do not override the new roadmap.
 
 ## Context
 
@@ -851,7 +883,7 @@ Root contracts remain authoritative for current behavior and future boundaries:
 
 - `ARCHITECTURE.md` owns package/module boundaries and dependency direction.
 - `DESIGN.md` owns parameters, presets, metadata, detection summaries, effect planning, and state-machine contracts.
-- `FRONTEND.md` owns SwiftUI Demo behavior and app-side state.
+- `FRONTEND.md` owns the historical UI/Demo archive redirect; no active UI is a requirement or build input.
 - `SECURITY.md` owns local-first privacy, input/resource trust, and redaction.
 - `RELIABILITY.md` owns typed errors, degradation, metrics, backpressure, and performance risk.
 - `PRODUCT_SENSE.md` owns user journeys and acceptance criteria.

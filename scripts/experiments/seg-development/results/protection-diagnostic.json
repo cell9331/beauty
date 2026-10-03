@@ -1,0 +1,65 @@
+[
+  {
+    "feature_rect_changed": 2308,
+    "id": "SEG-D02-negative",
+    "outside_face_envelope_changed": 0,
+    "protected_union_changed": 2308,
+    "side": 1024,
+    "smoothing": true,
+    "version": "S1-v2"
+  },
+  {
+    "feature_rect_changed": 2409,
+    "id": "SEG-D02-positive",
+    "outside_face_envelope_changed": 0,
+    "protected_union_changed": 2409,
+    "side": 1024,
+    "smoothing": true,
+    "version": "S1-v2"
+  },
+  {
+    "feature_rect_changed": 0,
+    "id": "SEG-D03-negative",
+    "outside_face_envelope_changed": 825,
+    "protected_union_changed": 825,
+    "side": 1024,
+    "smoothing": true,
+    "version": "S1-v2"
+  },
+  {
+    "feature_rect_changed": 0,
+    "id": "SEG-D03-positive",
+    "outside_face_envelope_changed": 887,
+    "protected_union_changed": 887,
+    "side": 1024,
+    "smoothing": true,
+    "version": "S1-v2"
+  },
+  {
+    "feature_rect_changed": 0,
+    "id": "SEG-D06-positive",
+    "outside_face_envelope_changed": 7,
+    "protected_union_changed": 7,
+    "side": 1024,
+    "smoothing": true,
+    "version": "S1-v2"
+  },
+  {
+    "feature_rect_changed": 0,
+    "id": "SEG-D03-negative",
+    "outside_face_envelope_changed": 599,
+    "protected_union_changed": 599,
+    "side": 1024,
+    "smoothing": true,
+    "version": "S2-v2"
+  },
+  {
+    "feature_rect_changed": 0,
+    "id": "SEG-D03-positive",
+    "outside_face_envelope_changed": 630,
+    "protected_union_changed": 630,
+    "side": 1024,
+    "smoothing": true,
+    "version": "S2-v2"
+  }
+]

@@ -73,11 +73,9 @@ final class BeautyUpperEyelidFullnessEditorTests: XCTestCase {
 
         let owner = BeautyLocalRetouchCompositionOwner(source: fixture.source)
         let composed = try owner.compose(result.makeUnits(using: owner)).canonicalImage
-        let after = try XCTUnwrap(BeautyExperimentalUpperEyelidReliefModel.analyze(
-            source: composed,
-            pixels: fixture.pixels
-        ))
-        XCTAssertLessThan(after.centralConvexityScore, before.centralConvexityScore * 0.55)
+        let flat = try reliefFixture(bulgeMagnitude: 0)
+        assertSourceDefinedContraction(source: fixture.source, flat: flat.source,
+                                       output: composed, strength: 1)
         XCTAssertEqual(composed.width, fixture.source.width)
         XCTAssertEqual(composed.height, fixture.source.height)
         XCTAssertEqual(composed.rowBytes, fixture.source.rowBytes)
@@ -85,7 +83,7 @@ final class BeautyUpperEyelidFullnessEditorTests: XCTestCase {
         XCTAssertTrue(alphaBytes(composed.rgba8Data).allSatisfy { $0 == 255 })
     }
 
-    func testHalfStrengthConvexReliefImprovesBeyondFrozenV121Baseline() throws {
+    func testHalfStrengthConvexReliefContractsWithoutCrossingFlatReference() throws {
         let fixture = try reliefFixture(bulgeMagnitude: 24)
         let before = try XCTUnwrap(BeautyExperimentalUpperEyelidReliefModel.analyze(
             source: fixture.source,
@@ -108,14 +106,9 @@ final class BeautyUpperEyelidFullnessEditorTests: XCTestCase {
         XCTAssertGreaterThan(rawCorrections.max() ?? 0, -2)
         let owner = BeautyLocalRetouchCompositionOwner(source: fixture.source)
         let composed = try owner.compose(edit.makeUnits(using: owner)).canonicalImage
-        let after = try XCTUnwrap(BeautyExperimentalUpperEyelidReliefModel.analyze(
-            source: composed,
-            pixels: fixture.pixels
-        ))
-        let ratio = after.centralConvexityScore / before.centralConvexityScore
-        let frozenV121Ratio = 0.4537424
-        XCTAssertLessThanOrEqual(ratio, 0.35)
-        XCTAssertLessThanOrEqual(ratio, frozenV121Ratio - 0.10)
+        let flat = try reliefFixture(bulgeMagnitude: 0)
+        assertSourceDefinedContraction(source: fixture.source, flat: flat.source,
+                                       output: composed, strength: 0.5)
     }
 
     func testPlanarLightingAndFineCreaseDetailDoNotCreateFullnessApproval() throws {
@@ -142,6 +135,10 @@ final class BeautyUpperEyelidFullnessEditorTests: XCTestCase {
     func testMixedLightingKeepsLocalizedConvexReliefWithoutApprovingPlanarPeer() throws {
         let positive = try reliefFixture(bulgeMagnitude: 0, localizedBulgeMagnitude: 35,
                                          oppositeShadowMagnitude: 90)
+        // Only the localized positive signal differs. Lighting, texture and
+        // support are fixed before output; a different shadow is not a baseline.
+        let negative = try reliefFixture(bulgeMagnitude: 0, localizedBulgeMagnitude: 0,
+                                         oppositeShadowMagnitude: 90)
         let model = try XCTUnwrap(BeautyExperimentalUpperEyelidReliefModel.analyze(
             source: positive.source, pixels: positive.pixels
         ))
@@ -150,22 +147,59 @@ final class BeautyUpperEyelidFullnessEditorTests: XCTestCase {
         XCTAssertTrue(model.isFullnessSupported)
         XCTAssertGreaterThanOrEqual(model.localizedConvexityScore,
                                     BeautyExperimentalUpperEyelidReliefModel.minimumLocalizedConvexityScore)
-        let edit = BeautyExperimentalUpperEyelidReliefEditor.edit(
-            source: positive.source, support: support(leftPixels: positive.pixels), strength: 1
-        )
-        XCTAssertEqual(edit.summary.acceptedEyeCount, 1)
-        XCTAssertLessThanOrEqual(edit.summary.maximumAbsoluteChannelDelta, 16)
-        let owner = BeautyLocalRetouchCompositionOwner(source: positive.source)
-        let composed = try owner.compose(edit.makeUnits(using: owner)).canonicalImage
-        let after = try XCTUnwrap(BeautyExperimentalUpperEyelidReliefModel.analyze(
-            source: composed, pixels: positive.pixels
-        ))
-        XCTAssertLessThan(after.localizedConvexityScore, model.localizedConvexityScore * 0.85)
-        let negative = try reliefFixture(bulgeMagnitude: 0, includeCreaseDetail: true)
         let negativeModel = try XCTUnwrap(BeautyExperimentalUpperEyelidReliefModel.analyze(
             source: negative.source, pixels: negative.pixels
         ))
         XCTAssertFalse(negativeModel.isFullnessSupported)
+
+        let ownedIndices = Set(positive.pixels.map(\.pixelIndex))
+        for strength in [0.25, 0.50, 0.75, 1.0] {
+            let edit = BeautyExperimentalUpperEyelidReliefEditor.edit(
+                source: positive.source, support: support(leftPixels: positive.pixels),
+                strength: strength
+            )
+            XCTAssertEqual(edit.summary.acceptedEyeCount, 1)
+            XCTAssertEqual(edit.summary.rejectedEyeCount, 1)
+            XCTAssertLessThanOrEqual(edit.summary.maximumAbsoluteChannelDelta, 16)
+            let owner = BeautyLocalRetouchCompositionOwner(source: positive.source)
+            let composed = try owner.compose(edit.makeUnits(using: owner)).canonicalImage
+            assertSourceDefinedContraction(source: positive.source, flat: negative.source,
+                                           output: composed, strength: strength)
+
+            var changedOutsideSupport = 0
+            var maximumComposedDelta = 0
+            for pixelIndex in 0..<(positive.source.width * positive.source.height) {
+                let original = rgb(positive.source.rgba8Data, pixelIndex: pixelIndex)
+                let edited = rgb(composed.rgba8Data, pixelIndex: pixelIndex)
+                let maximumDelta = max(abs(edited.red - original.red),
+                    max(abs(edited.green - original.green), abs(edited.blue - original.blue)))
+                maximumComposedDelta = max(maximumComposedDelta, maximumDelta)
+                if !ownedIndices.contains(pixelIndex), maximumDelta > 0 {
+                    changedOutsideSupport += 1
+                }
+            }
+            XCTAssertEqual(changedOutsideSupport, 0)
+            XCTAssertLessThanOrEqual(maximumComposedDelta, 16)
+            XCTAssertEqual(composed.width, positive.source.width)
+            XCTAssertEqual(composed.height, positive.source.height)
+            XCTAssertEqual(composed.rowBytes, positive.source.rowBytes)
+            XCTAssertEqual(composed.metadata, positive.source.metadata)
+            XCTAssertTrue(alphaBytes(composed.rgba8Data) == alphaBytes(positive.source.rgba8Data))
+
+            let negativeEdit = BeautyExperimentalUpperEyelidReliefEditor.edit(
+                source: negative.source, support: support(leftPixels: negative.pixels),
+                strength: strength
+            )
+            XCTAssertEqual(negativeEdit.summary.reason, .noApprovedSupport)
+            XCTAssertEqual(negativeEdit.summary.acceptedEyeCount, 0)
+            XCTAssertTrue(negativeEdit.proposalsByEye.isEmpty)
+            let negativeOwner = BeautyLocalRetouchCompositionOwner(source: negative.source)
+            let negativeOutput = try negativeOwner.compose(
+                negativeEdit.makeUnits(using: negativeOwner)
+            ).canonicalImage
+            XCTAssertTrue(negativeOutput.rgba8Data == negative.source.rgba8Data,
+                          "matched-shadow negative must remain source-exact at strength \(strength)")
+        }
     }
 
     func testRejectedExperimentalSemanticOwnerApprovesGeneratedReliefAndRejectsPlanarPeer() throws {
@@ -228,6 +262,37 @@ final class BeautyUpperEyelidFullnessEditorTests: XCTestCase {
         XCTAssertEqual(result.proposalsByEye.first?.count, fixture.pixels.count)
     }
 
+    func testIncompleteSourceNeighborhoodRejectsOnlyAffectedEye() throws {
+        let fixture = try reliefFixture(bulgeMagnitude: 24)
+        let borderPixels = [BeautyUpperEyelidSupportPixel(pixelIndex: 0, softWeightQ16: 1)]
+            + fixture.pixels
+        // Ensure source admission passes: this exercises the new neighborhood
+        // boundary, rather than an unrelated low-signal rejection.
+        let admitted = try XCTUnwrap(BeautyExperimentalUpperEyelidReliefModel.analyze(
+            source: fixture.source, pixels: borderPixels
+        ))
+        XCTAssertTrue(admitted.isFullnessSupported)
+        let resolution = BeautyUpperEyelidSupportResolution(
+            left: .supported(side: .left, confidence: 0.9, reason: .approved,
+                pixels: borderPixels, hardEnvelope: fullEnvelope),
+            right: .supported(side: .right, confidence: 0.9, reason: .approved,
+                pixels: fixture.pixels, hardEnvelope: fixture.envelope)
+        )
+        let edit = BeautyExperimentalUpperEyelidReliefEditor.edit(
+            source: fixture.source, support: resolution, strength: 1
+        )
+        XCTAssertEqual(edit.summary.acceptedEyeCount, 1)
+        XCTAssertEqual(edit.summary.rejectedEyeCount, 1)
+        XCTAssertEqual(edit.proposalsByEye.count, 1)
+        XCTAssertEqual(edit.proposalsByEye.first?.map(\.pixelIndex), fixture.pixels.map(\.pixelIndex))
+        XCTAssertGreaterThan(edit.summary.changedPixelCount, 0)
+        let recovered = BeautyExperimentalUpperEyelidReliefEditor.edit(
+            source: fixture.source, support: support(leftPixels: fixture.pixels), strength: 1
+        )
+        XCTAssertEqual(recovered.summary.acceptedEyeCount, 1)
+        XCTAssertGreaterThan(recovered.summary.changedPixelCount, 0)
+    }
+
     func testInvalidStrengthAndRepeatedRequestsFailClosedDeterministically() throws {
         let fixture = try reliefFixture(bulgeMagnitude: 24)
         for value in [Double.nan, .infinity, -0.01, 1.01] {
@@ -252,6 +317,42 @@ final class BeautyUpperEyelidFullnessEditorTests: XCTestCase {
         )
         XCTAssertEqual(first.summary, second.summary)
         XCTAssertEqual(first.proposalsByEye, second.proposalsByEye)
+    }
+
+    /// Independently generated flat pixels define the desired direction. The old
+    /// production-score upper bound rewarded overshoot and accepted visible rings.
+    /// These bounds were fixed before evaluating the constrained candidate.
+    private func assertSourceDefinedContraction(
+        source: BeautyCanonicalStillImage,
+        flat: BeautyCanonicalStillImage,
+        output: BeautyCanonicalStillImage,
+        strength: Double,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        var minimumResidual = 0
+        var maximumOvershoot = 0
+        var sourceCenter = 0.0
+        var outputCenter = 0.0
+        for pixelIndex in 0..<(source.width * source.height) {
+            let original = rgb(source.rgba8Data, pixelIndex: pixelIndex).red
+            let baseline = rgb(flat.rgba8Data, pixelIndex: pixelIndex).red
+            let edited = rgb(output.rgba8Data, pixelIndex: pixelIndex).red
+            let dome = original - baseline
+            let residual = edited - baseline
+            minimumResidual = min(minimumResidual, residual)
+            maximumOvershoot = max(maximumOvershoot, residual - dome)
+            // Source-defined central signal; never selected from candidate output.
+            if dome >= 20 {
+                sourceCenter += Double(dome)
+                outputCenter += Double(residual)
+            }
+        }
+        XCTAssertGreaterThanOrEqual(minimumResidual, -1, file: file, line: line)
+        XCTAssertLessThanOrEqual(maximumOvershoot, 1, file: file, line: line)
+        XCTAssertGreaterThan(sourceCenter, 0, file: file, line: line)
+        XCTAssertGreaterThanOrEqual((sourceCenter - outputCenter) / sourceCenter,
+                                    0.20 * strength, file: file, line: line)
     }
 
     private func semanticRequest(

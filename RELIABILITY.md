@@ -1,5 +1,124 @@
 # RELIABILITY.md
 
+## 2026-10-03 current batch result contract
+
+The [new batch entry](scripts/current-batch/README.md) independently verifies exact
+98/99 inventory, both renderer reports, actual files, source identity, metadata
+and repeated pixels. Per-case results distinguish `passed`, oracle-declared
+`abstained`, `effect_failed`, `execution_error` and `unverified`. Abstention means
+the input's declared unchanged-output contract passed; it does not reconstruct
+an unexported Vision diagnosis. Missing oracles never become passes.
+Exit precedence is execution error 2, effect failure 1, missing oracle 3, then 0;
+`preflight_only` gives inventory credit only. These codes belong to this entry,
+not the frozen historical wrapper. Children have a 600-second deadline and 8 MiB
+output limit; timeout/interruption kills their process group. Report-write failure
+returns a fixed redacted error. Fresh run directories prevent stale success reuse.
+Malformed PNGs, empty sampled regions, alpha changes and nondeterministic output
+cannot pass. No production error or recovery behavior changes.
+
+## 2026-10-03 SEG automatic development
+
+The [development runner](scripts/experiments/seg-development/README.md) uses the
+same bounded child execution and frozen inputs/metrics in disposable SwiftPM copies.
+Exit 0 means only the development numeric conjunction passed; 1 means completed
+measurement with effect failure; 2 means unavailable/incomplete execution. It never
+signs G1 itself. All four versions completed measurement but returned 1 for effects.
+Missing rows, duplicate identities, skips, changed source/contract hashes or stale
+baseline controls reject execution. Registered candidate/protocol digests are checked.
+
+The initial missing import ran zero tests. A later export-name collision was fixed
+without changing pixels or metric rows; old revisions remain preserved. Passing
+observation/public/repeat equivalence does not imply complete effect qualification.
+No production error/resource contract changed. SEG stops after the finite budget;
+retrying controls or read-only replay cannot create a fifth candidate version.
+
+## 2026-10-03 SEG G0 isolated validation
+
+The [complete SEG G0 runner](scripts/experiments/seg-g0-complete/README.md) uses a
+disposable package, verified local inputs, a 600-second child deadline and a
+16 MiB in-memory transcript limit. A successful exit requires every expected
+XCTest, zero skips/failures and the exact aggregate identity/count sets; missing
+rows, duplicates and incomplete execution cannot qualify. Structured aggregates
+are atomically written separately from XCTest logs and checked before a receipt
+is retained. Child transcripts are never persisted. The first complete-run
+receipt failure remains recorded; r2 passed 20/0/0 on unchanged inputs.
+
+Actual invalid-grid, corrupt/empty/nonopaque-input recovery, neutral identity,
+repeatability, orientation equivalence and metadata checks passed for the scope
+in the [freeze report](docs/SEG_G0_FREEZE_2026-10-03.md). These are G0 host controls,
+not automatic rejection or device-performance qualification. Production error,
+resource and retry behavior is unchanged.
+
+## 2026-10-01 suspended upper-eyelid default selection
+
+Default renderer discovery and execution omit the suspended upper-eyelid case;
+explicit legacy selection retains its previous validation and typed failures.
+The complete 99-item registration list still owns stale-output invalidation;
+default discovery and batch execution use 98 items. The opaque-input and typed
+failure contracts also apply to explicit compatibility calls. Existing
+SDK safety tests and the nine mandatory opt-ins remain active; pausing effect
+R&D does not suppress tests or turn the independent failing natural challenge
+into a passing result. That challenge is kept as a manual research artifact
+and is not repeatedly scheduled or a blocker for other SDK work. The explicitly
+reopened v1.25 branches are now [closed as unmet](docs/RETOUCH_FINAL_DISPOSITION_2026-10-03.md)
+after finite failures; no automatic retry or G0 continuation remains. Original
+failure evidence, safety opt-ins and runtime error/resource contracts are unchanged.
+
+The final EYE diagnostic runner has a 600-second child deadline and 16 MiB
+in-memory output bound, with process-group termination and fresh review directories.
+It validates controls before candidates and source bindings before each stage;
+missing/duplicate measurements, build failure or incomplete XCTest execution return
+2. Complete unsuccessful effects return 1 even when measurement XCTest returns 0.
+The initial compile failure ran zero tests; an equivalent pixel-count loop repaired
+the harness without changing candidate bytes. Final controls passed 1/0/0 and
+candidate measurement 3/0/0, while all three candidates failed effect qualification.
+No production error or retry behavior changed.
+
+## 2026-10-01 upper-eyelid reconstruction bounds
+
+The per-eye editor retains the existing source admission, but replaces the
+overcompressing gain with a source-bounded correction and descending priority
+reconstruction. For `n` supported pixels it adds request-local arrays, an
+index map and a heap: work is `O(n log n)`, storage `O(n)`, with at most the
+initial `n` entries plus one insertion per traversed neighbor edge. Every
+pixel is finalized once; there is no iterative convergence wait. The final
+Q16 encoding checks at most 17 targets and applies strength after the
+continuous reconstruction. Targets retain the full source/channel allowance
+and the full reconstructed-correction cap; nearest final-output selection
+avoids the systematic low-strength loss of two downward quantizations.
+Strength is monotone, ties choose the smaller target, and a zero visible
+correction emits no nonzero target. No device latency, peak-memory or throughput
+equivalence to the previous editor is claimed.
+
+Any support pixel lacking a complete 3×3 source neighborhood rejects only
+that eye; a valid peer and a subsequent valid request remain usable. Invalid
+strength/support, neutral requests and existing typed failure paths remain
+under their previous owners. The editor can conservatively yield zero final
+change for a boundary-connected ridge or insufficient correction headroom;
+admission is not a guarantee of visible effect or correct anatomical selection.
+The guide is an image-luminance proxy, not fat or shape truth. The proposal and
+actual composed-pixel counts retain their distinct meanings. No raw fields leave the
+request, and no extra detector, model, backend or persistent state is added.
+
+The effect-specific orientation suite now covers all 32 EXIF/input-mirror/
+preview-mirror combinations on a non-square asymmetric source. It confirms
+canonical input metadata and exact upright effect output, while neutral
+requests retain the existing raw-raster route. Empty and nonopaque inputs
+fail with `invalidInput`; the same engine then recovers on an oriented,
+mirrored valid request. A separate fixture-backed test runs the existing live
+Vision path; missing or invalid local fixture data fails with a fixed error
+instead of exposing a private file locator.
+
+The separate [natural-background challenge runner](scripts/experiments/upper-eyelid-natural-challenge/README.md)
+builds a disposable copy with a separate SwiftPM scratch directory and runs
+exactly the frozen main XCTest method. It preserves a nonzero child exit;
+zero tests, skips, missing/invalid inputs or unrecognized execution summaries
+cannot report success. It does not participate in the mandatory green gate
+and does not turn the unresolved natural-positive assertion into an
+expected failure. Its output is bounded to 16 MiB/200,000 child lines in private
+memory, and only aggregate results are exposed. An interrupted runner signals
+its child process group before cleaning the temporary package.
+
 ## 2026-09-29 texture exclusion recovery
 
 Malformed binary masks fail with typed `invalidInput`; a correctly sized mask
@@ -11,6 +130,17 @@ and skips excluded centers, using the same CPU-owned operation on CPU and
 Metal-selected routes. The caller-provided mask adds up to one byte per
 pixel of request memory beyond the earlier three-RGBA8-buffer texture bound;
 Core Image and Metal allocations remain outside that earlier estimate.
+
+The [2026-10-03 frozen probe](docs/TEXTURE_SEMANTIC_FEASIBILITY_2026-10-03.md)
+retains a failed protection assertion for a low-contrast lip extending outside
+the coarse zone. Object-only masks do not cover unmarked lip pixels. This is an
+unqualified input/protection limitation, not a new typed failure or a repaired
+production path; known protected pixels can use the existing explicit mask.
+General automatic object identification is paused after one rejected candidate.
+The [host union regression](docs/HOST_TEXTURE_PROTECTION.md) supplies the known
+object and full lip together, verifies exact protection and active cheek texture,
+and checks wrong-grid recovery plus absence of mask state in later requests.
+It does not extend the unmasked coarse feature admission domain.
 
 ## 2026-09-28 source-qualified geometry recovery
 
@@ -147,15 +277,22 @@ typed `invalidInput`; a later valid request on the same engine proceeds.
 `maximumInputByteCount` normalizes nonpositive mutation to its default.
 No diagnostic includes encoded contents or a source path.
 
-## 2026-09-26 whole-face vertical bounds and recovery
+## Current whole-face vertical bounds and recovery (2026-10-01)
 
-The new signed field caps at `±0.30` and emits at most one finite, unit-bounded
-face-shape point after checking face bounds and contour coordinates. Missing,
-stale, invalid, or out-of-image support leaves it neutral; reused non-eye
-geometry retains the existing half-scale policy. It shares the existing
-geometry conflict scaling, Metal point budget, extent/alpha result checks,
-and typed invalid-input recovery. No request state or device performance
-claim is added.
+The signed `wholeFaceYPosition` field caps at `±0.30`. The provider checks face
+bounds/contour support and emits either zero points or five finite,
+unit-bounded points: one center, two feature and two edge points. Existing
+combined-strength scaling and geometry-capacity checks still apply to provider
+plans; reused non-eye geometry retains its half-scale policy.
+
+In the current RGBA8 still-image geometry path, these provider translation
+points are suppressed. `WholeFaceTranslationRefiner` instead applies a rigid
+translation after source-silhouette admission: one connected head, uniform
+background and a safe output envelope. Missing/ambiguous source support leaves
+the translation unchanged. Eye/mouth widths, eye spacing, foreground area,
+extent/alpha and repeatability are covered by the qualified generated-image
+tests. The same admitted still-image operation is used for CPU and Metal-selected
+results; this is not a realtime/pixel-buffer geometry or device-performance claim.
 
 ## 2026-09-26 FACE-01 chromatic edge and side recovery
 
@@ -276,16 +413,14 @@ retain the existing bounded tone coefficient.
 At that audit date, `maximumInputByteCount` was a normalized Codable value
 only; the new in-memory entry above now enforces it.
 
-## v1.24 upper-eyelid bounded correction
+## Historical upper-eyelid gain bound (2026-09-24)
 
-The source-derived per-pixel gain is `1.8` at positive strength, still rounded
-deterministically and clipped to `±16` plus RGB headroom before the unchanged
-Q16 feather and immutable-source composition. No extra detection, allocation,
-cache, retry, or backend path is introduced. Neutral/invalid strength,
-unsupported peer, malformed support, and planar/crease-only negatives keep
-their existing source-exact behavior. The generated adjacent-correction and
-high-frequency safety checks remain gates; the historical genuine private
-matrix failures are not erased by a generated pixel improvement.
+The earlier `1.8` gain retained `±16`, RGB headroom, Q16 and source ownership,
+but its generated score improvement did not establish natural-image quality.
+It is no longer the production correction rule; current bounded reconstruction
+and quantization are described above. Historical constants and results remain
+in the [technical history](docs/history/upper-eyelid-technical-history-2026-10-01.md),
+without an instruction to continue tuning them.
 
 ## Independent face-mapping degradation (2026-09-23)
 
@@ -420,14 +555,14 @@ threshold or fabricated completion is used.
 
 ## Current Post-Archive Audit Status
 
-v1.21 adds provisional upper-eyelid fullness to the existing still-image
-local-retouch transaction. Positive intent uses the selected observation and
-existing per-eye support/editor; neutral, no-face, missing/malformed/ambiguous
-support, unsupported relief, invalid source, and composition collision remain
-deterministic source-exact outcomes. The known weak visual result is accepted
-as product debt, not hidden as a reliability success claim.
-The final archive-first no-skip gate passed `816/0/0`, all eight opt-ins exactly
-once, and zero skips.
+Suspended upper-eyelid explicit compatibility retains the selected-observation
+and per-eye support/editor transaction. Neutral, no-face, missing/malformed
+support, unsupported relief and composition collision retain their bounded,
+deterministic outcomes; invalid public input keeps its typed failure. Safety,
+ring/quantization fixes and orientation recovery do not establish effective
+natural-image reduction. The v1.21 provisional acceptance and `816/0/0` gate
+are [historical facts](docs/history/upper-eyelid-technical-history-2026-10-01.md),
+not an active effect-quality promise or a requirement to resume optimization.
 
 The v1.17 archive at `afb04b4` is immutable historical evidence: its
 Metal-available host ran focused parity `12/0/0` and the full gate `765/0/0`.
@@ -626,9 +761,15 @@ state recovers from archives and does not rerun retirement.
 5. the public SwiftPM consumer;
 6. generated CPU reference preflight;
 7. private opt-in validation and the existing one-child hardened SwiftPM run
-   with all eight opt-in environment variables; and
-8. transcript reduction that proves each expected identity exactly once, zero
-   failures, zero skips, and nonzero all-tests execution.
+   with the wrapper's five explicit environment inputs (three opt-in switches
+   and two evidence-bundle selectors); and
+8. transcript reduction that proves all nine expected opt-in test identities
+   execute exactly once, zero failures, zero skips, and nonzero all-tests execution.
+
+The identity list is owned by `expected_opt_in_tests` in the wrapper and
+checked separately from its environment inputs by
+`scripts/check-no-skip-wrapper.py`. Test identities and environment-variable
+counts are different contracts.
 
 Archive and scanner output is short aggregate status. The private test child may
 write its bounded output only through a streaming limiter capped at 16 MiB and
@@ -816,178 +957,62 @@ runtime `42/0/0`, Metal feature `34/0/0`, configuration `19/0/0`, CPU reference
 `41/0/0`, parity `13/0/0`, and full XCTest `776/0/0`. These results close F-01
 through F-10 while retaining the excluded product claims.
 
-## Phase 76 Per-Eye Support Reliability
+## Retained Upper-Eyelid Support and Editor Reliability
 
-The package-only upper-eyelid support seam reuses one mapped Vision observation
-and performs one semantic-owner call per request. Missing or malformed support
-is isolated to the smallest eye region; the peer remains independently
-eligible, while an unsupported eye returns source-exact bytes. Confidence,
-finite dimensions, hard-envelope containment, unique pixel ownership, and
-typed pose/occlusion reasons are checked before downstream composition.
+The package-only support seam reuses one mapped Vision observation and one
+semantic-owner call per request. Missing or malformed support is isolated to
+the smallest eye region; a rejected peer cannot authorize or suppress an
+eligible eye. Confidence, finite dimensions, plausible brow-to-eye geometry,
+hard containment, unique pixel ownership and bounded Q16 weights are checked
+before composition. `CoordinateMapper` remains the orientation/mirror owner.
 
-The existing `CoordinateMapper` remains the only orientation/mirror conversion
-boundary. The composition handoff uses the immutable canonical source and
-returns overlap claims to that source with an aggregate collision count. This
-phase proves package-host mechanics and privacy only; no genuine efficacy,
-device, performance, commercial, packaging, shipping, launch, or
-release-readiness claim follows.
+The retained relief analyzer validates canonical RGBA8 layout, finite strength,
+a nondegenerate patch, at least six boundary anchors, a solvable affine plane
+and a nonempty central region. Its box radius is patch-derived and capped at
+`24`; two patch-local integral arrays provide constant-time sample lookups.
+The current editor's reconstruction and quantization bounds are described
+above. They introduce no previous-request state, external model, network or
+retry path. The composition owner preserves protected/exterior pixels,
+alpha/metadata and overlap-to-source behavior.
 
-## Phase 77 Deterministic Editor Reliability
+Repeated supported requests are deterministic. Neutral and rejected local
+units emit no proposals, while public malformed/nonopaque input retains typed
+failure and same-engine recovery. A supported brightness proxy may still
+produce little or no useful natural-image reduction. This is the retained
+compatibility behavior of a suspended effect, not a passing efficacy claim.
 
-The package-only editor validates finite strength, source layout, per-eye
-support, unique/in-bounds ownership, and bounded channel deltas before it emits
-proposals. A neutral request and every invalid or unsupported outcome publish
-no edits; the valid eye remains independent from a rejected peer. Repeated
-requests over the same canonical source are deterministic and preserve the
-exact source residual, alpha, extent, and metadata.
+## Historical Upper-Eyelid Evaluation and Decision Binding
 
-`BeautyLocalRetouchCompositionOwner` remains the terminal source of truth for
-containment, protected/exterior bytes, and overlap-to-source collisions. The
-Phase 77 focused suite is 7/0/0, its boundary checker rejects 8/8 mutations,
-and the archive-first full gate is 797/0/0 with zero skips. These are SDK
-mechanics only; genuine efficacy, device, performance, commercial, packaging,
-shipping, launch, and release-readiness claims remain outside the result.
+Phases 77–79 recorded bounded mechanics and `mechanics-only-not-promotion` for
+the then-unexposed `61/5/74` surface. Later v1.19 candidates failed actual
+image applicability, adjacent continuity, texture or visible-reduction checks,
+despite some green generated tests. The exact historical counts, failed bounds
+and original evidence links are retained in the
+[technical history](docs/history/upper-eyelid-technical-history-2026-10-01.md).
+These are completed experiments, not tasks to acquire new private evidence.
 
-## Phase 78 Candidate Decision Reliability
+`scripts/check-v1-18-decision-binding.py` still validates the immutable
+Phase-75/78/79 decision and archived inventory. It does not bind the current
+editor to that historical implementation or prohibit the later explicit
+compatibility API. Resolution failures expose normalized reasons only;
+child transcripts and private paths are not persistent evidence.
 
-The candidate gate delegates evidence admission to the frozen Phase 75
-evaluator and preserves typed missing, incomplete, rights, review, and privacy
-failures. Metadata-only manifests are deterministic mechanics evidence and
-always resolve to `mechanics-only-not-promotion`. The Phase 77 deterministic
-editor remains the baseline; an optional additive comparator is terminally
-rejected unless exact rights, bounded-map, all-safety, and superiority checks
-pass.
+## Inactive Upper-Eyelid Prediction Reliability
 
-The focused decision suite is 6/0/0, the evaluator self-test records 12 checks
-and 8 mutation rejections, and the Phase 78 boundary checker rejects 8/8
-mutations. The archive-first full gate is 797/0/0 with zero skips. No genuine
-efficacy or naturalness, device, commercial, packaging, shipping, launch, or
-release-readiness claim follows without a supplied rights-approved bundle.
+The learned/data route was canceled on 2026-08-25 and remains paused under the
+2026-10-01 suspension. `BeautyUpperEyelidFullnessPredicting` has no registered
+implementation or model resource; the explicit compatibility route does not
+use it. The retained validator rejects invalid requests before a predictor
+call and rejects missing, malformed, non-finite, out-of-support or incorrectly
+owned results. It enforces confidence/uncertainty, alpha/flow/tone boundaries,
+local continuity and fold-over limits, with independent per-eye rejection and
+no proposal on failure. The exact retained bounds are in [DESIGN.md](DESIGN.md).
 
-## Phase 79 Failing-Branch Reliability
-
-The closeout consumes the single Phase 78 decision and fails closed before any
-public activation. Exact inventories, package/resource/SPI absence, taxonomy
-status, source-diff protection, canonical metadata, alpha, CPU authority,
-explicit GPU selection, and terminal `.metalUnavailable` behavior are checked
-with isolated mutations. Existing request-local deterministic recovery remains
-the authority for output and failure behavior.
-
-The final archive-first gate is the only milestone closeout authority. A green
-SDK run does not convert the mechanics candidate into genuine efficacy,
-naturalness, device, commercial, packaging, shipping, launch, or
-release-readiness evidence. The Phase-79 checker passes live mode and rejects
-8/8 isolated mutations; the final archive-first gate passes 797/0/0 with all
-eight opt-ins exactly once and zero skips.
-
-After archival, `scripts/check-v1-18-decision-binding.py` replaces—not mutates—
-that historical checker. v1.21 narrows its current responsibility to resolving
-and validating the immutable Phase-75/78/79 machine decision and archived
-61/5/74 disposition. It no longer treats later public-surface changes as drift
-or binds the current editor source/tests. Artifact-resolution failures expose
-only normalized reason identifiers; neither successful nor failed runs persist
-child transcripts or private paths.
-
-## v1.19 Phase 80 Candidate-v3 Remediation Reliability
-
-The per-eye resolver now separates `missingEyeEnvelope`,
-`missingEyebrowEnvelope`, `implausibleBrowEyeGap`, ambiguous order, invalid
-weight, and existing semantic/pose/occlusion failures. One rejected side cannot
-suppress a valid peer, and an absent semantic owner still returns two typed
-source-exact no-ops. Feathered pixel enumeration and validation are bounded to
-the permitted envelope rather than scanning or retaining arbitrary payloads.
-
-Candidate v2's generated tests passed but its first genuine automated run
-stopped at 14/19 rows: real-image neighboring corrections reached an aggregate
-maximum jump of 30 against 5, and texture retention fell below the frozen
-bound. No v2 image entered human review.
-
-The candidate-v3 editor validates source layout, finite strength, unique
-in-bounds weighted pixels, one whole-eye clipping bound, and maximum channel
-delta before emitting proposals. The pre-feather contour is one non-positive
-equal-RGB scalar for every accepted pixel; deterministic Q16 ownership supplies
-the only spatial falloff. Repeated requests produce identical proposals,
-summaries, and bytes. Generated pixel tests require target change, a single
-correction sign, exact source channel and spatial-detail differences before
-feathering, source-exact exterior/protected rows, exact alpha/extent/metadata,
-adjacent correction continuity, texture retention at or above `0.98`, and the
-existing `±16` safety cap.
-
-The candidate-v2 remediation verification was focused `24/0/0`, full SwiftPM `803/0/8`
-(the eight established opt-ins remain disabled in a plain run), SDK-only
-post-archive boundary pass, and diff-hygiene pass. This does not make a genuine
-efficacy, public API, device, commercial, packaging, shipping, launch, or
-release-readiness claim.
-
-## v1.19 Phase 80 Candidate-v4 Relief Analysis Reliability
-
-Candidate v4 replaces the invalidated uniform contour with deterministic
-request-local relief analysis. It validates canonical RGBA8 layout, finite
-strength, unique in-bounds support, bounded Q16 weights, a nondegenerate patch,
-at least six boundary anchors, a solvable affine plane, and a nonempty central
-region. Any failed precondition rejects only that eye and emits no proposal.
-
-The box-filter radius is derived from the admitted patch and capped at `24`.
-Two patch-local integral arrays make every sample lookup constant-time; no
-whole-image cache, prior-request state, external model, network, or retry path
-exists. Correction magnitudes are finite by construction, clipped to `±16` and
-RGB headroom, and composed once against immutable source. Repeated generated
-requests produce byte-identical proposals and output.
-
-The candidate-v4 focused group passes `30/0/0`. It covers convex relief
-compression, rejection of planar lighting and crease-only detail, production
-semantic admission, peer isolation, overlap-to-source, protected/exterior
-bytes, color/alpha/extent/metadata preservation, smooth feathering, and
-determinism. The plain full SwiftPM run passes `805/0/8`; the eight skips are the
-established opt-in suites and are not milestone closeout evidence. Genuine
-efficacy and naturalness remain pending the separately frozen private gate.
-
-## v1.19 Learned Upper-Eyelid Reliability Contract
-
-The owner canceled this runtime path on 2026-08-25. No predictor or model
-resource will be registered in v1.19; the existing package-only validator stays
-fail-closed and experimental code remains unreachable from the public facade.
-The remaining contract is retained only for a separately authorized future
-milestone.
-
-The candidate-v4 private matrix invalidated its generated reliability premise:
-repeatable genuine runs failed applicability, boundary continuity, and minimum
-relief before review. No v5 threshold retune is allowed. The replacement seam
-has an explicit unavailable state and emits no proposal until one validated,
-checksum-bound learned predictor exists.
-
-Each per-eye prediction validates fixed tensor dimensions, finite confidence
-and uncertainty, calibrated admission, alpha containment, zero protected and
-boundary flow, bounded mapped displacement, smooth gradients, positive local
-Jacobian, bounded low-frequency tone, and independent-eye ownership. Invalid
-resource, compile, inference, output, crop, mirror, color, or mapping state
-fails only that eye to immutable source without heuristic or CPU-proxy fallback.
-The predictor resource is loaded once per owning engine/resource boundary;
-request crops, tensors, outputs, and composition state are never shared between
-requests.
-
-Before private review, source-model and converted Core ML output/decision parity
-must pass on representative and threshold-boundary cases. Generated SwiftPM
-oracles cover invalid/missing models, malformed outputs, protection, strength-
-zero identity, orientation/mirror/color/alpha/extent, determinism, cancellation,
-recovery, and public absence. Genuine efficacy still requires a frozen unseen
-private matrix to pass twice and blinded original-detail review; generated tests
-cannot supply that result.
-
-The reliability lifecycle ends at an owner-local, checksum-pinned model. A
-research-only dataset may feed only a non-commercial local candidate under its
-actual terms. Distribution, monetization, customer upgrade, remote delivery,
-and externally supported rollback are prohibited rather than unimplemented
-reliability promises; any future change requires a new model/license/resource
-reliability contract.
-
-Plan 80-20 passes `8/0/0` learned-prediction tests and `23/0/0` across all
-upper-eyelid suites. It covers no-model, invalid request before inference,
-protected overlap, envelope escape, abstention, confidence, uncertainty, side
-mismatch, missing/malformed samples, non-zero boundary flow, excessive flow or
-tone, discontinuity, local fold-over, inference failure, and independent-peer
-recovery. The plain full package passes `813/0/8`; the eight existing opt-ins
-remain disabled in a plain development run and this is not final closeout.
+The historical fixed-output/model-conversion/review workflow is not a current
+reliability obligation. Historical validator tests prove rejection and
+recovery mechanics only, not model availability or effect quality. Candidate
+failures do not prove all no-model routes impossible or a learned replacement
+sufficient; a new owner request would need a separately evidenced design.
 
 ## Phase 90 Chin Repair and Contour Deferral Reliability Contract
 

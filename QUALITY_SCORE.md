@@ -1,58 +1,192 @@
 # QUALITY_SCORE.md
 
-## 2026-09-30 upper-eyelid source and public-output probe
+## Current batch tool verified (2026-10-03)
 
-A new generated flatter-lid candidate still admitted both eyes under live
-Vision (`4.28/4.40` central residual scores), so it was rejected as a safe
-negative before effect output. An exploratory public `processResult` probe
-paired an existing bilateral admitted positive with an independent zero-eye
-negative of another identity. Under regions and limits fixed before output,
-the positive changed 3,563/4,133 upper-lid pixels, zero outside or in alpha;
-the negative and neutral results were source exact, the repeat matched the
-first output, and maximum channel delta was 16. Original-detail inspection
-found no closed ring in that portrait but only a slight visible effect. The
-older controlled portrait still exhibits a closed ring, and the negative of
-another identity does not establish matched semantic discrimination. These
-observations do not qualify stronger visual quality or a production algorithm change. The
-temporary diagnostic tests were removed. Focused regression and boundary
-results for the restored tree are recorded in the active plan.
+The [current batch tool](docs/CURRENT_BATCH_VALIDATION.md) completes BAT25-01/02:
+17 tool tests, zero failures/skips, including 8 actual pixel counterexamples and
+3 decoded-file/region controls. The 98 default cases ran twice: 7 passed and 91
+declared no-face abstentions, with zero failures/errors/missing oracles. An actual
+custom suite with only one oracle ran twice and returned exit 3, with 1 passed
+and 97 unverified. Inventory is independently fixed at 98 default / 99 registered.
 
-## 2026-09-29 evidence and visual-gate review
+The r1 harness mislabeled a no-face skin combination as global brightening;
+its exit-1 report and source remain preserved. Existing resolver tests and DESIGN
+established the correction before r2; all 98 r1/r2 pixel rows are identical.
+This is tool/no-face validation, not 98 portrait-effect qualifications. No taxonomy
+promotion or full SDK rerun is claimed. The milestone is now 2/16 requirements,
+0/6 whole phases; SEG remains stopped and EYE G0 pending.
 
-The [primary-source review](docs/UPPER_EYELID_AND_SKIN_SEMANTICS_RESEARCH.md)
-separates 2D eye/brow localization from fullness inference and skin/object
-segmentation. The current acceptance policy now makes original-detail artifact
-inspection mandatory when claiming visual improvement or no worsening. In a
-temporary generated-bulge diagnostic, suppressing 123 brightened proposals
-left a visible dark ring despite `9/0/0` focused numeric tests; the candidate
-and its diagnostic test were removed. The restored editor suite passes `8/0/0`.
-This review does not qualify `去脂` visual quality or unmasked same-colored
-object protection. The post-archive SDK boundary and documentation checks
-passed; the full no-skip gate was not rerun for this documentation update.
+## SEG automatic development stopped (2026-10-03)
 
-## 2026-09-29 upper-eyelid visual counterexample
+[Four registered versions](docs/SEG_DEVELOPMENT_2026-10-03.md) exhausted the original
+2-method × 2-version budget without G1. Joint positive/negative passes were
+S1-v1 0/6 and 0/6; S1-v2 1/6 and 4/6; S2-v1 1/6 and 2/6; S2-v2 4/6 and 4/6.
+S2-v2 still had 8/48 hard protection failures and failed tone-stratum coverage.
+Candidate XCTest execution was 6/0/0 each, but every effect runner returned 1.
+Baseline/control execution was 14/0/0, with 48 correct host controls; the baseline
+automatic outputs failed. Do not relabel measurement execution as effect success.
 
-A local, code-generated 384×384 portrait pair was visually checked before
-effect evaluation: the positive has two visible bright upper-lid domes and
-the paired negative omits them. With the existing package-only observed-eye
-support, public `processResult` changed 2434 target pixels per eye, zero
-negative pixels, zero outside the predeclared target bands, and zero alpha
-pixels; maximum channel delta was 16. The positive source's central red-channel
-contrast over the negative exceeded 15 per eye, and output center red
-decreased by more than 2. Despite these numeric passes, original-size visual
-review found a conspicuous closed oval ring around each upper lid in the
-output. This is a failed visual no-worsening result, not effect qualification.
-The one-off test and generated pixels were removed from the repository; no
-production threshold, gain, model or weight changed. This source uses injected
-eye support and does not qualify the Vision admission path.
-An additional edited, natural-style generated portrait was checked with live
-Vision before effect output: one face was found, but both eyes were rejected
-by the semantic source owner. Aggregate source scores for the original were
-central `-0.26/1.42` and localized `6.76/7.56` (left/right); the visibly fuller
-edit fell to central `-4.19/-3.15` and localized `3.94/4.00`. This one pair
-shows that visual fullness and the present luminance-convexity score need not
-move together. The edit was not passed to the effect renderer; the temporary
-diagnostic test was removed.
+Existing-observation plumbing preserved all 153 baseline rows; S1-v1 export
+repair preserved all 72 rows. Public CPU/observer/repeated output equivalence,
+input hashes, neutral and metadata were checked. Selected native-size diagnostic
+views were inspected, without complete visual qualification. No automatic reject
+set, old full-lip regression, candidate holdout, Metal, G2/G3 or production integration
+ran. SEG stops unqualified; EYE G0 remains unprepared and E1-v1 rejected.
+Production and the earlier full 1076/0/0 checkpoint remain unchanged.
+
+## SEG G0 freeze (2026-10-03)
+
+[SEG G0](docs/SEG_G0_FREEZE_2026-10-03.md) passed **20/0/0**: 30 logical cases, 60
+input rasters, 96 texture controls, 12 rejection raster controls and 128 orientation
+comparisons. Support 54.28–93.18%; smoothing variation reduction 33.92–56.12%;
+sharpening increase 45.07–75.05%; no protection or alpha violations. Correct host
+controls and input/visual readiness only: no automatic recognition or rejection
+qualification. Thirty SEG cases are frozen; thirty EYE cases remain not_prepared.
+The first complete-run receipt failed; r2 atomic aggregate collection passed with
+all 156 review exports byte-identical. Full SDK 1076/0/0 was not rerun.
+
+## SEG G0 development input controls (2026-10-03, prior checkpoint)
+
+[Six independent generated development families](docs/SEG_G0_PROGRESS_2026-10-03.md)
+now have paired positive/negative inputs at 1024/512. The isolated public CPU/live
+Vision check passed **7/0/0**, with 48/48 joint effect controls, source-exact protected
+regions and matching observed/public output. Support was 54.28–69.69%; smoothing
+reduced local variation by 34.17–49.05%, sharpening increased it by 46.63–65.40%.
+These are correct host-mask controls, not automatic recognition results. r1
+observer/effective-strength mismatches remain recorded as 1/8/0; using the normal
+resolver fixed the harness. Its then-pending holdout/rejection/control work is
+covered by the separate complete SEG G0 record above. This earlier checkpoint
+did not run a new candidate or change production.
+
+## v1.25 R2 baseline and development pilot (2026-10-03)
+
+The [bounded pilot](docs/RETOUCH_MVP_PILOT_2026-10-03.md) is complete. Its final
+controls passed 2/0/0 (36 SEG comparisons); candidate measurement passed 2/0/0,
+but the runner returned 1 for EYE's actual direction/detail failure. SEG passed
+12 positive and 6 negative variants of one procedural family. EYE's full-strength
+per-eye improvements were 14.37%/0%, with first-eye high-pass change 13.45% > 10%.
+E1-v1 is rejected. No natural-portrait, formal G0/holdout or production qualification
+was granted; all existing production/tests/history bytes remain unchanged.
+
+The owner authorized lower initial expectations and requirements before code.
+The [MVP contract](docs/RETOUCH_MVP_REQUIREMENTS.md) defines independent reference
+metrics, finite coverage, patch-edge tolerance, visual checks and G0–G3. These are
+prospective project criteria, not measured success rates or calibrated perception
+thresholds. The [G0 design](docs/RETOUCH_G0_VALIDATION_PLAN.md) now fixes metric
+formulae, oracle controls and failure accounting. SEG now has 30 frozen cases;
+EYE has 30 not_prepared. Support coverage is measured by an output-equivalent
+isolated observer; changed pixels cannot substitute for support count.
+The owner subsequently authorized a bounded development pilot with isolated
+observation and generated diagnostic inputs, followed by SEG G0 completion. EYE
+G0 and both candidate qualifications remain pending; the later independent batch
+tool above brings verified requirements to 2/16.
+These results are separate from the full SDK gate.
+
+Latest focused existing-path recheck: **5 tests / 0 failures / 0 skips** (four
+host union-mask tests plus one calibrated eyelid/live Vision test). Host-mask
+backend counters: CPU=1, Metal=1, unavailable=0. This does not qualify the new
+automatic targets. The initial sandbox attempt ran zero tests; the permitted
+retry supplied the five-test evidence. This documentation turn does not rerun it.
+
+Latest full archive-first SDK gate remains the prior **1076/0/0 with 9 opt-ins**.
+Old natural-eyelid and automatic-object challenge failures retain their meanings.
+R2 permits prospective scope changes under explicit owner direction, with original
+requirements preserved; it does not alter old assertions or relabel old outcomes.
+
+## Host-supplied object and lip union (2026-10-03)
+
+The [host integration guide](docs/HOST_TEXTURE_PROTECTION.md) and new
+`BeautySkinTextureHostProtectionTests` use the unchanged frozen generator and
+protection/direction predicates with additional independent host information.
+Known object + complete lip pixels remain exact while the other cheek meets
+20% smoothing reduction / 10% sharpening increase. New tests passed **4/0/0**;
+with the existing mask tests, focused validation passed **8/0/0**. All 64
+orientation/mirror effect combinations, in-memory PNG, neutral/repeat,
+alpha/extent/sRGB, per-pixel union ownership, typed grid recovery and later
+unmasked requests passed. The documentation's Swift helper passed typecheck.
+
+The latest archive-first full SDK gate passed `1076/0/0`, with all 9 opt-in test identities executed. The new backend execution counters are CPU = 1, Metal = 1, unavailable = 0. The old automatic probe remains **4/6/0** and is
+not edited, converted to expected failure or reclassified. This workflow does
+not repair unmasked lip/object semantics or restart suspended research.
+The boundary gate admits only the exact reviewed new test SHA, with a mutation
+self-test rejecting any changed bytes/new backend declaration. No production
+API, GPU backend or algorithm changed.
+
+
+## Texture semantics: rejected finite probe (2026-10-03)
+
+The [frozen feasibility record](docs/TEXTURE_SEMANTIC_FEASIBILITY_2026-10-03.md)
+retains **4 tests / 6 assertion failures / zero skips**, reproduced in an
+external temporary SwiftPM consumer with the identical SHA-pinned source.
+General unmasked skin-colored object identification is unqualified and paused.
+The only candidate protects the object but stops valid skin texture. All three
+paths also fail the new deep-skin low-contrast lip outside coarse guards;
+object-only masks do not supply that missing feature protection. No threshold,
+ROI, expected-failure rewrite or production candidate was introduced.
+
+The 2026-10-03 archive-first full SDK gate passed `1072/0/0`, with all 9 opt-in test identities executed. The normal SDK gate and rejected probe have distinct scopes;
+the gate does not qualify this new input or erase its failure. Explicit masks
+remain exact for their specified pixels; existing bounded input qualifications
+and the suspended upper-eyelid status are unchanged.
+
+
+## Upper-eyelid: suspended; bounded engineering evidence (2026-10-01)
+
+Current upper-eyelid effect development is stopped. Natural-portrait effect
+quality has not met the frozen acceptance requirements. The renderer retains
+99 registered case identities for compatibility, while default discovery and
+batches expose 98 and omit this control. Recommended examples use scalar zero;
+explicit SDK calls and legacy CLI selection retain their existing behavior.
+Only an explicit owner request can reopen research with a new testable
+hypothesis. The retained API is compatibility, not an endorsement of effect
+quality.
+
+At the preceding code-changing checkpoint, the archive-first
+`bash scripts/run-no-skip-swiftpm.sh` passed **1072 tests, zero failures, nine
+executed opt-ins and zero skips**. Archive, SDK-only
+boundary and its self-test, backend, consumer and independent review checks
+passed. Default omission and explicit CLI compatibility passed two focused
+process tests. Their explicit-call input has no face, so it verifies calling,
+report and output behavior only. This gate establishes the tested engineering
+and compatibility contracts; it does not overturn the natural-effect failure.
+
+| Retained evidence | What it establishes | Boundary |
+| --- | --- | --- |
+| Independent matched-flat artifact tests: 13 sources at four strengths, including crossed brightness/affine lighting and fixed geometry variants | Meaningful central reduction, no added negative residual beyond tolerance, radial shape, protection, strength monotonicity, repeatability, alpha and metadata; flat/concave controls remain exact. | A finite known luminance-target domain, not tissue or natural-portrait semantics. |
+| Repaired reconstruction and bounded Q16 quantization; original-detail ring reproducer | The known contrast-reversal/ring defect and weak-strength quantization bias are repaired within the retained source/texture tests. | No general no-halo or natural-appearance qualification. |
+| 32 orientation/input-mirror/preview-mirror combinations | Independent pixel permutations reach byte-equivalent canonical output through the public facade, including non-square input and metadata. | Controlled geometry support; live Vision is covered separately. |
+| Calibrated luminance pair through live Vision and the public facade | Four-strength pixel oracles pass; flat, shadow and two natural raw controls reject with real detected geometry and source-exact output. The positive and added natural negative also have exact repeat checks. | The calibration creates visible color blocks and removes natural variation. It does not establish natural appearance or texture fidelity. |
+| Frozen uncalibrated natural-background challenge | **One test, two failures, zero skips, exit 1** against the restored production implementation. | Only one positive eye admits where two are required; the fail-fast guard prevents the effect loop. This is a real failed positive, not a passing negative or expected failure. |
+
+The failure has two demonstrated parts. First, the source analyzer measures a
+luminance residual, not eyelid morphology: lighting, reflectance and makeup can
+change that proxy independently of apparent fullness. Second, tested background
+fits that admitted both positive eyes still failed the unchanged minimum
+central reduction of `20% * strength`. At full strength, the raw-affine candidate
+removed only **4.34%/5.02%** (two eyes); the spatial/color candidate removed
+**4.85%/2.20%**.
+
+Pixel-matched stage diagnostics locate the dominant attenuation in
+reconstruction: raw-affine central capacity fell from 36.91%/28.77% before
+reconstruction to 4.81%/5.58% afterward, then 4.34%/5.02% after Q16. Central
+support coverage was complete. The spatial/color candidate had the same
+pattern. Relaxing propagation produced a residual as low as −8, radial rises
+of 4.08/2.47 against the fixed limit of 1, and 72 changed continuous-ridge
+pixels. The quadratic background candidate also lost an existing narrow-dome
+effect and falsely admitted a natural negative. All of these candidates were
+rejected and the validated model/editor restored. These results reject the
+tried candidates; they do not prove that every approach without a learned
+model is impossible.
+
+The [standalone experiment](scripts/experiments/upper-eyelid-natural-challenge/README.md)
+keeps the original source recipe and oracle outside the normal SwiftPM targets.
+It preserves a nonzero failure without weakening, skipping or relabeling the
+challenge. The green gate and this red experiment answer different questions.
+Detailed earlier experiments and dated receipts are retained as
+[pure history](docs/history/upper-eyelid-experiments-2026-10-01.md); the
+[research review](docs/UPPER_EYELID_AND_SKIN_SEMANTICS_RESEARCH.md) records the
+inference limits and existing primary sources. No further parameter search or
+candidate work is active.
 
 ## 2026-09-29 request-local texture exclusion qualification
 
@@ -81,8 +215,8 @@ The final archive-first `bash scripts/run-no-skip-swiftpm.sh` returned zero:
 1058 SwiftPM tests, zero failures, eight opt-ins executed and zero skips.
 SDK-only boundary self-test and post-archive check passed; `git diff --check`
 passed. The 15 formerly partial rows now have owner-local, generated-image 2D
-qualification within their individual source-admission limits. The separate
-provisional `去脂` and same-skin-colored non-skin gaps remain open.
+qualification within their individual source-admission limits. This checkpoint
+does not qualify upper-eyelid appearance or same-skin-colored object protection.
 
 ## 2026-09-28 final three source-qualified shape controls
 
@@ -387,30 +521,14 @@ hairline localization; the existing `partial` status remains. The final
 archive-first no-skip gate passes `1039/0/0`, all eight opt-ins, and zero skips;
 SDK-owned prechecks, the focused `34/0/0`, and `git diff --check` pass.
 
-An edited generated upper-lid source with more visible bilateral fullness
-still fails source-only semantic admission in both eyes. Its mean residuals
-are negative and the earlier negative's left-eye local signal remains higher.
-No effect-output or threshold credit is taken from this candidate.
-
 ## 2026-09-27 active qualification verification
 
 The 2026-09-27 checkpoint passed the archive-first no-skip gate: `1037/0/0`, all
 eight opt-ins executed, zero skips, and SDK-owned archive, boundary, backend,
 Metal, consumer and CPU-reference checks passed. The result verifies the
-implemented two-dimensional and texture contracts. It does not close the 15
-partial effects' feature-specific portrait semantics or the provisional
-upper-eyelid visual gap recorded below.
-
-## 2026-09-27 upper-eyelid generated source admission
-
-A new frozen 1145×1374 generated positive/negative pair yields one usable
-selected face per image and exact neutral/repeated output. Both eyes on both
-images fail the existing semantic approval and remain source-exact, so the
-predeclared positive effect oracle correctly fails at `0/0` changed upper-lid
-targets. The source pair lacks a clean positive-versus-negative residual
-separation: the positive means are negative and a negative eye has the larger
-localized score. No threshold, algorithm, or claim was changed to force a
-pass. This pair is diagnostic only; the provisional visual-quality gap remains.
+implemented two-dimensional and texture contracts. At that checkpoint, the 15
+partial effects' feature-specific portrait semantics and upper-eyelid visual
+quality remained unqualified.
 
 ## 2026-09-27 image-plane portrait schematic coverage
 
@@ -465,17 +583,6 @@ core, hair and far-background rectangles (maximum cheek channel delta 11).
 The final archive-first gate passes `1032/0/0`, with all eight opt-in checks
 executed, zero skips, and SDK-owned boundary checks passing.
 This envelope does not prove anatomical skin segmentation or device performance.
-
-## 2026-09-27 provisional upper-eyelid mixed-lighting gate
-
-The generated source-relief positive has a central mean below the old 3.5
-threshold but a coherent localized convex region; the revised bounded gate
-accepts it and reduces its upper-quartile residual by at least 15%. Planar
-lighting and fine-crease negatives remain rejected (`8/0/0` focused tests).
-One generated natural-style public CPU portrait changes both upper lids with
-maximum RGB channel delta 16 and unchanged distant background. The original-
-size change remains mild, so this is a safety and coverage improvement within
-the provisional owner-local effect, not broad visual-quality qualification.
 
 ## 2026-09-27 symmetry and lower-chin generated-pixel acceptance
 
@@ -849,23 +956,6 @@ have dedicated regressions. The stale Phase 96 driver passed `bash -n` and
 returns exit 2 before any batch or log action; `git diff --check` passed.
 These are generated fixture and SDK gate results, not actual-portrait effect
 or device qualification.
-
-## 2026-09-24 v1.24 去脂效果改进（有界完成）
-
-[预先固定的目标与保护区](.planning/V1.24-UPPER-EYELID-CURRENT.md) 使用同一
-内存生成凸起输入：半强度源图中央分数 `9.3623085`，旧输出/源图比值
-`0.4537424`；内部 gain `1.5 → 1.8` 后比值 `0.3422654`，改善约
-`0.1114770`，满足 `≤0.35` 且至少多改善 `0.10` 的固定谓词。新增测试在
-生产改动前对旧实现失败；复审后补半强度非均匀性、公开保护像素与双眼
-独立性断言，编辑器/公开双入口 `12/0/0`。初次完整 archive-first
-门禁 `945/0/0`、8 opt-in、0 skip 早于复审补测，属于中间检查；最终
-源码重新通过完整 archive-first no-skip 门禁：archive、SDK-only、
-后端/Metal、consumer、CPU-reference 与所有 8 项 opt-in 通过，SwiftPM
-非零测试、零失败、零 skip；二次独立只读复审无剩余 Swift 问题，
-[复审摘要](.planning/V1.24-INDEPENDENT-REVIEW.md) 与
-[最终身份](.planning/V1.24-UPPER-EYELID-CURRENT.md) 已记录。
-本次有界完成只证明生成输入机制改善；历史真实私有矩阵失败、真实人像
-视觉质量不足及 FUTURE-04 均不因该数值改变。
 
 ## 2026-09-24 v1.23 合成输入机制验收
 

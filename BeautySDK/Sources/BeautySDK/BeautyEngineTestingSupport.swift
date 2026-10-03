@@ -1163,6 +1163,7 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
     private var currentRequestIsMalformed = false
     private var currentCanonicalBackingIdentity: Int?
     private var currentCanonicalViewIdentity: ObjectIdentifier?
+    private var canonicalMetadataObservationValue: BeautyInputMetadata?
     private var detectorViewIdentity: ObjectIdentifier?
     private var rendererBackingIdentity: Int?
     private var rendererUsesExplicitSRGB = false
@@ -1191,6 +1192,9 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
     package var renderCount: Int { withLock { renderCountValue } }
     package var activeRequestContextCount: Int { withLock { activeRequestContextCountValue } }
     package var lastAggregateSupportValueID: Int? { withLock { lastAggregateSupportValueIDValue } }
+    package var canonicalMetadataObservation: BeautyInputMetadata? {
+        withLock { canonicalMetadataObservationValue }
+    }
     package var canonicalConsumerIdentityMatched: Bool {
         withLock {
             currentCanonicalBackingIdentity != nil &&
@@ -1256,6 +1260,7 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
             activeRequestContextCountValue = 0
             currentCanonicalBackingIdentity = nil
             currentCanonicalViewIdentity = nil
+            canonicalMetadataObservationValue = nil
             detectorViewIdentity = nil
             rendererBackingIdentity = nil
             rendererUsesExplicitSRGB = false
@@ -1275,6 +1280,7 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
             activeRequestContextCountValue = 0
             currentCanonicalBackingIdentity = nil
             currentCanonicalViewIdentity = nil
+            canonicalMetadataObservationValue = nil
             detectorViewIdentity = nil
             rendererBackingIdentity = nil
             rendererUsesExplicitSRGB = false
@@ -1308,6 +1314,7 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
             activeRequestContextCountValue = 0
             currentCanonicalBackingIdentity = nil
             currentCanonicalViewIdentity = nil
+            canonicalMetadataObservationValue = nil
             detectorViewIdentity = nil
             rendererBackingIdentity = nil
             rendererUsesExplicitSRGB = false
@@ -1322,6 +1329,7 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
         withLock {
             currentCanonicalBackingIdentity = carrier.backingIdentity
             currentCanonicalViewIdentity = ObjectIdentifier(carrier.ciImage)
+            canonicalMetadataObservationValue = carrier.metadata
         }
     }
 
@@ -1799,6 +1807,9 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
     public var hasCurrentCanonicalObservation: Bool {
         withInvocationLock { hooks.hasCurrentCanonicalObservation }
     }
+    public var canonicalMetadataObservation: BeautyInputMetadata? {
+        withInvocationLock { hooks.canonicalMetadataObservation }
+    }
     public var usedExplicitSRGBRender: Bool {
         withInvocationLock { hooks.usedExplicitSRGBRender }
     }
@@ -1971,6 +1982,18 @@ package final class BeautyLocalRetouchTestingHooks: @unchecked Sendable {
             detectionAvailability: detectionSummary?.availability.rawValue,
             detectionReasons: detectionSummary?.reasons.map(\.rawValue) ?? []
         )
+    }
+
+    /// Passes caller metadata through the same public still-image facade used
+    /// by hosts. Only detector observations are supplied by this testing seam.
+    public func invokeProcessResult(
+        image: CIImage,
+        metadata: BeautyInputMetadata,
+        parameters: BeautyParameters
+    ) throws -> BeautyResult<CIImage> {
+        invocationLock.lock()
+        defer { invocationLock.unlock() }
+        return try engine.processResult(image: image, metadata: metadata, parameters: parameters)
     }
 
     public func invokePixelBuffer(parameters: BeautyParameters) throws {

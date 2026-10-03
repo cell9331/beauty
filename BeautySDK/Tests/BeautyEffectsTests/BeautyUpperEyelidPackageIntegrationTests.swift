@@ -10,7 +10,7 @@ import XCTest
 /// explicitly experimental editor, then to immutable-source composition.
 final class BeautyUpperEyelidPackageIntegrationTests: XCTestCase {
     func testOneObservationFlowsThroughIndependentEyeResolutionEditorAndComposition() throws {
-        let source = try canonical()
+        let source = try canonical(localizedVertically: true)
         let provider = UpperEyelidIntegrationObservationProvider(support: standardSupport)
         let semanticOwner = UpperEyelidIntegrationSemanticOwner(mode: .acceptLeftRejectRight)
         var detector = VisionFaceDetector(observationProvider: provider.call)
@@ -122,6 +122,31 @@ final class BeautyUpperEyelidPackageIntegrationTests: XCTestCase {
         ] {
             XCTAssertFalse(diagnostics.contains(forbidden), "diagnostic leaked \(forbidden)")
         }
+    }
+
+    func testContinuingRidgeRemainsExactAtRetainedIntegrationStrength() throws {
+        // Retain the original integration source and strength as a regression:
+        // its bright ridges continue across both edges of the supported band.
+        // A request must not manufacture a local dark trough in that ridge.
+        let source = try canonical()
+        let provider = UpperEyelidIntegrationObservationProvider(support: standardSupport)
+        let semanticOwner = UpperEyelidIntegrationSemanticOwner(mode: .acceptLeftRejectRight)
+        var detector = VisionFaceDetector(observationProvider: provider.call)
+        let detected = detector.detectWithUpperEyelidSupport(
+            image: source.ciImage, metadata: source.metadata,
+            imageExtent: CGSize(width: source.width, height: source.height),
+            semanticOwner: semanticOwner.call
+        )
+        XCTAssertEqual(provider.callCount, 1)
+        XCTAssertEqual(detected.supportResolution.supportedEyeCount, 1)
+        let edit = BeautyExperimentalUpperEyelidReliefEditor.edit(
+            source: source, support: detected.supportResolution, strength: 0.75
+        )
+        let owner = BeautyLocalRetouchCompositionOwner(source: source)
+        let composed = try owner.compose(edit.makeUnits(using: owner))
+        XCTAssertEqual(composed.summary.changedPixelCount, 0)
+        XCTAssertEqual(composed.canonicalImage.rgba8Data, source.rgba8Data)
+        XCTAssertEqual(composed.canonicalImage.metadata, source.metadata)
     }
 
     func testOverlappingAcceptedEyesReturnCollisionPixelToImmutableSource() throws {
@@ -237,7 +262,7 @@ final class BeautyUpperEyelidPackageIntegrationTests: XCTestCase {
         ]
     }
 
-    private func canonical() throws -> BeautyCanonicalStillImage {
+    private func canonical(localizedVertically: Bool = false) throws -> BeautyCanonicalStillImage {
         let width = 96
         let height = 96
         let bytes = (0..<(width * height)).flatMap { pixelIndex in
@@ -248,8 +273,14 @@ final class BeautyUpperEyelidPackageIntegrationTests: XCTestCase {
                 let distance = normalizedX - center
                 return partial + 24 * exp(-(distance * distance) / 0.004)
             }
+            // The observed brow/eye pair bounds the canonical band at
+            // y=0.42...0.495. A positive must have a contained 2D peak;
+            // the original x-only ridge remains available as a negative.
+            let normalizedY = (Double(y) + 0.5) / Double(height)
+            let verticalWeight = localizedVertically
+                ? exp(-pow(normalizedY - 0.455, 2) / 0.0008) : 1
             let texture = ((x * 7 + y * 11) % 5) - 2
-            let base = Int((92 + Double(x) * 0.10 + Double(y) * 0.08 + relief).rounded()) + texture
+            let base = Int((92 + Double(x) * 0.10 + Double(y) * 0.08 + relief * verticalWeight).rounded()) + texture
             return [
                 UInt8(base + 18),
                 UInt8(base + 8),

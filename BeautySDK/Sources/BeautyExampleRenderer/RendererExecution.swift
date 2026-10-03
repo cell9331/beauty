@@ -44,7 +44,10 @@ enum RendererExecution {
             let outputURL = try requireOutputDirectory(command.outputDirectory)
             try invalidatePreviousArtifacts(in: outputURL, cases: cases)
             let inputURL = try requireInputDirectory(command.inputDirectory)
-            let renderCases = cases.filter { command.selectedCase == nil || command.selectedCase == $0.id }
+            let renderCases = cases.filter { renderCase in
+                if let selectedCase = command.selectedCase { return renderCase.id == selectedCase }
+                return renderCase.includedInDefaultBatch
+            }
             let imageURLs = fixtureImageURLs(in: inputURL, fileManager: .default)
             guard !imageURLs.isEmpty else {
                 throw RendererExecutionError(code: .inputImagesMissing)
@@ -337,6 +340,11 @@ enum RendererExecution {
                     continue
                 }
                 do {
+                    // Matrix-selection tests can exercise the real report path
+                    // through this existing seam without rendering every case.
+                    guard injection != .render else {
+                        throw RendererExecutionError(code: .renderFailed, inputID: inputID, caseID: renderCase.id)
+                    }
                     let result: BeautyResult<CIImage>
                     do {
                         result = try engine.processResult(
@@ -347,8 +355,7 @@ enum RendererExecution {
                     } catch {
                         throw RendererExecutionError(code: .renderFailed, inputID: inputID, caseID: renderCase.id)
                     }
-                    guard injection != .render,
-                          let cgImage = context.createCGImage(result.output, from: result.output.extent)
+                    guard let cgImage = context.createCGImage(result.output, from: result.output.extent)
                     else {
                         throw RendererExecutionError(code: .renderFailed, inputID: inputID, caseID: renderCase.id)
                     }

@@ -138,7 +138,7 @@ enum RendererCLI {
             case .listCases:
                 let encoder = JSONEncoder()
                 encoder.outputFormatting = [.sortedKeys]
-                let data = try encoder.encode(RendererCaseList(cases: cases))
+                let data = try encoder.encode(RendererCaseList(cases: cases.filter(\.includedInDefaultBatch)))
                 return RendererExecutionResult(stdout: String(decoding: data, as: UTF8.self) + "\n", diagnostic: nil)
             case .render:
                 return RendererExecution.run(command: command, cases: cases)
@@ -159,10 +159,10 @@ enum RendererCLI {
     Usage: BeautyExampleRenderer --output <directory> [options]
       --input <directory>   Input directory (default: example-images/input)
       --output <directory>  Existing output directory (required for rendering)
-      --case <case-id>      Render one case instead of all cases
+      --case <case-id>      Render one case instead of the default cases
       --backend cpu         Select the CPU renderer (the only supported backend)
       --no-watermark         Omit the presentation watermark
-      --list-cases           Print the deterministic case inventory as JSON
+      --list-cases           Print the deterministic default case inventory as JSON
       --help                 Print this help text
     """
 }
