@@ -60,6 +60,12 @@ if ! bash "${repository_root}/scripts/check-sdk-only-boundary.sh" \
 fi
 echo "no_skip_sdk_boundary_verified"
 
+if ! python3 -B "${repository_root}/scripts/manage-example-images.py" check; then
+  echo "no_skip_example_image_storage_failed"
+  exit 1
+fi
+echo "no_skip_example_image_storage_verified"
+
 if ! python3 "${decision_checker}" --self-test --repo-root "${repository_root}" \
   >/dev/null 2>&1; then
   echo "no_skip_v1_18_decision_self_test_failed"

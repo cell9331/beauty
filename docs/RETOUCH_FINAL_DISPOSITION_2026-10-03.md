@@ -1,6 +1,6 @@
 # v1.25 最终处置：两个自动目标未交付，结束本轮研发
 
-2026-10-03。效果结论已确定；当前正在完成最后的SDK门禁与文档核对。
+2026-10-03。有限实验、最新完整SDK门禁和当前文档核对均已结束。
 关闭依据是所有者最新的连续执行/到边界即停止要求，见[R3终局范围](RETOUCH_TERMINAL_SCOPE_2026-10-03.md)。
 最终里程碑结果为 `closed_with_unmet_objectives`；这不是“两功能修好了”的声明。
 
@@ -74,5 +74,10 @@ SAM3官方运行路径需要本机不具备的CUDA条件及权重访问准入。
 
 ## 最终工程核对
 
-完整SDK门禁结果与当前文档/历史保护检查待最后收齐后写入本节；在此之前不签
-工程closeout。效果分支的拒绝结论已由上面的真实测量成立，不等待测试数量改变。
+- 本轮重新执行 `bash scripts/run-no-skip-swiftpm.sh`，退出0：**1076 tests / 0 failures / 0 skips，9项必选opt-in全部执行**。先完成归档与SDK-only boundary、backend/consumer/CPU-reference前置检查；实际Metal parity执行14项、unavailable为0。
+- 2,201个既有生产源码、测试、脚本、冻结契约和历史文件摘要不变；生产/测试/档案目录无新增实现。原EYE参考、评分与高通函数保持；三候选在编译修复前后字节相同。
+- 当前owner、taxonomy、需求、路线图、GSD状态和历史导航已同步；本地链接、结构化回执与`git diff --check`核对通过。原R2需求/路线图另存快照，原历史索引不改，增加终局索引及关闭记录。
+- [需求终局表](../.planning/REQUIREMENTS.md)：5项verified、11项closed_unmet、0项待执行；没有将六阶段或两个效果标为完成。当前无active里程碑、phase或next命令。
+- [工程聚合回执](../scripts/experiments/retouch-terminal/results/closeout.json)与实验回执分开。完整SDK门禁验证现有兼容/安全，不授予两个自动分支效果、设备或商业质量资格。
+
+本里程碑已结清；未交付功能的限制仍明确存在，但不再阻塞后续独立SDK工作。

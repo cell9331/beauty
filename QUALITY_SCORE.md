@@ -1,5 +1,57 @@
 # QUALITY_SCORE.md
 
+## 2026-10-04 example image storage maintenance
+
+The archive-first wrapper now requires
+`python3 -B scripts/manage-example-images.py check` after archive/boundary
+verification. The read-only check enforces the [documented storage limits](example-images/README.md#storage-limits-and-compressed-previews).
+`python3 -B scripts/test-example-image-storage.py` covers byte/count admission,
+preview format/dimensions, required-asset retention, tracked-file refusal,
+symlink refusal, manifest conflicts and idempotent explicit cache cleanup.
+The native display encoder is separately checked with generated input/output
+pixels: rotation, resize, alpha-to-white, sRGB, opaque output, metadata removal,
+unchanged source bytes, and corrupt-input rejection. Run:
+
+```bash
+swiftc -O -module-cache-path /private/tmp/beauty-preview-modules scripts/example-image-preview.swift -o /private/tmp/beauty-example-image-preview
+swift -module-cache-path /private/tmp/beauty-preview-modules scripts/test-example-image-preview.swift /private/tmp/beauty-example-image-preview
+```
+
+Compression is confined to display previews; fixed fixture bytes and pixel
+acceptance thresholds remain unchanged. This maintenance adds no effect or
+device qualification. Observed results: storage regressions **15/0/0**, native
+pixel/metadata cases **3/0/0**, wrapper **14 checks / 14 mutation rejections**,
+and the final archive-first gate **1076 tests / 0 failures / 0 skips / 9 opt-ins**
+with exit 0. All 28 necessary fixture/manifest files retain their exact bytes.
+Early cache/sandbox permission failures did not count as passes; the full gate
+completed with approved normal cache permissions. See the
+[completion record](plans/history/2026-10/A-2026-10-04-example-image-storage.md).
+
+## v1.25 terminal closure and fresh SDK gate (2026-10-03)
+
+[Final disposition](docs/RETOUCH_FINAL_DISPOSITION_2026-10-03.md):
+`closed_with_unmet_objectives`, not successful automatic-effect delivery. EYE and
+SEG each exhausted two methods/four versions; no candidate is qualified or integrated.
+The last three EYE versions passed measurement execution 3/0/0 after controls
+1/0/0, but all failed joint effects and the runner returned 1. Correct weak controls
+improved the two eyes 12.68%/12.74%; the strongest new candidate improved only
+0.26%/0% and changed 45 normal-negative pixels. The smoothed version changed 37
+negative pixels without target improvement. EYE full G0/holdout/G3 were not run.
+
+The fresh `bash scripts/run-no-skip-swiftpm.sh` completed with exit 0:
+**1076 tests, 0 failures, 0 skips, all 9 mandatory opt-ins executed**. Archive,
+SDK-only boundary, backend/runtime/configuration, actual Metal parity (14 focused
+checks, zero unavailable), consumer and CPU-reference preflights passed.
+[Aggregate closeout receipt](scripts/experiments/retouch-terminal/results/closeout.json)
+is separate from effect failures. All 2,201 protected existing files are unchanged;
+there is no new production integration. Current docs and the empty execution queue
+match the terminal ledger: 5 verified, 11 closed_unmet, 0 pending requirements.
+
+Dated checkpoint sections below retain their original test scope and counts.
+Their historical pending/next-step wording does not reopen closed work or override
+this terminal result. Passing the SDK suite does not qualify the failed effects.
+
+
 ## Current batch tool verified (2026-10-03)
 
 The [current batch tool](docs/CURRENT_BATCH_VALIDATION.md) completes BAT25-01/02:
@@ -13,8 +65,9 @@ The r1 harness mislabeled a no-face skin combination as global brightening;
 its exit-1 report and source remain preserved. Existing resolver tests and DESIGN
 established the correction before r2; all 98 r1/r2 pixel rows are identical.
 This is tool/no-face validation, not 98 portrait-effect qualifications. No taxonomy
-promotion or full SDK rerun is claimed. The milestone is now 2/16 requirements,
-0/6 whole phases; SEG remains stopped and EYE G0 pending.
+promotion or full SDK rerun was claimed at that checkpoint (then 2/16 requirements).
+The final terminal result and fresh full gate are recorded above; this batch
+checkpoint does not imply either automatic effect passed.
 
 ## SEG automatic development stopped (2026-10-03)
 
@@ -31,8 +84,8 @@ repair preserved all 72 rows. Public CPU/observer/repeated output equivalence,
 input hashes, neutral and metadata were checked. Selected native-size diagnostic
 views were inspected, without complete visual qualification. No automatic reject
 set, old full-lip regression, candidate holdout, Metal, G2/G3 or production integration
-ran. SEG stops unqualified; EYE G0 remains unprepared and E1-v1 rejected.
-Production and the earlier full 1076/0/0 checkpoint remain unchanged.
+ran. SEG is closed as unmet. EYE full G0 remains unprepared and is no longer
+scheduled after the final simple candidates also failed. Production remains unchanged.
 
 ## SEG G0 freeze (2026-10-03)
 
@@ -78,8 +131,8 @@ EYE has 30 not_prepared. Support coverage is measured by an output-equivalent
 isolated observer; changed pixels cannot substitute for support count.
 The owner subsequently authorized a bounded development pilot with isolated
 observation and generated diagnostic inputs, followed by SEG G0 completion. EYE
-G0 and both candidate qualifications remain pending; the later independent batch
-tool above brings verified requirements to 2/16.
+G0 and both candidate qualifications were still pending at that checkpoint;
+the later terminal disposition closes the unmet goals without promoting them.
 These results are separate from the full SDK gate.
 
 Latest focused existing-path recheck: **5 tests / 0 failures / 0 skips** (four
@@ -88,7 +141,8 @@ backend counters: CPU=1, Metal=1, unavailable=0. This does not qualify the new
 automatic targets. The initial sandbox attempt ran zero tests; the permitted
 retry supplied the five-test evidence. This documentation turn does not rerun it.
 
-Latest full archive-first SDK gate remains the prior **1076/0/0 with 9 opt-ins**.
+The prior full archive-first SDK checkpoint was **1076/0/0 with 9 opt-ins**;
+it is distinct from the fresh terminal gate at the top of this document.
 Old natural-eyelid and automatic-object challenge failures retain their meanings.
 R2 permits prospective scope changes under explicit owner direction, with original
 requirements preserved; it does not alter old assertions or relabel old outcomes.

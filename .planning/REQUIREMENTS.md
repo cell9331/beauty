@@ -1,107 +1,47 @@
-# Requirements: Beauty v1.25 上睑外观与皮肤语义修复
+# Requirements: Beauty v1.25 terminal disposition
 
-**Revision:** R2, 2026-10-03；取代 R1 的初版范围。
-**Status:** in progress; 2/16 verified requirements（BAT25-01/02）。SEG预算耗尽且未合格，EYE G0未准备。
-**G0 进度:** [SEG 冻结](../docs/SEG_G0_FREEZE_2026-10-03.md)通过 20/0/0、96 项纹理控制；SEG 30 frozen，EYE 30 未准备，RSC25-01 和所有自动效果需求仍 pending。
-**Pilot:** [小规模预检](../docs/RETOUCH_MVP_PILOT_2026-10-03.md)已完成：SEG 受控图通过，E1-v1 拒绝；不勾选正式需求。
-**Source request:** 所有者允许先降低标准、以后优化或训练，并要求先规划需求，
-避免最终才发现不可验收；规划后已明确允许有失败可能的小规模隔离预检。
-**Normative acceptance:** [初版需求与验收契约](../docs/RETOUCH_MVP_REQUIREMENTS.md)。
-具体数字、输入数量、报告分母与 G0–G3 由该文件统一定义，其他文档不复制第二套标准。
+Revision R3, 2026-10-03. **Status: closed_with_unmet_objectives**.
 
-## Product scope
+所有者最新要求连续执行、从简单方法开始，到实际能力边界停止，并在本里程碑
+结束旧问题。[R3终局范围](../docs/RETOUCH_TERMINAL_SCOPE_2026-10-03.md)因此允许
+“未交付并关闭”，没有把失败改成通过或把辅助蒙版替代自动功能。
+[最终结果](../docs/RETOUCH_FINAL_DISPOSITION_2026-10-03.md)记录实际实验与工程核对。
 
-- EYE：自动上睑轻量光影修饰（实验）。弱化过亮光影线索，暂不承诺结构性饱满
-  减弱或真正去脂。保持旧字段兼容，旧 suspended 行不因改名自动升级。
-- SEG：自动保护有可见轮廓/纹理差异的肤色哑光贴片，同时保留有效皮肤处理。
-  不涵盖任意物体；已有主机蒙版不是新的自动识别成果。
-- 两分支有限覆盖、明确退出、分别验收和交付。删除“任何未知输入都能识别并
-  退出”的承诺，保留有限拒绝例与风险边界。两项未都通过时如实报告部分完成。
+原[R2需求快照](V1.25-R2-REQUIREMENTS.md)及[验收契约](../docs/RETOUCH_MVP_REQUIREMENTS.md)
+保持原阈值、输入要求和旧失败含义。下表是终局账本，不是新一轮待办。
+`verified` 表示原条目有对应证据；`closed_unmet` 表示要求未达成且本轮停止。
+共16项：5项verified、11项closed_unmet、0项待执行；两个自动效果交付数为0。
 
-## Active requirements
+## Final traceability
 
-### 范围与准入
+| Requirement | 原阶段 | 终局状态 | 证据或未交付原因 |
+| --- | --- | --- | --- |
+| RSC25-01 | 100 | closed_unmet | SEG30例G0冻结；EYE简单诊断失败后停止，未制作完整30例G0。 |
+| RSC25-02 | 101 | verified | 两分支方法/版本/预算与执行条件已登记；[行业来源复核](../docs/RETOUCH_INDUSTRY_DECISION_2026-10-03.md)明确采用条件，无第三方资产采用、模型执行或训练。 |
+| SEG25-01 | 101 | closed_unmet | [四版开发比较](../docs/SEG_DEVELOPMENT_2026-10-03.md)已执行，但无法联合选出合格候选。 |
+| SEG25-02 | 102 | closed_unmet | 无开发候选可进入G2，候选留出评估为零。 |
+| SEG25-03 | 102 | closed_unmet | 开发负例有误保护/漏保护；未签自动拒绝集与状态资格。已有host能力不替代本项。 |
+| LIP25-01 | 102 | closed_unmet | 旧低对比完整唇自动保护缺口仍在；[正确host并集](../docs/HOST_TEXTURE_PROTECTION.md)仅是保留的辅助路径。 |
+| EYE25-01 | 100 | closed_unmet | 独立小规模参考/正确错误控制存在，但不完成原要求的完整G0。 |
+| EYE25-02 | 103 | closed_unmet | [EYE最后三版](../scripts/experiments/retouch-terminal/README.md)与原E1-v1均拒绝；未通过G2。 |
+| EYE25-03 | 103 | verified | 原字段、零值、Codable、显式调用及默认隐藏保留；生产/旧测试摘要未改，最新完整SDK门禁复核兼容。未借用眼高/提睑。 |
+| INT25-01 | 104 | closed_unmet | 没有达到G2的自动分支，未进行生产集成。 |
+| INT25-02 | 104 | closed_unmet | 未交付新分支，不能拿旧路径错误恢复或实验运行器覆盖冒充新分支资格。 |
+| BAT25-01 | 104 | verified | [当前批量工具](../docs/CURRENT_BATCH_VALIDATION.md)独立核对98默认/99注册库存，旧wrapper只读。 |
+| BAT25-02 | 104 | verified | 工具17/0/0；实际双次98输出与缺oracle控制区分通过、退出、失败、错误、未验证。 |
+| VFY25-01 | 105 | closed_unmet | 没有交付分支可签G3；不将工程安全检查当图片效果验收。 |
+| VFY25-02 | 105 | closed_unmet | 当前仓库另做了最新完整SDK门禁，但没有原条目要求的“接入代码”，所以不声称分支集成门禁完成。 |
+| DOC25-01 | 105 | verified | 当前owner、taxonomy、PLANS、GSD和库存入口统一：两个自动目标未交付且关闭，辅助能力和批量工具保留。 |
 
-- [ ] **RSC25-01**: 完成 G0：每分支的开发、留出和拒绝输入、独立真值、版本、视觉 rubric、数值门槛、正负控制和预算实际就绪并冻结；不能只交文档就打勾。
-- [ ] **RSC25-02**: 候选路径、版本、依赖和本地执行条件有记录；第三方代码/模型/权重先核对实际用途及上游许可。不强制采用模型，本次不训练。
+## Closure boundary
 
-### 自动贴片与五官保护
+里程碑已结清，但原R2“两个分支G3、16项全完成”的目标**没有实现**；不标记
+`completed`，也不把六个阶段全勾选完成。当前执行队列为空，无下一轮G0、第五版
+或隐式训练任务。高质量去脂、通用物体识别及低对比唇自动修复均为公开能力限制，
+不自动迁入下个里程碑。重开需要所有者明确新范围与新假设/信息/资源。
 
-- [ ] **SEG25-01**: 在固定开发集比较当前基线与预算内的自动候选，按保护、皮肤方向、覆盖和过度保护联合选定一个候选；提示辅助结果独立列出。
-- [ ] **SEG25-02**: 自动贴片分支达到 G2：无主机目标信息，按契约 S1–S5 通过有限留出覆盖、物体内部与边缘保护和有效皮肤处理；原图退出不算效果成功。
-- [ ] **SEG25-03**: 固定配对负例和拒绝例按规定执行，报告漏保护/误保护/退出；正确 host 排除优先且无跨请求状态，不声称可发现全部未知输入。
-- [ ] **LIP25-01**: 对旧低对比唇缘失败源新增自动保护验证，完整唇区源精确且对侧皮肤有效；原失败实验保留。无需通用唇分割模型，但不能靠整脸停处理通过。
+## Preserved history
 
-### 上睑轻量光影修饰
-
-- [ ] **EYE25-01**: 制作独立光影目标参考、目标眼和保护区域并通过 G0；参考不由生产亮度残差或候选输出产生，原图与错误控制能被验收器区分。
-- [ ] **EYE25-02**: EYE 分支达到 G2：在无参考/目标 mask 输入的自动路径通过契约 E1–E5，包括有限留出覆盖、轻微可见改善、目标误差方向、纹理和无新增伪影；只改变像素不合格。
-- [ ] **EYE25-03**: 原字段、零值、Codable 和显式调用兼容；不借用眼高/提睑/眉移动，实验资格与旧去脂资格分别登记，不因文档修改恢复默认推荐。
-
-### 集成与库存
-
-- [ ] **INT25-01**: 通过 G2 的分支单独接入并复核同一输入的实际输出；保留主机并集蒙版，更强的显式保护不被自动结果覆盖。一项合格可先交付，另一项保持真实状态。
-- [ ] **INT25-02**: 适用资源/输入无效、缺失、超限及后续有效请求有明确失败或规定退出，无原始敏感诊断、隐式网络或跨请求残留。
-- [x] **BAT25-01**: 新批量入口核对当前独立规范库存和 CLI 身份；基线为 98 默认/99 注册，旧去脂仍默认排除。旧 75 项 wrapper 和历史 manifest 只读。
-- [x] **BAT25-02**: 批量结果区分实际效果失败、环境错误、正常退出、缺失/重复与成功；逐案例核对输入输出和 oracle，不把 exit 0 或动态自发现当完整性证明。
-
-### 交付验收
-
-- [ ] **VFY25-01**: 对实际交付分支通过契约共同硬门禁，覆盖选定尺度、方向/镜像、元数据、保护、neutral/repeat、主脸选择、typed failure 和恢复；实际后端分开计数。
-- [ ] **VFY25-02**: 接入代码实际通过最新 archive-first 全量非零测试、零失败、零 skip、全部必选 opt-in；不借用旧 1076/0/0，不重签历史失败。
-- [ ] **DOC25-01**: 当前 owner、taxonomy、清单、批量入口与逐分支结果一致；初版名称和能力范围准确，部分完成不写成两个自动功能全部完成。
-
-[当前批量工具证据](../docs/CURRENT_BATCH_VALIDATION.md)：17/0/0工具测试；98项两遍、7通过/91无脸退出；缺规则控制1通过/97未验证且退出3。仅完成两项BAT需求，不提升自动效果或完成Phase104。
-
-## Definition of done
-
-单个分支可在自身 G3 后单独交付。**整个 v1.25 初版完成**仍须 16 项都有证据，
-两个自动分支 G3 和当前批量工具均通过。未来高质量去脂、任意物体识别不再是
-本次完成条件；没有能力证据的分支不能用文档、隐藏或已有辅助功能代替。
-
-每分支最多两类方法 × 两次开发版本；选择后一次留出资格评估。失败即停止该
-分支，独立工作继续，不陷入无限调参。预算耗尽时如实记录未完成，不能自动
-把里程碑标成 completed；重开需新假设与明确范围。
-
-[G0 设计](../docs/RETOUCH_G0_VALIDATION_PLAN.md)和[逻辑案例](../docs/RETOUCH_G0_CASE_MANIFEST.md)
-已落实为 SEG 分支 G0：30例冻结；随后[四版开发](../docs/SEG_DEVELOPMENT_2026-10-03.md)均拒绝、预算耗尽，SEG停止且无G1。EYE仍未准备，
-Phase 100/RSC25-01 尚未完成。留出只做 G0 控制，候选留出评估为零；任何自动
-效果均未获得资格，既有预检失败和预算继续保留。
-
-## Future / excluded
-
-自然饱满外观的更强修饰、广泛姿态/妆容、手/衣物/麦克风等物体、通用语义分割、
-训练/微调/蒸馏均后续单独定义。真实脂肪测量、UI/App、实时视频效果扩展、3D、
-新 GPU backend/shader、外部分发和设备/商业质量不在本次范围。
-生成肖像有资格作完整效果输入；真人和真实设备不是当前硬门禁。
-
-## Traceability
-
-| Requirement | Phase | Status |
-| --- | --- | --- |
-| RSC25-01 | Phase 100 | Pending |
-| RSC25-02 | Phase 101 | Pending |
-| SEG25-01 | Phase 101 | Pending |
-| SEG25-02 | Phase 102 | Pending |
-| SEG25-03 | Phase 102 | Pending |
-| LIP25-01 | Phase 102 | Pending |
-| EYE25-01 | Phase 100 | Pending |
-| EYE25-02 | Phase 103 | Pending |
-| EYE25-03 | Phase 103 | Pending |
-| INT25-01 | Phase 104 | Pending |
-| INT25-02 | Phase 104 | Pending |
-| BAT25-01 | Phase 104 | Verified — current batch tool |
-| BAT25-02 | Phase 104 | Verified — current batch tool |
-| VFY25-01 | Phase 105 | Pending |
-| VFY25-02 | Phase 105 | Pending |
-| DOC25-01 | Phase 105 | Pending |
-
-Coverage: 16 requirements; 16 mapped exactly once; 0 unmapped.
-
-## Revision history
-
-R1 原文：[V1.25-R1-REQUIREMENTS.md](V1.25-R1-REQUIREMENTS.md)。R2 沿用 ID
-便于追踪，但 EYE25-01/02 的目标收窄为光影，SEG25-02/03 收窄类别、覆盖和
-边缘误差；LIP25-01 保留完整保护，不强制精确解剖分割。旧未通过项没有变成
-已通过；原高质量/通用目标转为后续工作。旧测试阈值不改。
-更早快照：[PRE-V1.25-REQUIREMENTS.md](PRE-V1.25-REQUIREMENTS.md)。
+[R1需求](V1.25-R1-REQUIREMENTS.md)、[R2需求](V1.25-R2-REQUIREMENTS.md)、
+[更早需求](PRE-V1.25-REQUIREMENTS.md)保持原文；旧失败不因关闭或工程测试通过而改签。
+生成肖像仍可作完整效果验收输入；没有用缺真人、缺设备作为停止理由。

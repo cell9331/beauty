@@ -1,6 +1,6 @@
 # 全部功能与完成状态清单（2026-10-01）
 
-> 2026-10-03 最新状态：旧[有限可行性验证](TEXTURE_SEMANTIC_FEASIBILITY_2026-10-03.md)失败不变。所有者随后明确重开去脂与同色物体识别的研究/修复规划，已建立 [v1.25](../.planning/ROADMAP.md)，包含粗略唇缘保护与当前批量工具。随后所有者允许降低初版标准，现按 [R2 初版契约](RETOUCH_MVP_REQUIREMENTS.md)规划光影修饰和有限贴片自动保护，分别验收。两个自动初版仍未完成，去脂仍默认隐藏、资格 suspended。下文保留 2026-10-01 盘点快照；现行任务以 PLANS 为准。
+> 2026-10-03 终局状态：[v1.25已关闭，两个自动目标未交付](RETOUCH_FINAL_DISPOSITION_2026-10-03.md)。EYE与SEG各2方法4版本均未合格；去脂保持suspended/default-hidden，host物体+完整唇并集蒙版继续可用。当前批量工具已完成。下文是2026-10-01日期快照，其中“活跃/下一步”不产生当前任务；现行状态以PLANS、taxonomy和终局需求表为准。
 
 这是当前工作树的日期快照，不是新的 effect authority 或交付承诺。
 当前项目是所有者自用 SDK-only Swift Package；App/UI 历史不进入完成分母。

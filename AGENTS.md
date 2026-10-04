@@ -144,3 +144,17 @@ bash scripts/run-no-skip-swiftpm.sh
 完整 owner-local 里程碑 closeout 使用最后一个命令；它必须先验证历史归档和
 SDK-only boundary，再执行 all-opt-ins、zero-failure、zero-skip、nonzero-test
 的 SwiftPM gate。该结果不构成任何外部发布或分发批准。
+
+## 10. 示例图存储限制
+
+- `example-images/` 总计最多 **128 MiB / 160 张图片**，单张最多 **16 MiB**；
+  `input/` 最多 **16 张 / 32 MiB**。新增或生成图片后运行
+  `python3 -B scripts/manage-example-images.py check`；全量测试入口也强制检查。
+- 日常展示图通过 `manage-example-images.py preview <source> --name <opaque-id>`
+  写入 ignored `previews/`：最多 **32 张**、每张 **512 KiB**、长边 **1600 px**，
+  使用 JPEG 压缩并移除源元数据。不要为展示永久保留全量 PNG 和多轮副本。
+- 验收原图、固定哈希夹具和蒙版保持原字节；压缩预览不作为像素验收输入。
+  全量原尺寸输出在临时目录评估，用完删除，只留下聚合回执。
+- `manage-example-images.py clean` 仅删除已登记的可重建缓存；保留输入、停用
+  兼容夹具、两个当前验收包的清单资产与文本证据。未分类文件不自动删除。
+  具体规则和用法见 [example-images/README.md](example-images/README.md)。

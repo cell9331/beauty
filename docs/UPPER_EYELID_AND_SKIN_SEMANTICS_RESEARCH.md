@@ -10,15 +10,7 @@ available assisted/model routes without pretending they were executed here.
 The dated review below preserves earlier evidence. It does not reopen development;
 [PLANS](../PLANS.md) owns current status.
 
-## Current routing after explicit restart (2026-10-03)
-
-The owner subsequently reopened research/planning for both problems in v1.25.
-The [primary-source comparison](RETOUCH_RESEARCH_AND_V1_25_2026-10-03.md) provides
-background; the subsequent owner-authorized [R2 MVP contract](RETOUCH_MVP_REQUIREMENTS.md)
-and PLANS own the narrowed automatic tone/patch scope. Production availability/
-qualification is unchanged. The dated
-review below preserves the earlier evidence and suspension decision; it does
-not cancel the new explicit authorization or prove a new candidate works.
+## Dated evidence review
 
 This note separates established findings from unproven claims for the current
 [effect taxonomy](SDK_EFFECT_TAXONOMY.md) and

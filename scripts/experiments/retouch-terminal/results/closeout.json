@@ -1,0 +1,61 @@
+{
+  "automatic_branches_delivered": 0,
+  "boundaries": {
+    "device_qualification": false,
+    "effect_qualification": false,
+    "external_distribution": false,
+    "models_executed": false,
+    "training": false
+  },
+  "eye": {
+    "candidate_holdout_evaluations": 0,
+    "formal_g0_passed": false,
+    "methods": 2,
+    "new_controls_tests": 1,
+    "new_effect_runner_exit_code": 1,
+    "new_measurement_tests": 3,
+    "qualified_versions": 0,
+    "versions": 4
+  },
+  "full_sdk_gate": {
+    "archive_first": true,
+    "backend_consumer_cpu_preflights_passed": true,
+    "boundary_verified": true,
+    "command": "bash scripts/run-no-skip-swiftpm.sh",
+    "exit_code": 0,
+    "failures": 0,
+    "mandatory_opt_ins": 9,
+    "metal_parity_focused_tests": 14,
+    "metal_unavailable_tests": 0,
+    "skips": 0,
+    "tests": 1076,
+    "wrapper_sha256": "ffafa5edc2ee89c9076d34bce0bcd59d132c6132dce7cb04e5c21f089889e6c0"
+  },
+  "milestone": "v1.25",
+  "preservation": {
+    "changed_files": 0,
+    "manifest_sha256": "f8911682afd853ef5c04101eecd6bf2e2580a57e0fafff816772a60733fd55c5",
+    "new_production_test_archive_files": 0,
+    "protected_files": 2201
+  },
+  "queue": {
+    "active_milestone": false,
+    "active_phases": 0,
+    "next_command": null
+  },
+  "recorded_at": "2026-10-03T14:50:34.321205+00:00",
+  "requirements": {
+    "closed_unmet": 11,
+    "pending": 0,
+    "verified": 5
+  },
+  "result": "closed_with_unmet_objectives",
+  "schema": "beauty.retouch-terminal.closeout.v1",
+  "seg": {
+    "candidate_holdout_evaluations": 0,
+    "methods": 2,
+    "new_versions_this_terminal_step": 0,
+    "qualified_versions": 0,
+    "versions": 4
+  }
+}

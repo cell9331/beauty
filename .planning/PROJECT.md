@@ -2,48 +2,29 @@
 
 ## Current project status (2026-10-03)
 
-[PLANS](../PLANS.md) owns execution. v1.25 completed a bounded development pilot, revision R2 after
-owner-authorized lower initial expectations and a documentation-first request.
-The [MVP contract](../docs/RETOUCH_MVP_REQUIREMENTS.md) defines prospective
-criteria; SEG inputs/oracles are frozen, EYE is not ready and no candidate is qualified.
-The [pilot result](../docs/RETOUCH_MVP_PILOT_2026-10-03.md) supports further SEG
-input preparation on the visible-boundary route; E1-v1 failed and stops this round.
-[SEG G0 freeze](../docs/SEG_G0_FREEZE_2026-10-03.md) passed 20/0/0 and 96 texture
-controls: thirty cases frozen, sixty input rasters; thirty EYE cases not_prepared.
-[SEG development](../docs/SEG_DEVELOPMENT_2026-10-03.md) then rejected all four
-versions in two methods; its budget is exhausted and this branch stops without G1.
-EYE remains at one used method/version, with its own G0 still pending. The independent
-[current batch tool](../docs/CURRENT_BATCH_VALIDATION.md) passed 17/0/0 and actual
-98-case repeated runs, completing BAT25-01/02. Next is EYE input/reference preparation. Holdouts
-were accessed for G0 controls only; candidate holdout evaluations remain zero.
-Production remains 77 fields, 99 registered / 98 default cases, 62 implemented
-bounded rows and one suspended upper-eyelid row. Host masks remain supported.
+v1.25 is **closed_with_unmet_objectives** under the owner's instruction to work
+continuously to the capability boundary and end the two old unresolved tracks.
+Each branch exhausted two methods/four versions without a qualified candidate.
+The [final disposition](../docs/RETOUCH_FINAL_DISPOSITION_2026-10-03.md) records
+measurements, industry alternatives and the fresh SDK gate: **1076/0/0, 9 opt-ins**. Original failures,
+thresholds and frozen input contracts remain unchanged.
 
-Latest full SDK gate remains the preceding 1076/0/0 with 9 opt-ins. The latest
-focused recheck was 5/0/0 (host mask and calibrated upper-eyelid evidence only).
-Historical failures retain their original meaning. Generated inputs are eligible;
-genuine portraits and physical devices remain optional.
+No automatic eyelid-tone or skin-colored patch detector is newly available.
+Upper-eyelid fullness remains suspended/default-hidden with explicit compatibility.
+Host object + complete-lip union masks and the current 98/99 batch tool remain
+usable. Production is unchanged: 77 fields, 62 implemented bounded taxonomy rows
+and one suspended row. Generated inputs remain eligible; lack of genuine portraits
+or physical devices was not the stopping reason.
 
-## Current Milestone: v1.25 上睑外观与皮肤语义修复
+## Current milestone: none
 
-**R2 Goal:** 分别交付自动上睑轻量光影修饰、可见边界同色贴片保护初版；有界
-覆盖/误差，独立效果与保护共同通过。未来强去脂和任意物体识别不属初版门禁。
-
-**Target features:**
-- EYE 光影实验能力，不声称组织或结构去脂，不自动提升旧 suspended 行。
-- SEG 自动贴片保护、有限完整唇回归、明确拒绝例；host 辅助不计自动成功。
-- 分支独立交付、当前库存批量工具和接入代码实际全量验收。
-
-6 phases (100–105), 2 verified / 14 pending requirements: [requirements R2](REQUIREMENTS.md),
-[roadmap R2](ROADMAP.md). SEG G0 is complete; EYE still needs inputs/references/
-controls under the [G0 design](../docs/RETOUCH_G0_VALIDATION_PLAN.md). The owner has explicitly
-authorized a small feasibility pilot, including isolated inputs/verifiers/candidates.
-The pilot does not pass full G0, consume holdouts or authorize production integration.
-No universal unknown-input detection guarantee; no training, fine-tuning, UI,
-new GPU backend, implicit network or external distribution. Pretrained assets
-are optional and require source/license/local-runtime admission. Budget and
-one-time holdout policy are in the MVP contract. Failed branches stop without
-blocking independent delivery or being mislabeled complete.
+[Requirements](REQUIREMENTS.md): 5 verified, 11 closed_unmet, 0 pending.
+[Roadmap](ROADMAP.md): no active phase, no default follow-up and no automatic retry.
+The original two-effect delivery goal was not achieved. Reopening requires explicit
+new owner scope and a new hypothesis/information/resources; previous R1/R2 suggestions
+or general “continue” requests do not reopen these tracks. Model downloads, training,
+fine-tuning, UI and external distribution are not queued or authorized by closure.
+[PLANS](../PLANS.md) remains the current execution entry.
 
 ## What This Is
 
@@ -867,15 +848,10 @@ The verified SDK-only slice implements exactly `大小`, `宽度`, and `微笑`.
 
 ## Next work (2026-10-03)
 
-The owner has explicitly authorized a small development pilot. Follow
-[PLANS](../PLANS.md) and the [active plan](../plans/active/A-2026-10-03-v1-25-retouch-repair.md)
-for its bounded controls/candidate evaluation. It does not replace full Phase 100
-inputs, references and G0 controls, or confer effect qualification. Preserve the
-normative thresholds and stop rules; do not restart scope interviews or treat
-written criteria as completed input preparation.
-Then license/local-feasibility screening precedes any candidate asset use.
-Old v1.22–v1.24 phases and failing probe recipes stay at their original identity;
-generic old phase directions do not override the new roadmap.
+None is automatically scheduled. v1.25 ended with two unmet automatic objectives;
+see the [terminal record](../docs/RETOUCH_FINAL_DISPOSITION_2026-10-03.md).
+Existing supported SDK work can proceed without reopening these effect gaps.
+Old plans, frozen recipes and source receipts retain their original identities.
 
 ## Context
 

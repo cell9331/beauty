@@ -1,124 +1,29 @@
-# Roadmap: Beauty v1.25 上睑外观与皮肤语义修复
+# Roadmap: no active milestone
 
-Revision R2, 2026-10-03. Status: in progress; 0/6 phases complete, 2/16 requirements verified (BAT25-01/02).
+## v1.25 上睑外观与皮肤语义修复 — CLOSED (2026-10-03)
 
-所有者要求先降低初版标准、以后优化/训练，先把需求规划清楚；规划后已明确允许小规模隔离预检。
-[预检已完成](../docs/RETOUCH_MVP_PILOT_2026-10-03.md)：SEG 受控图通过，E1-v1 拒绝；
-当时每分支已用一个方法一个版本，六阶段均未完成；候选留出评估至今为零。
-[SEG G0 冻结](../docs/SEG_G0_FREEZE_2026-10-03.md)已通过 20/0/0、96 项纹理控制；
-随后[SEG开发](../docs/SEG_DEVELOPMENT_2026-10-03.md)四版均拒绝、预算耗尽，停止此分支。[当前批量工具](../docs/CURRENT_BATCH_VALIDATION.md)已独立验收；下一步EYE G0准备，E1-v1保持拒绝。
-[初版契约](../docs/RETOUCH_MVP_REQUIREMENTS.md)统一拥有数字、输入、G0–G3 和停止规则；
-[需求](REQUIREMENTS.md)拥有逐项完成状态。生产仍为 99 注册/98 默认，去脂 suspended。
+**Result: closed_with_unmet_objectives.** 两个自动目标均未交付；各两方法四版本
+已拒绝，按所有者“连续执行至能力边界、结束旧问题”的最新要求停止本轮研发。
+[最终处置](../docs/RETOUCH_FINAL_DISPOSITION_2026-10-03.md)与
+[终局需求表](REQUIREMENTS.md)是当前入口。[R3范围](../docs/RETOUCH_TERMINAL_SCOPE_2026-10-03.md)
+只改变关闭方式，不降低冻结阈值或重新签发失败。
 
-## Goal
+| 原阶段 | 实际完成部分 | 最终处置 |
+| --- | --- | --- |
+| 100 输入与独立验收器 | SEG30例G0冻结；EYE只有小规模诊断控制 | 整体未完成；EYE完整G0取消续作 |
+| 101 候选准入与开发比较 | 方法/来源已记录；两分支各四版已实际比较 | 无合格候选；预算耗尽，未完成原选定目标 |
+| 102 自动贴片/唇保护 | SEG开发未通过，host辅助能力保留 | 未交付；不进入留出或修复循环 |
+| 103 自动上睑光影 | 兼容保留；最后三版简单诊断全部失败 | 未交付；无新入口，旧去脂仍suspended |
+| 104 接入与批量工具 | BAT25-01/02独立完成 | 工具交付；没有合格自动分支可集成 |
+| 105 资格与当前文档 | 现有SDK工程核对、文档终局同步 | 没有自动分支G3；不标全阶段完成 |
 
-分别交付受限自动上睑轻量光影修饰、可见边界同色贴片保护两个实验分支。
-允许较弱效果、有限覆盖及规定的保守退出；关键保护、伪影、兼容和工程质量
-仍需通过。两分支分别验收/接入，未来高质量或通用识别不阻塞本次初版。
-蒙版辅助成功不代替自动识别；光影资格不等于旧去脂资格。
+16需求：5 verified、11 closed_unmet、0 pending；0个自动分支交付。
+无active阶段或下一条执行命令；一般“继续”不恢复失败路线。重新研发须明确
+新范围与信息/资源，不因换里程碑名称重置预算或重新使用留出挑选赢家。
 
-## Phases
+## Preserved plans
 
-- [ ] **Phase 100: Freeze observable domains and independent oracles** — 将文档落实为真实输入、参考、正负控制和可运行测量，通过 G0。
-- [ ] **Phase 101: Qualify candidate sources and local feasibility** — 固定方法/依赖并在开发集验证可行性，模型是备选。
-- [ ] **Phase 102: Repair automatic skin, occlusion and lip protection** — 同色贴片自动分支独立通过 G2 与完整唇保护。
-- [ ] **Phase 103: Repair controlled upper-eyelid appearance** — 上睑轻量光影自动分支独立通过 G2，保持原字段兼容。
-- [ ] **Phase 104: Integrate accepted routes and current batch validation** — 逐分支接入，新建当前批量工具。
-- [ ] **Phase 105: Verify compatibility, effects and current documentation** — 逐分支 G3 与实际全量门禁，准确记录部分/全部完成。
-
-## Phase Details
-
-### Phase 100: Freeze observable domains and independent oracles
-
-Goal: 候选执行前即可回答每个案例应改什么、保护什么、如何失败。
-Depends on: none.
-Requirements: RSC25-01, EYE25-01.
-Plans: 输入/参考/验收器顺序见 [G0 设计](../docs/RETOUCH_G0_VALIDATION_PLAN.md)及现行计划；
-SEG 30 案例 frozen，EYE 30 例未准备，Phase 100 整体未完成。另行授权的[开发预检](../scripts/experiments/retouch-mvp-pilot/README.md)不完成此阶段。
-
-Success criteria:
-1. 每分支 6 开发源家族、6 留出源家族，各含配对正负例，另 6 拒绝例；生成来源合法且不跨集合泄漏。
-2. 独立上睑目标参考、可见贴片/完整唇部/皮肤区定义就绪，主要路径实际 Vision 支持存在；不向自动请求泄露真值。
-3. 契约 E1–E5、S1–S6 和共同门禁可计算；正确控制通过、no-op 与错误效果被拒绝；完整 G0 冻结后才开始候选。
-4. 旧失败源、阈值、脚本保持原样；新增有限域不能被描述为修复了全部旧失败。
-
-### Phase 101: Qualify candidate sources and local feasibility
-
-Goal: 在生产集成前发现没有效果、没有可用依赖或没有判定能力的路线。
-Depends on: 对应分支 Phase 100 G0；另一分支未就绪不阻塞已就绪分支。
-Requirements: RSC25-02, SEG25-01.
-Plans: TBD.
-
-Success criteria:
-1. 当前基线和最多两类候选登记方法依据、版本、预算和选择规则；每方法最多两次开发版本。
-2. 无新增模型的有限路线优先；预训练方法仅在代码/权重/上游许可与本地运行条件通过后才比较。缺乏合格模型不是无关分支的依赖。
-3. 候选在开发集使用效果/保护/过度保护/视觉联合判据；仅选一个版本进入该分支留出评估，不看留出结果后再选赢家。
-4. EYE 和 SEG 的资源或构建失败、正常退出及效果失败分开记录；不启动训练、微调、数据采集或第三方图像服务。
-
-### Phase 102: Repair automatic skin, occlusion and lip protection
-
-Goal: 在有限贴片域取得有效皮肤处理与自动保护的共同证据。
-Depends on: SEG 的 Phase 101；不依赖 EYE 是否成功。
-Requirements: SEG25-02, SEG25-03, LIP25-01.
-Plans: TBD.
-
-Success criteria:
-1. 选定自动候选一次通过 S1–S5 留出门槛；实际像素、皮肤覆盖和过度保护同时核对。
-2. S6 独立修复验证保留旧完整低对比唇 oracle 与皮肤效果，原失败脚本不改；不以主机唇蒙版计自动通过。
-3. 固定拒绝集合按规则退出；未知域只记录限制，不保证发现全部未知物体；显式排除优先且请求独立。
-4. 失败保留未完成，停止该分支；EYE 和当前批量工具仍可推进。
-
-### Phase 103: Repair controlled upper-eyelid appearance
-
-Goal: 验证轻量光影修饰的有限可用性，不把像素变化等同于真实去脂。
-Depends on: EYE 的 Phase 101；不依赖 SEG 成功。初版限无遮挡眼部，不强制新增分割。
-Requirements: EYE25-02, EYE25-03.
-Plans: TBD.
-
-Success criteria:
-1. E1–E5 联合通过：独立参考误差方向、纹理、保护、原尺寸轻微可见改善及有限留出覆盖。
-2. 固定标记的目标眼全部达标才计该正例成功；无目标眼保持源精确，失败眼不能事后删除。
-3. 保持旧字段零值/Codable/显式调用，不借用眼高/提睑；未来作为光影实验能力登记，不自动升级旧去脂 taxonomy。
-4. 候选预算或留出失败后停止该分支；SEG 和当前批量工具仍可推进。
-
-### Phase 104: Integrate accepted routes and current batch validation
-
-Goal: 已通过的成果可独立使用，批量验证与实际库存一致。
-Depends on: 接入只依赖相应分支 G2；批量工具不依赖两项算法完成。
-Requirements: INT25-01, INT25-02, BAT25-01, BAT25-02.
-Plans: BAT25-01/02完成，见[当前批量工具](../docs/CURRENT_BATCH_VALIDATION.md)；接入项仍待对应G2。
-
-Success criteria:
-1. 每个通过分支单独接入实验路径，再核对同一冻结输入；未通过分支不混入正常推荐。
-2. 主机物体 + 完整唇区蒙版保留更强的源精确保护；自动、辅助与原图退出分别报告。
-3. 当前资源/输入契约、错误恢复和隐私通过；必要 API/发现入口变化由 owner 定义，不能由本次规划自动产生。
-4. 新工具核对独立规范库存与实际 CLI 清单，基线 98 默认/99 注册；缺失、重复、环境失败、效果失败分开，旧 wrapper/manifest/回执只读。
-
-### Phase 105: Verify compatibility, effects and current documentation
-
-Goal: 对已接入分支给出可复现 G3，准确说明已完成和未完成。
-Depends on: 相应分支 Phase 104；总里程碑完成还须两个分支及批量工具通过。
-Requirements: VFY25-01, VFY25-02, DOC25-01.
-Plans: TBD.
-
-Success criteria:
-1. 实际交付分支通过共同硬门禁，方向/镜像、两档尺度、元数据、neutral/repeat、主脸和错误恢复证据完整，真实后端分别计数。
-2. 接入代码实际执行 archive-first 全量非零测试/零失败/零 skip/全部必选 opt-in；旧检查点不能覆盖新代码。
-3. 文档/状态/效果名/库存一致。一分支可先单独交付并报告另一分支未完成；不能用研究收尾或辅助功能标总完成。
-
-## Progress
-
-| Phase | Plans complete | Status | Completed |
-| --- | --- | --- | --- |
-| 100 | 0/TBD | In progress: SEG G0 frozen; EYE unprepared | — |
-| 101 | 0/TBD | In progress: SEG four versions rejected/stopped; EYE pending | — |
-| 102 | 0/TBD | Not entered: no qualified SEG development candidate | — |
-| 103 | 0/TBD | Not started | — |
-| 104 | 0/TBD | In progress: BAT25-01/02 verified; integration pending | — |
-| 105 | 0/TBD | Not started | — |
-
-## Preserved history
-
-[R1 原路线图](V1.25-R1-ROADMAP.md)保留本次降标前的范围；[更早快照](PRE-V1.25-ROADMAP.md)
-及既有 phase/receipt 不改。Phase 100–105 编号继续沿用，不重放旧阶段，也不
-因文档 R2 把任何算法、输入准备或阶段标记完成。
+[R2原路线图](V1.25-R2-ROADMAP.md)、[R1原路线图](V1.25-R1-ROADMAP.md)、
+[更早快照](PRE-V1.25-ROADMAP.md)保留原目标与阶段状态；
+[完整计划及终局记录](../plans/history/2026-10/A-2026-10-03-v1-25-retouch-repair.md)
+记录历史过程。原档案、phase目录、lock与回执未移动、改签或清理。

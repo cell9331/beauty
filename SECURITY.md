@@ -1,5 +1,24 @@
 # SECURITY.md
 
+## 2026-10-04 example media retention
+
+The [storage tool](scripts/manage-example-images.py) bounds the ignored local
+example tree to 128 MiB / 160 images, inputs to 16 / 32 MiB, and display JPEGs
+to 32 / 512 KiB each / 1600 px. `check` is read-only and is required by the
+archive-first SwiftPM wrapper. Explicit `clean` uses a code-owned cache allowlist,
+validates required manifest assets, and rejects tracked entries, links, mounts
+and special files before deletion. Unknown files and required fixture bytes are
+preserved. These are owner-local checks, not a hostile concurrent-filesystem
+sandbox. No automatic gate deletes images.
+
+The local preview helper receives a bounded temporary source copy, decodes one
+image of at most 40 million pixels, and encodes fresh sRGB JPEG pixels without
+source EXIF/GPS/TIFF/orientation metadata. Compilation artifacts and copies are
+temporary. Original hashes and masks are never modified; lossy previews cannot
+replace effect-oracle inputs. Console output contains fixed reasons and aggregate
+counts/bytes only, without private source locators or image content. No network,
+image upload, model, SDK behavior or distribution boundary is added.
+
 ## 2026-10-03 terminal research boundary
 
 The final EYE diagnostic reused existing authorized local inputs in disposable

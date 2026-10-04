@@ -21,14 +21,52 @@ commercial, customer, package, App Store, or model/weight use.
   - `input/negatives/`: negative fixtures such as `no-face-gradient.png`.
 - `parked-portraits/`: disabled historical portraits `e1` through `e6`; fixture
   discovery must never read this directory.
-- `parked-generated/`: disabled output/gallery snapshots retained outside the
-  active generation paths.
+- `parked-generated/`: obsolete output/gallery cache; removed on 2026-10-04 and
+  eligible for explicit cleanup if recreated.
 - `local-retouch-review/`: ignored local-only candidate and before/mask/after
   review material. It is never traversed by active renderer fixture discovery.
 - `output/`: ignored flat generated renderer PNGs, named `{fixtureStem}__{caseId}.png`.
 - `gallery/`: ignored generated human-review view, grouped as `{featureFamily}/{caseId}/{fixtureStem}.png`.
 - `.gallery-staging/`: ignored fail-closed publication slot. A leftover means a prior run did not publish and blocks another run.
 - `.gallery-quarantine/previous/`: ignored single-slot preservation of the prior gallery. The generator never traverses or deletes it.
+- `previews/`: compressed, metadata-stripped display JPEGs; never pixel-oracle inputs.
+
+## Storage limits and compressed previews
+
+The complete directory is limited to **128 MiB and 160 images**, with at most
+**16 MiB per image**. `input/` is limited to **16 images / 32 MiB**. Text files
+also count toward the total byte limit. The archive-first SwiftPM gate checks
+these limits and fails when exceeded; it never deletes files automatically.
+
+Display previews are limited to **32 JPEGs**, **512 KiB each**, and a **1600 px
+long edge**. The local ImageIO helper starts at JPEG quality 80%, reduces quality
+or dimensions when necessary, flattens alpha onto white, applies orientation,
+converts to sRGB, and creates fresh metadata without source EXIF/GPS/TIFF. It
+decodes its output and verifies dimensions and metadata before publication.
+Source fixtures, masks and fixed hashes are never rewritten. Preview IDs cannot
+overwrite an existing file. Use only authorized local images.
+
+```bash
+python3 -B scripts/manage-example-images.py check
+python3 -B scripts/manage-example-images.py preview example-images/input/portraits/p1.jpg --name portrait-001
+python3 -B scripts/manage-example-images.py clean
+```
+
+`clean` explicitly removes known output/gallery caches, staging/quarantine slots,
+parked generated output, the pre-phase-51 backup, obsolete review copies, and
+the current sclera bundle's unreferenced QA/work directories. It retains all
+inputs, the six parked portraits required by compatibility tests, the two
+current teeth/sclera manifests and their referenced assets, text records,
+compressed previews, and unclassified files. It checks the complete tree and
+manifest references before deleting anything, refuses links/mounts/special
+files or tracked cache entries, and recreates an empty `output/` directory.
+This is an owner-local cleanup command, not a concurrent-filesystem sandbox.
+
+The 2026-10-04 cleanup removed 1,800 disposable files (about 5.3 GiB), reducing
+the directory from about 5.4 GiB to 29 MiB. Required fixture bytes were preserved.
+Full original-resolution validation output belongs in a disposable temporary
+directory and must be removed after measuring actual pixels. Keep only a small
+compressed display selection and sanitized aggregate receipts afterward.
 
 Generated `output/` and `gallery/` contents are local artifacts. Recreate them
 instead of committing PNGs. The active `p1.jpg` is a metadata-sanitized
@@ -46,8 +84,8 @@ device, and orientation metadata are absent. The no-face negative fixture is
   filename or identity label, remains local/Git-ignored, and has image metadata
   stripped before storage.
 - `e1.png` through `e5.png` and `e6.jpg` are parked and forbidden from future
-  input discovery. Their prior outputs/gallery were moved under
-  `parked-generated/2026-07-30-e6/`.
+  input discovery. The old parked output/gallery cache was deleted on 2026-10-04;
+  historical aggregate evidence remains unchanged.
 - Authorization makes `p1.jpg` eligible for internal evaluation. Its exposed
   smile is useful for teeth-mask containment and over-whitening review, but its
   already-light teeth are not automatically a yellow-teeth positive. It is not
@@ -63,12 +101,13 @@ set `PHASE59_TEETH_BUNDLE` and `PHASE62_SCLERA_BUNDLE` to ignored local
 generated positive/negative bundles with the existing manifest and mask
 contract. See [current acceptance policy](../docs/IMAGE_EFFECT_ACCEPTANCE.md).
 
-## Current Local-Retouch Candidate
+## Historical Local-Retouch Candidate
 
-- `portrait_002/original.png` is registered under the ignored
-  `local-retouch-review/candidates/` boundary as an original-only positive-target
-  mechanics candidate for both `teeth_whitening` and `sclera_redness`.
-- Its embedded C2PA provenance declares `trainedAlgorithmicMedia`. At its
+- The original-only `portrait_002` mechanics candidate for `teeth_whitening`
+  and `sclera_redness` was historically registered in the ignored review area.
+  Its obsolete local image copy was deleted on 2026-10-04; this paragraph records
+  its historical disposition and does not assert current file availability.
+- Its historical embedded C2PA provenance declared `trainedAlgorithmicMedia`. At its
   historical registration it was an original-only mechanics candidate without
   a complete positive/negative effect oracle. That missing evidence, not its
   generated provenance, prevents promotion on the current record; a complete
@@ -84,6 +123,11 @@ They do not override the current `p1` fixture inventory and must not be reused
 as current-input claims.
 
 ## Generate Output
+
+Use a fresh temporary output directory for full pixel validation. The old
+in-tree command below is retained as a renderer usage example; its complete
+PNG inventory may exceed the storage limit. After measuring it, create selected
+compressed previews and explicitly clean the disposable output.
 
 ```bash
 swift run --package-path BeautySDK BeautyExampleRenderer --input example-images/input --output example-images/output

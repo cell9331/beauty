@@ -7,28 +7,21 @@ The current [image-effect acceptance policy](IMAGE_EFFECT_ACCEPTANCE.md) allows
 authorized generated portraits as full effect inputs; older real-image-only
 requirements in historical plans or spike notes are superseded for new work.
 
-Current upper-eyelid availability (2026-10-03): `去脂` is suspended, hidden from
-default renderer discovery/batches and omitted from normal integration examples.
-Its explicit API compatibility and safety tests remain; natural-appearance
-effect qualification has failed. The current mechanism is bounded image-space
-luminance correction, without reliable fullness recognition. See the
-[current cause and evidence summary](UPPER_EYELID_AND_SKIN_SEMANTICS_RESEARCH.md)
-and [PLANS.md](../PLANS.md). Old experiments in `docs/history/` preserve their
-original findings and never reopen work automatically. The owner has now
-explicitly reopened research/planning for this effect and same-colored object
-protection in [v1.25](../.planning/ROADMAP.md); see the
-[new paper/code comparison](RETOUCH_RESEARCH_AND_V1_25_2026-10-03.md) and the
-subsequent owner-authorized [R2 MVP contract](RETOUCH_MVP_REQUIREMENTS.md).
-R2 plans finite automatic eyelid-tone and visible-boundary patch protection;
-SEG input/oracle preparation passed G0; [four development versions](SEG_DEVELOPMENT_2026-10-03.md)
-were then rejected and the SEG budget is exhausted. This branch stops unqualified. The
-[G0 validation design](RETOUCH_G0_VALIDATION_PLAN.md) and
-[logical case roster](RETOUCH_G0_CASE_MANIFEST.md) define the frozen inputs and measurements. [SEG G0 freeze](SEG_G0_FREEZE_2026-10-03.md) passes 20/0/0
-and 96 texture controls across 30 frozen cases; 30 EYE cases remain not_prepared.
-Holdouts were used only for G0 controls, with zero candidate evaluations. After planning, the owner
-explicitly authorized a [bounded development pilot](../scripts/experiments/retouch-mvp-pilot/README.md);
-it does not replace G0 or qualify either branch. The [pilot result](RETOUCH_MVP_PILOT_2026-10-03.md)
-is now available: SEG passed one procedural family; E1-v1 failed and stops this round.
+Current terminal disposition (2026-10-03): [v1.25 closed with unmet objectives](RETOUCH_FINAL_DISPOSITION_2026-10-03.md).
+Both automatic targets exhausted two methods/four versions without qualification.
+Upper-eyelid correction remains suspended/default-hidden with explicit compatibility;
+automatic skin-colored object/patch recognition is not integrated. Existing
+[host object + lip masks](HOST_TEXTURE_PROTECTION.md) remain an assisted capability.
+The [industry comparison](RETOUCH_INDUSTRY_DECISION_2026-10-03.md) explains alternative
+information/model requirements without claiming untested models failed.
+No EYE G0 continuation, fifth candidate or training job is queued.
+
+[PLANS](../PLANS.md), the [terminal requirement ledger](../.planning/REQUIREMENTS.md)
+and [R3 scope](RETOUCH_TERMINAL_SCOPE_2026-10-03.md) own current disposition.
+The frozen [R2 contract](RETOUCH_MVP_REQUIREMENTS.md), [SEG freeze](SEG_G0_FREEZE_2026-10-03.md),
+[SEG development](SEG_DEVELOPMENT_2026-10-03.md) and [pilot](RETOUCH_MVP_PILOT_2026-10-03.md)
+retain original thresholds and outcomes; their earlier pending/next-step wording
+is historical and cannot reopen development. Candidate holdout evaluations remain zero.
 
 ## Authority
 
@@ -45,7 +38,7 @@ Use documents in this order:
 3. `docs/SDK_EFFECT_TAXONOMY.md` for effect status and
    `docs/IMAGE_EFFECT_ACCEPTANCE.md` for current image-input acceptance.
 4. `.planning/PROJECT.md` and `.planning/STATE.md` for current summaries and
-   recovery links to PLANS; active v1.25 roadmap/requirements follow that scope.
+   recovery links to PLANS; v1.25 is closed and there is no active milestone.
    Previous snapshots and codebase analyses are historical context.
 5. This `docs/` index and the other long-form documents below as background.
 6. `docs/_source/` only as imported source material.
@@ -62,8 +55,8 @@ identification has no qualified general solution; explicit masks remain supporte
 lip outside coarse protection remains a documented limitation. The
 [host integration guide](HOST_TEXTURE_PROTECTION.md) verifies known object and
 lip pixels together through the existing binary mask API. No automatic
-algorithm is credited by that integration. The active R2 plan now targets a finite
-automatic patch domain; see PLANS for current scope and independent branch gates.
+algorithm is credited by that integration. The later finite patch-domain repair
+also failed and closed; see PLANS for the terminal result, not an automatic retry.
 
 Last audited: 2026-10-01; see the [project status and drift audit](PROJECT_STATUS_AUDIT_2026-10-01.md).
 The six confirmed current-document findings have been repaired; the audit
@@ -84,7 +77,8 @@ retains their original observations and links to the repair record.
   under `archives/legacy-ui/`; verify and restore them only through that
   directory's README into a fresh outside-repository temporary directory.
 - `.planning/PROJECT.md` and `.planning/STATE.md` route to the current root
-  plan. The active v1.25 roadmap/requirements define the new scoped milestone.
+  plan. v1.25 roadmap/requirements now record terminal closure with unmet objectives;
+  there is no active milestone.
   Prior planning snapshots and seven `.planning/codebase/` maps preserve dated
   context; old counts/statuses do not define current execution.
 - The mandatory closeout is `bash scripts/run-no-skip-swiftpm.sh`; it verifies

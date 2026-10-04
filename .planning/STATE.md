@@ -1,17 +1,17 @@
 ---
 gsd_state_version: "1.0"
-milestone: v1.25
-milestone_name: 上睑外观与皮肤语义修复
-current_phase: 100
-current_phase_name: Freeze observable domains and independent oracles
-status: in_progress
-stopped_at: Current batch tool verified; EYE G0 preparation next; SEG stopped unqualified
-last_updated: "2026-10-03T13:47:03.214677+00:00"
+milestone: null
+milestone_name: No active milestone
+current_phase: null
+current_phase_name: None
+status: closed_with_unmet_objectives
+stopped_at: v1.25 terminal closure; both automatic objectives unmet; no next task
+last_updated: "2026-10-03T14:50:34.321205+00:00"
 last_activity: 2026-10-03
-last_activity_desc: BAT25-01/02 verified; 17 tool tests and actual repeated 98-case batches; EYE G0 pending
+last_activity_desc: Fresh SDK gate 1076/0/0 with 9 opt-ins; two failed tracks closed, no automatic continuation
 state_head: a305d1a1319b511c882af7d3c3460867cd49fa0a
 progress:
-  total_phases: 6
+  total_phases: 0
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -20,36 +20,26 @@ progress:
 
 # Project State
 
-## Current execution route (2026-10-03)
+## Current terminal route (2026-10-03)
 
-v1.25 R2 has explicit owner authorization for a small feasibility pilot after
-requirements and G0 design. Read [PLANS](../PLANS.md), the
-[pilot protocol](../scripts/experiments/retouch-mvp-pilot/README.md) and
-[MVP contract](../docs/RETOUCH_MVP_REQUIREMENTS.md). Controls must pass before
-bounded isolated candidates. No full G0, holdout use, production integration,
-model downloads or training is authorized by this pilot. The owner then continued
-SEG G0 preparation: [complete controls and freeze](../docs/SEG_G0_FREEZE_2026-10-03.md)
-passed 20/0/0 with 96 texture comparisons. Thirty SEG cases are frozen; thirty
-EYE cases remain not_prepared; the later independent batch tool completes 2 of 16 requirements.
+The owner's latest instruction supersedes the R2 continuation queue: complete
+finite simple attempts, stop at the actual capability boundary and end both old
+tracks this milestone. EYE and SEG each used two methods/four versions, all
+rejected. [Final disposition](../docs/RETOUCH_FINAL_DISPOSITION_2026-10-03.md) and
+[R3 scope](../docs/RETOUCH_TERMINAL_SCOPE_2026-10-03.md) close the unmet objectives;
+this does not implement them or promote taxonomy. Full EYE G0, candidate holdouts
+and production integration were not performed and are no longer scheduled.
 
-The [completed pilot](../docs/RETOUCH_MVP_PILOT_2026-10-03.md) passed controls 2/0/0
-and completed candidate measurement 2/0/0; its runner returned 1 for the EYE
-effect failure. SEG passed 12 positive/6 negative variants of one procedural family.
-E1-v1 failed the second eye and first-eye detail limit and stops this round.
-Subsequent [SEG development](../docs/SEG_DEVELOPMENT_2026-10-03.md) exhausted two
-methods/four versions, all rejected; SEG stops unqualified. EYE still has one used
-method/version and needs its G0. The [current batch tool](../docs/CURRENT_BATCH_VALIDATION.md)
-passed 17/0/0 and actual 98-case repeated output/missing-oracle controls; BAT25-01/02
-are verified, while Phase104 integration remains pending. Next is EYE input/reference preparation. Holdout access was limited to G0 controls;
-candidate holdout evaluations remain zero. No model or production integration ran.
+The final EYE diagnostic controls passed 1/0/0; measurement passed 3/0/0 but the
+effect runner correctly returned 1. SEG retains its four rejected development
+versions, including S2-v2's 8/48 hard protection failures. Original standards,
+failed attempts and licensed-input policies remain intact. No models ran.
 
-Both automatic branches remain required, narrowed to eyelid tone correction
-and visible-boundary skin-colored patches. Host assistance is not an accepted
-substitute. Branches can qualify and be delivered independently. No original
-fat-reduction status is promoted by the new tone target. Production remains
-77 fields, 99/98 cases and 62 implemented bounded rows plus one suspended row.
-Latest full gate is the prior 1076/0/0, 9 opt-ins; latest focused existing-path
-recheck is 5/0/0. Existing phases/receipts and frozen failures stay read-only.
+Five original requirements are verified and eleven closed_unmet; zero automatic
+branches are delivered. Host union masks and the current batch tool remain usable.
+Production stays at 77 fields, 99 registered/98 default cases, 62 implemented
+bounded rows plus one suspended eyelid row. Final engineering verification is
+**1076/0/0, 9 opt-ins**, separately from effect acceptance. [PLANS](../PLANS.md) owns current status.
 
 ## Project Reference
 
@@ -444,13 +434,12 @@ Plan 93-02 is complete, 2/2 tasks. Fresh current-gate registration 4/0/0, metric
 
 ### Current handoff — 2026-10-03
 
-Last session: 2026-10-03
-Stopped at: Current batch tool verified (BAT25-01/02); EYE G0 not_prepared, E1-v1 rejected; SEG stopped
-Resume entry: [PLANS](../PLANS.md), then current batch result, G0 design and active plan
-Next: Prepare EYE G0 before remaining candidates. Do not restart SEG or promote qualification; BAT25-01/02 are complete.
-Current instruction allows isolated feasibility work; no production algorithm, model download,
-training or automatic unhide has been performed. R1 requirement/roadmap snapshots
-preserve the original scope. Historical lock, phase directories and receipts stay intact.
+The two automatic tracks reached terminal failure within their original budgets.
+No next G0, candidate revision, model or training task remains. See
+[PLANS](../PLANS.md) and the [terminal result](../docs/RETOUCH_FINAL_DISPOSITION_2026-10-03.md)
+for closeout verification. Historical phase/lock/receipt files are unchanged;
+R2 requirement and roadmap snapshots preserve the original unfulfilled obligations.
+General “continue” requests must not revive them.
 
 ### Historical v1.22 completion handoff — 2026-09-23
 
@@ -514,7 +503,6 @@ No owner file changed after final qualification binding. PLANS intentionally rem
 
 ## Current Position
 
-Phase: 100 of 105 (v1.25: 1 of 6) — Freeze observable domains and independent oracles
-Plan: Not started
-Status: BAT25-01/02 verified (2/16); EYE G0 pending; SEG stopped without G1
-Last activity: 2026-10-03 — Current batch tool verified; 7 passed/91 declared abstentions; missing-oracle control 1/97; no production changes
+No active development phase. Both automatic effects are undelivered and closed;
+latest engineering closeout is recorded in PLANS and the terminal report.
+Five verified requirements, eleven closed_unmet; no queued next command.

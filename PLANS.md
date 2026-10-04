@@ -8,31 +8,25 @@
 ## 1. 阅读路径与更新规则
 
 1. 每次工作先读本页；涉及现行任务，再读下方 Active 条目和[当前技术债](plans/debt/current.md)。
-2. 查询已完成事项时，先读[历史索引](plans/history/README.md)或[2026-10 新完成计划索引](plans/history/2026-10/README.md)，再打开匹配分片。可用 `rg -l '记录 ID 或关键词' plans/history` 定位，不必加载整个历史账本。
+2. 查询已完成事项时，先读[历史索引](plans/history/README.md)或[2026-10 已完成索引](plans/history/2026-10/README.md)及[终局处置索引](plans/history/2026-10/TERMINAL.md)，再打开匹配分片。可用 `rg -l '记录 ID 或关键词' plans/history` 定位，不必加载整个历史账本。
 3. 开始工作前确认已有匹配计划，优先更新现有计划；每完成可验证步骤更新 checklist。
 4. 阻塞需记录原因、尝试及下一步；完成后记录验证证据与剩余风险，移入 Completed。
 5. 发现范围外问题写入当前技术债；契约变化同步更新对应根级 owner。未验证要写明原因。
 6. 新 Active 计划各用一个 `plans/active/<ID>.md`；完成时将其全文移至 `plans/history/YYYY-MM/<ID>.md`，并更新本页与历史索引。2026-09-28 前的旧记录保存在索引所列分片中。
 
-状态词：`planned` 待开始；`active` 推进中；`blocked` 等待条件；`verifying` 验证中；`completed` 已验证；`canceled` 明确取消并留原因。
+状态词：`planned` 待开始；`active` 推进中；`blocked` 等待条件；`verifying` 验证中；`completed` 已验证；`canceled` 明确取消并留原因；`closed_with_unmet_objectives` 有限尝试结束、目标未实现且无续作队列。
 
 ## 2. 当前边界
 
 - 产品面是所有者自用的 SDK-only SwiftPM library 与 SDK-owned 验证；本账本不授予设备、商业视觉质量或外部分发资格。
 - 真实设备反馈可成为后续发现，不是当前自动化完成门禁。效果方向、保护区、重复性、元数据及 typed failure 以实际输入/输出为准。
 - 历史分片保留当时的状态与证据，现行 taxonomy 以 [SDK_EFFECT_TAXONOMY.md](docs/SDK_EFFECT_TAXONOMY.md) 为准。
-- 去脂生产状态仍为 `suspended`、默认隐藏、保留显式兼容；自然外观效果未合格。所有者明确重开后，又于 2026-10-03 允许收窄初版并要求先规划，现行范围由 v1.25 R2 定义。模型是许可/运行准入后的备选，不预授权训练、微调或分发。初版光影资格、旧去脂资格、辅助保护与自动识别分别记录。
+- 去脂仍为 `suspended`、默认隐藏并保留显式兼容；自动同肤色贴片识别未实现。v1.25两分支各2方法4版本均失败，按所有者终局要求关闭未交付目标。现有host物体+完整唇并集蒙版继续可用；辅助能力不计自动交付。见[最终处置](docs/RETOUCH_FINAL_DISPOSITION_2026-10-03.md)。普通“继续”不重启、失败缺口不再作为计划阻塞；未来重开须明确新范围与新信息/资源。
 
 ## 3. Active
 
-### A-2026-10-03-v1-25-retouch-repair
-
-- Status: `active`，SEG G0 已冻结，但2方法×2版本开发均未联合通过，已停止此轮 SEG；EYE G0 未准备；当前批量工具已验收，正式需求为2/16。
-- Scope: 所有者允许降低初版标准后，收窄为**自动上睑轻量光影修饰 + 有可见边界的同色贴片自动保护**；包含有限唇保护修复和当前批量工具。保留自动目标，蒙版辅助未被授权替代自动交付。
-- Acceptance: [统一初版契约](docs/RETOUCH_MVP_REQUIREMENTS.md)定义输入规模、独立参考、数字/视觉判据、G0–G3、分支独立交付和有限尝试预算。降低效果/覆盖要求，不取消关键区域、伪影、兼容门禁；不承诺任意未知输入均可识别退出。
-- Next: 按所有者最新指示执行[R3有限执行与终局处置](docs/RETOUCH_TERMINAL_SCOPE_2026-10-03.md)：聚焦两个效果，EYE补完事前登记的三个最简单诊断候选；SEG原四版保持拒绝。通过才扩展G0/G1–G3，均失败则停止并以未交付结清，不再保持无限active。正在连续执行，不追加批量工具工作。
-- Entry: [现行计划](plans/active/A-2026-10-03-v1-25-retouch-repair.md)、[需求 R2](.planning/REQUIREMENTS.md)、[路线图 R2](.planning/ROADMAP.md)、[论文背景](docs/RETOUCH_RESEARCH_AND_V1_25_2026-10-03.md)。
-- Baseline: 77 字段、99 注册/98 默认，旧去脂仍 suspended；[主机并集蒙版](docs/HOST_TEXTURE_PROTECTION.md)持续可用。最近定向复核 5/0/0 只验证已有能力，旧失败和此前完整 1076/0/0 检查点保持原含义。
+无活跃计划。v1.25已按`closed_with_unmet_objectives`结清；两个自动目标未交付，
+不继续候选、G0、批量工具开发或模型工作。现有可用SDK能力不受此研发缺口阻塞。
 
 ## 3A. Historical Lifecycle Ledger（历史脚本锚点）
 
@@ -40,7 +34,35 @@
 
 原记录已在[历史索引](plans/history/README.md)对应的 completed 分片。Phase 93 的 owner-local `93-CHECKS.json` 与 Phase 95 independent review 属于历史证据，不是当前 Active 计划。
 
-## 4. Completed
+## 4. Completed / terminal dispositions
+
+以下分项按发生时刻保留；较早记录的“Next”、pending、2/16等是历史快照，
+不覆盖最上方终局状态，不产生自动续作任务。
+
+### C-2026-10-04-example-image-storage
+
+- Status: `completed`。删除 1,800 个可重建缓存/重复文件，`example-images/`
+  从约 5.4 GiB 降至 29 MiB，释放约 5.3 GiB；28 个必要夹具/清单文件原字节不变。
+- Change: [存储工具](scripts/manage-example-images.py)提供 check/clean/preview；
+  总计限制 128 MiB / 160 图，input 16 图 / 32 MiB，展示图 32 张 JPEG、单张
+  512 KiB、长边 1600 px。已生成约 255 KiB 的压缩展示图；原尺寸验收输出用完删除。
+- Verification: 存储回归 15/0/0、编码实际像素/元数据案例 3/0/0、wrapper
+  14 checks / 14 mutation rejections；最终 archive-first 全量门禁退出 0，
+  **1076 tests / 0 failures / 0 skips、9 opt-ins**，含新容量检查及全部原前置检查。
+  文档链接、必要夹具摘要、重复清理和 `git diff --check` 通过。环境缓存权限
+  导致的早期失败不算通过，最终全量在自动批准的正常缓存权限下运行。
+- Record: [归档计划](plans/history/2026-10/A-2026-10-04-example-image-storage.md)。
+  原有终局文档本地修改保留，SDK/API/效果资格与历史证据未变。
+
+### C-2026-10-03-v1-25-terminal-disposition
+
+- Status: `closed_with_unmet_objectives`，工程收尾已完成，两自动目标未交付。
+- Result: EYE最后三版加此前E1-v1均失败，SEG四版均失败；各2方法×2版本原预算耗尽，不重置或追加。保留去脂suspended/default-hidden和host辅助保护，无新自动入口。
+- Evidence: [终局实验与结果](docs/RETOUCH_FINAL_DISPOSITION_2026-10-03.md)、[行业复核](docs/RETOUCH_INDUSTRY_DECISION_2026-10-03.md)；新控制1/0/0、测量3/0/0，但效果运行器退出1。首轮编译失败保留，候选字节未改。
+- Closure: [16项终局需求](.planning/REQUIREMENTS.md)为5 verified/11 closed_unmet，无算法资格提升；[归档计划](plans/history/2026-10/A-2026-10-03-v1-25-retouch-repair.md)保留全过程，旧路径仅导航。
+- Verification: 本轮实际archive-first全量门禁退出0，**1076 tests / 0 failures / 0 skips、9 opt-ins**；归档、SDK-only boundary、backend/consumer/CPU oracle前置检查通过。2,201个既有源码/测试/冻结证据摘要不变，受保护目录无新增实现；当前链接与`git diff --check`通过。[聚合回执](scripts/experiments/retouch-terminal/results/closeout.json)不保存原始日志或图片。
+- Next: 无。当前里程碑、phase和next队列已清空；重开须所有者明确新范围和信息/资源。
+
 
 ### C-2026-10-03-current-batch-validation
 
@@ -160,6 +182,7 @@
 ## 5. Tech Debt
 
 - [当前技术债](plans/debt/current.md)：发际线语义、不足的泛化和皮肤语义边界；已完成或有界处理事项在正文按原记录说明。
+- 历史账本导航限制（本轮发现，不阻塞终局）：`.planning/MILESTONES.md`旧v1.16/v1.19/v1.20段有9个链接仍指向迁移前路径；HEAD中已存在，实际文件在`.planning/milestones/`，历史正文未改。本轮当前文档及新增终局段链接单独核对。
 - [历史技术债](plans/debt/historical.md)：Phase 95 当时发现及 TD-001 至 TD-024 状态快照。历史状态不能直接用作当前缺陷清单。
 
 ## 6. 模板与验证

@@ -9,6 +9,9 @@ example-images/gallery/
 example-images/.gallery-staging/
 example-images/.gallery-quarantine/
 example-images/local-test-records/
+example-images/previews/
+example-images/parked-generated/
+example-images/.output-pre-phase51/
 .serena/
 
 # Binary image and creative media assets stay local. Keep text manifests such as

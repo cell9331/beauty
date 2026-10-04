@@ -36,6 +36,7 @@ ORDERED_PATTERNS = (
     ("archive", r'python3\s+"\$\{repository_root\}/scripts/archive-legacy-ui\.py"\s+verify\b'),
     ("boundary-self", r'bash\s+"\$\{repository_root\}/scripts/check-sdk-only-boundary\.sh"\s*\\?\s+--self-test\b'),
     ("boundary-live", r'bash\s+"\$\{repository_root\}/scripts/check-sdk-only-boundary\.sh"\s*\\?\s+--post-archive\b'),
+    ("image-storage", r'python3\s+-B\s+"\$\{repository_root\}/scripts/manage-example-images\.py"\s+check\b'),
     ("decision-self", r'python3\s+"\$\{decision_checker\}"\s+--self-test\s+--repo-root\s+"\$\{repository_root\}"'),
     ("decision-live", r'python3\s+"\$\{decision_checker\}"\s+--live\s+--repo-root\s+"\$\{repository_root\}"'),
     ("backend-neutral", r'bash\s+"\$\{repository_root\}/scripts/check-backend-neutral-contract\.sh"'),
@@ -105,6 +106,7 @@ def self_test(source: str) -> tuple[int, int]:
         raise RuntimeError("wrapper.baseline-invalid")
 
     mutations = (
+        source.replace('manage-example-images.py" check', 'manage-example-images.py" disabled', 1),
         source + '\npython3 "${decision_checker}" --self-test --repo-root "${repository_root}"\n',
         source.replace("--live --repo-root", "--disabled --repo-root", 1),
         (

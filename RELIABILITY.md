@@ -1,5 +1,22 @@
 # RELIABILITY.md
 
+## 2026-10-04 example media storage failures
+
+The [storage entry](scripts/manage-example-images.py) returns 0 with aggregate
+counts on success and 1 with a fixed reason for limit, path, manifest or I/O
+failure. The archive-first wrapper runs its read-only `check` after boundary
+verification; exceeded limits stop the gate before SwiftPM tests. The gate never
+cleans files automatically. Explicit `clean` checks the complete tree, tracked
+entries and current manifest references before removing its cache allowlist;
+unclassified files are retained. A failed removal is not a successful cleanup;
+repeating `clean` is idempotent and `check` confirms the remaining storage state.
+
+Display encoding has a 120-second local compiler deadline and a 30-second helper
+deadline, uses temporary copies, rejects malformed/multi-image/oversized inputs,
+and verifies decoded JPEG dimensions and stripped metadata before retaining a
+preview. Existing preview IDs are rejected rather than overwritten. These
+commands add no SDK failure, retry or effect-qualification behavior.
+
 ## 2026-10-03 current batch result contract
 
 The [new batch entry](scripts/current-batch/README.md) independently verifies exact

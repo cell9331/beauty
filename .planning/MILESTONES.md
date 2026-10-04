@@ -1,5 +1,34 @@
 # Milestones
 
+## v1.25 上睑外观与皮肤语义修复 — CLOSED with unmet objectives (2026-10-03)
+
+**Result:** `closed_with_unmet_objectives`. The owner requested continuous finite
+execution and an explicit stop at the capability boundary. EYE and SEG each
+exhausted two methods/four versions without a qualified candidate. Neither automatic
+effect was delivered. Suspended/default-hidden eyelid compatibility and host object
++ complete-lip masks remain available; the current 98/99 batch tool is verified.
+
+**Verification:** Final EYE controls 1/0/0 and measurement 3/0/0, with effect exit 1;
+SEG retains four rejected development results. Fresh archive-first SDK gate:
+**1076/0/0, 9 opt-ins, exit 0**. Existing 2,201 protected files are unchanged.
+The [terminal report](../docs/RETOUCH_FINAL_DISPOSITION_2026-10-03.md),
+[requirement ledger](REQUIREMENTS.md) and
+[closed plan](../plans/history/2026-10/A-2026-10-03-v1-25-retouch-repair.md)
+record 5 verified/11 closed_unmet requirements, not six completed phases.
+[R2 requirements](V1.25-R2-REQUIREMENTS.md) and [R2 roadmap](V1.25-R2-ROADMAP.md)
+preserve the original unfulfilled scope.
+
+**Next:** None is automatically queued. Reopening needs explicit new owner scope
+and new hypothesis/information/resources. No model inference, training, device or
+commercial-effect qualification is claimed. Older milestone wording below retains
+its dated meaning and cannot restore a provisional/supported eyelid claim.
+
+
+Historical navigation note: the older v1.16/v1.19/v1.20 sections below retain
+nine pre-existing links written before the archive move. Their targets are under
+[milestones/](milestones/); the original body is unchanged. Current terminal links
+above resolve independently.
+
 ## v1.24 去脂效果改进 (Completed: 2026-09-24, bounded mechanics)
 
 **Delivered:** Kept the owner-local public `upperEyelidFullnessReduction`
