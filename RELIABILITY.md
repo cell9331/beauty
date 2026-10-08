@@ -1,5 +1,24 @@
 # RELIABILITY.md
 
+## 2026-10-08 simulator Vision compute compatibility
+
+The newly authorized external owner editor exposed `com.apple.Vision / 9` in
+the default face-landmark inference path on the reused iPhone 15 Pro / iOS 17.5
+simulator. `VisionFaceDetector.defaultObservationProvider` now selects advertised
+CPU devices for each compute stage under `targetEnvironment(simulator)` using
+[Apple's compute-device API](https://developer.apple.com/documentation/vision/vnrequest/setcomputedevice(_:for:)).
+Physical-device and macOS requests retain Vision's default policy. No public
+configuration, target boundary, model, Metal implementation or effect semantics
+changed; unavailable detection still yields the existing redacted typed summary.
+
+The native editor's actual authorized portrait now uses one detected face,
+changes output pixels and repeats identically. The archive-first full SDK gate
+passed **1076 tests / 0 failures / 0 skips, 9 opt-ins**. This does not establish
+physical-device performance or new algorithm qualification. The separate host's
+system person-segmentation positive still failed on this simulator and was not
+converted into a successful protection result; its macOS pass is separately
+scoped. Details are in the [owner-host record](plans/history/2026-10/A-2026-10-08-owner-ios-editor.md).
+
 ## 2026-10-04 example media storage failures
 
 The [storage entry](scripts/manage-example-images.py) returns 0 with aggregate

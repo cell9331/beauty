@@ -128,6 +128,9 @@ docs/                            background and historical long-form material
 - 新增 owner-local Swift `public` 行为补 `PRODUCT_SENSE.md`；新架构补 `ARCHITECTURE.md`。
 - 新风险补 `SECURITY.md`；新错误、日志或性能行为补 `RELIABILITY.md`。
 - 历史归档与 archived milestone evidence 保持只读。
+- 清理构建缓存时先核对 ignored/未跟踪身份及冻结源引用；`BeautySDK/.build`
+  含保留的冻结夹具和回执，不能按纯缓存整体删除。仅移除已确认可重建的
+  编译/索引产物与工作副本，保留 Serena 项目状态、源码与历史证据。
 
 ## 9. 基础命令
 

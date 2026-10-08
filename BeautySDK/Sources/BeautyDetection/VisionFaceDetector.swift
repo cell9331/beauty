@@ -1169,6 +1169,16 @@ package struct VisionFaceDetector: Sendable {
     private static func defaultObservationProvider(_ input: VisionFaceDetectionInput) throws -> [VisionDetectionObservation] {
         let raster = try canonicalStillImageInput(input)
         let request = VNDetectFaceLandmarksRequest()
+        #if targetEnvironment(simulator)
+        // iOS Simulator can advertise a default inference path that fails with
+        // Vision code 9. Select its advertised CPU devices per stage; real
+        // devices retain Vision's default compute policy.
+        for (stage, devices) in try request.supportedComputeStageDevices {
+            if let cpu = devices.first(where: { if case .cpu = $0 { return true }; return false }) {
+                request.setComputeDevice(cpu, for: stage)
+            }
+        }
+        #endif
         let handler = VNImageRequestHandler(
             cgImage: raster.image,
             orientation: raster.orientation,

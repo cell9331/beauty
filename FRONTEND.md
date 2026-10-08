@@ -43,3 +43,20 @@ framework source, or UI-test dependency violates the SDK-only boundary.
 Any future application/UI work requires a separately authorized project or
 milestone with its own product, security, reliability, and test owners. Historical
 archives are not an active implementation template or acceptance contract.
+
+## Separately authorized owner host (2026-10-08)
+
+The owner explicitly requested a new iOS photo editor from Figma file
+`l4srrGA4qSkYGT09nuAxXz`. Its new SwiftUI application and UI tests live outside
+this repository in the adjacent `BeautyEditorApp` project. No archived UI was
+restored. The host's `README.md` owns its product, architecture, privacy/input
+and recovery contracts; `VALIDATION.md` owns native UI and pixel verification.
+
+The host connects six designed categories to the existing SDK, with import,
+undo/redo, comparison, confirmation and original-size PNG export. Undesigned
+categories and suspended upper-eyelid reduction remain explicitly unavailable.
+Simulator person segmentation did not qualify its positive background-protection
+case; its failed admission remains visible and cannot be counted as a pass.
+This authorization creates no frontend target, UI acceptance gate, algorithm
+promotion or distribution commitment in the SDK repository. See the
+[owner-host record](plans/history/2026-10/A-2026-10-08-owner-ios-editor.md).

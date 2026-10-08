@@ -39,6 +39,36 @@
 以下分项按发生时刻保留；较早记录的“Next”、pending、2/16等是历史快照，
 不覆盖最上方终局状态，不产生自动续作任务。
 
+### C-2026-10-08-owner-ios-editor
+
+- Status: `completed`，指所有者明确新授权的独立 iOS 图片编辑宿主及核心导入/编辑/导出接线；不改变 SDK-only 仓库边界或算法效果资格。
+- Scope: 相邻 `BeautyEditorApp` 工程根据 Figma 12 状态实现六分类、54 工具位置（53 可调用、51 字段）、撤销/对比/确认、原尺寸 PNG 分享与相册保存；未恢复历史 UI，未下载模型/权重。缺设计分类与去脂明确停用。
+- Verification: 单台已有 iPhone 15 Pro / iOS 17.5 的基本测试 **20/0/0**，独立原生肖像人脸正例 **2/0/0**，系统相册真实保存与权限路径 **1/0/0**；截图、底部交互、安全区、八方向、P3/alpha、文件上限、导出与过期结果拦截通过。60 个 SVG 资源审计通过。
+- SDK change: 仅模拟器 Vision 人脸请求按其支持的 CPU 逐阶段计算；完整 archive-first SDK 门禁退出0，**1076 tests / 0 failures / 0 skips、9 opt-ins**。物理设备/macOS 默认计算策略、API、Metal及算法资格未变。
+- Limitation: iOS 模拟器人物分割正例未通过，空蒙版被拒绝并保持 OFF；失败和原强断言保留。相同生产 renderer 的 macOS 背景 ROI 保护通过单列，不能代替 iOS/真机资格。未真机安装或性能验收，不重开两个终局算法目标。
+- Record: [独立宿主实现与验证](plans/history/2026-10/A-2026-10-08-owner-ios-editor.md)。
+
+### C-2026-10-04-retouch-problem-review
+
+- Status: `completed`，仅指[详细复盘报告](docs/RETOUCH_PROBLEM_REVIEW_2026-10-04.md)，不重开两个已关闭的自动目标。
+- Scope: 对齐原需求/R2收窄/终局处置，复核上睑代理、环纹/重建、四版EYE与四版SEG、同观测反例和host辅助边界；明确经典问题分类、行业方案、模型未验证项和工程/效果混淆造成的推进问题。
+- Verification: 依据冻结报告/聚合回执、Serena源符号及一手论文/官方文档；核对报告数字、本地引用和`git diff --check`。本轮受保护的1,773份既有源码、测试、实验/归档证据、规范及当前里程碑状态摘要未变。
+- Boundary: 仅新增报告和导航记录；未运行算法、生成/修改图片、下载权重、训练或重跑SwiftPM。1076/0/0是已存工程检查点，不作为本报告的新执行或两个效果通过证据；5 verified/11 closed_unmet和空队列保持。
+
+### C-2026-10-04-repository-disk-cleanup
+
+- Status: `completed`。全项目约 **4.6 GiB → 696 MiB**，删除 23,447 个 ignored/
+  未跟踪编译、索引缓存及重复工作输出，清理约 **3.92 GiB**。SDK/consumer
+  及两处历史工具编译缓存均已核对；`.build` 中的冻结源和历史回执保留。
+- Verification: 35 项冻结源/作者摘要有效，2,824 个非目标文件字节或链接目标
+  不变；无活跃项目编译，语言服务未使用清理目标。归档验证、post-archive
+  SDK-only boundary、示例图 storage 和 `git diff --check` 通过。
+- Boundary: 源码/测试未改，本轮不重新编译以免再生成缓存；前轮 1076/0/0
+  保留原检查点含义。历史 spike 媒体约 306 MiB、Git 186 MiB、归档 84 MiB、
+  冻结输入/回执 34 MiB、示例图 29 MiB、Serena 22 MiB 及原有本地状态保留。
+- Record: [盘点与清理记录](plans/history/2026-10/A-2026-10-04-repository-disk-cleanup.md)。
+  不重开算法研发，不修改历史证据；后续构建和索引按需重新生成缓存。
+
 ### C-2026-10-04-example-image-storage
 
 - Status: `completed`。删除 1,800 个可重建缓存/重复文件，`example-images/`

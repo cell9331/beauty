@@ -23,6 +23,10 @@ The frozen [R2 contract](RETOUCH_MVP_REQUIREMENTS.md), [SEG freeze](SEG_G0_FREEZ
 retain original thresholds and outcomes; their earlier pending/next-step wording
 is historical and cannot reopen development. Candidate holdout evaluations remain zero.
 
+详细复盘：[去脂与同肤色物体识别：需求、尝试、失败原因与问题归类（2026-10-04）](RETOUCH_PROBLEM_REVIEW_2026-10-04.md)。
+该报告区分实测失败、观察歧义、行业备选和推进过程问题，解释为何测试通过不等于效果交付；
+不重开研发，也不修改原验收标准或终局状态。
+
 ## Authority
 
 Current inventory validation uses the [new batch tool](CURRENT_BATCH_VALIDATION.md):

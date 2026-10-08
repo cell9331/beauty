@@ -1,5 +1,17 @@
 # QUALITY_SCORE.md
 
+## 2026-10-04 repository disk inventory and cleanup
+
+One-time filesystem maintenance removed 23,447 ignored cache/output entries,
+about 3.9 GiB, after tracked-target rejection and frozen-source digest checks.
+All 2,824 unselected files stayed unchanged; all 35 frozen digest bindings were
+valid. Archive verification, post-archive SDK-only boundary, example-storage
+check and `git diff --check` passed. No Swift source or test changed. SwiftPM was
+not rerun because it would recreate the removed caches; the earlier same-day
+1076/0/0 remains its original verified checkpoint, not a new test run here.
+The [cleanup record](plans/history/2026-10/A-2026-10-04-repository-disk-cleanup.md)
+distinguishes remaining historical evidence and fixture storage from caches.
+
 ## 2026-10-04 example image storage maintenance
 
 The archive-first wrapper now requires

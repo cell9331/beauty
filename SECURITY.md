@@ -1,5 +1,18 @@
 # SECURITY.md
 
+## 2026-10-04 repository cache cleanup
+
+Build-directory names do not establish disposable ownership: `BeautySDK/.build`
+also contains frozen local inputs and receipts. The owner-authorized cleanup
+removed only identified ignored/untracked compiler/index caches and duplicate
+generated work outputs. Thirty-five frozen source/author digest bindings were
+validated, and all 2,824 files outside the selected caches/outputs retained their
+bytes or link targets. Historic spike media, aggregate receipts, archived sources,
+verified legacy ZIPs, current fixtures and project-scoped Serena state remain.
+Private source locators and the one-time cleanup helper were temporary; durable
+records contain categories, counts and byte totals only. No runtime, model,
+network, SDK/API or data-distribution boundary changes.
+
 ## 2026-10-04 example media retention
 
 The [storage tool](scripts/manage-example-images.py) bounds the ignored local
