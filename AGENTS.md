@@ -43,6 +43,7 @@ docs/                            background and historical long-form material
 
 | 任务类型 | 必读 / 必改 |
 | --- | --- |
+| 本仓库 Git 提交、推送、拉取或账号/权限排障 | [Git 操作与账号](docs/GIT_OPERATIONS.md)；复用本仓库已验证的 SSH 身份，不改全局账号配置 |
 | 包、Target、依赖方向 | `ARCHITECTURE.md` |
 | 参数、渲染状态、核心状态机 | `DESIGN.md` |
 | 历史 UI/Demo 查询或恢复 | `FRONTEND.md`, `archives/legacy-ui/README.md` |

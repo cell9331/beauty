@@ -1,5 +1,7 @@
 # Completed plan index: 2026-10
 
+- [A-2026-10-08-agent-instructions](A-2026-10-08-agent-instructions.md)：GitHub 双账号与 SSH 用法仅在本仓库记录；全局入口整理为五类按需指南，原规则与既有指南保留。
+
 - [A-2026-10-08-owner-ios-editor](A-2026-10-08-owner-ios-editor.md)：所有者新授权的独立 iOS 图片编辑宿主与模拟器 Vision 兼容；20/0/0基本编辑、2/0/0原生肖像人脸、1/0/0真实相册保存通过，背景分割正例未合格单列；SDK完整1076/0/0。
 
 - [A-2026-10-04-repository-disk-cleanup](A-2026-10-04-repository-disk-cleanup.md)：继续清理约 3.9 GiB 构建/索引缓存和重复输出，全项目约 4.6 GiB → 696 MiB；冻结输入、源码与历史证据保留。

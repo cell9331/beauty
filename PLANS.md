@@ -39,6 +39,14 @@
 以下分项按发生时刻保留；较早记录的“Next”、pending、2/16等是历史快照，
 不覆盖最上方终局状态，不产生自动续作任务。
 
+### C-2026-10-08-agent-instructions
+
+- Status: `completed`，仅指工作指引维护；不改变 SDK、算法状态或验证资格。
+- Scope: 按所有者纠正，将两个 GitHub 账号与本仓库 SSH 用法只写入 [Git 操作指南](docs/GIT_OPERATIONS.md)，由仓库 `AGENTS.md` 按 Git 任务触发读取。全局入口改为通用约束与五类指南导航，Serena 和真机签名细则单独存放；全局没有 GitHub 账号或密钥信息。
+- Verification: 原全局 24 条规则逐项核对，Serena/真机细则原文保留，三个既有 iOS 指南摘要不变；全局入口从 5,869 缩至 2,567 bytes。本地链接、命令语法、post-archive SDK-only boundary 和 `git diff --check` 核对通过。
+- Boundary: 本轮只改文档，未运行 SwiftPM、构建、设备操作或再次推送；本地锁/尝试日志保留。此前 `c2f5bc4f` 的成功推送只作为本仓库身份记录，不增加其他仓库的账号或推送授权。
+- Record: [指引整理记录](plans/history/2026-10/A-2026-10-08-agent-instructions.md)。
+
 ### C-2026-10-08-owner-ios-editor
 
 - Status: `completed`，指所有者明确新授权的独立 iOS 图片编辑宿主及核心导入/编辑/导出接线；不改变 SDK-only 仓库边界或算法效果资格。
