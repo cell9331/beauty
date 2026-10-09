@@ -24,10 +24,9 @@ commercial-effect qualification is claimed. Older milestone wording below retain
 its dated meaning and cannot restore a provisional/supported eyelid claim.
 
 
-Historical navigation note: the older v1.16/v1.19/v1.20 sections below retain
-nine pre-existing links written before the archive move. Their targets are under
-[milestones/](milestones/); the original body is unchanged. Current terminal links
-above resolve independently.
+Historical navigation: the v1.16/v1.19/v1.20 links below resolve to
+[milestones/](milestones/). Only navigation paths were corrected on 2026-10-09;
+archived roadmap/requirement/phase bytes, historical status and receipts remain unchanged.
 
 ## v1.24 去脂效果改进 (Completed: 2026-09-24, bounded mechanics)
 
@@ -188,9 +187,9 @@ presets / 74 renderer cases. `去脂` remains `future` with no public field,
 route, model, or renderer case. It was not trained, downloaded, modified, or
 activated in v1.20.
 
-**Archives:** [roadmap](v1.20-ROADMAP.md),
-[requirements](v1.20-REQUIREMENTS.md), and
-[phase artifacts](v1.20-phases/).
+**Archives:** [roadmap](milestones/v1.20-ROADMAP.md),
+[requirements](milestones/v1.20-REQUIREMENTS.md), and
+[phase artifacts](milestones/v1.20-phases/).
 
 ## v1.19 Genuine Upper-Eyelid Fullness Promotion (Canceled: 2026-08-25)
 
@@ -204,9 +203,9 @@ the public inventory remains exactly 61 fields / five presets / 74 cases.
 **Phases:** Phase 80 terminated with 17 completed/terminal plans; Plans 80-21
 and 80-22 plus Phases 81-84 were canceled unexecuted.
 
-**Archives:** [roadmap](v1.19-ROADMAP.md),
-[requirements](v1.19-REQUIREMENTS.md), and
-[phase artifacts](v1.19-phases/).
+**Archives:** [roadmap](milestones/v1.19-ROADMAP.md),
+[requirements](milestones/v1.19-REQUIREMENTS.md), and
+[phase artifacts](milestones/v1.19-phases/).
 
 **Verification:** Current post-cancellation binding, focused image/output,
 no-skip, and full SwiftPM evidence remain green. This record does not claim
@@ -306,7 +305,7 @@ review; otherwise preserve exact public absence.
 
 **Verification:** Archive/boundary and recovery gates passed; the final SDK-only SwiftPM conjunction executed 702 tests with zero failures and zero skips, including all eight opt-ins. Phase 69 independent verification passed 4/4 requirements; active inventory at close was 66 Swift source files / 14,952 lines and 61 test files / 29,995 lines.
 
-**Archives:** [roadmap](v1.16-ROADMAP.md), [requirements](v1.16-REQUIREMENTS.md), and [phase artifacts](v1.16-phases/).
+**Archives:** [roadmap](milestones/v1.16-ROADMAP.md), [requirements](milestones/v1.16-REQUIREMENTS.md), and [phase artifacts](milestones/v1.16-phases/).
 
 **What's next:** v1.17 Dual CPU/GPU Metal Rendering preserves the CPU backend and adds an explicit Metal execution path without UI/Demo or device scope.
 

@@ -39,7 +39,7 @@
 [原回执](../scripts/current-batch/results/default-r1.json)原样保留。修正依据是
 执行前已存在的 `testInternalNoFaceResolverSkipsBasicSkinWithRedactedWarning`
 及 `testNoFaceSkipsFaceDependentDomainsButKeepsColorAndFilterActive`，以及
-[DESIGN.md](../DESIGN.md) 的 Phase6 no-face routing：显式无脸跳过整个skin域。
+[DESIGN.md](../DESIGN.md) 的 no-face routing：显式无脸跳过整个skin域。
 组合含纹理项，会请求检测；独立美白/红润走无检测入口。这是验收器分类错误，
 不是SDK效果修复；r2仅将此项改成明确正常退出，其余像素阈值和输入不变。
 该决定在r2执行前记录，不抹去r1失败。
@@ -84,13 +84,15 @@ oracle 的 `kind` 为 `exact`、`abstain` 或 `metrics`。metrics 必须有非�
 [缺规则回执](../scripts/current-batch/results/missing-oracles-r2.json)保留；r3两批次全部
 196项结果与r2逐项一致。该工程修复不改变像素判据或SDK算法。
 
-据此完成 **BAT25-01、BAT25-02**，总需求为 **2/16**；Phase104 仍有接入项
-未完成。2,179个既有源码/测试/脚本/冻结契约/历史文件摘要保持不变，SDK-only
+据此完成 **BAT25-01、BAT25-02**；当时总需求为 **2/16**，Phase104 接入项
+尚未完成。该开发检查点的2,179个既有源码/测试/脚本/冻结契约/历史文件摘要保持不变，SDK-only
 boundary通过。此次未改生产实现、未运行全量SDK1076门禁，也未签任何新效果
 资格。`abstained`表示本输入预声明的源精确退出判据通过，不推断renderer未导出
 的检测器原因。当前metrics只覆盖颜色方向；几何、纹理与视觉资格仍由各效果的
 独立验收器负责，不能用该默认无脸批次代替人像正例验收。
 
 运行及自定义suite示例见[工具README](../scripts/current-batch/README.md)。
-旧75项脚本继续只读；当前入口库存漂移问题已由新工具解决。SEG仍按预算耗尽
-停止；EYE须先准备自身G0参考与控制，旧去脂仍suspended且默认隐藏。
+旧75项脚本继续只读；当前入口库存漂移问题已由新工具解决。随后 v1.25
+[终局处置](RETOUCH_FINAL_DISPOSITION_2026-10-03.md)将两自动分支均以未交付关闭：
+总需求为5 verified/11 closed_unmet，没有 EYE G0、候选留出或生产接入续作。
+本工具继续可用，旧去脂仍suspended且默认隐藏；上述工具回执没有重新签发。

@@ -25,8 +25,9 @@
 
 ## 3. Active
 
-无活跃计划。v1.25已按`closed_with_unmet_objectives`结清；两个自动目标未交付，
-不继续候选、G0、批量工具开发或模型工作。现有可用SDK能力不受此研发缺口阻塞。
+暂无 Active SDK 算法计划。所有者编辑宿主的接线、范围、组合、调试显示与预览修复
+已记录在下方；iOS 17.5 模拟器连续 Vision 检测异常尚未修复，见当前技术债。
+v1.25仍按`closed_with_unmet_objectives`结清，不恢复其自动效果研发。
 
 ## 3A. Historical Lifecycle Ledger（历史脚本锚点）
 
@@ -35,6 +36,19 @@
 原记录已在[历史索引](plans/history/README.md)对应的 completed 分片。Phase 93 的 owner-local `93-CHECKS.json` 与 Phase 95 independent review 属于历史证据，不是当前 Active 计划。
 
 ## 4. Completed / terminal dispositions
+
+### C-2026-10-09-document-cleanup
+
+- Status: `completed`，仅文档删除与现行契约/导航修复。
+- Scope: 删除重复原始导入和无接入/执行的孤立 Core ML 方案；六份根级 owner 从8,391行收敛为947行，更新实际参数/配置/库存、像素缓冲区纹理、无跨帧复用、GPU容量路线、九项opt-in和去脂未合格边界。现行索引隔离冻结历史，当前batch不再安排EYE G0；里程碑账本九个迁移前链接已修复。
+- Verification: 当前链接/锚点与源码声明核对、两个archive验证、SDK-only boundary及其自测、wrapper自测14 checks/14 mutation rejections、示例图storage和`git diff --check`通过。代码/测试/脚本/归档/冻结契约与历史证据摘要不变；SDK未改，未重跑SwiftPM或图片/模型实验，不重签1076/0/0。
+- Boundary: 历史只读记录内的旧路径仍按日期快照保留，详见[完整记录](plans/history/2026-10/A-2026-10-09-document-cleanup.md)。原有外部宿主修复和模拟器失败、本地锁/日志未覆盖；EYE/SEG终局不变。
+
+### C-2026-10-09-owner-editor-debug
+
+- Status: `completed`，限独立宿主的接线/参数范围、组合保留、关键点调试与预览调度修复。53 个可用工具位置连到 51 个字段；滑块按 SDK 各自 cap 映射，超出总预算只限制当前字段，保留之前的调整。
+- Verification: 同一原生设备定向回归 `24/0/0`，额外 UI 复核 `1/0/0`；macOS 六个鼻子工具各四档、重复像素、CPU/Metal 一致性、原图/输出复检、透明回退与原尺寸 PNG 通过。生成图底栏截图和真人临时调试截图实际检查，后者暴露出检测漂移而非证明关键点准确。
+- Remaining: iOS 17.5 模拟器的持续鼻子正例未通过；独立 Vision 连续同源检测同样产生越界点，未修复、不降低判据。原背景保护正例失败仍保留，真机速度未测。SDK 源码未变，本轮仅重新运行 boundary/storage/doc checks，不重复签发前次全量 SwiftPM。见[修复与失败记录](plans/history/2026-10/A-2026-10-08-owner-editor-debug.md)。
 
 以下分项按发生时刻保留；较早记录的“Next”、pending、2/16等是历史快照，
 不覆盖最上方终局状态，不产生自动续作任务。
@@ -220,7 +234,6 @@
 ## 5. Tech Debt
 
 - [当前技术债](plans/debt/current.md)：发际线语义、不足的泛化和皮肤语义边界；已完成或有界处理事项在正文按原记录说明。
-- 历史账本导航限制（本轮发现，不阻塞终局）：`.planning/MILESTONES.md`旧v1.16/v1.19/v1.20段有9个链接仍指向迁移前路径；HEAD中已存在，实际文件在`.planning/milestones/`，历史正文未改。本轮当前文档及新增终局段链接单独核对。
 - [历史技术债](plans/debt/historical.md)：Phase 95 当时发现及 TD-001 至 TD-024 状态快照。历史状态不能直接用作当前缺陷清单。
 
 ## 6. 模板与验证

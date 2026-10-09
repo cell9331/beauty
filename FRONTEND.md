@@ -60,3 +60,11 @@ case; its failed admission remains visible and cannot be counted as a pass.
 This authorization creates no frontend target, UI acceptance gate, algorithm
 promotion or distribution commitment in the SDK repository. See the
 [owner-host record](plans/history/2026-10/A-2026-10-08-owner-ios-editor.md).
+
+The subsequent [owner-host repair](plans/history/2026-10/A-2026-10-08-owner-editor-debug.md)
+maps sliders to admitted per-field caps, reserves previous geometry values,
+coalesces a 960-pixel preview and adds in-memory source/output Vision debug
+overlays. Re-detection is explicitly independent of SDK warp control points.
+Sustained simulator inference and the previous segmentation positive remain
+failed; neither overlay visibility nor changed pixels qualify all effects.
+SDK source and target boundaries are unchanged by this host repair.

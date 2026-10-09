@@ -1,5 +1,9 @@
 # Completed plan index: 2026-10
 
+- [A-2026-10-09-document-cleanup](A-2026-10-09-document-cleanup.md)：删除重复导入与孤立未执行方案，六owner收敛与现行声明/导航修复；文档门禁通过，SDK/冻结证据不变，未重签SwiftPM。
+
+- [A-2026-10-08-owner-editor-debug](A-2026-10-08-owner-editor-debug.md)：独立宿主控件 cap、旧参数保留、Vision 关键点调试和960px预览修复；原生24/0/0及额外UI1/0/0，macOS六鼻子四档与导出通过。iOS17.5连续Vision点漂移/鼻子持续正例未通过，单列失败，不宣称所有效果正常。
+
 - [A-2026-10-08-agent-instructions](A-2026-10-08-agent-instructions.md)：GitHub 双账号与 SSH 用法仅在本仓库记录；全局入口整理为五类按需指南，原规则与既有指南保留。
 
 - [A-2026-10-08-owner-ios-editor](A-2026-10-08-owner-ios-editor.md)：所有者新授权的独立 iOS 图片编辑宿主与模拟器 Vision 兼容；20/0/0基本编辑、2/0/0原生肖像人脸、1/0/0真实相册保存通过，背景分割正例未合格单列；SDK完整1076/0/0。

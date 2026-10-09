@@ -1,111 +1,77 @@
 # Documentation Index
 
-`docs/` stores long-form planning and historical design material for `beauty`.
-Root-level documents and the two authorities below define current contracts;
-historical blueprints and experiment logs do not create present work items.
-The current [image-effect acceptance policy](IMAGE_EFFECT_ACCEPTANCE.md) allows
-authorized generated portraits as full effect inputs; older real-image-only
-requirements in historical plans or spike notes are superseded for new work.
+The current repository is an owner-local SDK-only SwiftPM package. Start with
+[AGENTS.md](../AGENTS.md) and [PLANS.md](../PLANS.md), then read the matching
+owner below. Code/tests own implemented behavior; dated design and experiment
+records do not create current tasks or override current contracts.
 
-Current terminal disposition (2026-10-03): [v1.25 closed with unmet objectives](RETOUCH_FINAL_DISPOSITION_2026-10-03.md).
-Both automatic targets exhausted two methods/four versions without qualification.
-Upper-eyelid correction remains suspended/default-hidden with explicit compatibility;
-automatic skin-colored object/patch recognition is not integrated. Existing
-[host object + lip masks](HOST_TEXTURE_PROTECTION.md) remain an assisted capability.
-The [industry comparison](RETOUCH_INDUSTRY_DECISION_2026-10-03.md) explains alternative
-information/model requirements without claiming untested models failed.
-No EYE G0 continuation, fifth candidate or training job is queued.
+## Current owners and guides
 
-[PLANS](../PLANS.md), the [terminal requirement ledger](../.planning/REQUIREMENTS.md)
-and [R3 scope](RETOUCH_TERMINAL_SCOPE_2026-10-03.md) own current disposition.
-The frozen [R2 contract](RETOUCH_MVP_REQUIREMENTS.md), [SEG freeze](SEG_G0_FREEZE_2026-10-03.md),
-[SEG development](SEG_DEVELOPMENT_2026-10-03.md) and [pilot](RETOUCH_MVP_PILOT_2026-10-03.md)
-retain original thresholds and outcomes; their earlier pending/next-step wording
-is historical and cannot reopen development. Candidate holdout evaluations remain zero.
+| Topic | Authority |
+| --- | --- |
+| Targets, dependencies and processing routes | [ARCHITECTURE](../ARCHITECTURE.md) |
+| Parameters, input, detection, composition and result models | [DESIGN](../DESIGN.md) |
+| Owner-host integration and bounded effect use | [PRODUCT_SENSE](../PRODUCT_SENSE.md) |
+| Errors, recovery, resource bounds and known platform failures | [RELIABILITY](../RELIABILITY.md) |
+| Privacy, input/resource trust and archive/media retention | [SECURITY](../SECURITY.md) |
+| Dated inventory, executed receipts and validation gates | [QUALITY_SCORE](../QUALITY_SCORE.md) |
+| External owner editor and historical UI boundary | [FRONTEND](../FRONTEND.md) |
+| Current work and limitations | [PLANS](../PLANS.md), [current debt](../plans/debt/current.md) |
+| Exact control/parameter mappings and effect status | [SDK_EFFECT_TAXONOMY](SDK_EFFECT_TAXONOMY.md) |
+| Eligible inputs and independent effect/protection acceptance | [IMAGE_EFFECT_ACCEPTANCE](IMAGE_EFFECT_ACCEPTANCE.md) |
+| Current 98-default/99-registered batch validation | [CURRENT_BATCH_VALIDATION](CURRENT_BATCH_VALIDATION.md), [tool usage](../scripts/current-batch/README.md) |
+| Host-supplied object + complete-lip texture masks | [HOST_TEXTURE_PROTECTION](HOST_TEXTURE_PROTECTION.md) |
+| Git identity and remote operations | [GIT_OPERATIONS](GIT_OPERATIONS.md) |
+| Fixture storage, previews and classified cleanup | [example-images](../example-images/README.md) |
 
-详细复盘：[去脂与同肤色物体识别：需求、尝试、失败原因与问题归类（2026-10-04）](RETOUCH_PROBLEM_REVIEW_2026-10-04.md)。
-该报告区分实测失败、观察歧义、行业备选和推进过程问题，解释为何测试通过不等于效果交付；
-不重开研发，也不修改原验收标准或终局状态。
+Generated positives/negatives may qualify an effect under the current policy;
+genuine portraits and physical devices are optional. Swift `public` permits
+the owner's local hosts, not third-party source/binary/model distribution.
+Current SDK engineering and effect evidence have separate scopes.
 
-## Authority
+## Closed research and dated evidence
 
-Current inventory validation uses the [new batch tool](CURRENT_BATCH_VALIDATION.md):
-98 default / 99 registered, explicit per-case pixel contracts and separate missing
-oracle/failure results. The old 75-case wrapper remains historical. This tooling
-does not qualify the SEG/EYE candidates or reclassify suspended effects.
+v1.25 is [closed with unmet objectives](RETOUCH_FINAL_DISPOSITION_2026-10-03.md):
+EYE and SEG each rejected two methods/four versions. Neither automatic target
+was delivered. Upper-eyelid compatibility stays suspended/default-hidden;
+host masks and the current batch tool remain usable. There is no automatic G0,
+fifth candidate, model/training or production-integration task. Ordinary
+“continue” does not reopen the work; a new owner scope/hypothesis/resources is required.
 
-Use documents in this order:
+The [R3 scope](RETOUCH_TERMINAL_SCOPE_2026-10-03.md),
+[terminal requirements](../.planning/REQUIREMENTS.md) and
+[closed plan](../plans/history/2026-10/A-2026-10-03-v1-25-retouch-repair.md)
+record that disposition. The [problem review](RETOUCH_PROBLEM_REVIEW_2026-10-04.md)
+and [industry comparison](RETOUCH_INDUSTRY_DECISION_2026-10-03.md) distinguish
+measured failures from unexecuted alternatives; they grant no download or training authorization.
 
-1. Code and tests.
-2. `AGENTS.md`, `PLANS.md` and its current plan/debt links, followed by the
-   relevant root-level owner contracts.
-3. `docs/SDK_EFFECT_TAXONOMY.md` for effect status and
-   `docs/IMAGE_EFFECT_ACCEPTANCE.md` for current image-input acceptance.
-4. `.planning/PROJECT.md` and `.planning/STATE.md` for current summaries and
-   recovery links to PLANS; v1.25 is closed and there is no active milestone.
-   Previous snapshots and codebase analyses are historical context.
-5. This `docs/` index and the other long-form documents below as background.
-6. `docs/_source/` only as imported source material.
+Frozen historical contracts: [R2](RETOUCH_MVP_REQUIREMENTS.md),
+[G0 design](RETOUCH_G0_VALIDATION_PLAN.md), [case manifest](RETOUCH_G0_CASE_MANIFEST.md),
+[SEG freeze](SEG_G0_FREEZE_2026-10-03.md). Earlier pending/next-step wording in
+these files is a snapshot, not current execution. Their signed identities and
+thresholds remain unchanged. Results are preserved in the
+[SEG development](SEG_DEVELOPMENT_2026-10-03.md),
+[pilot](RETOUCH_MVP_PILOT_2026-10-03.md),
+[finite semantic probe](TEXTURE_SEMANTIC_FEASIBILITY_2026-10-03.md) and owning
+experiment receipts. Candidate holdout evaluations remain zero.
 
-If a long-form doc conflicts with a root-level contract, follow the root-level contract and update the drifting doc or record the conflict in `PLANS.md`.
+The [2026-10-01 feature inventory](FEATURE_COMPLETION_INVENTORY_2026-10-01.md)
+and [audit](PROJECT_STATUS_AUDIT_2026-10-01.md) are dated observations.
+Current counts/statuses come from the owners above. Full historical navigation
+starts at [plans/history](../plans/history/README.md),
+[2026-10 records](../plans/history/2026-10/README.md) and
+[terminal index](../plans/history/2026-10/TERMINAL.md).
 
-## Current Repository State
+## Initial design material
 
-完整功能盘点见[全部功能与完成状态清单（2026-10-01）](FEATURE_COMPLETION_INVENTORY_2026-10-01.md)：77 参数、11 配置、资源及 SDK 支撑能力逐项列出，明确完成范围、活跃缺口与暂停事项。该清单是日期快照；现行状态仍以 PLANS 和 taxonomy 为准。
+The numbered 01–10 documents, `docs/superpowers/`, `docs/meitu-function-blueprint/`,
+`docs/history/`, prior `.planning` snapshots/maps and archived milestones retain
+historical context and references. Their proposed APIs, UI/camera flows, old
+counts, toolchain observations and qualification rules are not current contracts.
+Use them only for a specific history question, through existing historical citations.
+The duplicate import and isolated unexecuted Core ML proposal were removed in
+[the 2026-10-09 cleanup](../plans/history/2026-10/A-2026-10-09-document-cleanup.md).
 
-Current follow-up (2026-10-03): the [finite texture-semantic probe](TEXTURE_SEMANTIC_FEASIBILITY_2026-10-03.md)
-rejected its only automatic candidate. General unmasked skin-colored object
-identification has no qualified general solution; explicit masks remain supported. A low-contrast
-lip outside coarse protection remains a documented limitation. The
-[host integration guide](HOST_TEXTURE_PROTECTION.md) verifies known object and
-lip pixels together through the existing binary mask API. No automatic
-algorithm is credited by that integration. The later finite patch-domain repair
-also failed and closed; see PLANS for the terminal result, not an automatic retry.
-
-Last audited: 2026-10-01; see the [project status and drift audit](PROJECT_STATUS_AUDIT_2026-10-01.md).
-The six confirmed current-document findings have been repaired; the audit
-retains their original observations and links to the repair record.
-
-- The active repository is SDK-only. `BeautySDK/Package.swift` is the sole build
-  graph and SwiftPM is the sole current build/test runner.
-- `BeautySDK` is a Swift-public library for the project owner's locally
-  controlled App/tools; `BeautyExampleRenderer` is the SDK-owned command-line
-  consumer. It is not offered to third parties, and no SDK binary, model,
-  weight, private fixture, or derived data is published or distributed.
-- `public` throughout current documents means Swift access level and the
-  owner-local integration surface. Any customer, package-registry, App Store,
-  model-transfer, or external-release scope requires a new explicit license/
-  security/product review. Internal commercial use is allowed only when every
-  admitted data/model license covers it; research-only inputs do not.
-- The two retired UI/Demo histories exist only as independently pinned artifacts
-  under `archives/legacy-ui/`; verify and restore them only through that
-  directory's README into a fresh outside-repository temporary directory.
-- `.planning/PROJECT.md` and `.planning/STATE.md` route to the current root
-  plan. v1.25 roadmap/requirements now record terminal closure with unmet objectives;
-  there is no active milestone.
-  Prior planning snapshots and seven `.planning/codebase/` maps preserve dated
-  context; old counts/statuses do not define current execution.
-- The mandatory closeout is `bash scripts/run-no-skip-swiftpm.sh`; it verifies
-  archives and the boundary scanner before its bounded one-child SwiftPM run.
-
-## Long-Form Docs
-
-0. [Historical Meitu Core Beauty Blueprint](meitu-function-blueprint/README.md) — reference grouping and dated evidence, not the current implementation backlog.
-1. [Beauty SDK Product Feature Plan](01_product_feature_plan.md)
-2. [iOS Beauty SDK Development Stages Full Plan](02_development_stages_full_plan.md)
-3. [iOS Beauty SDK Architecture SPM Skeleton](03_architecture_spm_skeleton.md)
-4. [iOS Beauty SDK Development Spec](04_development_spec.md)
-5. [Beauty SDK Public API Design](05_public_api_design.md)
-6. [Beauty Parameters Spec](06_beauty_parameters_spec.md)
-7. [Beauty SDK Face Landmarks Coordinate System](07_face_landmarks_coordinate_system.md)
-8. [Beauty SDK Metal Render Pipeline Design](08_metal_render_pipeline_design.md)
-9. [Beauty SDK Algorithm Effects Implementation](09_algorithm_effects_implementation.md)
-10. [Document Audit Report](10_document_audit_report.md)
-
-## Historical Planning Docs
-
-The `docs/superpowers/` files are execution planning artifacts from 2026-05-25. They are useful for implementation sequencing, but their environment observations can become stale. Current toolchain and build facts should be taken from `PLANS.md`, `QUALITY_SCORE.md`, this index, and fresh command output.
-
-## Source Import File
-
-- `docs/_source/docs_total.json` is kept only as the original imported source, not as the reading entry.
+Historical UI/Demo contents are available only from
+[verified archives](../archives/legacy-ui/README.md), restored into a fresh
+outside-repository temporary directory. They are not build or acceptance input.

@@ -1,673 +1,119 @@
 # ARCHITECTURE.md
 
-## 2026-10-03 current batch validation
-
-The [current batch tool](docs/CURRENT_BATCH_VALIDATION.md) lives in
-`scripts/current-batch/`, outside production targets. Python builds and calls the
-existing CPU renderer; a standalone Swift/Core Image helper checks decoded pixels.
-An independent ordered manifest owns 98 default identities and one compatibility-only
-identity, checked against source registration and actual CLI discovery. Each input
-runs twice in a fresh ignored directory. No library, parameter, dependency, backend
-or historical wrapper changes are involved; this tool does not qualify new effects.
-
-## 2026-10-01 upper-eyelid availability disposition
-
-The SDK-only SwiftPM architecture and all 77 parameter fields remain intact.
-The upper-eyelid control is suspended and hidden from the renderer's default
-discovery/batch: 98 default cases, with all 99 registered identities retained
-for explicit compatibility calls. This is a CLI availability policy, not a
-new effect backend or an application UI change. Explicit compatibility does
-not qualify natural-image effects. The hiding disposition remains complete.
-The v1.25 automatic eyelid/patch candidates ran only in disposable SwiftPM copies
-and were rejected. [Terminal closure](docs/RETOUCH_FINAL_DISPOSITION_2026-10-03.md)
-adds no library target, dependency, model, API, shader or backend. The remaining
-EYE diagnostic sources and aggregate receipts live in
-`scripts/experiments/retouch-terminal/`; they are research artifacts, not a
-production integration. Both automatic goals are closed as unmet; no candidate
-or model admission work is queued. See [PLANS.md](PLANS.md).
-
-## 2026-09-29 request-local skin-texture exclusion
-
-`BeautyTextureExclusionMask` is a binary, owner-supplied still-image input on
-`BeautyEngine.processResult`. It follows canonical orientation and input
-mirroring, then travels through the backend request to the existing shared
-CPU-owned texture stage on both CPU and Metal-selected routes. The mask only
-excludes pixels from `skinSmoothing` and `skinSharpen`; it is not an automatic
-skin classifier and does not change other effects. Invalid mask dimensions
-fail typed before backend execution. No model, network, shader, target or
-persistent mask is added.
-
-## 2026-09-28 still-image source admission
-
-`BeautyGeometryEffectPipeline` and `BeautyMetalBackend` share the
-`PhiltrumSourceAdmission` and `WholeFaceTranslationRefiner` owners for
-still-image raster qualification. Both suppress the corresponding legacy
-point emissions on that route; the Metal-selected path uses the same
-request-local CPU byte refinement around its retained pass. Pixel-buffer
-geometry and the retained Metal shader contract are unchanged.
-
-## 2026-09-28 still-image source-contour routes
-
-CPU and Metal-selected still-image paths now run one request-local,
-source-pixel hair/skin boundary refiner and one lower-center skin-contour
-refiner after rasterization. Both suppress the corresponding legacy geometry
-points for still images, including when source admission fails, so ambiguous
-inputs exit unchanged. Pixel-buffer geometry retains its previous point
-route. Neither refiner holds pixels or boundary coordinates after the request
-or adds a public API, model, shader, target, or backend.
-The coherent hair-cap detector also gates `headWrap` still-image points; an
-unsupported hair source emits no head-wrap geometry on CPU or Metal.
-`foreheadHeight` shares the hairline still-image boundary pass with opposite
-sign and suppresses its legacy point on that route. `midfaceLength` remains a
-bounded point field but now requires nose support.
-
-## 2026-09-27 request-local texture face support
-
-An active skin texture request now uses the existing Vision detector in the
-public still-image or pixel-buffer facade. The selected request-local face
-bounds reach the shared CPU-owned texture stage through the existing backend
-request; CPU and Metal-selected paths use the same conservative interior
-ellipse. No observation is cached across requests or frames. Missing or
-disabled detection leaves texture source-exact, while unrelated color work
-continues. The direct public color pipeline has no detector and therefore
-cannot authorize texture without supplied package-internal face support. No
-new model, shader, target, backend, or persistent mask is introduced.
-
-## 2026-09-27 symmetry and lower-chin controls
-
-`wholeFaceSymmetry`, `doubleChinReduction` and `doubleChinReductionPro`
-append owner-local parameters to the existing resolver and face-shape provider.
-Observed contour imbalance gates symmetry; the two chin tiers use different
-bounded point sets. All use the shared CPU/Metal geometry route. No detector,
-segmentation resource, model, weight, target, shader or backend was added.
-
-## 2026-09-27 head-region proportion controls
-
-`headSmall`, `headWrap`, `cranialCrownHeight` and `hairlineHeight` append
-independent scalar parameters to the existing face-shape provider. The first
-three retain the shared CPU/Metal point route, with still-image `headWrap`
-points admitted by the source hair-cap detector. Hairline still images use
-the request-local source-boundary route described above; pixel buffers retain
-the provider route. No new target, detector, segmentation resource, shader,
-model or backend is introduced.
-
-## 2026-09-27 philtrum and lower-face proportion controls
-
-`philtrumLength` and `lowerFaceLength` append separate signed parameters to
-the existing resolver and face-shape provider. Landmark-bounded points use
-the shared CPU/Metal geometry route. No target, detector, shader, model, or
-backend was added.
-
-## 2026-09-27 forehead and midface proportion controls
-
-`foreheadHeight` and `midfaceLength` append independent signed parameters to
-the existing resolver and face-shape provider. Pixel buffers retain one
-bounded point each; still-image forehead requests use the request-local
-source-boundary route above, while midface keeps a narrower point field.
-No new target, detector, shader, model, or backend is introduced.
-
-## 2026-09-27 short-face proportion control
-
-`faceShortening` follows the existing public parameter, effect resolver,
-face-shape provider, and shared CPU/Metal geometry point path. It emits four
-bounded points for a selected face with valid contour and a sufficiently tall
-bounding box. No new detector, shader, target, backend, or model is added.
-
-## 2026-09-27 texture resource admission
-
-The existing texture pipeline keeps its CPU-owned implementation and shared
-CPU/Metal-selected output route. A package texture budget is checked at the
-public decoded, encoded-declaration and pixel-buffer facades and again at the
-backend request boundary. No new detector, mask, shader, model, target or
-backend is introduced.
-
-## 2026-09-27 dense geometry capacity route
-
-The public still-image facade checks the aggregate selected-face point count
-before submitting to the retained Metal executor. A plan exceeding its
-256-point uniform capacity runs through the existing CPU reference executor
-with the same immutable plan, request-local observation and composed carrier.
-The Metal executor and shader remain strict and unchanged; construction and
-runtime errors are not retried. The public pixel-buffer path has no selected
-face support and retains its existing backend selection. A fixed aggregate
-result metric reports the capacity route, without exposing point coordinates.
-
-## 2026-09-27 whole-face image-plane tilt
-
-`wholeFaceTilt` follows the existing public parameter, resolver, face-shape
-provider and unified CPU/Metal geometry route. Four bounded cardinal and two
-upper/lower silhouette points rotate the selected face region around its
-validated bounds center. No depth
-input, model, shader, target or backend is added.
-
-## 2026-09-26 result-local diagnostic events
-
-`BeautyDiagnosticCode` and `BeautyDiagnosticEvent` are closed BeautyCore
-values. `BeautyResult` carries their array with a source-compatible empty
-default. The engine decorates successful public result routes after backend
-execution; encoded input delegates to the still-image route and replaces the
-same event list, so it is not duplicated. No logging target or persistent
-diagnostic store is added.
-
-## 2026-09-26 request-local performance metric
-
-`enablePerformanceLog` adds one result-local numeric metric through the
-existing `BeautyResult.metrics` boundary. The engine uses a monotonic clock
-around each public `processResult` facade and retains no timer or input data
-between requests. Encoded input includes byte preflight and decode. No new
-target, logger sink, OS log, or persistence path is added.
-
-## 2026-09-26 whole-face horizontal image control
-
-The owner-local `wholeFaceXPosition` field follows the existing public
-parameter, resolver, face-shape provider, and unified CPU/Metal geometry
-point route. With valid selected-face contour support, the provider emits
-three bounded points covering the center and upper/lower face areas. There
-is no new target, shader, depth input, or model.
-
-## 2026-09-26 encoded still-image facade
-
-`BeautyEngine.processResult(encodedImageData:metadata:parameters:)` decodes
-one in-memory ImageIO frame after byte and declared-pixel preflight, then
-delegates to the existing `CIImage` result path. It adds no target, external
-file reader, decoder dependency, or effect/backend route.
-
-## 2026-09-26 whole-face vertical image control
-
-The owner-local `wholeFaceYPosition` field uses the existing parameter,
-resolver, face-shape warp provider, CPU still-image and Metal geometry routes.
-It emits five bounded control points from the selected request-local face bounds;
-there is no new target, model, depth estimate, shader, backend, UI, or public
-biometric payload. The SDK-owned renderer exposes both signed directions.
-
-## 2026-09-26 explicit detection cadence
-
-An indexed camera/video CIImage facade passes a scheduling decision into the
-existing geometry route. Off-cycle calls resolve without selected face support
-and report a fixed skip reason; no observation cache, tracker, new backend,
-shader, or output format is introduced. Unindexed still-image calls keep their
-existing detection path.
-
-## 2026-09-26 preferred Vision detection size
-
-`preferredProcessingSize` now reaches `VisionFaceDetectionInput` through the
-existing engine/detector configuration path. Vision materializes a bounded
-working raster only for detection; the source carrier and backend still render
-at admitted original dimensions. No new target, cache, or output resize path
-was added.
-
-## 2026-09-26 skin texture path
-
-`BeautyEffects` now owns one request-local luminance-detail transform for
-`skinSmoothing` and `skinSharpen`. CPU still-image and pixel-buffer paths call
-it before their existing color/geometry work; the Metal-selected executor
-applies the same CPU transform to admitted RGBA8 bytes before its retained
-passes. This preserves one effect definition without adding a Metal shader,
-backend, model, public parameter, detector dependency, or target. The Metal
-selection still runs through the existing runtime for other passes and output
-conversion; it is not a claim that texture work executes on the GPU.
-The facade snapshots `renderQuality` into the backend request; both backend
-selections use the same 3×3, 5×5, or 7×7 CPU-owned spatial implementation.
-
-## Current image acceptance input boundary (2026-09-24)
-
-Image provenance does not select a different SDK architecture. Owner-authorized
-generated portrait-like images may exercise the same public facade, source-fixed
-effect oracle, and CPU/Metal paths as genuine portraits. Their absence as
-genuine human photographs is not an implementation or milestone dependency;
-see [image-effect acceptance](docs/IMAGE_EFFECT_ACCEPTANCE.md). Dated phase
-architecture and signed evidence descriptions below remain historical.
-
-## Phase 95 observed portrait support repair
-
-The default still-image Vision provider renders a named-sRGB CGImage from the
-admitted extent before its single landmarks request. Metadata orientation and
-the canonical mapper keep their existing ownership. This aligns source anatomy
-with the registered raster while preserving geometry-only output contracts.
-The dense-mesh model and isolated Python measurement runtime are SDK-owned
-validation tools only; they add no library target, model resource or dependency.
-
-The existing Vision detection pass now carries package-only request-scoped nose
-crest/contour through the canonical coordinate mapper into `FaceGeometry`.
-Observed outer lips already owned by detection also reach geometry planning.
-No target, dependency, public parameter, detector pass, backend or model is
-added. Raw support has no Codable representation; reflection exposes counts
-only. Root/bridge and negative mouth consume this support without changing
-legacy sibling templates. Portrait qualification is determined by the current
-registered 65-case gate and its execution-bound completion receipt.
-
-> `beauty` 的当前 SDK-only 系统蓝图。参数与状态机见 `DESIGN.md`；effect/control
-> status 见 `docs/SDK_EFFECT_TAXONOMY.md`。
-
-## Current Post-Archive Audit Status
-
-The suspended `upperEyelidFullnessReduction` compatibility route retains the
-existing canonicalize-once, detect/map-once, request-local per-eye support,
-immutable-source composition and render-once still-image path. Its source
-luminance residual is an admission proxy, not tissue-fat or anatomical truth.
-Natural-image effectiveness remains unqualified; passing mechanics and safety
-tests does not change that status. No trained model, resource, network, Metal
-pass, retained shader change, UI or pixel-buffer route belongs to this control.
-The v1.21 provisional acceptance and `816/0/0` gate are
-[historical records](docs/history/upper-eyelid-technical-history-2026-10-01.md),
-not the current product disposition.
-
-v1.17 was historically completed and archived at `afb04b4`; its frozen
-Phase-74 record reports focused `12/0/0` and full `765/0/0` execution on a
-Metal-available package host. Those numbers remain historical. The current
-archive-first closeout passed on 2026-08-18 with XCTest `776/0/0`, all eight
-opt-ins exactly once, and `skipped_tests=0`.
-
-The post-archive audit has repaired public non-up/mirrored raw-input metadata
-compatibility (`53e8da1`), unavailable-host parity accounting (`d29b90a`), the
-Metal geometry inline-binding overflow (`556499a`), and backend-result alpha/
-extent enforcement. Geometry point arrays
-are now request-local shared `MTLBuffer` resources; only the bounded scalar
-point count remains inline. On an available host the parity branch reports
-`focused_tests=13` and `parity_executed=1`; an unavailable host may pass its
-typed availability gate only with `parity_executed=0` and never receives GPU
-parity credit. Today's Metal-available branch recorded `metal_available=1`,
-`metal_unavailable=0`, `parity_executed=1`, `focused_tests=13`, and
-`unavailable_tests=0`. Current focused preflights passed backend-neutral
-`24/0/0`, Metal runtime `42/0/0`, Metal feature `34/0/0`, configuration
-`19/0/0`, and CPU reference `41/0/0`. Geometry safety parity now derives its
-plan, control points, locality envelope, and rendered request from one immutable
-face observation (`a577dd1`), with request equality and mutation-tested static
-provenance checks.
-
-All ten post-archive findings now have explicit dispositions. Local-retouch
-bytes remain CPU-owned original-pixel/Q16 composition transported through an
-identity Metal pass; Metal receives no masks or proposals. `.gpu` still images
-require exact-opaque bounded non-extended RGB before detection and materialize
-named-sRGB output. Metal still-image coefficients and lip math match the CPU
-oracle within the pinned generated tolerance (`max <= 2`, mean `< 0.75`). A
-`BeautyEngine` instance is intentionally non-`Sendable`; callers serialize all
-access to one instance, while independent engines may run concurrently. These
-bounded contracts do not claim transparent-input support, end-to-end GPU local-
-retouch composition, shared-instance parallel safety, device performance,
-commercial approval, packaging, shipping, launch, or release readiness.
-
-## 1. Current Repository Contract
-
-The repository contains one Swift Package rooted at `BeautySDK/`. SwiftPM library
-and executable products, SwiftPM tests, and SDK-owned scripts are the only active
-build/test/validation surfaces.
-
-`BeautySDK` is an owner-only local component. Its Swift `public` declarations
-exist so applications and tools controlled by the project owner can import the
-facade and so the repository can test that boundary. They do not define a
-third-party SDK offering or authorize package-registry publication, binary SDK
-delivery, customer integration, App Store distribution, or model/weight
-redistribution. Any future expansion beyond this owner-controlled environment
-requires a new license, security, privacy, compatibility, and product review.
-
-The retired application/UI trees are historical artifacts under
-`archives/legacy-ui/`. They are not dependencies, source examples, current
-requirements, or completion evidence. `FRONTEND.md` owns this redirect.
-
-The dated source/test inventory is recorded once in the
-[2026-10-01 project audit](docs/PROJECT_STATUS_AUDIT_2026-10-01.md).
-It counts the current working tree (including uncommitted Swift files), not
-only HEAD. To recompute file/line totals without `.build`:
-
-```bash
-python3 - <<'PY'
-from pathlib import Path
-for root in ('BeautySDK/Sources', 'BeautySDK/Tests'):
-    files = sorted(Path(root).rglob('*.swift'))
-    lines = sum(len(p.read_text().splitlines()) for p in files)
-    print(root, 'files=', len(files), 'lines=', lines)
-PY
-```
-
-`BeautyConfiguration` has 11 stored fields; the package graph is owned by
-`BeautySDK/Package.swift`. Dynamic source/test totals are dated observations,
-not fixed architecture invariants.
-
-## 2. Top-Level Invariants
-
-| ID | Invariant |
-| --- | --- |
-| A1 | SDK targets contain no application pages, UI state, navigation, or protected-resource prompts. |
-| A2 | Owner-controlled host code imports only the Swift-public `BeautySDK` product. |
-| A3 | Dependency direction is acyclic and flows inward toward `BeautyCore`. |
-| A4 | Detection/support values remain package-only, request-local, and absent from public diagnostics. |
-| A5 | Geometry controls enter the existing single `BeautyGeometryEffectPipeline`; no per-feature warp path exists. |
-| A6 | Local retouch canonicalizes once, detects/maps once, composes original-pixel proposals once, and fails locally. |
-| A7 | Public parameters and presets remain backend-independent normalized values. |
-| A8 | Resource lookup is centralized and validates logical identifiers rather than interpreting caller paths. |
-| A9 | SwiftPM plus SDK-owned CLI/script validation is the sole current evidence boundary. |
-| A10 | v1.16 historically retained CPU/Core Image behavior and pinned shader bytes without a public Metal API; the current package exposes `.cpu`/`.gpu` policy while keeping the Metal runtime package-internal and CPU as the reference. |
-| A11 | The repository-owned consumer fixture and CLI observe only owner-local public-surface results, bounded identities, and typed aggregate outcomes; executable-internal failure seams are test machinery, not public API. |
-| A12 | `BeautyResult<Output>` is `Sendable` only when `Output: Sendable`; public concurrency tests cover compile-time acceptance and a complete async task hop without making arbitrary payloads transferable. |
-| A13 | Suspended upper-eyelid explicit compatibility reuses the local-retouch owner chain, preserves independent per-eye failure and collision-to-source behavior, and exports only its existing scalar. Default discovery/batch stays hidden; compatibility does not imply qualified natural-image effects. |
-
-## 3. Products and Targets
-
-```text
-BeautyCore
-    ↑
-    ├── BeautyResources
-    ├── BeautyDetection
-    └── BeautyRender
-             ↑
-BeautyEffects ───── uses package-only support and render primitives
-    ↑
-BeautySDK            public library product
-    ↑
-BeautyExampleRenderer public-product command-line consumer
-```
-
-| Target | Owns | Must not own |
+## Current repository contract
+
+`beauty` is an SDK-only SwiftPM repository for the project owner's local Apps
+and tools. [Package.swift](BeautySDK/Package.swift) owns the build graph: iOS 17
+and macOS 14, one `BeautySDK` library product, one `BeautyExampleRenderer`
+executable product, six library targets and six test targets, no remote dependencies.
+Swift `public` describes the owner's callable surface, not third-party distribution.
+
+Historical UI/Demo material is confined to verified `archives/legacy-ui/`
+artifacts. [FRONTEND.md](FRONTEND.md) owns recovery and the separately authorized
+external editor boundary. No application source or lifecycle belongs to SDK targets.
+Current work and limitations are owned by [PLANS.md](PLANS.md); dated file/line
+inventory and executed gate evidence are recorded once in [QUALITY_SCORE.md](QUALITY_SCORE.md).
+
+## Target ownership
+
+| Target | Dependencies | Responsibility |
 | --- | --- | --- |
-| `BeautyCore` | public/shared value models, errors, the 11-field configuration including `BeautyRenderBackend`, canonical carrier, redacted diagnostics | Vision implementation, application state |
-| `BeautyDetection` | Vision detection, mapping, selection, package-only observed support | rendering, public raw geometry |
-| `BeautyRender` | pass/pixel-buffer foundations, the retained bundled shader resource, and the package-internal `BeautyMetalRuntime` resource/synchronization owner | effect policy, application code, a public backend selector, or a claimed device backend |
-| `BeautyResources` | bundled manifest/presets and identifier validation | arbitrary external path loading |
-| `BeautyEffects` | resolver, safety caps, geometry/color pipelines, local-retouch providers/transforms/composition | public facade, application controls |
-| `BeautySDK` | stable host facade, immutable `BeautyBackendFactory` selection, and request-local policy propagation | support-region export, application lifecycle |
-| `BeautyExampleRenderer` | public-facade fixture input/output validation, deterministic 98-case default discovery, 99 registered explicit selections, and typed report aggregation | internal-target imports, public backend selection, product claims from generated media |
+| `BeautyCore` | none | Shared/public value models, configuration, errors, canonical carrier and redacted diagnostics. |
+| `BeautyDetection` | Core | Vision detection, mapping, selection and package-only observed support. |
+| `BeautyRender` | Core | Render primitives, pixel buffers, bundled retained shader and package-only Metal runtime. |
+| `BeautyResources` | Core | Bundled manifest, presets, LUTs and logical resource-ID validation. |
+| `BeautyEffects` | Core, Detection, Render, Resources | Resolver, safety caps, geometry/color/texture pipelines, local-retouch providers and composition. |
+| `BeautySDK` | all five internal targets | Public facade, immutable backend selection and request policy. |
+| `BeautyExampleRenderer` | SDK only | CPU command-line consumer, case discovery, validated PNG outputs and aggregate reports. |
 
-The package declares no remote dependency. New dependencies, models, resource
-downloads, or network behavior require explicit security/licensing review.
+Owner hosts import only the `BeautySDK` product. The local-path consumer in
+`IntegrationTests/` exercises that same boundary; it is a validation fixture.
+Raw detection/support types and backend injection remain package-only.
+`BeautyResult<Output>` is `Sendable` only when `Output: Sendable`;
+`BeautyEngine` requires caller-serialized access.
 
-The repository-owned consumer fixture under `IntegrationTests/` is a separate
-SwiftPM executable with one local path dependency and only the public
-`BeautySDK` product. It generates its own neutral input and observes real output
-bytes/dimensions; it is an integration fixture, not a third-party consumer, SDK
-target, distribution artifact, or public release promise.
-`BeautyExampleRenderer` accepts the compatible `--input`, `--output`, `--case`,
-and `--no-watermark` flags, requires a pre-existing output directory, and
-preserves registered case identities while hiding suspended entries from
-default discovery and batches. Public backend selection is owned by
-`BeautyConfiguration`; the CLI remains a public-product consumer and does not
-create a second backend-policy surface.
+## Processing routes
 
-The renderer writes a versioned privacy-safe JSON report only after each output
-is non-empty, decodable, and dimension-preserving. Reports contain bounded
-relative public input/case/output identities and reconciled requested,
-succeeded, failed, and skipped counts. Unknown arguments/cases, duplicate
-arguments/stems, missing or invalid paths, decode/render/encode/write/
-validation/report failures, and incomplete output return typed non-zero
-diagnostics. The render/encode failure injection is an executable-internal
-test seam and is absent from SDK products, help, diagnostics, and reports.
-
-## 4. Processing Paths
-
-Still image:
+The [engine](BeautySDK/Sources/BeautySDK/BeautyEngine.swift) accepts decoded
+`CIImage`, in-memory encoded still-image `Data`, BGRA `CVPixelBuffer`, and an
+explicitly indexed camera/video `CIImage` route. Parameters are request snapshots;
+configuration is captured at engine initialization.
 
 ```text
-public BeautyEngine input
-→ validate extent/orientation/color/limits
-→ canonical opaque sRGB request carrier when local retouch is admitted
-→ one optional Vision detection/mapping request when parameters require support
-→ resolve normalized/capped effects
-→ select immutable CPU or GPU policy through `BeautyBackendFactory`
-→ CPU/Core Image or package Metal color + unified geometry + request-local local-retouch composition
-→ public output, typed error, redacted warning/aggregate metrics
+still image
+→ validate dimensions, limits, resources and applicable color/alpha contract
+→ canonicalize once when local retouch or an exclusion mask requires it
+→ one request-local Vision/mapping route when face support is required
+→ resolve normalized strengths, provider admission and geometry budget
+→ original-pixel local-retouch composition when requested
+→ selected backend: shared texture/color, geometry and source-raster refiners
+→ output, typed error, redacted warnings/metrics/diagnostic events
 ```
 
-Pixel buffer:
+Encoded input preflights byte count, frame count and declared dimensions before
+decoding one image, then delegates to the still-image route. Explicit metadata
+owns orientation. Pixel-buffer input produces a distinct output buffer and
+supports face-independent work; active smoothing/sharpening additionally requests
+fresh face bounds. It has no detection-backed facial geometry or teeth/sclera/
+upper-eyelid local-retouch route. No realtime throughput claim follows from this API.
 
-```text
-public BeautyEngine input
-→ validate BGRA and dimensions
-→ resolve face-independent supported work
-→ create a distinct output buffer
-```
+Unindexed support-dependent still calls detect afresh. The indexed camera/video
+route detects on indices divisible by `detectionFrameInterval`; other frames
+abstain from face-dependent work without reusing prior observations.
+`preferredProcessingSize` bounds only the Vision raster, preserving output size.
+Detection selects faces, but current still-image effects use only the primary face.
 
-The pixel-buffer path currently performs no detection-backed geometry or local
-retouch. A future realtime or alternate-backend contract cannot be inferred from
-existing foundation types or resource filenames.
+## Backend and effect ownership
 
-## 5. Effect and Privacy Ownership
+`BeautyConfiguration.renderBackend` is exactly `.cpu` or `.gpu`, with `.cpu`
+as the default and permanent reference. `BeautyBackendFactory` selects the
+package executor at initialization. Explicit unavailable GPU terminates with
+`.metalUnavailable`; construction/runtime failures never trigger retry.
+The still-image facade has one separate capacity route: over 256 geometry
+points without row restrictions execute the complete admitted plan on CPU,
+with `beauty.backend.cpuGeometryCapacityFallback = 1`. Direct Metal calls and
+row-restricted over-capacity plans retain typed failure. The retained
+`Warp.metal` and GPU/API boundaries remain pinned by the boundary scanner.
 
-- `docs/SDK_EFFECT_TAXONOMY.md` owns current status for the 77-field parameter inventory.
-- `BeautyParameters` is the public contract; archived labels/layout never create
-  a field, alias, provider, or product claim.
-- `teethWhitening` and `scleraRednessReduction` remain bounded opaque still-image
-  controls. Suspended `upperEyelidFullnessReduction` retains explicit compatible
-  access to the package experimental implementation. It cannot proxy through
-  eye/brow movement, smoothing, generic/landmark-driven warp or a new Metal route.
-- Raw masks, landmarks, pupil positions, tooth/eye geometry, candidate pixels,
-  and private fixture locations are request-local implementation details.
-- Generated output remains ignored and disposable; committed evidence is
-  aggregate and privacy-safe.
+Geometry providers feed one `BeautyGeometryEffectPipeline`. Shared CPU-owned
+still-image refiners implement source-admitted hairline/forehead, outer
+submental contour, philtrum and whole-face translation behavior on both selected
+backends. On these routes, corresponding legacy point emissions are suppressed
+even if source admission rejects. Pixel buffers retain their separate admitted
+capabilities; still-image qualification does not extend them.
 
-The mandatory CPU reference layer is generated in-memory Swift RGBA8/sRGB
-fixtures and target-local XCTest oracles. It covers exact neutral bytes,
-alpha/extent metadata, geometry displacement/direction/locality, color
-luminance/chroma/red/yellow-excess direction, local-retouch containment,
-collision-to-source ownership, and request recovery. The generated preflight
-(`scripts/check-cpu-reference-oracles.sh`) runs before private/native-Vision
-opt-ins and the single full SwiftPM child; it records only aggregate pass
-counts. The current CPU/Core Image implementation remains the permanent reference.
+Skin smoothing/sharpening uses the shared CPU-owned spatial texture stage with
+fresh primary-face bounds, conservative face/eye/lip/color/edge admission and
+a bounded pixel budget. `BeautyTextureExclusionMask` excludes known pixels only
+from those two effects on decoded/encoded still images. It adds no detector or
+semantic segmentation; [host integration](docs/HOST_TEXTURE_PROTECTION.md)
+owns the exact grid and protection contract.
 
-Upper-eyelid analysis remains package-only in `BeautyEffects`, between per-eye
-support and original-pixel composition. The retained plane/residual analyzer,
-source-bounded reconstruction and quantization fixes address measured image
-mechanics. They do not recover tissue volume or establish useful natural-image
-reduction; this distinction is why the explicit route is retained as suspended
-compatibility rather than a current recommended effect.
+Teeth and sclera retouch share one opaque canonical carrier, detection/context
+handoff and immutable-source composition owner. Per-feature/per-eye admission
+remains independent; unexpected overlap preserves source. Composition is
+CPU-owned before backend transport, so selected Metal does not imply end-to-end
+GPU local retouch. Raw pixels, masks and support die with the request.
 
-## 5A. Dormant Upper-Eyelid Prediction Seam
+Upper-eyelid correction retains explicit compatibility through the same owner
+chain but remains `suspended` and default-hidden. Its brightness proxy is not
+tissue recognition. The inactive prediction validator has no registered model,
+resource or inference route. v1.25's rejected EYE/SEG experiments were never
+integrated; [terminal disposition](docs/RETOUCH_FINAL_DISPOSITION_2026-10-03.md)
+creates no automatic follow-up. Exact control status is owned by the
+[taxonomy](docs/SDK_EFFECT_TAXONOMY.md).
 
-`BeautyUpperEyelidFullnessPredicting` has no registered implementation. Its
-package-only request/result types and independent validator remain in
-`BeautyEffects`; the explicit compatibility facade does not call this seam.
-Missing or invalid predictions emit no proposal. There is no active Core ML
-import, model resource, dataset, weight, download or training pipeline for it.
+## Validation ownership
 
-The 2026-08-25 learned-hybrid proposal was not implemented beyond this validation
-seam. Its proposed resource ownership, flow and qualification sequence are
-[historical design material](docs/history/upper-eyelid-technical-history-2026-10-01.md),
-not the only permitted future architecture or an outstanding implementation
-requirement. The failed candidates do not prove all no-model methods impossible
-or learned methods sufficient. Only an explicit owner request can reopen R&D;
-any new design would still owe compatibility, evidence and actual-use rights
-review under the current repository policies.
+The renderer retains 99 registered identities and exposes 98 default cases;
+explicit legacy upper-eyelid selection remains callable. It accepts only CPU
+at its CLI boundary and validates persisted outputs before crediting them.
+The [current batch tool](docs/CURRENT_BATCH_VALIDATION.md), outside production
+targets, independently checks ordered inventory and repeated decoded pixels.
+The old 75-case wrapper is historical and incompatible with current inventory.
 
-## 6. Archive Boundary
-
-The only retained legacy ownership is:
-
-- `archives/legacy-ui/BeautyDemo-v1.16.zip` plus manifest and digest record;
-- `archives/legacy-ui/meituxiuxiu-v1.16.zip` plus manifest and digest record; and
-- `archives/legacy-ui/README.md` as the safe access/recovery contract.
-
-Archive verification is mandatory before SwiftPM closeout. Restored material
-must stay in a new temporary directory. Reintroducing either retired root or an
-active application/UI build dependency fails the SDK-only boundary.
-
-## 7. Change Routing
-
-- Public model: `BeautyCore`, `DESIGN.md`, `PRODUCT_SENSE.md`, compatibility tests.
-- Detection/support: `BeautyDetection`, privacy/recovery tests.
-- Effect: `BeautyEffects`, taxonomy, safety/containment/output evidence.
-- Resource: `BeautyResources`, manifest/trust validation.
-- Facade/orchestration: `BeautySDK`, public consumer tests.
-- Repository gate: `scripts/`, `QUALITY_SCORE.md`.
-- Historical UI request: archive-only review outside the repository.
-
-## 8. Validation
-
-```bash
-swift build --package-path BeautySDK
-swift test --package-path BeautySDK
-python3 scripts/archive-legacy-ui.py verify --output archives/legacy-ui
-bash scripts/check-sdk-only-boundary.sh --post-archive
-bash scripts/check-swiftpm-consumer.sh
-bash scripts/check-cpu-reference-oracles.sh
-bash scripts/run-no-skip-swiftpm.sh
-```
-
-The generated CPU preflight must pass with nonzero focused execution and zero
-generated skips without reading tracked portrait media. Private/native-Vision
-fixtures remain ignored, explicit opt-ins and cannot lend success to the
-generated suite. The final wrapper must preserve one bounded SwiftPM child output, execute all nine
-documented opt-ins, and reject failure, skip, or zero execution. These gates do
-not establish device, performance-budget, commercial, packaging, shipping,
-launch, or release readiness.
-
-The current public-result concurrency evidence is the three-test
-`BeautyResultConcurrencyTests` suite (3/0/0): a `Sendable` payload result
-survives an async task hop with its public fields intact, ordinary string
-construction remains source-compatible, and a non-`Sendable` payload is kept
-outside the positive contract. The v1.16 historical mandatory wrapper evidence
-executes 702 tests with zero failures and zero skips. The Phase-71 historical
-archive-first wrapper executed 728 tests with zero failures and zero skips.
-Phase 73's historical archive-first wrapper executed 753 tests with
-zero failures and zero skips, with all eight opt-ins exactly once and separate
-`metal_available=1` / `metal_unavailable=0` classifications. The active
-boundary self-test rejects a mutation back to unconditional generic sendability
-before archive, consumer, generated-CPU, opt-in, or child execution.
-
-## 9. Phase 70 Backend-Neutral Contract
-
-`BeautyEffects/Backend/BeautyBackendContract.swift` is the single package-only
-execution boundary for still-image and pixel-buffer backends. It admits a
-validated input, explicit `BeautyInputMetadata`, the existing normalized
-`BeautyEffectPlan`, request-local selected support, and—only for an admitted
-still-image request—the canonical carrier and composition aggregate. The
-boundary owns shared validation for dimensions, metadata, canonical extent and
-alpha assumptions, containment, collision-to-source, and bounded failure
-counts; it does not recreate detection, normalization, or composition policy.
-
-`BeautyBackendDiagnostics` is aggregate-only: dimensions, alpha/extent flags,
-and bounded unit, failure, collision, and changed-count values. It is
-request-local and non-Codable. Typed terminal errors cross the boundary without
-retry or fallback. `.cpu` is the only policy in this phase and the retained CPU
-implementation remains the reference; Metal resources/passes and public
-`.cpu`/`.gpu` configuration are later-phase work. The existing 61-field
-`BeautyParameters`, five neutral presets, 74 renderer cases, target dependency
-direction, generated CPU oracle, and archive-only UI/Demo boundary are
-unchanged. This contract adds no public selector, new algorithm, or device,
-performance, commercial, packaging, shipping, launch, or release claim.
-
-## 10. Phase 71 SDK-Owned Metal Runtime
-
-Phase 71 adds only an internal runtime mechanics boundary. `BeautyRender` owns
-one package-internal `BeautyMetalRuntime` instance with its device, command
-queue, pipeline, and request-local textures/buffers/command objects.
-`BeautyEffects` owns the package-only `BeautyMetalBackend` executor that admits
-the shared backend request and invokes exactly one bounded identity transaction.
-`BeautySDK` remains unrouted publicly: no public `.gpu` or render-backend
-selector is added to `BeautyConfiguration`, `BeautyParameters`, presets, or the
-command-line consumer.
-
-The exact request lifecycle is: validate dimensions and RGBA8 byte counts;
-create bounded resources; encode the existing identity transaction; synchronize
-and inspect terminal command status; materialize a matching output; then release
-every request resource on both success and error. A host without a Metal device
-returns typed `.metalUnavailable`; it never becomes a GPU success, CPU
-fallback/retry, or parity claim. Diagnostics remain aggregate-only and omit
-support, raster, texture, framework, geometry, and path details. The runtime
-has no application, UI, or capture lifecycle dependency.
-
-Phase 72 owns feature-pass implementation, Phase 73 owns public `.cpu`/`.gpu`
-configuration and typed availability policy, and Phase 74 owns generated
-CPU/Metal parity and no-skip closeout. CPU remains the reference. Phase-71
-SwiftPM/static evidence preserves the 61-field parameter model, five presets,
-74 renderer cases, dependency direction, archive boundary, and privacy
-contracts; it establishes no simulator/physical-device, performance,
-commercial, packaging, shipping, launch, or release-readiness claim.
-
-## Phase 72 Metal Feature-Pass Ownership
-
-The still-image facade remains the sole owner of local-retouch admission,
-request-local support, and `BeautyLocalRetouchCompositionOwner`. It publishes
-only the immutable composed `BeautyCanonicalStillImage` and six bounded
-aggregate counters on `BeautyBackendRequest`. `BeautyMetalBackend` consumes
-that CPU-composed carrier through an identity composed-retouch Metal pass, then applies mapped
-color and geometry in CPU order; it does not receive providers, proposals,
-support, masks, or source locators. Local-retouch-only output is therefore the
-owner-produced carrier byte-for-byte, while mixed work starts from those same
-immutable bytes. This is a GPU transport/ordering boundary, not end-to-end GPU
-local-retouch computation. Geometry arrays are bound through a request-local
-shared `MTLBuffer`, including payloads beyond Metal's 4 KiB inline limit; the
-bounded scalar point count remains inline and cleanup is deterministic. Public
-backend configuration is covered by Phase 73; Phase-74 parity evidence remains
-historical, while the bounded post-archive remediation closeout is current and
-green at `776/0/0`.
-
-## Phase 73 Public Backend Configuration
-
-`BeautyCore.BeautyConfiguration` owns the public `renderBackend` field, whose
-exact two cases are `.cpu` and `.gpu`; it is execution policy and does not alter
-the 61-field `BeautyParameters`, five neutral presets, or 74 renderer cases.
-Missing and legacy configuration keys decode to `.cpu`, and a new
-configuration defaults to `.cpu`. `BeautySDK.BeautyBackendFactory` performs
-immutable construction and request-local policy propagation: explicit `.cpu`
-uses the permanent CPU reference, while explicit `.gpu` uses the package Metal
-runtime. If Metal is unavailable, the request terminates with typed
-`.metalUnavailable`; it never reports GPU success or silently falls back to
-CPU. Package-only injection seams are test-only.
-
-Historical Phase 73 evidence is aggregate-only: configuration focused `16/0/0`, runtime
-focused `34/0/0`, and the full archive-first no-skip wrapper `753/0/0`, with
-eight opt-ins exactly once and `metal_available=1` / `metal_unavailable=0`.
-Phase 74 owns generated CPU/GPU parity and SDK-only closeout. No UI/Demo,
-simulator or physical-device, performance, commercial, packaging, shipping,
-launch, or release-readiness claim follows from this configuration evidence.
-
-## Phase 74 Historical CPU/GPU Parity and SDK-Only Closeout
-
-The current package retains CPU/Core Image as the permanent semantic reference
-and routes the same normalized plans and request-local carriers through Metal.
-The archived Phase-74 generated SwiftPM fixtures compared input kind, dimensions, alpha, extent, named
-sRGB metadata, exact neutral bytes, and explicit active tolerances (maximum
-channel delta `8`, mean RGB `< 5.0`). Safety coverage checks CPU-owned
-containment, protected/outside bytes, collision summaries, no-face/degraded
-support, and smallest-unit failure isolation; bounded repetition/concurrency
-proves request-local determinism.
-
-The mutation-tested parity gate runs once in archive-first order after
-configuration and before consumer, CPU-oracle, opt-in, and full-child stages.
-Historical archive evidence is focused `12/0/0`, full SwiftPM `765/0/0`, eight opt-ins
-exactly once, and separate `metal_available=1` / `metal_unavailable=0`.
-The repaired current gate gives only its available branch GPU parity credit
-(`focused_tests=13`, `parity_executed=1`); unavailable Metal remains typed
-`.metalUnavailable`, reports `parity_executed=0`, and cannot lend success to
-CPU or GPU parity. The current bounded contract resolves the audit findings but
-does not turn the historical matrix into transparent-input, end-to-end GPU
-local-retouch, shared-instance parallel, or release evidence. UI/Demo,
-simulator/device, performance, commercial, packaging, shipping, launch, and
-release-readiness remain excluded.
-
-## Phase 91 Independent Gaze Correction Ownership
-
-The request path remains within existing targets. `BeautyDetection` supplies
-observed per-eye support; `BeautyEffects` maps each valid side into an internal
-gaze-only pupil channel while preserving the paired `pupilSize` channel.
-`EyeWarpProvider` selects zero, one, or two sides independently, proves strict
-simple-aperture containment and half-clearance radius ownership, and emits one
-bounded point per eligible eye. `BeautyEffectResolver` creates the six-field
-aggregate only after final conflict resolution and exact point reconciliation.
-
-`BeautySDK` carries those already-redacted metrics through the existing result
-path. `BeautyExampleRenderer` may place them only on the matching successful
-gaze output unit. The SDK-owned comparator binds schema, input, case, output,
-backend, and aggregate algebra before using minimum Q16 for direction; source
-and neutral target signal, sibling distinction, locality, and protected pixels
-remain image-derived mandatory gates. The runner consumes both temporary
-attempt reports, verifies their deletion, and publishes only aggregate status.
-
-This flow adds no public type, target, dependency, renderer case, model, data,
-network path, UI, realtime route, or GPU behavior. Exactly 62 fields, five
-presets, 75 renderer cases, both still-image facades, CPU reference,
-selectable `.cpu`/`.gpu`, terminal `.metalUnavailable`, and retained
-`Warp.metal` remain the architecture boundary. Phase 95 owns portrait
-publication and the full no-skip milestone gate.
-
-## v1.23 FACE-01 Still-Image Ownership
-
-`BeautyEffects` owns the new request-local `FaceContourLateralRuns` and
-`FaceContourSubpixelRefiner` internals. The CPU geometry pipeline and the
-selectable Metal still-image backend call the same immutable-source RGBA8
-refiner before their existing warp. The point provider continues to own the
-named FACE-01 control field and fail-closed admission. Neither the public
-facade nor `BeautyCore` gains a type or parameter; `BeautyDetection` still
-supplies observed support. The retained Metal shader, runtime API, and
-pixel-buffer route are unchanged. This architecture supports generated
-CPU/Metal parity only; natural portrait efficacy remains under active v1.23
-qualification.
+Current gates, fixture opt-ins and evidence scope are owned by
+[QUALITY_SCORE.md](QUALITY_SCORE.md). Privacy, errors and caller recovery are
+owned by [SECURITY.md](SECURITY.md) and [RELIABILITY.md](RELIABILITY.md).
+New API, dependency, resource or backend work must update its owner documents
+and public/target tests in the same change.

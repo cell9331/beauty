@@ -1,1073 +1,148 @@
 # SECURITY.md
 
-## 2026-10-04 repository cache cleanup
-
-Build-directory names do not establish disposable ownership: `BeautySDK/.build`
-also contains frozen local inputs and receipts. The owner-authorized cleanup
-removed only identified ignored/untracked compiler/index caches and duplicate
-generated work outputs. Thirty-five frozen source/author digest bindings were
-validated, and all 2,824 files outside the selected caches/outputs retained their
-bytes or link targets. Historic spike media, aggregate receipts, archived sources,
-verified legacy ZIPs, current fixtures and project-scoped Serena state remain.
-Private source locators and the one-time cleanup helper were temporary; durable
-records contain categories, counts and byte totals only. No runtime, model,
-network, SDK/API or data-distribution boundary changes.
-
-## 2026-10-04 example media retention
-
-The [storage tool](scripts/manage-example-images.py) bounds the ignored local
-example tree to 128 MiB / 160 images, inputs to 16 / 32 MiB, and display JPEGs
-to 32 / 512 KiB each / 1600 px. `check` is read-only and is required by the
-archive-first SwiftPM wrapper. Explicit `clean` uses a code-owned cache allowlist,
-validates required manifest assets, and rejects tracked entries, links, mounts
-and special files before deletion. Unknown files and required fixture bytes are
-preserved. These are owner-local checks, not a hostile concurrent-filesystem
-sandbox. No automatic gate deletes images.
-
-The local preview helper receives a bounded temporary source copy, decodes one
-image of at most 40 million pixels, and encodes fresh sRGB JPEG pixels without
-source EXIF/GPS/TIFF/orientation metadata. Compilation artifacts and copies are
-temporary. Original hashes and masks are never modified; lossy previews cannot
-replace effect-oracle inputs. Console output contains fixed reasons and aggregate
-counts/bytes only, without private source locators or image content. No network,
-image upload, model, SDK behavior or distribution boundary is added.
-
-## 2026-10-03 terminal research boundary
-
-The final EYE diagnostic reused existing authorized local inputs in disposable
-package copies. Candidates receive only source pixels, strength and fresh Vision
-eye support; references and evaluation regions remain isolated in test code.
-Images and annotations stay ignored/private; durable receipts retain logical IDs,
-hashes and bounded aggregate metrics only. Child transcripts are not persisted.
-No third-party model was downloaded or executed, and no image was uploaded.
-Both automatic routes are [closed as unmet](docs/RETOUCH_FINAL_DISPOSITION_2026-10-03.md);
-reading industry sources is not authorization to acquire assets or train models.
-
-## 2026-10-03 current batch local inputs
-
-The [current batch tool](docs/CURRENT_BATCH_VALIDATION.md) accepts explicit local
-suites only, with at most four digest-bound upright opaque 8-bit sRGB PNGs, each
-at most 16 MiB and 1,048,576 pixels. Repository-local media/suites must be ignored;
-regular-file checks reject symlinks and unexpected files. These owner-local checks
-do not establish an adversarial concurrent-filesystem sandbox. Regions are used
-only by the comparator, never supplied to the renderer. Staged images stay local.
-Transient request files and renderer reports are removed; durable receipts contain
-logical IDs, hashes, counts and bounded metrics, without regions, private locators
-or raw child transcripts. Child output is bounded in memory and never printed.
-No external assets, network requests, third-party code or production API is added.
-
-## 2026-10-01 suspended upper-eyelid fixture boundary
-
-The effect is `suspended` and default-hidden. Existing explicit calls and safety
-regressions remain; their availability does not qualify natural-image effects.
-The luminance proxy is not tissue-fat or shape truth. On 2026-10-03 the owner
-explicitly reopened literature/open-code research and
-repair planning in v1.25. Pretrained candidates require separate source, license,
-actual-use and local-feasibility checks before asset use. No image upload, model
-download/execution, training, fine-tuning or new runtime access happened in this
-planning step. R2 [MVP acceptance](docs/RETOUCH_MVP_REQUIREMENTS.md) requires
-local independent references and protected-region truth before candidates, grouped
-by source family with no development/holdout leakage. These private inputs and
-annotations stay ignored; durable records contain only logical IDs, hashes and
-aggregates. A correct oracle mask must never become an automatic request input.
-SEG inputs were subsequently created under the owner-authorized G0 work and
-[30 cases are frozen](docs/SEG_G0_FREEZE_2026-10-03.md); EYE inputs remain unprepared.
-The full EYE G0 remains unprepared and is no longer scheduled after terminal
-failure. Seventeen independently generated fictional portraits and one procedural source
-are for owner-local validation only. Source/annotation hashes and regular-file
-checks precede isolated loading. Review media stays in a fresh Git-ignored private
-directory; durable receipts contain no media, regions, private locators or child
-transcripts. Holdouts were used for G0 controls only, never candidate tuning. See
-[research boundaries](docs/RETOUCH_RESEARCH_AND_V1_25_2026-10-03.md).
-
-The subsequent [SEG development](docs/SEG_DEVELOPMENT_2026-10-03.md) read only the
-six frozen development families; candidate holdout and reject media were not loaded.
-Pure candidate files accept canonical pixels/dimensions and actual face bounds;
-S2 additionally receives the current request's existing private face observation.
-No truth masks, IDs, groups, paths, second detector call or external asset enters
-the automatic candidate. The adapter exists only in disposable package copies.
-Durable receipts and source snapshots contain aggregates/hashes only. The four
-versions are rejected and the SEG budget is exhausted; production remains unchanged.
-
-The new live Vision regression uses an owner-authorized generated portrait
-and a second previously authorized natural-style negative, both kept in the
-ignored local fixture directory. The test binds each input's separate
-SHA-256 and a 16 MiB input limit, accepts only a local `.png` basename, rejects
-symbolic-link resolution and reports fixed fixture errors. Source geometry,
-calibration pixels and intermediate masks remain request-local; the permanent
-test exports no media. Repository evidence contains only the logical fixture
-identity, recipe and aggregate assertions. Fixture calibration is not an SDK
-input feature and adds no production file, network or model access.
-
-The separate [natural-background challenge](scripts/experiments/upper-eyelid-natural-challenge/README.md)
-copies only these two hash-verified, bounded, Git-ignored fixtures into a
-disposable local package. It rejects source/ancestor symbolic links, disables
-media export and fixture overrides, and never injects a test into the working
-tree. Child output stays in a bounded private memory buffer; only aggregate
-counts/status and fixed error codes are printed. Temporary copies are removed
-on normal completion, failure or handled interruption. The immutable Swift
-recipe is durable; image bytes and child transcripts are not.
-
-## 2026-09-29 texture exclusion input boundary
-
-The owner-supplied binary exclusion mask is validated for positive dimensions,
-overflow-safe byte count, `0`/`255` values and exact canonical image size.
-It exists only during the request and is absent from results, diagnostics,
-logs and persistent evidence. The mask adds no model or network call; the
-existing face detector still analyzes the input image locally. Mask coverage
-is caller-provided; an omitted object cannot acquire semantic protection from
-a color-matched source alone.
-
-## 2026-09-28 source-pixel geometry boundaries
-
-The new still-image silhouette and upper-lip admission scans use only the
-current request's raster and selected face support. Their pixel masks and
-detected coordinates are not persisted, logged or returned as public metrics.
-The strict uniform-background and chromatic-lip conditions limit false
-acceptance; unsupported input is source exact for these isolated controls.
-No model, weight, remote service or additional data source is introduced.
-
-## 2026-09-28 source-contour still-image boundary
-
-The hairline and outer-submental refiners inspect opaque source pixels only
-within the current selected face's bounded regions. Their per-column
-boundary rows and raster copies are request-local, with no cache, diagnostic
-field, file, network request, model, weight or external distribution path.
-Ambiguous source contrast or contour topology exits unchanged. The guards
-are conservative color/shape tests rather than semantic hair or fat masks;
-similar-looking forehead objects and neck clothing outside the tested
-classes remain an image-quality boundary.
-The same request-local hair-cap decision now also suppresses `headWrap`
-geometry on unsupported still-image sources. It stores no hair classification
-or image-derived detail beyond the request.
-`foreheadHeight` shares the already bounded hairline source detector and
-request-local resampler. `midfaceLength` requires nose observation and retains
-no feature coordinates or pixels beyond the request.
-The submental detector requires a continuous source-skin run, rejecting the
-tested detached collar and internal dark fold before output. This is a
-request-local appearance guard, not a stored fat or garment classifier.
-
-## 2026-09-27 texture face-support boundary
-
-An active public texture request now admits pixels only inside a conservative
-ellipse from the current selected face bounds. Missing, invalid, disabled or
-skipped support yields no texture edit; the engine does not reuse prior face
-locations. Bounds and source pixels remain request-local and never enter
-diagnostics or persistent evidence. The envelope is not skin segmentation:
-coarse face-relative eye/lid and lip rectangles are now excluded, while
-non-skin content elsewhere inside it may still qualify for the existing
-color and edge filter. No feature mask, model, weight, network, or external
-distribution path is added.
-The source-RGB admission also rejects strongly saturated warm pixels using
-fixed per-channel bounds. A generated cheek decoration negative is exact for
-both texture controls while an opposite cheek target changes. Skin-colored
-non-skin content remains outside this guard's distinguishable scope.
-
-## 2026-09-27 vertical proportion input boundary
-
-The two new controls use only finite, unit-bounded request-local face bounds
-and contour validation. No landmarks, masks, generated pixels, or private
-fixture locations enter diagnostics or durable evidence. No resource, model,
-network or distribution route is added.
-
-## 2026-09-27 short-face input boundary
-
-`faceShortening` uses only request-local selected-face bounds and contour
-validity, with finite unit-bounded source and target points. It stores no
-landmarks, masks, pixels, fixture paths, or generated images in diagnostics
-or durable evidence and adds no file, model, network, or distribution route.
-
-## 2026-09-27 texture budget and cool-region guard
-
-The encoded-image texture cap is checked from declared dimensions before
-decoding, then checked against decoded dimensions. The same bound applies to
-decoded still images and pixel buffers. The cool-region decision uses only
-the admitted source RGB channels within the request; it stores no segmentation
-map or diagnostic pixels. The later face-support gate above supersedes this
-stage's face-free background behavior.
-
-## 2026-09-27 geometry capacity preflight
-
-The capacity decision reads only request-local validated face support and
-retains no point array. Its public evidence is a fixed numeric metric, never
-landmarks, masks, raw pixels or source paths. The CPU route uses the already
-admitted source and the same SDK-only backend contract; it adds no resource,
-model, network or external distribution boundary.
-
-## 2026-09-27 whole-face tilt input boundary
-
-`wholeFaceTilt` consumes request-local selected-face bounds and contour
-validity through the existing geometry path. It adds no persistent landmarks,
-pixels or mask, and no file, network, model or external distribution route.
-Generated marker pixels remain inside tests; durable evidence contains only
-aggregate assertions and results.
-
-## 2026-09-26 closed diagnostic vocabulary
-
-Result diagnostics use a closed enum with three fixed codes and the existing
-five log levels. The engine emits only an aggregate warning-presence flag,
-successful-request event, and gated backend-stage event. No event can embed
-raw pixels, masks, landmarks, paths, private locators, parameter values or
-framework messages. No system or persistent log is written.
-
-## 2026-09-26 opt-in performance metric
-
-`enablePerformanceLog` emits only one finite nonnegative elapsed-time number
-in a successful in-memory result. It never emits raw pixels, masks, landmarks,
-encoded bytes, paths, input identifiers or framework diagnostics, and it adds
-no persistent or OS logging sink.
-
-## 2026-09-26 whole-face horizontal bounds
-
-`wholeFaceXPosition` uses only the request-local selected-face geometry,
-finite unit-bounded coordinates, a capped displacement and one bounded warp
-point. Invalid contour or target support fails closed without retaining
-landmarks, masks, pixels or private fixture locations.
-
-## 2026-09-26 encoded input admission
-
-The new in-memory encoded still-image entry checks `Data.count` before any
-ImageIO work, accepts exactly one frame, verifies declared dimensions against
-the configured pixel ceiling before image creation, and validates decoded
-dimensions again before dispatch. Malformed or oversized input fails as
-`invalidInput` without exposing bytes, paths, decoder details, pixels or face
-support in the error. The existing decoded-image and pixel-buffer entries
-retain their separate pixel-only admission.
-
-## 2026-09-26 whole-face vertical input boundary
-
-`wholeFaceYPosition` uses validated, request-local selected-face bounds and
-the existing face contour. It emits no raw support, coordinates, or pixels in
-public metrics or durable diagnostics. Missing or invalid support fails the
-field closed. The new control does not add a model, network, file input,
-permission, or distribution path.
-
-## 2026-09-26 FACE-01 chromatic contour trust boundary
-
-The color fallback uses only current request pixels and requires a coherent
-source-row edge. A sustained compact dark band can suppress the affected side
-before CPU or Metal geometry submission; no observed contour, mask, hair
-pixels or side decision enters public diagnostics or persistent evidence.
-The frozen portrait oracle records aggregate checks only. This adds no model,
-network, file input or distribution path.
-
-## 2026-09-26 FACE-01 occluding hair boundary
-
-Short dark bands crossing the cheek are treated as competing source edges
-even when their inner return edge is weaker than the outer one. Their rows
-fail closed locally; neighboring accepted rows still use request-local source
-pixels. Generated tests and the frozen portrait oracle persist only aggregate
-results, never the hair pixels or observed contour coordinates.
-
-## 2026-09-26 indexed frame detection boundary
-
-The frame interval never reuses raw landmarks or masks across frames. An
-off-cycle face-dependent request has no selected support and cannot retouch a
-different face using stale coordinates. Validation rejects negative frame
-indices and non-camera/video metadata before processing; the public reason is
-a fixed enum and contains no frame pixels or coordinates.
-
-## 2026-09-26 preferred Vision detection boundary
-
-`preferredProcessingSize` is applied only after the source pixel count is
-admitted. It cannot turn an oversized original into an accepted request. The
-smaller Vision raster is request-local, carries the same redacted support
-boundary, and is not exposed in persistent diagnostics.
-
-## 2026-09-26 skin-texture input boundary
-
-The texture transform reads decoded pixels only inside the admitted request,
-stores no neighborhood map or image outside it, and emits no pixel-derived
-diagnostics. Opaque-footprint and strong-edge guards prevent this bounded
-operation from sampling across transparent or strongly different-color
-regions. They are not a skin classifier: an unprotected low-contrast background
-may be edited. Generated inputs stay in memory; durable evidence records only
-aggregate assertions and test outcomes. No model, network, permission, public
-raw-pixel API, or private fixture locator was added.
-`renderQuality` is a closed three-case enum. It only changes the bounded
-request-local neighborhood radius from one to three pixels. It does not add a
-source, output channel, persistent cache, or pixel-bearing diagnostic.
-
-## 2026-09-26 FACE-01 source-edge trust boundary
-
-Both bright and dark backgrounds can qualify, but a side must show a coherent
-edge direction. Coherent weak contrast and contradictory row directions now
-fail closed instead of entering the older point-centered fallback. A short
-opaque double-edge occlusion is skipped locally. These checks use request-local
-pixels and do not add persistent diagnostics.
-
-The wider cheek correction treats input pixels as untrusted evidence. It
-accepts only a coherent opaque outer edge near fresh observed lateral support,
-clips all scans and samples to image bounds, and rejects competing outward
-edges for the entire side. It does not persist source pixels, contours,
-support coordinates, or generated media. Ambiguous or unsupported images
-retain the established bounded local behavior or source-exact output.
-Generated portrait verification records aggregate results only.
-
-## Current generated-image trust boundary (2026-09-24)
-
-The current no-skip gate accepts a generated Vision portrait only as a regular,
-non-symlink file name under `example-images/input/portraits/`; path components
-are rejected. Teeth/sclera bundle overrides must retain their ignored-local
-manifest boundary and the feature tests' rights and pixel checks. Fixture
-provenance alone neither grants nor denies effect credit.
-
-Owner-authorized generated portrait-like inputs may supply effect positives,
-negatives, and adversarial cases. They require permission for actual local use
-and the same ignored-local storage, request-local mask/landmark handling,
-aggregate-only durable evidence, and no-distribution boundary as other
-fixtures. Genuine human photos are optional and never a privacy or evidence
-prerequisite. See [image-effect acceptance](docs/IMAGE_EFFECT_ACCEPTANCE.md).
-
-## 2026-09-24 audit repair input boundary
-
-Serialized EXIF orientation values outside the defined 1–8 range are rejected;
-they cannot silently become an unmirrored `.up` orientation. The configurable
-pixel limit is capped at the backend's 50,000,000-pixel hard ceiling, including
-Codable initialization. Fractional or nonfinite still-image dimensions are
-rejected before expensive detection. Metal geometry exceeding its 256-point
-payload budget fails closed. No raw pixels, landmarks, or private fixture
-locators are added to persistent diagnostics.
-At that audit date, `maximumInputByteCount` was not an enforced decoded-input
-guard; the host had to bound encoded files. The new in-memory entry above
-checks its encoded bytes; the SDK still does not read file paths.
-
-## Historical upper-eyelid change boundary (2026-09-24)
-
-The v1.24 gain experiment did not expand per-eye support, expose raw fields or
-add a model/network path. Its gain is superseded, while the request-local and
-immutable-source trust boundaries remain. The aggregate-only historical
-record is preserved in the [technical history](docs/history/upper-eyelid-technical-history-2026-10-01.md);
-it is not authorization to continue effect work.
-
-## Cross-face mapping isolation (2026-09-23)
-
-Malformed detected-face support cannot invalidate a separate mapped face or
-lend its geometry to one. Mapping and rejection stay within the request; only
-aggregate counts and `.mappingFailed` leave the detector. No coordinates,
-landmarks, stable face identities, pixels, or fixture locators are persisted or
-added to public diagnostics.
-
-## Source-fixed surface validation (2026-09-23)
-
-The current root method uses the reviewed source-only dorsal marker definition,
-not the historical certified-outer-edge requirement below. The validation-only
-mesh runtime/model stays outside BeautySDK, is verified against its locked
-payloads, and runs in network-denied isolated children. Actual RGB, source
-coordinates and decoded cohort data remain in bounded memory pipes. Only typed
-counts, conservative intervals and identity commitments enter evidence.
-
-The65 successor consumes the same decoded batch source/root/neutral/three
-siblings that the comparator scores. It binds their RGB digests and the fixed
-source cohort into the stable payload. A native qualifier may reconstruct
-source detection and sampling eligibility but must not rerender replacement
-outputs. Historical original-source/ROI and failure receipts remain unchanged.
-Default Vision's explicit sRGB CGImage is request-local and never persisted.
-
-
-## Source-only coverage diagnostic (2026-09-15)
-
-An independently authored exact14-entry review latch admits only bounded
-aggregate coverage of the same source/ROI/contracts. Two source-only processes
-must agree, with byte/environment identities rechecked. Only support-overlap
-counts, fixed false/zero qualification flags, hashes and environment summaries
-are exported. The observed11/16 crest and3/16 contour coverage does not grant
-source registration, anatomical-boundary qualification or scoring permission.
-No image, raw support, private locator or child transcript is persisted. The
-original frozen registrar and its ambiguous failures remain unchanged.
-
-## Phase 95 measurement identity and anatomical rows (2026-09-14)
-
-Registrar transport v3 retains strict stdout JSON and separately drains native
-stderr without persistence. Both streams count against the same bound; stderr
-cannot create success or hide an exit failure. Original v2 reviewer receipt is
-not reused for changed code. The observed structural ambiguity stays rejected.
-
-Report validation now checks case-to-metric equality in addition to existing
-inventory/verdict/digest checks; all eight recomputed-digest substitution probes
-are rejected. This does not create a successor measurement authorization. The
-original v1 registration is unchanged, and its comparator hash rejects the
-modified implementation until a reviewed successor binding exists.
-
-Root candidate rows partition actual eye extents. At each Y only one admitted
-inward pair acts; its monotone map is identity at the local root/eye boundary,
-preventing samples from entering protected eye pixels. Entire target disks are
-inside their own vertical row and the corresponding horizontal safe interval.
-No cross-row slope budget is borrowed. Historical stricter strip constraints
-remain documented but are not the current anatomical support contract.
-
-The new metric prototype accepts generated in-memory planes only. Source-only
-edge templates/exclusions are explicitly committed and never persisted as raw
-geometry or pixels. Positive affine/noise/blur ambiguity is retained as a
-conservative position interval, not resolved by picking favorable matches.
-Live source registration and scoring remain disabled pending independent review.
-
-The generic draft-2 mathematics has since been independently approved; a new
-source-only adapter is pending its own review. It verifies pinned definition/
-legacy identities, strips both original CLI dispatchers at exact boundaries,
-and composes the reviewed definitions in memory. It admits only the original
-single source, opaque canonical pixels and original contract digest. Source
-profiles/exclusions never leave memory except as commitments/counts. Process
-input/output/deadlines are bounded; all child-group exits are cleaned. Unknown
-arguments, stale review, duplicate fields and old source-result schemas reject.
-
-## Internal-bound revision (2026-09-14)
-
-Owner-approved chin/root displacement changes do not raise the 0.8 per-side
-slope ceiling. Root inverse-sampling disks, not hypothetical source-centered
-disks, are constrained to the canthus interval; the strictly monotone horizontal
-map is identity at both interval boundaries, so its samples cannot cross them.
-Generated coordinate sweeps and pixel protection tests supplement the analytic
-bound. Root sub-cap radii solve containment before emission. Portrait acceptance
-thresholds and privacy rules remain frozen, with no automatic promotion.
-
-## Phase 95 ordered inward field bound (2026-09-13)
-
-For horizontal linear cones with all positive-displacement targets preceding
-all negative-displacement targets, the positive part of du/dx is bounded by
-one side's sum(abs(deltaX)/radius). Requiring each sum <= 0.8 gives the normalized
-inverse field a horizontal derivative >= 0.2; between the groups it is >= 1.
-Admission checks finite unit coordinates, fixed Y, positive finite radius and
-strength, linear falloff, ordered groups and bounded counts. Canonical CPU
-sampling applies only to homogeneous admitted sets; this proof is not an
-assertion about legacy/mixed sampling or other backends. Input support remains
-request-local and non-persistent; no measurement thresholds are relaxed.
-
-Phase 95's observed nose carrier is package-only and request-scoped, has no
-Codable conformance, and redacts description/debug/reflection to counts. The
-canonical mapper bounds each coordinate and caps each nose array at 32 points;
-malformed explicit support stays empty and cannot borrow a legacy template.
-Observed lips used by negative mouth and chin remain memory-only. No additional
-detector, network, resource, model or persistent anatomical data is introduced.
-
-## Phase 95 registered portrait evidence (2026-09-12)
-
-Owner-authorized ROI registration reads only canonical source pixels and source
-anatomy before outputs are evaluated. Its frozen binding contains hashes and
-counts, never coordinates, raw support, media or fixture locators. Missing
-anatomy, region overlap, changed source/manifest/comparator, or a different
-registration digest rejects admission. Gaze direction aggregates cannot replace
-target signal, locality or protected-pixel checks. Closeout validates the
-runner envelope, recomputes payload digest and verdicts from measurements, and
-retains actual measured protection values instead of inventing zero maxima.
-
-> Current SDK-only privacy, input/resource trust, and archive safety contract.
-
-## Current Post-Archive Audit Status
-
-The suspended upper-eyelid explicit compatibility route retains one owner-local
-scalar and the existing trust boundary. Support, envelopes, pixels, proposals
-and editor summaries remain package-only and request-local; only
-`upperEyelidFullnessReduction` crosses the public parameter boundary. Missing
-or untrusted per-eye support fails closed, but this containment does not prove
-correct anatomical selection or effective natural-image reduction. The earlier
-v1.21 provisional acceptance and `816/0/0` gate are
-[historical records](docs/history/upper-eyelid-technical-history-2026-10-01.md),
-not the current effect disposition.
-
-The v1.17 archive at `afb04b4` preserves historical Metal-available evidence
-(focused `12/0/0`, full `765/0/0`). Post-archive remediation has restored public
-non-up/mirrored raw metadata compatibility (`53e8da1`), separated unavailable-
-host typed coverage from GPU parity credit (`d29b90a`), and moved geometry point
-payloads into request-local shared `MTLBuffer` storage (`556499a`). The buffer
-does not persist points and is released deterministically; only the bounded
-scalar count remains inline.
-
-All audit findings now have bounded, mutation-tested dispositions. Backend-
-result alpha/extent publication fails closed without retaining pixels. Local
-retouch is CPU-owned original-pixel/Q16 composition followed by identity Metal
-transport; Metal receives no masks, proposals, support, or source locators.
-`.gpu` rejects non-opaque or unsupported RGB before detection and materializes
-named-sRGB output. Geometry safety derives its envelope and request support from one
-immutable observation with mutation-tested ownership (`a577dd1`). An unavailable
-host reports `parity_executed=0` and
-never GPU parity success. The current Metal-available branch recorded
-`metal_available=1`, `metal_unavailable=0`, `parity_executed=1`,
-`focused_tests=13`, and `unavailable_tests=0`. The archive-first closeout passed
-on 2026-08-18 at XCTest `776/0/0`, with all eight opt-ins exactly once and
-`skipped_tests=0`. This bounded package-host result is not a device, commercial,
-or release trust decision; the archived `765/0/0` remains historical.
-
-## 1. Default Posture
-
-- Treat the SDK as owner-only: source packages, binaries, model resources,
-  compiled weights, private fixtures, and derived data do not leave the
-  owner-controlled environment.
-- Process images, frames, parameters, detection support, and effects locally.
-- Do not upload or persist source image/frame bytes, mapped landmarks, region maps, pupils,
-  teeth/eye geometry, or private fixture locations.
-- Keep raw/derived support request-local, package-only, non-Codable, and absent
-  from public diagnostics, logs, metrics, files, and network payloads.
-- Validate every caller/resource/archive input before expensive work or mutation.
-- Expose only typed redacted errors, fixed warning reasons, and aggregate metrics.
-
-Any network, cloud, telemetry, external model/resource, account, license, or
-distribution behavior is outside the current contract and requires an
-explicitly authorized new security and license review before use. Any internal
-commercial use must be explicitly covered by the admitted actual-use license;
-research-only data and derived models cannot supply that permission.
-
-## 2. Active Trust Boundaries
-
-| Boundary | Required checks |
+## Current trust boundary
+
+The SDK-only SwiftPM repository operates inside the owner's controlled local
+environment. Swift `public` permits local hosts to call the facade; source,
+binaries, model/weights, private fixtures and derived data are not distributed.
+No telemetry, upload, remote resource replacement or third-party delivery path
+is authorized. A future distribution/dependency/model scope needs explicit
+license, privacy and product review first. Actual-use rights matter even for
+owner-only use; research-only data and derived models stay in a noncommercial lane.
+
+| Boundary | Enforced ownership |
 | --- | --- |
-| Host → public SDK | parameter finiteness/ranges, explicit metadata, supported format/color, finite dimensions, byte/pixel ceilings |
-| Preset/resource ID → catalog | schema/version, conservative identifier, bundle membership, typed redacted failure |
-| Vision → effects | bounded finite topology, request-local ownership, per-region fail-closed behavior |
-| Local retouch → output | canonical opaque sRGB input, original-pixel composition, hard ownership, collision-to-source, checked budgets |
-| Private fixture → opt-in test | ignored local bundle, rights/manifest validation, fixed aggregate result, no durable locator/media |
-| Archive artifact → historical extraction | exact artifact/digest, safe entry path, manifest/content equality, new temporary destination |
-| CLI input/output/report → executable boundary | existing regular directories, supported image decode, duplicate-stem rejection, atomic writes, reopen/dimension validation, bounded public identities only |
-| Child test process → gate | bounded one-child output reduced to fixed aggregate pass/fail; raw output is not durable authority |
-| Generated CPU oracle → gate | regular in-tree Swift sources, in-memory fixtures, no media/location/private diagnostics, CPU-only tokens, bounded focused execution |
-| Automated image input/output oracle → milestone | generated in-memory or rights-approved ignored-local input, actual pixel/metadata assertions, temporary output, aggregate-only durable result; no physical-device dependency |
-| Public generic result → concurrency boundary | `BeautyResult` is `Sendable` only when `Output: Sendable`; public field-preserving transfer is tested, while unconditional generic sendability is rejected by the boundary mutation self-test |
-| Suspended upper-eyelid explicit intent → retained experimental mechanics | positive finite scalar only; selected request-local observation; per-eye brow/eye envelope; source-derived relief approval; bounded channel deltas; immutable-source composition; no model/network/persistent anatomy |
-
-## 3. Archive Entry and Extraction Safety
-
-The exact retained artifacts live under `archives/legacy-ui/`. Verification must
-fail closed when any ZIP, manifest, digest record, entry, or extraction differs.
-
-Required invariants:
-
-- only `BeautyDemo-v1.16` and `meituxiuxiu-v1.16` bundles are accepted;
-- archive records use lowercase 64-hex SHA-256 bound to the exact ZIP filename;
-- independent code-owned anchors pin both ZIP and manifest digests, exact
-  inventories/counts, compressed and uncompressed totals, per-entry maxima, and
-  compression-ratio ceilings; adjacent mutable records cannot re-authorize drift;
-- entry names use forward-slash relative paths rooted under the exact source
-  name, contain no absolute path, `.`/`..`, empty component, backslash, or NUL;
-- entries are sorted, unique, file-only, normalized, and equal to their manifest;
-- every extracted byte count and SHA-256 equals the manifest;
-- decompression starts only after all archive-wide metadata/resource bounds pass,
-  and each entry streams through bounded hashing into a newly created temporary
-  directory without creating a symlink;
-- review restoration never targets the repository or an existing directory.
-
-Do not trust a general archive extractor before these checks. The Python verifier
-performs entry validation before writing each extracted file and then independently
-walks the extraction for exact equality.
-
-## 4. Digest-Bound Deletion
-
-The original-source retirement contract permits only the two exact top-level
-non-symlink directories and only after fresh verification/reproduction.
-
-- approval binds both exact source names to their current verified ZIP digests;
-- any pre-existing tracked deletion fails before mutation; tracked deletions are
-  then precomputed and compared as an absolute exact allowlist;
-- SDK/docs/planning/private-fixture sentinels are fingerprinted before mutation;
-- both roots move to an outside-repository quarantine before the frozen bytes are
-  re-inventoried and reproduced against the pinned manifests/ZIP digests;
-- deletion-set and sentinel postconditions are checked before quarantine removal;
-- any pre-final failure restores both roots in reverse order;
-- no glob, unresolved environment variable, broad recursive target, or partial
-  single-root approval may authorize deletion.
-
-The completed deletion transaction is historical. Running retirement again when
-the roots are absent must fail; recovery uses the retained archives, not a second
-destructive transaction.
-
-## 5. Recovery and Historical Access
-
-Before recovery, run the verifier, create a fresh private parent, and let the
-same tool restore the already validated snapshots:
-
-```bash
-python3 scripts/archive-legacy-ui.py verify --output archives/legacy-ui
-restore_parent="$(mktemp -d "${TMPDIR:-/tmp}/beauty-legacy-ui-restore.XXXXXX")"
-python3 scripts/archive-legacy-ui.py restore --output archives/legacy-ui \
-  --destination "${restore_parent}/legacy-ui"
-```
-
-Restore only into a new temporary directory outside the repository. After review,
-delete that temporary copy through an explicitly scoped local operation. Never
-copy either root back into the repository; the post-archive scanner treats any
-restoration as a boundary violation.
-
-If an archive is corrupt, missing, symlinked, or digest-mismatched:
-
-1. stop without extraction or mutation;
-2. preserve the active SDK tree unchanged;
-3. recover the exact committed archive artifact from trusted Git history;
-4. rerun full verification; and
-5. proceed only after both bundles pass.
-
-Do not recreate a historical archive from memory or substitute a similarly named
-artifact.
-
-## 6. SDK Input and Resource Validation
-
-- Public dimensions must be positive, finite, integral where required, and at or
-  below configured ceilings before allocation/detection/render work.
-- Unknown/non-output-capable/extended-range color and transparent local-retouch
-  input fail through existing payload-free typed errors.
-- Public numeric parameters normalize deterministically; non-finite values become
-  documented no-op values before safety caps.
-- Resource IDs are logical identifiers, never arbitrary paths.
-- External packages/downloads remain disabled until type/size/path/integrity/
-  cache/licensing/privacy behavior is explicitly designed.
-- The retained shader file is byte-pinned; v1.16 rejects modification, additional
-  shader sources, or public/backend drift.
-
-## 7. Local-Retouch Privacy and Safety
-
-- Canonical input, Vision support, provider masks/proposals, and composition owner
-  remain within one request.
-- Missing/malformed/closed/occluded/low-confidence support fails per smallest
-  region without stale, mirrored, cached, or proxy recovery.
-- Accepted edits derive from original canonical pixels and hard-reclipped masks;
-  unexpected overlap preserves source.
-- Teeth coverage remains fixed to its qualified inner aperture. Sclera work
-  preserves iris, pupil, highlight, lash/lid, skin, caruncle, exterior, alpha,
-  and colored-interior protections.
-- Suspended `去脂` retains explicit compatibility only through
-  `upperEyelidFullnessReduction`; default renderer discovery/batch omits it.
-  It cannot alias eye, brow, smoothing, eye-bag or dark-circle behavior.
-  Its brightness-proxy approval, experimental names and retained safety tests
-  are not tissue/shape truth or natural-image efficacy claims.
-- Phase 76 support remains package-only and request-local. A mapped eye envelope
-  can constrain ownership but cannot authorize fullness; an injected semantic
-  owner must approve each eye's image-space edit independently. Missing, malformed, ambiguous,
-  closed, blinking, occluded, non-finite, duplicate, out-of-bounds, or
-  outside-envelope support returns a typed source-exact no-op.
-- The single-observation support handoff calls Vision once and releases support
-  after the request. Descriptions and mirrors contain only aggregate status,
-  confidence, counts, and reason codes; raw support arrays, coordinates,
-  landmarks, masks, pixels, and private locators never enter durable evidence.
-- The retained editor accepts only independently approved per-eye support and
-  clamps every source-safe channel delta before proposal emission. It never
-  writes raw pixels or masks to diagnostics, and rejected eyes remain
-  source-exact without affecting an eligible peer.
-- Final composition is still owned by the existing composition owner: exterior
-  and protected bytes, alpha, metadata, and overlap-to-source collision policy
-  are enforced there. The editor cannot bypass that owner; the public facade
-  may invoke it only through this existing owner chain.
-- Fixture masks must match finite zero-origin dimensions/orientation before
-  measurement. The historical Phase 78 evaluator classified its own
-  synthetic/AI inputs as mechanics-only; new authorized generated portraits
-  may establish owner-local effect evidence under the current policy.
-- Phase 78 reuses the Phase 75 child-process evaluator and exports only fixed
-  aggregate hashes, opaque IDs, counts, normalized reasons, and a decision.
-  Missing or metadata-only evidence cannot authorize tuning or promotion.
-- Optional additive-map candidates require separate approved model, data, and
-  redistribution rights plus bounded output and identical safety gates. No raw
-  candidate output, review prose, private locator, or face-derived artifact is
-  persisted, and the current comparator disposition is `not-admitted`.
-- Historically, Phase 79 consumed the failed decision as an authorization boundary:
-  internal support/editor symbols cannot be reached through public fields,
-  renderer cases, resources, package dependencies, or Testing SPI. The exact
-  61/5/74 absence was checked at that closeout. v1.21 supersedes only the
-  current public-surface decision and does not rewrite that archive.
-- The current historical-binding successor accepts only an explicit repository root
-  and resolves each Phase 75/78/79 artifact from exactly one active or archived
-  v1.18 location. Missing, duplicate, non-file, unreadable, and symlink inputs
-  fail closed with normalized reason identifiers; caller cwd cannot redirect
-  artifact ownership. Self/mutation diagnostics persist no child transcript,
-  repository/private locator, raw pixel, mask, landmark, support, or review
-  prose.
-
-The mandatory CPU reference oracle is generated entirely in Swift memory from
-small RGBA8/sRGB fixtures. Its static preflight rejects media reads, tracked
-output writes, absolute/private locators, raw diagnostic printing, and
-Metal/GPU/backend scope drift. Rights-approved portrait and native-Vision
-tests retain their existing environment guards and remain optional evidence;
-their skips cannot satisfy or be counted as generated-oracle success.
-
-The public `BeautyResultConcurrencyTests` result is aggregate-only evidence:
-3 tests pass with zero failures, including a complete async transfer of a
-sendable payload and all public result fields. Non-sendable payloads remain
-outside the positive contract; the boundary self-test mutates a temporary
-fixture to the historical unconditional declaration and requires rejection.
-No payload, support, pixel, mask, landmark, fixture location, or child output
-is persisted.
-
-Physical-iPhone testing is optional post-SDK user evaluation, not a mandatory
-trust boundary or milestone gate. Any later user feedback must be reduced to a
-sanitized issue description before durable recording; do not persist submitted
-device photos, raw outputs, masks, landmarks, EXIF/location data, private paths,
-or unredacted diagnostic payloads. Prefer a generated minimal reproduction; if
-an authorized real fixture is necessary, keep it ignored and local under the
-existing manifest/opt-in contract.
-
-## 8. Logging and Evidence
-
-Allowed durable data: fixed error/reason codes, feature/category names, counts,
-timings, bounded numeric aggregates, and relative public input/case/output IDs
-where the owning CLI/evidence contract permits them. The versioned renderer
-report is allowlisted to schema/version, CPU token, case/input/output identities,
-unit status/failure code, and reconciled counts.
-
-Forbidden durable data: source image or region bytes, absolute locations/locators,
-coordinates, landmark collections, pupil/teeth/vein geometry, rights/reviewer identity,
-raw framework errors, child output, generated media, and any private geometry,
-pixels, private test metadata, or environment value. CLI paths and child
-output are untrusted and remain temporary; relative public identities are the
-only path-like values permitted in the durable report. The executable-local
-render/encode failure seam is test-only machinery and must not become a flag,
-public SDK API, help text, diagnostic payload, or report field.
-
-The release default remains redacted and local; no data collection or upload is
-claimed. Reassess privacy-manifest needs before adding required-reason APIs,
-third-party dependencies, collection, or distribution scope.
-
-## 9. Required Gates
-
-```bash
-python3 scripts/archive-legacy-ui.py verify --output archives/legacy-ui
-bash scripts/check-sdk-only-boundary.sh --post-archive
-bash scripts/check-swiftpm-consumer.sh
-bash scripts/check-cpu-reference-oracles.sh
-bash scripts/run-no-skip-swiftpm.sh
-```
-
-These gates authorize SDK-core repository correctness only. They do not authorize
-device, commercial, packaging, shipping, launch, or release claims. Their
-completion also does not wait for physical-iPhone access or post-SDK user
-feedback; that evidence is supplemental unless a later user decision explicitly
-creates a device-focused scope.
-
-## Phase 89 Semantic Validation Trust Boundary
-
-The semantic manifest and every `--input`, `--output`, and `--report` value are
-untrusted. Before mutation, the runner requires the exact live/selected/semantic
-inventory `75/65/8`, schema `beauty.face-feature-batch-report.semantic.1`, and
-regular non-symlink descendant paths with no input/output/report overlap.
-Unknown or duplicate inventory, unsafe path components, stale destinations,
-decode/dimension failures, or incomplete renderer output fail closed without
-borrowing a prior result.
-
-Decoded pixels and target, sibling, outside, ROI/support, protection, and
-watermark geometry are request-local. The durable allowlist contains only the
-aggregate `stableSemanticPayload`, fixed schema/contract and CPU identifiers,
-opaque fixture IDs/counts, fixed case/direction identities and reasons, bounded
-source/neutral/target/outside/protected metrics, verdicts, and digests. Source
-paths or locators, raw media or pixels, masks, landmarks, pupil/anatomy values,
-private geometry or metadata, raw framework errors, and child transcripts are
-forbidden. Parameter watermarks remain only in ignored first-attempt PNGs and
-are excluded from measurement.
-
-Two fresh attempts must complete the same 75/65/8 contract and reconcile the
-same completion class, canonical `stableSemanticPayload` bytes, and digests
-before atomic publication. The retained first attempt contains only ignored
-watermarked PNGs. Successful semantic publication requires verified cleanup
-of repeat media, renderer/comparator reports, workspaces, and transcripts. A
-`cleanup_failure` publishes no creditable semantic result and means removal
-could not be verified; the owner must contain and remove any remaining
-artifacts locally. Complete deterministic failure is
-`semantic_fail` at exit 3 and remains trustworthy aggregate measurement. Any
-admission, render, output, report, stale-state, or determinism fault is the
-separate exit `2` `infrastructure_failure`. The report destination is
-admitted independently before input/output admission: when it is structurally
-safe and distinct, descriptor-relative atomic replacement publishes a
-sanitized current envelope so no stale prior report remains creditable. An
-unsafe or aliased report path is never mutated; exit 2 then invalidates any
-pre-existing document for the invocation.
-
-Metric admission is all-or-nothing. A source, neutral, candidate, or sibling
-metric failure cannot be serialized as a completed direction with the original
-fixture count. In particular, gaze remains non-creditable because this
-milestone has no independently admitted request-local pupil/own-eye anatomy;
-dark pixels, lashes, shadows, and foreign patches are forbidden proxies. The
-fixed `unsupported_metric` category stays transient and reaches only the
-sanitized infrastructure envelope—no anatomy or abstained-row detail persists.
-
-At Phase 89 close, this owner-local boundary preserved the then-current 62/5/75 public inventory,
-still-image facades, CPU/GPU policy, and local-retouch exclusions. It grants no
-device, population, naturalness, commercial, packaging, shipping, launch,
-release-readiness, or distribution authority.
-
-## 10. Phase 70 Backend Privacy Contract
-
-`BeautyBackendRequest` is an internal, non-Codable trust boundary. Selected
-support, canonical still-image storage, and composition state are request-local
-and released with the synchronous execution. `BeautyBackendResult` admits only
-the matching pixel-buffer or `CIImage` output plus `BeautyBackendDiagnostics`;
-diagnostics are limited to dimensions, alpha/extent flags, and bounded
-unit/failure/collision/change counts. They contain no support payload, geometry,
-landmark values, raster bytes, path-like data, or framework error detail.
-
-The contract keeps `.cpu` as the only Phase-70 policy and does not add a public
-backend selector, parameter/preset key, Metal import, or new algorithm. CPU is
-the current reference. Metal resources/passes and public `.cpu`/`.gpu`
-configuration were later-phase scope. At Phase 70 the 61-field parameters, five
-neutral presets, 74-case renderer, and archive-only UI/Demo boundary remained
-unchanged; at v1.21 close the surface was 62/5/75.
-
-## Phase 71 Metal Runtime Trust and Privacy Contract
-
-The package-internal `BeautyMetalRuntime` is owned by `BeautyRender`, while
-`BeautyEffects` owns the package-only `BeautyMetalBackend` executor. The
-runtime validates dimensions and RGBA8 byte counts before allocation, creates
-bounded device/queue/pipeline/texture/buffer/command resources, encodes the
-retained identity transaction, synchronizes and inspects terminal status,
-materializes the matching output, and releases every request resource on both
-success and error. No host Metal device is an explicit `.metalUnavailable`
-terminal outcome; it cannot be credited as GPU success, CPU fallback, or retry.
-
-Only aggregate status and bounded diagnostics are allowed across this trust
-boundary. Support, raster, texture, framework, geometry, and path details stay
-request-local and are never persisted. The runtime has no application, UI, or
-capture lifecycle dependency, and `BeautySDK` exposes no public backend
-selector in Phase 71. The existing dependency direction, 61-field parameter
-model, five presets, 74 renderer cases, archive boundary, and local-retouch
-privacy rules remain authoritative.
-
-The static/runtime preflight is itself bounded and emits fixed aggregate
-markers, including separate `metal_available` and `metal_unavailable` values,
-zero failure/skip accounting, and no child output or framework error detail.
-Phase 72 owns feature passes, Phase 73 owns public `.cpu`/`.gpu` configuration
-and typed availability policy, and Phase 74 owns generated parity/no-skip
-closeout. This evidence makes no simulator/physical-device, performance,
-commercial, packaging, shipping, launch, or release-readiness claim.
-
-## Phase 72 Local-Retouch Metal Trust Boundary
-
-`BeautyLocalRetouchCompositionOwner` is the sole trust boundary for teeth and
-sclera proposals, hard envelopes, duplicate/collision handling, and original
-source binding. The Metal backend accepts only its canonical RGBA8 carrier and
-six bounded counters. Those carrier bytes are already composed on CPU; the
-composed-retouch kernel is an identity-preserving
-boundary pass; it cannot reconstruct support or inspect provider units. A
-terminal Metal failure publishes no partial carrier and leaves no request
-resources active. Generated in-memory coverage verifies protected bytes,
-alpha, containment, collision-to-source, smallest-unit isolation, and mixed
-pass ordering without persistent private payloads. Public `.cpu`/`.gpu`
-configuration and broad parity claims remain outside this phase.
-
-## Phase 73 Backend Configuration Trust Boundary
-
-`BeautyConfiguration.renderBackend` is the sole public backend-policy input and
-contains exactly `.cpu` or `.gpu`; it is not part of `BeautyParameters` or
-preset data. New and legacy/missing-key configurations default to `.cpu`.
-`BeautySDK.BeautyBackendFactory` is the package-owned immutable selection point:
-`.cpu` preserves the permanent reference, while `.gpu` constructs the package
-Metal backend. A missing Metal capability returns terminal
-`.metalUnavailable`; no CPU fallback, retry, or success classification is
-allowed. Package-only injection is test-only and cannot become a host escape
-hatch.
-
-Historical durable Phase 73 evidence is restricted to aggregate focused/full counts and
-availability classifications: configuration `16/0/0`, runtime `34/0/0`, full
-`753/0/0`, eight opt-ins exactly once, `metal_available=1`, and
-`metal_unavailable=0`. No pixels, masks, landmarks, framework objects, paths,
-or private fixture locators are persisted. Phase 74 parity remains separate;
-UI/Demo, simulator/device, performance, commercial, packaging, shipping,
-launch, and release-readiness claims remain excluded.
-
-## Phase 74 Historical Generated Parity Trust Boundary
-
-Generated in-memory RGBA8 inputs cross into CPU and Metal only through the
-validated backend request. The parity suites retain aggregate kind, dimensions,
-alpha/extent flags, named color metadata, changed counts, and bounded deltas;
-raw pixels, masks, landmarks, support, paths, and fixture locators remain
-request-local. Mutation checks reject removal of CPU comparison, weakened
-tolerances, omitted safety suites, raw file output, and availability merging.
-
-The archived gate records focused `12/0/0`, full `765/0/0`, eight opt-ins
-exactly once, and separate `metal_available=1` / `metal_unavailable=0`.
-`.metalUnavailable` is terminal and never GPU parity success or CPU fallback.
-The repaired current gate reports `focused_tests=13` / `parity_executed=1`
-only when Metal is available; unavailable-host typed coverage reports
-`parity_executed=0`. The bounded current result does not authorize transparent
-input, end-to-end GPU local retouch, shared-instance parallel safety, or broad
-release equivalence. UI/Demo,
-simulator/device, performance, commercial, packaging, shipping, launch, and
-release-readiness claims remain outside the trust boundary.
-
-## Retained Upper-Eyelid Support and Relief Trust Boundary
-
-The same-side brow-to-lid envelope rejects missing/malformed brows, implausible
-or crossed gaps, insufficient horizontal overlap, invalid dimensions, duplicate
-pixels and out-of-envelope support. Every accepted pixel carries request-local
-Q16 ownership no greater than its elliptical feather ceiling. An independent
-per-eye owner remains mandatory; landmark placement alone cannot approve an edit.
-
-The retained analyzer's luminance samples, integral arrays, fitted plane and
-scores remain package-only, non-Codable and request-local. The editor may read
-complete 3×3 source neighborhoods, including protected neighbors, to guide
-corrections; those reads do not authorize proposals outside the approved eye.
-No derived field is cached, logged, exported or sent to a model/network service.
-The current brightness proxy can admit only within the existing envelope and
-pose/occlusion guards; it cannot infer fat, expand support, move geometry or
-authorize the peer eye. Low scores and malformed support fail closed.
-
-`BeautyLocalRetouchCompositionOwner` still owns exterior/protected bytes,
-alpha/metadata, foreign or duplicate units and collision-to-source behavior.
-Historical candidate-v3/v4 formulas and failed evidence are summarized in the
-[technical history](docs/history/upper-eyelid-technical-history-2026-10-01.md).
-Their old public-absence statements describe archived milestones; the explicit
-compatibility API exists and remains subject to these trust boundaries.
-
-## Inactive Upper-Eyelid Prediction Trust Boundary
-
-The 2026-08-25 learned proposal did not create a model resource, Core ML route,
-training pipeline or external access. The package-only prediction validator is
-retained without a registered predictor; the explicit compatibility facade
-uses the separate no-model implementation. The inactive validator checks
-canonical bytes, dimensions, containment, unique support and protected/support disjointness
-before any injected predictor call, then checks side, finite scores, exact
-sample ownership, alpha ceiling, boundary zero, bounded/smooth flow and tone,
-and positive local Jacobian. Invalid or absent predictions return aggregate
-rejection and no proposal. Raw tensors, crops, geometry and pixels remain
-request-local and absent from public/Codable diagnostics.
-
-There is no current task to obtain portraits, labels, checkpoints or weights.
-The historical learned-only recommendation and qualification workflow are not
-current authority; failed candidates do not prove every no-model method
-impossible or authorize a replacement model. An explicit owner request would
-need a new scoped design and actual-use rights review. Existing owner-local
-restrictions still prohibit external transfer and prevent research-only terms
-from being treated as general commercial permission. Historical source material
-is linked from the [technical history](docs/history/upper-eyelid-technical-history-2026-10-01.md).
-
-## Phase 90 Chin Repair and Contour Deferral Trust Boundary
-
-Promotion from the terminal FACE-01 summary into durable owner documents is an
-untrusted claim boundary. Before synchronization, the summary must be a regular
-non-symlink file with `status: completed-deferred`,
-`promotion_eligible: false`, and no completed requirement. Revision 22 may
-contribute only the aggregate diagnostic classification
-`prior_stop_not_reproduced`, its single request-local reconstruction, matching
-admission/final counts, zero render/oracle invocations, byte-exact rollback,
-temporary-symbol absence, and rollback-verifier result. None may be promoted
-to semantic, repair, effectiveness, or GREEN authority.
-
-FACE-02 consumes contours, the interpolated median, control points, and source
-pixels only within the current request. Bilateral ownership, X-only bounded
-movement, protected pixels, failure isolation, and immutable input ownership
-remain enforced by the existing provider and public-facade tests. Durable
-evidence is aggregate only. Raw anatomy, contours, medians, coordinates,
-landmarks, masks, pixels, private fixture locators, generated media, and child
-transcripts must not enter owner documents, summaries, diagnostics, or logs.
-
-At Phase 90 close, the trust surface had exactly 62 stored parameter fields, five presets, 75
-renderer cases, `BeautyEngine.processResult(image:metadata:parameters:)`, and
-`BeautyEngine.process(image:orientation:parameters:)`. CPU remains the
-reference; selectable GPU either succeeds through retained `Warp.metal` or
-terminates with typed `.metalUnavailable` without fallback. Phase 95 owns the
-direct one-step-above-neutral, cap-adjacent, quantization-threshold-adjacent,
-and tie tests, plus the clean 65-output seven-effective-plus-one-deferred
-publication and complete no-skip closeout.
-
-Package-host automation remains owner-local and SDK-only. It authorizes no
-device or population qualification, commercial quality, packaging, shipping,
-launch, release readiness, or distribution. Any future FACE-01 work belongs to
-separately authorized FUTURE-04 and cannot inherit revision-22 diagnostic
-credit.
-
-## Phase 91 Independent Gaze Correction Trust Boundary
-
-Observed eye contours, centers, pupils, clearances, control points, masks, and
-source/output pixels are request-local or test-local values. They are neither
-Codable nor public diagnostics and must not enter summaries, logs, renderer
-status, retained reports, paths, or transcripts. A valid eye cannot borrow the
-peer's support, and observed-but-invalid support never falls back to legacy or
-proxy anatomy.
-
-The durable evidence allowlist is exactly six bounded aggregate meanings:
-eligible, corrected, and rejected counts; all-reduced; abstained; and minimum-
-reduction Q16. The renderer spelling is exactly `eligibleCount`,
-`correctedCount`, `rejectedCount`, `allReduced`, `abstained`, and
-`minimumReductionQ16`. The values are admitted only on the matching successful
-CPU gaze unit after schema, input, case, output, backend, uniqueness, integral
-range, and algebra checks. Missing/extra/duplicate/fractional/nonfinite,
-contradictory, wrong-identity, replayed, stale, aliased, proxy-only, or sibling
-evidence is rejected rather than repaired.
-
-Direction credit remains conjoined with actual-pixel target, sibling, locality,
-contour, brow, background, and watermark gates. Both attempt report trees stay
-under verified no-follow ownership until comparison, then are removed and
-verified absent before publication. The boundary suite passed with
-`report_cleanup=6`; any residue or deletion uncertainty is a sanitized
-infrastructure failure with no semantic credit.
-
-All Plans 91-01 through 91-03 used implementation attempt 1. Comparator
-self-test passed 576 mutations, backend-neutral privacy/inventory gates passed,
-both archive hashes verified, and the post-archive SDK-only boundary passed.
-The 62/5/75 surface, public facades, CPU/GPU policy, and retained `Warp.metal`
-are unchanged. Phase 95 alone owns authorized portraits, clean 65-output
-publication, and the full no-skip closeout; Phase 91 grants no device,
-commercial, release, or distribution authority.
-
-## Phase 93 Evidence Admission and Privacy Boundary
-
-The owner-local trust boundary is request-local support to field emission and
-measured receipts to claims. Current independent code review and
-[93-CHECKS.json](.planning/phases/93-distinct-nose-bridge-and-root-repairs/93-CHECKS.json)
-bind the exact candidate, frozen tests and validator identities. Regular,
-non-symlink path admission, immutable hashes, bounded child capture, exact
-method discovery, fail-closed RED classification and aggregate-only export
-remain required. Raw support, pixels, masks, private locators and transcripts
-are not durable evidence. No network, authentication, model or service boundary
-was introduced.
-
-The original gate remains `873dba5a...`; its bindings are unchanged. The three
-reviewed entrypoints form the recovery chain:
-`check-phase93-attempt2.py` (`4b07195c...`),
-`check-phase93-timeout-recovery.py` (`eb7ccc0f...`), and
-`check-phase93-regression-closeout.py` (`7ff1598b...`).
-CHECKS plus `93-TIMEOUT-AMENDMENT.json` and
-`93-REGRESSION-DISPOSITION.json` retain full identities and receipt provenance.
-Compatibility/check receipts 53/54 belong to the timeout runner; regression
-56 belongs to the new closeout runner. Reuse of completed receipts is explicit,
-not a claimed rerun or retroactive rebinding.
-
-Two substantive candidates were consumed. Candidate-1 failure, timeout 39,
-rollback 40 and supplemental scope error 55 remain immutable. The last
-disposition admits only that exact extra selection error; new failures still
-block acceptance and support owned rollback. Its fresh 106/0/0 deterministic
-regression grants no credit to excluded portrait tests. Separate core,
-compatibility and script gates passed 36/0/0, 229/0/0 and 8/0/0.
-
-Independent goal verification passed. Phase 95 owns private portraits,
-final 65-output evidence and full no-skip closeout. No device, commercial or
-external-distribution authority is conferred.
-
-Independent goal verdict: [93-VERIFICATION.md](.planning/phases/93-distinct-nose-bridge-and-root-repairs/93-VERIFICATION.md), 18/18 must-haves and zero blockers.
-
-## Phase94 Negative Mouth-Width Evidence Boundary
-
-MOUTH-01 acceptance is bound to `94-REMAINING-CHECKS.json` SHA256
-`fa696dba3273f248924bdd34744088979bae1e23a35a8d5d433e1c379a8f3ac4`.
-Historical prerequisites remain immutable at their original provider identity.
-The current exception admits only the reviewed private negative provider
-addition through a counted begin, exact compile receipt, independent review,
-seal and fresh41-method acceptance. All other pinned code/tests remain exact.
-
-The initial runner and seed are preserved under the separate independently
-reviewed authoring disposition. Strict event replay validates writes before
-append; exclusive receipts publish atomically and orphaned/interrupted receipts
-cannot grant completion. Current inputs, history and reviews are checked around
-each bounded child. Native output is capped at8MiB in memory, with owned-process
-cleanup; only fixed markers, reconciled counts, bounded aggregates and digests
-enter durable evidence. Generated pixels, masks, geometry, private locators
-and native transcripts remain request-local and are not persisted.
-
-Both original defects and the failed policyA attempt/rollback remain recorded;
-policyB is attempt2/2, with no hidden retry or threshold edit. No external
-dependency installation, new public API, service, model/data, shader/backend,
-UI or redistribution scope was introduced. Phase95 private portraits/final65/
-full no-skip and device/commercial/release qualification remain separate.
-
-## v1.23 FACE-01 Raster and Evidence Boundary
-
-The contour refiner reads only the current request's canonical RGBA8 bytes
-and observed support. It produces no persistent mask, contour, coordinate,
-pixel, or fixture locator. It copies source alpha and edits RGB only when the
-destination and both interpolation neighbors are fully opaque; invalid
-dimensions, overflow, nonfinite geometry, missing support, and out-of-bounds
-samples fail closed. The two lateral bands exclude the central chin; field
-emission is checked before raster work. The owned image copy is released with
-the request and does not change public diagnostics.
-The bounded strong-edge scan reads only four horizontal source pairs per row
-near each observed lateral crossing; it retains no edge map or pixel-derived
-state after the request.
-
-Current portrait evidence remains aggregate-only. The historical Phase 95
-FACE-01 fixed ROIs cannot be treated as anatomical protection proof for a
-natural portrait; the source-admitted exploratory ROI was not promoted into
-the signed comparator. No raw pixels, coordinates, private paths, or child
-transcripts enter durable evidence. The existing owner-local, non-distributed
-boundary remains in force.
+| Caller image/metadata/parameters → SDK | Dimension/format/limit/resource admission and deterministic normalization before dependent work. |
+| Vision → providers | Package-only request-local validated support; missing or malformed anatomy fails locally. |
+| Provider proposals → output | Immutable original pixels, hard support containment, protected bytes and collision-to-source composition. |
+| SDK → host diagnostics | Typed/redacted errors, fixed events and aggregate metrics; no raw support payloads. |
+| CLI/process → evidence | Validated output identities/counts, bounded temporary capture and allowlisted aggregates. |
+| Historical ZIP → temporary restoration | Independently pinned hashes/manifests, safe streamed extraction and no active-source restoration. |
+
+## Input and resource admission
+
+Public inputs require finite positive dimensions and checked byte/pixel
+multiplication. `maximumInputPixelCount` defaults/caps at 50,000,000;
+encoded `Data` additionally obeys its byte bound (32 MiB default), one-frame
+admission and declared-dimension checks before decode. Active texture has the
+smaller 8,388,608-pixel ceiling. Unsupported formats/color and transparent
+local-retouch inputs fail through typed errors. Selected GPU stills retain
+opaque bounded-RGB admission. See [DESIGN.md](DESIGN.md) for route-specific policy.
+
+Resource IDs are validated logical identifiers, never arbitrary caller paths.
+Only bundled manifest/presets/LUTs and retained shader resources are admitted.
+The shader bytes, package/backend API boundaries and imports are checked by
+`scripts/check-sdk-only-boundary.sh`. External downloads, predictors, training,
+conversion and inferred license coverage are not enabled by dormant types or
+historical proposals. No registered upper-eyelid model exists.
+
+`BeautyTextureExclusionMask` validates dimensions, checked byte count and binary
+0/255 values. The engine rechecks its canonical grid even with neutral texture.
+It is owner-supplied information that excludes smoothing/sharpening only, not
+automatic skin/material/feature recognition or authority to change other effects.
+Its bytes are absent from results, Codable diagnostics and custom reflection;
+width/height descriptions are bounded aggregates.
+
+## Request-local geometry and retouch
+
+Landmarks, pupils, contours, source-raster boundaries, masks, integral arrays,
+scores, predictor tensors and pixels remain package-only and request-local.
+One canonical opaque retouch carrier, one detection/mapping handoff and one
+original-source composition owner constrain the request. A valid eye/feature
+cannot borrow invalid peer support. Missing, low-confidence, blinking/occluded,
+out-of-envelope, duplicate or nonfinite support fails closed per smallest unit.
+Reads of protected neighboring pixels guide an edit but never authorize
+proposals on those pixels. Composition enforces exterior/protected RGB, source
+alpha/metadata, unit ownership/capacity and unexpected-overlap source identity.
+
+Still-image source refiners reject ambiguous hair/skin/lip/head/submental
+support instead of reviving the legacy proxy. Geometry overflow changes only
+the explicitly reported pre-dispatch capacity route; no points are discarded,
+no second detection runs and GPU unavailable/runtime failure never retries.
+The capacity metric contains no coordinates.
+
+Upper-eyelid compatibility remains `suspended` and default-hidden. Its bounded
+brightness analyzer is not fat/shape truth or natural-effect approval. The
+inactive prediction validator has no predictor; invalid/absent predictions
+grant no proposal. Failed experiments authorize neither replacement-model
+downloads nor training. v1.25 is
+[closed with unmet objectives](docs/RETOUCH_FINAL_DISPOSITION_2026-10-03.md);
+historical provisional acceptance does not override that disposition.
+
+Known coarse-lip/object automatic protection failures remain public limitations.
+Correct host object + complete-lip union masks protect their specified texture
+pixels but add no automatic recognition credit. Generated inputs can qualify
+the particular effect/protection contract they actually pass under
+[IMAGE_EFFECT_ACCEPTANCE.md](docs/IMAGE_EFFECT_ACCEPTANCE.md).
+
+## Diagnostics and durable evidence
+
+Allowed durable data is limited to fixed error/reason/event codes, opaque or
+relative public case/input/output IDs where allowed, counts, hashes, bounded
+timings and approved numeric aggregates. Result diagnostics contain closed
+codes/levels; enabling debug/performance does not create a storage or OS-log sink.
+Error rendering/redaction is owned by `BeautyError`, not free-form framework output.
+
+Raw pixels, masks, coordinates, landmarks, pupil/tooth/vein geometry, EXIF/
+location, private fixture locators, reviewer identity/prose and child transcripts
+must not enter tracked evidence. CLI reports reconcile identities and counts;
+temporary input/output paths and raw child output are not report fields.
+Renderer failure injection stays executable-internal test machinery.
+Bounded semantic aggregates never substitute for actual target/protection pixels.
+Frozen evidence identities, failures and rejected candidates must not be
+rebound, retrospectively weakened or relabeled as current success.
+
+Local authorized portrait/bundle opt-ins validate actual assets and output;
+missing rights, masks, polarity or admissible inputs fail the complete gate.
+No media becomes tracked merely because the source is generated. Optional
+device feedback is sanitized into an issue; photos, landmarks and raw reports
+stay local/ignored. Prefer a generated minimal reproduction for a reproducible defect.
+No device/commercial/distribution claim is granted by package-host automation.
+
+## Archive recovery and deletion
+
+[archives/legacy-ui/README.md](archives/legacy-ui/README.md) is the historical
+access contract. The verifier owns independent ZIP/manifest SHA-256, compressed
+size, exact 45/26 file inventories, per-entry and uncompressed/ratio limits.
+Entries must be sorted, unique safe files with matching path/size/content hashes,
+valid CRC and normalized metadata. Symlinks, traversal, absolute paths,
+special entries, duplicate names and unsafe compression are rejected.
+
+Verify before restore. Stream into a nonexistent child of a fresh private
+outside-repository temporary directory, with no-follow ownership and cleanup/
+rollback on failure. Never restore either retired UI tree over current source,
+use it as build input or add application artifacts to SDK targets. Historical
+archives and archived milestone evidence remain read-only.
+
+Deletion of retired source/caches requires the owning inventory/digest checks,
+confirmed purpose and absence of active use. `.build` contains frozen fixtures,
+sources and receipts; remove only confirmed regenerable compile/index/work
+copies, retaining historical evidence, ignored required assets and Serena state.
+Current documentation cleanup removes only identified obsolete material and
+preserves archive/frozen identities.
+
+## Example media retention
+
+[example-images/README.md](example-images/README.md) owns exact quotas and
+classification. Total storage is at most 128 MiB/160 images, single images
+16 MiB, inputs 16 images/32 MiB. Checks fail rather than automatically delete.
+Display previews are ignored JPEGs, at most 32 files, 512 KiB each and 1600 px
+long edge; they apply orientation/sRGB conversion and remove source metadata.
+Preview rewriting never touches original bytes, masks or fixed-hash inputs.
+Original-size validation outputs are disposable; compressed previews are not
+pixel-oracle input. Full system/Metal resource peaks are outside these quotas.
+
+Explicit cleanup refuses symlink/mount/special-file or tracked cache entries,
+checks current manifests, preserves inputs/current bundles/text/unknown files,
+and touches only registered regenerable outputs. These tools assume the
+owner's local filesystem; they are not a concurrent-filesystem security sandbox.
+
+## Verification and change routing
+
+Archive verification, boundary self-test/live scan and wrapper mutation checks
+are the narrow document/boundary gates. SDK code/contract changes run the
+owning public/target tests and the complete archive-first zero-failure/zero-skip
+gate described in [QUALITY_SCORE.md](QUALITY_SCORE.md). New data/model/resource
+or external access must update this trust contract and actual-use rights review
+before implementation. Separately authorized external host UI stays outside
+the repository under [FRONTEND.md](FRONTEND.md).
