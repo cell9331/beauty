@@ -42,7 +42,8 @@ enum BeautySkinTexturePipeline {
         to image: CIImage, plan: BeautyEffectPlan,
         renderQuality: BeautyRenderQuality = .balanced,
         faceBounds: CoordinateRect? = nil,
-        exclusionMask: BeautyTextureExclusionMask? = nil
+        exclusionMask: BeautyTextureExclusionMask? = nil,
+        denseSupport: BeautyDenseFaceSupport? = nil
     ) -> CIImage {
         guard isActive(plan), admits(faceBounds: faceBounds) else { return image }
         let extent = image.extent
@@ -55,10 +56,7 @@ enum BeautySkinTexturePipeline {
               pixelCount.partialValue <= BeautyTextureResourceBudget.maximumPixelCount
         else { return image }
         let colorSpace = image.colorSpace ?? CGColorSpace(name: CGColorSpace.sRGB)!
-        let context = CIContext(options: [
-            .workingColorSpace: colorSpace,
-            .outputColorSpace: colorSpace
-        ])
+        let context = BeautyImageContexts.context(for: colorSpace)
         var source = [UInt8](repeating: 0, count: width * height * 4)
         context.render(
             image, toBitmap: &source, rowBytes: width * 4, bounds: extent,
@@ -67,7 +65,7 @@ enum BeautySkinTexturePipeline {
         let result = applyRGBA(
             source, width: width, height: height, plan: plan,
             renderQuality: renderQuality, faceBounds: faceBounds,
-            exclusionMask: exclusionMask
+            exclusionMask: exclusionMask, denseSupport: denseSupport
         )
         let output = CIImage(
             bitmapData: Data(result), bytesPerRow: width * 4,
@@ -83,7 +81,8 @@ enum BeautySkinTexturePipeline {
         _ source: [UInt8], width: Int, height: Int, plan: BeautyEffectPlan,
         renderQuality: BeautyRenderQuality = .balanced,
         faceBounds: CoordinateRect? = nil,
-        exclusionMask: BeautyTextureExclusionMask? = nil
+        exclusionMask: BeautyTextureExclusionMask? = nil,
+        denseSupport: BeautyDenseFaceSupport? = nil
     ) -> [UInt8] {
         let weights: [Int]
         switch renderQuality {
@@ -105,10 +104,13 @@ enum BeautySkinTexturePipeline {
         let byteCount = pixelCount.partialValue.multipliedReportingOverflow(by: 4)
         guard !byteCount.overflow, source.count == byteCount.partialValue else { return source }
         let strengths = plan.effectiveStrengths
-        let gain = Double(strengths.skinSharpen) * 2.5 -
-            Double(strengths.skinSmoothing) * 1.5
-        guard gain != 0 else { return source }
-        let divisor = Double(weights.reduce(0, +) * weights.reduce(0, +))
+        let smoothing = min(0.95, Double(strengths.skinSmoothing) * 1.75)
+        let sharpening = Double(strengths.skinSharpen) * 2.5
+        // Bounded bilateral range weights; spatial weights and the hard RGB /
+        // alpha protection remain independent. This is not semantic skin ML.
+        let rangeWeights = (0...255).map { difference in
+            max(1, Int((256 / (1 + pow(Double(difference) / 64, 2))).rounded()))
+        }
         let centerX = (faceBounds.minX + faceBounds.width / 2) * Double(width) - 0.5
         let centerY = (faceBounds.minY + faceBounds.height / 2) * Double(height) - 0.5
         let radiusX = faceBounds.width * 0.43 * Double(width)
@@ -139,6 +141,8 @@ enum BeautySkinTexturePipeline {
                 let inMouthZone = Double(y) >= mouthMinimumY && Double(y) <= mouthMaximumY &&
                     Double(x) >= mouthMinimumX && Double(x) <= mouthMaximumX
                 guard !inEyeZone, !inMouthZone else { continue }
+                guard denseSupport?.admitsTexture(x: x, y: y, width: width, height: height, radius: radius) ?? true
+                else { continue }
                 let offset = (y * width + x) * 4
                 guard source[offset + 3] == 255 else { continue }
                 let red = Int(source[offset])
@@ -151,7 +155,9 @@ enum BeautySkinTexturePipeline {
                 guard red + 8 >= green, red + 8 >= blue,
                       red - green <= 80, red - blue <= 100
                 else { continue }
+                let centerLuminance = (77 * red + 150 * green + 29 * blue + 128) / 256
                 var weightedLuminance = 0
+                var weightTotal = 0
                 var protectedEdge = false
                 for dy in -radius...radius {
                     for dx in -radius...radius {
@@ -166,18 +172,32 @@ enum BeautySkinTexturePipeline {
                             protectedEdge = true
                             break
                         }
-                        let weight = weights[dy + radius] * weights[dx + radius]
+                        let spatialWeight = weights[dy + radius] * weights[dx + radius]
                         let luminance = (77 * neighborRed + 150 * neighborGreen +
                             29 * neighborBlue + 128) / 256
+                        let weight = spatialWeight * rangeWeights[abs(luminance - centerLuminance)]
                         weightedLuminance += weight * luminance
+                        weightTotal += weight
                     }
                     if protectedEdge { break }
                 }
                 guard !protectedEdge else { continue }
-                let centerLuminance = (77 * red + 150 * green + 29 * blue + 128) / 256
-                let localMean = Double(weightedLuminance) / divisor
+                let localMean = Double(weightedLuminance) / Double(weightTotal)
                 let detail = Double(centerLuminance) - localMean
-                let delta = max(-16.0, min(16.0, detail * gain))
+                func luminance(_ x: Int, _ y: Int) -> Double {
+                    let index = (y * width + x) * 4
+                    return Double((77 * Int(source[index]) + 150 * Int(source[index + 1]) +
+                        29 * Int(source[index + 2]) + 128) / 256)
+                }
+                let gradient = abs(luminance(x - radius, y) - luminance(x + radius, y)) +
+                    abs(luminance(x, y - radius) - luminance(x, y + radius))
+                // Separate smoothing and edge-detail branches share immutable
+                // neighborhoods. Strong smoothing limits the detail restored
+                // by sharpening; coherent edges receive more gain than noise.
+                let coherence = 0.5 + 0.5 * min(1, gradient / (4 + abs(detail) * 4))
+                let retainedDetail = detail * (1 - smoothing * 0.5)
+                let delta = max(-16.0, min(16.0,
+                    -detail * smoothing + retainedDetail * sharpening * coherence))
                 guard abs(delta) >= 0.5 else { continue }
                 let rounded = Int(delta.rounded())
                 result[offset] = UInt8(max(0, min(255, red + rounded)))

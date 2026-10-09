@@ -11,7 +11,9 @@ No score or complete engineering gate overrides a frozen effect failure.
 
 | Area | Current evidence | Limit |
 | --- | --- | --- |
-| SDK engineering | Last recorded complete SDK gate, 2026-10-08: **1076 tests / 0 failures / 0 skips, 9 opt-ins**, archive/boundary/backend/consumer/CPU-oracle checks. [Record](plans/history/2026-10/A-2026-10-08-owner-ios-editor.md). | Simulator face-compute compatibility only; no new effect/device qualification. This document cleanup does not rerun or re-sign that gate. |
+| SDK engineering | Complete SDK gate, 2026-10-09: **1098 tests / 0 failures / 0 skips, 9 opt-ins**, archive/boundary/backend/consumer/CPU-oracle checks. [Record](plans/history/2026-10/A-2026-10-09-dense-face-refactor.md). | macOS retains Vision. This engineering gate does not qualify general appearance or physical-device performance. |
+| MediaPipe iOS integration | Same existing iPhone 15 Pro / iOS 17.5: **24 native tests / 0 failures / 0 skips**, comprising 9 original probe and 15 SDK adapter/provider/consumer tests. Two authorized portraits, mesh/pose/visible iris, actual combination pixels, CPU/GPU maximum channel difference≤2, 20 exact repeats, no-face/reset/recovery/cadence. | Synchronous CPU image mode with shared CPU-owned dense geometry; two portrait inputs, no broad accuracy/occlusion/appearance or physical-device speed claim. |
+| Dense still-image mechanics | Final targeted geometry/support **12/0/0**, included in the complete gate: source-fixed ring/impulse direction, actual iris-area change, dark-skin noise, protection, extent/color/alpha/repetition, invalid supports and extreme composed-map orientation. Independent smoothing/sharpening combination oracle also passes. [Guide](docs/DENSE_FACE_REFACTOR.md). | Source-defined generated domains plus native integration; no population, semantic segmentation, video or end-to-end-GPU claim. Existing taxonomy qualification remains scoped. |
 | Control qualification | 63 legacy taxonomy rows: 62 bounded `implemented`, one upper-eyelid `suspended`; 77 parameter fields, 99 registered/98 default cases. | Each row's stated input domain applies; no generic portrait, 3D or population claim. |
 | Additional 15 shape controls | [Final source-defined positive/negative/direction/protection table](plans/history/2026-10/A-2026-09-27-remaining-effect-qualification.md). | Qualified generated-image 2D domains, not general anatomy/segmentation. |
 | Teeth/sclera retouch | Independent public-facade/fixture pixel, protection, metadata and failure oracles in the mandatory gate. | Opaque still-image scope; no realtime/end-to-end-GPU promise. |
@@ -21,17 +23,17 @@ No score or complete engineering gate overrides a frozen effect failure.
 | Current batch tool | Regression **17/0/0**; 98 cases twice: 7 passed/91 abstained; missing-oracle control exits 3. [Evidence](docs/CURRENT_BATCH_VALIDATION.md). | Default input has no face; color-only metrics do not qualify geometry/texture/appearance. Old 75-case wrapper stays historical. |
 | Owner editor | Separately scoped external-host tests/repairs recorded in [PLANS.md](PLANS.md). | Sustained iOS 17.5 simulator Vision and segmentation positive failures remain; no real-device speed claim. |
 
-These are previously executed, dated observations. Current document-only
-verification is recorded separately in PLANS. The simulator sustained failure
-does not retroactively change unrelated bounded gates; it remains an unresolved
-finding in [current debt](plans/debt/current.md). Historical receipts, original
+These are executed, dated observations. The simulator sustained Vision failure
+does not retroactively change unrelated bounded gates; its provider limitation
+remains in [current debt](plans/debt/current.md), while the default iOS SDK route
+now uses MediaPipe. Historical receipts, original
 failed predicates and archived milestone evidence remain unchanged.
 
 ## Dated inventory
 
 Static working-tree inventory measured 2026-10-09, excluding `.build` and
-historical archives: **85 Swift source files / 23,499 lines; 140 SwiftPM test
-files / 53,897 lines**. This includes uncommitted source/test files if present;
+historical archives: **92 Swift source files / 24,252 lines; 145 SwiftPM test
+files / 54,622 lines**. This includes uncommitted source/test files if present;
 it is not an executed-test denominator. Previous audits retain their own dates.
 
 | Contract inventory | Value | Authority |
@@ -44,6 +46,7 @@ it is not an executed-test denominator. Previous audits retain their own dates.
 | Explicitly assigned wrapper child environment inputs | 5 | Three opt-in switches and two bundle selectors; separate from inherited fixture overrides |
 | Library / executable products | 1 / 1 | `BeautySDK/Package.swift` |
 | Library / test targets | 6 / 6 | `BeautySDK/Package.swift` |
+| Pinned iOS binary targets | 3 | MediaPipe 1.1.0 Common/Graphs/Vision; fixed official URLs/SHA-256 and Detection-owned iOS conditions |
 | Legacy archive bundles / intentional files | 2 / 45+26 | Code-owned archive anchors |
 
 Recompute dynamic source/test totals rather than copying old counts into owners:
@@ -82,6 +85,13 @@ disabled events and a passed Swift Testing aggregate when that runner starts.
 Tool/fixture/summary/oversize/zero-execution failures cannot earn completion.
 Separate Metal available/unavailable accounting must not merge typed unavailability
 with executed parity success.
+
+The five retained backend gates share `scripts/validate-sdk-dependencies.py`.
+It admits only the three specifically authorized fixed binaries, in Detection
+and on iOS only, rejecting other source/binary dependencies. Its 11 mutation
+checks and the backend-neutral gate's dependency mutations passed. Native iOS
+source/consumer setup is documented in [IntegrationTests/MediaPipeIOS](IntegrationTests/MediaPipeIOS/README.md);
+media and application sources remain outside the repository.
 
 Plain `swift test --package-path BeautySDK` can leave established opt-ins
 skipped and is not full closeout. Current wrapper fixture overrides and exact

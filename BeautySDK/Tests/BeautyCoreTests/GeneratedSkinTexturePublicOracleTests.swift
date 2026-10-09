@@ -336,6 +336,22 @@ final class GeneratedSkinTexturePublicOracleTests: XCTestCase {
                           textureDeviation(small) * 0.65)
     }
 
+    func testCombinedControlsNoLongerCancelAndSharpenRetainsItsOwnContribution() throws {
+        for kind in [Kind.textured, .softEdge] {
+            let source = fixture(kind)
+            let smooth = try render(source, parameters: .init(skinSmoothing: 0.5))
+            // The old linear gain was exactly -.75 + .75 for this pair.
+            let combined = try render(source, parameters: .init(skinSmoothing: 0.5, skinSharpen: 0.3))
+            XCTAssertTrue(combined != source)
+            XCTAssertTrue(combined != smooth)
+            XCTAssertFalse(changed(source, combined, in: .protected))
+            XCTAssertEqual(alpha(combined), alpha(source))
+            XCTAssertTrue(combined == (try render(source, parameters: .init(skinSmoothing: 0.5, skinSharpen: 0.3))))
+            if kind == .textured { XCTAssertLessThan(textureDeviation(combined), textureDeviation(source) * 0.85) }
+            if kind == .softEdge { XCTAssertGreaterThan(softEdgeGradient(combined), softEdgeGradient(smooth)) }
+        }
+    }
+
     private enum Kind { case textured, softEdge, flat }
     private enum Region { case target, protected, translucent }
 

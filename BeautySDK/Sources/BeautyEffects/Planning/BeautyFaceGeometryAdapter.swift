@@ -52,6 +52,27 @@ enum BeautyFaceGeometryAdapter {
     static func makeGeometry(from observation: BeautyFaceObservation) -> FaceGeometry {
         let bounds = makeBounds(from: observation)
         let landmarks = observation.landmarks.availableGroups
+        let mesh = observation.mesh
+        func detectedPath(_ indices: [Int], legacy: [SIMD2<Float>]) -> [SIMD2<Float>] {
+            guard let mesh else { return legacy }
+            return mesh.path(indices).map { SIMD2<Float>(Float($0.x), Float($0.y)) }
+        }
+        let facePoints = detectedPath(MediaPipeFaceTopology.lowerContour,
+            legacy: landmarks.contains(.faceContour) ? faceContour(in: bounds) : [])
+        let nosePoints = detectedPath(MediaPipeFaceTopology.noseContour,
+            legacy: landmarks.contains(.nose) ? nose(in: bounds) : [])
+        let rootPoints = detectedPath(MediaPipeFaceTopology.noseRoot,
+            legacy: landmarks.contains(.nose) ? noseRoot(in: bounds) : [])
+        let tipPoints = detectedPath(MediaPipeFaceTopology.noseTip,
+            legacy: landmarks.contains(.nose) ? noseTip(in: bounds) : [])
+        let outerPoints = detectedPath(MediaPipeFaceTopology.outerLip,
+            legacy: landmarks.contains(.outerLips) ? outerLips(in: bounds) : [])
+        let upperPoints = detectedPath(MediaPipeFaceTopology.upperLip,
+            legacy: landmarks.contains(.outerLips) ? upperLips(in: bounds) : [])
+        let lowerPoints = detectedPath(MediaPipeFaceTopology.lowerLip,
+            legacy: landmarks.contains(.outerLips) ? lowerLips(in: bounds) : [])
+        let innerPoints = detectedPath(MediaPipeFaceTopology.innerLip,
+            legacy: landmarks.contains(.innerLips) ? innerLips(in: bounds) : [])
         let observedOuterLips = observation.observedLipSupport.map { support in
             (support.outer ?? []).map { SIMD2<Float>(Float($0.x), Float($0.y)) }
         }
@@ -76,22 +97,23 @@ enum BeautyFaceGeometryAdapter {
         if observedSupports != nil, observation.observedEyeOrder != .canonical {
             return FaceGeometry(
                 bounds: bounds,
-                faceContour: landmarks.contains(.faceContour) ? faceContour(in: bounds) : [],
+                faceContour: facePoints,
                 observedFaceSupport: observedFaceSupport,
                 leftEye: [],
                 rightEye: [],
-                nose: landmarks.contains(.nose) ? nose(in: bounds) : [],
-                noseRoot: landmarks.contains(.nose) ? noseRoot(in: bounds) : [],
-                noseTip: landmarks.contains(.nose) ? noseTip(in: bounds) : [],
-                outerLips: landmarks.contains(.outerLips) ? outerLips(in: bounds) : [],
-                upperLips: landmarks.contains(.outerLips) ? upperLips(in: bounds) : [],
-                lowerLips: landmarks.contains(.outerLips) ? lowerLips(in: bounds) : [],
-                innerLips: landmarks.contains(.innerLips) ? innerLips(in: bounds) : [],
+                nose: nosePoints,
+                noseRoot: rootPoints,
+                noseTip: tipPoints,
+                outerLips: outerPoints,
+                upperLips: upperPoints,
+                lowerLips: lowerPoints,
+                innerLips: innerPoints,
                 leftEyeSupport: nil,
                 rightEyeSupport: nil,
                 observedEyebrowSupport: observedBrowSupport,
                 observedOuterLips: observedOuterLips,
-                observedNoseSupport: observation.observedNoseSupport
+                observedNoseSupport: observation.observedNoseSupport,
+                denseSupport: mesh.map(BeautyDenseFaceSupport.init(mesh:))
             )
         }
         let supportsBySide = observedSupports.map { supports in
@@ -134,22 +156,23 @@ enum BeautyFaceGeometryAdapter {
 
         return FaceGeometry(
             bounds: bounds,
-            faceContour: landmarks.contains(.faceContour) ? faceContour(in: bounds) : [],
+            faceContour: facePoints,
             observedFaceSupport: observedFaceSupport,
             leftEye: landmarks.contains(.leftEye) ? leftEyePoints : [],
             rightEye: landmarks.contains(.rightEye) ? rightEyePoints : [],
-            nose: landmarks.contains(.nose) ? nose(in: bounds) : [],
-            noseRoot: landmarks.contains(.nose) ? noseRoot(in: bounds) : [],
-            noseTip: landmarks.contains(.nose) ? noseTip(in: bounds) : [],
-            outerLips: landmarks.contains(.outerLips) ? outerLips(in: bounds) : [],
-            upperLips: landmarks.contains(.outerLips) ? upperLips(in: bounds) : [],
-            lowerLips: landmarks.contains(.outerLips) ? lowerLips(in: bounds) : [],
-            innerLips: landmarks.contains(.innerLips) ? innerLips(in: bounds) : [],
+            nose: nosePoints,
+            noseRoot: rootPoints,
+            noseTip: tipPoints,
+            outerLips: outerPoints,
+            upperLips: upperPoints,
+            lowerLips: lowerPoints,
+            innerLips: innerPoints,
             leftEyeSupport: leftSupport,
             rightEyeSupport: rightSupport,
             observedEyebrowSupport: observedBrowSupport,
             observedOuterLips: observedOuterLips,
-            observedNoseSupport: observation.observedNoseSupport
+            observedNoseSupport: observation.observedNoseSupport,
+                denseSupport: mesh.map(BeautyDenseFaceSupport.init(mesh:))
         )
     }
 

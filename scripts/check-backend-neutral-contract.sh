@@ -39,7 +39,7 @@ run_bounded() {
 
 validate_static_boundary() {
   local root="$1"
-  python3 - "${root}" <<'PY'
+  python3 - "${root}" "${repository_root}/scripts/validate-sdk-dependencies.py" <<'PY'
 from pathlib import Path
 import json
 import re
@@ -133,8 +133,11 @@ if "renderBackend" in parameters or "BeautyRenderBackend" not in configuration:
 configuration_fields = re.findall(r"^\s*public var ([A-Za-z][A-Za-z0-9]*):", configuration, re.MULTILINE)
 if len(configuration_fields) != 11 or len(set(configuration_fields)) != 11:
     raise SystemExit("BeautyConfiguration inventory changed")
-if ".package(" in package or "http://" in package or "https://" in package:
-    raise SystemExit("package dependency drifted into Phase 70")
+import runpy
+try:
+    runpy.run_path(sys.argv[2])["validate"](package)
+except ValueError as error:
+    raise SystemExit(str(error))
 
 manifest = json.loads(schema_text[schema_sources[2]])
 if [item.get("id") for item in manifest.get("presets", [])] != [
@@ -174,8 +177,40 @@ PY
 
 self_test() {
   temporary_root="$(mktemp -d "${TMPDIR:-/tmp}/beauty-backend-neutral-self-test.XXXXXX")"
-  cp -R -- "${package_root}" "${temporary_root}/BeautySDK"
+  # Static mutations need only these source files, never copied build caches.
+  for relative in "${backend_sources[@]}" "${schema_sources[@]}"; do
+    mkdir -p -- "${temporary_root}/$(dirname -- "${relative}")"
+    cp -- "${repository_root}/${relative}" "${temporary_root}/${relative}"
+  done
   validate_static_boundary "${temporary_root}"
+
+  local dependency_mutation
+  local package_mutation_path="${temporary_root}/BeautySDK/Package.swift"
+  for dependency_mutation in checksum origin platform extra; do
+    cp -- "${package_root}/Package.swift" "${package_mutation_path}"
+    python3 - "${package_mutation_path}" "${dependency_mutation}" <<'PY'
+from pathlib import Path
+import sys
+path = Path(sys.argv[1])
+text = path.read_text()
+mutation = sys.argv[2]
+if mutation == "checksum":
+    text = text.replace("d2194b929b91f0c866b2f8d65003e08c474f6c85e8ca7293511e9ff4a780aa68", "0" * 64, 1)
+elif mutation == "origin":
+    text = text.replace("https://dl.google.com/cpdc/", "https://example.invalid/cpdc/", 1)
+elif mutation == "platform":
+    text = text.replace('name: "MediaPipeTasksCommonBinary", condition: .when(platforms: [.iOS])',
+                        'name: "MediaPipeTasksCommonBinary", condition: .when(platforms: [.macOS])', 1)
+else:
+    text += '\nlet dependency = "https://example.invalid/extra.zip"\n'
+path.write_text(text)
+PY
+    if validate_static_boundary "${temporary_root}" >/dev/null 2>&1; then
+      echo "backend_neutral_dependency_mutation_self_test_failed mutation=${dependency_mutation}" >&2
+      return 1
+    fi
+  done
+  cp -- "${package_root}/Package.swift" "${package_mutation_path}"
 
   local mutation_path="${temporary_root}/BeautySDK/Sources/BeautySDK/BeautyEngine.swift"
   printf '\nlet fallback = true\n' >>"${mutation_path}"

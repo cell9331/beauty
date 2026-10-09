@@ -205,7 +205,8 @@ public enum BeautyColorEffectPipeline {
     ) -> CIImage {
         var output = BeautySkinTexturePipeline.apply(
             to: image, plan: plan, renderQuality: renderQuality,
-            faceBounds: textureFaceBounds, exclusionMask: textureExclusionMask
+            faceBounds: textureFaceBounds, exclusionMask: textureExclusionMask,
+            denseSupport: face?.denseSupport
         )
 
         if plan.hasVisibleColorOutput {

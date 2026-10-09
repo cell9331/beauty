@@ -25,7 +25,9 @@
 
 ## 3. Active
 
-暂无 Active SDK 算法计划。所有者编辑宿主的接线、范围、组合、调试显示与预览修复
+当前无 Active 执行计划。478点静图核心改造已完成，记录见下方。
+
+所有者编辑宿主的接线、范围、组合、调试显示与预览修复
 已记录在下方；iOS 17.5 模拟器连续 Vision 检测异常尚未修复，见当前技术债。
 v1.25仍按`closed_with_unmet_objectives`结清，不恢复其自动效果研发。
 
@@ -36,6 +38,34 @@ v1.25仍按`closed_with_unmet_objectives`结清，不恢复其自动效果研发
 原记录已在[历史索引](plans/history/README.md)对应的 completed 分片。Phase 93 的 owner-local `93-CHECKS.json` 与 Phase 95 independent review 属于历史证据，不是当前 Active 计划。
 
 ## 4. Completed / terminal dispositions
+
+### C-2026-10-09-dense-face-refactor
+
+- Status: `completed`。按所有者要求充分使用478点与姿态，在现有静图管线完成首批核心改造。
+- Result: 有界Core Image context复用；可见虹膜环与眼/眉/唇几何保护；近刚性姿态衰减；全478点分布驱动的固定画布网格与位移/梯度预算；美肤平滑和相干细节分支独立，避免旧组合抵消。见[实现说明](docs/DENSE_FACE_REFACTOR.md)。
+- Verification: 最终完整SDK **1098 tests / 0 failures / 0 skips，9 opt-ins**；同一已有iOS宿主 **24/0/0**，两图姿态/可见iris、CPU/GPU组合最大通道差≤2、重复及失败恢复通过。新增独立几何/虹膜/纹理像素正负例纳入完整门禁；失败候选与原因留档，原阈值未放宽。
+- Boundary: 共享dense几何仍为CPU-owned阶段；公开字段/default、模型、retained shader和冻结终局保留。视频、GPU原生网格、扩大纹理尺度及全链零拷贝未交付，效果资格不批量提升。见[完成记录](plans/history/2026-10/A-2026-10-09-dense-face-refactor.md)。
+
+### C-2026-10-09-playbook-synthesis
+
+- Status: `completed`，按所有者要求学习外部 beauty-sdk-playbook 并整理为[项目手册](docs/refactor-playbook/README.md)。
+- Result: 六篇549行，覆盖478点/坐标/时序、候选网格与位移安全、美肤/五官、工程/验收，以及原文和四份代码骨架评审；现行实现、建议设计和待验证结论分别标明。
+- Verification: 一手资料与代码/owner核对、文档导航/差异、两归档、post-archive边界、示例存储通过；2,452份既有非目标文件SHA-256不变。
+- Boundary: 仅文档，不运行/导入外部提示词与代码，不改SDK/模型/测试，不新开算法或EYE/SEG队列，不重签此前SwiftPM/原生检查点。见[完成记录](plans/history/2026-10/A-2026-10-09-playbook-synthesis.md)。
+
+### C-2026-10-09-mediapipe-sdk-integration
+
+- Status: `completed`。按所有者要求将 MediaPipe iOS 1.1.0 接入 BeautySDK；iOS 默认启用，macOS 保留 Vision，原公开调用方式不变。
+- Result: 固定三个官方运行库与 float16/1 模型并校验哈希；478 点映射眼/眉/鼻/唇/脸支撑，既有几何使用实测点；列主序姿态正确转换并保留在请求内。CPU image mode 复用初始化，不复用观测；失败安全退出。
+- Verification: 完整 SDK 门禁 **1083 tests / 0 failures / 0 skips，9 opt-ins**；同一 iPhone 15 Pro / iOS 17.5 原生 **23/0/0**（14 项 SDK 专属 + 9 项原探针），覆盖两个肖像、有效姿态/区域支撑、实际输出、20 次连续重复、无脸/重置恢复、跳帧与超限预算。固定依赖负向变异检查通过。
+- Boundary: 完成检测器接入，不重新授予所有效果、泛化、真机性能或自动分割资格；旧 Vision 内部异常仍保留。见[完成记录](plans/history/2026-10/A-2026-10-09-mediapipe-sdk-integration.md)。
+
+### C-2026-10-09-mediapipe-landmarker-probe
+
+- Status: `completed`，限官方资源下载及仓库外独立 iOS 图片检测项目。
+- Result: 官方 `face_landmarker/float16/1` 模型、MediaPipe iOS 1.1.0 的 Common/Graphs/Vision 三个运行库及三份 Apache-2.0 模型卡已完整下载；三个运行库均匹配官方 SHA-256。独立工程在已有 iPhone 15 Pro / iOS 17.5 上通过 **9 tests / 0 failures / 0 skips**。
+- Verification: 真人/生成两个已授权本地正例各输出1脸、478点、1个有限可逆4×4矩阵和52个有限/有界表情系数；无脸/恢复、缺失/损坏模型、关闭可选输出和错误调用模式通过。同一输入20次重复，点/矩阵/表情最大差异0；预热后模拟器纯检测中位6.55ms，非端到端或真机性能。应用实际打开并检查肖像点位叠加。
+- Boundary: 本次直接链接官方预编译组件，未声称完整官方SwiftPM入口接入通过；未接入BeautySDK、修改算法或重开终局目标。未评估独立标注精度、遮挡泛化、视频/实时流、方向矩阵或真机。归档、SDK-only boundary、示例存储及文档差异检查通过；未重签SDK全量门禁。见[完整记录](plans/history/2026-10/A-2026-10-09-mediapipe-landmarker-probe.md)。
 
 ### C-2026-10-09-document-cleanup
 

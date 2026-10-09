@@ -15,6 +15,7 @@ package enum BeautyGeometryPointBudget {
     ) -> Bool {
         let face = BeautyFaceGeometryAdapter.makeGeometry(from: observation)
         let points = BeautyGeometryEffectPipeline.controlPoints(for: plan, face: face)
+        if face.denseSupport != nil { return false }
         return points.count > BeautyMetalGeometryParameters.maximumPointCount
             && points.allSatisfy { $0.exclusiveMaximumY == nil }
     }
@@ -112,7 +113,8 @@ enum BeautyGeometryEffectPipeline {
             to: image,
             plan: plan,
             face: face,
-            colorSpace: CGColorSpaceCreateDeviceRGB()
+            colorSpace: face.denseSupport == nil ? CGColorSpaceCreateDeviceRGB() :
+                (image.colorSpace ?? CGColorSpace(name: CGColorSpace.sRGB)!)
         )
     }
 
@@ -164,10 +166,7 @@ enum BeautyGeometryEffectPipeline {
 
         let rowBytes = width * 4
         var source = [UInt8](repeating: 0, count: rowBytes * height)
-        let context = CIContext(options: [
-            .workingColorSpace: colorSpace,
-            .outputColorSpace: colorSpace
-        ])
+        let context = BeautyImageContexts.context(for: colorSpace)
         onRasterize?()
         source.withUnsafeMutableBytes { rawBytes in
             guard let baseAddress = rawBytes.baseAddress else {
@@ -220,10 +219,14 @@ enum BeautyGeometryEffectPipeline {
                     refinement.bytes, width: width, height: height, face: face
                 ),
             suppressWholeFaceTranslationPoints: true
-        ).compactMap(RenderableWarpPoint.init)
-        let warpedBytes = warpedRGBABytes(
-            alignedSource, width: width, height: height, points: points
         )
+        let warpedBytes: [UInt8]
+        if face.denseSupport != nil {
+            warpedBytes = BeautyDenseGeometryMap(width: width, height: height, face: face, points: points)?.applyRGBA(alignedSource) ?? alignedSource
+        } else {
+            warpedBytes = warpedRGBABytes(alignedSource, width: width, height: height,
+                                         points: points.compactMap(RenderableWarpPoint.init))
+        }
         let output = WholeFaceTranslationRefiner.apply(
             warpedBytes, width: width, height: height, face: face,
             xStrength: plan.effectiveStrengths.wholeFaceXPosition,

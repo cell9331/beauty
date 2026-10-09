@@ -305,6 +305,7 @@ struct FaceGeometry: Equatable, Sendable {
     /// mouth siblings. nil retains the legacy fixture contract; empty rejects.
     let observedOuterLips: [SIMD2<Float>]?
     let observedNoseSupport: BeautyObservedNoseSupport?
+    let denseSupport: BeautyDenseFaceSupport?
 
     var leftEyeSemanticSupport: BeautyEyeSemanticSupport? { leftEyeSupport }
     var rightEyeSemanticSupport: BeautyEyeSemanticSupport? { rightEyeSupport }
@@ -327,7 +328,8 @@ struct FaceGeometry: Equatable, Sendable {
         freshness: LandmarkGeometryFreshness = .fresh,
         observedEyebrowSupport: BeautyEyebrowSemanticSupport? = nil,
         observedOuterLips: [SIMD2<Float>]? = nil,
-        observedNoseSupport: BeautyObservedNoseSupport? = nil
+        observedNoseSupport: BeautyObservedNoseSupport? = nil,
+        denseSupport: BeautyDenseFaceSupport? = nil
     ) {
         self.bounds = bounds
         self.faceContour = faceContour
@@ -347,6 +349,7 @@ struct FaceGeometry: Equatable, Sendable {
         self.observedEyebrowSupport = observedEyebrowSupport
         self.observedOuterLips = observedOuterLips
         self.observedNoseSupport = observedNoseSupport
+        self.denseSupport = denseSupport
     }
 
     var center: SIMD2<Float> {

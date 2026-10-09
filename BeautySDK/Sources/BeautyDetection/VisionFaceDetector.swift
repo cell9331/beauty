@@ -157,6 +157,7 @@ package struct VisionFaceDetectionInput: @unchecked Sendable {
     package let stillImage: CIImage?
     package let maximumPixelCount: Int
     package let preferredProcessingSize: CGSize?
+    package let maximumFaceCount: Int
 
     package init(
         metadata: BeautyInputMetadata,
@@ -164,7 +165,8 @@ package struct VisionFaceDetectionInput: @unchecked Sendable {
         previewExtent: CGSize? = nil,
         stillImage: CIImage? = nil,
         maximumPixelCount: Int = BeautyConfiguration.default.maximumInputPixelCount,
-        preferredProcessingSize: CGSize? = nil
+        preferredProcessingSize: CGSize? = nil,
+        maximumFaceCount: Int = 1
     ) {
         self.metadata = metadata
         self.imageExtent = imageExtent
@@ -172,10 +174,24 @@ package struct VisionFaceDetectionInput: @unchecked Sendable {
         self.stillImage = stillImage
         self.maximumPixelCount = maximumPixelCount
         self.preferredProcessingSize = preferredProcessingSize
+        self.maximumFaceCount = max(1, maximumFaceCount)
     }
 }
 
-package struct VisionFaceDetector: Sendable {
+// Keep the Vision name as a package compatibility alias for existing fixtures.
+package typealias VisionFaceDetector = BeautyFaceDetector
+
+package struct BeautyMappedFaceObservations: Sendable {
+    package let observations: [BeautyFaceObservation]
+    package let rejectedFaceCount: Int
+
+    package init(observations: [BeautyFaceObservation], rejectedFaceCount: Int = 0) {
+        self.observations = observations
+        self.rejectedFaceCount = rejectedFaceCount
+    }
+}
+
+package struct BeautyFaceDetector: Sendable {
     package enum DetectionPurpose: Sendable {
         case geometry
         case localSupport
@@ -195,10 +211,13 @@ package struct VisionFaceDetector: Sendable {
 
     package typealias ObservationProvider = @Sendable (VisionFaceDetectionInput) throws -> [VisionDetectionObservation]
     package typealias MappingObserver = @Sendable (MappingEvent) -> Void
+    package typealias MappedObservationProvider = @Sendable (VisionFaceDetectionInput) throws -> BeautyMappedFaceObservations
 
     private let minimumConfidence: Double
     private let observationProvider: ObservationProvider
     private let mappingObserver: MappingObserver?
+    private let mappedObservationProvider: MappedObservationProvider?
+    private let resetProvider: (@Sendable () -> Void)?
     private var selectionPolicy: FaceSelectionPolicy
 
     package init(
@@ -209,7 +228,30 @@ package struct VisionFaceDetector: Sendable {
         self.minimumConfidence = minimumConfidence
         self.observationProvider = observationProvider
         self.mappingObserver = mappingObserver
+        self.mappedObservationProvider = nil
+        self.resetProvider = nil
         self.selectionPolicy = FaceSelectionPolicy()
+    }
+
+    package init(
+        mappedObservationProvider: @escaping MappedObservationProvider,
+        resetProvider: (@Sendable () -> Void)? = nil
+    ) {
+        self.minimumConfidence = 0.5
+        self.observationProvider = { _ in [] }
+        self.mappingObserver = nil
+        self.mappedObservationProvider = mappedObservationProvider
+        self.resetProvider = resetProvider
+        self.selectionPolicy = FaceSelectionPolicy()
+    }
+
+    package static func production() -> BeautyFaceDetector {
+        #if os(iOS)
+        let provider = MediaPipeFaceObservationProvider()
+        return BeautyFaceDetector(mappedObservationProvider: provider.detect, resetProvider: provider.reset)
+        #else
+        return BeautyFaceDetector()
+        #endif
     }
 
     package mutating func detect(
@@ -246,16 +288,19 @@ package struct VisionFaceDetector: Sendable {
         }
 
         do {
-            let observations = try observationProvider(
-                VisionFaceDetectionInput(
+            let input = VisionFaceDetectionInput(
                     metadata: metadata,
                     imageExtent: imageExtent,
                     previewExtent: previewExtent,
                     stillImage: image,
                     maximumPixelCount: configuration.maximumInputPixelCount,
-                    preferredProcessingSize: configuration.preferredProcessingSize
+                    preferredProcessingSize: configuration.preferredProcessingSize,
+                    maximumFaceCount: configuration.maximumFaceCount
                 )
-            )
+            if let mappedObservationProvider {
+                return summarizeMapped(try mappedObservationProvider(input), configuration: configuration, purpose: purpose)
+            }
+            let observations = try observationProvider(input)
             return summarize(
                 observations,
                 metadata: metadata,
@@ -323,6 +368,42 @@ package struct VisionFaceDetector: Sendable {
 
     package mutating func resetTracking() {
         selectionPolicy.reset()
+        resetProvider?()
+    }
+
+    private mutating func summarizeMapped(
+        _ output: BeautyMappedFaceObservations,
+        configuration: BeautyConfiguration,
+        purpose: DetectionPurpose
+    ) -> VisionFaceDetectionResult {
+        guard !output.observations.isEmpty else {
+            selectionPolicy.reset()
+            return VisionFaceDetectionResult(observations: [], summary: BeautyDetectionSummary(
+                availability: output.rejectedFaceCount > 0 ? .partial : .noFace,
+                reasons: output.rejectedFaceCount > 0 ? [.mappingFailed] : [.noFaceDetected],
+                faceCount: output.rejectedFaceCount
+            ))
+        }
+        let usable = output.observations.filter {
+            $0.confidence.isFinite && $0.confidence >= minimumConfidence
+                && (purpose != .geometry || $0.landmarks.hasRequiredGeometry)
+        }
+        guard !usable.isEmpty else {
+            selectionPolicy.reset()
+            return VisionFaceDetectionResult(observations: [], summary: BeautyDetectionSummary(
+                availability: .partial, reasons: [.missingLandmarks],
+                faceCount: output.observations.count + output.rejectedFaceCount
+            ))
+        }
+        let selected = selectionPolicy.select(from: usable, configuration: configuration)
+        let summary = purposeAwareSummary(selected.summary, selectedFaces: selected.selectedFaces, purpose: purpose)
+        var reasons = summary.reasons
+        if output.rejectedFaceCount > 0 { reasons.append(.mappingFailed) }
+        return VisionFaceDetectionResult(observations: selected.selectedFaces, summary: BeautyDetectionSummary(
+            availability: output.rejectedFaceCount > 0 ? .partial : summary.availability,
+            reasons: reasons, faceCount: output.observations.count + output.rejectedFaceCount,
+            usedFaceCount: summary.usedFaceCount
+        ))
     }
 
     private mutating func summarize(

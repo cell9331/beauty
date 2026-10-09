@@ -27,8 +27,8 @@ Later mutation of the caller's copy does not change that engine.
 
 | Field | Implemented meaning |
 | --- | --- |
-| `preferredProcessingSize` | Optional finite positive maximum Vision raster width/height; no output resize. Invalid values become `nil`. |
-| `maximumFaceCount` | Detector selection cap, at least one at init/decode; effects still use the primary face. |
+| `preferredProcessingSize` | Optional finite positive maximum detector raster width/height; no output resize. MediaPipe applies it after upright normalization. Invalid values become `nil`. |
+| `maximumFaceCount` | Detector selection cap and iOS MediaPipe output cap, at least one at init/decode; iOS native budgets above 32 abstain before allocation. Effects still use the primary face. |
 | `enableFaceTracking` | Enables detection-backed support; disabling it removes dependent work. It is not a promise of cross-frame support reuse. |
 | `detectionFrameInterval` | Explicit indexed camera/video cadence, normalized to at least one. |
 | `renderQuality` | Active texture footprint: `.performance` 3×3, `.balanced` 5×5, `.quality` 7×7. |
@@ -67,6 +67,18 @@ Skipped frames return `.skipped / .detectionInterval` and remove dependent work.
 Invalid support fails at the smallest field/side rather than being guessed or
 borrowed. Detector `usedFaceCount` is a selection count, not an edited-face count.
 
+The default iOS detector is pinned MediaPipe 1.1.0 in synchronous CPU image
+mode; macOS retains Vision. Image mode intentionally supplies no temporal
+tracking/smoothing or timestamp contract. Inference receives upright pixels after
+EXIF and explicit input-mirror normalization; its normalized points already
+match the render grid. A malformed 478-point mesh rejects that face; a malformed
+optional transform only removes the transform, preserving valid point support.
+MediaPipe exposes no per-face confidence value in this task result: the internal
+admission marker means the configured 0.5 detection/presence thresholds passed,
+not a probability or certainty score. Pose/visibility/occlusion estimates do not
+replace existing regional support admission. Dense points and transforms are
+non-Codable request data and never appear in public results.
+
 No-face routing is explicit: a detected no-face request skips face-dependent
 geometry and the skin domain while preserving supported global color/filter
 work. Standalone whitening/rosy tone can use a no-detection color route; a skin
@@ -98,7 +110,13 @@ coherent source hair cap. Whole-face X/Y provider points remain narrower
 mechanics; admitted still images use rigid translation. These are bounded 2D
 image operations, not depth, fat or general segmentation estimates.
 
-The Metal uniform capacity is 256 points. A selected-GPU still-image plan over
+Dense still images use a fixed full-canvas inverse lattice, pixel-metric radius,
+canonical centers, final displacement and per-triangle gradient bounds; validated
+pose can only attenuate that map. Visible iris rings and geometric feature
+exclusions stay request-local. [Exact mechanism and limits](docs/DENSE_FACE_REFACTOR.md)
+separate this CPU-owned stage from the retained legacy point renderer.
+
+The legacy Metal uniform capacity is 256 points. A selected-GPU still-image plan over
 capacity without row restrictions executes the entire admitted plan once on
 CPU and reports `beauty.backend.cpuGeometryCapacityFallback = 1`. No strength
 or point is silently discarded. Direct Metal and row-restricted over-capacity
@@ -110,7 +128,10 @@ requests retain typed failure; unavailable GPU and runtime errors never retry.
 `skinSharpen` increases it through source-edge admission. The shared CPU-owned
 stage runs on both selected backends with 3×3/5×5/7×7 footprints. It requires
 fresh primary-face bounds, a conservative interior ellipse and eye/lip/color/
-edge guards. These are not anatomical or skin-material segmentation.
+edge guards. Bilateral range weights and separate smoothing/sharpen detail
+branches prevent the former constant-gain cancellation. Dense still support adds
+oval containment and padded eyelid/brow/lip exclusions; these are unioned with
+existing coarse and host guards, not anatomical or skin-material segmentation.
 
 An active texture request is limited to `min(maximumInputPixelCount, 8_388_608)`
 pixels at decoded, encoded-declaration, pixel-buffer and backend boundaries.

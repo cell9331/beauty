@@ -14,7 +14,7 @@ package enum BeautyObservedEyeOrder: Equatable, Sendable {
     case invalid
 }
 
-/// Frame-scoped, image-normalized evidence captured by the Vision adapter.
+/// Frame-scoped, image-normalized evidence captured by a detector adapter.
 ///
 /// This value intentionally has no Codable or diagnostic representation. It is
 /// copied into an observation only after the detector has mapped and bounded
@@ -79,7 +79,7 @@ package enum BeautyObservedEyebrowSide: Equatable, Sendable {
     case right
 }
 
-/// Request-scoped mapped evidence copied from actual Vision eyebrow regions.
+/// Request-scoped mapped evidence copied from actual detected eyebrow regions.
 /// Left and right absence remain independent and diagnostics expose counts only.
 package struct BeautyObservedEyebrowSupport: Equatable, Sendable {
     package let left: [CoordinatePoint]?
@@ -107,7 +107,7 @@ extension BeautyObservedEyebrowSupport: CustomStringConvertible, CustomDebugStri
     }
 }
 
-/// Request-scoped mapped evidence copied from Vision's actual lip regions.
+/// Request-scoped mapped evidence copied from actual detected lip regions.
 ///
 /// Outer and inner support are independently optional so malformed or missing
 /// samples in either region cannot erase a valid sibling. The value is
@@ -165,6 +165,7 @@ package struct BeautyFaceObservation: Equatable, Sendable {
     package let observedEyebrowSupport: BeautyObservedEyebrowSupport?
     package let observedLipSupport: BeautyObservedLipSupport?
     package let observedNoseSupport: BeautyObservedNoseSupport?
+    package let mesh: BeautyFaceMesh?
 
     package init(
         stableID: String? = nil,
@@ -177,7 +178,8 @@ package struct BeautyFaceObservation: Equatable, Sendable {
         observedFaceSupport: BeautyObservedFaceSupport? = nil,
         observedEyebrowSupport: BeautyObservedEyebrowSupport? = nil,
         observedLipSupport: BeautyObservedLipSupport? = nil,
-        observedNoseSupport: BeautyObservedNoseSupport? = nil
+        observedNoseSupport: BeautyObservedNoseSupport? = nil,
+        mesh: BeautyFaceMesh? = nil
     ) {
         self.stableID = stableID
         self.confidence = confidence
@@ -190,6 +192,7 @@ package struct BeautyFaceObservation: Equatable, Sendable {
         self.observedEyebrowSupport = observedEyebrowSupport
         self.observedLipSupport = observedLipSupport
         self.observedNoseSupport = observedNoseSupport
+        self.mesh = mesh
     }
 }
 

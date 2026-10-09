@@ -21,6 +21,7 @@ records do not create current tasks or override current contracts.
 | Eligible inputs and independent effect/protection acceptance | [IMAGE_EFFECT_ACCEPTANCE](IMAGE_EFFECT_ACCEPTANCE.md) |
 | Current 98-default/99-registered batch validation | [CURRENT_BATCH_VALIDATION](CURRENT_BATCH_VALIDATION.md), [tool usage](../scripts/current-batch/README.md) |
 | Host-supplied object + complete-lip texture masks | [HOST_TEXTURE_PROTECTION](HOST_TEXTURE_PROTECTION.md) |
+| Dense static-image semantics, map safety and resource reuse | [DENSE_FACE_REFACTOR](DENSE_FACE_REFACTOR.md) |
 | Git identity and remote operations | [GIT_OPERATIONS](GIT_OPERATIONS.md) |
 | Fixture storage, previews and classified cleanup | [example-images](../example-images/README.md) |
 
@@ -28,6 +29,15 @@ Generated positives/negatives may qualify an effect under the current policy;
 genuine portraits and physical devices are optional. Swift `public` permits
 the owner's local hosts, not third-party source/binary/model distribution.
 Current SDK engineering and effect evidence have separate scopes.
+
+## Learning and refactor references
+
+[BeautySDK 学习与重构手册](refactor-playbook/README.md) synthesizes the owner's
+external playbook against the current MediaPipe/geometry/texture contracts. It
+covers landmarks and timing, candidate mesh geometry, effects, engineering and
+acceptance, with a review of the source examples. Proposed designs and budgets
+are distinguished from implemented behavior; reading it does not activate its
+AI prompts, roadmap, model downloads or closed retouch work.
 
 ## Closed research and dated evidence
 

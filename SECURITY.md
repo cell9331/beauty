@@ -13,13 +13,26 @@ owner-only use; research-only data and derived models stay in a noncommercial la
 | Boundary | Enforced ownership |
 | --- | --- |
 | Caller image/metadata/parameters → SDK | Dimension/format/limit/resource admission and deterministic normalization before dependent work. |
-| Vision → providers | Package-only request-local validated support; missing or malformed anatomy fails locally. |
+| Vision/MediaPipe → providers | Package-only request-local validated support; invalid mesh rejects its face and regional plausibility checks still apply. |
 | Provider proposals → output | Immutable original pixels, hard support containment, protected bytes and collision-to-source composition. |
 | SDK → host diagnostics | Typed/redacted errors, fixed events and aggregate metrics; no raw support payloads. |
 | CLI/process → evidence | Validated output identities/counts, bounded temporary capture and allowlisted aggregates. |
 | Historical ZIP → temporary restoration | Independently pinned hashes/manifests, safe streamed extraction and no active-source restoration. |
 
 ## Input and resource admission
+
+On 2026-10-09 the owner explicitly authorized downloading official MediaPipe
+Face Landmarker assets and creating an independent local iOS test project.
+The subsequent explicit request to integrate it into BeautySDK authorizes the
+specific Common/Graphs/Vision 1.1.0 dependency and pinned float16/1 model for
+owner-local iOS inference. Apache-2.0 source/model-card evidence covers this
+internal use; assets and license notices remain inside the owner's environment.
+This does not authorize training, conversion, distribution or reopening closed
+retouch objectives. Authorized input stays local; reports contain only
+allowlisted aggregate checks, never raw landmarks, matrices or portrait pixels.
+The [completed probe](plans/history/2026-10/A-2026-10-09-mediapipe-landmarker-probe.md)
+records the initial independent probe. The [completed integration](plans/history/2026-10/A-2026-10-09-mediapipe-sdk-integration.md)
+owns SDK implementation and verification.
 
 Public inputs require finite positive dimensions and checked byte/pixel
 multiplication. `maximumInputPixelCount` defaults/caps at 50,000,000;
@@ -30,7 +43,12 @@ local-retouch inputs fail through typed errors. Selected GPU stills retain
 opaque bounded-RGB admission. See [DESIGN.md](DESIGN.md) for route-specific policy.
 
 Resource IDs are validated logical identifiers, never arbitrary caller paths.
-Only bundled manifest/presets/LUTs and retained shader resources are admitted.
+Only bundled manifest/presets/LUTs, retained shader resources and the specifically
+pinned Face Landmarker task model are admitted. The model is checked before
+native task creation; arbitrary model paths and runtime asset downloads are not
+public input. Official binary archives have SwiftPM's fixed checksum enforcement.
+The iOS native face budget is limited to 1...32 before graph allocation; larger
+configuration budgets return the existing detector-unavailable degradation.
 The shader bytes, package/backend API boundaries and imports are checked by
 `scripts/check-sdk-only-boundary.sh`. External downloads, predictors, training,
 conversion and inferred license coverage are not enabled by dormant types or
@@ -42,6 +60,18 @@ It is owner-supplied information that excludes smoothing/sharpening only, not
 automatic skin/material/feature recognition or authority to change other effects.
 Its bytes are absent from results, Codable diagnostics and custom reflection;
 width/height descriptions are bounded aggregates.
+
+## Dense support and framework-resource reuse (2026-10-09)
+
+The owner-authorized optimization uses the already pinned 478-point task,
+visible iris-ring subsets, validated near-rigid pose and geometric exclusions;
+no new model, training, raw diagnostic or external delivery was added. Internal
+dense support/lattice reflection exposes counts only. Full-canvas connectivity,
+finite bounded controls and per-triangle gradient admission precede sampling.
+The fixed three-profile Core Image cache retains framework context only, never
+images, observations, masks or private profile keys. Other profiles remain
+request-local. These mechanics do not identify arbitrary skin-colored objects
+or reopen closed EYE/SEG work. See [dense contract](docs/DENSE_FACE_REFACTOR.md).
 
 ## Request-local geometry and retouch
 

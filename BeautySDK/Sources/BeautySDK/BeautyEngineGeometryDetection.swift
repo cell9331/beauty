@@ -89,7 +89,8 @@ extension BeautyEngine {
             plan: withDetectionMetrics(
                 plan,
                 summary: detection.summary,
-                geometryRequired: requiresFaceGeometry
+                geometryRequired: requiresFaceGeometry,
+                observation: detection.observations.first
             ),
             detectionSummary: detection.summary,
             selectedFaceObservation: detection.observations.first
@@ -99,12 +100,17 @@ extension BeautyEngine {
     private func withDetectionMetrics(
         _ plan: BeautyEffectPlan,
         summary: BeautyDetectionSummary,
-        geometryRequired: Bool
+        geometryRequired: Bool,
+        observation: BeautyFaceObservation? = nil
     ) -> BeautyEffectPlan {
         var metrics = plan.metrics
         metrics["beauty.detection.geometryRequired"] = geometryRequired ? 1 : 0
         metrics["beauty.detection.faceCount"] = Double(summary.faceCount)
         metrics["beauty.detection.usedFaceCount"] = Double(summary.usedFaceCount)
+        if let mesh = observation?.mesh {
+            metrics["beauty.detection.meshPointCount"] = Double(mesh.points.count)
+            metrics["beauty.detection.hasFacialTransformation"] = mesh.facialTransformation == nil ? 0 : 1
+        }
         return BeautyEffectPlan(
             activeDomains: plan.activeDomains,
             skippedDomains: plan.skippedDomains,

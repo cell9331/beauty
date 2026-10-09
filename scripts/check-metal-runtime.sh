@@ -42,7 +42,7 @@ run_bounded() {
 
 validate_static_boundary() {
   local root="$1"
-  python3 - "${root}" <<'PY'
+  python3 - "${root}" "${repository_root}/scripts/validate-sdk-dependencies.py" <<'PY'
 from pathlib import Path
 import json
 import re
@@ -224,8 +224,11 @@ configuration_fields = re.findall(r"^\s*public var ([A-Za-z][A-Za-z0-9]*):", tex
 if len(configuration_fields) != 11 or len(set(configuration_fields)) != 11:
     raise SystemExit("BeautyConfiguration inventory changed")
 package_text = text[package_manifest]
-if re.search(r"\.package\s*\(|https?://", package_text):
-    raise SystemExit("package dependency drifted")
+import runpy
+try:
+    runpy.run_path(sys.argv[2])["validate"](package_text)
+except ValueError as error:
+    raise SystemExit(str(error))
 manifest = json.loads(text[manifest_source])
 if [item.get("id") for item in manifest.get("presets", [])] != [
     "natural", "clear", "refined", "male-natural", "id-photo-natural"

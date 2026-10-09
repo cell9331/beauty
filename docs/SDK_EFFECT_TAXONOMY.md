@@ -90,8 +90,12 @@ normalize to `-1...1`; `filterId` is an optional logical resource identifier.
 - Filter: `filterId`, `filterIntensity`
 <!-- SDK_PARAMETER_INVENTORY_END -->
 
-`skinSmoothing` and `skinSharpen` now use a bounded spatial luminance-detail
-filter on admitted opaque, low-contrast neighborhoods. Generated skin-colored
+`skinSmoothing` and `skinSharpen` use bounded independent luminance-detail
+branches with bilateral range weights on admitted opaque, low-contrast neighborhoods.
+The 2026-10-09 [dense still-image contract](DENSE_FACE_REFACTOR.md) adds visible
+iris-ring use, pose attenuation, fixed-canvas geometry safety and geometric
+texture exclusions. Those scoped tests do not requalify every existing control
+on arbitrary iOS portraits; Vision/legacy receipts retain their original domains. Generated skin-colored
 cheek and soft-edge positives, flat negatives, and protected facial features
 pass owner-local public-pixel tests. The 2026-09-27 public route additionally
 requires a fresh selected face and confines texture to a conservative interior

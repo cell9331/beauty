@@ -5,7 +5,12 @@
 `beauty` is an SDK-only SwiftPM repository for the project owner's local Apps
 and tools. [Package.swift](BeautySDK/Package.swift) owns the build graph: iOS 17
 and macOS 14, one `BeautySDK` library product, one `BeautyExampleRenderer`
-executable product, six library targets and six test targets, no remote dependencies.
+executable product, six library targets and six test targets. Three pinned
+official MediaPipe 1.1.0 binary targets are dependencies on iOS only; there
+are no remote source-package dependencies. The float16/1 Face Landmarker model
+is bundled in Detection and checked against its fixed size/SHA-256 at native
+task initialization. [Provenance and licenses](BeautySDK/ThirdParty/MediaPipe/README.md)
+own the exact assets. The package remains a local-path owner consumer.
 Swift `public` describes the owner's callable surface, not third-party distribution.
 
 Historical UI/Demo material is confined to verified `archives/legacy-ui/`
@@ -18,8 +23,8 @@ inventory and executed gate evidence are recorded once in [QUALITY_SCORE.md](QUA
 
 | Target | Dependencies | Responsibility |
 | --- | --- | --- |
-| `BeautyCore` | none | Shared/public value models, configuration, errors, canonical carrier and redacted diagnostics. |
-| `BeautyDetection` | Core | Vision detection, mapping, selection and package-only observed support. |
+| `BeautyCore` | none | Shared/public values, canonical carrier, redacted diagnostics and bounded package-only Core Image contexts. |
+| `BeautyDetection` | Core; three MediaPipe binaries on iOS | Platform detector, mapping, selection and package-only observed mesh/support. |
 | `BeautyRender` | Core | Render primitives, pixel buffers, bundled retained shader and package-only Metal runtime. |
 | `BeautyResources` | Core | Bundled manifest, presets, LUTs and logical resource-ID validation. |
 | `BeautyEffects` | Core, Detection, Render, Resources | Resolver, safety caps, geometry/color/texture pipelines, local-retouch providers and composition. |
@@ -43,7 +48,7 @@ configuration is captured at engine initialization.
 still image
 → validate dimensions, limits, resources and applicable color/alpha contract
 → canonicalize once when local retouch or an exclusion mask requires it
-→ one request-local Vision/mapping route when face support is required
+→ one request-local platform detection/mapping route when face support is required
 → resolve normalized strengths, provider admission and geometry budget
 → original-pixel local-retouch composition when requested
 → selected backend: shared texture/color, geometry and source-raster refiners
@@ -60,8 +65,31 @@ upper-eyelid local-retouch route. No realtime throughput claim follows from this
 Unindexed support-dependent still calls detect afresh. The indexed camera/video
 route detects on indices divisible by `detectionFrameInterval`; other frames
 abstain from face-dependent work without reusing prior observations.
-`preferredProcessingSize` bounds only the Vision raster, preserving output size.
+`preferredProcessingSize` bounds only the detector raster, preserving output size.
 Detection selects faces, but current still-image effects use only the primary face.
+
+`BeautyFaceDetector.production()` chooses MediaPipe on iOS and Vision on macOS.
+The package compatibility name `VisionFaceDetector` remains available to existing
+Vision-specific fixtures. The iOS provider uses CPU image mode, lazily reuses
+the native task and recreates it on `reset()` or face-budget changes. It retains
+no observations. All EXIF directions and explicit input mirroring are baked into
+an upright raster before `MPImage`; mapped points bypass the Vision mapper to
+avoid a second orientation transform. Preview mirroring does not affect inference.
+`maximumFaceCount` also bounds the MediaPipe task's output face count.
+The native task accepts budgets 1...32; larger values abstain before allocation.
+
+The iOS mesh has 478 finite bounded x/y points and finite z, with an optional
+validated row-major 4×4 facial transform. Ordered mesh subsets supply observed
+eyes/iris centers, eyebrows, nose, lips, lower contour and median support. Existing
+geometry uses detected nose/lip/contour points instead of face-box templates on
+this route, retaining existing regional plausibility checks. The transform stays
+request-local: validated near-rigid rotation now attenuates the dense unified
+inverse map, rather than being applied to image pixels as a 4x4 warp.
+Visible iris-ring points support size/gaze admission, while oval/eyelid/brow/lip
+geometry adds conservative texture protection. Blendshapes remain disabled.
+[Dense static-image contract](docs/DENSE_FACE_REFACTOR.md) owns the mechanism and limits.
+No second detector is invoked on failure. These changes do not qualify new beauty
+effects or guarantee arbitrary pose/occlusion accuracy.
 
 ## Backend and effect ownership
 
@@ -69,20 +97,25 @@ Detection selects faces, but current still-image effects use only the primary fa
 as the default and permanent reference. `BeautyBackendFactory` selects the
 package executor at initialization. Explicit unavailable GPU terminates with
 `.metalUnavailable`; construction/runtime failures never trigger retry.
-The still-image facade has one separate capacity route: over 256 geometry
-points without row restrictions execute the complete admitted plan on CPU,
+The legacy point route has one separate still-image capacity route: over 256
+geometry points without row restrictions execute the complete admitted plan on CPU,
 with `beauty.backend.cpuGeometryCapacityFallback = 1`. Direct Metal calls and
 row-restricted over-capacity plans retain typed failure. The retained
 `Warp.metal` and GPU/API boundaries remain pinned by the boundary scanner.
 
-Geometry providers feed one `BeautyGeometryEffectPipeline`. Shared CPU-owned
+Geometry providers feed one `BeautyGeometryEffectPipeline`. Dense still images
+use a full-canvas lattice with fixed triangle connectivity, pixel-metric influence,
+combined displacement/gradient bounds and canonical pixel centers. Both selected
+backends share this CPU-owned stage; GPU does not also submit its old point pass.
+The Metal 256-point bound applies only to the retained point route. Shared CPU-owned
 still-image refiners implement source-admitted hairline/forehead, outer
 submental contour, philtrum and whole-face translation behavior on both selected
 backends. On these routes, corresponding legacy point emissions are suppressed
 even if source admission rejects. Pixel buffers retain their separate admitted
 capabilities; still-image qualification does not extend them.
 
-Skin smoothing/sharpening uses the shared CPU-owned spatial texture stage with
+Skin smoothing/sharpening uses independent bounded detail branches with bilateral
+range weights in the shared CPU-owned texture stage, with
 fresh primary-face bounds, conservative face/eye/lip/color/edge admission and
 a bounded pixel budget. `BeautyTextureExclusionMask` excludes known pixels only
 from those two effects on decoded/encoded still images. It adds no detector or
@@ -117,3 +150,11 @@ Current gates, fixture opt-ins and evidence scope are owned by
 owned by [SECURITY.md](SECURITY.md) and [RELIABILITY.md](RELIABILITY.md).
 New API, dependency, resource or backend work must update its owner documents
 and public/target tests in the same change.
+
+## Refactor reference
+
+The [learning and refactor playbook](docs/refactor-playbook/README.md) explains
+candidate fixed-mesh geometry, texture processing and temporal designs against
+this architecture. These are documentation proposals, not current targets,
+backends, APIs or an activated implementation plan. Its source-code review
+identifies gaps before any future adoption.

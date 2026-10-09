@@ -29,7 +29,7 @@ run_bounded() {
 
 validate_static_boundary() {
   local root="$1"
-  python3 - "$root" <<'PY'
+  python3 - "$root" "${repository_root}/scripts/validate-sdk-dependencies.py" <<'PY'
 from pathlib import Path
 import re
 import sys
@@ -313,8 +313,11 @@ if len(parameters) != 77 or len(set(parameters)) != 77:
     raise SystemExit("BeautyParameters inventory changed")
 if "BeautyRenderBackend" in text["parameters"]:
     raise SystemExit("backend selector leaked into parameters")
-if "\.package(" in text["package"] or re.search(r"https?://", text["package"]):
-    raise SystemExit("package dependency drifted")
+import runpy
+try:
+    runpy.run_path(sys.argv[2])["validate"](text["package"])
+except ValueError as error:
+    raise SystemExit(str(error))
 if len(re.findall(r"^\s*RenderCase\(", text["renderer"], re.MULTILINE)) != 99:
     raise SystemExit("renderer inventory changed")
 print("backend_parity_static_boundary_passed")

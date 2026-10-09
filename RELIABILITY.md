@@ -1,5 +1,42 @@
 # RELIABILITY.md
 
+## 2026-10-09 dense static-image execution
+
+Dense static images use one shared CPU-owned inverse lattice on both selected
+backends. Finite point/input bounds, fixed canvas coverage, contractual row
+knots and a per-triangle gradient bound replace silent point truncation or a
+fold-search assumption. Bad candidates or fully attenuated pose preserve the
+pre-map raster; independent color/source-raster stages keep their own contracts.
+Valid iris work only uses ring points inside the eyelid; closed/invalid sides
+cannot authorize size/gaze editing. Invalid/crossing oval cannot authorize texture.
+The [dense contract](docs/DENSE_FACE_REFACTOR.md) owns exact limits; native/profile
+accuracy and useful appearance across unknown inputs remain unqualified.
+
+Named Core Image contexts are shared framework resources, with only three fixed
+profiles and no request state or caller-keyed growth. Unknown profiles retain
+request-local construction. Texture adds no float-sized frame buffer; the
+existing active-texture budget and precise host-mask behavior remain enforced.
+Same-engine caller serialization is still mandatory.
+
+## 2026-10-09 platform detector integration
+
+The default iOS engine now uses pinned MediaPipe Tasks 1.1.0 CPU image mode;
+macOS retains Vision. The previous simulator Vision failure remains a historical
+finding about that provider, not a claim that its platform internals were fixed.
+The synchronous native task is lazily reused, while every scheduled call produces
+fresh request-local observations. `reset()` releases the native task. Neutral,
+disabled and interval-skipped calls do not initialize or run it.
+
+Native iOS face budgets above 32 abstain before C++ graph allocation. Oversized
+budgets, missing/corrupt bundled model, task construction and inference failures yield
+the existing `.skipped / .detectorUnavailable` summary. There is no silent Vision
+retry. Malformed meshes produce `.partial / .mappingFailed`; valid peer faces
+survive. Invalid optional pose removes that pose alone. No raw native error or
+model path enters public diagnostics. Model validation occurs at task creation,
+not once per image. Different population/pose/occlusion accuracy and physical
+device speed remain unmeasured. Scoped new evidence belongs to the integration
+record linked from [PLANS.md](PLANS.md).
+
 ## 2026-10-09 sustained simulator detection limitation
 
 The adjacent owner host's sustained nose regression exposed progressively
@@ -11,7 +48,7 @@ returns Vision code 9, so that path cannot substitute for CPU. The internal
 platform cause remains unidentified.
 The SDK retains its existing `.partial / .mappingFailed` summary and safe
 abstention; no malformed support, fabricated point or lower threshold is admitted.
-This task does not modify SDK production code or replace the previous no-skip
+That earlier investigation did not modify SDK production code or replace its previous no-skip
 receipt. A few successful native face calls do not establish sustained inference.
 Host debug mode displays the observed points/revisions/reasons and may expose
 drift rather than qualify accuracy. Aggregate checks, the failed nose oracle and
@@ -22,7 +59,7 @@ the passed bounded host tests are separately scoped in the
 
 The newly authorized external owner editor exposed `com.apple.Vision / 9` in
 the default face-landmark inference path on the reused iPhone 15 Pro / iOS 17.5
-simulator. `VisionFaceDetector.defaultObservationProvider` now selects advertised
+simulator. The retained Vision provider selects advertised
 CPU devices for each compute stage under `targetEnvironment(simulator)` using
 [Apple's compute-device API](https://developer.apple.com/documentation/vision/vnrequest/setcomputedevice(_:for:)).
 Physical-device and macOS requests retain Vision's default policy. No public

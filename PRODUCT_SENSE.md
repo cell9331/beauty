@@ -1,5 +1,16 @@
 # PRODUCT_SENSE.md
 
+## Dense still-image behavior (2026-10-09)
+
+The iOS still-image facade now consumes the 478-point distribution for fixed
+canvas mapping, measured iris boundaries for eligible size/gaze work, near-rigid
+pose for conservative map attenuation and denser geometric texture exclusions.
+Smoothing and sharpening retain separate contributions rather than canceling
+through one constant gain. No new public control or nonzero default is added.
+Both backend selections share CPU-owned dense geometry/texture; known host
+protection remains exact. [Mechanism and qualified evidence scope](docs/DENSE_FACE_REFACTOR.md)
+are separate from general anatomy, unknown-input protection and device speed.
+
 ## Current owner-local batch validation (2026-10-03)
 
 Use `python3 -B scripts/current-batch/run.py` for the current default inventory
@@ -115,6 +126,21 @@ metadata and normalized parameter snapshots, then handles output, typed errors
 and redacted result diagnostics. SDK code owns processing; hosts own their UI,
 permissions, input acquisition, protected-resource lifecycle and export.
 Source, binaries, model assets, fixtures and derived data remain owner-local.
+
+On iOS, ordinary `BeautyEngine()` now uses bundled MediaPipe Face Landmarker
+1.1.0; the host does not supply a model path or add a separate detector. macOS
+uses Vision. Existing calls, parameter defaults, rendering backend selection and
+caller serialization are unchanged. Actual iOS nose/lip/lower-contour coordinates
+now come from dense observed points. This changes detection support, so old Vision
+effect evidence is not a claim of identical MediaPipe output or general portrait
+quality. No new beauty effect or automatic object/skin segmentation is introduced.
+
+A still-image result with admitted MediaPipe support can include aggregate
+`beauty.detection.meshPointCount` (478) and
+`beauty.detection.hasFacialTransformation` (0/1). These are support diagnostics,
+not raw point/pose APIs or effect-quality scores. Unrequested/skipped/no-face
+routes do not reuse those metrics. Detection failure still removes dependent
+work and preserves admitted global color/filter work.
 
 `maximumFaceCount` caps detector selection, not multi-face rendering. Current
 still-image effects use the primary selected face; `usedFaceCount` is a detector

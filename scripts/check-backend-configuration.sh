@@ -28,7 +28,7 @@ run_bounded() {
 
 validate_static_boundary() {
   local root="$1"
-  python3 - "${root}" <<'PY'
+  python3 - "${root}" "${repository_root}/scripts/validate-sdk-dependencies.py" <<'PY'
 from pathlib import Path
 import json
 import re
@@ -230,8 +230,11 @@ for marker in (
 if re.search(r"\b(?:XCTSkip|UI(Image|Kit)|NS(Image|Application)|URLSession|FileManager)\b", text["configuration_tests"] + text["routing_tests"], re.IGNORECASE):
     raise SystemExit("configuration tests contain UI, path, or skip behavior")
 
-if re.search(r"\.package\s*\(|https?://", text["package"]):
-    raise SystemExit("package dependency drifted")
+import runpy
+try:
+    runpy.run_path(sys.argv[2])["validate"](text["package"])
+except ValueError as error:
+    raise SystemExit(str(error))
 manifest = json.loads(text["manifest"])
 if [item.get("id") for item in manifest.get("presets", [])] != [
     "natural", "clear", "refined", "male-natural", "id-photo-natural"
