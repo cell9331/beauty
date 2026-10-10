@@ -82,6 +82,22 @@ package struct BeautyBackendDiagnostics: Equatable, Sendable {
         self.collisionCount = collisionCount
         self.changedPixelCount = changedPixelCount
     }
+
+    /// The same bounded composition counters cross either execution policy.
+    package init(width: Int, height: Int,
+                 compositionSummary: BeautyLocalRetouchCompositionSummary?) {
+        let pixelCount = width.multipliedReportingOverflow(by: height)
+        let limit = pixelCount.overflow
+            ? BeautyConfiguration.defaultMaximumInputPixelCount
+            : pixelCount.partialValue
+        self.init(
+            width: width, height: height, preservesAlpha: true, preservesExtent: true,
+            unitCount: min(compositionSummary?.acceptedUnitCount ?? 0, limit),
+            failureCount: min(compositionSummary?.rejectedUnitCount ?? 0, limit),
+            collisionCount: min(compositionSummary?.collisionPixelCount ?? 0, limit),
+            changedPixelCount: min(compositionSummary?.changedPixelCount ?? 0, limit)
+        )
+    }
 }
 
 /// One validated, backend-neutral execution request.

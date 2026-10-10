@@ -80,20 +80,10 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
             }
 
             let dimensions = dimensions(of: output)
-            let summary = request.compositionSummary
-            let pixelCount = dimensions.width.multipliedReportingOverflow(by: dimensions.height)
-            let boundedPixelCount = pixelCount.overflow
-                ? BeautyConfiguration.defaultMaximumInputPixelCount
-                : pixelCount.partialValue
             let diagnostics = BeautyBackendDiagnostics(
                 width: dimensions.width,
                 height: dimensions.height,
-                preservesAlpha: true,
-                preservesExtent: true,
-                unitCount: min(summary?.acceptedUnitCount ?? 0, boundedPixelCount),
-                failureCount: min(summary?.rejectedUnitCount ?? 0, boundedPixelCount),
-                collisionCount: min(summary?.collisionPixelCount ?? 0, boundedPixelCount),
-                changedPixelCount: min(summary?.changedPixelCount ?? 0, boundedPixelCount)
+                compositionSummary: request.compositionSummary
             )
             return try BeautyBackendResult(
                 output: output,
@@ -145,7 +135,7 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
             bytes: rgbaBytes,
             passes: try makePasses(
                 plan: plan,
-                selectedFaceSupport: selectedFaceSupport,
+                face: selectedFaceSupport.map(BeautyFaceGeometryAdapter.makeGeometry(from:)),
                 compositionSummary: compositionSummary,
                 hasCPUComposedCarrier: canonicalImage != nil,
                 inputKind: .pixelBuffer
@@ -175,121 +165,36 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
         if let canonicalImage {
             guard canonicalImage.width == dimensions.width,
                   canonicalImage.height == dimensions.height
-            else {
-                throw BeautyError.invalidInput
-            }
+            else { throw BeautyError.invalidInput }
             bytes = Array(canonicalImage.rgba8Data)
         } else {
-            bytes = try rasterize(image: image, extent: extent, width: dimensions.width, height: dimensions.height)
+            bytes = try rasterize(image: image, extent: extent,
+                                  width: dimensions.width, height: dimensions.height)
         }
 
+        let face = selectedFaceSupport.map(BeautyFaceGeometryAdapter.makeGeometry(from:))
         let texturedBytes = BeautySkinTexturePipeline.applyRGBA(
             bytes, width: dimensions.width, height: dimensions.height, plan: plan,
             renderQuality: renderQuality,
             faceBounds: selectedFaceSupport?.imageBounds,
-            exclusionMask: textureExclusionMask,
-            denseSupport: selectedFaceSupport.flatMap { BeautyFaceGeometryAdapter.makeGeometry(from: $0).denseSupport }
+            exclusionMask: textureExclusionMask, denseSupport: face?.denseSupport
         )
-        let refinement: FaceContourSubpixelRefiner.Refinement?
-        if let selectedFaceSupport {
-            refinement = FaceContourSubpixelRefiner.refineWithProtection(
-                texturedBytes,
-                width: dimensions.width,
-                height: dimensions.height,
-                face: BeautyFaceGeometryAdapter.makeGeometry(from: selectedFaceSupport),
-                strength: plan.effectiveStrengths.faceContourSmooth
-            )
-        } else {
-            refinement = nil
-        }
-        let alignedBytes: [UInt8]
-        let suppressHeadWrapPoints: Bool
-        if let selectedFaceSupport {
-            let face = BeautyFaceGeometryAdapter.makeGeometry(from: selectedFaceSupport)
-            suppressHeadWrapPoints = plan.effectiveStrengths.headWrap != 0 &&
-                !HairlineBoundaryRefiner.hasCoherentHairCap(
-                    refinement?.bytes ?? texturedBytes,
-                    width: dimensions.width, height: dimensions.height, face: face
-                )
-            let hairlineBytes = HairlineBoundaryRefiner.apply(
-                refinement?.bytes ?? texturedBytes,
-                width: dimensions.width, height: dimensions.height,
-                face: face,
-                strength: HairlineBoundaryRefiner.combinedStrength(
-                    hairline: plan.effectiveStrengths.hairlineHeight,
-                    forehead: plan.effectiveStrengths.foreheadHeight
-                )
-            )
-            alignedBytes = SubmentalContourRefiner.apply(
-                hairlineBytes, width: dimensions.width, height: dimensions.height,
-                face: face,
-                baseStrength: plan.effectiveStrengths.doubleChinReduction,
-                proStrength: plan.effectiveStrengths.doubleChinReductionPro
-            )
-        } else {
-            alignedBytes = refinement?.bytes ?? texturedBytes
-            suppressHeadWrapPoints = false
-        }
-
-        let denseFace = selectedFaceSupport.map(BeautyFaceGeometryAdapter.makeGeometry(from:))
+        let stage = BeautyStillImageGeometryStage(
+            sourceRGBA: texturedBytes, width: dimensions.width, height: dimensions.height,
+            plan: plan, face: face
+        )
         let renderedBytes = try invokeRuntime(
-            width: dimensions.width,
-            height: dimensions.height,
-            bytes: alignedBytes,
+            width: dimensions.width, height: dimensions.height,
+            bytes: stage.sourceRGBA,
             passes: try makePasses(
-                plan: plan,
-                selectedFaceSupport: selectedFaceSupport,
-                compositionSummary: compositionSummary,
-                hasCPUComposedCarrier: canonicalImage != nil,
-                inputKind: .stillImage,
-                protectedLeftContour: refinement?.protectedLeft ?? false,
-                protectedRightContour: refinement?.protectedRight ?? false,
-                suppressHairlinePoints: plan.effectiveStrengths.hairlineHeight != 0,
-                suppressSubmentalPoints: plan.effectiveStrengths.doubleChinReduction != 0 ||
-                    plan.effectiveStrengths.doubleChinReductionPro != 0,
-                suppressHeadWrapPoints: suppressHeadWrapPoints,
-                suppressForeheadPoints: plan.effectiveStrengths.foreheadHeight != 0,
-                suppressPhiltrumPoints: plan.effectiveStrengths.philtrumLength != 0 &&
-                    selectedFaceSupport.map {
-                        !PhiltrumSourceAdmission.hasRegisteredUpperLip(
-                            refinement?.bytes ?? texturedBytes,
-                            width: dimensions.width, height: dimensions.height,
-                            face: BeautyFaceGeometryAdapter.makeGeometry(from: $0)
-                        )
-                    } ?? false,
-                suppressWholeFaceTranslationPoints: true,
-                suppressDenseGeometry: denseFace?.denseSupport != nil
+                plan: plan, face: face, compositionSummary: compositionSummary,
+                hasCPUComposedCarrier: canonicalImage != nil, inputKind: .stillImage,
+                preparedGeometryPoints: stage.controlPoints,
+                suppressDenseGeometry: stage.usesDenseMap
             )
         )
-        let geometrizedBytes: [UInt8]
-        if let face = denseFace, face.denseSupport != nil {
-            let points = BeautyGeometryEffectPipeline.controlPoints(
-                for: plan, face: face,
-                protectedLeftContour: refinement?.protectedLeft ?? false,
-                protectedRightContour: refinement?.protectedRight ?? false,
-                suppressHairlinePoints: plan.effectiveStrengths.hairlineHeight != 0,
-                suppressSubmentalPoints: plan.effectiveStrengths.doubleChinReduction != 0 || plan.effectiveStrengths.doubleChinReductionPro != 0,
-                suppressHeadWrapPoints: suppressHeadWrapPoints,
-                suppressForeheadPoints: plan.effectiveStrengths.foreheadHeight != 0,
-                suppressPhiltrumPoints: plan.effectiveStrengths.philtrumLength != 0 &&
-                    !PhiltrumSourceAdmission.hasRegisteredUpperLip(refinement?.bytes ?? texturedBytes,
-                        width: dimensions.width, height: dimensions.height, face: face),
-                suppressWholeFaceTranslationPoints: true
-            )
-            geometrizedBytes = BeautyDenseGeometryMap(width: dimensions.width, height: dimensions.height,
-                face: face, points: points)?.applyRGBA(renderedBytes) ?? renderedBytes
-        } else { geometrizedBytes = renderedBytes }
-        let translatedBytes: [UInt8]
-        if let selectedFaceSupport {
-            translatedBytes = WholeFaceTranslationRefiner.apply(
-                geometrizedBytes, width: dimensions.width, height: dimensions.height,
-                face: BeautyFaceGeometryAdapter.makeGeometry(from: selectedFaceSupport),
-                xStrength: plan.effectiveStrengths.wholeFaceXPosition,
-                yStrength: plan.effectiveStrengths.wholeFaceYPosition
-            )
-        } else {
-            translatedBytes = geometrizedBytes
-        }
+        let geometrizedBytes = stage.applyingDenseMap(to: renderedBytes)
+        let translatedBytes = stage.applyingTranslation(to: geometrizedBytes)
         guard let colorSpace = CGColorSpace(name: CGColorSpace.sRGB) else {
             throw BeautyError.unsupportedPixelFormat
         }
@@ -297,8 +202,7 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
             bitmapData: Data(translatedBytes),
             bytesPerRow: dimensions.width * 4,
             size: CGSize(width: dimensions.width, height: dimensions.height),
-            format: .RGBA8,
-            colorSpace: colorSpace
+            format: .RGBA8, colorSpace: colorSpace
         )
         guard output.extent == CGRect(origin: .zero, size: CGSize(width: dimensions.width, height: dimensions.height)) else {
             throw BeautyError.renderFailed("output_conversion_failed")
@@ -361,18 +265,11 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
 
     private func makePasses(
         plan: BeautyEffectPlan,
-        selectedFaceSupport: BeautyFaceObservation?,
+        face: FaceGeometry?,
         compositionSummary: BeautyLocalRetouchCompositionSummary?,
         hasCPUComposedCarrier: Bool,
         inputKind: BeautyMetalColorInputKind,
-        protectedLeftContour: Bool = false,
-        protectedRightContour: Bool = false,
-        suppressHairlinePoints: Bool = false,
-        suppressSubmentalPoints: Bool = false,
-        suppressHeadWrapPoints: Bool = false,
-        suppressForeheadPoints: Bool = false,
-        suppressPhiltrumPoints: Bool = false,
-        suppressWholeFaceTranslationPoints: Bool = false,
+        preparedGeometryPoints: [WarpControlPoint]? = nil,
         suppressDenseGeometry: Bool = false
     ) throws -> [BeautyMetalPass] {
         var passes: [BeautyMetalPass] = []
@@ -388,23 +285,12 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
             passes.append(.composedRetouch(try BeautyMetalComposedRetouchParameters()))
         }
 
-        let face = selectedFaceSupport.map(BeautyFaceGeometryAdapter.makeGeometry(from:))
         let strengths = plan.effectiveStrengths
         let globalColor = !plan.activeDomains.isDisjoint(with: [.skin, .color, .filter])
         let lipRequested = plan.activeDomains.contains(.lipColor) && strengths.lipColor > 0
         let lipEnvelope = lipRequested ? face.flatMap(lipEnvelope) : nil
-        let geometryPoints = face.map {
-            BeautyGeometryEffectPipeline.controlPoints(
-                for: plan, face: $0,
-                protectedLeftContour: protectedLeftContour,
-                protectedRightContour: protectedRightContour,
-                suppressHairlinePoints: suppressHairlinePoints,
-                suppressSubmentalPoints: suppressSubmentalPoints,
-                suppressHeadWrapPoints: suppressHeadWrapPoints,
-                suppressForeheadPoints: suppressForeheadPoints,
-                suppressPhiltrumPoints: suppressPhiltrumPoints,
-                suppressWholeFaceTranslationPoints: suppressWholeFaceTranslationPoints
-            )
+        let geometryPoints = preparedGeometryPoints ?? face.map {
+            BeautyGeometryEffectPipeline.controlPoints(for: plan, face: $0)
         } ?? []
         let geometry = suppressDenseGeometry ? nil : try Self.makeGeometryPass(points: geometryPoints)
         guard globalColor || lipEnvelope != nil || geometry != nil || !passes.isEmpty else {

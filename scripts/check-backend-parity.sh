@@ -207,7 +207,13 @@ for marker in (
 ):
     if marker not in tests:
         raise SystemExit(f"parity marker missing: {marker}")
-if "XCTAssertEqual(gpuBytes, cpuBytes)" not in text["parity"]:
+neutral_case_name = "func testGeneratedNeutralPixelBufferIsStructurallyAndByteIdentical() throws"
+neutral_case_start = text["parity"].find(neutral_case_name)
+neutral_case_end = text["parity"].find("\n    func ", neutral_case_start + len(neutral_case_name))
+if neutral_case_start < 0 or neutral_case_end < 0:
+    raise SystemExit("neutral CPU/Metal parity case missing")
+neutral_case = text["parity"][neutral_case_start:neutral_case_end]
+if neutral_case.count("XCTAssertEqual(gpuBytes, cpuBytes)") != 1:
     raise SystemExit("exact neutral CPU comparison missing")
 if "BeautyBackendSafetyParityTests" not in text["safety"]:
     raise SystemExit("safety suite missing")
@@ -428,7 +434,13 @@ self_test() {
 from pathlib import Path
 import sys
 path = Path(sys.argv[1]); value = path.read_text(encoding="utf-8")
-path.write_text(value.replace("XCTAssertEqual(gpuBytes, cpuBytes)", "XCTAssertEqual(gpuBytes.count, cpuBytes.count)", 1), encoding="utf-8")
+case_name = "func testGeneratedNeutralPixelBufferIsStructurallyAndByteIdentical() throws"
+start = value.index(case_name)
+end = value.index("\n    func ", start + len(case_name))
+case = value[start:end]
+assert case.count("XCTAssertEqual(gpuBytes, cpuBytes)") == 1
+case = case.replace("XCTAssertEqual(gpuBytes, cpuBytes)", "XCTAssertEqual(gpuBytes.count, cpuBytes.count)", 1)
+path.write_text(value[:start] + case + value[end:], encoding="utf-8")
 PY
   if validate_static_boundary "$temporary_root" >/dev/null 2>&1; then echo "cpu_oracle_mutation_failed" >&2; return 1; fi
   cp -- "$package_root/Tests/BeautyEffectsTests/BeautyBackendParityTests.swift" "$mutation_path"
