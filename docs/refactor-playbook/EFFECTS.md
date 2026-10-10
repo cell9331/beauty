@@ -10,7 +10,7 @@
 把饱和度/对比度变化当成磨皮，或把颜色变化当成形变，会让验收失去对象。
 当前磨皮/锐化使用双边低频和独立细节分支，共享CPU实现、3×3/5×5/7×7邻域，
 受新鲜主脸、保守椭圆、粗五官/颜色/硬边及dense几何保护限制；不是完整导向滤波或语义分割。
-旧常数gain抵消已撤除；组合效果和保护按[本轮契约](../DENSE_FACE_REFACTOR.md)验证。
+旧常数gain抵消已撤除；组合效果和保护按[本轮契约](../sdk/DENSE_FACE_REFACTOR.md)验证。
 源码参照 [BeautySkinTexturePipeline](../../BeautySDK/Sources/BeautyEffects/Render/BeautySkinTexturePipeline.swift)。
 
 候选高低频分离可写为：`L = edgePreservingFilter(I)`，`H = I−L`，
@@ -46,7 +46,7 @@ Lab和线性RGB不是可互换标签；转换时要写明原色、白点、传�
 
 柔边权重适合局部着色，当前 `BeautyTextureExclusionMask` 的0/255则是**精确保留**契约，
 不能为了羽化把保护值变软。该保护还应考虑滤波邻域跨区污染，按输出像素与邻域分别验证。
-当前host蒙版仅影响磨皮/锐化，见 [保护指南](../HOST_TEXTURE_PROTECTION.md)。
+当前host蒙版仅影响磨皮/锐化，见 [保护指南](../sdk/HOST_TEXTURE_PROTECTION.md)。
 
 478点密度不解决同肤色贴片和完整低对比唇缘自动保护缺口。
 原手册提出的皮肤/头发/眼镜分割只能作为未验证方法，未授权下载或接入新的解析模型。
@@ -85,7 +85,7 @@ MediaPipe让鼻/唇/轮廓使用实测坐标；目前又接入可见虹膜环、
 去脂、眼袋、黑眼圈、泪沟、上睑提肌是不同目标。原手册把去脂写成下睑提亮/平滑，
 与当前保留的上睑字段不一致；提亮或滤波不能证明脂肪识别/体积减少。
 `upperEyelidFullnessReduction` 保持 `suspended`；EYE/SEG失败与关闭状态见
-[终局记录](../RETOUCH_FINAL_DISPOSITION_2026-10-03.md)。
+[终局记录](../history/retouch/RETOUCH_FINAL_DISPOSITION_2026-10-03.md)。
 3D重建、补纹理、眼球重定向和泛化解析均需要新输入/模型/证据，本文不安排其实施。
 
 ## 强度如何标定

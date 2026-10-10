@@ -8,14 +8,18 @@
 统一进入 [BeautyGeometryEffectPipeline](../../BeautySDK/Sources/BeautyEffects/Render/BeautyGeometryEffectPipeline.swift)。
 dense路线按478点分布加密覆盖整张图的输出网格，每格固定两个三角。
 局部位移在像素度量合成后统一限制位移/梯度，再用分片仿射映射采样；两backend共享CPU-owned阶段。
-[实现契约](../DENSE_FACE_REFACTOR.md)说明全覆盖、保护行和充分无折叠条件。
+[实现契约](../sdk/DENSE_FACE_REFACTOR.md)说明全覆盖、保护行和充分无折叠条件。
 旧Vision/retained Metal仍是局部影响点renderer：Metal最多256点，
 facade无行限制超量计划走完整CPU容量路线，直接Metal/行限制超量typed failure。
 
 重构目标是使每个效果产生可解释、可合并的位移计划，并证明统一映射的保护与稳定性。
 当前 [GeometryConflictResolver](../../BeautySDK/Sources/BeautyEffects/Warp/GeometryConflictResolver.swift)
-限制的是参数总强度；dense地图另在所有三角检查位移梯度并统一缩放，
-二者分别承担参数冲突与实际映射安全。参数预算本身不等于无折叠证明。
+在有新鲜 dense 支撑时，只对九个涉及 source-raster/refinement 或网格后平移的字段
+保留独立的保守总预算；其余 mapped 字段按各自 cap 和正负方向进入统一地图，
+增加鼻子调整不会消耗眼睛的标量额度。没有 dense carrier 的 legacy 路线仍使用原总预算。
+dense 地图最终对实际组合的位移、每三角梯度与姿态统一限幅；超界组合仍可能共同减弱。
+九字段清单和精确界限见[组合准入契约](../sdk/DENSE_FACE_REFACTOR.md#组合准入与宿主滑块)。
+参数预算本身不等于无折叠证明。
 现有特定水平内收路线有专用充分条件，不能推广为全部二维组合安全。
 
 ## 网格为何能逆向采样
