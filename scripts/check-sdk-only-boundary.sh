@@ -607,6 +607,11 @@ audited_test_backend_hashes = {
 audited_test_backend_hashes[
     "BeautySDK/Tests/BeautyCoreTests/BeautySkinTextureHostProtectionTests.swift"
 ] = "d88c1ef8eb25a5f2bfc2fb3f75a52f2d33782e6324ffbe6757361d2145e4c890"
+# Prepared-photo parity exercises only the retained Metal selection and existing
+# alpha admission; bind this reviewed test revision, not future test/API changes.
+audited_test_backend_hashes[
+    "BeautySDK/Tests/BeautyCoreTests/BeautyPreparedStillImageTests.swift"
+] = "82e68a8e622fa0e8609c9b63b0601bb029d0917c164e6d8ec6190066f08b2698"
 for base in (root / "BeautySDK/Sources", root / "BeautySDK/Tests"):
     if not base.exists():
         continue
@@ -857,7 +862,7 @@ PY
     printf '%s\n' 'enum BeautyRenderBackend { case gpu }' > "$fixture/BeautySDK/Sources/Backend.swift"
     expect_failure validate_post_archive "$fixture"
     rm "$fixture/BeautySDK/Sources/Backend.swift"
-    for cpu_test in BeautyEngineMouthNegativeTests BeautyEngineMouthLifecycleTests RepairedControlSafetyTests BeautyUpperEyelidLiveVisionTests BeautySkinTextureHostProtectionTests; do
+    for cpu_test in BeautyEngineMouthNegativeTests BeautyEngineMouthLifecycleTests RepairedControlSafetyTests BeautyUpperEyelidLiveVisionTests BeautySkinTextureHostProtectionTests BeautyPreparedStillImageTests; do
         cp "$PROJECT_ROOT/BeautySDK/Tests/BeautyCoreTests/$cpu_test.swift" \
             "$fixture/BeautySDK/Tests/BeautyCoreTests/$cpu_test.swift"
         validate_post_archive "$fixture" >/dev/null

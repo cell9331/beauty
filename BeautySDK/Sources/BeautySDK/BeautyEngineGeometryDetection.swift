@@ -17,7 +17,9 @@ extension BeautyEngine {
         imageExtent: CGSize,
         parameters: BeautyParameters,
         requiresLocalSupport: Bool = false,
-        skipDetectionForInterval: Bool = false
+        skipDetectionForInterval: Bool = false,
+        preparedSource: BeautyPreparedStillImageState? = nil,
+        canonicalDetection: Bool = false
     ) -> BeautyEngineGeometryRoute {
         let requiresFaceGeometry = BeautyEffectResolver.requiresFaceGeometry(parameters: parameters)
         let normalized = parameters.normalized()
@@ -74,13 +76,13 @@ extension BeautyEngine {
             purpose = .geometry
         }
 
-        let detection = faceDetector.detect(
-            image: image,
-            metadata: metadata,
-            imageExtent: imageExtent,
-            configuration: configuration,
-            purpose: purpose
-        )
+        let detect = {
+            self.faceDetector.detect(image: image, metadata: metadata,
+                imageExtent: imageExtent, configuration: self.configuration, purpose: purpose)
+        }
+        let (detection, reused) = preparedSource.map {
+            $0.detection(purpose: purpose, canonical: canonicalDetection, produce: detect)
+        } ?? (detect(), false)
         let plan = BeautyEffectResolver.resolve(
             parameters: parameters,
             selectedFaceObservation: detection.observations.first
@@ -90,7 +92,8 @@ extension BeautyEngine {
                 plan,
                 summary: detection.summary,
                 geometryRequired: requiresFaceGeometry,
-                observation: detection.observations.first
+                observation: detection.observations.first,
+                preparedReuse: preparedSource == nil ? nil : reused
             ),
             detectionSummary: detection.summary,
             selectedFaceObservation: detection.observations.first
@@ -101,12 +104,14 @@ extension BeautyEngine {
         _ plan: BeautyEffectPlan,
         summary: BeautyDetectionSummary,
         geometryRequired: Bool,
-        observation: BeautyFaceObservation? = nil
+        observation: BeautyFaceObservation? = nil,
+        preparedReuse: Bool? = nil
     ) -> BeautyEffectPlan {
         var metrics = plan.metrics
         metrics["beauty.detection.geometryRequired"] = geometryRequired ? 1 : 0
         metrics["beauty.detection.faceCount"] = Double(summary.faceCount)
         metrics["beauty.detection.usedFaceCount"] = Double(summary.usedFaceCount)
+        if let preparedReuse { metrics["beauty.detection.preparedReuse"] = preparedReuse ? 1 : 0 }
         if let mesh = observation?.mesh {
             metrics["beauty.detection.meshPointCount"] = Double(mesh.points.count)
             metrics["beauty.detection.hasFacialTransformation"] = mesh.facialTransformation == nil ? 0 : 1

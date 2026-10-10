@@ -32,8 +32,13 @@ The upstream calculator registry requires `-all_load`. BeautySDK is a local-path
 SwiftPM consumer; these unsafe linker flags do not establish compatibility with
 remote version-based package consumption or third-party distribution.
 Blendshapes remain disabled because existing effects do not use them. Dense
-landmarks and the optional row-major pose matrix are request-local package data;
-neither appears in public diagnostics or persisted evidence. The transform is
+landmarks and the optional row-major pose matrix are package-only data: ordinary
+calls keep them request-local, while explicit prepared-photo editing retains
+valid observations only for its immutable engine-owned source until release,
+replacement or reset. They are never persisted;
+neither appears in standard render diagnostics or persisted evidence. The
+owner-only `OwnerDiagnostics` SPI separately permits transient x/y overlay points,
+with aggregate-only descriptions/reflection and no persistence or pose export. The transform is
 not used as a substitute for the current 2D warp algorithms.
 
 The pinned [iOS result helper](https://github.com/google-ai-edge/mediapipe/blob/v1.1.0/mediapipe/tasks/ios/vision/face_landmarker/utils/sources/MPPFaceLandmarkerResult%2BHelpers.mm)
