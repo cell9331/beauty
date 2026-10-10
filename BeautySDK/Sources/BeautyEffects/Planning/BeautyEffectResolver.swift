@@ -884,7 +884,10 @@ public enum BeautyEffectResolver {
         var iterationIndex = 0
         for _ in 0..<44 {
             defer { iterationIndex += 1 }
-            let resolution = GeometryConflictResolver().resolve(strengths: retainedBaseline)
+            let resolution = GeometryConflictResolver().resolve(
+                strengths: retainedBaseline,
+                usesDenseMap: faceGeometry.denseSupport != nil && faceGeometry.freshness == .fresh
+            )
             var nextBaseline = faceProvider
                 .fieldEmissions(face: faceGeometry, strengths: resolution.strengths)
                 .sanitizing(retainedBaseline)
@@ -924,7 +927,10 @@ public enum BeautyEffectResolver {
             retainedBaseline = nextBaseline
         }
 
-        return GeometryConflictResolver().resolve(strengths: retainedBaseline)
+        return GeometryConflictResolver().resolve(
+            strengths: retainedBaseline,
+            usesDenseMap: faceGeometry.denseSupport != nil && faceGeometry.freshness == .fresh
+        )
     }
 
     private static let geometryFieldNames = [

@@ -13,7 +13,32 @@ struct GeometryConflictResolver: Sendable {
         self.totalThreshold = totalThreshold
     }
 
-    func resolve(strengths: BeautyEffectiveStrengths) -> GeometryConflictResolution {
+    func resolve(
+        strengths: BeautyEffectiveStrengths,
+        usesDenseMap: Bool = false
+    ) -> GeometryConflictResolution {
+        if usesDenseMap {
+            // These fields also depend on source-raster refinement/admission
+            // or post-map rigid translation. Preserve their conservative joint
+            // budget independently of the mapped facial fields.
+            // All other fields reach the map's actual displacement/gradient
+            // admission; adding a nose edit must not consume an eye's L1 quota.
+            let sourceFields: [WritableKeyPath<BeautyEffectiveStrengths, Float>] = [
+                \.faceContourSmooth, \.hairlineHeight, \.doubleChinReduction,
+                \.doubleChinReductionPro, \.headWrap, \.foreheadHeight,
+                \.philtrumLength, \.wholeFaceXPosition, \.wholeFaceYPosition
+            ]
+            var sourceOnly = BeautyEffectiveStrengths()
+            for key in sourceFields { sourceOnly[keyPath: key] = strengths[keyPath: key] }
+            let source = resolve(strengths: sourceOnly)
+            var combined = strengths
+            for key in sourceFields { combined[keyPath: key] = source.strengths[keyPath: key] }
+            var metrics = source.metrics
+            metrics["beauty.effects.denseMapCombination"] = 1
+            return GeometryConflictResolution(
+                strengths: combined, warnings: source.warnings, metrics: metrics
+            )
+        }
         let total = geometryTotal(strengths)
         guard total > totalThreshold else {
             return GeometryConflictResolution(strengths: strengths, warnings: [], metrics: [:])
