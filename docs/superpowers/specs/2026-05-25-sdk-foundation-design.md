@@ -21,12 +21,12 @@ Authoritative inputs:
 - `RELIABILITY.md`
 - `PRODUCT_SENSE.md`
 - `QUALITY_SCORE.md`
-- `docs/02_development_stages_full_plan.md`
-- `docs/03_architecture_spm_skeleton.md`
-- `docs/04_development_spec.md`
-- `docs/05_public_api_design.md`
-- `docs/08_metal_render_pipeline_design.md`
-- `docs/10_document_audit_report.md`
+- `docs/history/design/02_development_stages_full_plan.md`
+- `docs/history/design/03_architecture_spm_skeleton.md`
+- `docs/history/design/04_development_spec.md`
+- `docs/history/design/05_public_api_design.md`
+- `docs/history/design/08_metal_render_pipeline_design.md`
+- `docs/history/audits/10_document_audit_report.md`
 
 Current repository state observed on 2026-05-25:
 
@@ -141,7 +141,7 @@ BeautySDK/
 
 `BeautyParameters` is the stable public parameter snapshot. Numeric values are clamped at construction or mutation boundaries. Defaults represent no effect.
 
-The 1.0 model keeps the 31 fields documented in `DESIGN.md` and `docs/06_beauty_parameters_spec.md`:
+The 1.0 model keeps the 31 fields documented in `DESIGN.md` and `docs/history/design/06_beauty_parameters_spec.md`:
 
 - Skin: `skinSmoothing`, `skinWhitening`, `skinRosy`, `skinSharpen`
 - Color: `brightness`, `contrast`, `saturation`, `temperature`, `tint`, `exposure`, `highlight`, `shadow`

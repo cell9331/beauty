@@ -48,7 +48,7 @@ configuration is captured at engine initialization.
 still image
 → validate dimensions, limits, resources and applicable color/alpha contract
 → canonicalize once when local retouch or an exclusion mask requires it
-→ one request-local platform detection/mapping route when face support is required
+→ resolve face support: fresh detection, or valid explicit prepared-source reuse
 → resolve normalized strengths, provider admission and geometry budget
 → original-pixel local-retouch composition when requested
 → selected backend: shared texture/color, geometry and source-raster refiners
@@ -62,13 +62,29 @@ supports face-independent work; active smoothing/sharpening additionally request
 fresh face bounds. It has no detection-backed facial geometry or teeth/sclera/
 upper-eyelid local-retouch route. No realtime throughput claim follows from this API.
 
-Unindexed support-dependent still calls detect afresh. The indexed camera/video
+Ordinary unindexed support-dependent still calls detect afresh. The indexed camera/video
 route detects on indices divisible by `detectionFrameInterval`; other frames
 abstain from face-dependent work without reusing prior observations.
 `preferredProcessingSize` bounds only the detector raster, preserving output size.
 Detection selects faces, but current still-image effects use only the primary face.
 
+The explicit `prepareStillImage(CGImage, metadata:)` editing route deep-copies
+one RGB8 photo into an engine-owned source. Its opaque handle authorizes only
+that engine's current source. Prepared renders reuse usable/no-face detection
+by purpose and original/canonical raster (at most six entries), while geometry,
+texture, masks and local composition execute per snapshot. Replacement, release
+and reset release the source/support and expire the handle. Ordinary still,
+encoded and indexed frame routes retain their existing fresh/cadence contracts.
+The external editor prepares each engine's fixed preview only; full-size export
+uses fresh support. See [prepared photo editing](docs/sdk/PREPARED_PHOTO_EDITING.md).
+
 `BeautyFaceDetector.production()` chooses MediaPipe on iOS and Vision on macOS.
+The owner's external editor can import `OwnerDiagnostics` SPI and serialize a
+separate `BeautyOwnerLandmarkDetector`. It reuses that factory, canonicalizer and
+pinned assets for transient upright preview/output re-detection, independently
+of render-engine selection state. It adds no model copy, target or dependency.
+`BeautyOwnerLandmarks` exposes 478 ordered x/y samples on iOS only to the owner's
+in-memory overlay; standard result diagnostics and reflection stay aggregate.
 The package compatibility name `VisionFaceDetector` remains available to existing
 Vision-specific fixtures. The iOS provider uses CPU image mode, lazily reuses
 the native task and recreates it on `reset()` or face-budget changes. It retains
@@ -87,7 +103,11 @@ request-local: validated near-rigid rotation now attenuates the dense unified
 inverse map, rather than being applied to image pixels as a 4x4 warp.
 Visible iris-ring points support size/gaze admission, while oval/eyelid/brow/lip
 geometry adds conservative texture protection. Blendshapes remain disabled.
-[Dense static-image contract](docs/DENSE_FACE_REFACTOR.md) owns the mechanism and limits.
+[Dense static-image contract](docs/sdk/DENSE_FACE_REFACTOR.md) owns the mechanism and limits.
+The resolver distinguishes dense mapped fields from source-raster-dependent and
+legacy fields. Dense mapped strengths reach the shared final map independently
+capped; its physical displacement/gradient admission replaces their scalar sum
+quota. This changes no target, dependency, retained shader or public API boundary.
 No second detector is invoked on failure. These changes do not qualify new beauty
 effects or guarantee arbitrary pose/occlusion accuracy.
 
@@ -107,6 +127,11 @@ Geometry providers feed one `BeautyGeometryEffectPipeline`. Dense still images
 use a full-canvas lattice with fixed triangle connectivity, pixel-metric influence,
 combined displacement/gradient bounds and canonical pixel centers. Both selected
 backends share this CPU-owned stage; GPU does not also submit its old point pass.
+`BeautyStillImageGeometryStage` owns request-local contour/hairline/submental
+preparation, source admission, final control points and post-sampler translation
+for both executors. CPU and Metal supply their rasters at the original stage
+boundaries; their existing color order remains intact. Metal adapts the selected
+face once and reuses the prepared points rather than repeating source admission.
 The Metal 256-point bound applies only to the retained point route. Shared CPU-owned
 still-image refiners implement source-admitted hairline/forehead, outer
 submental contour, philtrum and whole-face translation behavior on both selected
@@ -119,7 +144,7 @@ range weights in the shared CPU-owned texture stage, with
 fresh primary-face bounds, conservative face/eye/lip/color/edge admission and
 a bounded pixel budget. `BeautyTextureExclusionMask` excludes known pixels only
 from those two effects on decoded/encoded still images. It adds no detector or
-semantic segmentation; [host integration](docs/HOST_TEXTURE_PROTECTION.md)
+semantic segmentation; [host integration](docs/sdk/HOST_TEXTURE_PROTECTION.md)
 owns the exact grid and protection contract.
 
 Teeth and sclera retouch share one opaque canonical carrier, detection/context
@@ -132,7 +157,7 @@ Upper-eyelid correction retains explicit compatibility through the same owner
 chain but remains `suspended` and default-hidden. Its brightness proxy is not
 tissue recognition. The inactive prediction validator has no registered model,
 resource or inference route. v1.25's rejected EYE/SEG experiments were never
-integrated; [terminal disposition](docs/RETOUCH_FINAL_DISPOSITION_2026-10-03.md)
+integrated; [terminal disposition](docs/history/retouch/RETOUCH_FINAL_DISPOSITION_2026-10-03.md)
 creates no automatic follow-up. Exact control status is owned by the
 [taxonomy](docs/SDK_EFFECT_TAXONOMY.md).
 
@@ -141,7 +166,7 @@ creates no automatic follow-up. Exact control status is owned by the
 The renderer retains 99 registered identities and exposes 98 default cases;
 explicit legacy upper-eyelid selection remains callable. It accepts only CPU
 at its CLI boundary and validates persisted outputs before crediting them.
-The [current batch tool](docs/CURRENT_BATCH_VALIDATION.md), outside production
+The [current batch tool](docs/validation/CURRENT_BATCH_VALIDATION.md), outside production
 targets, independently checks ordered inventory and repeated decoded pixels.
 The old 75-case wrapper is historical and incompatible with current inventory.
 
@@ -154,7 +179,10 @@ and public/target tests in the same change.
 ## Refactor reference
 
 The [learning and refactor playbook](docs/refactor-playbook/README.md) explains
-candidate fixed-mesh geometry, texture processing and temporal designs against
-this architecture. These are documentation proposals, not current targets,
-backends, APIs or an activated implementation plan. Its source-code review
-identifies gaps before any future adoption.
+the implemented fixed-canvas dense map, bounded texture detail and composition
+admission, alongside candidate temporal, semantic-mesh, TPS and GPU-native work.
+Its implemented baseline follows this owner and the
+[dense contract](docs/sdk/DENSE_FACE_REFACTOR.md); candidate material creates no
+target, backend, API or automatic task. Current authorized work is tracked in
+[PLANS](PLANS.md). Its source-code review records static findings for the named
+external examples, separately from SDK implementation and executed evidence.

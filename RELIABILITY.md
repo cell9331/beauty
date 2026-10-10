@@ -1,15 +1,54 @@
 # RELIABILITY.md
 
+## Prepared fixed-photo editing (2026-10-10)
+
+Explicit preparation reuses detection only on the same engine-owned deep-copied
+photo, separately by original/canonical raster and detection purpose. It never
+uses prior edited output or another purpose's support. Cache only usable/no-face
+outcomes; partial, low-confidence and inference failures retry. Invalid handles
+fail before inference, and prepare failure preserves the prior valid source.
+Reset/replacement/release removes source and observations; caller serialization
+still applies. The aggregate reuse flag does not imply a new inference/timing
+measurement on a cache hit. The external editor retains revision guards and
+one-running/one-latest scheduling; its original-size export detects afresh.
+No fps, physical-device latency, video tracking or new effect claim follows.
+
+## Owner-only diagnostic re-detection (2026-10-09)
+
+The external editor's former independent Vision overlay was not switched when
+the SDK iOS factory changed. `OwnerDiagnostics` now reuses that factory and pinned
+model with one separately serialized, reusable detector. Invalid input throws the
+existing canonicalizer's typed error before inference; unavailable/no-face output
+returns an empty point snapshot with the detector summary, never stale or invented
+points and never a silent iOS Vision fallback. Reset releases its native task.
+The host's debug failure remains pixel-inert and its revision guards still apply.
+Native 478-point/UI/continuous-render checks are recorded separately from old
+Vision failures and general device performance.
+
 ## 2026-10-09 dense static-image execution
+
+Dense mapped combinations no longer consume the old cross-region scalar quota.
+Independent field caps and final displacement/gradient/pose bounds remain active;
+source-raster-dependent fields and legacy support retain conservative conflict
+admission. The external owner editor preserves requested slider snapshots and
+handles routine combination attenuation automatically without a quota toast.
+Aggregate source/legacy warning codes stay available in debug/results; actual
+missing support, no-face or typed failures remain visible to the owner.
 
 Dense static images use one shared CPU-owned inverse lattice on both selected
 backends. Finite point/input bounds, fixed canvas coverage, contractual row
 knots and a per-triangle gradient bound replace silent point truncation or a
 fold-search assumption. Bad candidates or fully attenuated pose preserve the
 pre-map raster; independent color/source-raster stages keep their own contracts.
+Both still-image executors use one request-local geometry preparation owner;
+failed source admission continues to exclude the corresponding proxy points
+while valid siblings survive. Reusing the prepared face/points does not retain
+them between requests or change pixel-buffer, neutral, typed-failure or color
+ordering behavior. Shared diagnostic construction retains the same checked
+pixel-count bound and result validation.
 Valid iris work only uses ring points inside the eyelid; closed/invalid sides
 cannot authorize size/gaze editing. Invalid/crossing oval cannot authorize texture.
-The [dense contract](docs/DENSE_FACE_REFACTOR.md) owns exact limits; native/profile
+The [dense contract](docs/sdk/DENSE_FACE_REFACTOR.md) owns exact limits; native/profile
 accuracy and useful appearance across unknown inputs remain unqualified.
 
 Named Core Image contexts are shared framework resources, with only three fixed
@@ -23,8 +62,10 @@ Same-engine caller serialization is still mandatory.
 The default iOS engine now uses pinned MediaPipe Tasks 1.1.0 CPU image mode;
 macOS retains Vision. The previous simulator Vision failure remains a historical
 finding about that provider, not a claim that its platform internals were fixed.
-The synchronous native task is lazily reused, while every scheduled call produces
-fresh request-local observations. `reset()` releases the native task. Neutral,
+The synchronous native task is lazily reused. Ordinary scheduled calls produce
+fresh request-local observations; explicit prepared-photo renders may reuse
+valid observations bound to their fixed source. `reset()` releases the native
+task and prepared source/support. Neutral,
 disabled and interval-skipped calls do not initialize or run it.
 
 Native iOS face budgets above 32 abstain before C++ graph allocation. Oversized
@@ -102,13 +143,14 @@ public error/report content.
 
 ## Request recovery and bounds
 
-Still-image retouch canonicalizes once, detects/maps once, creates one request
+Still-image retouch canonicalizes once, resolves support once, creates one request
 context, derives independent units from original pixels and composes once.
 Rejected eyes/features do not poison siblings or subsequent requests. Texture
 requires fresh face bounds on both still-image and pixel-buffer routes; disabled,
 missing or interval-skipped support leaves it inert. Indexed camera/video frames
-never recover support from a prior frame. Geometry's package-internal freshness
-rules do not imply observation reuse in the public facade.
+never recover support from a prior frame. Ordinary facade calls remain fresh;
+the explicit prepared-photo route reuses only support from its immutable source,
+with the same per-request field and pixel admission.
 
 Source-admitted still-image refiners suppress corresponding legacy point
 emissions even if source admission fails. Hairline/forehead ambiguity, brow
@@ -130,7 +172,7 @@ explicit legacy calls preserve compatibility and safe rejection. Reconstruction,
 quantization and calibrated Vision checks do not repair its failed natural
 appearance. Coarse skin/eye/lip guards also do not reliably protect all
 skin-colored objects or low-contrast lip borders. The
-[explicit union mask](docs/HOST_TEXTURE_PROTECTION.md) protects known pixels
+[explicit union mask](docs/sdk/HOST_TEXTURE_PROTECTION.md) protects known pixels
 from texture only. EYE/SEG closure leaves these limits visible without creating
 an automatic continuation or claiming universal rejection of unknown inputs.
 
@@ -145,7 +187,7 @@ Requested/succeeded/failed/skipped counts must reconcile; report-write failure
 also prevents success. Test-only render/encode failure seams are not CLI flags
 or public SDK APIs. Child capture and temporary outputs are bounded.
 
-The [current batch tool](docs/CURRENT_BATCH_VALIDATION.md) checks independent
+The [current batch tool](docs/validation/CURRENT_BATCH_VALIDATION.md) checks independent
 ordered inventory and two decoded outputs per input/case. `passed`, `abstained`,
 `effect_failed`, `execution_error` and `unverified` are separate outcomes:
 exit 0 satisfies the declared pixel rules, 1 is effect failure, 2 execution/input
@@ -174,7 +216,7 @@ active/archive paths and normalized failure reasons without rebinding old receip
 
 Actual image output must pass the owning pixels/metadata oracle; script completion
 alone cannot qualify an effect. Generated inputs are eligible under the
-[acceptance policy](docs/IMAGE_EFFECT_ACCEPTANCE.md). Missing physical devices or
+[acceptance policy](docs/validation/IMAGE_EFFECT_ACCEPTANCE.md). Missing physical devices or
 optional user feedback never blocks this gate.
 
 ## Storage, archive and observations

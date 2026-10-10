@@ -18,7 +18,7 @@ unfinished tuning. Generated images remain eligible acceptance inputs.
 The owner hid this case from default renderer batches, `--list-cases`, help
 and recommended examples in 2026-10-01. The explicitly reopened v1.25 automatic
 eyelid-tone and patch-protection branches each exhausted two methods/four versions
-without qualification. They are now [closed as unmet](RETOUCH_FINAL_DISPOSITION_2026-10-03.md)
+without qualification. They are now [closed as unmet](history/retouch/RETOUCH_FINAL_DISPOSITION_2026-10-03.md)
 under the owner's terminal instruction; neither is queued for automatic continuation.
 The 77 public fields, 99 registered cases and 98 default/discoverable cases remain.
 Explicit `--case upperEyelidFullnessReduction_1p00` remains compatible.
@@ -30,12 +30,12 @@ falsifiable hypothesis, fixed positive/negative inputs, joint effect and
 protection checks, and a termination rule. No model architecture or eventual
 success is presumed. General requests to continue do not reopen this work.
 The [product contract](../PRODUCT_SENSE.md) retains historical references;
-the [research record](UPPER_EYELID_AND_SKIN_SEMANTICS_RESEARCH.md) records the
+the [research record](history/upper-eyelid/UPPER_EYELID_AND_SKIN_SEMANTICS_RESEARCH.md) records the
 findings. No external application UI is changed by this SDK-only disposition.
 
 ## Boundary
 
-The [current image-effect acceptance policy](IMAGE_EFFECT_ACCEPTANCE.md)
+The [current image-effect acceptance policy](validation/IMAGE_EFFECT_ACCEPTANCE.md)
 permits owner-authorized generated portrait-like positive/negative inputs to
 complete an owner-local effect qualification. No row remains `partial` merely
 because qualifying images are generated rather than genuine human portraits.
@@ -92,10 +92,15 @@ normalize to `-1...1`; `filterId` is an optional logical resource identifier.
 
 `skinSmoothing` and `skinSharpen` use bounded independent luminance-detail
 branches with bilateral range weights on admitted opaque, low-contrast neighborhoods.
-The 2026-10-09 [dense still-image contract](DENSE_FACE_REFACTOR.md) adds visible
+The 2026-10-09 [dense still-image contract](sdk/DENSE_FACE_REFACTOR.md) adds visible
 iris-ring use, pose attenuation, fixed-canvas geometry safety and geometric
-texture exclusions. Those scoped tests do not requalify every existing control
-on arbitrary iOS portraits; Vision/legacy receipts retain their original domains. Generated skin-colored
+texture exclusions.
+The same contract separates independently capped dense-map fields from the
+conservative source-raster/translation group; legacy geometry retains its old
+scalar quota. Actual dense composition is bounded by the final map, not the
+cross-region parameter sum. This changes combination admission, not row status.
+Those scoped tests do not requalify every existing control on arbitrary iOS
+portraits; Vision/legacy receipts retain their original domains. Generated skin-colored
 cheek and soft-edge positives, flat negatives, and protected facial features
 pass owner-local public-pixel tests. The 2026-09-27 public route additionally
 requires a fresh selected face and confines texture to a conservative interior
@@ -108,12 +113,12 @@ An optional owner-supplied binary still-image exclusion mask now protects
 specified same-colored non-skin pixels on both CPU and Metal-selected texture
 routes while unmasked cheek texture remains active; malformed or mismatched
 masks fail typed. The SDK does not automatically identify unmarked objects.
-The [2026-10-03 finite feasibility probe](TEXTURE_SEMANTIC_FEASIBILITY_2026-10-03.md)
+The [2026-10-03 finite feasibility probe](history/retouch/TEXTURE_SEMANTIC_FEASIBILITY_2026-10-03.md)
 rejected its only automatic candidate and initially paused general unmasked
 object identification. The subsequent v1.25 patch-domain repair rejected four versions and closed as
 unmet; no automatic detector is integrated or queued. A low-contrast lip extending outside the coarse exclusion also
 failed; arbitrary lip pixels are not guaranteed by these guards and may need an
-explicit owner mask. The [host union guide](HOST_TEXTURE_PROTECTION.md) now
+explicit owner mask. The [host union guide](sdk/HOST_TEXTURE_PROTECTION.md) now
 verifies this explicit object + lip workflow using the same generated source;
 it supplies additional host information rather than an automatic classifier.
 Existing bounded skin-control qualifications remain valid.
@@ -243,6 +248,15 @@ surface is 77 fields and five presets, with 99 registered renderer cases and
 explicit name for diagnostic compatibility.
 `implemented` is an owner-local engineering status only and never authorizes
 external distribution or commercial release.
+
+## Historical qualification records
+
+The sections below preserve Phase 90–94 and v1.23 evidence in their original
+qualification scopes. Their 62-field/75-case inventories, Phase 95 assignments
+and pending language refer to those checkpoints; they do not override the
+current inventory/rows above or create work in [PLANS](../PLANS.md).
+Subsequent dense-map and diagnostic changes are described by current owners,
+without rewriting these pixel thresholds or signed results.
 
 ## Historical Phase 90 Chin Repair and Contour Deferral
 

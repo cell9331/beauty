@@ -19,9 +19,9 @@ Spend time on thinking; you do not need to use the commentary channel to report 
 
 1. 先读 `AGENTS.md` 与 `PLANS.md`。
 2. 按任务类型读取对应根级 owner；`PLANS.md` 是渐进式入口，现行计划与技术债按其中链接继续读取。
-3. 再读相关代码、SwiftPM 测试与 `docs/` 背景资料；`docs/history/` 只保留历史证据，不产生当前任务。
+3. 再读相关代码、SwiftPM 测试及 [docs 分类索引](docs/README.md) 中对应的现行指南；`docs/history/` 保留历史证据和已关闭研究，不产生当前任务。
 4. 算法/control taxonomy 以 `docs/SDK_EFFECT_TAXONOMY.md` 为当前 authority。
-5. 图片效果验收输入与声明以 `docs/IMAGE_EFFECT_ACCEPTANCE.md` 为当前 authority。
+5. 图片效果验收输入与声明以 `docs/validation/IMAGE_EFFECT_ACCEPTANCE.md` 为当前 authority。
 6. 若契约变化，同步更新拥有该契约的文档，替换失效的当前声明；不要持续叠加互相覆盖的补丁说明。接口兼容、工程安全与效果资格分别记录。
 
 冲突优先级：代码与测试 > `PLANS.md` 及其链接的现行计划/技术债 > 根级专项文档 > 历史分片与 `docs/` 历史资料。
@@ -34,8 +34,14 @@ scripts/                         SDK-owned archive/boundary/test gates
 archives/legacy-ui/              verified historical UI/Demo ZIP artifacts
 PLANS.md                         当前计划入口和按需加载导航
 plans/                           现行计划、技术债与历史记录分片
-docs/SDK_EFFECT_TAXONOMY.md      current effect/control taxonomy
-docs/                            background and historical long-form material
+docs/README.md                   文档总索引与分类/兼容路径说明
+docs/SDK_EFFECT_TAXONOMY.md       固定路径的 current effect/control taxonomy
+docs/sdk/                        当前静图实现与宿主接入指南
+docs/validation/                 当前图片验收政策与批量工具
+docs/operations/                 Git 操作与账号
+docs/history/                    初始设计、日期审计与已关闭研究
+docs/refactor-playbook/          对照现行实现的项目学习手册
+docs/beauty-sdk-playbook/         所有者导入的原始参考材料
 .planning/                       active GSD state plus archived milestone evidence
 ```
 
@@ -43,7 +49,7 @@ docs/                            background and historical long-form material
 
 | 任务类型 | 必读 / 必改 |
 | --- | --- |
-| 本仓库 Git 提交、推送、拉取或账号/权限排障 | [Git 操作与账号](docs/GIT_OPERATIONS.md)；复用本仓库已验证的 SSH 身份，不改全局账号配置 |
+| 本仓库 Git 提交、推送、拉取或账号/权限排障 | [Git 操作与账号](docs/operations/GIT_OPERATIONS.md)；复用本仓库已验证的 SSH 身份，不改全局账号配置 |
 | 包、Target、依赖方向 | `ARCHITECTURE.md` |
 | 参数、渲染状态、核心状态机 | `DESIGN.md` |
 | 历史 UI/Demo 查询或恢复 | `FRONTEND.md`, `archives/legacy-ui/README.md` |
@@ -53,6 +59,7 @@ docs/                            background and historical long-form material
 | 计划与技术债 | `PLANS.md`，再按链接读取 `plans/active/` 与 `plans/debt/current.md` |
 | 测试与质量门禁 | `QUALITY_SCORE.md` |
 | effect/control status | `docs/SDK_EFFECT_TAXONOMY.md` |
+| 文档分类、迁移与漂移修复 | `docs/README.md`、`QUALITY_SCORE.md`；当前引用直达分类后的正文，冻结/只读历史使用已有兼容入口 |
 
 - Local-retouch/privacy/fixture work also follows `Skill("spike-findings-beauty")`.
 
@@ -75,8 +82,8 @@ docs/                            background and historical long-form material
 - 2026-10-03 所有者重开并降低初版标准后，EYE光影与SEG同色贴片自动分支各自
   2方法×2版本均未合格。按所有者最新“连续执行、到能力边界即停止、本里程碑
   结束旧问题”的指示，以 `closed_with_unmet_objectives` 结束v1.25，详见
-  [最终处置](docs/RETOUCH_FINAL_DISPOSITION_2026-10-03.md)与
-  [R3终局范围](docs/RETOUCH_TERMINAL_SCOPE_2026-10-03.md)。未交付不冒充实现；
+  [最终处置](docs/history/retouch/RETOUCH_FINAL_DISPOSITION_2026-10-03.md)与
+  [R3终局范围](docs/history/retouch/RETOUCH_TERMINAL_SCOPE_2026-10-03.md)。未交付不冒充实现；
   同色物体/完整唇部保护仅保留现有host显式蒙版能力，自动保护缺口公开记录。
   两条失败路线不再列为active、下一轮G0或默认后续任务。一般“继续/下一步”
   不恢复研发；重开须所有者明确新范围与新假设/信息/资源，不能重置本轮预算。
@@ -103,7 +110,7 @@ docs/                            background and historical long-form material
   设备均为可选补充，不得因缺少真人图像而阻塞里程碑、taxonomy 提升或后续
   计划。效果方向、负例、不恶化、保护区、重复性、元数据和 typed failure 仍
   须用实际输入/输出验证；仅有变化像素数不够。具体规则见
-  `docs/IMAGE_EFFECT_ACCEPTANCE.md`。raw pixels、masks、landmarks、私有路径和
+  `docs/validation/IMAGE_EFFECT_ACCEPTANCE.md`。raw pixels、masks、landmarks、私有路径和
   生成图片不得进入持久证据。
 - SDK 完成后的真实设备反馈作为补充发现记录到 `PLANS.md`，必要时进入后续
   修复计划；它不追溯否定当时已通过的自动化里程碑，除非暴露出可复现的契约

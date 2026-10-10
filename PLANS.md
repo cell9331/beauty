@@ -3,7 +3,7 @@
 > `beauty` 的当前执行入口。先读本页，再按链接读取当前计划或相关历史记录。
 > 本页与 `plans/active/`、`plans/debt/current.md` 共同拥有当前计划和技术债；`plans/history/` 是历史快照。
 
-当前图片效果验收政策见 [IMAGE_EFFECT_ACCEPTANCE.md](docs/IMAGE_EFFECT_ACCEPTANCE.md)。有权使用的生成肖像可作正负例；真人图片和真实设备是可选补充。历史记录中相反的要求不约束新工作。
+当前图片效果验收政策见 [IMAGE_EFFECT_ACCEPTANCE.md](docs/validation/IMAGE_EFFECT_ACCEPTANCE.md)。有权使用的生成肖像可作正负例；真人图片和真实设备是可选补充。历史记录中相反的要求不约束新工作。
 
 ## 1. 阅读路径与更新规则
 
@@ -21,14 +21,13 @@
 - 产品面是所有者自用的 SDK-only SwiftPM library 与 SDK-owned 验证；本账本不授予设备、商业视觉质量或外部分发资格。
 - 真实设备反馈可成为后续发现，不是当前自动化完成门禁。效果方向、保护区、重复性、元数据及 typed failure 以实际输入/输出为准。
 - 历史分片保留当时的状态与证据，现行 taxonomy 以 [SDK_EFFECT_TAXONOMY.md](docs/SDK_EFFECT_TAXONOMY.md) 为准。
-- 去脂仍为 `suspended`、默认隐藏并保留显式兼容；自动同肤色贴片识别未实现。v1.25两分支各2方法4版本均失败，按所有者终局要求关闭未交付目标。现有host物体+完整唇并集蒙版继续可用；辅助能力不计自动交付。见[最终处置](docs/RETOUCH_FINAL_DISPOSITION_2026-10-03.md)。普通“继续”不重启、失败缺口不再作为计划阻塞；未来重开须明确新范围与新信息/资源。
+- 去脂仍为 `suspended`、默认隐藏并保留显式兼容；自动同肤色贴片识别未实现。v1.25两分支各2方法4版本均失败，按所有者终局要求关闭未交付目标。现有host物体+完整唇并集蒙版继续可用；辅助能力不计自动交付。见[最终处置](docs/history/retouch/RETOUCH_FINAL_DISPOSITION_2026-10-03.md)。普通“继续”不重启、失败缺口不再作为计划阻塞；未来重开须明确新范围与新信息/资源。
 
 ## 3. Active
 
-当前无 Active 执行计划。478点静图核心改造已完成，记录见下方。
-
 所有者编辑宿主的接线、范围、组合、调试显示与预览修复
-已记录在下方；iOS 17.5 模拟器连续 Vision 检测异常尚未修复，见当前技术债。
+已记录在下方。旧 iOS 17.5 模拟器 Vision provider 的连续检测异常仍为历史限制；
+现行 iOS SDK 与宿主调试已使用 MediaPipe，该旧失败不是现行宿主阻塞，见[当前技术债](plans/debt/current.md)。
 v1.25仍按`closed_with_unmet_objectives`结清，不恢复其自动效果研发。
 
 ## 3A. Historical Lifecycle Ledger（历史脚本锚点）
@@ -39,10 +38,58 @@ v1.25仍按`closed_with_unmet_objectives`结清，不恢复其自动效果研发
 
 ## 4. Completed / terminal dispositions
 
+### C-2026-10-10-batched-local-commits
+
+- Status: `completed`。按所有者要求分六批提交：OwnerDiagnostics、独立组合强度、共享几何渲染、固定原图检测复用、正式参考手册、文档分类与契约同步；仅本地Git提交。
+- Pre-commit repair: 新Metal测试遗漏边界登记，使用既有精确SHA256机制补齐并新增修改拒绝自测；live/self-test与两归档通过，不放宽生产API/backend/shader边界。SDK/App源码和测试字节未改，先前定向结果保留其原范围，没有全量重跑。
+- Record: [六批范围、提交、排除项和实际验证](plans/history/2026-10/A-2026-10-10-batched-local-commits.md)。独立Demo无Git历史；根级原始参考副本与Python缓存保留本地，正式资料从docs进入。
+
+### C-2026-10-10-prepared-photo-editing
+
+- Status: `completed`。所有者明确借鉴视频处理方案优化已有图片SDK与编辑Demo；研究并修正八项规划问题后实现固定原图、按用途隔离的有效检测复用。
+- Result: engine只保留一个深拷贝source与最多六个检测入口；失败重试、换图/reset/release失效。独立Demo预览接入opaque token，每次参数从原图渲染，原尺寸导出仍fresh检测。
+- Verification: SDK **65个不同定向用例/0失败/0跳过**（含实际Metal）；同一已有iPhone15Pro/iOS17.5原生 **13/0/0**（9pipeline+3session+1UI），真实478点复用与独立fresh像素完全一致、换图/导出和过期结果拦截通过。macOS生产renderer六鼻子四档、alpha/neutral/导出及相关门禁通过。
+- Boundary: 无视频/摄像头、时序跟踪、新效果或灰色入口解锁；未全量回归、安装真机或宣称性能。保留既有改动与失败边界；[研究、规划修正和完整验证记录](plans/history/2026-10/A-2026-10-10-prepared-photo-editing.md)。
+
+### C-2026-10-09-playbook-sdk-refactor
+
+- Status: `completed`。在新分支`codex/playbook-sdk-refactor`先研究、规划审查并修正阶段顺序/失败保护问题，再重构已有SDK静图路径。
+- Result: CPU/Metal共用请求内几何准备、source准入、最终点和后置平移；Metal适配一次face、复用prepared点，两backend共用有界诊断。修复parity门禁依赖首个断言顺序的既有缺口。
+- Verification: **134个不同直接回归全部通过，0失败/0跳过**；实际Metal parity **14/0/0**单列，parity/neutral和SDK-only自测、归档、存储、链接/差异及非目标源码摘要核验通过。首次缓存权限/新测试编译与原自测失败在记录中分列；未弱化生产准入或验收标准。
+- Boundary: 保留已有及并行文档改动；未重跑完整SDK、原生iOS/App或真机，未新增效果或解除灰色入口，未测性能。见[规划审查与完成记录](plans/history/2026-10/A-2026-10-09-playbook-sdk-refactor.md)。
+
+### C-2026-10-09-document-drift-followup
+
+- Status: `completed`，仅文档漂移修复；并行 SDK 重构保留独立状态。
+- Result: 同步分类与 authority、七份 dated map 导航、dense/source/legacy 组合规则、OwnerDiagnostics 边界和已实施/候选区别；明确 v1.25/旧 phase 证据的历史范围及原材料评审覆盖。项目 skill 与四份参考文档使用分类后的规范路径。
+- Verification: 当前导航/源码声明及旧断言扫描、3 份冻结 G0 绑定、2,077 份历史/冻结/试验/既有测试摘要、两归档、boundary live/self-test、wrapper 14/14 控制、storage 和 diff 检查通过，无新增断链。本任务未改代码/测试或运行 SwiftPM；QUALITY 库存为带时间的工作树采样，不复用旧 gate 证明并行代码。
+- Record: [修复清单、共享工作树与实际验证范围](plans/history/2026-10/A-2026-10-09-document-drift-followup.md)。
+
+### C-2026-10-09-docs-organization
+
+- Status: `completed`，仅目录分类与文档导航维护。
+- Result: 新建 7 个分类目录与索引，迁移 28 份正文；taxonomy 和 3 份摘要绑定契约保留固定路径，14 份短入口维持冻结/只读历史链接。顶层 Markdown 33 → 19，正文不重复保存。
+- Verification: 本地链接/锚点无新增断链；2,532 份原文件摘要核对、3 份 G0 绑定、两归档、SDK-only boundary live/self-test、wrapper 14/14 自测、storage 和 diff 检查通过。代码与测试未改，未运行 SwiftPM 或重新签发图片/模型/设备证据。
+- Record: [目录、兼容入口与实际验证范围](plans/history/2026-10/A-2026-10-09-docs-organization.md)；文档入口见 [docs 索引](docs/README.md)。原有历史断链和所有者本地改动保持原范围。
+
+### C-2026-10-09-combination-ui
+
+- Status: `completed`。移除宿主旧组合余额截停和quota提示；dense字段按独立cap及最终实际位移/梯度/姿态准入，九源像素相关字段和legacy保留保守预算。
+- Result: 每个滑块保留独立值/方向、别名/撤销；debug显示组合项数。未开发分类和去脂保留置灰禁用，直接model调用无提示/无状态变化；实际无脸/缺点/错误继续说明。
+- Verification: SDK定向 **25/0/0**；外部宿主 **12个不同相关用例最终通过**（10 unit + 2 UI，首轮11通过/1测试访问错误，单项修正重验通过；最终fresh路径另单项通过）。实际组合像素、五张生成输入布局截图/交互、字段绑定、helper编译与SDK-only边界通过。未全量回归、扩展设备或更新手机。
+- Record: [完成范围、原始失败与限制](plans/history/2026-10/A-2026-10-09-combination-ui.md)。实际超界网格仍可能共同减弱；整体只读、装饰标识等后续候选入债务，不恢复新算法或EYE/SEG。
+
+### C-2026-10-09-owner-mediapipe-debug
+
+- Status: `completed`。修复截图暴露的宿主Vision调试遗漏：SDK渲染已使用MediaPipe，但独立debug仍调用Vision且文字写死。
+- Result: 新增owner-only瞬时诊断SPI，复用生产adapter、canonicalizer与固定模型；宿主在独立actor-owned实例上复检，iOS原图/输出各478点，面板显示实际模型，原图/当前版本隔离保留。
+- Verification: SDK定向 **3/0/0**，真实外部宿主相关 **4/0/0**（3 unit + 1 UI），覆盖478点、无脸/错误恢复、调试像素不变、六鼻子四档及组合、异步/UI开关；App主bundle模型哈希匹配。未运行完整SDK或App全功能回归。
+- Boundary: 同一已有模拟器/稳定缓存，旧Vision/人物分割失败保留；手机已安装版本未更新/验证，需要用户重新运行新App。见[完成记录](plans/history/2026-10/A-2026-10-09-owner-mediapipe-debug.md)。
+
 ### C-2026-10-09-dense-face-refactor
 
 - Status: `completed`。按所有者要求充分使用478点与姿态，在现有静图管线完成首批核心改造。
-- Result: 有界Core Image context复用；可见虹膜环与眼/眉/唇几何保护；近刚性姿态衰减；全478点分布驱动的固定画布网格与位移/梯度预算；美肤平滑和相干细节分支独立，避免旧组合抵消。见[实现说明](docs/DENSE_FACE_REFACTOR.md)。
+- Result: 有界Core Image context复用；可见虹膜环与眼/眉/唇几何保护；近刚性姿态衰减；全478点分布驱动的固定画布网格与位移/梯度预算；美肤平滑和相干细节分支独立，避免旧组合抵消。见[实现说明](docs/sdk/DENSE_FACE_REFACTOR.md)。
 - Verification: 最终完整SDK **1098 tests / 0 failures / 0 skips，9 opt-ins**；同一已有iOS宿主 **24/0/0**，两图姿态/可见iris、CPU/GPU组合最大通道差≤2、重复及失败恢复通过。新增独立几何/虹膜/纹理像素正负例纳入完整门禁；失败候选与原因留档，原阈值未放宽。
 - Boundary: 共享dense几何仍为CPU-owned阶段；公开字段/default、模型、retained shader和冻结终局保留。视频、GPU原生网格、扩大纹理尺度及全链零拷贝未交付，效果资格不批量提升。见[完成记录](plans/history/2026-10/A-2026-10-09-dense-face-refactor.md)。
 
@@ -86,7 +133,7 @@ v1.25仍按`closed_with_unmet_objectives`结清，不恢复其自动效果研发
 ### C-2026-10-08-agent-instructions
 
 - Status: `completed`，仅指工作指引维护；不改变 SDK、算法状态或验证资格。
-- Scope: 按所有者纠正，将两个 GitHub 账号与本仓库 SSH 用法只写入 [Git 操作指南](docs/GIT_OPERATIONS.md)，由仓库 `AGENTS.md` 按 Git 任务触发读取。全局入口改为通用约束与五类指南导航，Serena 和真机签名细则单独存放；全局没有 GitHub 账号或密钥信息。
+- Scope: 按所有者纠正，将两个 GitHub 账号与本仓库 SSH 用法只写入 [Git 操作指南](docs/operations/GIT_OPERATIONS.md)，由仓库 `AGENTS.md` 按 Git 任务触发读取。全局入口改为通用约束与五类指南导航，Serena 和真机签名细则单独存放；全局没有 GitHub 账号或密钥信息。
 - Verification: 原全局 24 条规则逐项核对，Serena/真机细则原文保留，三个既有 iOS 指南摘要不变；全局入口从 5,869 缩至 2,567 bytes。本地链接、命令语法、post-archive SDK-only boundary 和 `git diff --check` 核对通过。
 - Boundary: 本轮只改文档，未运行 SwiftPM、构建、设备操作或再次推送；本地锁/尝试日志保留。此前 `c2f5bc4f` 的成功推送只作为本仓库身份记录，不增加其他仓库的账号或推送授权。
 - Record: [指引整理记录](plans/history/2026-10/A-2026-10-08-agent-instructions.md)。
@@ -102,7 +149,7 @@ v1.25仍按`closed_with_unmet_objectives`结清，不恢复其自动效果研发
 
 ### C-2026-10-04-retouch-problem-review
 
-- Status: `completed`，仅指[详细复盘报告](docs/RETOUCH_PROBLEM_REVIEW_2026-10-04.md)，不重开两个已关闭的自动目标。
+- Status: `completed`，仅指[详细复盘报告](docs/history/retouch/RETOUCH_PROBLEM_REVIEW_2026-10-04.md)，不重开两个已关闭的自动目标。
 - Scope: 对齐原需求/R2收窄/终局处置，复核上睑代理、环纹/重建、四版EYE与四版SEG、同观测反例和host辅助边界；明确经典问题分类、行业方案、模型未验证项和工程/效果混淆造成的推进问题。
 - Verification: 依据冻结报告/聚合回执、Serena源符号及一手论文/官方文档；核对报告数字、本地引用和`git diff --check`。本轮受保护的1,773份既有源码、测试、实验/归档证据、规范及当前里程碑状态摘要未变。
 - Boundary: 仅新增报告和导航记录；未运行算法、生成/修改图片、下载权重、训练或重跑SwiftPM。1076/0/0是已存工程检查点，不作为本报告的新执行或两个效果通过证据；5 verified/11 closed_unmet和空队列保持。
@@ -140,7 +187,7 @@ v1.25仍按`closed_with_unmet_objectives`结清，不恢复其自动效果研发
 
 - Status: `closed_with_unmet_objectives`，工程收尾已完成，两自动目标未交付。
 - Result: EYE最后三版加此前E1-v1均失败，SEG四版均失败；各2方法×2版本原预算耗尽，不重置或追加。保留去脂suspended/default-hidden和host辅助保护，无新自动入口。
-- Evidence: [终局实验与结果](docs/RETOUCH_FINAL_DISPOSITION_2026-10-03.md)、[行业复核](docs/RETOUCH_INDUSTRY_DECISION_2026-10-03.md)；新控制1/0/0、测量3/0/0，但效果运行器退出1。首轮编译失败保留，候选字节未改。
+- Evidence: [终局实验与结果](docs/history/retouch/RETOUCH_FINAL_DISPOSITION_2026-10-03.md)、[行业复核](docs/history/retouch/RETOUCH_INDUSTRY_DECISION_2026-10-03.md)；新控制1/0/0、测量3/0/0，但效果运行器退出1。首轮编译失败保留，候选字节未改。
 - Closure: [16项终局需求](.planning/REQUIREMENTS.md)为5 verified/11 closed_unmet，无算法资格提升；[归档计划](plans/history/2026-10/A-2026-10-03-v1-25-retouch-repair.md)保留全过程，旧路径仅导航。
 - Verification: 本轮实际archive-first全量门禁退出0，**1076 tests / 0 failures / 0 skips、9 opt-ins**；归档、SDK-only boundary、backend/consumer/CPU oracle前置检查通过。2,201个既有源码/测试/冻结证据摘要不变，受保护目录无新增实现；当前链接与`git diff --check`通过。[聚合回执](scripts/experiments/retouch-terminal/results/closeout.json)不保存原始日志或图片。
 - Next: 无。当前里程碑、phase和next队列已清空；重开须所有者明确新范围和信息/资源。
@@ -148,7 +195,7 @@ v1.25仍按`closed_with_unmet_objectives`结清，不恢复其自动效果研发
 
 ### C-2026-10-03-current-batch-validation
 
-- Status: `completed`，仅指[当前批量工具](docs/CURRENT_BATCH_VALIDATION.md)及 BAT25-01/02；总需求2/16，Phase104的算法接入项及总里程碑未完成。
+- Status: `completed`，仅指[当前批量工具](docs/validation/CURRENT_BATCH_VALIDATION.md)及 BAT25-01/02；总需求2/16，Phase104的算法接入项及总里程碑未完成。
 - Change: 新入口 `python3 -B scripts/current-batch/run.py`，独立98默认/99注册库存、两遍实际CPU输出、逐例像素/元数据/保护与明确oracle；通过、正常退出、效果失败、执行错误、缺项分列。旧75项wrapper/manifest/比较器保持只读。
 - Verification: 工具17/0/0，含8真实像素控制和3文件/区域控制。默认98×2实际输出：7通过、91无脸正常退出，零失败/错误/缺项；自定义缺规则控制98×2：1通过、97未验证，正确退出3。
 - Correction: 首轮误将skinCombo无脸退出列为必须提亮，退出1；原代码、契约和回执保留。依据既有resolver测试与DESIGN纠正，r1/r2全部98项测量及像素摘要一致，生产未改。
@@ -158,7 +205,7 @@ v1.25仍按`closed_with_unmet_objectives`结清，不恢复其自动效果研发
 
 ### C-2026-10-03-seg-development-disposition
 
-- Status: `completed`，仅指[有限开发比较与停止记录](docs/SEG_DEVELOPMENT_2026-10-03.md)。SEG 两方法四版本全部拒绝、原预算耗尽；自动功能、Phase 101 和 v1.25 均未完成，不追加第五版。
+- Status: `completed`，仅指[有限开发比较与停止记录](docs/history/retouch/SEG_DEVELOPMENT_2026-10-03.md)。SEG 两方法四版本全部拒绝、原预算耗尽；自动功能、Phase 101 和 v1.25 均未完成，不追加第五版。
 - Result: S1-v1 正/负例0/6、0/6；S1-v2为1/6、4/6；S2-v1为1/6、2/6；S2-v2为4/6、4/6且8/48比较保护硬失败，中肤色覆盖缺失。整图退出不计成功，冻结阈值、样本和原失败未改。
 - Verification: 基线14/0/0，四候选各6/0/0仅为测量执行，效果运行器均退出1；正确 host 控制48项通过。观察/实际 public CPU/重复输出等价；接线前后153行基线及导出修正前后72行 S1-v1 一致。局部原尺寸视觉诊断已做，完整视觉资格、拒绝、旧唇回归、Metal和候选留出未做，不签 G1。
 - Preservation: 2,111个既有源码、测试、脚本、冻结契约和历史文件哈希保持；SDK-only boundary、文档链接、聚合一致性和 `git diff --check` 核对。无生产/API/模型/训练变更；此前完整1076/0/0未重跑。
@@ -166,7 +213,7 @@ v1.25仍按`closed_with_unmet_objectives`结清，不恢复其自动效果研发
 
 ### C-2026-10-03-seg-g0-freeze
 
-- Status: `completed`，仅指 [SEG G0 验收准备](docs/SEG_G0_FREEZE_2026-10-03.md)。18 个独立源家族形成开发 12、留出 12、拒绝 6，共 30 逻辑案例、60 尺度栅格；SEG 全部 frozen，EYE 30 未准备，Phase 100 和 16 项正式需求仍未完成。
+- Status: `completed`，仅指 [SEG G0 验收准备](docs/history/retouch/SEG_G0_FREEZE_2026-10-03.md)。18 个独立源家族形成开发 12、留出 12、拒绝 6，共 30 逻辑案例、60 尺度栅格；SEG 全部 frozen，EYE 30 未准备，Phase 100 和 16 项正式需求仍未完成。
 - Verification: 隔离 public CPU + 实际 Vision **20 tests / 0 failures / 0 skips**；96 项纹理控制、12 项拒绝栅格控制、128 次方向/镜像比较与输入故障恢复通过。支持覆盖 54.28–93.18%，平滑变化降低 33.92–56.12%，锐化增加 45.07–75.05%，保护违例与额外排除均为零。逐案例视觉记录、权利/来源/标记/栅格摘要及工具版本已冻结。
 - Correction: 首轮回执收集失败，未计通过；改用独立原子聚合 JSON 后原输入原标准重跑成功。两轮 156 张本地复核图逐字节相同，旧版本和失败摘要保留。开发输入及判据未移动，没有算法预算重置。
 - Preservation: 2,097 个既有生产/测试/脚本/历史文件摘要不变；SDK-only boundary、冻结绑定、60 案例状态、16 pending 需求、现行文档本地链接与 `git diff --check` 核对通过。
@@ -174,7 +221,7 @@ v1.25仍按`closed_with_unmet_objectives`结清，不恢复其自动效果研发
 
 ### C-2026-10-03-seg-g0-development-input-controls
 
-- Status: `completed`，仅指 SEG 开发输入及局部控制。六个独立生成肖像形成 12 个配对案例、24 个双尺度栅格；完整 SEG G0 尚未通过。详情见 [进展记录](docs/SEG_G0_PROGRESS_2026-10-03.md)。
+- Status: `completed`，仅指 SEG 开发输入及局部控制。六个独立生成肖像形成 12 个配对案例、24 个双尺度栅格；完整 SEG G0 尚未通过。详情见 [进展记录](docs/history/retouch/SEG_G0_PROGRESS_2026-10-03.md)。
 - Verification: 实际 Vision + public CPU 路径 **7 tests / 0 failures / 0 skips**，48 项效果控制通过；支持覆盖 54.28–69.69%，平滑变化降低 34.17–49.05%，锐化增加 46.63–65.40%，保护/alpha 无违例。观察器与公开输出逐字节一致；错网格恢复、neutral/repeat 和关键错误控制通过。这是正确 host 蒙版控制，不是自动识别结果。
 - Corrections: r1 观察路径遗漏生产参数安全上限导致 8 个等价性失败，改为同一 resolver 后通过；r3 复核图未带家族前缀的问题在 r4 修正并重跑。原版本和聚合保留，皮肤 ROI、源栅格、贴片及阈值不变；补全脸外保护，未修改旧预检或生产实现。
 - Preservation: 2,078 个既有生产/测试/脚本/历史文件摘要不变；SDK-only boundary、文档本地链接、回执与源码摘要绑定、60 案例状态、16 pending 需求和 `git diff --check` 核对通过。完整 SDK 1076/0/0 未重跑。
@@ -182,7 +229,7 @@ v1.25仍按`closed_with_unmet_objectives`结清，不恢复其自动效果研发
 
 ### C-2026-10-03-v1-25-development-pilot
 
-- Status: `completed`，只指所有者允许的小规模预检。[结果](docs/RETOUCH_MVP_PILOT_2026-10-03.md)：S1-v1 在一个几何图家族的 12 正例/6 负例变体联合通过，保护无违例、平滑降低 50%、锐化增加约 250%、固定皮肤区支持 100%，负例双颊新增排除 0%。不是自然肖像或正式留出通过。
+- Status: `completed`，只指所有者允许的小规模预检。[结果](docs/history/retouch/RETOUCH_MVP_PILOT_2026-10-03.md)：S1-v1 在一个几何图家族的 12 正例/6 负例变体联合通过，保护无违例、平滑降低 50%、锐化增加约 250%、固定皮肤区支持 100%，负例双颊新增排除 0%。不是自然肖像或正式留出通过。
 - EYE: E1-v1 全强度两眼分别改善 14.37%/0%，第一眼高通变化 13.45% 超过 10%；本候选拒绝并停止，不把单眼改善或降低目标当作整图通过。旧字段仍 suspended/default-hidden，两个正式效果都尚未交付。
 - Verification: r3 控制 2/0/0（含 36 个 SEG 比较），候选测量 2/0/0，但运行器按真实判据退出 1；成功执行与算法失败分开。r1/r2 输入执行错误及源快照保留；实际 Core Image 预检定位缩放边缘 alpha，修加载器不改 SDK。两候选函数从 r1 到 r3 字节相同，每分支只用一个方法一个版本；未访问正式留出。
 - Preservation: 2,063 个既有生产/测试/脚本/历史文件摘要不变；SDK-only boundary、13 份文档的 146 个本地链接与 `git diff --check` 通过。原尺寸输入/参考/候选代表图已查看，未授予上睑自然外观资格。正式 60 例仍未准备，16 需求仍 pending；此前完整 1076/0/0 未重新签发。
@@ -212,7 +259,7 @@ v1.25仍按`closed_with_unmet_objectives`结清，不恢复其自动效果研发
 
 ### C-2026-10-03-host-texture-protection-integration
 
-- Status: `completed`。新增主机物体 + 完整唇区并集蒙版的公开路径回归与[接入说明](docs/HOST_TEXTURE_PROTECTION.md)。在原冻结生成源、双肤色与原目标/保护谓词下，物体与完整唇区源精确，对侧平滑变化降低至少 20%、锐化增加至少 10%。该额外主机信息不是自动分割，通用自动物体识别和去脂继续暂停；无蒙版粗略唇域未修复。
+- Status: `completed`。新增主机物体 + 完整唇区并集蒙版的公开路径回归与[接入说明](docs/sdk/HOST_TEXTURE_PROTECTION.md)。在原冻结生成源、双肤色与原目标/保护谓词下，物体与完整唇区源精确，对侧平滑变化降低至少 20%、锐化增加至少 10%。该额外主机信息不是自动分割，通用自动物体识别和去脂继续暂停；无蒙版粗略唇域未修复。
 - Verification: 新回归 **4/0/0**、与原物体蒙版回归合计 **8/0/0**；64 个方向/镜像效果组合、CPU/GPU-selected 既有纹理路径、内存 PNG、neutral/repeat、RGB/alpha/extent/sRGB、全排除/无脸/平坦皮肤、错误网格恢复与后续无蒙版状态检查通过。接入示例通过 `swiftc -typecheck`。
 - Full gate: `bash scripts/run-no-skip-swiftpm.sh` 实际返回 0，**1076 tests / 0 failures / 0 skips，9 opt-in**，archive-first 与 SDK-only boundary、backend/consumer/CPU oracle 门禁通过；wrapper 自测 13 checks / 13 mutation rejections 通过。最初静态门禁因新测试尚未登记既有 backend 引用而停，登记固定源摘要并 mutation 自测后重跑通过，未新增或放宽 GPU API。
 - Preservation: 1,756 个既有生产/测试/脚本/历史文件中，仅边界脚本按既有审阅哈希机制登记新测试及追加声明拒绝自测；其余 1,755 个文件逐项哈希不变。原自动失败挑战 SHA 与 4/6/0 结果保持不变。文档链接与 `git diff --check` 通过，未改生产算法或公开 API。
@@ -224,23 +271,23 @@ v1.25仍按`closed_with_unmet_objectives`结清，不恢复其自动效果研发
 - Result: 相同完整可观察输入不能满足矛盾材质语义输出；唯一周期纹理候选在保护物体时同时停掉有效皮肤处理，拒绝接入生产。新深肤色低对比唇缘越出粗略域的完整保护仍失败，作为未修复限制记录。
 - Verification: 冻结挑战原宿主及外部临时 SwiftPM 包均为 **4 tests / 6 assertion failures / 0 skips，退出 1**，原显式蒙版回归 **4/0/0**；失败标准未改。完整 `bash scripts/run-no-skip-swiftpm.sh` 实际返回 0，**1072/0/0、9 opt-in**，archive-first、SDK-only boundary、wrapper 自测通过。两类结果分开引用；最初构建权限失败无测试结果，不算效果证据。
 - Preservation: 1,751 个既有生产/测试/脚本/历史文件哈希未变；文档链接、Python 语法及 `git diff --check` 通过。没有生产 API/算法改动，没有模型、训练或设备声明。
-- Record: [冻结结果](docs/TEXTURE_SEMANTIC_FEASIBILITY_2026-10-03.md)、[全文归档计划](plans/history/2026-10/A-2026-09-27-remaining-effect-qualification.md)及[新月度索引](plans/history/2026-10/README.md)。以后若扩展自动能力，需明确可观察的新域和独立正负例后另行授权。
+- Record: [冻结结果](docs/history/retouch/TEXTURE_SEMANTIC_FEASIBILITY_2026-10-03.md)、[全文归档计划](plans/history/2026-10/A-2026-09-27-remaining-effect-qualification.md)及[新月度索引](plans/history/2026-10/README.md)。以后若扩展自动能力，需明确可观察的新域和独立正负例后另行授权。
 
 ### C-2026-10-01-all-feature-completion-inventory
 
-- Status: `completed`。完成[全部功能与完成状态清单](docs/FEATURE_COMPLETION_INVENTORY_2026-10-01.md)：逐项列出 77 参数字段、11 配置字段、5 预设、2 滤镜及 SDK/工程支撑项目；将限定范围内已完成、当前活跃缺口、去脂暂停、未覆盖能力和范围外产品面分别标明。63 行旧控制映射全部由参数表覆盖，别名不计成独立算法。
+- Status: `completed`。完成[全部功能与完成状态清单](docs/history/audits/FEATURE_COMPLETION_INVENTORY_2026-10-01.md)：逐项列出 77 参数字段、11 配置字段、5 预设、2 滤镜及 SDK/工程支撑项目；将限定范围内已完成、当前活跃缺口、去脂暂停、未覆盖能力和范围外产品面分别标明。63 行旧控制映射全部由参数表覆盖，别名不计成独立算法。
 - Verification: 参数/配置字段与源码、控制映射与现行 taxonomy、资源与 manifest 静态逐项核对通过；本地链接、post-archive SDK-only boundary、保护文件哈希及 `git diff --check` 通过。仅盘点文档，未重跑 SwiftPM 或图片效果验收；此前 `1072/0/0` 保留原检查点含义。
 - Remaining at 2026-10-01: 盘点当时的活跃能力缺口为无排除蒙版时同肤色非皮肤物体自动辨认；该项后于 2026-10-03 有限研究处置中暂停。去脂暂停、历史批量 wrapper 库存技术债和其余泛化/输入/设备限制均按原状态列出，本清单不创建新研发任务。
 
 ### C-2026-10-01-current-document-drift-repair
 
-- Status: `completed`。修复[项目审计](docs/PROJECT_STATUS_AUDIT_2026-10-01.md)的 D01–D03、D05–D07 六组漂移：统一 `.planning` 当前状态/恢复入口，明确旧回执和旧代码地图的历史范围；产品正文收敛为原 15 项最终二维适用域，移出中途 partial 叙述；可靠性说明区分整脸上下的 provider 五点与静图刚性平移，并区分九个 opt-in 测试身份和五个显式环境输入；动态源码库存改为带日期的单一记录与复算命令。
+- Status: `completed`。修复[项目审计](docs/history/audits/PROJECT_STATUS_AUDIT_2026-10-01.md)的 D01–D03、D05–D07 六组漂移：统一 `.planning` 当前状态/恢复入口，明确旧回执和旧代码地图的历史范围；产品正文收敛为原 15 项最终二维适用域，移出中途 partial 叙述；可靠性说明区分整脸上下的 provider 五点与静图刚性平移，并区分九个 opt-in 测试身份和五个显式环境输入；动态源码库存改为带日期的单一记录与复算命令。
 - Verification: 两个 legacy 归档、post-archive SDK-only boundary、mandatory wrapper 自测（13 checks / 13 mutation rejections）与 `git diff --check` 通过；19 份文档的 171 个本地链接（含 2 个锚点）和 1 个入站锚点引用通过；15 项控制与 taxonomy、77 字段、99/98 清单、九个测试身份/五个环境输入静态核对通过。2,144 个受保护代码/脚本/既有历史证据文件哈希未变。仅文档修复，未重跑 SwiftPM 或效果验收；此前 `1072/0/0` 保留其原检查点含义。
 - Remaining: 历史批量 wrapper 的 75 案例限制仍为独立技术债；同肤色物体无蒙版自动辨认仍是当前能力缺口。去脂继续 `suspended`，不恢复研发。
 
 ### C-2026-10-01-project-status-and-document-drift-audit
 
-- Status: `completed`。完成[项目进度与文档漂移审计](docs/PROJECT_STATUS_AUDIT_2026-10-01.md)：当前 77 参数、99 注册/98 默认案例、63 taxonomy 行中的 62 implemented + 1 suspended 与源码/现有测试对齐；原 15 项限定二维验收已完成，去脂暂停，同肤色物体自动辨认仍未完成。
+- Status: `completed`。完成[项目进度与文档漂移审计](docs/history/audits/PROJECT_STATUS_AUDIT_2026-10-01.md)：当前 77 参数、99 注册/98 默认案例、63 taxonomy 行中的 62 implemented + 1 suspended 与源码/现有测试对齐；原 15 项限定二维验收已完成，去脂暂停，同肤色物体自动辨认仍未完成。
 - Findings: 确认 6 组文档问题，包括 `.planning` 当前状态/旧回执恢复入口、产品段落仍称 partial、上下移动路径、重复库存和 opt-in 测试/环境变量数量。纹理旧描述已有明确替代说明，已排除为当前漂移。确认项已记入技术债，本轮未批量修正文档、未启动旧阶段或算法研究。
 - Verification: 归档验证、post-archive SDK-only boundary 和 CLI 只读清单通过；2,188 个代码/既有历史基线文件未变。最近完整门禁仍为此前实际执行的 `1072/0/0`、9 opt-in，本轮不重复签发。报告列出每项代码/测试依据及审计局限。
 

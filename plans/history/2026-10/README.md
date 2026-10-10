@@ -1,5 +1,19 @@
 # Completed plan index: 2026-10
 
+- [A-2026-10-10-batched-local-commits](A-2026-10-10-batched-local-commits.md)：按功能与文档分六批本地提交；补齐新测试的精确哈希边界登记并验证修改拒绝，源码/测试保持已验证字节。未推送，原始参考/Python缓存及无Git历史的独立Demo未入库。
+
+- [A-2026-10-10-prepared-photo-editing](A-2026-10-10-prepared-photo-editing.md)：先研究并修正固定原图/用途/失败/隐私等八项规划问题，再实现显式准备源和检测复用、接入独立Demo；SDK65/0/0、同一已有设备原生13/0/0、macOS像素与相关门禁通过。没有视频、新效果、全量回归或性能声明。
+
+- [A-2026-10-09-playbook-sdk-refactor](A-2026-10-09-playbook-sdk-refactor.md)：新分支先研究/审查再重构共同静图geometry stage与诊断，修复parity自测顺序依赖；134个不同直接回归、实际Metal parity14/0/0及相关门禁通过。现有效果/灰色入口保留，未全量或原生App/设备回归。
+
+- [A-2026-10-09-document-drift-followup](A-2026-10-09-document-drift-followup.md)：修复目录/authority、dated map、组合预算、owner 诊断、实现/候选及旧阶段证据漂移；导航/摘要/文档门禁通过，未新增断链或重签 SDK。并行重构与本任务分开计量。
+
+- [A-2026-10-09-docs-organization](A-2026-10-09-docs-organization.md)：新建 7 个分类目录/索引，迁移 28 份正文并维护冻结/历史链接入口；无新增断链，摘要与文档门禁通过，代码/测试/冻结契约和历史正文保留，未重跑 SwiftPM。
+
+- [A-2026-10-09-combination-ui](A-2026-10-09-combination-ui.md)：取消旧组合余额截停/提示，dense实际网格准入与源/legacy预算分离；未开发入口保留置灰禁用。SDK25/0/0、宿主12个相关用例最终通过，单项测试访问错误修复与重验分列；仅定向验证，不更新手机。
+
+- [A-2026-10-09-owner-mediapipe-debug](A-2026-10-09-owner-mediapipe-debug.md)：修复宿主独立Vision复检/写死标签遗漏，SDK-owned瞬时诊断与实际MediaPipe 478显示；SDK定向3/0/0，宿主相关4/0/0，固定主bundle模型通过。未全量回归或更新手机二进制。
+
 - [A-2026-10-09-dense-face-refactor](A-2026-10-09-dense-face-refactor.md)：478点静图核心改造，context复用、可见虹膜/姿态、固定画布网格与独立美肤分支；完整SDK1098/0/0、9 opt-ins，原生24/0/0。失败候选/范围保留，不签视频或全程GPU。
 
 - [A-2026-10-09-playbook-synthesis](A-2026-10-09-playbook-synthesis.md)：外部手册学习与六篇项目重构参考，纠正原理/代码骨架缺口；仅文档，2,452份既有非目标文件不变，文档/归档/边界通过。

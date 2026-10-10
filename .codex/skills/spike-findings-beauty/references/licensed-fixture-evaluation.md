@@ -3,7 +3,7 @@
 This describes a historical spike reviewer and its recorded decisions. Current
 owner policy permits authorized generated portrait positives/negatives for full
 SDK effect acceptance; genuine human photos are optional. See
-`docs/IMAGE_EFFECT_ACCEPTANCE.md`. A legacy reviewer that rejects all generated
+`docs/validation/IMAGE_EFFECT_ACCEPTANCE.md`. A legacy reviewer that rejects all generated
 inputs by type must be adapted or replaced for a new qualification; it must not
 block progress solely for missing genuine photos.
 

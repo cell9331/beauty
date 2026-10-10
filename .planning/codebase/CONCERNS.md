@@ -4,14 +4,17 @@
 **Boundary:** SDK-only SwiftPM repository
 **Policy Sync:** 2026-08-25
 
-**Snapshot status (clarified 2026-10-01):** This is a dated analysis, not a
+**Snapshot status (navigation clarified 2026-10-09):** This is a dated analysis, not a
 current inventory, task list or contract. All uses of current/latest/active
 below refer to the analysis/policy-sync dates above; file counts, CLI catalogs,
 gate denominators, effect statuses and future-work descriptions may be stale.
 Use [PLANS.md](../../PLANS.md), its current plan/debt links and root owners for
-execution; use [taxonomy](../../docs/SDK_EFFECT_TAXONOMY.md) for effects and
-[the dated project audit](../../docs/PROJECT_STATUS_AUDIT_2026-10-01.md) for
-the latest recorded inventory. Recompute dynamic counts before relying on them.
+execution; use [taxonomy](../../docs/SDK_EFFECT_TAXONOMY.md) for effects,
+[QUALITY_SCORE](../../QUALITY_SCORE.md) for current inventory and executed evidence,
+and [docs navigation](../../docs/README.md) for classified guides.
+[The 2026-10-01 audit](../../docs/history/audits/PROJECT_STATUS_AUDIT_2026-10-01.md)
+is a dated observation, not the latest inventory. Recompute dynamic counts
+before relying on them; the analysis and policy-sync dates above are unchanged.
 
 **Distribution:** Owner-only and non-distributed. Any commercialization,
 third-party use, package publication, or model/weight transfer would be a new
@@ -41,10 +44,13 @@ regressions rather than change behavior opportunistically.
 
 ### Current versus historical documentation
 
-Root contracts, `docs/README.md`, `docs/SDK_EFFECT_TAXONOMY.md`, and the seven
-`.planning/codebase/` maps are current. Milestone/phase evidence and retained
-archives are historical. The SDK-only boundary scanner now covers every current
-owner/map class and rejects stale application commands or symlinked active trees.
+Root owners, `PLANS.md` and the guides selected by `docs/README.md` own current
+contracts; `docs/SDK_EFFECT_TAXONOMY.md` owns current effect status. The seven
+`.planning/codebase/` maps remain dated analyses with maintained navigation,
+rather than current inventory or implementation authority. Milestone/phase
+evidence and retained archives are historical. The SDK-only boundary scanner
+covers owner/map locations for boundary checks; that coverage does not refresh
+their old counts, effect conclusions or work queues.
 
 ## Security and Privacy Risks
 

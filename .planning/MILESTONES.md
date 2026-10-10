@@ -11,7 +11,7 @@ effect was delivered. Suspended/default-hidden eyelid compatibility and host obj
 **Verification:** Final EYE controls 1/0/0 and measurement 3/0/0, with effect exit 1;
 SEG retains four rejected development results. Fresh archive-first SDK gate:
 **1076/0/0, 9 opt-ins, exit 0**. Existing 2,201 protected files are unchanged.
-The [terminal report](../docs/RETOUCH_FINAL_DISPOSITION_2026-10-03.md),
+The [terminal report](../docs/history/retouch/RETOUCH_FINAL_DISPOSITION_2026-10-03.md),
 [requirement ledger](REQUIREMENTS.md) and
 [closed plan](../plans/history/2026-10/A-2026-10-03-v1-25-retouch-repair.md)
 record 5 verified/11 closed_unmet requirements, not six completed phases.

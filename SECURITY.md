@@ -13,9 +13,10 @@ owner-only use; research-only data and derived models stay in a noncommercial la
 | Boundary | Enforced ownership |
 | --- | --- |
 | Caller image/metadata/parameters → SDK | Dimension/format/limit/resource admission and deterministic normalization before dependent work. |
-| Vision/MediaPipe → providers | Package-only request-local validated support; invalid mesh rejects its face and regional plausibility checks still apply. |
+| Vision/MediaPipe → providers | Package-only validated support; ordinary calls are request-local, explicit prepared-photo calls retain source-bound support until replacement/release/reset. Invalid mesh rejects its face and regional plausibility checks still apply. |
 | Provider proposals → output | Immutable original pixels, hard support containment, protected bytes and collision-to-source composition. |
-| SDK → host diagnostics | Typed/redacted errors, fixed events and aggregate metrics; no raw support payloads. |
+| SDK → standard host results/diagnostics | Typed/redacted errors, fixed events and aggregate metrics; no raw support payloads. |
+| SDK → owner-only `OwnerDiagnostics` SPI | Transient upright x/y points for the owner's local overlay; description/debug/reflection expose counts only, and raw points never enter persistent evidence. |
 | CLI/process → evidence | Validated output identities/counts, bounded temporary capture and allowlisted aggregates. |
 | Historical ZIP → temporary restoration | Independently pinned hashes/manifests, safe streamed extraction and no active-source restoration. |
 
@@ -71,12 +72,25 @@ finite bounded controls and per-triangle gradient admission precede sampling.
 The fixed three-profile Core Image cache retains framework context only, never
 images, observations, masks or private profile keys. Other profiles remain
 request-local. These mechanics do not identify arbitrary skin-colored objects
-or reopen closed EYE/SEG work. See [dense contract](docs/DENSE_FACE_REFACTOR.md).
+or reopen closed EYE/SEG work. See [dense contract](docs/sdk/DENSE_FACE_REFACTOR.md).
 
 ## Request-local geometry and retouch
 
+The explicit prepared-photo API is a bounded memory-only exception for one
+engine-owned immutable RGB8 source and at most six purpose/raster detection
+entries. Deep byte copying prevents later mutation of a caller provider from
+changing the authorized source. Checked dimensions/row bytes bound the snapshot
+to at most four times `maximumInputPixelCount` bytes. No arbitrary caller cache
+keys, file references, serialization or raw exports are added. Token and storage
+reflection show dimensions/counts only. Replacement, release and reset drop
+pixels/support and expire the prior token; unsuccessful preparation preserves
+the last valid source. Ordinary images and video never access this state.
+All retouch units, masks and parameter-dependent pixels remain request-local;
+cache admission does not relax any regional guard or closed effect status.
+
 Landmarks, pupils, contours, source-raster boundaries, masks, integral arrays,
-scores, predictor tensors and pixels remain package-only and request-local.
+scores, predictor tensors and pixels remain package-only and request-local,
+except for the explicit immutable prepared source/support described above.
 One canonical opaque retouch carrier, one detection/mapping handoff and one
 original-source composition owner constrain the request. A valid eye/feature
 cannot borrow invalid peer support. Missing, low-confidence, blinking/occluded,
@@ -96,16 +110,26 @@ brightness analyzer is not fat/shape truth or natural-effect approval. The
 inactive prediction validator has no predictor; invalid/absent predictions
 grant no proposal. Failed experiments authorize neither replacement-model
 downloads nor training. v1.25 is
-[closed with unmet objectives](docs/RETOUCH_FINAL_DISPOSITION_2026-10-03.md);
+[closed with unmet objectives](docs/history/retouch/RETOUCH_FINAL_DISPOSITION_2026-10-03.md);
 historical provisional acceptance does not override that disposition.
 
 Known coarse-lip/object automatic protection failures remain public limitations.
 Correct host object + complete-lip union masks protect their specified texture
 pixels but add no automatic recognition credit. Generated inputs can qualify
 the particular effect/protection contract they actually pass under
-[IMAGE_EFFECT_ACCEPTANCE.md](docs/IMAGE_EFFECT_ACCEPTANCE.md).
+[IMAGE_EFFECT_ACCEPTANCE.md](docs/validation/IMAGE_EFFECT_ACCEPTANCE.md).
 
 ## Diagnostics and durable evidence
+
+The owner explicitly authorized an in-memory source/output overlay. The
+`OwnerDiagnostics` SPI is its narrow exception to package-only point access:
+`BeautyOwnerLandmarkDetector` accepts an upright CGImage through the existing
+bounded opaque canonicalizer and production adapter, returning selected-primary
+x/y samples and an aggregate summary. The host owns their transient display and
+clearing; there is no Codable, file/model-path input, pose/byte export, persistence
+or logging sink. Description/reflection exposes the fixed detector name and count
+only. A separate detector prevents debug requests changing render-engine state.
+This exception does not authorize raw points in durable evidence or distribution.
 
 Allowed durable data is limited to fixed error/reason/event codes, opaque or
 relative public case/input/output IDs where allowed, counts, hashes, bounded

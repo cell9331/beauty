@@ -25,26 +25,32 @@ progress:
 The owner's latest instruction supersedes the R2 continuation queue: complete
 finite simple attempts, stop at the actual capability boundary and end both old
 tracks this milestone. EYE and SEG each used two methods/four versions, all
-rejected. [Final disposition](../docs/RETOUCH_FINAL_DISPOSITION_2026-10-03.md) and
-[R3 scope](../docs/RETOUCH_TERMINAL_SCOPE_2026-10-03.md) close the unmet objectives;
+rejected. [Final disposition](../docs/history/retouch/RETOUCH_FINAL_DISPOSITION_2026-10-03.md) and
+[R3 scope](../docs/history/retouch/RETOUCH_TERMINAL_SCOPE_2026-10-03.md) close the unmet objectives;
 this does not implement them or promote taxonomy. Full EYE G0, candidate holdouts
 and production integration were not performed and are no longer scheduled.
 
 The final EYE diagnostic controls passed 1/0/0; measurement passed 3/0/0 but the
 effect runner correctly returned 1. SEG retains its four rejected development
 versions, including S2-v2's 8/48 hard protection failures. Original standards,
-failed attempts and licensed-input policies remain intact. No models ran.
+failed attempts and licensed-input policies remain intact. No EYE/SEG-specific
+learned candidate was run in this terminal experiment; that statement does not
+describe the current SDK's platform detector.
 
 Five original requirements are verified and eleven closed_unmet; zero automatic
 branches are delivered. Host union masks and the current batch tool remain usable.
 Production stays at 77 fields, 99 registered/98 default cases, 62 implemented
-bounded rows plus one suspended eyelid row. Final engineering verification is
-**1076/0/0, 9 opt-ins**, separately from effect acceptance. [PLANS](../PLANS.md) owns current status.
+bounded rows plus one suspended eyelid row. The 2026-10-03 engineering closure
+checkpoint is **1076/0/0, 9 opt-ins**, separately from effect
+acceptance. Later independent SDK changes and current work are recorded in
+[PLANS](../PLANS.md), with executed evidence and inventory in
+[QUALITY_SCORE](../QUALITY_SCORE.md). This dated terminal route does not replace
+those owners or restart its closed branches.
 
 ## Project Reference
 
 Current owner-local execution: [PLANS.md](../PLANS.md).
-Generated-input acceptance: [IMAGE_EFFECT_ACCEPTANCE.md](../docs/IMAGE_EFFECT_ACCEPTANCE.md).
+Generated-input acceptance: [IMAGE_EFFECT_ACCEPTANCE.md](../docs/validation/IMAGE_EFFECT_ACCEPTANCE.md).
 Genuine portraits and physical devices are optional supplements; broader
 population, device and commercial quality remain unclaimed.
 
@@ -436,7 +442,7 @@ Plan 93-02 is complete, 2/2 tasks. Fresh current-gate registration 4/0/0, metric
 
 The two automatic tracks reached terminal failure within their original budgets.
 No next G0, candidate revision, model or training task remains. See
-[PLANS](../PLANS.md) and the [terminal result](../docs/RETOUCH_FINAL_DISPOSITION_2026-10-03.md)
+[PLANS](../PLANS.md) and the [terminal result](../docs/history/retouch/RETOUCH_FINAL_DISPOSITION_2026-10-03.md)
 for closeout verification. Historical phase/lock/receipt files are unchanged;
 R2 requirement and roadmap snapshots preserve the original unfulfilled obligations.
 General “continue” requests must not revive them.

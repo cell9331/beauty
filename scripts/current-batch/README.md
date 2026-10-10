@@ -1,7 +1,7 @@
 # Current renderer batch validation
 
 Owner-local SDK validation; full contract and measured results:
-[CURRENT_BATCH_VALIDATION](../../docs/CURRENT_BATCH_VALIDATION.md).
+[CURRENT_BATCH_VALIDATION](../../docs/validation/CURRENT_BATCH_VALIDATION.md).
 The old 75-case scripts and receipts are historical and remain unchanged.
 
 From the repository root on macOS with Swift, Python 3 and Core Image/Vision:

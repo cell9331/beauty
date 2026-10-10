@@ -1,7 +1,7 @@
 # Example Images
 
 Current policy: [authorized generated portrait-like inputs are eligible for
-full SDK effect acceptance](../docs/IMAGE_EFFECT_ACCEPTANCE.md). The `p1.jpg`
+full SDK effect acceptance](../docs/validation/IMAGE_EFFECT_ACCEPTANCE.md). The `p1.jpg`
 inventory below describes the existing renderer fixture, not an exclusive
 image-source requirement for future milestones. Genuine human portraits are
 optional.
@@ -99,7 +99,7 @@ The image must satisfy the same Vision face/eyebrow and output assertions;
 its generated origin is not a reason to skip or fail. For teeth and sclera,
 set `PHASE59_TEETH_BUNDLE` and `PHASE62_SCLERA_BUNDLE` to ignored local
 generated positive/negative bundles with the existing manifest and mask
-contract. See [current acceptance policy](../docs/IMAGE_EFFECT_ACCEPTANCE.md).
+contract. See [current acceptance policy](../docs/validation/IMAGE_EFFECT_ACCEPTANCE.md).
 
 ## Historical Local-Retouch Candidate
 

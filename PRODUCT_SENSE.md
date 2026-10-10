@@ -1,6 +1,40 @@
 # PRODUCT_SENSE.md
 
+## Repeated fixed-photo editing (2026-10-10)
+
+An owner host can call `prepareStillImage(image:metadata:)` once on an RGB8 photo,
+then `processResult(preparedImage:parameters:textureExclusionMask:)` for each
+slider snapshot. The engine owns one deep-copied original; every edit starts
+there. Detection is lazy and reused by purpose/raster on usable/no-face outcomes.
+Replacement/reset/`releasePreparedStillImage()` expires old handles and releases
+the source/support. Failed preparation preserves the prior source; unavailable
+or partial detection retries without using older support. Serialize engine
+access. The token exposes dimensions only, not bytes or landmarks. Preview and
+full-size sources require independent preparation/support; the external editor
+uses ordinary fresh calls for full-size export. Existing APIs and effects keep
+their contract. See [integration and limits](docs/sdk/PREPARED_PHOTO_EDITING.md).
+
+## Owner-only landmark overlay (2026-10-09)
+
+The adjacent editor's debug overlay now uses `OwnerDiagnostics` SPI with the
+same production adapter as rendering: MediaPipe 478 on iOS, Vision on macOS.
+Source/output points are independently re-detected, upright, top-left normalized
+and index ordered. They are observation samples, not applied warp-control points
+or proof of correspondence/effect accuracy. The owner must serialize the detector,
+clear overlay points on debug-off/photo replacement and never encode/log/export
+them. The diagnostic instance is separate from the rendering engine and cached
+native task; no prior observations substitute for a failed or no-face result.
+
 ## Dense still-image behavior (2026-10-09)
+
+Mapped facial controls accept independent capped values on fresh dense support,
+with actual composed-map safety applied during rendering. Adding another field
+does not consume the previous field's scalar quota or overwrite its requested
+value; the final map may still attenuate an excessive combination. Source-raster
+admission/translation and legacy geometry keep separate conservative limits.
+The external owner editor keeps unavailable categories and suspended tools grey,
+disabled and silent; its guards preserve selection, parameters and history.
+Its "整体" label describes the implemented whole-face scope, not a side selector.
 
 The iOS still-image facade now consumes the 478-point distribution for fixed
 canvas mapping, measured iris boundaries for eligible size/gaze work, near-rigid
@@ -8,7 +42,7 @@ pose for conservative map attenuation and denser geometric texture exclusions.
 Smoothing and sharpening retain separate contributions rather than canceling
 through one constant gain. No new public control or nonzero default is added.
 Both backend selections share CPU-owned dense geometry/texture; known host
-protection remains exact. [Mechanism and qualified evidence scope](docs/DENSE_FACE_REFACTOR.md)
+protection remains exact. [Mechanism and qualified evidence scope](docs/sdk/DENSE_FACE_REFACTOR.md)
 are separate from general anatomy, unknown-input protection and device speed.
 
 ## Current owner-local batch validation (2026-10-03)
@@ -25,7 +59,7 @@ wrapper remains historical and is not the current integration entry point.
 v1.25 attempt narrowed the target to automatic eyelid tone correction and
 visible-boundary skin-colored patch protection. Both exhausted their original
 two-method/four-version budgets without qualification. Under the owner's latest
-stop-at-the-boundary instruction, the [terminal disposition](docs/RETOUCH_FINAL_DISPOSITION_2026-10-03.md)
+stop-at-the-boundary instruction, the [terminal disposition](docs/history/retouch/RETOUCH_FINAL_DISPOSITION_2026-10-03.md)
 closes both as undelivered, with no automatic continuation. No tone effect or
 automatic object detector is newly available. Hiding and compatibility do not
 count as implementing either automatic goal.
@@ -39,7 +73,7 @@ that constraint restored visible artifacts. Controlled dome/flat, protection
 and calibrated live Vision tests prove their stated pixel behavior, not a
 usable natural-portrait effect. Generated provenance is not the cause of the
 failure, and further parameter tuning is not known to solve it. The
-[research record](docs/UPPER_EYELID_AND_SKIN_SEMANTICS_RESEARCH.md) and
+[research record](docs/history/upper-eyelid/UPPER_EYELID_AND_SKIN_SEMANTICS_RESEARCH.md) and
 [quality evidence](QUALITY_SCORE.md) retain the concrete results.
 
 The 77-field API retains `upperEyelidFullnessReduction`, its zero default,
@@ -72,7 +106,7 @@ still changes. The host supplies the mask in the upright image grid after
 input orientation and mirroring. The SDK does not discover all such objects
 automatically; other requested effects have separate protection contracts.
 
-The [2026-10-03 finite feasibility probe](docs/TEXTURE_SEMANTIC_FEASIBILITY_2026-10-03.md)
+The [2026-10-03 finite feasibility probe](docs/history/retouch/TEXTURE_SEMANTIC_FEASIBILITY_2026-10-03.md)
 rejected the single source-periodicity candidate: it also stopped valid skin
 texture. General unmasked automatic object protection remains unqualified. The subsequent v1.25 finite patch-domain repair also rejected all four versions
 and is now closed without automatic delivery. Host masks remain an assisted
@@ -82,7 +116,7 @@ The existing eye/lip zones are coarse guards, not anatomical segmentation;
 a new deep-skin low-contrast lip outside that zone failed exact protection.
 Known critical feature pixels must also be included in the host mask when exact
 texture preservation is required. The failed probe remains separate from
-bounded SDK acceptance. The [host integration guide](docs/HOST_TEXTURE_PROTECTION.md)
+bounded SDK acceptance. The [host integration guide](docs/sdk/HOST_TEXTURE_PROTECTION.md)
 and new public-path regression now verify the object + complete lip union on
 that same generated source: both stay exact while the other cheek meets the
 frozen smoothing/sharpening direction thresholds. This supplies independent
@@ -224,7 +258,7 @@ color/alpha, neutral identity, tolerance, repeatability and typed recovery.
 Visual/no-worsening claims additionally require original-detail inspection.
 A safe no-op or changed-pixel count cannot pass a positive effect oracle.
 Generated images are eligible; genuine portraits and physical devices are
-optional under [IMAGE_EFFECT_ACCEPTANCE.md](docs/IMAGE_EFFECT_ACCEPTANCE.md).
+optional under [IMAGE_EFFECT_ACCEPTANCE.md](docs/validation/IMAGE_EFFECT_ACCEPTANCE.md).
 
 Clean local-path SwiftPM consumer tests import only `BeautySDK` and measure
 actual output bytes/dimensions. Renderer integration requires every requested

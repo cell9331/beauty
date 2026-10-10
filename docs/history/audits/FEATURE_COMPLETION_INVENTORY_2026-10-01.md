@@ -1,11 +1,11 @@
 # 全部功能与完成状态清单（2026-10-01）
 
-> 2026-10-03 终局状态：[v1.25已关闭，两个自动目标未交付](RETOUCH_FINAL_DISPOSITION_2026-10-03.md)。EYE与SEG各2方法4版本均未合格；去脂保持suspended/default-hidden，host物体+完整唇并集蒙版继续可用。当前批量工具已完成。下文是2026-10-01日期快照，其中“活跃/下一步”不产生当前任务；现行状态以PLANS、taxonomy和终局需求表为准。
+> 2026-10-03 终局状态：[v1.25已关闭，两个自动目标未交付](../retouch/RETOUCH_FINAL_DISPOSITION_2026-10-03.md)。EYE与SEG各2方法4版本均未合格；去脂保持suspended/default-hidden，host物体+完整唇并集蒙版继续可用。当前批量工具已完成。下文是2026-10-01日期快照，其中“活跃/下一步”不产生当前任务；现行状态以PLANS、taxonomy和终局需求表为准。
 
 这是当前工作树的日期快照，不是新的 effect authority 或交付承诺。
 当前项目是所有者自用 SDK-only Swift Package；App/UI 历史不进入完成分母。
-功能状态依据 [taxonomy](SDK_EFFECT_TAXONOMY.md)、[代码](../BeautySDK/Sources/BeautyCore/Models/BeautyParameters.swift)、
-[现行计划](../PLANS.md)及[当前技术债](../plans/debt/current.md)。
+功能状态依据 [taxonomy](../../SDK_EFFECT_TAXONOMY.md)、[代码](../../../BeautySDK/Sources/BeautyCore/Models/BeautyParameters.swift)、
+[现行计划](../../../PLANS.md)及[当前技术债](../../../plans/debt/current.md)。
 最新完整工程检查点是此前实际执行的 **1072 测试 / 0 失败 / 0 跳过，9 opt-in**；
 本次盘点不重跑效果验收，也不把工程通过当作通用照片质量合格。
 
@@ -165,9 +165,9 @@
 | 输入像素上限 | `maximumInputPixelCount` | 已完成：默认最大 50,000,000 像素；纹理还有独立 8,388,608 像素预算。 |
 | 执行后端 | `renderBackend` | 已完成：CPU 默认，Metal 可选；不可用为 typed failure；局部修饰仍由 CPU 合成，少数大几何静图有整体 CPU 回退。 |
 
-代码依据：[BeautyConfiguration](../BeautySDK/Sources/BeautyCore/Models/BeautyConfiguration.swift)、
-[BeautyEngine](../BeautySDK/Sources/BeautySDK/BeautyEngine.swift)、
-[主脸选择](../BeautySDK/Sources/BeautyDetection/FaceSelectionPolicy.swift)。
+代码依据：[BeautyConfiguration](../../../BeautySDK/Sources/BeautyCore/Models/BeautyConfiguration.swift)、
+[BeautyEngine](../../../BeautySDK/Sources/BeautySDK/BeautyEngine.swift)、
+[主脸选择](../../../BeautySDK/Sources/BeautyDetection/FaceSelectionPolicy.swift)。
 
 ## 三、资源、SDK 支撑与工程项目
 
@@ -203,10 +203,10 @@
 | UI/Demo 退役与安全归档恢复工具 | 已完成 | 两份验证 ZIP；只恢复到仓库外新临时目录。 |
 | 文档审计与六组漂移修正 | 已完成 | 当前状态、恢复路由、最终适用域、库存与门禁说明统一。 |
 
-资源依据：[manifest](../BeautySDK/Sources/BeautyResources/Resources/manifest.json)。
-支撑项目依据：[架构](../ARCHITECTURE.md)、[设计](../DESIGN.md)、
-[可靠性](../RELIABILITY.md)、[产品契约](../PRODUCT_SENSE.md)、
-[质量记录](../QUALITY_SCORE.md)、[审计及修复记录](PROJECT_STATUS_AUDIT_2026-10-01.md)。
+资源依据：[manifest](../../../BeautySDK/Sources/BeautyResources/Resources/manifest.json)。
+支撑项目依据：[架构](../../../ARCHITECTURE.md)、[设计](../../../DESIGN.md)、
+[可靠性](../../../RELIABILITY.md)、[产品契约](../../../PRODUCT_SENSE.md)、
+[质量记录](../../../QUALITY_SCORE.md)、[审计及修复记录](PROJECT_STATUS_AUDIT_2026-10-01.md)。
 
 ## 四、尚未完成、暂停及未覆盖的项目
 

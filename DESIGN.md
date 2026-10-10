@@ -59,8 +59,8 @@ Selected GPU still images require the retained opaque bounded-RGB admission.
 Other decoded-image behavior keeps its existing route-specific extent/color/
 alpha contract; no global transparent-input claim is made.
 
-Detection/support remains package-only and request-local. The current facade
-does not cache or reuse prior face observations. Unindexed still-image calls
+Detection/support remains package-only. Ordinary facade calls keep observations
+request-local and never reuse earlier face support. Unindexed still-image calls
 detect when required. Indexed camera/video calls require a nonnegative index
 and camera/video metadata; only multiples of the configured interval detect.
 Skipped frames return `.skipped / .detectionInterval` and remove dependent work.
@@ -77,7 +77,9 @@ MediaPipe exposes no per-face confidence value in this task result: the internal
 admission marker means the configured 0.5 detection/presence thresholds passed,
 not a probability or certainty score. Pose/visibility/occlusion estimates do not
 replace existing regional support admission. Dense points and transforms are
-non-Codable request data and never appear in public results.
+non-Codable internal source/request data and never appear in standard render results. The owner's
+explicit `OwnerDiagnostics` SPI separately returns only transient x/y samples for
+an in-memory overlay; pose stays internal and all durable diagnostics stay aggregate.
 
 No-face routing is explicit: a detected no-face request skips face-dependent
 geometry and the skin domain while preserving supported global color/filter
@@ -95,11 +97,40 @@ an asynchronous stream, shared-instance parallelism or persistent support.
 
 ## Geometry and raster ownership
 
+### Explicit fixed-photo preparation
+
+`prepareStillImage(image:metadata:)` accepts only `.photo` RGB8 `CGImage` and
+deep-copies its checked raster bytes while retaining its bitmap/color/alpha and
+metadata meaning. One current source belongs to an engine; public handles carry
+only opaque identity and dimensions. Successful replacement/reset/release expires
+old handles; invalid prepare preserves the prior source. Wrong-engine/expired
+handles fail with `invalidInput` before inference. Original and canonical detector
+rasters and geometry/local/combined purposes have separate bounded entries.
+Only usable/no-face results are reused; partial/unavailable/low-confidence results
+retry without borrowing another purpose's support. Neutral/disabled work does
+not detect. Fixed-source reuse is not cross-frame `.reused` landmark freshness:
+the observed pixels are still the exact immutable input of the current render.
+All parameter-dependent maps, source admission, retouch and masks remain fresh.
+`beauty.detection.preparedReuse` reports 0/1 only when this route requires detection;
+the detection summary retains its original outcome and any original timings.
+See [prepared photo contract](docs/sdk/PREPARED_PHOTO_EDITING.md).
+
 Providers produce validated request-local `WarpControlPoint` sets into one
 geometry pipeline. Field-local caps, finite/bounded source and target checks,
 support freshness and aggregate conflict budgets apply before dispatch.
+On fresh dense still-image support, mapped fields retain their independently
+capped signed strengths; the old sum-of-parameters quota does not represent
+their actual combined displacement. The final shared inverse map enforces
+pixel displacement, per-triangle gradient and pose bounds. The nine fields with
+source-raster refinement/admission or post-map translation retain a separate
+conservative sum budget: contour smoothing, hairline/forehead height, both
+double-chin controls, head wrap, philtrum length and whole-face x/y translation.
+Legacy support retains its previous all-geometry conflict budget. No public
+range, default or cap changes; requested values are distinct from admitted
+output strength. See [exact dense behavior](docs/sdk/DENSE_FACE_REFACTOR.md).
 Provider-empty work is removed consistently from the final plan. Observed
-eye, brow, nose and lip support is not public geometry or a UI coordinate API.
+eye, brow, nose and lip support is not part of the standard geometry/UI API.
+The owner-only diagnostic overlay has its separate upright top-left x/y contract.
 
 Still-image source admission additionally qualifies contour smoothing,
 hairline/forehead displacement, outer submental tiers, philtrum and rigid
@@ -110,10 +141,19 @@ coherent source hair cap. Whole-face X/Y provider points remain narrower
 mechanics; admitted still images use rigid translation. These are bounded 2D
 image operations, not depth, fat or general segmentation estimates.
 
+The internal `BeautyStillImageGeometryStage` now prepares the raster and final
+points once per admitted geometry stage on either backend. Head-wrap/philtrum
+admission still reads the contour-refined, pre-hairline/submental raster.
+CPU passes its already-colored raster; Metal passes its textured raster and
+keeps its color pass before the dense sampler. A rejected dense map preserves
+the supplied raster; rigid translation follows the selected sampler. CPU's
+neutral preflight and canonical rasterization callback are unchanged. Both
+executors construct existing aggregate diagnostics through one bounded initializer.
+
 Dense still images use a fixed full-canvas inverse lattice, pixel-metric radius,
 canonical centers, final displacement and per-triangle gradient bounds; validated
 pose can only attenuate that map. Visible iris rings and geometric feature
-exclusions stay request-local. [Exact mechanism and limits](docs/DENSE_FACE_REFACTOR.md)
+exclusions stay request-local. [Exact mechanism and limits](docs/sdk/DENSE_FACE_REFACTOR.md)
 separate this CPU-owned stage from the retained legacy point renderer.
 
 The legacy Metal uniform capacity is 256 points. A selected-GPU still-image plan over
@@ -146,7 +186,7 @@ from smoothing/sharpening only; `0` retains existing admission. It adds no
 support and cannot enable a no-face request. Dimensions are checked even with
 neutral parameters. Only decoded/encoded still-image result entries accept it;
 it never becomes engine state, Codable output or raw diagnostic data.
-See [host protection](docs/HOST_TEXTURE_PROTECTION.md) for the object + full-lip union.
+See [host protection](docs/sdk/HOST_TEXTURE_PROTECTION.md) for the object + full-lip union.
 
 ## Local-retouch composition and suspended compatibility
 
@@ -171,7 +211,7 @@ The inactive prediction validator has no registered predictor or model asset.
 v1.25's automatic eyelid-tone and patch-protection branches both closed as
 unmet after their finite budgets. No full EYE G0, candidate holdout or production
 integration is queued. Current failure and restart semantics are owned by the
-[terminal report](docs/RETOUCH_FINAL_DISPOSITION_2026-10-03.md).
+[terminal report](docs/history/retouch/RETOUCH_FINAL_DISPOSITION_2026-10-03.md).
 
 ## Diagnostics and acceptance
 
@@ -186,7 +226,7 @@ time using a monotonic clock; encoded input includes preflight/decode, deferred
 CIImage evaluation is excluded. Convenience output-only calls do not expose it.
 
 Compatibility, safe mechanics and useful effect qualification are distinct.
-The [image acceptance policy](docs/IMAGE_EFFECT_ACCEPTANCE.md) requires joint
+The [image acceptance policy](docs/validation/IMAGE_EFFECT_ACCEPTANCE.md) requires joint
 source-defined direction/negative/protection/metadata/repeat/failure evidence.
 Generated inputs are eligible; genuine portraits and physical devices are
 optional. Exact status and bounded input ranges belong to the taxonomy,

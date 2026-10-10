@@ -63,8 +63,21 @@ promotion or distribution commitment in the SDK repository. See the
 
 The subsequent [owner-host repair](plans/history/2026-10/A-2026-10-08-owner-editor-debug.md)
 maps sliders to admitted per-field caps, reserves previous geometry values,
-coalesces a 960-pixel preview and adds in-memory source/output Vision debug
-overlays. Re-detection is explicitly independent of SDK warp control points.
-Sustained simulator inference and the previous segmentation positive remain
-failed; neither overlay visibility nor changed pixels qualify all effects.
-SDK source and target boundaries are unchanged by this host repair.
+coalesces a 960-pixel preview and initially added independent Vision overlays.
+The 2026-10-09 follow-up replaces that host detection call with SDK-owned
+`OwnerDiagnostics` SPI, using MediaPipe 478 on iOS and reporting the actual model
+name. Re-detection remains independent of applied warp-control points. The actual
+host's bounded native debug/continuous-nose/UI paths now pass on the authorized
+generated input; old Vision-provider failures and the segmentation positive
+remain distinct. Overlay visibility does not qualify all effects. Application
+sources/UI tests remain external; SDK target/dependency boundaries are preserved.
+
+The 2026-10-09 combination follow-up removes the host's old remaining-budget
+slider clamp and routine quota messages. Sliders keep independent capped signed
+snapshots and canonical aliases; the dense SDK map handles actual displacement
+and gradient admission. Its debug panel counts active canonical edits instead
+of presenting the old scalar sum as a capacity percentage. Undesigned categories
+and the suspended tool remain visible but grey and disabled; direct model calls
+are silent no-ops. Import/undo/confirm, actual missing-support errors and the
+single safe-area owner remain unchanged. Application source and UI validation
+stay in the already authorized external host.

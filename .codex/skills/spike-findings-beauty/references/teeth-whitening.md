@@ -2,7 +2,7 @@
 
 Current policy: generated smiles may be full effect inputs when they contain a
 qualified positive/negative and pass the feature oracle; genuine photos are
-optional. See `docs/IMAGE_EFFECT_ACCEPTANCE.md`.
+optional. See `docs/validation/IMAGE_EFFECT_ACCEPTANCE.md`.
 
 ## Requirements
 
