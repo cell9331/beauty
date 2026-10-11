@@ -1,5 +1,26 @@
 # RELIABILITY.md
 
+## Continuous face contour bounds (2026-10-11)
+
+The eight-field contour sampler admits fresh observed contour, eye and registered
+outer-lip support, finite strengths and bounded dimensions. Invalid support
+returns the supplied raster; registered routes do not restore old contour
+points. Stable source/cap shape admits a grid with displacement ≤6% contour
+span and bilinear gradient Frobenius norm ≤.45, so its inverse map has minimum
+singular value ≥.55. Other geometry stages retain their independent limits;
+there is no new all-stage 6% bound or performance guarantee. Fixed feature-edge
+knots, exact ROI copies and unchanged alpha avoid interpolation into protected
+boxes; transitions across unlike alpha abstain. Source color space and extent
+are preserved on this route. Raw coordinates are excluded from diagnostics.
+
+The supplementary soft hairline route requires contiguous dark-hair/skin
+transitions, skin color, opaque samples, smooth column progression and brow
+clearance. Invalid brow samples exit before integer conversion. Head wrap keeps
+its prior hard-edge admission, rather than borrowing this new soft support.
+Bangs-like dips and missing/ambiguous boundaries abstain. It admits
+the tested distributed generated edge; both actual owner portraits still exit
+unchanged. This is not a hair segmentation or reconstruction capability.
+
 ## Prepared fixed-photo editing (2026-10-10)
 
 Explicit preparation reuses detection only on the same engine-owned deep-copied
@@ -241,3 +262,20 @@ becomes a sanitized reproducible issue in [PLANS.md](PLANS.md). Current known
 simulator failures remain distinct from successful bounded SDK/host evidence.
 Latest executed engineering checkpoints are linked from
 [QUALITY_SCORE.md](QUALITY_SCORE.md); document edits never re-sign them.
+
+## Dense nasal sampling and owner preview (2026-10-10)
+
+Dense geometry keeps at most 32 anatomy knots plus 32 local control centers for
+nasal detail (124 columns / 188 rows including 64 raster cutoffs). Current and
+cap shapes both participate in the existing .45-gradient / 6%-face-span bound;
+invalid sampling centers/fractions fail map admission. Sampling visits only
+cells with nonzero vertices, using the same pixel-center interpolation and
+rounding as the independent full-canvas reference. This avoids per-pixel binary
+lookup and source-exact-area arithmetic, without new backend or persistent cache.
+
+The separate owner's editor limits preview starts at 40 ms, holds one in-flight
+render and one replaceable newest snapshot, and flushes a pending timer on
+release. In-flight synchronous SDK work finishes before the newest render can
+start; this is not a preemption or 25-fps guarantee. Output debug re-detection
+waits for settled editing. Simulator Debug measurements belong to the scoped
+repair receipt and make no target-device performance claim.

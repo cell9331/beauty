@@ -139,6 +139,15 @@ backends. On these routes, corresponding legacy point emissions are suppressed
 even if source admission rejects. Pixel buffers retain their separate admitted
 capabilities; still-image qualification does not extend them.
 
+Eight lip-registered contour fields additionally use `BeautyContinuousFaceMap`,
+a request-local CPU-owned ROI lattice shared by both still executors. The
+shared stage suppresses their old point emissions and applies the new sampler
+after other legacy/dense geometry, before translation. Feature-edge knots and
+fixed source kernels preserve protected regions. Each sampler has its own
+gradient/displacement bound; this is not one all-field sampling transaction.
+The target graph, model resources, retained shaders and pixel-buffer route are
+unchanged. [Exact face behavior](docs/sdk/FACE_SHAPE_SLIDERS.md).
+
 Skin smoothing/sharpening uses independent bounded detail branches with bilateral
 range weights in the shared CPU-owned texture stage, with
 fresh primary-face bounds, conservative face/eye/lip/color/edge admission and

@@ -41,9 +41,10 @@ records do not create current tasks or override current contracts.
 | Current work and limitations | [PLANS](../PLANS.md), [current debt](../plans/debt/current.md) |
 | Exact control/parameter mappings and effect status | [SDK_EFFECT_TAXONOMY](SDK_EFFECT_TAXONOMY.md) |
 | Eligible inputs and independent effect/protection acceptance | [IMAGE_EFFECT_ACCEPTANCE](validation/IMAGE_EFFECT_ACCEPTANCE.md) |
-| Current 98-default/99-registered batch validation | [CURRENT_BATCH_VALIDATION](validation/CURRENT_BATCH_VALIDATION.md), [tool usage](../scripts/current-batch/README.md) |
+| Current 98-default/99-canonical batch validation (face slider opt-ins separate) | [CURRENT_BATCH_VALIDATION](validation/CURRENT_BATCH_VALIDATION.md), [tool usage](../scripts/current-batch/README.md) |
 | Host-supplied object + complete-lip texture masks | [HOST_TEXTURE_PROTECTION](sdk/HOST_TEXTURE_PROTECTION.md) |
 | Dense static-image semantics, map safety and resource reuse | [DENSE_FACE_REFACTOR](sdk/DENSE_FACE_REFACTOR.md) |
+| Face slider polarity, continuous fields and reference limits | [FACE_SHAPE_SLIDERS](sdk/FACE_SHAPE_SLIDERS.md) |
 | Git identity and remote operations | [GIT_OPERATIONS](operations/GIT_OPERATIONS.md) |
 | Fixture storage, previews and classified cleanup | [example-images](../example-images/README.md) |
 

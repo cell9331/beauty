@@ -12,6 +12,17 @@ not alternative current models or a continuation queue.
 
 [BeautyParameters](BeautySDK/Sources/BeautyCore/Models/BeautyParameters.swift)
 has 77 stored fields: 76 numeric controls and optional logical `filterId`.
+All six nose fields (`noseSlim`, `noseWingSlim`, `noseTipSize`, `noseBridge`,
+`noseRootNarrowing`, `noseTipLift`) are signed, including reconstruction and
+mutable normalization. Keys, zero defaults and absolute safety caps are unchanged.
+Positive size/wing/tip/root/bridge contract their image-plane region; negative
+values expand it. Positive lift moves tip support up; negative moves it down.
+Dense nasal kernels remain anchored to the immutable source, with their cap
+shape participating in the unchanged displacement/gradient admission. The
+lattice retains bounded nasal anatomy/control knots; this avoids intensity-
+dependent quantile loss and premature nonmonotone attenuation. Historical
+positive legacy geometry remains compatible. See [dense geometry](docs/sdk/DENSE_FACE_REFACTOR.md).
+
 Unit controls normalize to `0...1`, signed controls to `-1...1`; nonfinite
 values become neutral. Algorithm-specific caps and combination budgets are
 separate from public ranges. Default numeric controls are zero and `filterId`
@@ -20,6 +31,14 @@ orientation/color/copy route. The resolver derives strengths, domains, warnings,
 metrics and emitted geometry from one admitted set, removing unsupported work
 without leaving ghost strength or points. Hosts submit value snapshots rather
 than storing slider state in the SDK. The five built-in presets are neutral.
+
+`faceSlim`, `faceSmall`, `jawSlim`, `templeFullness`, `cheekboneSlim` and
+`chinTaper` now normalize/reconstruct as signed values with unchanged keys,
+zero defaults and absolute caps. `BeautyFaceShapeSlider` maps a host's 0...1
+position over those caps; centered controls are neutral at .5, V-face/smoothing
+at 0. Its chin-length direction is shortening-positive, while direct API
+positive chin length remains longer. No slider view/state belongs to the SDK.
+See [mapping and implementation](docs/sdk/FACE_SHAPE_SLIDERS.md).
 
 [BeautyConfiguration](BeautySDK/Sources/BeautyCore/Models/BeautyConfiguration.swift)
 has 11 stored fields and is captured by `BeautyEngine` at initialization.
@@ -161,6 +180,17 @@ capacity without row restrictions executes the entire admitted plan once on
 CPU and reports `beauty.backend.cpuGeometryCapacityFallback = 1`. No strength
 or point is silently discarded. Direct Metal and row-restricted over-capacity
 requests retain typed failure; unavailable GPU and runtime errors never retry.
+
+Observed, lip-registered still images use a continuous source-anchored contour
+band for eight face/chin fields, with local pixel axes, fixed feature boxes and
+cap-shape gradient/displacement bounds. It follows other legacy/dense sampling
+and precedes rigid translation on both executors; corresponding eight points
+are suppressed even when new-map admission rejects. Coarse historical positive
+fixtures remain on their old route; new negative fields require registration.
+This contour stage preserves source color/extent/alpha. Stages have separate
+bounds, so their composition is not a single all-field 6% displacement budget.
+Soft hair/skin boundary admission now supplements the prior hard-edge route;
+ambiguous/bangs-like boundaries still abstain. [Details](docs/sdk/FACE_SHAPE_SLIDERS.md).
 
 ## Texture and exclusion masks
 

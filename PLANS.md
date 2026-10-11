@@ -25,6 +25,8 @@
 
 ## 3. Active
 
+本轮脸型接线与连续轮廓修复已完成其限定实现，见下方 C-2026-10-11；完整美图外观一致及发际线/面部流畅原图缺口保留 FACE-REF-01。
+
 所有者编辑宿主的接线、范围、组合、调试显示与预览修复
 已记录在下方。旧 iOS 17.5 模拟器 Vision provider 的连续检测异常仍为历史限制；
 现行 iOS SDK 与宿主调试已使用 MediaPipe，该旧失败不是现行宿主阻塞，见[当前技术债](plans/debt/current.md)。
@@ -37,6 +39,42 @@ v1.25仍按`closed_with_unmet_objectives`结清，不恢复其自动效果研发
 原记录已在[历史索引](plans/history/README.md)对应的 completed 分片。Phase 93 的 owner-local `93-CHECKS.json` 与 Phase 95 independent review 属于历史证据，不是当前 Active 计划。
 
 ## 4. Completed / terminal dispositions
+
+### C-2026-10-11-face-continuous
+
+- Status: `completed` for bounded code/slider implementation; complete reference appearance remains unmet.
+- Result: 六项 signed、十控件 SDK helper、八项连续轮廓及柔和发际线准入；小脸下巴波纹修复。direct chinLength 极性、旧粗代理正向、默认98/canonical99库存保留；新增50显式opt-in位置。
+- Verification: **174相关SwiftPM / 0失败 / 0跳过**，含实际CPU/Metal、双向/四档幅度、眼嘴/外围/alpha、平滑下巴、neutral/退出/恢复及元数据；**38张macOS/Vision输出**，边界及mutation、归档、库存2例/两次CLI发现、媒体容量通过。未全量或原生iOS/宿主回归。
+- Limit: 两图发际线及面部流畅仍退出；截图无数值，未交付全部外观/幅度一致。原图与nose本地改动保留，三张忽略压缩对比图；原尺寸临时输出已清理。
+- Record: [实现、修正、验证与剩余边界](plans/history/2026-10/A-2026-10-11-face-continuous.md)，现行缺口见 FACE-REF-01。
+
+
+### C-2026-10-10-face-reference
+
+- Status: `completed` for comparison and rejected-candidate disposition (recorded 2026-10-11); face appearance repair remains unmet.
+- Result: 18 isolated Meitu screenshots, both authorized originals and 26 actual macOS/Vision outputs compared. Positive-only width/small/jaw/temple/cheek/chin, uneven small-face chin and baseline-exact hairline/contour on both portraits identified. Three-field signed candidate failed dense monotonicity/protection and was withdrawn; no face code/test change retained.
+- Verification: candidate 5 cases: 4 passed/1 failed; restored current face-provider tests **6/0/0**. Four bounded previews and aggregate evidence retained. No full suite, native iOS/MediaPipe portrait rerender or appearance-parity claim.
+- Record: [comparison, oracle and disposition](plans/history/2026-10/A-2026-10-10-face-reference.md); remaining gaps tracked as FACE-REF-01.
+
+### C-2026-10-10-nose-screenshot-comparison
+
+- Status: `completed`，完成原图、八张双向截图与美图参考视频对照；外观问题未修复。
+- Result: 大小/鼻尖接线独立，大小的下鼻纵向拉伸占主导且同组嘴唇样本被带动；山根/鼻梁/鼻尖有变化但作用局部、观感不足。美图同照片统一显示比例对照及现行代码/参考章节核对完成。
+- Verification: 原尺寸照片区域像素对照、端点视频帧和未变化眼部/头发配准；仅聚合记录与压缩预览。未运行SDK/App测试、复现独立字段运行时或修改算法。后续必须冻结neutral其他字段/settled预览，补整体比例、局部形状与保护区oracle。
+- Record: [截图对照、证据限制与新增验收缺口](plans/history/2026-10/A-2026-10-10-nose-screenshot-comparison.md)；未满足项归入NOSE-REF-01，旧85/20测试不代表此照片外观合格。
+
+### C-2026-10-10-nose-signed-preview
+
+- Status: `completed`，完成本次双向鼻部与响应修复；美图秀秀外观对齐仍未验收。
+- Result: 六字段signed重建/归一化/cap/backend与六宿主双向滑杆；40ms启动限频、单运行+最新待处理、松手flush，调试延后。鼻部实测/控制节点、source核与cap准入修复漏采样及非单调衰减，大小/鼻尖/翼/提升/梁的dense局部幅度增强；ROI采样与参考逐字节一致。
+- Verification: SDK **85个不同相关用例/0失败/0跳过**（含强制CPU/Metal parity）；同一既有iPhone15Pro/iOS17.5宿主 **20/0/0**。六项±四档48实际输出、方向/单调幅度/完整眼嘴与外围保护、元数据及两侧UI截图通过；模拟器Debug中位渲染耗时308→125ms，最终元数据复验104ms；不构成真机或fps声明。
+- Record: [实现、失败修复、最小验证及剩余对照边界](plans/history/2026-10/A-2026-10-10-nose-signed-preview.md)。旧正向冻结像素/Shader/模型保持，未全量回归/安装真机；外观/3D光影差距保留NOSE-REF-01。
+
+### C-2026-10-10-nose-reference-audit
+
+- Status: `completed`，指视频/代码/文档核对完成；鼻部弱效果反馈未修复。
+- Result: 所有者确认视频为美图秀秀参考。逐秒67样本及原尺寸鼻部裁剪显示六项双向参考；SDK仅鼻尖双向，大小/提升/山根/鼻梁存在作用语义差异。当前宿主100已到cap，近期四档断言没有可见幅度/尺寸/方向门禁；dense局部采样/衰减原因待运行时量测。
+- Record: [具体对照、确认项、假设与验证范围](plans/history/2026-10/A-2026-10-10-nose-reference-audit.md)。现行taxonomy与质量声明限定到实际证据，缺口进入[NOSE-REF-01](plans/debt/current.md)；没有修改SDK/App算法或重新签发旧测试。
 
 ### C-2026-10-10-batched-local-commits
 

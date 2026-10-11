@@ -8,6 +8,7 @@
 | --- | --- |
 | [效果分类与参数映射](../SDK_EFFECT_TAXONOMY.md) | 当前 effect/control status；保留固定权威路径 |
 | [478 点静图改造](DENSE_FACE_REFACTOR.md) | 请求内支撑、固定画布网格、纹理与资源复用 |
+| [脸型滑杆与连续轮廓](FACE_SHAPE_SLIDERS.md) | 双向接线、八项连续场、保护与参考差距 |
 | [固定图片连续编辑](PREPARED_PHOTO_EDITING.md) | 显式单源准备、按用途检测复用、换图/reset失效与Demo预览接入 |
 | [主机显式保护](HOST_TEXTURE_PROTECTION.md) | 宿主提供物体与完整唇部保护蒙版的接入 |
 

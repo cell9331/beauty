@@ -1,5 +1,15 @@
 # Completed plan index: 2026-10
 
+- [A-2026-10-11-face-continuous](A-2026-10-11-face-continuous.md)：六signed/十滑杆helper/八项连续轮廓，小脸下巴修复；174相关SDK、38原图单字段输出、边界mutation/归档/库存/容量通过。完整美图外观与两图发际线/流畅仍未满足；无原生iOS或全量回归。
+
+- [A-2026-10-10-face-reference](A-2026-10-10-face-reference.md)：18张单参数脸型参考、两原图和26张macOS/Vision输出对照；signed候选5例4通过1失败已撤回，恢复后6/0/0，外观/双向缺口未修复。
+
+- [A-2026-10-10-nose-screenshot-comparison](A-2026-10-10-nose-screenshot-comparison.md)：原图/八端点截图/同照片美图视频对照；确认大小下鼻拉伸不均衡与唇部样本变化、根/梁/尖观感不足及接线独立。仅像素/视觉/源码核对，未修复算法或重签测试，独立字段复现与外观oracle缺口保留。
+
+- [2026-10-10 鼻部双向控制与预览修复](A-2026-10-10-nose-signed-preview.md)：六项signed、source核/cap/节点与ROI，SDK85/native20定向通过；外观对齐边界保留。
+
+- [A-2026-10-10-nose-reference-audit](A-2026-10-10-nose-reference-audit.md)：核对所有者确认的美图参考录像、六鼻子源码/控件与四档断言；澄清双向/语义/可见效果资格缺口，弱效果未修复。仅审计及现行声明同步，不重签旧像素或原生结果。
+
 - [A-2026-10-10-batched-local-commits](A-2026-10-10-batched-local-commits.md)：按功能与文档分六批本地提交；补齐新测试的精确哈希边界登记并验证修改拒绝，源码/测试保持已验证字节。未推送，原始参考/Python缓存及无Git历史的独立Demo未入库。
 
 - [A-2026-10-10-prepared-photo-editing](A-2026-10-10-prepared-photo-editing.md)：先研究并修正固定原图/用途/失败/隐私等八项规划问题，再实现显式准备源和检测复用、接入独立Demo；SDK65/0/0、同一已有设备原生13/0/0、macOS像素与相关门禁通过。没有视频、新效果、全量回归或性能声明。

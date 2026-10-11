@@ -1,5 +1,20 @@
 # PRODUCT_SENSE.md
 
+## Reference-style face editing (2026-10-11)
+
+Owner hosts can map one face slider with
+`BeautyFaceShapeSlider.smallFace.applying(position: position, to: parameters)`.
+Centered controls span both directions around .5; V-face and contour smoothing
+start neutral at 0. The helper uses each existing cap and reverses only the
+chin-length slider, preserving direct API polarity. [All ten mappings](docs/sdk/FACE_SHAPE_SLIDERS.md).
+Eight observed/lip-registered still-image contour fields now use continuous
+local deformation with exact tested eye/mouth/exterior protection; small-face
+chin scalloping on the first owner portrait is repaired. Missing valid support
+abstains. Actual macOS/Vision examples and generated public CPU/Metal tests do
+not establish identical Meitu appearance, iOS inference, device performance or
+an updated host binary. Hairline/smoothing remain inactive on both supplied
+portraits; their narrower admitted source classes remain explicit limitations.
+
 ## Repeated fixed-photo editing (2026-10-10)
 
 An owner host can call `prepareStillImage(image:metadata:)` once on an RGB8 photo,
@@ -280,3 +295,22 @@ The independently authorized owner editor lives outside this repository;
 [FRONTEND.md](FRONTEND.md) describes its boundary and known failed simulator
 checks. Historical UI material is recoverable only under the verified archive
 contract and creates no current SDK feature, UI gate or automatic backlog.
+
+## Signed nose editing (2026-10-10)
+
+The owner's local host can expose all six nose controls at -100/0/+100, mapped
+to unchanged absolute SDK caps. The SDK accepts negative values through init,
+Codable, mutable normalization, planning and backend validation. With fresh
+dense nasal anatomy, size contracts/expands observed width and length, tip size
+uses its own local center, wings change lateral width, and lift moves lower
+support up/down. Root/bridge retain distinct surface-width bands; neither
+supplies 3-D height, relighting or Meitu appearance parity. Legacy positive
+geometry and neutral keys/defaults remain compatible.
+
+Generated source-fixed nasal markers verify opposite directions, four monotone
+settings, >1 pixel endpoint change at the tested 480×640/640×480 sizes, alpha,
+protected exterior, determinism and missing-support abstention. This is bounded
+2-D geometry acceptance, not a naturalness or population-level assertion. The
+separate host throttles starts at 40 ms, replaces pending values and flushes on
+release; current-output debug detection waits for settled editing. Actual
+simulator timings and native checks belong to the linked [plan](PLANS.md).
