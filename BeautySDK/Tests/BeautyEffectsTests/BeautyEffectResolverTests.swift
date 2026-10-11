@@ -921,7 +921,7 @@ final class BeautyEffectResolverTests: XCTestCase {
         XCTAssertLessThan(all.effectiveStrengths.noseTipSize, 0)
     }
 
-    func testPhase35NOSE03NegativePositiveOnlyInputsAreSilentNoOps() {
+    func testPhase35NOSE03NegativeNoseInputsActivateSignedGeometry() {
         let cases: [(BeautyParameters, KeyPath<BeautyParameters, Float>, KeyPath<BeautyEffectiveStrengths, Float>)] = [
             (BeautyParameters(noseSlim: -1), \.noseSlim, \.noseSlim),
             (BeautyParameters(noseWingSlim: -1), \.noseWingSlim, \.noseWingSlim),
@@ -932,12 +932,12 @@ final class BeautyEffectResolverTests: XCTestCase {
 
         for (parameters, publicKeyPath, effectiveKeyPath) in cases {
             let plan = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: .fixture)
-            XCTAssertEqual(parameters[keyPath: publicKeyPath], 0)
-            XCTAssertEqual(plan.effectiveStrengths[keyPath: effectiveKeyPath], 0)
-            XCTAssertFalse(BeautyEffectResolver.requiresFaceGeometry(parameters: parameters))
-            XCTAssertFalse(plan.activeDomains.contains(.nose))
+            XCTAssertEqual(parameters[keyPath: publicKeyPath], -1)
+            XCTAssertLessThan(plan.effectiveStrengths[keyPath: effectiveKeyPath], 0)
+            XCTAssertTrue(BeautyEffectResolver.requiresFaceGeometry(parameters: parameters))
+            XCTAssertTrue(plan.activeDomains.contains(.nose))
             XCTAssertFalse(plan.skippedDomains.contains(.nose))
-            XCTAssertEqual(plan.metrics["beauty.effects.cappedCount"], 0)
+            XCTAssertEqual(plan.metrics["beauty.effects.cappedCount"], 1)
             assertRedacted(plan)
         }
     }
@@ -976,7 +976,7 @@ final class BeautyEffectResolverTests: XCTestCase {
             Row(name: "zero", input: 0, normalized: 0, effective: 0, cappedCount: 0, eligible: false),
             Row(name: "exact cap", input: 0.25, normalized: 0.25, effective: 0.25, cappedCount: 0, eligible: true),
             Row(name: "public overflow", input: 1, normalized: 1, effective: 0.25, cappedCount: 1, eligible: true),
-            Row(name: "negative", input: -1, normalized: 0, effective: 0, cappedCount: 0, eligible: false),
+            Row(name: "negative", input: -1, normalized: -1, effective: -0.25, cappedCount: 1, eligible: true),
             Row(name: "nan", input: .nan, normalized: 0, effective: 0, cappedCount: 0, eligible: false),
             Row(name: "positive infinity", input: .infinity, normalized: 0, effective: 0, cappedCount: 0, eligible: false),
             Row(name: "negative infinity", input: -.infinity, normalized: 0, effective: 0, cappedCount: 0, eligible: false),

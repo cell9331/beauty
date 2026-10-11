@@ -58,9 +58,14 @@ final class NoseRepairFieldTests: XCTestCase {
             let actual = provider.fieldEmissions(face: .fixture, strengths: strengths(value)).noseBridge
             correct = scales(actual, from: full, factor: value / cap, strength: value) && correct
         }
-        for value: Float in [0, Float.ulpOfOne, Float.ulpOfOne.nextUp, -cap, cap.nextUp, .infinity, -.infinity, .nan] {
+        for value: Float in [0, Float.ulpOfOne, Float.ulpOfOne.nextUp, cap.nextUp, .infinity, -.infinity, .nan] {
             correct = provider.fieldEmissions(face: .fixture, strengths: strengths(value)).noseBridge.isEmpty && correct
         }
+        let negative = provider.fieldEmissions(face: .fixture, strengths: strengths(-cap)).noseBridge
+        XCTAssertFalse(negative.isEmpty)
+        XCTAssertTrue(zip(negative, full).allSatisfy { reversed, forward in
+            (reversed.target.x - reversed.source.x) * (forward.target.x - forward.source.x) < 0
+        })
         XCTAssertTrue(correct, "P93_BRIDGE_SCALING")
     }
 
@@ -211,8 +216,9 @@ final class NoseRepairFieldTests: XCTestCase {
 
     func testRendererCutoffAndMalformedBoundsFailClosed() {
         var correct = true
-        for value: Float in [0, Float.ulpOfOne, Float.ulpOfOne.nextUp, -0.25, Float(0.25).nextUp, .infinity, -.infinity, .nan] {
-            correct = provider.fieldEmissions(face: .fixture, strengths: strengths(0, value)).noseRootNarrowing.isEmpty && correct
+        for value: Float in [0, Float.ulpOfOne, Float.ulpOfOne.nextUp, Float(0.25).nextUp, .infinity, -.infinity, .nan] {
+            XCTAssertTrue(provider.fieldEmissions(face: .fixture, strengths: strengths(0, value)).noseRootNarrowing.isEmpty, "renderer subcheck line \(#line)")
+            correct = (provider.fieldEmissions(face: .fixture, strengths: strengths(0, value)).noseRootNarrowing.isEmpty) && correct
         }
         // Adjacent representable target components bracketing the L1 renderer cutoff.
         let source: Float = 0.5
@@ -242,11 +248,14 @@ final class NoseRepairFieldTests: XCTestCase {
                 let request = isRoot ? strengths(0, value) : strengths(value)
                 let emission = provider.fieldEmissions(face: .fixture, strengths: request)
                 let points = isRoot ? emission.noseRootNarrowing : emission.noseBridge
-                correct = points.allSatisfy(admitted) && correct
-                correct = (isRoot ? points.isEmpty || points.count == 2 : true) && correct
+                XCTAssertTrue(points.allSatisfy(admitted), "renderer subcheck line \(#line)")
+            correct = (points.allSatisfy(admitted)) && correct
+                XCTAssertTrue((isRoot ? points.isEmpty || points.count == 2 : true), "renderer subcheck line \(#line)")
+            correct = ((isRoot ? points.isEmpty || points.count == 2 : true)) && correct
                 let expected = points.isEmpty ? Float(0) : value
                 let sanitized = emission.sanitizing(request)
-                correct = (isRoot ? sanitized.noseRootNarrowing : sanitized.noseBridge) == expected && correct
+                XCTAssertTrue((isRoot ? sanitized.noseRootNarrowing : sanitized.noseBridge) == expected, "renderer subcheck line \(#line)")
+            correct = ((isRoot ? sanitized.noseRootNarrowing : sanitized.noseBridge) == expected) && correct
             }
         }
         let invalidBounds = [
@@ -259,7 +268,8 @@ final class NoseRepairFieldTests: XCTestCase {
             FaceBounds(x: Float.greatestFiniteMagnitude, y: 0.2, width: Float.greatestFiniteMagnitude, height: 0.6)]
         for bounds in invalidBounds {
             let result = fields(face(bounds: bounds))
-            correct = result.noseBridge.isEmpty && result.noseRootNarrowing.isEmpty && correct
+            XCTAssertTrue(result.noseBridge.isEmpty && result.noseRootNarrowing.isEmpty, "renderer subcheck line \(#line)")
+            correct = (result.noseBridge.isEmpty && result.noseRootNarrowing.isEmpty) && correct
         }
         let invalidNoses: [[Point]] = [[], [Point(0.5, 0.52)],
             [Point(0.48, 0.45), Point(0.48, 0.45), Point(0.54, 0.58)],
@@ -270,12 +280,13 @@ final class NoseRepairFieldTests: XCTestCase {
         for nose in invalidNoses {
             let request = strengths(0.30, 0.25)
             let result = provider.fieldEmissions(face: face(nose: nose), strengths: request)
-            correct = result.noseBridge.isEmpty && result.sanitizing(request).noseBridge == 0 && correct
+            XCTAssertTrue(result.noseBridge.isEmpty && result.sanitizing(request).noseBridge == 0, "renderer subcheck line \(#line)")
+            correct = (result.noseBridge.isEmpty && result.sanitizing(request).noseBridge == 0) && correct
             XCTAssertFalse(result.noseRootNarrowing.isEmpty, "malformed bridge keeps root sibling")
         }
         let noRoom = face(root: [Point(0.476, 0.20), Point(0.524, 0.20)])
         let roomResult = fields(noRoom)
-        correct = roomResult.noseRootNarrowing.isEmpty && correct
+        XCTAssertTrue(roomResult.noseRootNarrowing.isEmpty, "renderer subcheck line \(#line)"); correct = (roomResult.noseRootNarrowing.isEmpty) && correct
         XCTAssertFalse(roomResult.noseBridge.isEmpty, "root disk rejection keeps bridge")
         XCTAssertTrue(correct, "P93_RENDERER_CUTOFF")
     }

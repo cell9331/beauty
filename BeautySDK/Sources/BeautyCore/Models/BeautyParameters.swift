@@ -313,12 +313,12 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
         self.eyebrowTilt = Self.clampSigned(eyebrowTilt)
         self.eyebrowPeakDefinition = Self.clampUnit(eyebrowPeakDefinition)
 
-        self.noseSlim = Self.clampUnit(noseSlim)
-        self.noseWingSlim = Self.clampUnit(noseWingSlim)
+        self.noseSlim = Self.clampSigned(noseSlim)
+        self.noseWingSlim = Self.clampSigned(noseWingSlim)
         self.noseTipSize = Self.clampSigned(noseTipSize)
-        self.noseBridge = Self.clampUnit(noseBridge)
-        self.noseRootNarrowing = Self.clampUnit(noseRootNarrowing)
-        self.noseTipLift = Self.clampUnit(noseTipLift)
+        self.noseBridge = Self.clampSigned(noseBridge)
+        self.noseRootNarrowing = Self.clampSigned(noseRootNarrowing)
+        self.noseTipLift = Self.clampSigned(noseTipLift)
 
         self.mouthSize = Self.clampSigned(mouthSize)
         self.mouthWidth = Self.clampSigned(mouthWidth)

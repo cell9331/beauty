@@ -306,12 +306,12 @@ public enum BeautyEffectResolver {
             strengths.eyebrowPeakDefinition
         )
 
-        strengths.noseSlim = capUnit(normalized.noseSlim, cap: BeautySafetyCaps.noseSlim, cappedCount: &cappedCount)
-        strengths.noseWingSlim = capUnit(normalized.noseWingSlim, cap: BeautySafetyCaps.noseWingSlim, cappedCount: &cappedCount)
+        strengths.noseSlim = capSigned(normalized.noseSlim, cap: BeautySafetyCaps.noseSlim, cappedCount: &cappedCount)
+        strengths.noseWingSlim = capSigned(normalized.noseWingSlim, cap: BeautySafetyCaps.noseWingSlim, cappedCount: &cappedCount)
         strengths.noseTipSize = capSigned(normalized.noseTipSize, cap: BeautySafetyCaps.noseTipSize, cappedCount: &cappedCount)
-        strengths.noseBridge = capUnit(normalized.noseBridge, cap: BeautySafetyCaps.noseBridge, cappedCount: &cappedCount)
-        strengths.noseRootNarrowing = capUnit(normalized.noseRootNarrowing, cap: BeautySafetyCaps.noseRootNarrowing, cappedCount: &cappedCount)
-        strengths.noseTipLift = capUnit(normalized.noseTipLift, cap: BeautySafetyCaps.noseTipLift, cappedCount: &cappedCount)
+        strengths.noseBridge = capSigned(normalized.noseBridge, cap: BeautySafetyCaps.noseBridge, cappedCount: &cappedCount)
+        strengths.noseRootNarrowing = capSigned(normalized.noseRootNarrowing, cap: BeautySafetyCaps.noseRootNarrowing, cappedCount: &cappedCount)
+        strengths.noseTipLift = capSigned(normalized.noseTipLift, cap: BeautySafetyCaps.noseTipLift, cappedCount: &cappedCount)
 
         strengths.mouthSize = capSigned(normalized.mouthSize, cap: BeautySafetyCaps.mouthSize, cappedCount: &cappedCount)
         strengths.mouthWidth = capSigned(normalized.mouthWidth, cap: BeautySafetyCaps.mouthWidth, cappedCount: &cappedCount)

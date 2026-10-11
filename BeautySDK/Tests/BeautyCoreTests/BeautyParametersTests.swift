@@ -755,14 +755,24 @@ final class BeautyParametersTests: XCTestCase {
         }
     }
 
-    func testNOSE04NoseInputsNormalizePositiveOnlySignedOverflowAndNonFiniteValues() {
+    func testSixSignedNoseFieldsRoundTripAndNormalizeMutableNegativeValues() throws {
+        let fields: [WritableKeyPath<BeautyParameters, Float>] = [\.noseSlim, \.noseWingSlim, \.noseTipSize, \.noseBridge, \.noseRootNarrowing, \.noseTipLift]
+        var requested = BeautyParameters()
+        for field in fields { requested[keyPath: field] = -0.2 }
+        XCTAssertEqual(try JSONDecoder().decode(BeautyParameters.self, from: JSONEncoder().encode(requested)), requested)
+        for field in fields { requested[keyPath: field] = -2 }
+        let normalized = requested.normalized()
+        for field in fields { XCTAssertEqual(normalized[keyPath: field], -1); XCTAssertEqual(requested[keyPath: field], -2) }
+    }
+
+    func testNOSE04NoseInputsNormalizeSignedOverflowAndNonFiniteValues() {
         let values = BeautyParameters(
             noseSlim: -1,
             noseWingSlim: 2,
             noseTipSize: -2,
             noseBridge: .infinity
         )
-        XCTAssertEqual(values.noseSlim, 0)
+        XCTAssertEqual(values.noseSlim, -1)
         XCTAssertEqual(values.noseWingSlim, 1)
         XCTAssertEqual(values.noseTipSize, -1)
         XCTAssertEqual(values.noseBridge, 0)
@@ -771,9 +781,9 @@ final class BeautyParametersTests: XCTestCase {
         XCTAssertEqual(positive.noseTipSize, 1)
     }
 
-    func testNOSE01NewNoseInputsNormalizePositiveOnlyValuesIndependently() {
+    func testNOSE01NewNoseInputsNormalizeSignedValuesIndependently() {
         let cases: [(name: String, value: Float, expected: Float)] = [
-            ("negative", -1, 0),
+            ("negative", -1, -1),
             ("overflow", 2, 1),
             ("in range root", 0.21, 0.21),
             ("in range tip", 0.37, 0.37),

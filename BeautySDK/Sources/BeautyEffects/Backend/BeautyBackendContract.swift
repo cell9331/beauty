@@ -276,17 +276,18 @@ package struct BeautyBackendRequest: @unchecked Sendable {
             plan.effectiveStrengths.outerCornerOpen,
             plan.effectiveStrengths.eyeSymmetry,
             plan.effectiveStrengths.eyebrowPeakDefinition,
-            plan.effectiveStrengths.noseSlim,
-            plan.effectiveStrengths.noseWingSlim,
-            plan.effectiveStrengths.noseBridge,
-            plan.effectiveStrengths.noseRootNarrowing,
-            plan.effectiveStrengths.noseTipLift,
             plan.effectiveStrengths.smile,
             plan.effectiveStrengths.lipPeakDefinition,
             plan.effectiveStrengths.lipPlump,
             plan.effectiveStrengths.lipColor,
         ]
         let signedStrengths: [Float] = [
+            plan.effectiveStrengths.noseSlim,
+            plan.effectiveStrengths.noseWingSlim,
+            plan.effectiveStrengths.noseBridge,
+            plan.effectiveStrengths.noseRootNarrowing,
+            plan.effectiveStrengths.noseTipLift,
+
             plan.effectiveStrengths.brightness,
             plan.effectiveStrengths.contrast,
             plan.effectiveStrengths.saturation,

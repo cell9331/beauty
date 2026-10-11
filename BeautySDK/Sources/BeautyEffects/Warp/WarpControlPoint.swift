@@ -9,6 +9,10 @@ struct WarpControlPoint: Equatable, Sendable {
     var pixelCenterSampling: Bool = false
     // Optional anatomy-owned raster cutoff. The cut row belongs to the next
     // region: row < floor(exclusiveMaximumY * imageHeight). No public surface.
+    /// Dense nasal inverse kernels stay source-anchored during slider changes.
+    var samplingCenter: SIMD2<Float>? = nil
+    /// Actual/cap fraction; admission also considers this field's cap shape.
+    var admissionFraction: Float = 1
     var exclusiveMaximumY: Float? = nil
 }
 
