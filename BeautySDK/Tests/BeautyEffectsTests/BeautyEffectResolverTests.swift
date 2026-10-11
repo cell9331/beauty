@@ -519,11 +519,12 @@ final class BeautyEffectResolverTests: XCTestCase {
 
         for row in phase46ResolverRows {
             let negative = row.makeParameters(-1)
-            XCTAssertFalse(
+            XCTAssertEqual(
                 BeautyEffectResolver.requiresFaceGeometry(parameters: negative),
+                row.name != "faceContourSmooth",
                 "\(row.name) negative normalized input"
             )
-            XCTAssertEqual(negative[keyPath: row.publicValue], 0, row.name)
+            XCTAssertEqual(negative[keyPath: row.publicValue], row.name == "faceContourSmooth" ? 0 : -1, row.name)
 
             let overflow = row.makeParameters(1)
             XCTAssertTrue(BeautyEffectResolver.requiresFaceGeometry(parameters: overflow), row.name)
@@ -592,7 +593,13 @@ final class BeautyEffectResolverTests: XCTestCase {
             ("positive infinity", .infinity, 0, 0),
             ("negative infinity", -.infinity, 0, 0),
         ]
-        let face = FaceGeometry.phase46AsymmetricComplete
+        let coarse = FaceGeometry.phase46AsymmetricComplete
+        let face = FaceGeometry(bounds: coarse.bounds, faceContour: coarse.faceContour,
+            observedFaceSupport: coarse.observedFaceSupport,
+            leftEye: coarse.leftEye, rightEye: coarse.rightEye,
+            outerLips: coarse.outerLips,
+            observedOuterLips: [SIMD2(0.42,0.52),SIMD2(0.58,0.52),
+                                SIMD2(0.58,0.58),SIMD2(0.42,0.58)])
 
         XCTAssertEqual(phase46ResolverRows.count, 4)
         XCTAssertEqual(Set(phase46ResolverRows.map(\.name)).count, 4)
@@ -604,31 +611,34 @@ final class BeautyEffectResolverTests: XCTestCase {
                     faceGeometry: face
                 )
                 let label = "\(row.name) \(input.name)"
+                let signedNegative = row.name != "faceContourSmooth" && input.value == -1
+                let expected: Float = signedNegative ? -0.25 : input.expected
+                let cappedCount: Double = signedNegative ? 1 : input.cappedCount
 
                 XCTAssertEqual(
                     plan.effectiveStrengths[keyPath: row.effectiveValue],
-                    input.expected,
+                    expected,
                     accuracy: 0.000_001,
                     label
                 )
                 XCTAssertEqual(
                     plan.metrics["beauty.effects.cappedCount"],
-                    input.cappedCount,
+                    cappedCount,
                     label
                 )
                 XCTAssertEqual(
                     plan.warnings.filter { $0.code == "beauty_strength_capped" }.count,
-                    input.cappedCount == 1 ? 1 : 0,
+                    cappedCount == 1 ? 1 : 0,
                     label
                 )
                 XCTAssertEqual(
                     row.emissionPoints(face, plan.effectiveStrengths).isEmpty,
-                    input.expected == 0,
+                    expected == 0,
                     label
                 )
                 XCTAssertEqual(
                     plan.activeDomains.contains(.faceShape),
-                    input.expected > 0,
+                    expected != 0,
                     label
                 )
                 XCTAssertFalse(plan.skippedDomains.contains(.faceShape), label)

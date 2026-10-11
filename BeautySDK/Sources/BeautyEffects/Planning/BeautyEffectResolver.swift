@@ -157,8 +157,8 @@ public enum BeautyEffectResolver {
         strengths.shadow = normalized.shadow
         strengths.filterIntensity = min(normalized.filterIntensity, BeautySafetyCaps.filterIntensity)
 
-        strengths.faceSlim = capUnit(normalized.faceSlim, cap: BeautySafetyCaps.faceSlim, cappedCount: &cappedCount)
-        strengths.faceSmall = capUnit(normalized.faceSmall, cap: BeautySafetyCaps.faceSmall, cappedCount: &cappedCount)
+        strengths.faceSlim = capSigned(normalized.faceSlim, cap: BeautySafetyCaps.faceSlim, cappedCount: &cappedCount)
+        strengths.faceSmall = capSigned(normalized.faceSmall, cap: BeautySafetyCaps.faceSmall, cappedCount: &cappedCount)
         strengths.wholeFaceYPosition = capSigned(
             normalized.wholeFaceYPosition,
             cap: BeautySafetyCaps.wholeFaceYPosition,
@@ -235,24 +235,24 @@ public enum BeautyEffectResolver {
             cappedCount: &cappedCount
         )
         strengths.faceVShape = capUnit(normalized.faceVShape, cap: BeautySafetyCaps.faceVShape, cappedCount: &cappedCount)
-        strengths.jawSlim = capUnit(normalized.jawSlim, cap: BeautySafetyCaps.jawSlim, cappedCount: &cappedCount)
+        strengths.jawSlim = capSigned(normalized.jawSlim, cap: BeautySafetyCaps.jawSlim, cappedCount: &cappedCount)
         strengths.chinLength = capSigned(normalized.chinLength, cap: BeautySafetyCaps.chinLength, cappedCount: &cappedCount)
         strengths.faceContourSmooth = capUnit(
             normalized.faceContourSmooth,
             cap: BeautySafetyCaps.faceContourSmooth,
             cappedCount: &cappedCount
         )
-        strengths.templeFullness = capUnit(
+        strengths.templeFullness = capSigned(
             normalized.templeFullness,
             cap: BeautySafetyCaps.templeFullness,
             cappedCount: &cappedCount
         )
-        strengths.cheekboneSlim = capUnit(
+        strengths.cheekboneSlim = capSigned(
             normalized.cheekboneSlim,
             cap: BeautySafetyCaps.cheekboneSlim,
             cappedCount: &cappedCount
         )
-        strengths.chinTaper = capUnit(
+        strengths.chinTaper = capSigned(
             normalized.chinTaper,
             cap: BeautySafetyCaps.chinTaper,
             cappedCount: &cappedCount

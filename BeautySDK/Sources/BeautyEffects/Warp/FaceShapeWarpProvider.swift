@@ -1,8 +1,8 @@
 import Foundation
 
 struct FaceShapeWarpFieldEmissions: Equatable, Sendable {
-    let faceSlim: [WarpControlPoint]
-    let faceSmall: [WarpControlPoint]
+    var faceSlim: [WarpControlPoint]
+    var faceSmall: [WarpControlPoint]
     let wholeFaceYPosition: [WarpControlPoint]
     let wholeFaceXPosition: [WarpControlPoint]
     let wholeFaceTilt: [WarpControlPoint]
@@ -19,10 +19,10 @@ struct FaceShapeWarpFieldEmissions: Equatable, Sendable {
     let doubleChinReduction: [WarpControlPoint]
     let doubleChinReductionPro: [WarpControlPoint]
     let faceVShape: [WarpControlPoint]
-    let jawSlim: [WarpControlPoint]
+    var jawSlim: [WarpControlPoint]
     let faceContourSmooth: [WarpControlPoint]
-    let templeFullness: [WarpControlPoint]
-    let cheekboneSlim: [WarpControlPoint]
+    var templeFullness: [WarpControlPoint]
+    var cheekboneSlim: [WarpControlPoint]
 
     var points: [WarpControlPoint] {
         faceSlim + faceSmall + wholeFaceYPosition + wholeFaceXPosition + wholeFaceTilt + faceShortening + foreheadHeight + midfaceLength + philtrumLength + lowerFaceLength + headSmall + headWrap + cranialCrownHeight + hairlineHeight + wholeFaceSymmetry + doubleChinReduction + doubleChinReductionPro + faceVShape + jawSlim +
@@ -107,6 +107,22 @@ struct FaceShapeWarpProvider: WarpControlPointProvider {
         face: FaceGeometry,
         strengths: BeautyEffectiveStrengths
     ) -> FaceShapeWarpFieldEmissions {
+        // Signed planning emissions are used for admission/counts. Observed
+        // still images replace these proxies with BeautyContinuousFaceMap.
+        let signedKeys: [WritableKeyPath<BeautyEffectiveStrengths, Float>] = [
+            \.faceSlim, \.faceSmall, \.jawSlim, \.templeFullness, \.cheekboneSlim
+        ]
+        if signedKeys.contains(where: { strengths[keyPath: $0] < 0 }) {
+            var positive = strengths
+            for key in signedKeys { positive[keyPath: key] = abs(strengths[keyPath: key]) }
+            var result = fieldEmissions(face: face, strengths: positive)
+            if strengths.faceSlim < 0 { result.faceSlim = signedPlanningPoints(result.faceSlim, face: face) }
+            if strengths.faceSmall < 0 { result.faceSmall = signedPlanningPoints(result.faceSmall, face: face) }
+            if strengths.jawSlim < 0 { result.jawSlim = signedPlanningPoints(result.jawSlim, face: face) }
+            if strengths.templeFullness < 0 { result.templeFullness = signedPlanningPoints(result.templeFullness, face: face) }
+            if strengths.cheekboneSlim < 0 { result.cheekboneSlim = signedPlanningPoints(result.cheekboneSlim, face: face) }
+            return result
+        }
         let hasLegacyContour = !face.faceContour.isEmpty
         return FaceShapeWarpFieldEmissions(
             faceSlim: hasLegacyContour && strengths.faceSlim > 0
@@ -196,6 +212,15 @@ struct FaceShapeWarpProvider: WarpControlPointProvider {
                 ? cheekboneSlimPoints(face: face, strength: strengths.cheekboneSlim)
                 : []
         )
+    }
+
+    private func signedPlanningPoints(_ points: [WarpControlPoint], face: FaceGeometry) -> [WarpControlPoint] {
+        guard BeautyContinuousFaceMap.replacesLegacy(for: face) else { return [] }
+        let reversed = points.map { p in
+            WarpControlPoint(source: p.source, target: p.source * 2 - p.target,
+                radius: p.radius, strength: p.strength, falloff: p.falloff)
+        }
+        return reversed.allSatisfy { isFiniteUnitPoint($0.target) } ? reversed : []
     }
 
     private func cheekPoints(face: FaceGeometry, strength: Float) -> [WarpControlPoint] {

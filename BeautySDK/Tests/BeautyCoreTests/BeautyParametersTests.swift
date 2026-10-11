@@ -247,7 +247,7 @@ final class BeautyParametersTests: XCTestCase {
         XCTAssertEqual(legacyDecoded.filterIntensity, parameters.filterIntensity)
     }
 
-    func testFACE07FACE08FACE09FACE12PositiveOnlyInputsNormalizeIndependently() {
+    func testFACE07FACE08FACE09FACE12UnitAndSignedInputsNormalizeIndependently() {
         let cases: [(name: String, value: Float, expected: Float)] = [
             ("negative", -1, 0),
             ("in range", 0.37, 0.37),
@@ -267,7 +267,7 @@ final class BeautyParametersTests: XCTestCase {
             for testCase in cases {
                 XCTAssertEqual(
                     field.make(testCase.value)[keyPath: field.keyPath],
-                    testCase.expected,
+                    field.name == "faceContourSmooth" ? testCase.expected : (testCase.value == -1 ? -1 : testCase.expected),
                     accuracy: 0.0001,
                     "\(field.name) \(testCase.name)"
                 )
@@ -291,7 +291,7 @@ final class BeautyParametersTests: XCTestCase {
         let normalized = parameters.normalized()
 
         XCTAssertEqual(normalized.faceContourSmooth, 1)
-        XCTAssertEqual(normalized.templeFullness, 0)
+        XCTAssertEqual(normalized.templeFullness, -1)
         XCTAssertEqual(normalized.cheekboneSlim, 0)
         XCTAssertEqual(normalized.chinTaper, 0)
         XCTAssertEqual(normalized.chinLength, -0.42, accuracy: 0.0001)

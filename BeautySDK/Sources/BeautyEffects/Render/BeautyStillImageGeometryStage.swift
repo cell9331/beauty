@@ -10,6 +10,7 @@ struct BeautyStillImageGeometryStage {
     let face: FaceGeometry?
     private let width: Int
     private let height: Int
+    private let continuousMap: BeautyContinuousFaceMap?
     private let translationX: Float
     private let translationY: Float
 
@@ -20,6 +21,8 @@ struct BeautyStillImageGeometryStage {
         self.face = face
         self.width = width
         self.height = height
+        continuousMap = face.flatMap { BeautyContinuousFaceMap(
+            width: width, height: height, face: $0, strengths: plan.effectiveStrengths) }
         translationX = plan.effectiveStrengths.wholeFaceXPosition
         translationY = plan.effectiveStrengths.wholeFaceYPosition
         guard let face else {
@@ -65,7 +68,8 @@ struct BeautyStillImageGeometryStage {
             suppressHeadWrapPoints: suppressHeadWrap,
             suppressForeheadPoints: strengths.foreheadHeight != 0,
             suppressPhiltrumPoints: suppressPhiltrum,
-            suppressWholeFaceTranslationPoints: true
+            suppressWholeFaceTranslationPoints: true,
+            suppressContinuousFacePoints: BeautyContinuousFaceMap.replacesLegacy(for: face)
         )
     }
 
@@ -75,6 +79,10 @@ struct BeautyStillImageGeometryStage {
         guard let face, usesDenseMap else { return bytes }
         return BeautyDenseGeometryMap(width: width, height: height,
                                       face: face, points: controlPoints)?.applyRGBA(bytes) ?? bytes
+    }
+
+    func applyingContinuousContour(to bytes: [UInt8]) -> [UInt8] {
+        continuousMap?.applyRGBA(bytes) ?? bytes
     }
 
     /// Rigid source-qualified translation remains after the selected sampler.
