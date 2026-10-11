@@ -17,6 +17,8 @@ mode generates one no-face gradient, renders all 98 default cases twice, and che
 actual pixels and metadata. It covers six global color directions, one neutral
 identity and 91 declared no-face exits. It does not qualify 98 portrait effects.
 The compatibility-only suspended eyelid identity is excluded from execution.
+The 99-case canonical inventory excludes the 50 explicit `faceSlider_*`
+reference positions added on 2026-10-11; they keep their own scoped tests.
 Preflight checks inventory only and reports `preflight_only` without pixel credit.
 
 Custom suites require explicit local PNGs, SHA-256 values and independently authored

@@ -4,6 +4,11 @@
 实现入口：`python3 -B scripts/current-batch/run.py`。旧75项脚本、manifest、比较器
 及历史回执保持只读；本入口不重新研发 SEG/EYE，不改变默认98/注册99的范围。
 
+2026-10-11：该 99 项是 canonical 批量库存。Renderer 另有 50 个显式
+`faceSlider_*` 参考位置 opt-in，不在默认发现或本工具批量范围内。主注册源摘要
+已绑定新增 helper 后的文件字节，原 98 个身份、顺序及兼容项保持不变。
+这些新增位置的验证见 [脸型接线](../sdk/FACE_SHAPE_SLIDERS.md)。
+
 ## 先固定的工具契约
 
 1. [独立库存](../../scripts/current-batch/inventory.json)明确列出98个有序默认身份和

@@ -103,6 +103,6 @@
   "compatibility_only": [
     "upperEyelidFullnessReduction_1p00"
   ],
-  "registration_source_sha256": "0d91bffa55b3c4f986cc58487bdf3557cb0cfd17d92fb78dfa77766d7ecc8f25",
+  "registration_source_sha256": "cfde56bbebcc6dd68801bf24f7bee6b9ec7cc1f61fa4b99bc6a0e377e53ae831",
   "scope": "CPU renderer inventory and declared pixel contracts; not new effect qualification"
 }
