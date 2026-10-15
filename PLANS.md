@@ -27,6 +27,7 @@
 
 
 
+
 当前无 Active 执行计划。478点静图核心改造已完成，记录见下方。
 
 所有者编辑宿主的接线、范围、组合、调试显示与预览修复
@@ -40,6 +41,12 @@ v1.25仍按`closed_with_unmet_objectives`结清，不恢复其自动效果研发
 原记录已在[历史索引](plans/history/README.md)对应的 completed 分片。Phase 93 的 owner-local `93-CHECKS.json` 与 Phase 95 independent review 属于历史证据，不是当前 Active 计划。
 
 ## 4. Completed / terminal dispositions
+
+### C-2026-10-15-branch-preservation-cleanup
+
+- 两个脸型工作区已分别保存WIP：`feb8c9b1`（124项文件）和`a7f7f2d8`（109项文件），Git blob与原文件逐字校验通过；保存不代表效果合格。两个分支/工作区及其独有功能都保留。
+- `playbook-sdk-refactor`旧tip被眉及两个脸型分支完整覆盖，已非force删除；其余四个非main分支保留。main只增加整理记录，未合入WIP、未推送、未清理缓存或原始资料。
+- [保存、可恢复性核对及分支处置](plans/history/2026-10/A-2026-10-15-branch-preservation-cleanup.md)。
 
 ### C-2026-10-15-iris-current-effect-integration
 

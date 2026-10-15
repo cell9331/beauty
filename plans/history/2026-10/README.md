@@ -1,5 +1,7 @@
 # Completed plan index: 2026-10
 
+- [A-2026-10-15-branch-preservation-cleanup](A-2026-10-15-branch-preservation-cleanup.md)：两个脸型工作区233项文件改动保存为两份WIP并逐字核对；仅删除被完整覆盖的playbook分支，四个非main分支保留，未合并未达标效果。
+
 - [A-2026-10-15-iris-current-effect-integration](A-2026-10-15-iris-current-effect-integration.md)：按所有者决定保留当前眼瞳并暂停灰边优化；37/133/3及单列14项Metal一致性通过，仅单项与必要依赖整合，不授予美图外观资格。
 
 - [A-2026-10-15-qualified-branch-merges](A-2026-10-15-qualified-branch-merges.md)：八分支审查，三分支祖先纳入main、五分支保留；70去重定向用例及14项Metal一致性通过，未导入最新未达标参考效果。
