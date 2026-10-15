@@ -25,8 +25,13 @@
 
 ## 3. Active
 
-无活跃计划。v1.25已按`closed_with_unmet_objectives`结清；两个自动目标未交付，
-不继续候选、G0、批量工具开发或模型工作。现有可用SDK能力不受此研发缺口阻塞。
+- [A-2026-10-15-qualified-branch-merges](plans/active/A-2026-10-15-qualified-branch-merges.md)：审核八分支，只合并已完成且通过的范围，保留未达标参考效果。
+
+当前无 Active 执行计划。478点静图核心改造已完成，记录见下方。
+
+所有者编辑宿主的接线、范围、组合、调试显示与预览修复
+已记录在下方；iOS 17.5 模拟器连续 Vision 检测异常尚未修复，见当前技术债。
+v1.25仍按`closed_with_unmet_objectives`结清，不恢复其自动效果研发。
 
 ## 3A. Historical Lifecycle Ledger（历史脚本锚点）
 
@@ -36,8 +41,87 @@
 
 ## 4. Completed / terminal dispositions
 
+### C-2026-10-09-dense-face-refactor
+
+- Status: `completed`。按所有者要求充分使用478点与姿态，在现有静图管线完成首批核心改造。
+- Result: 有界Core Image context复用；可见虹膜环与眼/眉/唇几何保护；近刚性姿态衰减；全478点分布驱动的固定画布网格与位移/梯度预算；美肤平滑和相干细节分支独立，避免旧组合抵消。见[实现说明](docs/DENSE_FACE_REFACTOR.md)。
+- Verification: 最终完整SDK **1098 tests / 0 failures / 0 skips，9 opt-ins**；同一已有iOS宿主 **24/0/0**，两图姿态/可见iris、CPU/GPU组合最大通道差≤2、重复及失败恢复通过。新增独立几何/虹膜/纹理像素正负例纳入完整门禁；失败候选与原因留档，原阈值未放宽。
+- Boundary: 共享dense几何仍为CPU-owned阶段；公开字段/default、模型、retained shader和冻结终局保留。视频、GPU原生网格、扩大纹理尺度及全链零拷贝未交付，效果资格不批量提升。见[完成记录](plans/history/2026-10/A-2026-10-09-dense-face-refactor.md)。
+
+### C-2026-10-09-playbook-synthesis
+
+- Status: `completed`，按所有者要求学习外部 beauty-sdk-playbook 并整理为[项目手册](docs/refactor-playbook/README.md)。
+- Result: 六篇549行，覆盖478点/坐标/时序、候选网格与位移安全、美肤/五官、工程/验收，以及原文和四份代码骨架评审；现行实现、建议设计和待验证结论分别标明。
+- Verification: 一手资料与代码/owner核对、文档导航/差异、两归档、post-archive边界、示例存储通过；2,452份既有非目标文件SHA-256不变。
+- Boundary: 仅文档，不运行/导入外部提示词与代码，不改SDK/模型/测试，不新开算法或EYE/SEG队列，不重签此前SwiftPM/原生检查点。见[完成记录](plans/history/2026-10/A-2026-10-09-playbook-synthesis.md)。
+
+### C-2026-10-09-mediapipe-sdk-integration
+
+- Status: `completed`。按所有者要求将 MediaPipe iOS 1.1.0 接入 BeautySDK；iOS 默认启用，macOS 保留 Vision，原公开调用方式不变。
+- Result: 固定三个官方运行库与 float16/1 模型并校验哈希；478 点映射眼/眉/鼻/唇/脸支撑，既有几何使用实测点；列主序姿态正确转换并保留在请求内。CPU image mode 复用初始化，不复用观测；失败安全退出。
+- Verification: 完整 SDK 门禁 **1083 tests / 0 failures / 0 skips，9 opt-ins**；同一 iPhone 15 Pro / iOS 17.5 原生 **23/0/0**（14 项 SDK 专属 + 9 项原探针），覆盖两个肖像、有效姿态/区域支撑、实际输出、20 次连续重复、无脸/重置恢复、跳帧与超限预算。固定依赖负向变异检查通过。
+- Boundary: 完成检测器接入，不重新授予所有效果、泛化、真机性能或自动分割资格；旧 Vision 内部异常仍保留。见[完成记录](plans/history/2026-10/A-2026-10-09-mediapipe-sdk-integration.md)。
+
+### C-2026-10-09-mediapipe-landmarker-probe
+
+- Status: `completed`，限官方资源下载及仓库外独立 iOS 图片检测项目。
+- Result: 官方 `face_landmarker/float16/1` 模型、MediaPipe iOS 1.1.0 的 Common/Graphs/Vision 三个运行库及三份 Apache-2.0 模型卡已完整下载；三个运行库均匹配官方 SHA-256。独立工程在已有 iPhone 15 Pro / iOS 17.5 上通过 **9 tests / 0 failures / 0 skips**。
+- Verification: 真人/生成两个已授权本地正例各输出1脸、478点、1个有限可逆4×4矩阵和52个有限/有界表情系数；无脸/恢复、缺失/损坏模型、关闭可选输出和错误调用模式通过。同一输入20次重复，点/矩阵/表情最大差异0；预热后模拟器纯检测中位6.55ms，非端到端或真机性能。应用实际打开并检查肖像点位叠加。
+- Boundary: 本次直接链接官方预编译组件，未声称完整官方SwiftPM入口接入通过；未接入BeautySDK、修改算法或重开终局目标。未评估独立标注精度、遮挡泛化、视频/实时流、方向矩阵或真机。归档、SDK-only boundary、示例存储及文档差异检查通过；未重签SDK全量门禁。见[完整记录](plans/history/2026-10/A-2026-10-09-mediapipe-landmarker-probe.md)。
+
+### C-2026-10-09-document-cleanup
+
+- Status: `completed`，仅文档删除与现行契约/导航修复。
+- Scope: 删除重复原始导入和无接入/执行的孤立 Core ML 方案；六份根级 owner 从8,391行收敛为947行，更新实际参数/配置/库存、像素缓冲区纹理、无跨帧复用、GPU容量路线、九项opt-in和去脂未合格边界。现行索引隔离冻结历史，当前batch不再安排EYE G0；里程碑账本九个迁移前链接已修复。
+- Verification: 当前链接/锚点与源码声明核对、两个archive验证、SDK-only boundary及其自测、wrapper自测14 checks/14 mutation rejections、示例图storage和`git diff --check`通过。代码/测试/脚本/归档/冻结契约与历史证据摘要不变；SDK未改，未重跑SwiftPM或图片/模型实验，不重签1076/0/0。
+- Boundary: 历史只读记录内的旧路径仍按日期快照保留，详见[完整记录](plans/history/2026-10/A-2026-10-09-document-cleanup.md)。原有外部宿主修复和模拟器失败、本地锁/日志未覆盖；EYE/SEG终局不变。
+
+### C-2026-10-09-owner-editor-debug
+
+- Status: `completed`，限独立宿主的接线/参数范围、组合保留、关键点调试与预览调度修复。53 个可用工具位置连到 51 个字段；滑块按 SDK 各自 cap 映射，超出总预算只限制当前字段，保留之前的调整。
+- Verification: 同一原生设备定向回归 `24/0/0`，额外 UI 复核 `1/0/0`；macOS 六个鼻子工具各四档、重复像素、CPU/Metal 一致性、原图/输出复检、透明回退与原尺寸 PNG 通过。生成图底栏截图和真人临时调试截图实际检查，后者暴露出检测漂移而非证明关键点准确。
+- Remaining: iOS 17.5 模拟器的持续鼻子正例未通过；独立 Vision 连续同源检测同样产生越界点，未修复、不降低判据。原背景保护正例失败仍保留，真机速度未测。SDK 源码未变，本轮仅重新运行 boundary/storage/doc checks，不重复签发前次全量 SwiftPM。见[修复与失败记录](plans/history/2026-10/A-2026-10-08-owner-editor-debug.md)。
+
 以下分项按发生时刻保留；较早记录的“Next”、pending、2/16等是历史快照，
 不覆盖最上方终局状态，不产生自动续作任务。
+
+### C-2026-10-08-agent-instructions
+
+- Status: `completed`，仅指工作指引维护；不改变 SDK、算法状态或验证资格。
+- Scope: 按所有者纠正，将两个 GitHub 账号与本仓库 SSH 用法只写入 [Git 操作指南](docs/GIT_OPERATIONS.md)，由仓库 `AGENTS.md` 按 Git 任务触发读取。全局入口改为通用约束与五类指南导航，Serena 和真机签名细则单独存放；全局没有 GitHub 账号或密钥信息。
+- Verification: 原全局 24 条规则逐项核对，Serena/真机细则原文保留，三个既有 iOS 指南摘要不变；全局入口从 5,869 缩至 2,567 bytes。本地链接、命令语法、post-archive SDK-only boundary 和 `git diff --check` 核对通过。
+- Boundary: 本轮只改文档，未运行 SwiftPM、构建、设备操作或再次推送；本地锁/尝试日志保留。此前 `c2f5bc4f` 的成功推送只作为本仓库身份记录，不增加其他仓库的账号或推送授权。
+- Record: [指引整理记录](plans/history/2026-10/A-2026-10-08-agent-instructions.md)。
+
+### C-2026-10-08-owner-ios-editor
+
+- Status: `completed`，指所有者明确新授权的独立 iOS 图片编辑宿主及核心导入/编辑/导出接线；不改变 SDK-only 仓库边界或算法效果资格。
+- Scope: 相邻 `BeautyEditorApp` 工程根据 Figma 12 状态实现六分类、54 工具位置（53 可调用、51 字段）、撤销/对比/确认、原尺寸 PNG 分享与相册保存；未恢复历史 UI，未下载模型/权重。缺设计分类与去脂明确停用。
+- Verification: 单台已有 iPhone 15 Pro / iOS 17.5 的基本测试 **20/0/0**，独立原生肖像人脸正例 **2/0/0**，系统相册真实保存与权限路径 **1/0/0**；截图、底部交互、安全区、八方向、P3/alpha、文件上限、导出与过期结果拦截通过。60 个 SVG 资源审计通过。
+- SDK change: 仅模拟器 Vision 人脸请求按其支持的 CPU 逐阶段计算；完整 archive-first SDK 门禁退出0，**1076 tests / 0 failures / 0 skips、9 opt-ins**。物理设备/macOS 默认计算策略、API、Metal及算法资格未变。
+- Limitation: iOS 模拟器人物分割正例未通过，空蒙版被拒绝并保持 OFF；失败和原强断言保留。相同生产 renderer 的 macOS 背景 ROI 保护通过单列，不能代替 iOS/真机资格。未真机安装或性能验收，不重开两个终局算法目标。
+- Record: [独立宿主实现与验证](plans/history/2026-10/A-2026-10-08-owner-ios-editor.md)。
+
+### C-2026-10-04-retouch-problem-review
+
+- Status: `completed`，仅指[详细复盘报告](docs/RETOUCH_PROBLEM_REVIEW_2026-10-04.md)，不重开两个已关闭的自动目标。
+- Scope: 对齐原需求/R2收窄/终局处置，复核上睑代理、环纹/重建、四版EYE与四版SEG、同观测反例和host辅助边界；明确经典问题分类、行业方案、模型未验证项和工程/效果混淆造成的推进问题。
+- Verification: 依据冻结报告/聚合回执、Serena源符号及一手论文/官方文档；核对报告数字、本地引用和`git diff --check`。本轮受保护的1,773份既有源码、测试、实验/归档证据、规范及当前里程碑状态摘要未变。
+- Boundary: 仅新增报告和导航记录；未运行算法、生成/修改图片、下载权重、训练或重跑SwiftPM。1076/0/0是已存工程检查点，不作为本报告的新执行或两个效果通过证据；5 verified/11 closed_unmet和空队列保持。
+
+### C-2026-10-04-repository-disk-cleanup
+
+- Status: `completed`。全项目约 **4.6 GiB → 696 MiB**，删除 23,447 个 ignored/
+  未跟踪编译、索引缓存及重复工作输出，清理约 **3.92 GiB**。SDK/consumer
+  及两处历史工具编译缓存均已核对；`.build` 中的冻结源和历史回执保留。
+- Verification: 35 项冻结源/作者摘要有效，2,824 个非目标文件字节或链接目标
+  不变；无活跃项目编译，语言服务未使用清理目标。归档验证、post-archive
+  SDK-only boundary、示例图 storage 和 `git diff --check` 通过。
+- Boundary: 源码/测试未改，本轮不重新编译以免再生成缓存；前轮 1076/0/0
+  保留原检查点含义。历史 spike 媒体约 306 MiB、Git 186 MiB、归档 84 MiB、
+  冻结输入/回执 34 MiB、示例图 29 MiB、Serena 22 MiB 及原有本地状态保留。
+- Record: [盘点与清理记录](plans/history/2026-10/A-2026-10-04-repository-disk-cleanup.md)。
+  不重开算法研发，不修改历史证据；后续构建和索引按需重新生成缓存。
 
 ### C-2026-10-04-example-image-storage
 
@@ -182,7 +266,6 @@
 ## 5. Tech Debt
 
 - [当前技术债](plans/debt/current.md)：发际线语义、不足的泛化和皮肤语义边界；已完成或有界处理事项在正文按原记录说明。
-- 历史账本导航限制（本轮发现，不阻塞终局）：`.planning/MILESTONES.md`旧v1.16/v1.19/v1.20段有9个链接仍指向迁移前路径；HEAD中已存在，实际文件在`.planning/milestones/`，历史正文未改。本轮当前文档及新增终局段链接单独核对。
 - [历史技术债](plans/debt/historical.md)：Phase 95 当时发现及 TD-001 至 TD-024 状态快照。历史状态不能直接用作当前缺陷清单。
 
 ## 6. 模板与验证

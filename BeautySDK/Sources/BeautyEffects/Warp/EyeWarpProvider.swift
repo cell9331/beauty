@@ -178,6 +178,10 @@ struct EyeWarpProvider: WarpControlPointProvider {
         [face.leftEyeSupport, face.rightEyeSupport]
             .compactMap { $0 }
             .filter(\.gazeCorrectionEligible)
+            .filter { support in
+                guard let dense = face.denseSupport else { return true }
+                return dense.iris(side: support.side, eye: support) != nil
+            }
     }
 
     private func legacySupport(_ points: [SIMD2<Float>], side: BeautyObservedEyeSide) -> BeautyEyeSemanticSupport? {
@@ -219,6 +223,13 @@ struct EyeWarpProvider: WarpControlPointProvider {
 
     private func pupilSizePoints(support: BeautyEyeSemanticSupport, face: FaceGeometry, strength: Float) -> [WarpControlPoint] {
         guard let pupil = support.pupil, support.contourEligible else { return [] }
+        if let dense = face.denseSupport {
+            guard let ring = dense.iris(side: support.side, eye: support) else { return [] }
+            let expansion = 1 + 0.20 * strength / BeautySafetyCaps.pupilSize
+            let targets = ring.map { pupil + ($0 - pupil) * expansion }
+            let radius = max(support.span.x * 0.35, 0.002)
+            return makePoints(sources: ring, targets: targets, face: face, radius: radius, strength: strength)
+        }
         let d = face.bounds.width * 0.012 * strength / BeautySafetyCaps.pupilSize
         let offsets = [SIMD2<Float>(-d, 0), SIMD2<Float>(d, 0), SIMD2<Float>(0, -d), SIMD2<Float>(0, d)]
         return makePoints(sources: offsets.map { pupil + $0 }, targets: offsets.map { pupil + $0 * 1.8 }, face: face, radius: face.bounds.width * 0.045, strength: strength)

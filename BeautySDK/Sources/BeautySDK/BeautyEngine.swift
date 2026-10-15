@@ -14,7 +14,7 @@ import BeautyEffects
 /// Independent `BeautyEngine` instances may execute concurrently.
 public final class BeautyEngine {
     public let configuration: BeautyConfiguration
-    var faceDetector: VisionFaceDetector
+    var faceDetector: BeautyFaceDetector
     private let localRetouchTestingHooks: BeautyLocalRetouchTestingHooks?
     private let backendExecutor: BeautyBackendExecutor
     private let backendPolicy: BeautyBackendExecutionPolicy
@@ -28,7 +28,7 @@ public final class BeautyEngine {
     public init(configuration: BeautyConfiguration = .default) throws {
         let selection = try BeautyBackendFactory.select(configuration: configuration)
         self.configuration = configuration
-        self.faceDetector = VisionFaceDetector()
+        self.faceDetector = BeautyFaceDetector.production()
         self.localRetouchTestingHooks = nil
         self.backendExecutor = selection.executor
         self.backendPolicy = selection.policy
@@ -53,7 +53,7 @@ public final class BeautyEngine {
     ) throws {
         try self.init(
             configuration: configuration,
-            faceDetector: VisionFaceDetector(),
+            faceDetector: BeautyFaceDetector.production(),
             backendExecutor: backendExecutor
         )
     }

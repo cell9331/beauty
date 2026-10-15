@@ -23,10 +23,7 @@ package final class BeautyStillImageCanonicalizer: @unchecked Sendable {
         let sRGB = CGColorSpace(name: CGColorSpace.sRGB)
         self.sRGB = sRGB
         self.context = sRGB.map { colorSpace in
-            CIContext(options: [
-                .workingColorSpace: colorSpace,
-                .outputColorSpace: colorSpace,
-            ])
+            BeautyImageContexts.context(for: colorSpace)
         }
     }
 

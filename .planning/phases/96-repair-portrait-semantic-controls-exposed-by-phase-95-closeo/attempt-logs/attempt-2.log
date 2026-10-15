@@ -1,0 +1,211 @@
+[phase96] self-test 10:38:09
+{"status":"clean65_self_test_pass","discovered":16,"executed":16,"passed":16,"failed":0,"skipped":0}
+[phase96] focused Swift tests 10:38:09
+[0/1] Planning build
+Building for debugging...
+[0/5] Write swift-version--58304C5D6DBC2206.txt
+[2/20] Compiling BeautyCore BeautyLogLevel.swift
+[3/20] Compiling BeautyCore BeautyRenderQuality.swift
+[4/20] Compiling BeautyCore BeautyConfiguration.swift
+[5/20] Compiling BeautyCore BeautyDetectionSummary.swift
+[6/20] Compiling BeautyCore BeautyPreset.swift
+[7/20] Compiling BeautyCore BeautyValidationWarning.swift
+[8/20] Compiling BeautyCore BeautyCanonicalStillImage.swift
+[9/20] Emitting module BeautyCore
+[10/20] Compiling BeautyCore BeautyCore.swift
+[11/20] Compiling BeautyCore BeautyErrorContext.swift
+[12/20] Compiling BeautyCore BeautyParameters.swift
+[13/20] Compiling BeautyCore BeautyFrame.swift
+[14/20] Compiling BeautyCore BeautyInputMetadata.swift
+[15/20] Compiling BeautyCore BeautyError.swift
+[16/20] Compiling BeautyCore BeautyFilterDefinition.swift
+[17/21] Compiling BeautyCore BeautyResult.swift
+[18/44] Compiling BeautyRender RenderPass.swift
+[19/44] Compiling BeautyRender resource_bundle_accessor.swift
+[20/44] Compiling BeautyRender RenderGraph.swift
+[21/44] Compiling BeautyRender PixelBufferFactory.swift
+[22/44] Compiling BeautyRender CopyRenderPass.swift
+[23/44] Compiling BeautyRender BeautyRender.swift
+[24/44] Compiling BeautyDetection CoordinateSpace.swift
+[25/44] Compiling BeautyDetection CoordinateMapper.swift
+[26/44] Compiling BeautyResources resource_bundle_accessor.swift
+[27/44] Emitting module BeautyResources
+[28/44] Compiling BeautyResources BeautyResourceManifest.swift
+[29/44] Compiling BeautyResources BeautyResourceCatalog.swift
+[30/44] Compiling BeautyResources BeautyResources.swift
+[31/44] Compiling BeautyRender BeautyMetalPass.swift
+[32/44] Compiling BeautyRender BeautyMetalRuntime.swift
+[33/44] Emitting module BeautyRender
+[34/44] Compiling BeautyDetection BeautyUpperEyelidSemanticSupport.swift
+[35/44] Compiling BeautyDetection BeautyDetection.swift
+[36/44] Compiling BeautyDetection BeautyFaceObservation.swift
+[37/44] Compiling BeautyDetection FaceSelectionPolicy.swift
+[38/44] Compiling BeautyDetection VisionFaceDetector.swift
+[39/44] Emitting module BeautyDetection
+[40/75] Compiling BeautyEffects BeautyLocalRetouchAdmission.swift
+[41/75] Compiling BeautyEffects BeautySafetyCaps.swift
+[42/75] Compiling BeautyEffects BeautyColorEffectPipeline.swift
+[43/75] Compiling BeautyEffects GeometryConflictResolver.swift
+[44/75] Compiling BeautyEffects LandmarkGeometryHelper.swift
+[45/75] Compiling BeautyEffects MouthWarpProvider.swift
+[46/78] Compiling BeautyEffects BeautyGeometryEffectPipeline.swift
+[47/78] Compiling BeautyEffects BeautyLocalRetouchComposition.swift
+[48/78] Compiling BeautyEffects ChinWarpProvider.swift
+[49/78] Compiling BeautyEffects BeautyBackendContract.swift
+[50/78] Compiling BeautyEffects BeautyCPUBackend.swift
+[51/78] Compiling BeautyEffects BeautyMetalBackend.swift
+[52/78] Compiling BeautyEffects BeautyEffects.swift
+[53/78] Compiling BeautyEffects BeautyScleraRednessProvider.swift
+[54/78] Compiling BeautyEffects BeautyTeethWhiteningProvider.swift
+[55/78] Compiling BeautyEffects BeautyTeethWhiteningTransform.swift
+[56/78] Compiling BeautyEffects BeautyUpperEyelidFullnessEditor.swift
+[57/78] Emitting module BeautyEffects
+[58/78] Compiling BeautyEffects BeautyFocalScleraRednessProvider.swift
+[59/78] Compiling BeautyEffects BeautyFocalScleraRednessTransform.swift
+[60/78] Compiling BeautyEffects BeautyFullScleraRednessProvider.swift
+[61/78] Compiling BeautyEffects BeautyFullScleraRednessTransform.swift
+[62/78] Compiling BeautyEffects BeautyEffectPlan.swift
+[63/78] Compiling BeautyEffects BeautyEffectResolver.swift
+[64/78] Compiling BeautyEffects BeautyFaceGeometryAdapter.swift
+[65/78] Compiling BeautyEffects BeautyUpperEyelidFullnessPredictor.swift
+[66/78] Compiling BeautyEffects BeautyUpperEyelidReliefModel.swift
+[67/78] Compiling BeautyEffects BeautyEffectDomain.swift
+[68/78] Compiling BeautyEffects NoseWarpProvider.swift
+[69/78] Compiling BeautyEffects WarpControlPoint.swift
+[70/78] Compiling BeautyEffects WarpControlPointProvider.swift
+[71/78] Compiling BeautyEffects EyeWarpProvider.swift
+[72/78] Compiling BeautyEffects EyebrowWarpProvider.swift
+[73/78] Compiling BeautyEffects FaceShapeWarpProvider.swift
+[74/87] Compiling BeautySDK BeautyEngine.swift
+[75/87] Emitting module BeautySDK
+[76/87] Compiling BeautySDK BeautyEngineTestingSupport.swift
+[77/87] Compiling BeautySDK BeautyStillImageCanonicalizer.swift
+[78/87] Compiling BeautySDK BeautyStillImageRequestContext.swift
+[79/87] Compiling BeautySDK BeautyBackendFactory.swift
+[80/87] Compiling BeautySDK BeautyEngineGeometryDetection.swift
+[81/87] Compiling BeautySDK BeautySDK.swift
+[82/87] Compiling BeautySDK BeautySDKResources.swift
+[82/87] Write Objects.LinkFileList
+[83/91] Linking BeautySDKPackageTests
+[85/91] Compiling BeautyExampleRenderer RendererExecution.swift
+[86/91] Compiling BeautyExampleRenderer main.swift
+[87/91] Emitting module BeautyExampleRenderer
+[88/91] Compiling BeautyExampleRenderer RendererCLIContract.swift
+[88/91] Write Objects.LinkFileList
+[89/91] Linking BeautyExampleRenderer
+[90/91] Applying BeautyExampleRenderer
+Build complete! (12.62s)
+Test Suite 'Selected tests' started at 2026-09-12 10:38:23.253.
+Test Suite 'BeautySDKPackageTests.xctest' started at 2026-09-12 10:38:23.254.
+Test Suite 'BeautyEngineChinTaperRepairTests' started at 2026-09-12 10:38:23.254.
+Test Case '-[BeautyCoreTests.BeautyEngineChinTaperRepairTests testFACE02PublicFacadeInvalidSupportIsSourceOrSiblingSafeAndRecovers]' started.
+Test Case '-[BeautyCoreTests.BeautyEngineChinTaperRepairTests testFACE02PublicFacadeInvalidSupportIsSourceOrSiblingSafeAndRecovers]' passed (0.563 seconds).
+Test Case '-[BeautyCoreTests.BeautyEngineChinTaperRepairTests testFACE02PublicFacadeIsSemanticallyDistinctFromFrozenSiblingSet]' started.
+Test Case '-[BeautyCoreTests.BeautyEngineChinTaperRepairTests testFACE02PublicFacadeIsSemanticallyDistinctFromFrozenSiblingSet]' passed (1.349 seconds).
+Test Case '-[BeautyCoreTests.BeautyEngineChinTaperRepairTests testFACE02PublicFacadePassesFrozenSemanticProtectionAndMetadataContract]' started.
+Test Case '-[BeautyCoreTests.BeautyEngineChinTaperRepairTests testFACE02PublicFacadePassesFrozenSemanticProtectionAndMetadataContract]' passed (0.904 seconds).
+Test Suite 'BeautyEngineChinTaperRepairTests' passed at 2026-09-12 10:38:26.071.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 2.816 (2.817) seconds
+Test Suite 'BeautyGeometryEffectPipelineTests' started at 2026-09-12 10:38:26.071.
+Test Case '-[BeautyEffectsTests.BeautyGeometryEffectPipelineTests testBROW08EyebrowOnlyDispatchesOnceAndRemovedWorkDispatchesNothing]' started.
+Test Case '-[BeautyEffectsTests.BeautyGeometryEffectPipelineTests testBROW08EyebrowOnlyDispatchesOnceAndRemovedWorkDispatchesNothing]' passed (0.001 seconds).
+Test Case '-[BeautyEffectsTests.BeautyGeometryEffectPipelineTests testCIImageGeometryWarpMovesLocalPixelsWithoutGlobalColorBias]' started.
+Test Case '-[BeautyEffectsTests.BeautyGeometryEffectPipelineTests testCIImageGeometryWarpMovesLocalPixelsWithoutGlobalColorBias]' passed (0.032 seconds).
+Test Case '-[BeautyEffectsTests.BeautyGeometryEffectPipelineTests testGEOMFinalNamedEmissionsDispatchOnceThroughExistingPipeline]' started.
+Test Case '-[BeautyEffectsTests.BeautyGeometryEffectPipelineTests testGEOMFinalNamedEmissionsDispatchOnceThroughExistingPipeline]' passed (0.132 seconds).
+Test Case '-[BeautyEffectsTests.BeautyGeometryEffectPipelineTests testSAFE02SevenNamedEyebrowArraysAndUnifiedProvidersKeepStableExactlyOnceOrder]' started.
+Test Case '-[BeautyEffectsTests.BeautyGeometryEffectPipelineTests testSAFE02SevenNamedEyebrowArraysAndUnifiedProvidersKeepStableExactlyOnceOrder]' passed (0.004 seconds).
+Test Suite 'BeautyGeometryEffectPipelineTests' passed at 2026-09-12 10:38:26.240.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.168 (0.169) seconds
+Test Suite 'ChinTaperRepairTests' started at 2026-09-12 10:38:26.240.
+Test Case '-[BeautyEffectsTests.ChinTaperRepairTests testFACE02GeneratedCPURasterPassesFrozenSignalDirectionAndProtection]' started.
+Test Case '-[BeautyEffectsTests.ChinTaperRepairTests testFACE02GeneratedCPURasterPassesFrozenSignalDirectionAndProtection]' passed (0.858 seconds).
+Test Case '-[BeautyEffectsTests.ChinTaperRepairTests testFACE02GeneratedGeometryEmitsPairedLowerChinBandAtExactCapAndHalfStrength]' started.
+Test Case '-[BeautyEffectsTests.ChinTaperRepairTests testFACE02GeneratedGeometryEmitsPairedLowerChinBandAtExactCapAndHalfStrength]' passed (0.001 seconds).
+Test Case '-[BeautyEffectsTests.ChinTaperRepairTests testFACE02InvalidCenterlineAndNamedSiblingIsolationFailClosed]' started.
+Test Case '-[BeautyEffectsTests.ChinTaperRepairTests testFACE02InvalidCenterlineAndNamedSiblingIsolationFailClosed]' passed (0.000 seconds).
+Test Case '-[BeautyEffectsTests.ChinTaperRepairTests testFACE02NarrowAndWideLowerChinBandsRemainPairedBoundedAndTraversalStable]' started.
+Test Case '-[BeautyEffectsTests.ChinTaperRepairTests testFACE02NarrowAndWideLowerChinBandsRemainPairedBoundedAndTraversalStable]' passed (0.000 seconds).
+Test Case '-[BeautyEffectsTests.ChinTaperRepairTests testFACE02QuantizationHostileBandFailsClosedWhenPairOwnershipIsIncomplete]' started.
+Test Case '-[BeautyEffectsTests.ChinTaperRepairTests testFACE02QuantizationHostileBandFailsClosedWhenPairOwnershipIsIncomplete]' passed (0.000 seconds).
+Test Suite 'ChinTaperRepairTests' passed at 2026-09-12 10:38:27.100.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.860 (0.860) seconds
+Test Suite 'EyebrowWarpProviderTests' started at 2026-09-12 10:38:27.100.
+Test Case '-[BeautyEffectsTests.EyebrowWarpProviderTests testBROW01DenseTraceComposedSamplingMapKeepsPositiveSlope]' started.
+Test Case '-[BeautyEffectsTests.EyebrowWarpProviderTests testBROW01DenseTraceComposedSamplingMapKeepsPositiveSlope]' passed (0.182 seconds).
+Test Case '-[BeautyEffectsTests.EyebrowWarpProviderTests testBROW01HeadSpacingPreservesDeadZoneCapPeerIndependenceAndRequestIsolation]' started.
+Test Case '-[BeautyEffectsTests.EyebrowWarpProviderTests testBROW01HeadSpacingPreservesDeadZoneCapPeerIndependenceAndRequestIsolation]' passed (0.001 seconds).
+Test Case '-[BeautyEffectsTests.EyebrowWarpProviderTests testBROW01HeadSpacingUsesOwnAxisInnerHalfMonotoneTaperAndTargetClearance]' started.
+Test Case '-[BeautyEffectsTests.EyebrowWarpProviderTests testBROW01HeadSpacingUsesOwnAxisInnerHalfMonotoneTaperAndTargetClearance]' passed (0.001 seconds).
+Test Case '-[BeautyEffectsTests.EyebrowWarpProviderTests testBROW01ShortTraceAndLowStrengthKeepActualSupportBounds]' started.
+Test Case '-[BeautyEffectsTests.EyebrowWarpProviderTests testBROW01ShortTraceAndLowStrengthKeepActualSupportBounds]' passed (0.001 seconds).
+Test Case '-[BeautyEffectsTests.EyebrowWarpProviderTests testEyebrowOnlyInputLeavesShippedProviderArraysByteEqual]' started.
+Test Case '-[BeautyEffectsTests.EyebrowWarpProviderTests testEyebrowOnlyInputLeavesShippedProviderArraysByteEqual]' passed (0.000 seconds).
+Test Case '-[BeautyEffectsTests.EyebrowWarpProviderTests testFieldLocalSanitizingStableOrderAndProviderEmpty]' started.
+Test Case '-[BeautyEffectsTests.EyebrowWarpProviderTests testFieldLocalSanitizingStableOrderAndProviderEmpty]' passed (0.000 seconds).
+Test Case '-[BeautyEffectsTests.EyebrowWarpProviderTests testGEOM01VerticalPositionNamedEmission]' started.
+Test Case '-[BeautyEffectsTests.EyebrowWarpProviderTests testGEOM01VerticalPositionNamedEmission]' passed (0.000 seconds).
+Test Case '-[BeautyEffectsTests.EyebrowWarpProviderTests testGEOM02DegenerateAdjacencySkipsOnlyAffectedThicknessSample]' started.
+Test Case '-[BeautyEffectsTests.EyebrowWarpProviderTests testGEOM02DegenerateAdjacencySkipsOnlyAffectedThicknessSample]' passed (0.000 seconds).
+Test Case '-[BeautyEffectsTests.EyebrowWarpProviderTests testGEOM02ThicknessNamedEmission]' started.
+Test Case '-[BeautyEffectsTests.EyebrowWarpProviderTests testGEOM02ThicknessNamedEmission]' passed (0.000 seconds).
+Test Case '-[BeautyEffectsTests.EyebrowWarpProviderTests testGEOM03LengthNamedEmission]' started.
+Test Case '-[BeautyEffectsTests.EyebrowWarpProviderTests testGEOM03LengthNamedEmission]' passed (0.000 seconds).
+Test Case '-[BeautyEffectsTests.EyebrowWarpProviderTests testGEOM04WholeSpacingNamedEmission]' started.
+Test Case '-[BeautyEffectsTests.EyebrowWarpProviderTests testGEOM04WholeSpacingNamedEmission]' passed (0.000 seconds).
+Test Case '-[BeautyEffectsTests.EyebrowWarpProviderTests testGEOM05HeadSpacingNamedEmission]' started.
+Test Case '-[BeautyEffectsTests.EyebrowWarpProviderTests testGEOM05HeadSpacingNamedEmission]' passed (0.000 seconds).
+Test Case '-[BeautyEffectsTests.EyebrowWarpProviderTests testGEOM06TiltNamedEmission]' started.
+Test Case '-[BeautyEffectsTests.EyebrowWarpProviderTests testGEOM06TiltNamedEmission]' passed (0.000 seconds).
+Test Case '-[BeautyEffectsTests.EyebrowWarpProviderTests testGEOM07PeakNamedEmission]' started.
+Test Case '-[BeautyEffectsTests.EyebrowWarpProviderTests testGEOM07PeakNamedEmission]' passed (0.000 seconds).
+Test Case '-[BeautyEffectsTests.EyebrowWarpProviderTests testRequestAndConcurrencyIsolationUsesImmutableFixtures]' started.
+Test Case '-[BeautyEffectsTests.EyebrowWarpProviderTests testRequestAndConcurrencyIsolationUsesImmutableFixtures]' passed (0.000 seconds).
+Test Case '-[BeautyEffectsTests.EyebrowWarpProviderTests testSAFE01DeadZoneAdjacencyUsesStrengthBoundaryNotGeometryEpsilon]' started.
+Test Case '-[BeautyEffectsTests.EyebrowWarpProviderTests testSAFE01DeadZoneAdjacencyUsesStrengthBoundaryNotGeometryEpsilon]' passed (0.001 seconds).
+Test Case '-[BeautyEffectsTests.EyebrowWarpProviderTests testSAFE01NamedFinalCapsRadiiBoundsAndUnavailableFixtures]' started.
+Test Case '-[BeautyEffectsTests.EyebrowWarpProviderTests testSAFE01NamedFinalCapsRadiiBoundsAndUnavailableFixtures]' passed (0.001 seconds).
+Test Case '-[BeautyEffectsTests.EyebrowWarpProviderTests testSeventeenFlaggedPredicatesRemainExecutableVocabulary]' started.
+Test Case '-[BeautyEffectsTests.EyebrowWarpProviderTests testSeventeenFlaggedPredicatesRemainExecutableVocabulary]' passed (0.000 seconds).
+Test Suite 'EyebrowWarpProviderTests' passed at 2026-09-12 10:38:27.290.
+	 Executed 18 tests, with 0 failures (0 unexpected) in 0.189 (0.190) seconds
+Test Suite 'MouthNegativeFieldTests' started at 2026-09-12 10:38:27.290.
+Test Case '-[BeautyEffectsTests.MouthNegativeFieldTests testActualNegativeMapAndOverlapSafety]' started.
+Test Case '-[BeautyEffectsTests.MouthNegativeFieldTests testActualNegativeMapAndOverlapSafety]' passed (0.014 seconds).
+Test Case '-[BeautyEffectsTests.MouthNegativeFieldTests testFinalFloatScalingAndRendererCutoff]' started.
+Test Case '-[BeautyEffectsTests.MouthNegativeFieldTests testFinalFloatScalingAndRendererCutoff]' passed (0.013 seconds).
+Test Case '-[BeautyEffectsTests.MouthNegativeFieldTests testMalformedSupportAndSiblingIsolation]' started.
+Test Case '-[BeautyEffectsTests.MouthNegativeFieldTests testMalformedSupportAndSiblingIsolation]' passed (0.001 seconds).
+Test Case '-[BeautyEffectsTests.MouthNegativeFieldTests testReuseConflictAndRetainedEmissions]' started.
+Test Case '-[BeautyEffectsTests.MouthNegativeFieldTests testReuseConflictAndRetainedEmissions]' passed (0.019 seconds).
+Test Suite 'MouthNegativeFieldTests' passed at 2026-09-12 10:38:27.337.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.046 (0.047) seconds
+Test Suite 'NoseRepairFieldTests' started at 2026-09-12 10:38:27.337.
+Test Case '-[BeautyEffectsTests.NoseRepairFieldTests testBridgeDisplacementScalesAtQuarterHalfAndCap]' started.
+Test Case '-[BeautyEffectsTests.NoseRepairFieldTests testBridgeDisplacementScalesAtQuarterHalfAndCap]' passed (0.000 seconds).
+Test Case '-[BeautyEffectsTests.NoseRepairFieldTests testFinalFloatFieldBudgetAndDenseMap]' started.
+Test Case '-[BeautyEffectsTests.NoseRepairFieldTests testFinalFloatFieldBudgetAndDenseMap]' passed (1.815 seconds).
+Test Case '-[BeautyEffectsTests.NoseRepairFieldTests testLegacySiblingVectorsRemainByteIdentical]' started.
+Test Case '-[BeautyEffectsTests.NoseRepairFieldTests testLegacySiblingVectorsRemainByteIdentical]' passed (0.001 seconds).
+Test Case '-[BeautyEffectsTests.NoseRepairFieldTests testRendererCutoffAndMalformedBoundsFailClosed]' started.
+Test Case '-[BeautyEffectsTests.NoseRepairFieldTests testRendererCutoffAndMalformedBoundsFailClosed]' passed (0.000 seconds).
+Test Case '-[BeautyEffectsTests.NoseRepairFieldTests testReusedAndCombinedStrengthsRemainExact]' started.
+Test Case '-[BeautyEffectsTests.NoseRepairFieldTests testReusedAndCombinedStrengthsRemainExact]' passed (0.001 seconds).
+Test Case '-[BeautyEffectsTests.NoseRepairFieldTests testRootPairRemainsAtomicAndIndependent]' started.
+Test Case '-[BeautyEffectsTests.NoseRepairFieldTests testRootPairRemainsAtomicAndIndependent]' passed (0.000 seconds).
+Test Suite 'NoseRepairFieldTests' passed at 2026-09-12 10:38:29.155.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 1.818 (1.819) seconds
+Test Suite 'BeautySDKPackageTests.xctest' passed at 2026-09-12 10:38:29.156.
+	 Executed 40 tests, with 0 failures (0 unexpected) in 5.898 (5.901) seconds
+Test Suite 'Selected tests' passed at 2026-09-12 10:38:29.156.
+	 Executed 40 tests, with 0 failures (0 unexpected) in 5.898 (5.902) seconds
+P94N_BOUND_INCONCLUSIVE
+◇ Test run started.
+↳ Testing Library Version: 1902
+↳ Target Platform: arm64e-apple-macos14.0
+✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.
+[phase96] prepare batch workspace 10:38:29
+{"status":"prepared","raw_outputs":"transient_only"}
+[phase96] run 65-case batch; renderer/comparator output is intentionally quiet 10:38:29
+semantic_report=semantic_fail batches=5 cases=65 directions=8 attempts=2
+[phase96] batch completed 11:02:18

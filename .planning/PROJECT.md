@@ -40,9 +40,11 @@ The former application and legacy UI-reference trees are absent from the active 
 
 ## Core Value
 
-The project owner's local iOS host can integrate `BeautySDK` and get natural,
-controllable, real-time and still-image beauty processing through a stable
-modular facade without distributing the SDK or its model resources.
+The project owner's local host can integrate `BeautySDK` for bounded,
+controllable still-image effects and the implemented frame-input routes through
+one modular facade. Effect qualification follows the current taxonomy and
+image-acceptance policy; no realtime performance or general natural-portrait
+quality is implied. The SDK and local resources remain non-distributed.
 
 ## Historical completed milestone records
 
@@ -1016,6 +1018,6 @@ Current visual reference contracts:
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-09-08 after Phase 92*
+*Current-summary maintenance: 2026-10-09. Historical milestone rows retain their dated scope.*
 
 <!-- beauty-v122-complete-sha256: 33b49fee25b4156b8a947ac437822ac33f7e5473a61ed74b1015c393035862d4 -->

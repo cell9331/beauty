@@ -78,13 +78,17 @@ unseen holdout evidence and must not be relabeled a pass against its old contrac
 The rule against weakening thresholds after output does not prohibit this explicit,
 versioned product-scope change; it prohibits retrospective success claims.
 
-For v1.25 the owner authorized such a revision on 2026-10-03. The
-[R2 MVP contract](RETOUCH_MVP_REQUIREMENTS.md) defines automatic eyelid-tone correction
+For v1.25 the owner authorized such a revision on 2026-10-03. The frozen historical
+[R2 MVP contract](RETOUCH_MVP_REQUIREMENTS.md) defined automatic eyelid-tone correction
 and visible-boundary skin-colored patch protection. Numbers are prospective project
 choices requiring pre-candidate oracle controls, not proof of feasibility or universal
 perception thresholds. Exact key-feature protection, artifact checks, compatibility
 and the current engineering gates remain. Photo-wide unknown-input recognition and
-full high-quality fat reduction are not implied. Each branch needs its own evidence.
+full high-quality fat reduction were not implied. Both branches later exhausted their
+finite budgets and [closed as unmet](RETOUCH_FINAL_DISPOSITION_2026-10-03.md).
+The original criteria remain historical evidence; they create no current G0,
+holdout, model or training task. Any new branch requires its own authorized scope
+and evidence under this policy.
 
 ## Failed and suspended routes
 
