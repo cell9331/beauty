@@ -85,9 +85,10 @@ final class BeautyGeometryEffectPipelineTests: XCTestCase {
         )
         XCTAssertEqual(
             plan.metrics["beauty.effects.geometryPointCount"],
-            Double(expectedCount),
-            "Face-domain accounting must not count the unified eye/nose/mouth arrays a second time."
+            Double(expectedCount - eyebrowEmissions.points.count),
+            "Continuous eyebrow admission contributes no legacy points; remaining providers are counted once."
         )
+        XCTAssertEqual(plan.metrics["beauty.effects.continuousEyebrowFields"], 1)
         XCTAssertTrue(
             plan.activeDomains.isSuperset(
                 of: Set<BeautyEffectDomain>([.faceShape, .eyes, .eyebrows, .nose, .mouth])
@@ -106,8 +107,14 @@ final class BeautyGeometryEffectPipelineTests: XCTestCase {
             strengths: active.effectiveStrengths
         ).eyebrowYPosition
         XCTAssertFalse(expected.isEmpty)
+        // The named legacy provider remains available for its direct ordering
+        // contract. The production still-image stage owns continuous work.
         XCTAssertEqual(BeautyGeometryEffectPipeline.controlPoints(for: active, face: face), expected)
-        XCTAssertEqual(active.metrics["beauty.effects.geometryPointCount"], Double(expected.count))
+        XCTAssertNil(active.metrics["beauty.effects.geometryPointCount"])
+        XCTAssertEqual(active.metrics["beauty.effects.continuousEyebrowFields"], 1)
+        let stage = BeautyStillImageGeometryStage(sourceRGBA: [UInt8](repeating: 255, count: 32 * 32 * 4),
+            width: 32, height: 32, plan: active, face: face)
+        XCTAssertTrue(stage.controlPoints.isEmpty, "raster rejection cannot revive the eyebrow proxy")
 
         let removedFace = phase50Face(eyebrowSupport: nil)
         let removed = BeautyEffectResolver.resolve(
@@ -147,8 +154,13 @@ final class BeautyGeometryEffectPipelineTests: XCTestCase {
         )
         XCTAssertEqual(
             plan.metrics["beauty.effects.geometryPointCount"],
-            Double(namedArrays.reduce(0) { $0 + $1.count })
+            nil,
+            "Continuous admission is separate from the retained direct-provider ordering contract."
         )
+        XCTAssertEqual(plan.metrics["beauty.effects.continuousEyebrowFields"], 7)
+        let stage = BeautyStillImageGeometryStage(sourceRGBA: [UInt8](repeating: 255, count: 32 * 32 * 4),
+            width: 32, height: 32, plan: plan, face: face)
+        XCTAssertTrue(stage.controlPoints.isEmpty)
 
         let sourceURL = URL(fileURLWithPath: #filePath)
             .deletingLastPathComponent()
@@ -227,17 +239,7 @@ final class BeautyGeometryEffectPipelineTests: XCTestCase {
     }
 
     private func phase50Trace(side: BeautyObservedEyebrowSide) -> BeautyEyebrowSemanticTrace {
-        let points: [SIMD2<Float>] = side == .left
-            ? [.init(0.25, 0.40), .init(0.30, 0.36), .init(0.36, 0.34), .init(0.42, 0.37), .init(0.47, 0.41)]
-            : [.init(0.75, 0.40), .init(0.70, 0.36), .init(0.64, 0.34), .init(0.58, 0.37), .init(0.53, 0.41)]
-        return BeautyEyebrowSemanticTrace(
-            side: side,
-            points: points,
-            innerEndpoint: points[0],
-            outerEndpoint: points[points.count - 1],
-            center: points.reduce(.zero, +) / Float(points.count),
-            apexIndex: 2
-        )
+        EyebrowSafetyFixtures.trace(side: side, bounds: FaceGeometry.phase46AsymmetricComplete.bounds)
     }
 
     private func phase50Face(eyebrowSupport: BeautyEyebrowSemanticSupport?) -> FaceGeometry {

@@ -22,6 +22,13 @@ owner-only use; research-only data and derived models stay in a noncommercial la
 
 ## Input and resource admission
 
+The owner-scoped `jawlineShadow` branch uses transient original-image
+geometry and local material corroboration to qualify a bounded luminance
+band. RGB similarity alone does not establish skin ownership. No source
+pixels, masks or landmarks enter persistent receipts. Unsupported evidence,
+nonopaque input and incompatible geometry combinations reject this branch;
+it introduces no model, remote request, shader or distribution permission.
+
 On 2026-10-09 the owner explicitly authorized downloading official MediaPipe
 Face Landmarker assets and creating an independent local iOS test project.
 The subsequent explicit request to integrate it into BeautySDK authorizes the
@@ -34,6 +41,19 @@ allowlisted aggregate checks, never raw landmarks, matrices or portrait pixels.
 The [completed probe](plans/history/2026-10/A-2026-10-09-mediapipe-landmarker-probe.md)
 records the initial independent probe. The [completed integration](plans/history/2026-10/A-2026-10-09-mediapipe-sdk-integration.md)
 owns SDK implementation and verification.
+
+On 2026-10-15 the owner separately authorizes one local SAM2.1 Hiera Tiny
+contact-owner feasibility experiment, fixed code/checkpoint and isolated CPU
+dependencies. Code and checkpoints declare Apache2.0; exact versions, hashes
+and scope live in the [active iris plan](plans/active/A-2026-10-15-iris-gray-panel-repair.md).
+The source image, crops, masks and logits remain in owner-local temporary
+storage; persistent evidence is allowlisted aggregates and hashes only. This
+permission adds no SDK resource, runtime download, App integration, training,
+dataset, second model, image upload or distribution path, and does not reopen
+closed EYE/SEG. A model mask/logit is not a true mixed-pixel alpha or semantic
+ownership certificate. The fixed experiment completes10 CPU predictions but
+misses the required contact iris witnesses and is rejected; it grants no
+automatic follow-up model or integration.
 
 Public inputs require finite positive dimensions and checked byte/pixel
 multiplication. `maximumInputPixelCount` defaults/caps at 50,000,000;
@@ -75,6 +95,54 @@ request-local. These mechanics do not identify arbitrary skin-colored objects
 or reopen closed EYE/SEG work. See [dense contract](docs/sdk/DENSE_FACE_REFACTOR.md).
 
 ## Request-local geometry and retouch
+
+The continuous eye map derives source-fixed axes from observed eye support.
+Dense visible-ring evidence gates negative iris size; missing eye/iris support
+is not borrowed or synthesized for admission. Protection uses the existing
+FaceGeometry feature paths: dense nose/lip observations where available, and
+coarse compatibility paths on the sparse Vision route. These guards do not
+establish complete semantic organ boundaries. Grid/geometry storage releases
+per request, and reflection remains aggregate. Reference portraits and derived
+outputs stay in local ignored/temporary storage; evidence records directions
+and aggregate checks only. See [eye input limits](docs/sdk/EYE_SHAPE_SLIDERS.md).
+
+The first five controls may calibrate position scale and the horizontal scale pivot from
+bounded RGB dark-edge evidence in the supplied source raster. Coherent rows,
+opaque samples and geometric span/pivot limits precede calibration; ambiguous
+or unsupported evidence keeps the measured geometric frame. This creates no
+eye/skin/occluder semantic classification, model or retained pixel payload.
+Lower-lid and outer-corner work select the widest consistent three sampled rows
+for a local horizontal frame; the rows need not be adjacent. The original opaque
+RGB contrast, two-boundary coherence and .80 minimum-span/.22 pivot bounds still
+apply. The strict default three-widest-row path for the first five controls is
+unchanged. Lower-lid upper-zero trace, central lobe and outer-zero edge share
+this local frame, as does the outer-corner plateau. Opaque RGB contrast at an
+already validated dense iris center only chooses the upper-trace sampling rim.
+It does not infer or relocate a pupil,
+infer an iris radius or admit an unsupported eye; ambiguous/transparent evidence
+keeps the conservative geometric fallback. Derived scalars remain request-local.
+Protected feature paths, additional brow/central-bridge guards and existing
+joint displacement/gradient admission still apply. Opposite spacing fields
+require ordered, separated eyes and meet at a fixed source midline.
+
+The continuous mouth map uses existing observed outer/inner lips and eye/nose
+support within the request. Its descriptions and reflection expose counts only;
+it adds no serialized geometry, resource, model or diagnostic payload. Invalid
+observations cannot authorize the legacy proxy. Local lip-thickness/peak edits
+protect the observed inner-opening band; this geometric guard is not general
+tooth, skin or object segmentation. See [mouth bounds](docs/sdk/MOUTH_SLIDERS.md).
+
+The continuous eyebrow map uses observed source traces, bounded opaque RGB
+profiles and local skin donors to propose eyebrow material. Dark-core coherence
+and width, source continuity, organ exclusion and immutable-source ownership
+are admission guards, not semantic eyebrow/skin/forelock segmentation. Material
+and derived fields remain request-local; unsupported or ambiguous sides abstain
+without a legacy proxy. Color composition uses an independent source carrier,
+never geometry-altered pixels as extraction authority. Source media, private
+geometry and detail crops remain owner-local ignored/temporary data; durable
+reference evidence contains only allowed aggregate checks. The
+[eyebrow plan](plans/active/A-2026-10-14-eyebrow-reference-refactor.md) retains
+failed photographic candidates separately from generated-source qualification.
 
 The explicit prepared-photo API is a bounded memory-only exception for one
 engine-owned immutable RGB8 source and at most six purpose/raster detection
@@ -193,10 +261,13 @@ owner's local filesystem; they are not a concurrent-filesystem security sandbox.
 
 ## Verification and change routing
 
-Archive verification, boundary self-test/live scan and wrapper mutation checks
-are the narrow document/boundary gates. SDK code/contract changes run the
-owning public/target tests and the complete archive-first zero-failure/zero-skip
-gate described in [QUALITY_SCORE.md](QUALITY_SCORE.md). New data/model/resource
+Document checks follow the changed claims: archive/boundary checks for those
+boundaries, wrapper mutation checks for gate semantics, and link/claim/diff
+checks for prose. SDK code/contract changes run the directly affected public/
+target tests; expand only for concrete dependent paths. Complete owner-local
+milestone closeout requires the archive-first zero-failure/zero-skip gate;
+ordinary edits do not implicitly require a full rerun. Exact scope selection
+is owned by [QUALITY_SCORE.md](QUALITY_SCORE.md). New data/model/resource
 or external access must update this trust contract and actual-use rights review
 before implementation. Separately authorized external host UI stays outside
 the repository under [FRONTEND.md](FRONTEND.md).

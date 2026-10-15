@@ -14,7 +14,7 @@ final class RepairedControlCompatibilityTests: XCTestCase {
         let value = BeautyParameters(chinTaper: 0.2, filterId: "soft_clean", filterIntensity: 0.25)
         let data = try JSONEncoder().encode(value)
         let object = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])
-        XCTAssertEqual(object.count, 77, "current Codable count")
+        XCTAssertEqual(object.count, 78, "current Codable count")
         XCTAssertEqual(object["wholeFaceYPosition"] as? Double, 0, "new field stays neutral")
         XCTAssertEqual(object["wholeFaceXPosition"] as? Double, 0, "new field stays neutral")
         XCTAssertEqual(object["wholeFaceTilt"] as? Double, 0, "new field stays neutral")
@@ -31,6 +31,8 @@ final class RepairedControlCompatibilityTests: XCTestCase {
         XCTAssertEqual(object["doubleChinReduction"] as? Double, 0, "new field stays neutral")
         XCTAssertEqual(object["doubleChinReductionPro"] as? Double, 0, "new field stays neutral")
         var frozenProjection = object
+        frozenProjection.removeValue(forKey: "jawlineShadow")
+        XCTAssertEqual(object["jawlineShadow"] as? Double, 0)
         frozenProjection.removeValue(forKey: "wholeFaceYPosition")
         frozenProjection.removeValue(forKey: "wholeFaceXPosition")
         frozenProjection.removeValue(forKey: "wholeFaceTilt")

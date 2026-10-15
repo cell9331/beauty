@@ -1,171 +1,99 @@
 # AGENTS.md
 
-Spend time on thinking; you do not need to use the commentary channel to report progress to me.
+适用于本仓库。`beauty` 是 **SDK-only SwiftPM** 项目：`BeautySDK/` 提供所有者本地
+App、工具与验证程序使用的 library 和命令行 renderer；不面向第三方分发。
+沟通以结论、实际验证和必要决策为主，无需逐步播报。
 
-> `beauty` 仓库的唯一入口。当前仓库是 SDK-only Swift Package；历史 UI/Demo
-> 只能从已验证归档中恢复到仓库外的临时目录。
->
-> 当前 `BeautySDK` 只供项目所有者在自己控制的本地 App、工具和验证程序中
-> 使用，不面向第三方用户，也不计划发布、售卖或分发 SDK、模型或权重。
+## 开始工作
 
-## 1. 核心原则
+1. 读本页和 [PLANS.md](PLANS.md)，检查 `git status --short`，识别已有及并行改动。
+2. 按下方任务表只读匹配的契约文档、现行计划、相关代码和测试；历史材料按需查找。
+3. 明确要改变的行为、保留的契约与最小充分验证，再编辑。优先更新已有匹配计划。
 
-- 仓库文本、代码与测试是记录系统；不存在的事实不得默认存在。
-- 当前产品面是 `BeautySDK` SwiftPM library 与 SDK-owned command-line validation。
-- 原应用/UI 只属于 `archives/legacy-ui/` 历史材料，不是构建、测试或需求输入。
-- 具体约束由专项文档承载；每次改动记录改了什么、为什么、如何验证。
+用户在当前任务中的明确授权决定工作范围；不要从历史计划、参考材料或“继续”推导新授权。
+代码/测试用于核实实际行为，契约文档定义要求，计划记录执行状态，回执只证明其注明的
+日期、输入与检查范围。发现不一致时查明是实现缺陷还是文档漂移并在本次范围内修正；
+不要用“代码优先”取消安全要求，也不要把计划或旧测试通过写成已交付效果。
 
-## 2. 阅读顺序
+## 必须保留的边界
 
-1. 先读 `AGENTS.md` 与 `PLANS.md`。
-2. 按任务类型读取对应根级 owner；`PLANS.md` 是渐进式入口，现行计划与技术债按其中链接继续读取。
-3. 再读相关代码、SwiftPM 测试及 [docs 分类索引](docs/README.md) 中对应的现行指南；`docs/history/` 保留历史证据和已关闭研究，不产生当前任务。
-4. 算法/control taxonomy 以 `docs/SDK_EFFECT_TAXONOMY.md` 为当前 authority。
-5. 图片效果验收输入与声明以 `docs/validation/IMAGE_EFFECT_ACCEPTANCE.md` 为当前 authority。
-6. 若契约变化，同步更新拥有该契约的文档，替换失效的当前声明；不要持续叠加互相覆盖的补丁说明。接口兼容、工程安全与效果资格分别记录。
+- **所有者自用**：Swift `public` 是访问级别；不授权向所有者控制环境外分发源码、
+  二进制、模型/权重、私有夹具或派生数据。改变此边界须所有者明确新范围及许可、
+  安全、隐私、兼容和产品审查；自用仍须满足实际用途许可证。
+- **SDK 与宿主分离**：不在仓库新增或恢复应用源码、UI、lifecycle 或 UI automation。
+  已单独授权的外部宿主由 [FRONTEND.md](FRONTEND.md) 及其自身文档约束；本仓库任务
+  不自动扩大到宿主。历史 UI/Demo 先验证归档，只恢复到仓库外的新临时目录。
+- **保留工程边界**：retained `Warp.metal` 与既有 Metal/GPU API/backend 受
+  `scripts/check-sdk-only-boundary.sh` 约束；默认不改。现行 SDK 算法按授权计划推进。
+  已批准的固定 MediaPipe 依赖/模型见
+  [SECURITY.md](SECURITY.md)；不据此授权其他下载、训练、微调、数据采集或分发。
+- **保留效果处置**：去脂 `suspended`、默认隐藏，保留 `upperEyelidFullnessReduction`
+  字段、零默认值、Codable、显式调用、
+  `BeautyExperimentalUpperEyelid*` 和安全测试。v1.25 自动 EYE/SEG 为
+  `closed_with_unmet_objectives`，未交付且无自动续作；重开须明确新范围和新假设、
+  信息或资源。现行状态由 [taxonomy](docs/SDK_EFFECT_TAXONOMY.md) 和
+  [最终处置](docs/history/retouch/RETOUCH_FINAL_DISPOSITION_2026-10-03.md) 拥有。
+- **保护工作与证据**：不覆盖未要求修改的本地变更；历史归档、冻结契约、阈值、
+  失败和既有回执只读。raw pixels、masks、landmarks、私有夹具路径和 child transcripts
+  不写入持久证据；授权媒体留在本地 ignored/临时区域，仅记录允许的聚合数据。
+- **精确管理存储**：`BeautySDK/.build` 含冻结夹具/回执，不能整树删除。清理前核对
+  用途、引用及 tracked/ignored 身份，只删已确认可重建产物。示例图容量、预览和
+  清理规则由 [example-images/README.md](example-images/README.md) 拥有。
 
-冲突优先级：代码与测试 > `PLANS.md` 及其链接的现行计划/技术债 > 根级专项文档 > 历史分片与 `docs/` 历史资料。
+## 按任务读取与更新
 
-## 3. 仓库地图
-
-```text
-BeautySDK/                       Swift Package、library、renderer 与 tests
-scripts/                         SDK-owned archive/boundary/test gates
-archives/legacy-ui/              verified historical UI/Demo ZIP artifacts
-PLANS.md                         当前计划入口和按需加载导航
-plans/                           现行计划、技术债与历史记录分片
-docs/README.md                   文档总索引与分类/兼容路径说明
-docs/SDK_EFFECT_TAXONOMY.md       固定路径的 current effect/control taxonomy
-docs/sdk/                        当前静图实现与宿主接入指南
-docs/validation/                 当前图片验收政策与批量工具
-docs/operations/                 Git 操作与账号
-docs/history/                    初始设计、日期审计与已关闭研究
-docs/refactor-playbook/          对照现行实现的项目学习手册
-docs/beauty-sdk-playbook/         所有者导入的原始参考材料
-.planning/                       active GSD state plus archived milestone evidence
-```
-
-## 4. 任务路由
-
-| 任务类型 | 必读 / 必改 |
+| 任务 / 契约变化 | 文档 owner 与指南 |
 | --- | --- |
-| 本仓库 Git 提交、推送、拉取或账号/权限排障 | [Git 操作与账号](docs/operations/GIT_OPERATIONS.md)；复用本仓库已验证的 SSH 身份，不改全局账号配置 |
-| 包、Target、依赖方向 | `ARCHITECTURE.md` |
-| 参数、渲染状态、核心状态机 | `DESIGN.md` |
-| 历史 UI/Demo 查询或恢复 | `FRONTEND.md`, `archives/legacy-ui/README.md` |
-| 隐私、输入、资源、归档信任边界 | `SECURITY.md` |
-| 错误、日志、性能、恢复 | `RELIABILITY.md` |
-| SDK 使用旅程与验收 | `PRODUCT_SENSE.md` |
-| 计划与技术债 | `PLANS.md`，再按链接读取 `plans/active/` 与 `plans/debt/current.md` |
-| 测试与质量门禁 | `QUALITY_SCORE.md` |
-| effect/control status | `docs/SDK_EFFECT_TAXONOMY.md` |
-| 文档分类、迁移与漂移修复 | `docs/README.md`、`QUALITY_SCORE.md`；当前引用直达分类后的正文，冻结/只读历史使用已有兼容入口 |
+| Target、依赖、处理路径 | [ARCHITECTURE.md](ARCHITECTURE.md) |
+| 参数、输入、状态、组合、结果 | [DESIGN.md](DESIGN.md) |
+| 所有者可调用行为、使用旅程 | [PRODUCT_SENSE.md](PRODUCT_SENSE.md)；实现指南从 [docs/sdk/](docs/sdk/README.md) 进入 |
+| 错误、恢复、日志、性能与资源边界 | [RELIABILITY.md](RELIABILITY.md) |
+| 隐私、输入/资源信任、许可、归档 | [SECURITY.md](SECURITY.md) |
+| 效果分类、参数映射与资格 | [SDK_EFFECT_TAXONOMY.md](docs/SDK_EFFECT_TAXONOMY.md) |
+| 图片效果验收、批量像素检查 | [IMAGE_EFFECT_ACCEPTANCE.md](docs/validation/IMAGE_EFFECT_ACCEPTANCE.md)、[validation/](docs/validation/README.md) |
+| 测试范围、质量门禁、回执与动态库存 | [QUALITY_SCORE.md](QUALITY_SCORE.md) |
+| 历史 UI/Demo 或外部宿主边界 | [FRONTEND.md](FRONTEND.md)、[归档指南](archives/legacy-ui/README.md) |
+| 当前工作与范围外发现 | [PLANS.md](PLANS.md)、匹配 Active 计划与[当前技术债](plans/debt/current.md) |
+| 文档分类、导航、漂移修复 | [docs/README.md](docs/README.md)、[QUALITY_SCORE.md](QUALITY_SCORE.md) |
+| Git 提交、推送、拉取、权限 | [GIT_OPERATIONS.md](docs/operations/GIT_OPERATIONS.md)；复用仓库已验证 SSH 身份，不改全局账号 |
 
-- Local-retouch/privacy/fixture work also follows `Skill("spike-findings-beauty")`.
+Local-retouch、隐私或夹具工作还须读取项目技能
+[spike-findings-beauty](.codex/skills/spike-findings-beauty/SKILL.md)。技能与参考手册中的历史
+方案不能替代现行契约或激活已关闭研究。`.planning/` 保存 GSD 状态及日期证据，当前任务
+仍从 PLANS 进入，不从旧 phase 的 next-step 恢复。
 
-## 5. 当前边界
+## 验证：先选范围，再运行命令
 
-- **所有者自用**：仓库内的 `public` 仅表示 Swift 访问级别和所有者本地宿主的
-  可调用面，不表示第三方产品、公共包、二进制 SDK、模型权重、App Store、
-  客户交付或任何发布承诺。
-- 不向仓库或所有者控制环境以外分发源码包、二进制、Core ML 资源、训练权重、
-  私有夹具或派生数据。若未来要改变这一边界，必须先新建明确授权的里程碑，
-  重新审核许可证、安全、隐私、API 兼容和产品声明。
-- 不新增或恢复应用源、UI 行为、application lifecycle 或 UI automation。
-- 不把归档内容解压回仓库；恢复只进入新建临时目录，并先运行归档验证。
-- 不把 raw masks、landmarks、pixels、private fixture locators 或 child transcripts 写入持久证据。
-- v1.16 不修改 retained `Warp.metal`、不新增 Metal/GPU API/backend 或新算法。
-- `去脂` 当前为 `suspended`：有界上睑亮度修正不等于脂肪/形态识别，自然外观
-  效果未合格；2026-10-01 默认隐藏。保留 `upperEyelidFullnessReduction` 的字段、
-  默认零值、Codable、显式调用、`BeautyExperimentalUpperEyelid*` 内部实现和安全
-  测试；默认 renderer 清单/批量与常用示例不推荐或启用它。
-- 2026-10-03 所有者重开并降低初版标准后，EYE光影与SEG同色贴片自动分支各自
-  2方法×2版本均未合格。按所有者最新“连续执行、到能力边界即停止、本里程碑
-  结束旧问题”的指示，以 `closed_with_unmet_objectives` 结束v1.25，详见
-  [最终处置](docs/history/retouch/RETOUCH_FINAL_DISPOSITION_2026-10-03.md)与
-  [R3终局范围](docs/history/retouch/RETOUCH_TERMINAL_SCOPE_2026-10-03.md)。未交付不冒充实现；
-  同色物体/完整唇部保护仅保留现有host显式蒙版能力，自动保护缺口公开记录。
-  两条失败路线不再列为active、下一轮G0或默认后续任务。一般“继续/下一步”
-  不恢复研发；重开须所有者明确新范围与新假设/信息/资源，不能重置本轮预算。
-  历史provisional接受、R1/R2研究和原待办不覆盖终局处置。没有预授权模型下载、
-  训练、微调、数据采集或分发；未执行模型不能被写成已经失败。
+所有命令从仓库根运行。以改动和直接调用路径选择检查；共享模块仅按具体依赖扩大范围。
+普通修复/功能不例行全量回归，也不扩展设备、字体或方向矩阵。
 
-- 数据、模型和权重的许可证必须覆盖实际的所有者内部用途；“自用、不分发”
-  不自动等于“允许商业使用”。research-only 数据及派生模型只能进入隔离的
-  非商业研究/评估路径。device、SDK 商业化、monetization、packaging、shipping、
-  launch、外部分发与 release readiness 均不属于当前目标。
+| 条件 | 检查入口 |
+| --- | --- |
+| 仅文档 | 本地链接/锚点、声明依据、保护文件摘要与 `git diff --check`；附加检查按 QUALITY 的条件表选择 |
+| SDK 行为或缺陷 | `swift test --package-path BeautySDK --filter '<相关测试类或用例>'`，记录实际执行与 skip；不以空执行作为通过 |
+| 需要编译验证 | `swift build --package-path BeautySDK`；复用增量缓存 |
+| CLI 说明变化 | `swift run --package-path BeautySDK BeautyExampleRenderer --help`；像素效果另跑对应 oracle |
+| 归档或 SDK-only 边界声明变化 | `python3 -B scripts/archive-legacy-ui.py verify --output archives/legacy-ui`；`bash scripts/check-sdk-only-boundary.sh --post-archive`，按需运行其 `--self-test` |
+| 门禁流程/声明变化 | `bash scripts/run-no-skip-swiftpm.sh --self-test`；这是控制自测，未执行完整 SDK 测试 |
+| 新增/生成示例图 | `python3 -B scripts/manage-example-images.py check` |
+| 明确的完整 SDK 里程碑 closeout | `bash scripts/run-no-skip-swiftpm.sh`：archive-first、all-opt-ins、非零执行、zero-failure/zero-skip |
 
-## 6. 项目级自动化验证政策
+完整 closeout 与普通定向验证是不同范围；其他必须全量的情形先说明局部检查不足的具体原因。
+不得以关闭 verifier、跳过门禁或空命令缩小检查。plain `swift test` 可能跳过 opt-ins，
+不能代替完整 closeout。确有执行/验证代理时，同样传递此范围。
 
-- 真实 iPhone 测试是 SDK 完成后由用户执行的可选验收与反馈，不是当前或未来
-  里程碑的默认硬门禁、依赖或计划推进 blocker；只有用户在后续里程碑中明确
-  提升为强制要求时，才可成为完成条件。
-- SDK 里程碑以可重复的 SwiftPM 测试和 SDK-owned 脚本为主要证据。涉及图片
-  效果时，测试必须通过实际输入/输出像素与元数据断言判断结果，覆盖适用的
-  尺寸/extent、方向/镜像、色彩空间、alpha、neutral identity、目标区域变化、
-  保护区域不变、容差、确定性与 typed failure；不能用“脚本运行成功”代替结果
-  正确性。
-- 图片效果验收可使用有权本地使用的代码生成图或 AI 生成肖像，正例、负例和
-  保护区均可由生成输入提供；生成来源本身不降低验收等级。真人肖像和真实
-  设备均为可选补充，不得因缺少真人图像而阻塞里程碑、taxonomy 提升或后续
-  计划。效果方向、负例、不恶化、保护区、重复性、元数据和 typed failure 仍
-  须用实际输入/输出验证；仅有变化像素数不够。具体规则见
-  `docs/validation/IMAGE_EFFECT_ACCEPTANCE.md`。raw pixels、masks、landmarks、私有路径和
-  生成图片不得进入持久证据。
-- SDK 完成后的真实设备反馈作为补充发现记录到 `PLANS.md`，必要时进入后续
-  修复计划；它不追溯否定当时已通过的自动化里程碑，除非暴露出可复现的契约
-  缺陷。
-- 没有真实设备证据时，仍不得宣称设备性能、温升、耗电、长稳、商业视觉质量、
-  packaging、shipping、launch 或 release readiness；这是声明边界，不是计划
-  blocker。
+图片效果须用实际输入/输出验证方向、负例不恶化、目标/保护区、容差、确定性、neutral、
+适用元数据与 typed failure；脚本成功或变化像素数不能替代效果正确。授权生成肖像可作
+合格输入；真人照片与真实 iPhone 默认是可选补充，不阻塞自动化完成或 taxonomy 提升。
+未测设备性能、温升、耗电、长稳及一般外观质量不作声明；工程通过不授权外部分发。
 
-## 7. 工作流
+## 完成交付与文档维护
 
-1. **Orient**：读取计划、owner、相关 source/test。
-2. **Scope**：确认最小改动与 SwiftPM/SDK-owned 验证。
-3. **Edit**：遵循现有 Target 边界、命名与抽象层级。
-4. **Verify**：运行最窄但有意义的 SwiftPM test 或 SDK-owned script。
-5. **Record**：更新 `PLANS.md` 与被改动契约 owner。
-
-不要依赖聊天记忆；长期决定必须沉淀到仓库文本。
-
-## 8. 操作约束
-
-- 不扩大任务边界；额外问题写入 `PLANS.md`。
-- 不覆盖用户未要求修改的本地变更。
-- 新增 owner-local Swift `public` 行为补 `PRODUCT_SENSE.md`；新架构补 `ARCHITECTURE.md`。
-- 新风险补 `SECURITY.md`；新错误、日志或性能行为补 `RELIABILITY.md`。
-- 历史归档与 archived milestone evidence 保持只读。
-- 清理构建缓存时先核对 ignored/未跟踪身份及冻结源引用；`BeautySDK/.build`
-  含保留的冻结夹具和回执，不能按纯缓存整体删除。仅移除已确认可重建的
-  编译/索引产物与工作副本，保留 Serena 项目状态、源码与历史证据。
-
-## 9. 基础命令
-
-```bash
-rg --files
-swift build --package-path BeautySDK
-swift test --package-path BeautySDK
-swift run --package-path BeautySDK BeautyExampleRenderer --help
-python3 scripts/archive-legacy-ui.py verify --output archives/legacy-ui
-bash scripts/check-sdk-only-boundary.sh --post-archive
-bash scripts/run-no-skip-swiftpm.sh
-```
-
-完整 owner-local 里程碑 closeout 使用最后一个命令；它必须先验证历史归档和
-SDK-only boundary，再执行 all-opt-ins、zero-failure、zero-skip、nonzero-test
-的 SwiftPM gate。该结果不构成任何外部发布或分发批准。
-
-## 10. 示例图存储限制
-
-- `example-images/` 总计最多 **128 MiB / 160 张图片**，单张最多 **16 MiB**；
-  `input/` 最多 **16 张 / 32 MiB**。新增或生成图片后运行
-  `python3 -B scripts/manage-example-images.py check`；全量测试入口也强制检查。
-- 日常展示图通过 `manage-example-images.py preview <source> --name <opaque-id>`
-  写入 ignored `previews/`：最多 **32 张**、每张 **512 KiB**、长边 **1600 px**，
-  使用 JPEG 压缩并移除源元数据。不要为展示永久保留全量 PNG 和多轮副本。
-- 验收原图、固定哈希夹具和蒙版保持原字节；压缩预览不作为像素验收输入。
-  全量原尺寸输出在临时目录评估，用完删除，只留下聚合回执。
-- `manage-example-images.py clean` 仅删除已登记的可重建缓存；保留输入、停用
-  兼容夹具、两个当前验收包的清单资产与文本证据。未分类文件不自动删除。
-  具体规则和用法见 [example-images/README.md](example-images/README.md)。
+- 复用现有 Target、命名和抽象；变更行为时同步所属 owner 和相关测试，不为格式偏好
+  扩大重构。新增所有者可调用 API 同步 PRODUCT_SENSE，新增风险同步 SECURITY。
+- 每个契约只在一个 owner 定义，其他文档直接链接；AGENTS 只放长期行动规则与入口。
+  当前正文替换失效说法，历史记录保留原日期与范围，不叠加互相覆盖的补丁说明。
+- 完成后更新匹配计划/checklist 和 PLANS 摘要：改了什么、为什么、实际检查及结果、
+  未验证项和剩余风险。范围外发现进入技术债，不自动启动下一任务。
+- 完成记录用 [plans/TEMPLATES.md](plans/TEMPLATES.md)。不把旧回执、未验证的并行
+  代码或参考提案写成此次通过；长期决定落到仓库文本。

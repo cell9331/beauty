@@ -169,6 +169,10 @@ package struct BeautyBackendRequest: @unchecked Sendable {
         guard normalized(plan) else {
             throw BeautyError.invalidInput
         }
+        // This source-qualified intent is owned by the still-image raster stage.
+        guard input.kind == .stillImage || plan.effectiveStrengths.jawlineShadow == 0 else {
+            throw BeautyError.invalidInput
+        }
 
         let dimensions: (width: Int, height: Int)
         switch input {
@@ -258,24 +262,24 @@ package struct BeautyBackendRequest: @unchecked Sendable {
             plan.effectiveStrengths.doubleChinReductionPro,
             plan.effectiveStrengths.faceVShape,
             plan.effectiveStrengths.faceContourSmooth,
+            plan.effectiveStrengths.upperEyelidLift,
+            plan.effectiveStrengths.gazeCorrection,
+            plan.effectiveStrengths.eyeSymmetry,
+            plan.effectiveStrengths.lipColor,
+            plan.effectiveStrengths.jawlineShadow,
+        ]
+        let signedStrengths: [Float] = [
+            plan.effectiveStrengths.smile,
+            plan.effectiveStrengths.lipPeakDefinition,
+            plan.effectiveStrengths.lipPlump,
             plan.effectiveStrengths.eyeSize,
             plan.effectiveStrengths.eyeTailLift,
             plan.effectiveStrengths.eyeHeight,
             plan.effectiveStrengths.eyeLength,
-            plan.effectiveStrengths.upperEyelidLift,
             plan.effectiveStrengths.pupilSize,
-            plan.effectiveStrengths.gazeCorrection,
             plan.effectiveStrengths.lowerEyelidDrop,
             plan.effectiveStrengths.innerCornerOpen,
             plan.effectiveStrengths.outerCornerOpen,
-            plan.effectiveStrengths.eyeSymmetry,
-            plan.effectiveStrengths.eyebrowPeakDefinition,
-            plan.effectiveStrengths.smile,
-            plan.effectiveStrengths.lipPeakDefinition,
-            plan.effectiveStrengths.lipPlump,
-            plan.effectiveStrengths.lipColor,
-        ]
-        let signedStrengths: [Float] = [
             plan.effectiveStrengths.faceSlim,
             plan.effectiveStrengths.faceSmall,
             plan.effectiveStrengths.jawSlim,
@@ -315,6 +319,7 @@ package struct BeautyBackendRequest: @unchecked Sendable {
             plan.effectiveStrengths.eyebrowSpacing,
             plan.effectiveStrengths.eyebrowHeadSpacing,
             plan.effectiveStrengths.eyebrowTilt,
+            plan.effectiveStrengths.eyebrowPeakDefinition,
             plan.effectiveStrengths.noseTipSize,
             plan.effectiveStrengths.mouthSize,
             plan.effectiveStrengths.mouthWidth,

@@ -310,7 +310,6 @@ package final class BeautyMetalRuntime: @unchecked Sendable {
         uploadEncoderValue.endEncoding()
         uploadEncoder = nil
 
-        let threadGrid = MTLSize(width: width, height: height, depth: 1)
         var currentTexture = inputTexture
         var nextTexture = outputTexture
         for (index, pass) in passes.enumerated() {
@@ -368,7 +367,11 @@ package final class BeautyMetalRuntime: @unchecked Sendable {
             case .composedRetouch:
                 break
             }
-            computeEncoderValue.dispatchThreads(threadGrid, threadsPerThreadgroup: MTLSize(width: threadgroupWidth, height: 1, depth: 1))
+            // Uniform groups support older GPUs; the retained kernels guard padded edge threads.
+            computeEncoderValue.dispatchThreadgroups(
+                MTLSize(width: (width - 1) / threadgroupWidth + 1, height: height, depth: 1),
+                threadsPerThreadgroup: MTLSize(width: threadgroupWidth, height: 1, depth: 1)
+            )
             computeEncoderValue.endEncoding()
             computeEncoder = nil
             swap(&currentTexture, &nextTexture)
@@ -399,7 +402,10 @@ package final class BeautyMetalRuntime: @unchecked Sendable {
             encoder.setComputePipelineState(pipeline)
             encoder.setTexture(currentTexture, index: 0)
             encoder.setTexture(nextTexture, index: 1)
-            encoder.dispatchThreads(threadGrid, threadsPerThreadgroup: MTLSize(width: threadgroupWidth, height: 1, depth: 1))
+            encoder.dispatchThreadgroups(
+                MTLSize(width: (width - 1) / threadgroupWidth + 1, height: height, depth: 1),
+                threadsPerThreadgroup: MTLSize(width: threadgroupWidth, height: 1, depth: 1)
+            )
             encoder.endEncoding()
             computeEncoder = nil
             swap(&currentTexture, &nextTexture)

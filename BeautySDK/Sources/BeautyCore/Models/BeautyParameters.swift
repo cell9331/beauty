@@ -17,6 +17,8 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
     public var faceSmall: Float
     public var faceVShape: Float
     public var jawSlim: Float
+    /// Positive-only source-qualified local under-jaw shading; never moves pixels.
+    public var jawlineShadow: Float
     public var chinLength: Float
     public var faceContourSmooth: Float
     public var templeFullness: Float
@@ -124,6 +126,7 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
         case faceSmall
         case faceVShape
         case jawSlim
+        case jawlineShadow
         case chinLength
         case faceContourSmooth
         case templeFullness
@@ -204,6 +207,7 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
         faceSmall: Float = 0,
         faceVShape: Float = 0,
         jawSlim: Float = 0,
+        jawlineShadow: Float = 0,
         chinLength: Float = 0,
         faceContourSmooth: Float = 0,
         templeFullness: Float = 0,
@@ -284,25 +288,26 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
         self.faceSmall = Self.clampSigned(faceSmall)
         self.faceVShape = Self.clampUnit(faceVShape)
         self.jawSlim = Self.clampSigned(jawSlim)
+        self.jawlineShadow = Self.clampUnit(jawlineShadow)
         self.chinLength = Self.clampSigned(chinLength)
         self.faceContourSmooth = Self.clampUnit(faceContourSmooth)
         self.templeFullness = Self.clampSigned(templeFullness)
         self.cheekboneSlim = Self.clampSigned(cheekboneSlim)
         self.chinTaper = Self.clampSigned(chinTaper)
 
-        self.eyeSize = Self.clampUnit(eyeSize)
+        self.eyeSize = Self.clampSigned(eyeSize)
         self.eyeDistance = Self.clampSigned(eyeDistance)
         self.eyeYPosition = Self.clampSigned(eyeYPosition)
-        self.eyeTailLift = Self.clampUnit(eyeTailLift)
-        self.eyeHeight = Self.clampUnit(eyeHeight)
-        self.eyeLength = Self.clampUnit(eyeLength)
+        self.eyeTailLift = Self.clampSigned(eyeTailLift)
+        self.eyeHeight = Self.clampSigned(eyeHeight)
+        self.eyeLength = Self.clampSigned(eyeLength)
         self.upperEyelidLift = Self.clampUnit(upperEyelidLift)
-        self.pupilSize = Self.clampUnit(pupilSize)
+        self.pupilSize = Self.clampSigned(pupilSize)
         self.gazeCorrection = Self.clampUnit(gazeCorrection)
-        self.lowerEyelidDrop = Self.clampUnit(lowerEyelidDrop)
+        self.lowerEyelidDrop = Self.clampSigned(lowerEyelidDrop)
         self.eyeTilt = Self.clampSigned(eyeTilt)
-        self.innerCornerOpen = Self.clampUnit(innerCornerOpen)
-        self.outerCornerOpen = Self.clampUnit(outerCornerOpen)
+        self.innerCornerOpen = Self.clampSigned(innerCornerOpen)
+        self.outerCornerOpen = Self.clampSigned(outerCornerOpen)
         self.eyeSymmetry = Self.clampUnit(eyeSymmetry)
 
         self.eyebrowYPosition = Self.clampSigned(eyebrowYPosition)
@@ -311,7 +316,7 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
         self.eyebrowSpacing = Self.clampSigned(eyebrowSpacing)
         self.eyebrowHeadSpacing = Self.clampSigned(eyebrowHeadSpacing)
         self.eyebrowTilt = Self.clampSigned(eyebrowTilt)
-        self.eyebrowPeakDefinition = Self.clampUnit(eyebrowPeakDefinition)
+        self.eyebrowPeakDefinition = Self.clampSigned(eyebrowPeakDefinition)
 
         self.noseSlim = Self.clampSigned(noseSlim)
         self.noseWingSlim = Self.clampSigned(noseWingSlim)
@@ -322,12 +327,12 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
 
         self.mouthSize = Self.clampSigned(mouthSize)
         self.mouthWidth = Self.clampSigned(mouthWidth)
-        self.smile = Self.clampUnit(smile)
+        self.smile = Self.clampSigned(smile)
         self.mouthYPosition = Self.clampSigned(mouthYPosition)
         self.mouthTilt = Self.clampSigned(mouthTilt)
         self.mouthXPosition = Self.clampSigned(mouthXPosition)
-        self.lipPeakDefinition = Self.clampUnit(lipPeakDefinition)
-        self.lipPlump = Self.clampUnit(lipPlump)
+        self.lipPeakDefinition = Self.clampSigned(lipPeakDefinition)
+        self.lipPlump = Self.clampSigned(lipPlump)
         self.lipColor = Self.clampUnit(lipColor)
 
         self.filterId = filterId
@@ -371,6 +376,7 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
             faceSmall: try container.decodeFloatIfPresent(.faceSmall),
             faceVShape: try container.decodeFloatIfPresent(.faceVShape),
             jawSlim: try container.decodeFloatIfPresent(.jawSlim),
+            jawlineShadow: try container.decodeFloatIfPresent(.jawlineShadow),
             chinLength: try container.decodeFloatIfPresent(.chinLength),
             faceContourSmooth: try container.decodeFloatIfPresent(.faceContourSmooth),
             templeFullness: try container.decodeFloatIfPresent(.templeFullness),
@@ -453,6 +459,7 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
             faceSmall: faceSmall,
             faceVShape: faceVShape,
             jawSlim: jawSlim,
+            jawlineShadow: jawlineShadow,
             chinLength: chinLength,
             faceContourSmooth: faceContourSmooth,
             templeFullness: templeFullness,

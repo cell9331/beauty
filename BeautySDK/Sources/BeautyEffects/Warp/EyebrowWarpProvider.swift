@@ -10,6 +10,10 @@ struct EyebrowWarpFieldEmissions: Equatable, Sendable {
     let eyebrowTilt: [WarpControlPoint]
     let eyebrowPeakDefinition: [WarpControlPoint]
 
+    /// Continuous still-image admission is independent of legacy point count.
+    var continuousFieldMask: UInt8 = 0
+    var hasAdmittedWork: Bool { continuousFieldMask != 0 || !points.isEmpty }
+
     var points: [WarpControlPoint] {
         eyebrowYPosition + eyebrowThickness + eyebrowLength + eyebrowSpacing +
             eyebrowHeadSpacing + eyebrowTilt + eyebrowPeakDefinition
@@ -17,13 +21,13 @@ struct EyebrowWarpFieldEmissions: Equatable, Sendable {
 
     func sanitizing(_ strengths: BeautyEffectiveStrengths) -> BeautyEffectiveStrengths {
         var sanitized = strengths
-        if strengths.eyebrowYPosition != 0, eyebrowYPosition.isEmpty { sanitized.eyebrowYPosition = 0 }
-        if strengths.eyebrowThickness != 0, eyebrowThickness.isEmpty { sanitized.eyebrowThickness = 0 }
-        if strengths.eyebrowLength != 0, eyebrowLength.isEmpty { sanitized.eyebrowLength = 0 }
-        if strengths.eyebrowSpacing != 0, eyebrowSpacing.isEmpty { sanitized.eyebrowSpacing = 0 }
-        if strengths.eyebrowHeadSpacing != 0, eyebrowHeadSpacing.isEmpty { sanitized.eyebrowHeadSpacing = 0 }
-        if strengths.eyebrowTilt != 0, eyebrowTilt.isEmpty { sanitized.eyebrowTilt = 0 }
-        if strengths.eyebrowPeakDefinition != 0, eyebrowPeakDefinition.isEmpty { sanitized.eyebrowPeakDefinition = 0 }
+        if strengths.eyebrowYPosition != 0, eyebrowYPosition.isEmpty, continuousFieldMask & 1 == 0 { sanitized.eyebrowYPosition = 0 }
+        if strengths.eyebrowThickness != 0, eyebrowThickness.isEmpty, continuousFieldMask & 2 == 0 { sanitized.eyebrowThickness = 0 }
+        if strengths.eyebrowLength != 0, eyebrowLength.isEmpty, continuousFieldMask & 4 == 0 { sanitized.eyebrowLength = 0 }
+        if strengths.eyebrowSpacing != 0, eyebrowSpacing.isEmpty, continuousFieldMask & 8 == 0 { sanitized.eyebrowSpacing = 0 }
+        if strengths.eyebrowHeadSpacing != 0, eyebrowHeadSpacing.isEmpty, continuousFieldMask & 16 == 0 { sanitized.eyebrowHeadSpacing = 0 }
+        if strengths.eyebrowTilt != 0, eyebrowTilt.isEmpty, continuousFieldMask & 32 == 0 { sanitized.eyebrowTilt = 0 }
+        if strengths.eyebrowPeakDefinition != 0, eyebrowPeakDefinition.isEmpty, continuousFieldMask & 64 == 0 { sanitized.eyebrowPeakDefinition = 0 }
         return sanitized
     }
 }
@@ -31,6 +35,27 @@ struct EyebrowWarpFieldEmissions: Equatable, Sendable {
 struct EyebrowWarpProvider: WarpControlPointProvider {
     private let strengthDeadZone = Float.ulpOfOne
     private let geometryEpsilon: Float = 0.000_001
+
+    func planningEmissions(face: FaceGeometry, strengths: BeautyEffectiveStrengths,
+                           onProviderWorkStarted: (() -> Void)? = nil) -> EyebrowWarpFieldEmissions {
+        guard BeautyContinuousEyebrowMap.replacesLegacy(for: face) else {
+            return fieldEmissions(face: face, strengths: strengths,
+                                  onProviderWorkStarted: onProviderWorkStarted)
+        }
+        onProviderWorkStarted?()
+        var result = EyebrowWarpFieldEmissions(eyebrowYPosition: [], eyebrowThickness: [],
+            eyebrowLength: [], eyebrowSpacing: [], eyebrowHeadSpacing: [], eyebrowTilt: [],
+            eyebrowPeakDefinition: [])
+        let eligible = BeautyContinuousEyebrowMap.eligibleFieldMask(face: face)
+        for (index, key) in BeautyContinuousEyebrowMap.keys.enumerated() {
+            let value = strengths[keyPath: key], bit = UInt8(1 << index)
+            if value.isFinite, abs(value) > strengthDeadZone,
+               abs(value) <= BeautyContinuousEyebrowMap.caps[index], eligible & bit != 0 {
+                result.continuousFieldMask |= bit
+            }
+        }
+        return result
+    }
 
     func makeControlPoints(face: FaceGeometry, strengths: BeautyEffectiveStrengths) -> WarpControlPointResult {
         let emissions = fieldEmissions(face: face, strengths: strengths)
@@ -72,9 +97,7 @@ struct EyebrowWarpProvider: WarpControlPointProvider {
                 ? traces.flatMap { headSpacingPoints(trace: $0, face: face, strength: strengths.eyebrowHeadSpacing, maximum: headSpacingCap) } : [],
             eyebrowTilt: isSignedWork(strengths.eyebrowTilt, maximum: tiltCap)
                 ? traces.flatMap { tiltPoints(trace: $0, face: face, strength: strengths.eyebrowTilt, maximum: tiltCap) } : [],
-            eyebrowPeakDefinition: strengths.eyebrowPeakDefinition.isFinite &&
-                strengths.eyebrowPeakDefinition > strengthDeadZone &&
-                strengths.eyebrowPeakDefinition <= peakDefinitionCap
+            eyebrowPeakDefinition: isSignedWork(strengths.eyebrowPeakDefinition, maximum: peakDefinitionCap)
                 ? traces.flatMap { peakPoints(trace: $0, face: face, strength: strengths.eyebrowPeakDefinition, maximum: peakDefinitionCap) } : []
         )
     }
@@ -315,7 +338,7 @@ struct EyebrowWarpProvider: WarpControlPointProvider {
         strength: Float,
         maximum: Float
     ) -> [WarpControlPoint] {
-        guard validFace(face), validTrace(trace), strength <= maximum,
+        guard validFace(face), validTrace(trace), abs(strength) <= maximum,
               let apexIndex = trace.apexIndex,
               apexIndex > trace.points.startIndex,
               apexIndex < trace.points.index(before: trace.points.endIndex),
@@ -326,14 +349,14 @@ struct EyebrowWarpProvider: WarpControlPointProvider {
         let projection = trace.innerEndpoint + chordAxis * dot(fromInner, chordAxis)
         guard let normal = normalized(apex - projection) else { return [] }
         let displacement = face.bounds.height * 0.012 * strength / maximum
-        guard displacement.isFinite, displacement > 0 else { return [] }
+        guard displacement.isFinite, displacement != 0 else { return [] }
         let indices = [apexIndex - 1, apexIndex, apexIndex + 1]
         let weights: [Float] = [0.5, 1, 0.5]
         let sources = indices.map { trace.points[$0] }
         let targets = zip(sources, weights).map { $0.0 + normal * displacement * $0.1 }
         return makePoints(
             sources: sources, targets: targets, radius: face.bounds.width * 0.055,
-            strength: strength, maximumStrength: maximum
+            strength: abs(strength), maximumStrength: maximum
         )
     }
 

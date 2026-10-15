@@ -35,6 +35,7 @@ public enum BeautyEffectResolver {
             normalized.doubleChinReductionPro,
             normalized.faceVShape,
             normalized.jawSlim,
+            normalized.jawlineShadow,
             normalized.chinLength,
             normalized.faceContourSmooth,
             normalized.templeFullness,
@@ -236,6 +237,7 @@ public enum BeautyEffectResolver {
         )
         strengths.faceVShape = capUnit(normalized.faceVShape, cap: BeautySafetyCaps.faceVShape, cappedCount: &cappedCount)
         strengths.jawSlim = capSigned(normalized.jawSlim, cap: BeautySafetyCaps.jawSlim, cappedCount: &cappedCount)
+        strengths.jawlineShadow = capUnit(normalized.jawlineShadow, cap: BeautySafetyCaps.jawlineShadow, cappedCount: &cappedCount)
         strengths.chinLength = capSigned(normalized.chinLength, cap: BeautySafetyCaps.chinLength, cappedCount: &cappedCount)
         strengths.faceContourSmooth = capUnit(
             normalized.faceContourSmooth,
@@ -258,19 +260,19 @@ public enum BeautyEffectResolver {
             cappedCount: &cappedCount
         )
 
-        strengths.eyeSize = capUnit(normalized.eyeSize, cap: BeautySafetyCaps.eyeSize, cappedCount: &cappedCount)
+        strengths.eyeSize = capSigned(normalized.eyeSize, cap: BeautySafetyCaps.eyeSize, cappedCount: &cappedCount)
         strengths.eyeDistance = capSigned(normalized.eyeDistance, cap: BeautySafetyCaps.eyeDistance, cappedCount: &cappedCount)
         strengths.eyeYPosition = capSigned(normalized.eyeYPosition, cap: BeautySafetyCaps.eyeYPosition, cappedCount: &cappedCount)
-        strengths.eyeTailLift = capUnit(normalized.eyeTailLift, cap: BeautySafetyCaps.eyeTailLift, cappedCount: &cappedCount)
-        strengths.eyeHeight = capUnit(normalized.eyeHeight, cap: BeautySafetyCaps.eyeHeight, cappedCount: &cappedCount)
-        strengths.eyeLength = capUnit(normalized.eyeLength, cap: BeautySafetyCaps.eyeLength, cappedCount: &cappedCount)
+        strengths.eyeTailLift = capSigned(normalized.eyeTailLift, cap: BeautySafetyCaps.eyeTailLift, cappedCount: &cappedCount)
+        strengths.eyeHeight = capSigned(normalized.eyeHeight, cap: BeautySafetyCaps.eyeHeight, cappedCount: &cappedCount)
+        strengths.eyeLength = capSigned(normalized.eyeLength, cap: BeautySafetyCaps.eyeLength, cappedCount: &cappedCount)
         strengths.upperEyelidLift = capUnit(normalized.upperEyelidLift, cap: BeautySafetyCaps.upperEyelidLift, cappedCount: &cappedCount)
-        strengths.pupilSize = capUnit(normalized.pupilSize, cap: BeautySafetyCaps.pupilSize, cappedCount: &cappedCount)
+        strengths.pupilSize = capSigned(normalized.pupilSize, cap: BeautySafetyCaps.pupilSize, cappedCount: &cappedCount)
         strengths.gazeCorrection = capUnit(normalized.gazeCorrection, cap: BeautySafetyCaps.gazeCorrection, cappedCount: &cappedCount)
-        strengths.lowerEyelidDrop = capUnit(normalized.lowerEyelidDrop, cap: BeautySafetyCaps.lowerEyelidDrop, cappedCount: &cappedCount)
+        strengths.lowerEyelidDrop = capSigned(normalized.lowerEyelidDrop, cap: BeautySafetyCaps.lowerEyelidDrop, cappedCount: &cappedCount)
         strengths.eyeTilt = capSigned(normalized.eyeTilt, cap: BeautySafetyCaps.eyeTilt, cappedCount: &cappedCount)
-        strengths.innerCornerOpen = capUnit(normalized.innerCornerOpen, cap: BeautySafetyCaps.innerCornerOpen, cappedCount: &cappedCount)
-        strengths.outerCornerOpen = capUnit(normalized.outerCornerOpen, cap: BeautySafetyCaps.outerCornerOpen, cappedCount: &cappedCount)
+        strengths.innerCornerOpen = capSigned(normalized.innerCornerOpen, cap: BeautySafetyCaps.innerCornerOpen, cappedCount: &cappedCount)
+        strengths.outerCornerOpen = capSigned(normalized.outerCornerOpen, cap: BeautySafetyCaps.outerCornerOpen, cappedCount: &cappedCount)
         strengths.eyeSymmetry = capUnit(normalized.eyeSymmetry, cap: BeautySafetyCaps.eyeSymmetry, cappedCount: &cappedCount)
         let hasRequestedEyeValues = anyNonZero(
             strengths.eyeSize,
@@ -295,7 +297,7 @@ public enum BeautyEffectResolver {
         strengths.eyebrowSpacing = capSigned(normalized.eyebrowSpacing, cap: BeautySafetyCaps.eyebrowSpacing, cappedCount: &cappedCount)
         strengths.eyebrowHeadSpacing = capSigned(normalized.eyebrowHeadSpacing, cap: BeautySafetyCaps.eyebrowHeadSpacing, cappedCount: &cappedCount)
         strengths.eyebrowTilt = capSigned(normalized.eyebrowTilt, cap: BeautySafetyCaps.eyebrowTilt, cappedCount: &cappedCount)
-        strengths.eyebrowPeakDefinition = capUnit(normalized.eyebrowPeakDefinition, cap: BeautySafetyCaps.eyebrowPeakDefinition, cappedCount: &cappedCount)
+        strengths.eyebrowPeakDefinition = capSigned(normalized.eyebrowPeakDefinition, cap: BeautySafetyCaps.eyebrowPeakDefinition, cappedCount: &cappedCount)
         let hasRequestedEyebrowValues = anyNonZero(
             strengths.eyebrowYPosition,
             strengths.eyebrowThickness,
@@ -315,12 +317,12 @@ public enum BeautyEffectResolver {
 
         strengths.mouthSize = capSigned(normalized.mouthSize, cap: BeautySafetyCaps.mouthSize, cappedCount: &cappedCount)
         strengths.mouthWidth = capSigned(normalized.mouthWidth, cap: BeautySafetyCaps.mouthWidth, cappedCount: &cappedCount)
-        strengths.smile = capUnit(normalized.smile, cap: BeautySafetyCaps.smile, cappedCount: &cappedCount)
+        strengths.smile = capSigned(normalized.smile, cap: BeautySafetyCaps.smile, cappedCount: &cappedCount)
         strengths.mouthYPosition = capSigned(normalized.mouthYPosition, cap: BeautySafetyCaps.mouthYPosition, cappedCount: &cappedCount)
         strengths.mouthTilt = capSigned(normalized.mouthTilt, cap: BeautySafetyCaps.mouthTilt, cappedCount: &cappedCount)
         strengths.mouthXPosition = capSigned(normalized.mouthXPosition, cap: BeautySafetyCaps.mouthXPosition, cappedCount: &cappedCount)
-        strengths.lipPeakDefinition = capUnit(normalized.lipPeakDefinition, cap: BeautySafetyCaps.lipPeakDefinition, cappedCount: &cappedCount)
-        strengths.lipPlump = capUnit(normalized.lipPlump, cap: BeautySafetyCaps.lipPlump, cappedCount: &cappedCount)
+        strengths.lipPeakDefinition = capSigned(normalized.lipPeakDefinition, cap: BeautySafetyCaps.lipPeakDefinition, cappedCount: &cappedCount)
+        strengths.lipPlump = capSigned(normalized.lipPlump, cap: BeautySafetyCaps.lipPlump, cappedCount: &cappedCount)
         strengths.lipColor = capUnit(normalized.lipColor, cap: BeautySafetyCaps.lipColor, cappedCount: &cappedCount)
 
         onProviderResolutionStarted?()
@@ -476,17 +478,17 @@ public enum BeautyEffectResolver {
                 .fieldEmissions(face: faceGeometry, strengths: strengths)
                 .sanitizing(strengths)
             strengths = eyebrowProvider
-                .fieldEmissions(
+                .planningEmissions(
                     face: faceGeometry,
                     strengths: strengths,
                     onProviderWorkStarted: onProviderWorkStarted
                 )
                 .sanitizing(strengths)
             strengths = noseProvider
-                .fieldEmissions(face: faceGeometry, strengths: strengths)
+                .planningEmissions(face: faceGeometry, strengths: strengths)
                 .sanitizing(strengths)
             strengths = mouthProvider
-                .fieldEmissions(face: faceGeometry, strengths: strengths)
+                .planningEmissions(face: faceGeometry, strengths: strengths)
                 .sanitizing(strengths)
         }
 
@@ -585,13 +587,13 @@ public enum BeautyEffectResolver {
             eyeProvider.fieldEmissions(face: $0, strengths: strengths)
         }
         let finalEyebrowEmissions = staleGeometry ? nil : faceGeometry.map {
-            eyebrowProvider.fieldEmissions(face: $0, strengths: strengths)
+            eyebrowProvider.planningEmissions(face: $0, strengths: strengths)
         }
         let finalNoseEmissions = staleGeometry ? nil : faceGeometry.map {
-            noseProvider.fieldEmissions(face: $0, strengths: strengths)
+            noseProvider.planningEmissions(face: $0, strengths: strengths)
         }
         let finalMouthEmissions = staleGeometry ? nil : faceGeometry.map {
-            mouthProvider.fieldEmissions(face: $0, strengths: strengths)
+            mouthProvider.planningEmissions(face: $0, strengths: strengths)
         }
 
         // The gaze aggregate is deliberately derived only after provider
@@ -680,7 +682,7 @@ public enum BeautyEffectResolver {
         }
         if hasRequestedEyebrowValues {
             let points = finalEyebrowEmissions?.points ?? []
-            if points.isEmpty {
+            if finalEyebrowEmissions?.hasAdmittedWork != true {
                 Self.zeroEyebrowStrengths(&strengths)
                 skippedDomains.insert(.eyebrows)
                 metrics["beauty.effects.skippedEyebrowDomains"] = 1
@@ -688,6 +690,9 @@ public enum BeautyEffectResolver {
             } else {
                 activeDomains.insert(.eyebrows)
                 geometryPointCount += points.count
+                if let mask = finalEyebrowEmissions?.continuousFieldMask, mask != 0 {
+                    metrics["beauty.effects.continuousEyebrowFields"] = Double(mask.nonzeroBitCount)
+                }
             }
         }
         if hadRequestedNoseValues {
@@ -698,7 +703,7 @@ public enum BeautyEffectResolver {
                 appendStaleGeometryWarningIfNeeded()
             } else if faceGeometry != nil {
                 let points = finalNoseEmissions?.points ?? []
-                if points.isEmpty {
+                if finalNoseEmissions?.hasAdmittedWork != true {
                     Self.zeroNoseStrengths(&strengths)
                     skippedDomains.insert(.nose)
                     metrics["beauty.effects.skippedNoseDomains"] = 1
@@ -726,7 +731,7 @@ public enum BeautyEffectResolver {
                 appendStaleGeometryWarningIfNeeded()
             } else if faceGeometry != nil {
                 let points = finalMouthEmissions?.points ?? []
-                if points.isEmpty {
+                if finalMouthEmissions?.hasAdmittedWork != true {
                     Self.zeroMouthGeometryStrengths(&strengths)
                     skippedDomains.insert(.mouth)
                     metrics["beauty.effects.skippedMouthDomains"] = 1
@@ -761,9 +766,25 @@ public enum BeautyEffectResolver {
             }
         }
 
+        // This local colour intent is independent of geometric point work.
+        // RGB admission happens later, over immutable canonical source pixels.
+        if normalized.jawlineShadow > 0 {
+            if let faceGeometry, BeautyJawlineShadow.hasGeometrySupport(faceGeometry),
+               BeautyJawlineShadow.hasIndependentSourceRequest(normalized),
+               BeautyJawlineShadow.hasIndependentSourceCoordinates(strengths) {
+                activeDomains.insert(.jawlineShadow)
+                metrics["beauty.effects.jawlineShadow.sourceQualificationDeferred"] = 1
+            } else {
+                strengths.jawlineShadow = 0
+                skippedDomains.insert(.jawlineShadow)
+                extraWarnings.append(BeautyValidationWarning(code: "jawline_shadow_source_scope_unavailable",
+                    message: "Jawline shading requires fresh complete support and an independent source-coordinate scope."))
+            }
+        }
+
         if noUsableFace {
             let skippedFaceDependentCount = skippedDomains
-                .intersection([.skin, .faceShape, .eyes, .eyebrows, .nose, .mouth, .lipColor])
+                .intersection([.skin, .faceShape, .eyes, .eyebrows, .nose, .mouth, .lipColor, .jawlineShadow])
                 .count
             if skippedFaceDependentCount > 0 {
                 metrics["beauty.effects.skippedFaceDomains"] = Double(skippedFaceDependentCount)
@@ -898,13 +919,13 @@ public enum BeautyEffectResolver {
                 .fieldEmissions(face: faceGeometry, strengths: resolution.strengths)
                 .sanitizing(nextBaseline)
             nextBaseline = eyebrowProvider
-                .fieldEmissions(face: faceGeometry, strengths: resolution.strengths)
+                .planningEmissions(face: faceGeometry, strengths: resolution.strengths)
                 .sanitizing(nextBaseline)
             nextBaseline = noseProvider
-                .fieldEmissions(face: faceGeometry, strengths: resolution.strengths)
+                .planningEmissions(face: faceGeometry, strengths: resolution.strengths)
                 .sanitizing(nextBaseline)
             nextBaseline = mouthProvider
-                .fieldEmissions(face: faceGeometry, strengths: resolution.strengths)
+                .planningEmissions(face: faceGeometry, strengths: resolution.strengths)
                 .sanitizing(nextBaseline)
             if let onRetainedMaskIteration {
                 let priorNames = Set(Self.retainedGeometryFieldNames(in: retainedBaseline))

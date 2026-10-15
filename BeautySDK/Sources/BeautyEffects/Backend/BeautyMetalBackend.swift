@@ -179,9 +179,29 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
             faceBounds: selectedFaceSupport?.imageBounds,
             exclusionMask: textureExclusionMask, denseSupport: face?.denseSupport
         )
+        // Brow material belongs to the immutable, color-composed source. Use
+        // the selected runtime's own color result so byte-exact ownership can
+        // distinguish sibling geometry from permitted color composition.
+        var eyebrowSourceRGBA: [UInt8]?
+        if let face, BeautyContinuousEyebrowMap.replacesLegacy(for: face),
+           BeautyContinuousEyebrowMap.keys.contains(where: {
+               plan.effectiveStrengths[keyPath: $0] != 0
+           }) {
+            let colorPasses = try makePasses(
+                plan: plan, face: face, compositionSummary: compositionSummary,
+                hasCPUComposedCarrier: canonicalImage != nil, inputKind: .stillImage,
+                preparedGeometryPoints: [], suppressDenseGeometry: true
+            )
+            if !colorPasses.isEmpty {
+                eyebrowSourceRGBA = try invokeRuntime(
+                    width: dimensions.width, height: dimensions.height,
+                    bytes: texturedBytes, passes: colorPasses
+                )
+            }
+        }
         let stage = BeautyStillImageGeometryStage(
             sourceRGBA: texturedBytes, width: dimensions.width, height: dimensions.height,
-            plan: plan, face: face
+            plan: plan, face: face, eyebrowSourceRGBA: eyebrowSourceRGBA
         )
         let renderedBytes = try invokeRuntime(
             width: dimensions.width, height: dimensions.height,
@@ -194,7 +214,10 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
             )
         )
         let geometrizedBytes = stage.applyingDenseMap(to: renderedBytes)
-        let translatedBytes = stage.applyingTranslation(to: stage.applyingContinuousContour(to: geometrizedBytes))
+        let nasalBytes = stage.applyingContinuousNose(to: geometrizedBytes)
+        let mouthBytes = stage.applyingContinuousMouth(to: nasalBytes)
+        let eyebrowBytes = stage.applyingContinuousEyebrows(to: mouthBytes)
+        let translatedBytes = stage.applyingTranslation(to: stage.applyingContinuousContour(to: eyebrowBytes))
         guard let colorSpace = CGColorSpace(name: CGColorSpace.sRGB) else {
             throw BeautyError.unsupportedPixelFormat
         }

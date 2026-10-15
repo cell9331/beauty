@@ -36,13 +36,13 @@ for token in (
         raise SystemExit(f"taxonomy is missing boundary token: {token}")
 
 source_fields = re.findall(r"^\s*public var ([A-Za-z][A-Za-z0-9]*):", source, re.MULTILINE)
-if len(source_fields) != 77 or len(set(source_fields)) != 77:
-    raise SystemExit(f"expected exact 77-field BeautyParameters source, found {len(source_fields)}")
+if len(source_fields) != 78 or len(set(source_fields)) != 78:
+    raise SystemExit(f"expected exact 78-field BeautyParameters source, found {len(source_fields)}")
 inventory = taxonomy.split("<!-- SDK_PARAMETER_INVENTORY_BEGIN -->", 1)[1].split(
     "<!-- SDK_PARAMETER_INVENTORY_END -->", 1
 )[0]
 documented_fields = re.findall(r"`([A-Za-z][A-Za-z0-9]*)`", inventory)
-if set(documented_fields) != set(source_fields) or len(documented_fields) != 77:
+if set(documented_fields) != set(source_fields) or len(documented_fields) != 78:
     missing = sorted(set(source_fields) - set(documented_fields))
     extra = sorted(set(documented_fields) - set(source_fields))
     raise SystemExit(
@@ -63,7 +63,7 @@ expected = [
     ("脸型", "下巴长短", "implemented", "chinLength"),
     ("脸型", "去双下巴", "implemented", "doubleChinReduction"), ("脸型", "去双下巴 Pro", "implemented", "doubleChinReductionPro"),
     ("脸型", "尖下巴", "implemented", "chinTaper"), ("脸型", "V脸", "implemented", "faceVShape"),
-    ("脸型", "下颌角", "implemented", "jawSlim"), ("脸型", "下颌线", "implemented", "jawSlim"),
+    ("脸型", "下颌角", "implemented", "jawSlim"), ("脸型", "下颌线", "partial", "jawlineShadow"),
     ("脸型", "发际线", "implemented", "hairlineHeight"),
     ("眼睛", "大小", "implemented", "eyeSize"), ("眼睛", "上下", "implemented", "eyeYPosition"),
     ("眼睛", "眼高", "implemented", "eyeHeight"), ("眼睛", "长度", "implemented", "eyeLength"),
@@ -617,6 +617,31 @@ audited_test_backend_hashes[
 audited_test_backend_hashes[
     "BeautySDK/Tests/BeautyCoreTests/BeautyEngineFaceSliderTests.swift"
 ] = "423afd2b347664774e78fa3dde7ff6fe671b183e8943c3d217a50bdadca28846"
+# Eye slider pixels exercise only retained backend selection and executors.
+# This reviewed revision is admitted exactly; mutation still rejects API drift.
+audited_test_backend_hashes[
+    "BeautySDK/Tests/BeautyCoreTests/BeautyEngineEyeSliderTests.swift"
+] = "6c50c089fd63fd2b8cf6fc918b062db059dd764ac5596d6b7b8e2f815f91f0a5"
+# The explicit CPU iris-preview facade rejects the retained GPU selection
+# before execution. Admit only these inspected regression bytes.
+audited_test_backend_hashes[
+    "BeautySDK/Tests/BeautyCoreTests/BeautyEngineIrisPreviewTests.swift"
+] = "f0dd1c0f8e1c146e17b00250691cbabbe7b3379781b08e0d4c0d72dc1fa76822"
+# Mouth pixel parity uses the retained CPU/Metal settings and runtime only.
+# Admit this reviewed test revision; the mutation below rejects GPU API drift.
+audited_test_backend_hashes[
+    "BeautySDK/Tests/BeautyCoreTests/BeautyEngineMouthReferenceTests.swift"
+] = "4632668c8827b247890a9da3f7a8aac06cef94accb2ecc82ae9f40d1d531af2e"
+# Eyebrow material parity uses only retained CPU/Metal selection and runtime.
+# Bind the inspected test bytes; changed tests and new GPU declarations reject.
+audited_test_backend_hashes[
+    "BeautySDK/Tests/BeautyCoreTests/BeautyEngineEyebrowContinuousTests.swift"
+] = "7be9c664aa6e19f9d396ed799f6e61744b789f92fedb8f384e44ce00fd9d159c"
+# Independent jaw-shadow photo parity calls only the retained backend selector.
+# Bind these inspected test bytes; no new production GPU API is admitted.
+audited_test_backend_hashes[
+    "BeautySDK/Tests/BeautyCoreTests/BeautyEngineJawlineShadowPhotoPolicyTests.swift"
+] = "eac0ebb0b7b7562af412b0ac9fe2845f3dc1d5330de943b46fc94d942dc89bf5"
 for base in (root / "BeautySDK/Sources", root / "BeautySDK/Tests"):
     if not base.exists():
         continue
@@ -867,7 +892,7 @@ PY
     printf '%s\n' 'enum BeautyRenderBackend { case gpu }' > "$fixture/BeautySDK/Sources/Backend.swift"
     expect_failure validate_post_archive "$fixture"
     rm "$fixture/BeautySDK/Sources/Backend.swift"
-    for cpu_test in BeautyEngineMouthNegativeTests BeautyEngineMouthLifecycleTests RepairedControlSafetyTests BeautyUpperEyelidLiveVisionTests BeautySkinTextureHostProtectionTests BeautyPreparedStillImageTests BeautyEngineFaceSliderTests; do
+    for cpu_test in BeautyEngineMouthNegativeTests BeautyEngineMouthLifecycleTests RepairedControlSafetyTests BeautyUpperEyelidLiveVisionTests BeautySkinTextureHostProtectionTests BeautyPreparedStillImageTests BeautyEngineFaceSliderTests BeautyEngineEyeSliderTests BeautyEngineIrisPreviewTests BeautyEngineMouthReferenceTests BeautyEngineEyebrowContinuousTests; do
         cp "$PROJECT_ROOT/BeautySDK/Tests/BeautyCoreTests/$cpu_test.swift" \
             "$fixture/BeautySDK/Tests/BeautyCoreTests/$cpu_test.swift"
         validate_post_archive "$fixture" >/dev/null

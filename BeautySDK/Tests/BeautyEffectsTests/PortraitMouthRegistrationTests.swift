@@ -108,7 +108,7 @@ final class PortraitMouthRegistrationTests: XCTestCase {
         }, "Unused shares must be available to narrower eligible supports")
     }
 
-    func testActualPixelsChangeOnlyAroundObservedCornersWithRepeatAndNeutralIdentity() throws {
+    func testLegacyPointPixelsChangeOnlyAroundObservedCornersWhileDefaultMissingSupportAbstains() throws {
         let size = 256
         let color = try XCTUnwrap(CGColorSpace(name: CGColorSpace.sRGB))
         var source = [UInt8](repeating: 255, count: size * size * 4)
@@ -120,14 +120,28 @@ final class PortraitMouthRegistrationTests: XCTestCase {
         let image = CIImage(bitmapData: Data(source), bytesPerRow: size * 4,
                             size: CGSize(width: size, height: size), format: .RGBA8, colorSpace: color)
         let face = geometry(lips)
+        // This partial observation registers the retained negative-width point
+        // field, but lacks the eye/nose support required by the continuous
+        // public route. Current default rendering must not revive old points.
+        let defaultPlan = BeautyEffectResolver.resolve(parameters: .init(mouthWidth: -0.35), faceGeometry: face)
+        XCTAssertEqual(defaultPlan.effectiveStrengths.mouthWidth, 0)
+        XCTAssertTrue(defaultPlan.skippedDomains.contains(.mouth))
+        let defaultOutput = BeautyGeometryEffectPipeline.applyMVPProxy(to: image, plan: defaultPlan, face: face)
+        var defaultBytes = [UInt8](repeating: 0, count: source.count)
+        CIContext(options: [.workingColorSpace: color, .outputColorSpace: color]).render(
+            defaultOutput, toBitmap: &defaultBytes, rowBytes: size * 4, bounds: image.extent,
+            format: .RGBA8, colorSpace: color)
+        XCTAssertEqual(defaultBytes, source)
+
+        // Exercise the exact retained point sampler explicitly. The unchanged
+        // localization thresholds below qualify this legacy field only; they
+        // are not a second admission path for an incomplete observation.
         func render(_ amount: Float) -> [UInt8] {
-            let plan = BeautyEffectResolver.resolve(parameters: .init(mouthWidth: amount), faceGeometry: face)
-            let output = BeautyGeometryEffectPipeline.applyMVPProxy(to: image, plan: plan, face: face)
-            var bytes = [UInt8](repeating: 0, count: source.count)
-            CIContext(options: [.workingColorSpace: color, .outputColorSpace: color]).render(
-                output, toBitmap: &bytes, rowBytes: size * 4, bounds: image.extent,
-                format: .RGBA8, colorSpace: color)
-            return bytes
+            var strengths = BeautyEffectiveStrengths(); strengths.mouthWidth = amount
+            let points = MouthWarpProvider().fieldEmissions(face: face, strengths: strengths).mouthWidth
+            XCTAssertEqual(points.count, amount == 0 ? 0 : 2)
+            return BeautyGeometryEffectPipeline.warpedRGBABytes(source, width: size, height: size,
+                points: points.compactMap(BeautyGeometryEffectPipeline.RenderableWarpPoint.init))
         }
         let neutral = render(0), output = render(-0.35)
         XCTAssertEqual(neutral, source)
