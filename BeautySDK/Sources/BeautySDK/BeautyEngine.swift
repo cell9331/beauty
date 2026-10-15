@@ -24,6 +24,7 @@ public final class BeautyEngine {
         return canonicalizer
     }()
     private var resetGeneration: UInt64 = 0
+    private var preparedStillImage: BeautyPreparedStillImageState?
 
     public init(configuration: BeautyConfiguration = .default) throws {
         let selection = try BeautyBackendFactory.select(configuration: configuration)
@@ -224,6 +225,65 @@ public final class BeautyEngine {
         )
     }
 
+    /// Deep-copies one RGB8 photo for repeated parameter snapshots. Only one
+    /// source is retained; successful replacement invalidates the prior handle.
+    /// Detection is lazy, purpose-aware and reused only for this fixed source.
+    public func prepareStillImage(
+        image: CGImage,
+        metadata: BeautyInputMetadata = BeautyInputMetadata(orientation: .up, source: .photo)
+    ) throws -> BeautyPreparedStillImage {
+        let prepared = try BeautyPreparedStillImageState(image: image, metadata: metadata,
+            maximumPixelCount: configuration.maximumInputPixelCount)
+        faceDetector.resetTracking()
+        preparedStillImage = prepared
+        return prepared.handle
+    }
+
+    /// Renders from the prepared original, never a previous edited output.
+    /// An expired/reset/foreign handle throws `invalidInput` before inference.
+    /// Exclusion masks and all parameter-dependent work remain per invocation.
+    public func processResult(
+        preparedImage: BeautyPreparedStillImage,
+        parameters: BeautyParameters,
+        textureExclusionMask: BeautyTextureExclusionMask? = nil
+    ) throws -> BeautyResult<CIImage> {
+        guard let prepared = preparedStillImage,
+              prepared.handle.identifier == preparedImage.identifier else { throw BeautyError.invalidInput }
+        return try processStillImageResult(image: prepared.image, metadata: prepared.metadata,
+            parameters: parameters, frameIndex: nil, textureExclusionMask: textureExclusionMask,
+            preparedSource: prepared)
+    }
+
+    /// Creates an owner preview from the prepared original with CPU rendering.
+    /// Iris resampling and its protection decisions precede thumbnail creation;
+    /// the remaining geometry runs once on the resulting preview raster.
+    /// The handle remains bound to the original, and masks use its canonical grid.
+    public func processIrisPreviewResult(
+        preparedImage: BeautyPreparedStillImage,
+        maximumPreviewEdge: Int = 960,
+        parameters: BeautyParameters,
+        textureExclusionMask: BeautyTextureExclusionMask? = nil
+    ) throws -> BeautyResult<CIImage> {
+        guard backendPolicy == .cpu,
+              (1...960).contains(maximumPreviewEdge),
+              let prepared = preparedStillImage,
+              prepared.handle.identifier == preparedImage.identifier else {
+            throw BeautyError.invalidInput
+        }
+        return try processStillImageResult(
+            image: prepared.image, metadata: prepared.metadata,
+            parameters: parameters, frameIndex: nil,
+            textureExclusionMask: textureExclusionMask, preparedSource: prepared,
+            irisPreviewMaximumEdge: maximumPreviewEdge
+        )
+    }
+
+    /// Releases the prepared source and its observations without resetting
+    /// unrelated detector/testing state. The prior handle immediately expires.
+    public func releasePreparedStillImage() {
+        preparedStillImage = nil
+    }
+
     /// Processes one explicitly indexed camera/video image. Frames that are
     /// not scheduled for detection fail closed for face-dependent effects;
     /// no prior face support is reused across frames.
@@ -248,7 +308,9 @@ public final class BeautyEngine {
         metadata: BeautyInputMetadata,
         parameters: BeautyParameters,
         frameIndex: Int?,
-        textureExclusionMask: BeautyTextureExclusionMask? = nil
+        textureExclusionMask: BeautyTextureExclusionMask? = nil,
+        preparedSource: BeautyPreparedStillImageState? = nil,
+        irisPreviewMaximumEdge: Int? = nil
     ) throws -> BeautyResult<CIImage> {
         let performanceStart = configuration.enablePerformanceLog
             ? DispatchTime.now().uptimeNanoseconds : nil
@@ -280,12 +342,14 @@ public final class BeautyEngine {
             } ?? productionAdmission
             : productionAdmission
 
-        guard admission.isEmpty == false || textureExclusionMask != nil else {
+        guard admission.isEmpty == false || textureExclusionMask != nil ||
+                irisPreviewMaximumEdge != nil else {
             return try withConfiguredResultMetadata(legacyStillImageResult(
                 image: image,
                 metadata: metadata,
                 parameters: validated,
-                skipDetectionForInterval: skipsDetection(frameIndex)
+                skipDetectionForInterval: skipsDetection(frameIndex),
+                preparedSource: preparedSource
             ), since: performanceStart)
         }
 
@@ -310,8 +374,9 @@ public final class BeautyEngine {
             metadata: canonical.metadata,
             imageExtent: CGSize(width: canonical.width, height: canonical.height),
             parameters: validated,
-            requiresLocalSupport: true,
-            skipDetectionForInterval: skipsDetection(frameIndex)
+            requiresLocalSupport: irisPreviewMaximumEdge == nil || !admission.isEmpty,
+            skipDetectionForInterval: skipsDetection(frameIndex),
+            preparedSource: preparedSource, canonicalDetection: true
         )
 
         if localRetouchTestingHooks?.consumeMalformedRequest() == true {
@@ -404,6 +469,26 @@ public final class BeautyEngine {
         }
 
         localRetouchTestingHooks?.record(.render)
+        if let irisPreviewMaximumEdge {
+            let preview = try BeautyIrisPreviewCutpoint.execute(
+                original: renderCarrier, plan: route.plan,
+                renderQuality: configuration.renderQuality,
+                selectedFaceObservation: requestContext.selectedFaceObservation,
+                maximumPreviewEdge: irisPreviewMaximumEdge,
+                textureExclusionMask: textureExclusionMask
+            )
+            var previewMetrics = route.plan.metrics
+            previewMetrics.merge(preview.metrics) { _, actual in actual }
+            if let sRGB = CGColorSpace(name: CGColorSpace.sRGB) {
+                localRetouchTestingHooks?.recordCanonicalRasterize(
+                    carrier: renderCarrier, colorSpace: sRGB
+                )
+            }
+            return withConfiguredResultMetadata(BeautyResult(
+                output: preview.output, warnings: route.plan.warnings,
+                metrics: previewMetrics, detectionSummary: route.detectionSummary
+            ), since: performanceStart)
+        }
         let request = try BeautyBackendRequest(
             policy: backendPolicy,
             input: .stillImage(renderCarrier.ciImage),
@@ -497,14 +582,16 @@ public final class BeautyEngine {
         image: CIImage,
         metadata: BeautyInputMetadata,
         parameters: BeautyParameters,
-        skipDetectionForInterval: Bool = false
+        skipDetectionForInterval: Bool = false,
+        preparedSource: BeautyPreparedStillImageState? = nil
     ) throws -> BeautyResult<CIImage> {
         let route = resolveStillImageGeometry(
             image: image,
             metadata: metadata,
             imageExtent: image.extent.size,
             parameters: parameters,
-            skipDetectionForInterval: skipDetectionForInterval
+            skipDetectionForInterval: skipDetectionForInterval,
+            preparedSource: preparedSource
         )
         localRetouchTestingHooks?.record(.render)
         let request = try BeautyBackendRequest(
@@ -543,6 +630,7 @@ public final class BeautyEngine {
     }
 
     public func reset() {
+        preparedStillImage = nil
         localRetouchTestingHooks?.resetLocalRetouchObservations()
         resetGeneration &+= 1
         faceDetector.resetTracking()

@@ -85,3 +85,5 @@ The duplicate import and isolated unexecuted Core ML proposal were removed in
 Historical UI/Demo contents are available only from
 [verified archives](../archives/legacy-ui/README.md), restored into a fresh
 outside-repository temporary directory. They are not build or acceptance input.
+
+- [眼瞳大小：保留版本、调用与已知限制](sdk/IRIS_SIZE.md)（2026-10-15，进一步优化暂停）。

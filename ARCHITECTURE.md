@@ -85,7 +85,10 @@ geometry uses detected nose/lip/contour points instead of face-box templates on
 this route, retaining existing regional plausibility checks. The transform stays
 request-local: validated near-rigid rotation now attenuates the dense unified
 inverse map, rather than being applied to image pixels as a 4x4 warp.
-Visible iris-ring points support size/gaze admission, while oval/eyelid/brow/lip
+Visible iris-ring points support size/gaze admission; dense pupil-size uses a
+separate CPU-owned radial source sampler before the shared lattice, on both
+backends. Its explicit CPU preview has an original-source resize cutpoint
+([contract](docs/sdk/IRIS_SIZE.md)). Meanwhile oval/eyelid/brow/lip
 geometry adds conservative texture protection. Blendshapes remain disabled.
 [Dense static-image contract](docs/DENSE_FACE_REFACTOR.md) owns the mechanism and limits.
 No second detector is invoked on failure. These changes do not qualify new beauty
@@ -158,3 +161,13 @@ candidate fixed-mesh geometry, texture processing and temporal designs against
 this architecture. These are documentation proposals, not current targets,
 backends, APIs or an activated implementation plan. Its source-code review
 identifies gaps before any future adoption.
+
+## Fixed original and iris preview
+
+The explicit prepared-photo handle deep-copies one admitted source, reuses
+purpose-qualified detection only for that source and expires on replacement,
+release or reset. It is separate from ordinary/video cadence. The iris preview
+executes its radial sampler on the canonical original before resizing, clips
+observable changes with the request-local source owner, then runs existing main
+geometry once on the view raster. No other continuous reference-effect map is
+imported. [Usage and limits](docs/sdk/IRIS_SIZE.md).

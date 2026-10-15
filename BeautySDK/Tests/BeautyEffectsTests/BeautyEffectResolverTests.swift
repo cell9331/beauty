@@ -840,7 +840,6 @@ final class BeautyEffectResolverTests: XCTestCase {
             Field(name: "eyeHeight", cap: BeautySafetyCaps.eyeHeight, makeParameters: { BeautyParameters(eyeHeight: $0) }, publicValue: \.eyeHeight, effectiveValue: \.eyeHeight),
             Field(name: "eyeLength", cap: BeautySafetyCaps.eyeLength, makeParameters: { BeautyParameters(eyeLength: $0) }, publicValue: \.eyeLength, effectiveValue: \.eyeLength),
             Field(name: "upperEyelidLift", cap: BeautySafetyCaps.upperEyelidLift, makeParameters: { BeautyParameters(upperEyelidLift: $0) }, publicValue: \.upperEyelidLift, effectiveValue: \.upperEyelidLift),
-            Field(name: "pupilSize", cap: BeautySafetyCaps.pupilSize, makeParameters: { BeautyParameters(pupilSize: $0) }, publicValue: \.pupilSize, effectiveValue: \.pupilSize),
             Field(name: "gazeCorrection", cap: BeautySafetyCaps.gazeCorrection, makeParameters: { BeautyParameters(gazeCorrection: $0) }, publicValue: \.gazeCorrection, effectiveValue: \.gazeCorrection),
             Field(name: "lowerEyelidDrop", cap: BeautySafetyCaps.lowerEyelidDrop, makeParameters: { BeautyParameters(lowerEyelidDrop: $0) }, publicValue: \.lowerEyelidDrop, effectiveValue: \.lowerEyelidDrop),
             Field(name: "innerCornerOpen", cap: BeautySafetyCaps.innerCornerOpen, makeParameters: { BeautyParameters(innerCornerOpen: $0) }, publicValue: \.innerCornerOpen, effectiveValue: \.innerCornerOpen),
@@ -888,6 +887,17 @@ final class BeautyEffectResolverTests: XCTestCase {
             XCTAssertEqual(plan.metrics["beauty.effects.cappedCount"], cappedCount, name)
             XCTAssertEqual(plan.warnings.filter { $0.code == "beauty_strength_capped" }.count, cappedCount == 0 ? 0 : 1, name)
             assertRedacted(plan)
+        }
+    }
+
+    func testRetainedIrisSignedCapsDoNotChangeSiblingContracts() {
+        for input: Float in [-1, -0.25, 0, 0.25, 1] {
+            let plan = BeautyEffectResolver.resolve(parameters: BeautyParameters(pupilSize: input))
+            let expected = min(BeautySafetyCaps.pupilSize, max(-BeautySafetyCaps.pupilSize, input))
+            XCTAssertEqual(plan.effectiveStrengths.pupilSize, expected, accuracy: 0.000001)
+            XCTAssertEqual(plan.effectiveStrengths.eyeSize, 0)
+            XCTAssertEqual(plan.effectiveStrengths.noseSlim, 0)
+            XCTAssertEqual(plan.effectiveStrengths.mouthSize, 0)
         }
     }
 

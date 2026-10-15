@@ -390,7 +390,6 @@ final class BeautyParametersTests: XCTestCase {
             ("eyeHeight", \.eyeHeight, { BeautyParameters(eyeHeight: $0) }),
             ("eyeLength", \.eyeLength, { BeautyParameters(eyeLength: $0) }),
             ("upperEyelidLift", \.upperEyelidLift, { BeautyParameters(upperEyelidLift: $0) }),
-            ("pupilSize", \.pupilSize, { BeautyParameters(pupilSize: $0) }),
             ("gazeCorrection", \.gazeCorrection, { BeautyParameters(gazeCorrection: $0) }),
             ("lowerEyelidDrop", \.lowerEyelidDrop, { BeautyParameters(lowerEyelidDrop: $0) }),
             ("innerCornerOpen", \.innerCornerOpen, { BeautyParameters(innerCornerOpen: $0) }),
@@ -428,6 +427,16 @@ final class BeautyParametersTests: XCTestCase {
                 accuracy: 0.0001,
                 "eyeTilt \(testCase.name)"
             )
+        }
+    }
+
+    func testRetainedIrisSignedNormalizationAndCodable() throws {
+        let cases: [(Float, Float)] = [(-2, -1), (-0.4, -0.4), (0, 0), (0.4, 0.4), (2, 1), (.nan, 0), (.infinity, 0)]
+        for (input, expected) in cases {
+            let value = BeautyParameters(pupilSize: input)
+            XCTAssertEqual(value.pupilSize, expected, accuracy: 0.000001)
+            let decoded = try JSONDecoder().decode(BeautyParameters.self, from: JSONEncoder().encode(value))
+            XCTAssertEqual(decoded.pupilSize, expected, accuracy: 0.000001)
         }
     }
 

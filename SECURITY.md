@@ -73,10 +73,22 @@ images, observations, masks or private profile keys. Other profiles remain
 request-local. These mechanics do not identify arbitrary skin-colored objects
 or reopen closed EYE/SEG work. See [dense contract](docs/DENSE_FACE_REFACTOR.md).
 
+## Retained iris ownership (2026-10-15)
+
+The iris sampler and preview retain no raw pixels, circles or source-owner masks
+in public diagnostics. Prepared-photo retains only the explicitly selected fixed
+source and its validated detection state until release/replacement/reset. This
+integration adds no model or download, does not integrate previous SAM experiments,
+and does not reopen closed automatic EYE/SEG research. [Iris limits](docs/sdk/IRIS_SIZE.md).
+
 ## Request-local geometry and retouch
 
-Landmarks, pupils, contours, source-raster boundaries, masks, integral arrays,
-scores, predictor tensors and pixels remain package-only and request-local.
+Effect masks, pupil/circle registration, source-raster boundaries, integral arrays,
+scores and predictor tensors remain internal and invocation-local. The explicit
+owner-diagnostic SPI may return transient ordered landmark points to its owner
+for a local overlay; these must never be encoded, logged or exported. Prepared
+photo retains its explicitly selected source and purpose-qualified observation
+state only until replacement/release/reset; ordinary results contain neither.
 One canonical opaque retouch carrier, one detection/mapping handoff and one
 original-source composition owner constrain the request. A valid eye/feature
 cannot borrow invalid peer support. Missing, low-confidence, blinking/occluded,

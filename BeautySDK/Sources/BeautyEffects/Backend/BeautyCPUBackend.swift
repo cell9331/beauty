@@ -47,20 +47,10 @@ package struct BeautyCPUBackend: BeautyBackendExecutor, Sendable {
         }
 
         let dimensions = dimensions(of: output)
-        let summary = request.compositionSummary
-        let pixelCount = dimensions.width.multipliedReportingOverflow(by: dimensions.height)
-        let boundedPixelCount = pixelCount.overflow
-            ? BeautyConfiguration.defaultMaximumInputPixelCount
-            : pixelCount.partialValue
         let diagnostics = BeautyBackendDiagnostics(
             width: dimensions.width,
             height: dimensions.height,
-            preservesAlpha: true,
-            preservesExtent: true,
-            unitCount: min(summary?.acceptedUnitCount ?? 0, boundedPixelCount),
-            failureCount: min(summary?.rejectedUnitCount ?? 0, boundedPixelCount),
-            collisionCount: min(summary?.collisionPixelCount ?? 0, boundedPixelCount),
-            changedPixelCount: min(summary?.changedPixelCount ?? 0, boundedPixelCount)
+            compositionSummary: request.compositionSummary
         )
         return try BeautyBackendResult(
             output: output,

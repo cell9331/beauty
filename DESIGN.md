@@ -59,8 +59,10 @@ Selected GPU still images require the retained opaque bounded-RGB admission.
 Other decoded-image behavior keeps its existing route-specific extent/color/
 alpha contract; no global transparent-input claim is made.
 
-Detection/support remains package-only and request-local. The current facade
-does not cache or reuse prior face observations. Unindexed still-image calls
+Detection/support remains package-only. Ordinary still-image and indexed calls
+do not reuse prior observations. The explicit prepared-photo handle retains one
+immutable original with purpose-aware detection reuse until release/replacement/reset;
+all effect work remains invocation-local. Unindexed ordinary still-image calls
 detect when required. Indexed camera/video calls require a nonnegative index
 and camera/video metadata; only multiples of the configured interval detect.
 Skipped frames return `.skipped / .detectionInterval` and remove dependent work.
@@ -98,8 +100,10 @@ an asynchronous stream, shared-instance parallelism or persistent support.
 Providers produce validated request-local `WarpControlPoint` sets into one
 geometry pipeline. Field-local caps, finite/bounded source and target checks,
 support freshness and aggregate conflict budgets apply before dispatch.
-Provider-empty work is removed consistently from the final plan. Observed
-eye, brow, nose and lip support is not public geometry or a UI coordinate API.
+Provider-empty work is removed consistently from the final plan. Effect-support
+eye, brow, nose and lip regions remain internal. A separate explicit owner-only
+diagnostic SPI returns transient ordered source points for overlays, not warp
+controls, effect masks or a persistence API.
 
 Still-image source admission additionally qualifies contour smoothing,
 hairline/forehead displacement, outer submental tiers, philtrum and rigid
@@ -112,8 +116,9 @@ image operations, not depth, fat or general segmentation estimates.
 
 Dense still images use a fixed full-canvas inverse lattice, pixel-metric radius,
 canonical centers, final displacement and per-triangle gradient bounds; validated
-pose can only attenuate that map. Visible iris rings and geometric feature
-exclusions stay request-local. [Exact mechanism and limits](docs/DENSE_FACE_REFACTOR.md)
+pose can only attenuate that map. Dense pupil-size now uses the separate original-source radial sampler before
+this lattice, suppressing its legacy pupil points; gaze retains its existing route.
+Visible iris rings and geometric feature exclusions stay request-local. [Exact mechanism and limits](docs/DENSE_FACE_REFACTOR.md)
 separate this CPU-owned stage from the retained legacy point renderer.
 
 The legacy Metal uniform capacity is 256 points. A selected-GPU still-image plan over
@@ -191,3 +196,10 @@ source-defined direction/negative/protection/metadata/repeat/failure evidence.
 Generated inputs are eligible; genuine portraits and physical devices are
 optional. Exact status and bounded input ranges belong to the taxonomy,
 not historical candidates, changed-pixel counts or full-suite success alone.
+
+## Retained iris-size contract (2026-10-15)
+
+`pupilSize` alone gains signed normalization and caps; other eye/nose/mouth/brow
+contracts retain main behavior. Explicit original-first CPU preview uses prepared
+source ownership and a bounded resize cutpoint. The owner has paused further
+optimization; the shrinking-edge defect remains. [Mechanism and limits](docs/sdk/IRIS_SIZE.md).

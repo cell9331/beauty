@@ -297,7 +297,7 @@ public struct BeautyParameters: Codable, Equatable, Sendable {
         self.eyeHeight = Self.clampUnit(eyeHeight)
         self.eyeLength = Self.clampUnit(eyeLength)
         self.upperEyelidLift = Self.clampUnit(upperEyelidLift)
-        self.pupilSize = Self.clampUnit(pupilSize)
+        self.pupilSize = Self.clampSigned(pupilSize)
         self.gazeCorrection = Self.clampUnit(gazeCorrection)
         self.lowerEyelidDrop = Self.clampUnit(lowerEyelidDrop)
         self.eyeTilt = Self.clampSigned(eyeTilt)

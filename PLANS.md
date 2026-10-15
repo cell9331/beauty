@@ -26,6 +26,7 @@
 ## 3. Active
 
 
+
 当前无 Active 执行计划。478点静图核心改造已完成，记录见下方。
 
 所有者编辑宿主的接线、范围、组合、调试显示与预览修复
@@ -39,6 +40,12 @@ v1.25仍按`closed_with_unmet_objectives`结清，不恢复其自动效果研发
 原记录已在[历史索引](plans/history/README.md)对应的 completed 分片。Phase 93 的 owner-local `93-CHECKS.json` 与 Phase 95 independent review 属于历史证据，不是当前 Active 计划。
 
 ## 4. Completed / terminal dispositions
+
+### C-2026-10-15-iris-current-effect-integration
+
+- 所有者决定保留当前眼瞳效果、暂停进一步灰边优化；单独整合源空间重映射与原图优先CPU预览，未导入其他未达标参考map。极值灰边仍是已知限制，不宣称美图达标。
+- 当前整合实际37/0/0、依赖133/0/0、owner SPI3/0/0，另14项actual Metal一致性通过；边界/归档、源字节保护及文档链接通过。未全量/原图重新验收/真机更新，未推送。
+- [完整记录](plans/history/2026-10/A-2026-10-15-iris-current-effect-integration.md)、[调用与限制](docs/sdk/IRIS_SIZE.md)。无自动续作队列；原开发分支保留其他未完成工作。
 
 ### C-2026-10-15-qualified-branch-merges
 

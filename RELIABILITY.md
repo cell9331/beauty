@@ -1,5 +1,14 @@
 # RELIABILITY.md
 
+## 2026-10-15 retained iris-size execution
+
+Dense pupil-size suppresses legacy iris points even if its separate radial source
+sampler rejects. Original-first CPU preview validates its handle, backend and
+1...960 limit before execution; source masks remain on the original grid. The
+known extreme-shrink gray edge remains, and optimization is paused by owner
+decision. [Current scope](docs/sdk/IRIS_SIZE.md) does not promise arbitrary semantic
+boundary correctness or Meitu appearance parity.
+
 ## 2026-10-09 dense static-image execution
 
 Dense static images use one shared CPU-owned inverse lattice on both selected

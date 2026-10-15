@@ -175,7 +175,7 @@ names and visual organization are intentionally omitted from the active contract
 | 眼睛 | 眼距 | implemented | `eyeDistance` | Signed paired spacing. |
 | 眼睛 | 去脂 | suspended | `upperEyelidFullnessReduction` | Bounded upper-eyelid luminance correction retained for explicit-call compatibility. No qualified natural-appearance range or fat/tissue identification. Default renderer presentation is suspended; v1.25 bounded research closed with unmet objectives; no automatic continuation. API, safety and research evidence do not qualify the effect. |
 | 眼睛 | 提肌 | implemented | `upperEyelidLift` | Upper-contour geometry; not `去脂`. |
-| 眼睛 | 眼瞳大小 | implemented | `pupilSize` | Requires plausible request-local pupil support. |
+| 眼睛 | 眼瞳大小 | implemented | `pupilSize` | Owner-retained signed dense source-radial effect; extreme shrink gray edge remains, optimization paused 2026-10-15. [Scope](sdk/IRIS_SIZE.md). |
 | 眼睛 | 眼神矫正 | implemented | `gazeCorrection` | Per-eye request-local pupil-to-own-center correction with no peer borrowing; strict aperture containment and source-safe local rejection. |
 | 眼睛 | 眼睑下至 | implemented | `lowerEyelidDrop` | Lower-contour geometry. |
 | 眼睛 | 眼尾上扬 | implemented | `eyeTailLift` | Outer-eye lift geometry. |

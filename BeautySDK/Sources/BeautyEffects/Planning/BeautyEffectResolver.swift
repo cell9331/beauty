@@ -265,7 +265,7 @@ public enum BeautyEffectResolver {
         strengths.eyeHeight = capUnit(normalized.eyeHeight, cap: BeautySafetyCaps.eyeHeight, cappedCount: &cappedCount)
         strengths.eyeLength = capUnit(normalized.eyeLength, cap: BeautySafetyCaps.eyeLength, cappedCount: &cappedCount)
         strengths.upperEyelidLift = capUnit(normalized.upperEyelidLift, cap: BeautySafetyCaps.upperEyelidLift, cappedCount: &cappedCount)
-        strengths.pupilSize = capUnit(normalized.pupilSize, cap: BeautySafetyCaps.pupilSize, cappedCount: &cappedCount)
+        strengths.pupilSize = capSigned(normalized.pupilSize, cap: BeautySafetyCaps.pupilSize, cappedCount: &cappedCount)
         strengths.gazeCorrection = capUnit(normalized.gazeCorrection, cap: BeautySafetyCaps.gazeCorrection, cappedCount: &cappedCount)
         strengths.lowerEyelidDrop = capUnit(normalized.lowerEyelidDrop, cap: BeautySafetyCaps.lowerEyelidDrop, cappedCount: &cappedCount)
         strengths.eyeTilt = capSigned(normalized.eyeTilt, cap: BeautySafetyCaps.eyeTilt, cappedCount: &cappedCount)
@@ -884,7 +884,10 @@ public enum BeautyEffectResolver {
         var iterationIndex = 0
         for _ in 0..<44 {
             defer { iterationIndex += 1 }
-            let resolution = GeometryConflictResolver().resolve(strengths: retainedBaseline)
+            let resolution = GeometryConflictResolver().resolve(
+                strengths: retainedBaseline,
+                usesDenseMap: faceGeometry.denseSupport != nil && faceGeometry.freshness == .fresh
+            )
             var nextBaseline = faceProvider
                 .fieldEmissions(face: faceGeometry, strengths: resolution.strengths)
                 .sanitizing(retainedBaseline)
@@ -924,7 +927,10 @@ public enum BeautyEffectResolver {
             retainedBaseline = nextBaseline
         }
 
-        return GeometryConflictResolver().resolve(strengths: retainedBaseline)
+        return GeometryConflictResolver().resolve(
+            strengths: retainedBaseline,
+            usesDenseMap: faceGeometry.denseSupport != nil && faceGeometry.freshness == .fresh
+        )
     }
 
     private static let geometryFieldNames = [

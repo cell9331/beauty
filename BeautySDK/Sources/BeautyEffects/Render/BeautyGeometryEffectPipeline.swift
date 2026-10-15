@@ -169,81 +169,27 @@ enum BeautyGeometryEffectPipeline {
         let context = BeautyImageContexts.context(for: colorSpace)
         onRasterize?()
         source.withUnsafeMutableBytes { rawBytes in
-            guard let baseAddress = rawBytes.baseAddress else {
-                return
-            }
+            guard let baseAddress = rawBytes.baseAddress else { return }
             context.render(
-                image,
-                toBitmap: baseAddress,
-                rowBytes: rowBytes,
-                bounds: extent,
-                format: .RGBA8,
-                colorSpace: colorSpace
+                image, toBitmap: baseAddress, rowBytes: rowBytes,
+                bounds: extent, format: .RGBA8, colorSpace: colorSpace
             )
         }
 
-        let refinement = FaceContourSubpixelRefiner.refineWithProtection(
-            source,
-            width: width,
-            height: height,
-            face: face,
-            strength: plan.effectiveStrengths.faceContourSmooth
+        let stage = BeautyStillImageGeometryStage(
+            sourceRGBA: source, width: width, height: height, plan: plan, face: face
         )
-        let hairlineSource = HairlineBoundaryRefiner.apply(
-            refinement.bytes, width: width, height: height,
-            face: face, strength: HairlineBoundaryRefiner.combinedStrength(
-                hairline: plan.effectiveStrengths.hairlineHeight,
-                forehead: plan.effectiveStrengths.foreheadHeight
-            )
-        )
-        let alignedSource = SubmentalContourRefiner.apply(
-            hairlineSource, width: width, height: height, face: face,
-            baseStrength: plan.effectiveStrengths.doubleChinReduction,
-            proStrength: plan.effectiveStrengths.doubleChinReductionPro
-        )
-        let suppressHeadWrap = plan.effectiveStrengths.headWrap != 0 &&
-            !HairlineBoundaryRefiner.hasCoherentHairCap(
-                refinement.bytes, width: width, height: height, face: face
-            )
-        let points = controlPoints(
-            for: plan, face: face,
-            protectedLeftContour: refinement.protectedLeft,
-            protectedRightContour: refinement.protectedRight,
-            suppressHairlinePoints: plan.effectiveStrengths.hairlineHeight != 0,
-            suppressSubmentalPoints: plan.effectiveStrengths.doubleChinReduction != 0 ||
-                plan.effectiveStrengths.doubleChinReductionPro != 0,
-            suppressHeadWrapPoints: suppressHeadWrap,
-            suppressForeheadPoints: plan.effectiveStrengths.foreheadHeight != 0,
-            suppressPhiltrumPoints: plan.effectiveStrengths.philtrumLength != 0 &&
-                !PhiltrumSourceAdmission.hasRegisteredUpperLip(
-                    refinement.bytes, width: width, height: height, face: face
-                ),
-            suppressWholeFaceTranslationPoints: true
-        )
-        let warpedBytes: [UInt8]
-        if face.denseSupport != nil {
-            warpedBytes = BeautyDenseGeometryMap(width: width, height: height, face: face, points: points)?.applyRGBA(alignedSource) ?? alignedSource
-        } else {
-            warpedBytes = warpedRGBABytes(alignedSource, width: width, height: height,
-                                         points: points.compactMap(RenderableWarpPoint.init))
-        }
-        let output = WholeFaceTranslationRefiner.apply(
-            warpedBytes, width: width, height: height, face: face,
-            xStrength: plan.effectiveStrengths.wholeFaceXPosition,
-            yStrength: plan.effectiveStrengths.wholeFaceYPosition
-        )
-        let data = Data(output)
+        let warpedBytes = stage.usesDenseMap
+            ? stage.applyingDenseMap(to: stage.sourceRGBA)
+            : warpedRGBABytes(stage.sourceRGBA, width: width, height: height,
+                              points: stage.controlPoints.compactMap(RenderableWarpPoint.init))
+        let output = stage.applyingTranslation(to: warpedBytes)
         let warped = CIImage(
-            bitmapData: data,
-            bytesPerRow: rowBytes,
+            bitmapData: Data(output), bytesPerRow: rowBytes,
             size: CGSize(width: width, height: height),
-            format: .RGBA8,
-            colorSpace: colorSpace
+            format: .RGBA8, colorSpace: colorSpace
         )
-
-        guard extent.origin != .zero else {
-            return warped.cropped(to: extent)
-        }
+        guard extent.origin != .zero else { return warped.cropped(to: extent) }
         return warped
             .transformed(by: CGAffineTransform(translationX: extent.origin.x, y: extent.origin.y))
             .cropped(to: extent)
@@ -253,7 +199,7 @@ enum BeautyGeometryEffectPipeline {
         UInt8(min(max(value, 0), 255))
     }
 
-    private static func warpedRGBABytes(
+    static func warpedRGBABytes(
         _ source: [UInt8],
         width: Int,
         height: Int,
@@ -393,7 +339,7 @@ enum BeautyGeometryEffectPipeline {
         )
     }
 
-    private struct RenderableWarpPoint {
+    struct RenderableWarpPoint {
         let pixelCenterSampling: Bool
         let target: SIMD2<Float>
         let displacement: SIMD2<Float>

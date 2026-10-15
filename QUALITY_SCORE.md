@@ -130,3 +130,17 @@ Frozen thresholds, failures, archives, snapshots and receipts retain their
 original bytes and scope. Unreferenced proposals or duplicate imports may be
 removed after confirming no current code/gate dependency and recording the
 reason; they do not create a new algorithm or model task.
+
+## Retained iris integration, 2026-10-15
+
+The owner requested preserving the current iris-size version and pausing further
+gray-edge optimization. Current isolated integration executes 37 iris/material/
+preview tests, 133 direct parameter/planning/stage/prepared/public-backend tests,
+and 3 owner-SPI dependency tests, all zero-failure/zero-skip. The independent
+backend parity gate separately passes 14 focused tests with actual Metal
+execution; these counts are separate scopes, not a summed distinct denominator.
+Boundary live/self-test, archive verification and preservation/diff/link checks
+pass. The algorithm and original four iris test files match the source branch
+exactly. [Record](plans/history/2026-10/A-2026-10-15-iris-current-effect-integration.md).
+This is not complete SDK regression, a fresh photo/Meitu appearance acceptance,
+a host/device update, or performance evidence. Extreme shrink gray edging remains.

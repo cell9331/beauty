@@ -87,7 +87,7 @@ struct EyeWarpProvider: WarpControlPointProvider {
             eyeHeight: strengths.eyeHeight > 0 ? supports.flatMap { heightPoints(support: $0, face: face, strength: strengths.eyeHeight) } : [],
             eyeLength: strengths.eyeLength > 0 ? supports.flatMap { lengthPoints(support: $0, face: face, strength: strengths.eyeLength) } : [],
             upperEyelidLift: strengths.upperEyelidLift > 0 ? supports.flatMap { lidPoints(support: $0.upper, center: $0.center, face: face, strength: strengths.upperEyelidLift, upward: true, cap: BeautySafetyCaps.upperEyelidLift) } : [],
-            pupilSize: strengths.pupilSize > 0 ? supports.flatMap { pupilSizePoints(support: $0, face: face, strength: strengths.pupilSize) } : [],
+            pupilSize: (strengths.pupilSize > 0 || (strengths.pupilSize < 0 && face.denseSupport != nil)) ? supports.flatMap { pupilSizePoints(support: $0, face: face, strength: strengths.pupilSize) } : [],
             gazeCorrection: strengths.gazeCorrection > 0 ? gazeSupports.compactMap { gazeCandidate(support: $0, face: face, strength: strengths.gazeCorrection)?.point } : [],
             lowerEyelidDrop: strengths.lowerEyelidDrop > 0 ? supports.flatMap { lidPoints(support: $0.lower, center: $0.center, face: face, strength: strengths.lowerEyelidDrop, upward: false, cap: BeautySafetyCaps.lowerEyelidDrop) } : [],
             eyeTilt: abs(strengths.eyeTilt) > Float.ulpOfOne ? supports.flatMap { tiltPoints(support: $0, face: face, strength: strengths.eyeTilt) } : [],
@@ -228,7 +228,7 @@ struct EyeWarpProvider: WarpControlPointProvider {
             let expansion = 1 + 0.20 * strength / BeautySafetyCaps.pupilSize
             let targets = ring.map { pupil + ($0 - pupil) * expansion }
             let radius = max(support.span.x * 0.35, 0.002)
-            return makePoints(sources: ring, targets: targets, face: face, radius: radius, strength: strength)
+            return makePoints(sources: ring, targets: targets, face: face, radius: radius, strength: abs(strength))
         }
         let d = face.bounds.width * 0.012 * strength / BeautySafetyCaps.pupilSize
         let offsets = [SIMD2<Float>(-d, 0), SIMD2<Float>(d, 0), SIMD2<Float>(0, -d), SIMD2<Float>(0, d)]

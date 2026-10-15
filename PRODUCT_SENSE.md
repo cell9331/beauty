@@ -1,5 +1,13 @@
 # PRODUCT_SENSE.md
 
+## Retained iris-size behavior (2026-10-15)
+
+The owner requested retaining the current iris-size effect and pausing further
+gray-edge work. `pupilSize` supports both signs; original-first CPU preview uses
+`prepareStillImage` plus `processIrisPreviewResult`. Shrinking at the extreme can
+still leave a thin gray lower edge: retaining this version is not Meitu appearance
+qualification. [Calls, protection scope and limitations](docs/sdk/IRIS_SIZE.md).
+
 ## Dense still-image behavior (2026-10-09)
 
 The iOS still-image facade now consumes the 478-point distribution for fixed
@@ -246,3 +254,13 @@ The independently authorized owner editor lives outside this repository;
 [FRONTEND.md](FRONTEND.md) describes its boundary and known failed simulator
 checks. Historical UI material is recoverable only under the verified archive
 contract and creates no current SDK feature, UI gate or automatic backlog.
+
+## Fixed-photo and owner-diagnostic dependency
+
+`prepareStillImage` / `processResult(preparedImage:)` / `releasePreparedStillImage`
+retain one immutable original and purpose-aware detection until replacement or
+reset; see [lifecycle](docs/sdk/PREPARED_PHOTO_EDITING.md). Per-parameter rendering
+still starts from the original. The explicitly opted-in `OwnerDiagnostics` SPI
+also retains `BeautyOwnerLandmarkDetector.detect(_:)` and `reset()`: its transient
+ordered points are for the owner's local overlay only, never logging or export.
+This completed dependency does not add automatic material segmentation.

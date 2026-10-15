@@ -16,3 +16,13 @@
 - **同肤色物体/贴片自动辨认：未交付，已关闭本轮研发**（2026-10-03）。[冻结开发比较](../../docs/SEG_DEVELOPMENT_2026-10-03.md)两方法四版本全部拒绝；S2-v2正/负例各4/6、8/48保护硬失败且肤色分层不足。未进入候选留出或生产，不追加第五版，不转为默认后续任务。现有host物体+完整唇并集蒙版可用，仅计辅助保护；通用语义能力也未完成。[终局范围](../../docs/RETOUCH_TERMINAL_SCOPE_2026-10-03.md)关闭本轮义务，不改变失败含义或保证未知输入可自动拒绝。
 
 - 粗略唇区保护边界（2026-10-03，新发现，未修复）：深肤色低对比唇缘延伸到现有脸相对保护域之外时，平滑/锐化改动了部分唇像素；基线、拒绝候选、物体专用蒙版均未通过新完整保护断言，冻结挑战为 4 tests / 6 failures / 0 skips。既有有界验收不承诺任意唇缘覆盖。已知需精确保留的唇/物体像素可同时纳入正确显式蒙版；后续[主机并集蒙版集成](../../docs/HOST_TEXTURE_PROTECTION.md)已在同一源图验证完整保护与有效皮肤方向同时成立。该额外主机信息不修改无蒙版准入阈值或粗略域，自动保护缺口仍未修复。v1.25因无合格自动候选，LIP25-01以未交付关闭；该限制继续公开记录，不再是当前计划依赖或自动续作任务。蒙版本身最多增加每像素一字节请求内存，不进入诊断或持久记录。
+
+## IRIS-RETAINED-01 — accepted current version, optimization paused
+
+2026-10-15 owner decision: retain the current iris-size effect and merge it with
+documentation. A thin gray lower iris edge/short line can remain at extreme
+shrink; complete Meitu appearance is unqualified. [Current scope](../../docs/sdk/IRIS_SIZE.md)
+and [integration record](../history/2026-10/A-2026-10-15-iris-current-effect-integration.md).
+This is a disclosed retained limitation, not an active repair queue or authority
+for further tuning/model evaluation. Other unfinished reference effects stay on
+their development branches.

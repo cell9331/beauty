@@ -1,5 +1,7 @@
 # Completed plan index: 2026-10
 
+- [A-2026-10-15-iris-current-effect-integration](A-2026-10-15-iris-current-effect-integration.md)：按所有者决定保留当前眼瞳并暂停灰边优化；37/133/3及单列14项Metal一致性通过，仅单项与必要依赖整合，不授予美图外观资格。
+
 - [A-2026-10-15-qualified-branch-merges](A-2026-10-15-qualified-branch-merges.md)：八分支审查，三分支祖先纳入main、五分支保留；70去重定向用例及14项Metal一致性通过，未导入最新未达标参考效果。
 
 - [A-2026-10-09-dense-face-refactor](A-2026-10-09-dense-face-refactor.md)：478点静图核心改造，context复用、可见虹膜/姿态、固定画布网格与独立美肤分支；完整SDK1098/0/0、9 opt-ins，原生24/0/0。失败候选/范围保留，不签视频或全程GPU。
