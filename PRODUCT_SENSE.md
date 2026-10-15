@@ -1,5 +1,96 @@
 # PRODUCT_SENSE.md
 
+## Reference-guided eye editing (2026-10-14)
+
+Owner hosts use `BeautyEyeShapeSlider` for eleven centered eye geometry controls.
+`applying(position:to:)` changes one field over its existing cap;
+`position(in:)` keeps selection, undo and restored values aligned with the
+slider. Height and iris size have distinct entries. The [eye mapping table](docs/sdk/EYE_SHAPE_SLIDERS.md)
+defines directions, including the reference's opposite tail/tilt polarity.
+The adjacent editor consumes this helper with independently stored controls.
+
+The 2026-10-14 authorization only optimizes referenced `pupilSize`. Eleven
+distinct reference sliders remain selectable, with iris size using the same
+bidirectional reference track. The host keeps lift, gaze correction, symmetry
+and sclera redness visible but grey and disabled; their interactions cannot
+change selection, parameters or history. The SDK's fifteen eye fields/APIs,
+caps and defaults remain, and upper-eyelid fullness stays `suspended`.
+[The iris follow-up](plans/active/A-2026-10-14-eye-iris-reference-delivery.md)
+selects C40: the one authorized already-edited portrait passes its frozen
+original/preview amplitude, photometric, quarter, protection and detail criteria.
+The old ten isolated caps are canonical-PNG exact 20/20 to this continuation's
+C32 baseline. Earlier rejected candidates retain their failures. iPhone13Pro
+original actual-Metal/independent-CPU parity and the frozen oracle pass as an
+intermediate checkpoint; its preview runner did not execute. The owner's final
+iPad7 original/preview/panel delivery is still being verified. No complete
+device delivery or general Meitu appearance equality is claimed.
+
+Observed still-image eyes use a continuous local map with separate height,
+length, lower-lid and corner components. The first five controls use the visible
+aperture frame, independent image-axis position directions and bounded RGB
+registration of position scale and the size/length horizontal pivot. Lower-lid
+and outer-corner work share a bounded local visible-edge frame, including the
+lower-lid zero boundaries. Unsupported edge evidence keeps the geometric frame;
+protected source features and original safety caps remain.
+Missing support exits locally;
+negative iris size requires dense visible-ring support, which the macOS Vision
+route does not provide. Both selected backends share the CPU-owned sampler.
+Nonzero dense iris work blends shape-only and full-iris colors independently
+sampled from the same immutable eye-stage input. Source-pixel ownership,
+alpha/protected-feature checks and a fixed material collar constrain the full
+sample; an unsafe iris sample keeps eligible shape-only work. This branch does
+not resample rendered output or change the old ten controls' sampling route.
+The initial reference repair excluded upper-eyelid fullness and sclera redness.
+Generated pixel checks and local portrait inspection are recorded
+in the [initial work record](plans/history/2026-10/A-2026-10-11-eye-reference.md).
+The separately requested [five-control validation](plans/history/2026-10/A-2026-10-12-eye-five-match.md)
+meets its frozen endpoint-response, separation, protection and original-detail
+eye-region criteria on one supplied portrait across simulator CPU preview/original
+and physical iPad Metal original renders;
+screenshots without a shared untreated neutral do not establish pixel-identical
+Meitu appearance or population-wide quality.
+
+The next-five CPU checkpoint belongs to [the 2026-10-12 record](plans/history/2026-10/A-2026-10-12-eye-next-five-match.md).
+Subsequent actual iPad rendering exposed lower-lid and outer-corner registration
+failures. At the 2026-10-13 C32 checkpoint, the unchanged supplied-reference response, separation,
+protection and required eye-region detail criteria passed on that same tagged-sRGB
+portrait: one method ran actual Metal original twenty caps and CPU prepared
+preview forty next-five settings, each 1/0/0. All original caps repeat and match
+independent CPU RGBA; the first-five ten caps remain canonical-PNG exact to the
+earlier device checkpoint. That checkpoint's App was updated in place and opened with
+data preserved. [The physical delivery record](plans/history/2026-10/A-2026-10-13-eye-physical-delivery.md)
+owns these results and retained failed candidates.
+
+Both batches' ten selected controls keep the same reference-style continuous
+bidirectional tracks and dated tap/drag/history/restoration evidence. That C32
+delivery adds no physical touch or performance claim. Only the ten preview
+caps repeat; the other thirty settings have direction/protection checks without
+reference quarter curves or repeats. One already-edited reference endpoint
+does not supply a shared untreated neutral, numeric positions or general Meitu
+appearance equality; P3 quantization and sparse-iris amplitude remain separate
+limits.
+
+## Reference-guided mouth editing (2026-10-11)
+
+Owner hosts use `BeautyMouthSlider` for the eight centered mouth geometry
+controls and the independent one-way whitening control. Size runs large to
+small, vertical position down to up, and the other directions follow the
+[mouth mapping table](docs/sdk/MOUTH_SLIDERS.md). M-lip, fullness and smile
+accept both signs; all controls retain their keys, neutral values and caps.
+Undo/selection uses `position(in:)` so the displayed position matches the
+stored parameter. The adjacent editor consumes this mapping without layout
+changes.
+
+Observed still-image lips use a continuous local map instead of summed point
+pulls: whole-mouth controls move the complete lips; Cupid's bow and fullness
+use inner/outer support and protect the opening. Missing valid support exits
+locally. The same CPU-owned sampler serves both selected backends. Generated
+pixel oracles and actual local portrait comparisons have different scopes;
+the [implementation record](plans/history/2026-10/A-2026-10-11-mouth-reference.md) owns
+executed evidence and remaining differences from the supplied reference.
+This change does not assert general Meitu appearance parity or new whitening
+behavior.
+
 ## Reference-style face editing (2026-10-11)
 
 Owner hosts can map one face slider with
@@ -248,8 +339,9 @@ The encoded `Data` result entry preflights its byte limit (32 MiB default), one
 frame and declared dimensions before decoding. Decoded still/pixel-buffer
 inputs obey the pixel ceiling, default/hard maximum 50,000,000. Active texture
 has the smaller 8,388,608-pixel ceiling; hosts must respect it for originals as
-well as previews. `preferredProcessingSize` reduces only the Vision raster;
-it does not resize output or promise faster inference. `renderQuality` selects
+well as previews. `preferredProcessingSize` bounds only the detector raster
+(MediaPipe on iOS, Vision on macOS); it does not resize output or promise faster
+inference. `renderQuality` selects
 the active texture neighborhood rather than general export quality.
 
 Texture's fresh face/interior/color/edge and coarse eye/lip guards do not
@@ -296,21 +388,25 @@ The independently authorized owner editor lives outside this repository;
 checks. Historical UI material is recoverable only under the verified archive
 contract and creates no current SDK feature, UI gate or automatic backlog.
 
-## Signed nose editing (2026-10-10)
+## Signed nose editing (2026-10-11)
 
 The owner's local host can expose all six nose controls at -100/0/+100, mapped
 to unchanged absolute SDK caps. The SDK accepts negative values through init,
 Codable, mutable normalization, planning and backend validation. With fresh
-dense nasal anatomy, size contracts/expands observed width and length, tip size
-uses its own local center, wings change lateral width, and lift moves lower
-support up/down. Root/bridge retain distinct surface-width bands; neither
-supplies 3-D height, relighting or Meitu appearance parity. Legacy positive
-geometry and neutral keys/defaults remain compatible.
+dense nasal anatomy and complete eye/brow/lip support, Size adjusts broad nasal
+width with stable base height; Tip has an independent stronger local bulb
+contraction and milder expansion. Wings change lower lateral width, Lift moves
+the lower nose with a smooth middle-nose transition, and Root/Bridge adjust
+short upper/longer dorsal side bands. Complete registered protected feature
+boxes remain fixed. Missing support abstains without restoring older circular
+kernels. These are source-guided 2-D effects; 3-D height and relighting are not
+implemented. Vision compatibility, zero defaults and parameter caps remain.
 
-Generated source-fixed nasal markers verify opposite directions, four monotone
-settings, >1 pixel endpoint change at the tested 480×640/640×480 sizes, alpha,
-protected exterior, determinism and missing-support abstention. This is bounded
-2-D geometry acceptance, not a naturalness or population-level assertion. The
-separate host throttles starts at 40 ms, replaces pending values and flushes on
+Generated source-fixed features and real same-source portrait/reference
+comparisons have separate evidence. The older marker tests alone did not
+qualify the owner's portrait; current measured results and remaining appearance
+limits are recorded in [PLANS.md](PLANS.md) and the taxonomy. The
+separate host throttles starts at 16 ms, replaces pending values and flushes on
 release; current-output debug detection waits for settled editing. Actual
-simulator timings and native checks belong to the linked [plan](PLANS.md).
+native timings and checks belong to the linked [plan](PLANS.md); the interval is
+a scheduling bound, not a frame-rate or input-to-display latency guarantee.

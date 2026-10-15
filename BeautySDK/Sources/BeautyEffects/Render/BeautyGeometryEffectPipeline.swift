@@ -41,11 +41,19 @@ enum BeautyGeometryEffectPipeline {
         suppressForeheadPoints: Bool = false,
         suppressPhiltrumPoints: Bool = false,
         suppressWholeFaceTranslationPoints: Bool = false,
-        suppressContinuousFacePoints: Bool = false
+        suppressContinuousFacePoints: Bool = false,
+        suppressContinuousNosePoints: Bool = false,
+        suppressContinuousMouthPoints: Bool = false
     ) -> [WarpControlPoint] {
         var prepared = plan.effectiveStrengths
         if suppressContinuousFacePoints {
             for key in BeautyContinuousFaceMap.keys { prepared[keyPath: key] = 0 }
+        }
+        if suppressContinuousNosePoints {
+            for key in BeautyContinuousNoseMap.keys { prepared[keyPath: key] = 0 }
+        }
+        if suppressContinuousMouthPoints {
+            for key in BeautyContinuousMouthMap.keys { prepared[keyPath: key] = 0 }
         }
         let controls = controlPoints(for: prepared, face: face)
         guard protectedLeftContour || protectedRightContour ||
@@ -113,16 +121,24 @@ enum BeautyGeometryEffectPipeline {
     }
 
     /// Deterministic still-image warp used until the production Metal FaceWarpPass consumes control points directly.
-    static func applyMVPProxy(to image: CIImage, plan: BeautyEffectPlan, face: FaceGeometry) -> CIImage {
+    static func applyMVPProxy(to image: CIImage, plan: BeautyEffectPlan, face: FaceGeometry,
+        sourceOwnershipImage: CIImage? = nil,
+        jawlineShadowSourceImage: CIImage? = nil) -> CIImage {
         applyMVPProxy(
             to: image,
             plan: plan,
             face: face,
-            colorSpace: face.denseSupport == nil &&
+            colorSpace: sourceOwnershipImage != nil || jawlineShadowSourceImage != nil ? CGColorSpace(name: CGColorSpace.sRGB)! :
+                (face.denseSupport == nil &&
+                !(face.observedFaceSupport != nil && plan.effectiveStrengths.faceContourSmooth > 0) &&
+                !FaceShapeWarpProvider.hasSourceHairlineGeometry(
+                    face: face, strength: plan.effectiveStrengths.hairlineHeight) &&
                 !(BeautyContinuousFaceMap.replacesLegacy(for: face) &&
                   BeautyContinuousFaceMap.keys.contains { plan.effectiveStrengths[keyPath: $0] != 0 })
                 ? CGColorSpaceCreateDeviceRGB() :
-                (image.colorSpace ?? CGColorSpace(name: CGColorSpace.sRGB)!)
+                (image.colorSpace ?? CGColorSpace(name: CGColorSpace.sRGB)!)),
+            sourceOwnershipImage: sourceOwnershipImage,
+            jawlineShadowSourceImage: jawlineShadowSourceImage
         )
     }
 
@@ -139,11 +155,23 @@ enum BeautyGeometryEffectPipeline {
         guard let colorSpace = CGColorSpace(name: CGColorSpace.sRGB) else {
             return image.cropped(to: canonicalImage.ciImage.extent)
         }
+        var ownershipSource: [UInt8]?
+        if BeautyContinuousFaceMap.requiresSourceOwnershipProof(face: face, strengths: plan.effectiveStrengths) {
+            ownershipSource = CGFloat(canonicalImage.width) == image.extent.width &&
+                CGFloat(canonicalImage.height) == image.extent.height &&
+                canonicalImage.ciImage.extent == image.extent ? Array(canonicalImage.rgba8Data) : []
+        }
+        let shadowSource: [UInt8]? = plan.effectiveStrengths.jawlineShadow > 0 ?
+            (CGFloat(canonicalImage.width) == image.extent.width &&
+             CGFloat(canonicalImage.height) == image.extent.height &&
+             canonicalImage.ciImage.extent == image.extent ? Array(canonicalImage.rgba8Data) : []) : nil
         return applyMVPProxy(
             to: image,
             plan: plan,
             face: face,
             colorSpace: colorSpace,
+            sourceOwnershipRGBA: ownershipSource,
+            jawlineShadowSourceRGBA: shadowSource,
             onRasterize: {
                 onRasterize?(canonicalImage, colorSpace)
             }
@@ -155,11 +183,23 @@ enum BeautyGeometryEffectPipeline {
         plan: BeautyEffectPlan,
         face: FaceGeometry,
         colorSpace: CGColorSpace,
+        sourceOwnershipRGBA: [UInt8]? = nil,
+        sourceOwnershipImage: CIImage? = nil,
+        jawlineShadowSourceRGBA: [UInt8]? = nil,
+        jawlineShadowSourceImage: CIImage? = nil,
         onRasterize: (() -> Void)? = nil
     ) -> CIImage {
         let requestsContinuous = face.observedFaceSupport != nil &&
             BeautyContinuousFaceMap.keys.contains { plan.effectiveStrengths[keyPath: $0] != 0 }
-        guard requestsContinuous || !controlPoints(for: plan, face: face).isEmpty else {
+        let requestsNose = BeautyContinuousNoseMap.replacesLegacy(for: face) &&
+            BeautyContinuousNoseMap.keys.contains { plan.effectiveStrengths[keyPath: $0] != 0 }
+        let requestsMouth = BeautyContinuousMouthMap.replacesLegacy(for: face) &&
+            BeautyContinuousMouthMap.keys.contains { plan.effectiveStrengths[keyPath: $0] != 0 }
+        let requestsHairline = FaceShapeWarpProvider.hasSourceHairlineGeometry(
+            face: face, strength: plan.effectiveStrengths.hairlineHeight)
+        let requestsJawlineShadow = plan.effectiveStrengths.jawlineShadow > 0
+        guard requestsContinuous || requestsNose || requestsMouth || requestsHairline || requestsJawlineShadow ||
+              !controlPoints(for: plan, face: face).isEmpty else {
             return image.cropped(to: image.extent)
         }
 
@@ -186,14 +226,42 @@ enum BeautyGeometryEffectPipeline {
             )
         }
 
+        // Qualification uses the immutable, pre-color source on either backend.
+        // Sampling/restoration still consume the current admitted color raster.
+        // An explicitly supplied but mismatched proof stays present and rejects;
+        // it must never fall back to reclassifying the altered current pixels.
+        var ownershipSource = sourceOwnershipRGBA
+        if ownershipSource == nil, let original = sourceOwnershipImage {
+            ownershipSource = []
+            if original.extent == extent, let proofSpace = CGColorSpace(name: CGColorSpace.sRGB) {
+                var proof = [UInt8](repeating: 0, count: rowBytes * height)
+                BeautyImageContexts.context(for: proofSpace).render(original, toBitmap: &proof,
+                    rowBytes: rowBytes, bounds: extent, format: .RGBA8, colorSpace: proofSpace)
+                ownershipSource = proof
+            }
+        }
+        var shadowSource = jawlineShadowSourceRGBA
+        if shadowSource == nil, let original = jawlineShadowSourceImage {
+            shadowSource = []
+            if original.extent == extent, let proofSpace = CGColorSpace(name: CGColorSpace.sRGB) {
+                var proof = [UInt8](repeating: 0, count: rowBytes * height)
+                BeautyImageContexts.context(for: proofSpace).render(original, toBitmap: &proof,
+                    rowBytes: rowBytes, bounds: extent, format: .RGBA8, colorSpace: proofSpace)
+                shadowSource = proof
+            }
+        }
         let stage = BeautyStillImageGeometryStage(
-            sourceRGBA: source, width: width, height: height, plan: plan, face: face
+            sourceRGBA: source, width: width, height: height, plan: plan, face: face,
+            sourceOwnershipRGBA: ownershipSource,
+            jawlineShadowSourceRGBA: shadowSource
         )
         let warpedBytes = stage.usesDenseMap
             ? stage.applyingDenseMap(to: stage.sourceRGBA)
             : warpedRGBABytes(stage.sourceRGBA, width: width, height: height,
                               points: stage.controlPoints.compactMap(RenderableWarpPoint.init))
-        let output = stage.applyingTranslation(to: stage.applyingContinuousContour(to: warpedBytes))
+        let nasalBytes = stage.applyingContinuousNose(to: warpedBytes)
+        let mouthBytes = stage.applyingContinuousMouth(to: nasalBytes)
+        let output = stage.applyingTranslation(to: stage.applyingContinuousContour(to: mouthBytes))
         let warped = CIImage(
             bitmapData: Data(output), bytesPerRow: rowBytes,
             size: CGSize(width: width, height: height),
@@ -209,7 +277,7 @@ enum BeautyGeometryEffectPipeline {
         UInt8(min(max(value, 0), 255))
     }
 
-    private static func warpedRGBABytes(
+    static func warpedRGBABytes(
         _ source: [UInt8],
         width: Int,
         height: Int,
@@ -349,7 +417,7 @@ enum BeautyGeometryEffectPipeline {
         )
     }
 
-    private struct RenderableWarpPoint {
+    struct RenderableWarpPoint {
         let pixelCenterSampling: Bool
         let target: SIMD2<Float>
         let displacement: SIMD2<Float>

@@ -5,6 +5,12 @@ struct NoseWarpFieldEmissions: Equatable, Sendable {
     let noseBridge: [WarpControlPoint]
     let noseRootNarrowing: [WarpControlPoint]
     let noseTipLift: [WarpControlPoint]
+    /// Dense still images use a continuous field, with no proxy control points.
+    /// Keeping admission separate avoids making planner work depend on whether
+    /// the superseded circular kernels could emit at this particular anatomy.
+    var continuousFieldMask: UInt8 = 0
+
+    var hasAdmittedWork: Bool { continuousFieldMask != 0 || !points.isEmpty }
 
     var points: [WarpControlPoint] {
         noseSlim +
@@ -17,22 +23,22 @@ struct NoseWarpFieldEmissions: Equatable, Sendable {
 
     func sanitizing(_ strengths: BeautyEffectiveStrengths) -> BeautyEffectiveStrengths {
         var sanitized = strengths
-        if strengths.noseSlim != 0, noseSlim.isEmpty {
+        if strengths.noseSlim != 0, noseSlim.isEmpty, continuousFieldMask & 1 == 0 {
             sanitized.noseSlim = 0
         }
-        if strengths.noseWingSlim != 0, noseWingSlim.isEmpty {
+        if strengths.noseWingSlim != 0, noseWingSlim.isEmpty, continuousFieldMask & 2 == 0 {
             sanitized.noseWingSlim = 0
         }
-        if strengths.noseTipSize != 0, noseTipSize.isEmpty {
+        if strengths.noseTipSize != 0, noseTipSize.isEmpty, continuousFieldMask & 4 == 0 {
             sanitized.noseTipSize = 0
         }
-        if strengths.noseBridge != 0, noseBridge.isEmpty {
+        if strengths.noseBridge != 0, noseBridge.isEmpty, continuousFieldMask & 8 == 0 {
             sanitized.noseBridge = 0
         }
-        if strengths.noseRootNarrowing != 0, noseRootNarrowing.isEmpty {
+        if strengths.noseRootNarrowing != 0, noseRootNarrowing.isEmpty, continuousFieldMask & 16 == 0 {
             sanitized.noseRootNarrowing = 0
         }
-        if strengths.noseTipLift != 0, noseTipLift.isEmpty {
+        if strengths.noseTipLift != 0, noseTipLift.isEmpty, continuousFieldMask & 32 == 0 {
             sanitized.noseTipLift = 0
         }
         return sanitized
@@ -40,6 +46,24 @@ struct NoseWarpFieldEmissions: Equatable, Sendable {
 }
 
 struct NoseWarpProvider: WarpControlPointProvider {
+    /// The dense still-image contract fails closed when source nose or complete
+    /// protection support is unavailable. Vision retains its existing route.
+    func planningEmissions(face: FaceGeometry, strengths: BeautyEffectiveStrengths) -> NoseWarpFieldEmissions {
+        guard BeautyContinuousNoseMap.replacesLegacy(for: face) else {
+            return fieldEmissions(face: face, strengths: strengths)
+        }
+        var result = NoseWarpFieldEmissions(noseSlim: [], noseWingSlim: [], noseTipSize: [],
+                                            noseBridge: [], noseRootNarrowing: [], noseTipLift: [])
+        guard BeautyContinuousNoseMap.isEligible(face: face) else { return result }
+        for (index, key) in BeautyContinuousNoseMap.keys.enumerated() {
+            let strength = strengths[keyPath: key]
+            if strength.isFinite, abs(strength) > Float.ulpOfOne {
+                result.continuousFieldMask |= UInt8(1 << index)
+            }
+        }
+        return result
+    }
+
     func makeControlPoints(
         face: FaceGeometry,
         strengths: BeautyEffectiveStrengths

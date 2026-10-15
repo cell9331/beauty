@@ -165,6 +165,22 @@ final class GeometryConflictResolverTests: XCTestCase {
         XCTAssertEqual(resolved.warnings.map(\.code), ["combined_geometry_weakened"])
     }
 
+    func testSignedMouthSmilePeakAndPlumpUseAbsoluteCombinationBudget() {
+        let positive = strengths(smile: 1, lipPeakDefinition: 1, lipPlump: 1)
+        let negative = strengths(smile: -1, lipPeakDefinition: -1, lipPlump: -1)
+        let resolver = GeometryConflictResolver(totalThreshold: 0.5)
+        let a = resolver.resolve(strengths: positive)
+        let b = resolver.resolve(strengths: negative)
+        XCTAssertEqual(positive.geometryTotal, 1, accuracy: 0.000001)
+        XCTAssertEqual(negative.geometryTotal, positive.geometryTotal, accuracy: 0.000001)
+        XCTAssertEqual(a.metrics, b.metrics)
+        XCTAssertEqual(a.warnings, b.warnings)
+        XCTAssertEqual(b.strengths.smile, -a.strengths.smile, accuracy: 0.000001)
+        XCTAssertEqual(b.strengths.lipPeakDefinition, -a.strengths.lipPeakDefinition, accuracy: 0.000001)
+        XCTAssertEqual(b.strengths.lipPlump, -a.strengths.lipPlump, accuracy: 0.000001)
+        XCTAssertEqual(b.metrics["beauty.effects.weakenedCount"], 3)
+    }
+
     func testMOUTH14FaceEyeSixNoseEightMouthFieldsShareOneExactScale() {
         let strengths = self.strengths(
             faceSlim: 1,
@@ -651,12 +667,12 @@ final class GeometryConflictResolverTests: XCTestCase {
         strengths.noseTipLift = min(max(noseTipLift, 0), BeautySafetyCaps.noseTipLift)
         strengths.mouthSize = min(max(mouthSize, -BeautySafetyCaps.mouthSize), BeautySafetyCaps.mouthSize)
         strengths.mouthWidth = min(max(mouthWidth, -BeautySafetyCaps.mouthWidth), BeautySafetyCaps.mouthWidth)
-        strengths.smile = min(smile, BeautySafetyCaps.smile)
+        strengths.smile = min(max(smile, -BeautySafetyCaps.smile), BeautySafetyCaps.smile)
         strengths.mouthYPosition = min(max(mouthYPosition, -BeautySafetyCaps.mouthYPosition), BeautySafetyCaps.mouthYPosition)
         strengths.mouthTilt = min(max(mouthTilt, -BeautySafetyCaps.mouthTilt), BeautySafetyCaps.mouthTilt)
         strengths.mouthXPosition = min(max(mouthXPosition, -BeautySafetyCaps.mouthXPosition), BeautySafetyCaps.mouthXPosition)
-        strengths.lipPeakDefinition = min(max(lipPeakDefinition, 0), BeautySafetyCaps.lipPeakDefinition)
-        strengths.lipPlump = min(max(lipPlump, 0), BeautySafetyCaps.lipPlump)
+        strengths.lipPeakDefinition = min(max(lipPeakDefinition, -BeautySafetyCaps.lipPeakDefinition), BeautySafetyCaps.lipPeakDefinition)
+        strengths.lipPlump = min(max(lipPlump, -BeautySafetyCaps.lipPlump), BeautySafetyCaps.lipPlump)
         return strengths
     }
 
@@ -762,12 +778,12 @@ private extension BeautyEffectiveStrengths {
             noseTipLift,
             abs(mouthSize),
             abs(mouthWidth),
-            smile,
+            abs(smile),
             abs(mouthYPosition),
             abs(mouthTilt),
             abs(mouthXPosition),
-            lipPeakDefinition,
-            lipPlump,
+            abs(lipPeakDefinition),
+            abs(lipPlump),
         ].reduce(0.0) { $0 + Double($1) })
     }
 }

@@ -76,6 +76,42 @@ or reopen closed EYE/SEG work. See [dense contract](docs/sdk/DENSE_FACE_REFACTOR
 
 ## Request-local geometry and retouch
 
+The continuous eye map derives source-fixed axes from observed eye support.
+Dense visible-ring evidence gates negative iris size; missing eye/iris support
+is not borrowed or synthesized for admission. Protection uses the existing
+FaceGeometry feature paths: dense nose/lip observations where available, and
+coarse compatibility paths on the sparse Vision route. These guards do not
+establish complete semantic organ boundaries. Grid/geometry storage releases
+per request, and reflection remains aggregate. Reference portraits and derived
+outputs stay in local ignored/temporary storage; evidence records directions
+and aggregate checks only. See [eye input limits](docs/sdk/EYE_SHAPE_SLIDERS.md).
+
+The first five controls may calibrate position scale and the horizontal scale pivot from
+bounded RGB dark-edge evidence in the supplied source raster. Coherent rows,
+opaque samples and geometric span/pivot limits precede calibration; ambiguous
+or unsupported evidence keeps the measured geometric frame. This creates no
+eye/skin/occluder semantic classification, model or retained pixel payload.
+Lower-lid and outer-corner work select the widest consistent three sampled rows
+for a local horizontal frame; the rows need not be adjacent. The original opaque
+RGB contrast, two-boundary coherence and .80 minimum-span/.22 pivot bounds still
+apply. The strict default three-widest-row path for the first five controls is
+unchanged. Lower-lid upper-zero trace, central lobe and outer-zero edge share
+this local frame, as does the outer-corner plateau. Opaque RGB contrast at an
+already validated dense iris center only chooses the upper-trace sampling rim.
+It does not infer or relocate a pupil,
+infer an iris radius or admit an unsupported eye; ambiguous/transparent evidence
+keeps the conservative geometric fallback. Derived scalars remain request-local.
+Protected feature paths, additional brow/central-bridge guards and existing
+joint displacement/gradient admission still apply. Opposite spacing fields
+require ordered, separated eyes and meet at a fixed source midline.
+
+The continuous mouth map uses existing observed outer/inner lips and eye/nose
+support within the request. Its descriptions and reflection expose counts only;
+it adds no serialized geometry, resource, model or diagnostic payload. Invalid
+observations cannot authorize the legacy proxy. Local lip-thickness/peak edits
+protect the observed inner-opening band; this geometric guard is not general
+tooth, skin or object segmentation. See [mouth bounds](docs/sdk/MOUTH_SLIDERS.md).
+
 The explicit prepared-photo API is a bounded memory-only exception for one
 engine-owned immutable RGB8 source and at most six purpose/raster detection
 entries. Deep byte copying prevents later mutation of a caller provider from
@@ -193,10 +229,13 @@ owner's local filesystem; they are not a concurrent-filesystem security sandbox.
 
 ## Verification and change routing
 
-Archive verification, boundary self-test/live scan and wrapper mutation checks
-are the narrow document/boundary gates. SDK code/contract changes run the
-owning public/target tests and the complete archive-first zero-failure/zero-skip
-gate described in [QUALITY_SCORE.md](QUALITY_SCORE.md). New data/model/resource
+Document checks follow the changed claims: archive/boundary checks for those
+boundaries, wrapper mutation checks for gate semantics, and link/claim/diff
+checks for prose. SDK code/contract changes run the directly affected public/
+target tests; expand only for concrete dependent paths. Complete owner-local
+milestone closeout requires the archive-first zero-failure/zero-skip gate;
+ordinary edits do not implicitly require a full rerun. Exact scope selection
+is owned by [QUALITY_SCORE.md](QUALITY_SCORE.md). New data/model/resource
 or external access must update this trust contract and actual-use rights review
 before implementation. Separately authorized external host UI stays outside
 the repository under [FRONTEND.md](FRONTEND.md).

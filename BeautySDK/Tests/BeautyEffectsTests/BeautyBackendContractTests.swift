@@ -188,6 +188,27 @@ final class BeautyBackendContractTests: XCTestCase {
         }
     }
 
+    func testSignedSmilePeakAndPlumpPassBackendNormalizationAndRejectInvalidValues() throws {
+        let fields: [WritableKeyPath<BeautyEffectiveStrengths, Float>] = [
+            \.smile, \.lipPeakDefinition, \.lipPlump
+        ]
+        for field in fields {
+            var strengths = BeautyEffectiveStrengths()
+            strengths[keyPath: field] = -0.25
+            XCTAssertNoThrow(try BeautyBackendRequest(
+                input: .stillImage(Self.image(width: 1, height: 1)), metadata: Self.metadata(),
+                plan: BeautyEffectPlan(activeDomains: [.mouth], effectiveStrengths: strengths)))
+            for invalid: Float in [-1.01, 1.01, .nan, .infinity, -.infinity] {
+                strengths[keyPath: field] = invalid
+                XCTAssertThrowsError(try BeautyBackendRequest(
+                    input: .stillImage(Self.image(width: 1, height: 1)), metadata: Self.metadata(),
+                    plan: BeautyEffectPlan(activeDomains: [.mouth], effectiveStrengths: strengths))) {
+                        XCTAssertEqual($0 as? BeautyError, .invalidInput)
+                    }
+            }
+        }
+    }
+
     func testOutputKindMismatchIsRejected() throws {
         let request = try BeautyBackendRequest(
             input: .stillImage(Self.image(width: 1, height: 1)),

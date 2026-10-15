@@ -88,7 +88,7 @@ final class BeautyEngineFaceSliderTests: XCTestCase {
             (.faceWidth,0.305,0.61,false,-1),(.smallFace,0.305,0.61,false,-1),
             (.jawAngle,0.36,0.70,false,-1),(.vFace,0.36,0.70,false,-1),
             (.temple,0.26,0.29,false,1),(.cheekbone,0.265,0.43,false,-1),
-            (.chinTaper,0.41,0.75,false,-1),(.chinLength,0.5,0.78,true,-1)]
+            (.chinTaper,0.41,0.75,false,1),(.chinLength,0.5,0.78,true,-1)]
         for (slider,x,y,vertical,direction) in cases {
             let source=image(x:x,y:y,vertical:vertical),before=pixels(source)
             let baseline=measure(before,vertical:vertical)
@@ -118,6 +118,26 @@ final class BeautyEngineFaceSliderTests: XCTestCase {
                 XCTAssertEqual(protectedDelta,0);XCTAssertEqual(alphaDelta,0)
             }
         }
+    }
+
+    func testChinTaperReferenceSliderReversesDirectPolarityAndPreservesOtherFields() {
+        let source = BeautyParameters(faceSlim: 0.2, faceSmall: -0.1,
+            faceVShape: 0.12, jawSlim: 0.1, chinLength: 0.1,
+            faceContourSmooth: 0.1, templeFullness: 0.12, cheekboneSlim: -0.08,
+            chinTaper: 0.15, noseBridge: 0.1, hairlineHeight: -0.1)
+        let cap: Float = 0.25
+        let mappings: [(Float, Float)] = [
+            (0, cap), (0.25, cap * 0.5), (0.5, 0), (0.75, -cap * 0.5),
+            (1, -cap), (-1, cap), (2, -cap), (.nan, 0)
+        ]
+        for (position, directValue) in mappings {
+            var expected = source.normalized()
+            expected.chinTaper = directValue
+            XCTAssertEqual(BeautyFaceShapeSlider.chinTaper.applying(position: position, to: source), expected,
+                "reference mapping changes only chinTaper")
+        }
+        XCTAssertEqual(BeautyParameters(chinTaper: cap).normalized().chinTaper, cap,
+            "the direct positive taper API retains its polarity")
     }
 
     func testPublicNeutralNoFaceAndTypedFailureRecovery() throws {

@@ -183,6 +183,80 @@ final class BeautyMetalRuntimeTests: XCTestCase {
         XCTAssertEqual(recovered.created, recovered.released)
     }
 
+    func testUniformThreadgroupsPreserveEveryRowAcrossWidthBoundariesAndNeutralPasses() throws {
+        // This regression requires actual Metal execution, including on older supported GPUs.
+        let runtime = try BeautyMetalRuntime()
+        let color = BeautyMetalPass.color(try BeautyMetalColorParameters(
+            saturationDelta: 0,
+            contrastScale: 1,
+            lightLift: 0,
+            redBias: 0,
+            greenBias: 0,
+            blueBias: 0,
+            highlightLift: 0,
+            shadowLift: 0,
+            smoothing: 0
+        ))
+        // Inactive support exercises dispatch without starting the retained geometry resampling.
+        let geometry = BeautyMetalPass.geometry(try BeautyMetalGeometryParameters(points: [
+            try BeautyMetalWarpPoint(
+                sourceX: 0.5,
+                sourceY: 0,
+                targetX: 0.5,
+                targetY: 0,
+                radius: 0.01,
+                strength: 0,
+                falloff: 1
+            )
+        ]))
+        let retouch = BeautyMetalPass.composedRetouch(try BeautyMetalComposedRetouchParameters())
+        let graphs: [[BeautyMetalPass]] = [
+            [], [color], [geometry], [retouch],
+            [color, geometry, retouch], [retouch, geometry, color, retouch]
+        ]
+        let height = 3
+
+        for width in [1, 31, 32, 33, 65] {
+            var bytes: [UInt8] = []
+            bytes.reserveCapacity(width * height * 4)
+            for pixel in 0..<(width * height) {
+                let red: UInt8 = UInt8(pixel % 256)
+                let green: UInt8 = UInt8((pixel * 37 + 17) % 256)
+                let blue: UInt8 = UInt8((pixel * 73 + 29) % 256)
+                let alpha: UInt8 = UInt8((pixel * 19 + 7) % 256)
+                bytes.append(red)
+                bytes.append(green)
+                bytes.append(blue)
+                bytes.append(alpha)
+            }
+            for (graphIndex, graph) in graphs.enumerated() {
+                let before = runtime.resourceCountersForTesting
+                let output = try runtime.render(
+                    width: width, height: height, rgba8Bytes: bytes, passes: graph
+                )
+                let context = "width=\(width), graph=\(graphIndex)"
+                XCTAssertEqual(output, bytes, context)
+                XCTAssertEqual(
+                    stride(from: 3, to: output.count, by: 4).map { output[$0] },
+                    stride(from: 3, to: bytes.count, by: 4).map { bytes[$0] },
+                    context
+                )
+                for row in 0..<height {
+                    let rowEnd = ((row + 1) * width - 1) * 4
+                    XCTAssertEqual(
+                        Array(output[rowEnd..<(rowEnd + 4)]),
+                        Array(bytes[rowEnd..<(rowEnd + 4)]),
+                        "\(context), row=\(row)"
+                    )
+                }
+                let after = runtime.resourceCountersForTesting
+                XCTAssertGreaterThan(after.created, before.created, context)
+                XCTAssertEqual(after.active, 0, context)
+                XCTAssertEqual(after.created, after.released, context)
+            }
+        }
+    }
+
     func testOrderedPassGraphUsesBoundedGeometryBuffersAndCleansEveryRequestResource() throws {
         guard let device = MTLCreateSystemDefaultDevice() else {
             XCTAssertTrue(true, "metalUnavailable")

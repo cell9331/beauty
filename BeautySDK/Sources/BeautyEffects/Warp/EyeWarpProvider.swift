@@ -74,25 +74,30 @@ struct EyeWarpProvider: WarpControlPointProvider {
     func fieldEmissions(face: FaceGeometry, strengths: BeautyEffectiveStrengths) -> EyeWarpFieldEmissions {
         let supports = semanticSupports(in: face)
         let gazeSupports = gazeSupports(in: face)
-        let centers = supports.map(\.center)
+        let measured = [face.leftEyeSupport, face.rightEyeSupport].compactMap { $0 }
+        let geometrySupports = measured.isEmpty ? supports : measured
+        let centers = geometrySupports.map(\.center)
+        func active(_ value: Float) -> Bool {
+            value > 0 || (value < 0 && !measured.isEmpty)
+        }
         let leftCenter = supports.first(where: { $0.side == .left })?.center
         let rightCenter = supports.first(where: { $0.side == .right })?.center
         return EyeWarpFieldEmissions(
-            eyeSize: strengths.eyeSize > 0 ? sizePoints(centers: centers, face: face, strength: strengths.eyeSize) : [],
+            eyeSize: active(strengths.eyeSize) ? sizePoints(centers: centers, face: face, strength: strengths.eyeSize) : [],
             eyeDistance: abs(strengths.eyeDistance) > Float.ulpOfOne
                 ? distancePoints(leftCenter: leftCenter, rightCenter: rightCenter, face: face, strength: strengths.eyeDistance) : [],
             eyeYPosition: abs(strengths.eyeYPosition) > Float.ulpOfOne
                 ? verticalPoints(centers: centers, face: face, strength: strengths.eyeYPosition) : [],
-            eyeTailLift: strengths.eyeTailLift > 0 ? tailLiftPoints(face: face, strength: strengths.eyeTailLift) : [],
-            eyeHeight: strengths.eyeHeight > 0 ? supports.flatMap { heightPoints(support: $0, face: face, strength: strengths.eyeHeight) } : [],
-            eyeLength: strengths.eyeLength > 0 ? supports.flatMap { lengthPoints(support: $0, face: face, strength: strengths.eyeLength) } : [],
+            eyeTailLift: active(strengths.eyeTailLift) ? tailLiftPoints(face: face, strength: strengths.eyeTailLift) : [],
+            eyeHeight: active(strengths.eyeHeight) ? geometrySupports.flatMap { heightPoints(support: $0, face: face, strength: strengths.eyeHeight) } : [],
+            eyeLength: active(strengths.eyeLength) ? geometrySupports.flatMap { lengthPoints(support: $0, face: face, strength: strengths.eyeLength) } : [],
             upperEyelidLift: strengths.upperEyelidLift > 0 ? supports.flatMap { lidPoints(support: $0.upper, center: $0.center, face: face, strength: strengths.upperEyelidLift, upward: true, cap: BeautySafetyCaps.upperEyelidLift) } : [],
-            pupilSize: strengths.pupilSize > 0 ? supports.flatMap { pupilSizePoints(support: $0, face: face, strength: strengths.pupilSize) } : [],
+            pupilSize: active(strengths.pupilSize) ? geometrySupports.flatMap { pupilSizePoints(support: $0, face: face, strength: strengths.pupilSize) } : [],
             gazeCorrection: strengths.gazeCorrection > 0 ? gazeSupports.compactMap { gazeCandidate(support: $0, face: face, strength: strengths.gazeCorrection)?.point } : [],
-            lowerEyelidDrop: strengths.lowerEyelidDrop > 0 ? supports.flatMap { lidPoints(support: $0.lower, center: $0.center, face: face, strength: strengths.lowerEyelidDrop, upward: false, cap: BeautySafetyCaps.lowerEyelidDrop) } : [],
-            eyeTilt: abs(strengths.eyeTilt) > Float.ulpOfOne ? supports.flatMap { tiltPoints(support: $0, face: face, strength: strengths.eyeTilt) } : [],
-            innerCornerOpen: strengths.innerCornerOpen > 0 ? supports.flatMap { cornerPoints(support: $0.innerCorner, center: $0.center, face: face, strength: strengths.innerCornerOpen, cap: BeautySafetyCaps.innerCornerOpen) } : [],
-            outerCornerOpen: strengths.outerCornerOpen > 0 ? supports.flatMap { cornerPoints(support: $0.outerCorner, center: $0.center, face: face, strength: strengths.outerCornerOpen, cap: BeautySafetyCaps.outerCornerOpen) } : [],
+            lowerEyelidDrop: active(strengths.lowerEyelidDrop) ? geometrySupports.flatMap { lidPoints(support: $0.lower, center: $0.center, face: face, strength: strengths.lowerEyelidDrop, upward: false, cap: BeautySafetyCaps.lowerEyelidDrop) } : [],
+            eyeTilt: abs(strengths.eyeTilt) > Float.ulpOfOne ? geometrySupports.flatMap { tiltPoints(support: $0, face: face, strength: strengths.eyeTilt) } : [],
+            innerCornerOpen: active(strengths.innerCornerOpen) ? geometrySupports.flatMap { cornerPoints(support: $0.innerCorner, center: $0.center, face: face, strength: strengths.innerCornerOpen, cap: BeautySafetyCaps.innerCornerOpen) } : [],
+            outerCornerOpen: active(strengths.outerCornerOpen) ? geometrySupports.flatMap { cornerPoints(support: $0.outerCorner, center: $0.center, face: face, strength: strengths.outerCornerOpen, cap: BeautySafetyCaps.outerCornerOpen) } : [],
             eyeSymmetry: strengths.eyeSymmetry > 0 ? symmetryPoints(supports: supports, face: face, strength: strengths.eyeSymmetry) : []
         )
     }
@@ -222,7 +227,8 @@ struct EyeWarpProvider: WarpControlPointProvider {
     }
 
     private func pupilSizePoints(support: BeautyEyeSemanticSupport, face: FaceGeometry, strength: Float) -> [WarpControlPoint] {
-        guard let pupil = support.pupil, support.contourEligible else { return [] }
+        guard let pupil = support.pupil, support.contourEligible,
+              strength >= 0 || face.denseSupport != nil else { return [] }
         if let dense = face.denseSupport {
             guard let ring = dense.iris(side: support.side, eye: support) else { return [] }
             let expansion = 1 + 0.20 * strength / BeautySafetyCaps.pupilSize
@@ -230,9 +236,10 @@ struct EyeWarpProvider: WarpControlPointProvider {
             let radius = max(support.span.x * 0.35, 0.002)
             return makePoints(sources: ring, targets: targets, face: face, radius: radius, strength: strength)
         }
-        let d = face.bounds.width * 0.012 * strength / BeautySafetyCaps.pupilSize
+        let d = face.bounds.width * 0.012 * abs(strength) / BeautySafetyCaps.pupilSize
+        let factor: Float = strength < 0 ? 0.2 : 1.8
         let offsets = [SIMD2<Float>(-d, 0), SIMD2<Float>(d, 0), SIMD2<Float>(0, -d), SIMD2<Float>(0, d)]
-        return makePoints(sources: offsets.map { pupil + $0 }, targets: offsets.map { pupil + $0 * 1.8 }, face: face, radius: face.bounds.width * 0.045, strength: strength)
+        return makePoints(sources: offsets.map { pupil + $0 }, targets: offsets.map { pupil + $0 * factor }, face: face, radius: face.bounds.width * 0.045, strength: strength)
     }
 
     private struct GazeSample {
@@ -535,9 +542,10 @@ struct EyeWarpProvider: WarpControlPointProvider {
     }
 
     private func sizePoints(centers: [SIMD2<Float>], face: FaceGeometry, strength: Float) -> [WarpControlPoint] {
-        let displacement = face.bounds.height * 0.025 * strength / BeautySafetyCaps.eyeSize
+        let displacement = face.bounds.height * 0.025 * abs(strength) / BeautySafetyCaps.eyeSize
+        let factor: Float = strength < 0 ? 0.2 : 1.8
         return centers.flatMap { center in
-            makePoints(sources: [SIMD2<Float>(center.x, center.y - displacement), SIMD2<Float>(center.x, center.y + displacement)], targets: [SIMD2<Float>(center.x, center.y - displacement * 1.8), SIMD2<Float>(center.x, center.y + displacement * 1.8)], face: face, radius: face.bounds.width * 0.12, strength: strength)
+            makePoints(sources: [SIMD2<Float>(center.x, center.y - displacement), SIMD2<Float>(center.x, center.y + displacement)], targets: [SIMD2<Float>(center.x, center.y - displacement * factor), SIMD2<Float>(center.x, center.y + displacement * factor)], face: face, radius: face.bounds.width * 0.12, strength: strength)
         }
     }
 
@@ -555,15 +563,18 @@ struct EyeWarpProvider: WarpControlPointProvider {
     }
 
     private func tailLiftPoints(face: FaceGeometry, strength: Float) -> [WarpControlPoint] {
-        guard let leftTail = face.leftEye.min(by: { $0.x < $1.x }), let rightTail = face.rightEye.max(by: { $0.x < $1.x }) else { return [] }
+        let left = face.leftEyeSupport?.outer.first ?? face.leftEye.min(by: { $0.x < $1.x })
+        let right = face.rightEyeSupport?.outer.first ?? face.rightEye.max(by: { $0.x < $1.x })
+        let tails = [left, right].compactMap { $0 }
+        guard !tails.isEmpty, face.leftEyeSupport != nil || face.rightEyeSupport != nil || tails.count == 2 else { return [] }
         let displacement = face.bounds.height * 0.035 * strength / BeautySafetyCaps.eyeTailLift
-        return makePoints(sources: [leftTail, rightTail], targets: [SIMD2<Float>(leftTail.x, leftTail.y - displacement), SIMD2<Float>(rightTail.x, rightTail.y - displacement)], face: face, radius: face.bounds.width * 0.10, strength: strength)
+        return makePoints(sources: tails, targets: tails.map { SIMD2<Float>($0.x, $0.y - displacement) }, face: face, radius: face.bounds.width * 0.10, strength: strength)
     }
 
     private func makePoints(sources: [SIMD2<Float>], targets: [SIMD2<Float>], face: FaceGeometry, radius: Float, strength: Float) -> [WarpControlPoint] {
-        guard sources.count == targets.count, strength.isFinite, strength > Float.ulpOfOne,
+        guard sources.count == targets.count, strength.isFinite, abs(strength) > Float.ulpOfOne,
               sources.indices.allSatisfy({ isFinitePoint(sources[$0]) && isFinitePoint(targets[$0]) }) else { return [] }
-        return zip(sources, targets).map { makePoint(source: $0.0, target: $0.1, radius: radius, strength: strength) }
+        return zip(sources, targets).map { makePoint(source: $0.0, target: $0.1, radius: radius, strength: abs(strength)) }
     }
 
     private func makePoint(source: SIMD2<Float>, target: SIMD2<Float>, radius: Float, strength: Float) -> WarpControlPoint {

@@ -1,7 +1,7 @@
 # FRONTEND.md
 
-> Historical application/UI boundary and archive redirect. The active repository is
-> SDK-only and uses SwiftPM plus SDK-owned command-line validation.
+> SDK-only SwiftPM repository boundary, historical UI recovery and the separately
+> authorized external owner host. Application work remains outside this repository.
 
 ## Current Contract
 
@@ -38,10 +38,13 @@ bash scripts/check-sdk-only-boundary.sh --post-archive
 Reintroducing either retired source root, any application project artifact, UI
 framework source, or UI-test dependency violates the SDK-only boundary.
 
-## Future UI Work
+## Authorization for external UI work
 
-Any future application/UI work requires a separately authorized project or
-milestone with its own product, security, reliability, and test owners. Historical
+New application/UI scope requires a separately authorized project or milestone
+with its own product, security, reliability, and test owners. Existing explicit
+authorization below remains valid for that host and scope; routine continuation
+within it does not require repeating authorization. An SDK-only task does not
+implicitly include external application edits or native UI regression. Historical
 archives are not an active implementation template or acceptance contract.
 
 ## Separately authorized owner host (2026-10-08)
@@ -81,3 +84,26 @@ and the suspended tool remain visible but grey and disabled; direct model calls
 are silent no-ops. Import/undo/confirm, actual missing-support errors and the
 single safe-area owner remain unchanged. Application source and UI validation
 stay in the already authorized external host.
+
+## Current eye-tool scope (2026-10-14)
+
+The owner's clarified [iris follow-up](plans/active/A-2026-10-14-eye-iris-reference-delivery.md)
+only optimizes the referenced `pupilSize` control. Eleven distinct reference
+sliders remain selectable, with iris size using the established bidirectional
+track. Lift, gaze correction, symmetry and sclera redness remain visible but
+grey and disabled; their interactions cannot change selection, parameters or
+history. Existing values/history are not cleared by this availability choice.
+The SDK's fifteen eye fields/APIs remain callable, with caps and defaults
+unchanged; host availability does not change SDK taxonomy. Upper-eyelid fullness remains
+`suspended`, and closed EYE/SEG work stays closed.
+
+C40 meets the frozen original/preview iris response, photometric, protection,
+quarter and detail criteria for one authorized already-edited portrait; prior-ten
+isolated cap PNG20/20 identity remains exact. Host6/0/0 and two simulator UI
+tests2/0/0 verify the focused slider/grey-entry interactions. The iPhone13Pro
+original actual-Metal/CPU-parity pass is an intermediate checkpoint; its preview
+runner did not execute. Final delivery follows the owner's latest iPad7 choice,
+with original, preview and native panel configurations still being verified.
+No complete device-delivery or general appearance claim follows yet.
+Application source, interaction evidence and native UI validation remain in the
+external host's README/VALIDATION.

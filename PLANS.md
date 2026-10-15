@@ -9,9 +9,9 @@
 
 1. 每次工作先读本页；涉及现行任务，再读下方 Active 条目和[当前技术债](plans/debt/current.md)。
 2. 查询已完成事项时，先读[历史索引](plans/history/README.md)或[2026-10 已完成索引](plans/history/2026-10/README.md)及[终局处置索引](plans/history/2026-10/TERMINAL.md)，再打开匹配分片。可用 `rg -l '记录 ID 或关键词' plans/history` 定位，不必加载整个历史账本。
-3. 开始工作前确认已有匹配计划，优先更新现有计划；每完成可验证步骤更新 checklist。
+3. 开始工作前确认已有匹配计划，优先更新现有计划；每完成可验证步骤更新 checklist。任务先写清行为、保留契约与最小充分验证，不默认扩大到全 SDK 或外部宿主。
 4. 阻塞需记录原因、尝试及下一步；完成后记录验证证据与剩余风险，移入 Completed。
-5. 发现范围外问题写入当前技术债；契约变化同步更新对应根级 owner。未验证要写明原因。
+5. 发现范围外问题写入当前技术债；契约变化同步更新对应 owner，摘要直接链接正文。授权范围、实际实现、效果资格和日期回执分别记录；未验证要写明原因。
 6. 新 Active 计划各用一个 `plans/active/<ID>.md`；完成时将其全文移至 `plans/history/YYYY-MM/<ID>.md`，并更新本页与历史索引。2026-09-28 前的旧记录保存在索引所列分片中。
 
 状态词：`planned` 待开始；`active` 推进中；`blocked` 等待条件；`verifying` 验证中；`completed` 已验证；`canceled` 明确取消并留原因；`closed_with_unmet_objectives` 有限尝试结束、目标未实现且无续作队列。
@@ -24,6 +24,20 @@
 - 去脂仍为 `suspended`、默认隐藏并保留显式兼容；自动同肤色贴片识别未实现。v1.25两分支各2方法4版本均失败，按所有者终局要求关闭未交付目标。现有host物体+完整唇并集蒙版继续可用；辅助能力不计自动交付。见[最终处置](docs/history/retouch/RETOUCH_FINAL_DISPOSITION_2026-10-03.md)。普通“继续”不重启、失败缺口不再作为计划阻塞；未来重开须明确新范围与新信息/资源。
 
 ## 3. Active
+
+- [A-2026-10-14-face-reference-protection](plans/active/A-2026-10-14-face-reference-protection.md)：`active`，独立分支对照十项脸型；共同原图已配准。所有者已授权预定义窄圈，五官/耳/发型主体/圈外背景保持。C42内部窄圈19定向方法通过，限定照片保护保持但上侧脸宽8.8–9.3display仍未达参考17–19的原幅度门；C43扩内侧皮肤肩部实际21方法/16照片保护断言失败，已拒绝并恢复C42；圈不扩大。追加宿主美图滑杆已完成，单台原生8个不同定向方法分两次通过；宿主仍连原SDK，不冒充算法集成。C39流畅/发际线旧失败与原目录眼鼻嘴并行工作保留。 所有者最新要求按功能核对、部分暂交付；当前原SDK21孤立设置重渲成功（Mac诊断），建议先核对5项观感候选、流畅/发际线明确短板及脸宽/太阳穴/颧骨，名单尚待确认，不更改既有保护门。
+
+- [嘴部整体重做](plans/active/A-2026-10-14-mouth-redesign-HANDOFF.md)：`active`，已接续并冻结八项材料/目标域与域外 RGBA 零变化判据；先复现74e大小±，再独立研究局部合成，证据合格后整合。所有者追加 iPad 真机测试。旧36项集成通过不证明新局部性或外观；保留眼鼻并行改动，不提交/推送。
+
+- [A-2026-10-14-eye-iris-reference-delivery](plans/active/A-2026-10-14-eye-iris-reference-delivery.md)：按所有者新澄清只优化有参考的眼瞳大小；提肌/眼神矫正/对称/祛红血丝四宿主入口置灰，SDK能力保留。先冻结源定义参考/保护/细节谓词并测当前基线，沿用双向参考滑杆；保留此前十项、冻结证据及并行嘴部R13就绪产物。
+
+
+
+### A-2026-10-11-nose-reference-implementation
+
+- Status: `verifying`。六项连续鼻场与16ms预览调度已实现；选定候选6，原13项鼻部SDK及7个不同相关原生用例通过。2026-10-12修复A10 GPU dispatch兼容问题，新增本轮16项直接SDK及3项iPad Release原生检查全部通过；同照片预览/原尺寸各90/90可靠端点、完整眼眉唇保护与12端点实际Metal一致性通过。已更新安装并打开iPad应用；正鼻尖仍稍宽圆，完整美图外观目标未结清，限量渲染耗时不代表拖动帧率或长稳。
+- Scope: 固定单项原图/参考端点与比例、轮廓、眼唇保护验收；连续鼻部场替代局部拉点，并验证真实MediaPipe输出与必要外观增强。
+- Plan: [实施假设、预先声明的像素/外观标准与最小验证](plans/active/A-2026-10-11-nose-reference-implementation.md)。不把旧生成测试或变化像素数当成此次外观达标。
 
 本轮脸型接线与连续轮廓修复已完成其限定实现，见下方 C-2026-10-11；完整美图外观一致及发际线/面部流畅原图缺口保留 FACE-REF-01。
 
@@ -39,6 +53,75 @@ v1.25仍按`closed_with_unmet_objectives`结清，不恢复其自动效果研发
 原记录已在[历史索引](plans/history/README.md)对应的 completed 分片。Phase 93 的 owner-local `93-CHECKS.json` 与 Phase 95 independent review 属于历史证据，不是当前 Active 计划。
 
 ## 4. Completed / terminal dispositions
+
+### C-2026-10-14-mouth-thinning-research
+
+- Status: `canceled`，用户改为嘴部整体重做；仅完成单项研究规划及只读准备，无新候选/证明/图片/研究编译，不能算实验成功或失败。
+- Record: [原计划及取代原因](plans/history/2026-10/A-2026-10-14-mouth-thinning-research.md)、[新线程交接](plans/active/A-2026-10-14-mouth-redesign-HANDOFF.md)。生产未改；另有当前共享工作区36项定向集成检查通过，不能覆盖唇外脸部稳定性。
+
+### C-2026-10-12-mouth-native-followup
+
+- Status: `completed`，限负收薄与image-X改善/滑杆响应。f160忠实集成74e；仅修合成marker归属，原几何、保护、cap、数值门及照片matcher保留。完整参考仍未达到，MOUTH-REF-01保持。
+- Verification: 实际SDK31/0/0含Metal32、public14；原iPad R13 shadow1/原7和当前iPhone13Pro26.4.2自身shadow1/原7分开记录。手机原final5/0/0、36PNG/14完整RGBA身份、8controls-first F−/X数值与双图原生1:1细节通过；A F辅助改善.8576/.8020px，X三窗增益3.8451/2.8400/2.8418px，负例不恶化。无全量回归。
+- Delivery: 同原AppID保留数据安装，iPhone App已实际打开；007/008压缩预览与库存check通过。本机162项/441152876bytes精确清理，输入/golden/失败回执/构建与并行工作保留。手机精确目录清理及后续文件服务检查失败，未确认清理或残留数；旧iPad未连接未检查，见MOUTH-DEVICE-MEDIA-01。
+- Record: [同一计划的完成记录](plans/history/2026-10/A-2026-10-12-mouth-native-followup.md)、[原交接路径](plans/active/A-2026-10-12-mouth-native-followup-HANDOFF.md)。保留所有旧失败，不提交/推送；无完整参考、一般外观、全尺寸/手机GPU、UI/FPS、性能/温升/耗电/长稳资格。
+
+
+### C-2026-10-13-eye-physical-delivery
+
+- Status: `completed`，完成现有iPad更新及限定参考响应交付。C32按原RGB一致性边界修复下至/外角局部框架，前五项默认注册、系数/cap及冻结V2谓词保持；原尺寸与预览五项响应、保护及必要原生细节/身份复核通过，C28–C31失败保持其版本含义。
+- Verification: 最新 **8个不同最小SDK用例+一次扩展同回归/0失败/0跳过**；同一iPad生产照片方法actual Metal原图20端点、CPU prepared预览40档各 **1/0/0**。20原图端点重复及独立CPU RGBA exact，前五项10及未改动6端点与实际C28 PNG exact；预览10cap重复、30中间档未重复。
+- Delivery: 同App ID保留数据更新打开；设备专属媒体根独立确认移除，本机539临时图及29一次性helper等659文件精确清理。有效App/结果/runfile/缓存、原始参考及并行嘴部最新产物保留。初次误清理R10已按冻结配置恢复，后续C32精确恢复当时最新R11产物。
+- Record: [完成记录](plans/history/2026-10/A-2026-10-13-eye-physical-delivery.md)、[匿名回执](docs/validation/EYE_PHYSICAL_20261013.json)。单张已编辑源仍缺共同零態/美图数值/参考四档曲线；不扩大为一般美图、人群、完整语义蒙版、UI触摸、性能或全量回归资格。
+
+### C-2026-10-12-eye-next-five-match
+
+- Status: `completed` for bounded supplied-reference response and selected sliders.
+- Result: 下至、眼尾上扬、倾斜、内外眼角选定C28；原尺寸/预览冻结幅度、双向响应、分离、核心保护与眼区细节通过。两批十项共用参考连续滑杆；前五项同一sRGB输入的C7实现基线PNG10/10 exact。
+- Verification: **23直接SDK/0失败/0跳过**，含actual public CPU/Metal；**5原生滑杆/0/0**。同一MediaPipe照片方法两次CPU配置各**1/0/0**：原图20cap（新10+旧10），预览新五项40四档。必要弱尺度身份复核、边界、媒体与链接/diff检查通过；无全量回归。
+- Cleanup: 原参考/冻结旧回执/构建和非探针失败xcresult保留，2104临时媒体、标注/helper/runfile及3个原始探针结果包精确移除；独立后检查确认零残留，两oracle hash不变。保留一张受管预览与允许聚合。
+- Limit: 单张已编辑参考端点、sRGB验证协议，缺共同未编辑neutral/数值/中间轨迹；无完整美图/人群/组合/严格分辨率一致或本批真机/性能声明，P3±1另留债务。
+- Record: [本批交付、失败、实际验证与清理](plans/history/2026-10/A-2026-10-12-eye-next-five-match.md)。
+
+### C-2026-10-12-eye-five-match
+
+- Status: `completed`，限前五项既定端点响应/分离/保护与已授权滑杆范围。
+- Result: 大小、上下、眼高、长度、眼距选定C7；冻结参考幅度、跨轴、保护与眼区原尺寸复核全部通过，滑杆外观与连续点按/拖动/历史行为完成。
+- Verification: **22项定向SDK / 0失败 / 0跳过**、**3项滑杆 / 0 / 0**；同一照片方法在模拟器CPU预览40档、CPU原尺寸10端点和iPad实际Metal原尺寸10端点三个配置各执行1次，均1/0/0。iPad十端点与独立CPU RGBA完全一致。
+- Finish: iPad沿用原ID更新保留数据；本次独立fixture已核验移除，App已打开。精确清理本机400临时文件（365媒体、13坐标工具等），保留失败聚合、有效构建/xcresult和唯一展示图。
+- Limit: 单张已编辑参考端点，缺共享未经编辑零态；不声明完整美图外观等价、其他六项幅度、真机UI/性能或全量回归，剩余边界见EYE-REF-01。
+- Record: [选定结果、失败、实际检查与清理记录](plans/history/2026-10/A-2026-10-12-eye-five-match.md)。
+
+### C-2026-10-12-mouth-amplitude
+
+- Status: `completed` for bounded algorithm/slider-response optimization; complete reference amplitude remains unmet.
+- Result: M唇趋平与薄组织正端、负收薄距离场与细网格、左右共同嘴角平台已优化；修复滑杆过零跳变和组合pose预算，保留完整口腔/鼻眼保护与原cap。
+- Verification: 最终**29项定向SDK / 0失败 / 0跳过**，含实际Metal32调用；fresh原生**5/0/0**（3滑杆契约+2照片）。14公开输出与14所选原生端点对候选全RGBA一致，34原生库存/回执核对；固定参考测量、原尺寸复核、边界/链接/媒体检查通过。
+- Limit: M与左右有实际增益，负收薄改善较小；完整M、负收薄和原生左右幅度目标仍未达，见MOUTH-REF-01。保留005/006新压缩预览，355临时派生图已精确清理；未全量/真机性能回归。
+- Record: [选定实现、失败复现、真实验证与边界](plans/history/2026-10/A-2026-10-12-mouth-amplitude.md)。
+
+### C-2026-10-11-eye-reference
+
+- Status: `completed` on 2026-10-12 for bounded eye algorithm/slider implementation; complete Meitu appearance and sparse-pupil amplitude remain unmet.
+- Result: 十项实测眼形连续局部场、dense 虹膜双向机制、十一中点滑杆与倾斜极性；眼高/眼瞳分离、五个宿主入口补齐、两处过零跳变及稀疏正向眼瞳眉保护修复。去脂、祛红血丝按所有者要求排除。
+- Verification: **89项不同的直接相关SDK / 0失败 / 0跳过**，含实际CPU/Metal；单台已有模拟器的**10项宿主 / 0 / 0**。20实照眼形端点方向/分离/保护通过；眼瞳修复后保护通过，但深色面积+2.344%/+1.982%未达到预设>3%。边界/mutation、归档、媒体及链接/diff检查通过；没有全量回归。
+- Limit: 照片本身是参考端点且缺零态/数值；该初始检查点未执行原生MediaPipe肖像重渲或完整外观等价。稀疏眼瞳幅度仍弱、负向退出；更早额外组合检查的鼻嘴夹具两断言失败另记当前债，不宣称该额外检查通过。
+- Record: [实现、真实检查、失败与剩余范围](plans/history/2026-10/A-2026-10-11-eye-reference.md)，后续边界见 EYE-REF-01。
+
+### C-2026-10-11-mouth-reference
+
+- Status: `completed` for bounded algorithm/slider implementation and scoped validation; complete reference appearance remains unmet.
+- Result: 八项实测连续嘴场、M/丰唇/微笑signed、九控件SDK及外部宿主映射；像素旋转、薄唇/外围重复衰减和微笑展开修正，口腔与鼻眼保护保留。
+- Verification: 累计86个不同相关SDK用例最终通过；最终同版25/0/0含实际Metal。累计11个不同原生用例最终通过；最终两照片2/0/0，32双向+4微笑横向、重复/neutral/alpha/保护及478点/sRGB通过。14Vision/34原生实际输出独立复核，边界/归档/链接/媒体容量通过；旧失败保留，未全量回归。
+- Limit: 微笑宽度与正向丰唇接近匹配参考；M双端、负丰唇与左右仍有幅度差距，见MOUTH-REF-01。两张忽略压缩预览保留，本轮334临时媒体副本已精确清理；未验收一般外观、露齿或真机性能。
+- Record: [实现、失败修正、最终实际检查与剩余边界](plans/history/2026-10/A-2026-10-11-mouth-reference.md)。
+
+### C-2026-10-11-agent-documentation
+
+- Status: `completed`，限本轮文档优化与漂移修复。
+- Result: AGENTS 精简为行动入口；明确授权/要求/实现/证据的职责，按影响选择检查，统一 SDK/外部宿主边界、导航与计划模板；修正 detector raster 和连续脸型多阶段采样描述。
+- Verification: 本地链接/锚点与 diff 检查、两归档、boundary self-test、no-skip 控制自测通过。boundary live 因本轮开始前已有嘴部测试的 `renderBackend` 引用退出 1，已记录 SDK-GATE-01，未放宽扫描器；未执行 SwiftPM/App/图片效果回归。
+- Record: [改动依据、修复清单、实际验证和共享工作树边界](plans/history/2026-10/A-2026-10-11-agent-documentation.md)。并行眼/鼻/嘴实现、模型、媒体、冻结契约和旧回执保留独立状态。
 
 ### C-2026-10-11-face-continuous
 

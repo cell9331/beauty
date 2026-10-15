@@ -9,6 +9,10 @@ struct MouthWarpFieldEmissions: Equatable, Sendable {
     let mouthXPosition: [WarpControlPoint]
     let lipPeakDefinition: [WarpControlPoint]
     let lipPlump: [WarpControlPoint]
+    /// Continuous still-image admission emits no superseded proxy points.
+    var continuousFieldMask: UInt8 = 0
+
+    var hasAdmittedWork: Bool { continuousFieldMask != 0 || !points.isEmpty }
 
     var points: [WarpControlPoint] {
         mouthSize +
@@ -23,28 +27,28 @@ struct MouthWarpFieldEmissions: Equatable, Sendable {
 
     func sanitizing(_ strengths: BeautyEffectiveStrengths) -> BeautyEffectiveStrengths {
         var sanitized = strengths
-        if strengths.mouthSize != 0, mouthSize.isEmpty {
+        if strengths.mouthSize != 0, mouthSize.isEmpty, continuousFieldMask & 1 == 0 {
             sanitized.mouthSize = 0
         }
-        if strengths.mouthWidth != 0, mouthWidth.isEmpty {
+        if strengths.mouthWidth != 0, mouthWidth.isEmpty, continuousFieldMask & 2 == 0 {
             sanitized.mouthWidth = 0
         }
-        if strengths.smile != 0, smile.isEmpty {
+        if strengths.smile != 0, smile.isEmpty, continuousFieldMask & 4 == 0 {
             sanitized.smile = 0
         }
-        if strengths.mouthYPosition != 0, mouthYPosition.isEmpty {
+        if strengths.mouthYPosition != 0, mouthYPosition.isEmpty, continuousFieldMask & 8 == 0 {
             sanitized.mouthYPosition = 0
         }
-        if strengths.mouthTilt != 0, mouthTilt.isEmpty {
+        if strengths.mouthTilt != 0, mouthTilt.isEmpty, continuousFieldMask & 16 == 0 {
             sanitized.mouthTilt = 0
         }
-        if strengths.mouthXPosition != 0, mouthXPosition.isEmpty {
+        if strengths.mouthXPosition != 0, mouthXPosition.isEmpty, continuousFieldMask & 32 == 0 {
             sanitized.mouthXPosition = 0
         }
-        if strengths.lipPeakDefinition != 0, lipPeakDefinition.isEmpty {
+        if strengths.lipPeakDefinition != 0, lipPeakDefinition.isEmpty, continuousFieldMask & 64 == 0 {
             sanitized.lipPeakDefinition = 0
         }
-        if strengths.lipPlump != 0, lipPlump.isEmpty {
+        if strengths.lipPlump != 0, lipPlump.isEmpty, continuousFieldMask & 128 == 0 {
             sanitized.lipPlump = 0
         }
         return sanitized
@@ -53,6 +57,22 @@ struct MouthWarpFieldEmissions: Equatable, Sendable {
 
 struct MouthWarpProvider: WarpControlPointProvider {
     private let displacementThreshold = Float.ulpOfOne
+
+    func planningEmissions(face: FaceGeometry, strengths: BeautyEffectiveStrengths) -> MouthWarpFieldEmissions {
+        guard BeautyContinuousMouthMap.replacesLegacy(for: face) else {
+            return fieldEmissions(face: face, strengths: strengths)
+        }
+        var result = MouthWarpFieldEmissions(mouthSize: [], mouthWidth: [], smile: [],
+            mouthYPosition: [], mouthTilt: [], mouthXPosition: [], lipPeakDefinition: [], lipPlump: [])
+        let eligible = BeautyContinuousMouthMap.eligibleFieldMask(face: face)
+        for (index, key) in BeautyContinuousMouthMap.keys.enumerated() {
+            let value = strengths[keyPath: key], bit = UInt8(1 << index)
+            if value.isFinite, abs(value) > Float.ulpOfOne, eligible & bit != 0 {
+                result.continuousFieldMask |= bit
+            }
+        }
+        return result
+    }
 
     func makeControlPoints(
         face: FaceGeometry,
@@ -81,13 +101,34 @@ struct MouthWarpProvider: WarpControlPointProvider {
         MouthWarpFieldEmissions(
             mouthSize: sizePoints(face: face, strength: strengths.mouthSize),
             mouthWidth: widthPoints(face: face, strength: strengths.mouthWidth),
-            smile: smilePoints(face: face, strength: strengths.smile),
+            smile: signedLocalPoints(face: face, strength: strengths.smile, cap: BeautySafetyCaps.smile) {
+                smilePoints(face: face, strength: $0)
+            },
             mouthYPosition: yPositionPoints(face: face, strength: strengths.mouthYPosition),
             mouthTilt: tiltPoints(face: face, strength: strengths.mouthTilt),
             mouthXPosition: xPositionPoints(face: face, strength: strengths.mouthXPosition),
-            lipPeakDefinition: peakDefinitionPoints(face: face, strength: strengths.lipPeakDefinition),
-            lipPlump: plumpPoints(face: face, strength: strengths.lipPlump)
+            lipPeakDefinition: signedLocalPoints(face: face, strength: strengths.lipPeakDefinition, cap: BeautySafetyCaps.lipPeakDefinition) {
+                peakDefinitionPoints(face: face, strength: $0)
+            },
+            lipPlump: signedLocalPoints(face: face, strength: strengths.lipPlump, cap: BeautySafetyCaps.lipPlump) {
+                plumpPoints(face: face, strength: $0)
+            }
         )
+    }
+
+    /// Preserve existing positive coarse geometry byte-for-byte. The new
+    /// negative half reverses only its admitted field, including target bounds.
+    private func signedLocalPoints(face: FaceGeometry, strength: Float, cap: Float,
+                                   positive: (Float) -> [WarpControlPoint]) -> [WarpControlPoint] {
+        guard let value = validatedSignedStrength(strength, cap: cap) else { return [] }
+        let points = positive(abs(value))
+        guard value < 0 else { return points }
+        let targets = points.map { $0.source * 2 - $0.target }
+        guard targets.allSatisfy({ isValidSupportPoint($0, in: face.bounds) }) else { return [] }
+        return zip(points, targets).map { point, target in
+            WarpControlPoint(source: point.source, target: target, radius: point.radius,
+                             strength: point.strength, falloff: point.falloff)
+        }
     }
 
     private func sizePoints(face: FaceGeometry, strength: Float) -> [WarpControlPoint] {

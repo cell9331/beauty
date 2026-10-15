@@ -17,11 +17,17 @@ All six nose fields (`noseSlim`, `noseWingSlim`, `noseTipSize`, `noseBridge`,
 mutable normalization. Keys, zero defaults and absolute safety caps are unchanged.
 Positive size/wing/tip/root/bridge contract their image-plane region; negative
 values expand it. Positive lift moves tip support up; negative moves it down.
-Dense nasal kernels remain anchored to the immutable source, with their cap
-shape participating in the unchanged displacement/gradient admission. The
-lattice retains bounded nasal anatomy/control knots; this avoids intensity-
-dependent quantile loss and premature nonmonotone attenuation. Historical
-positive legacy geometry remains compatible. See [dense geometry](docs/sdk/DENSE_FACE_REFACTOR.md).
+Fresh dense still images now use an eye-axis-aligned continuous nasal field.
+Size adjusts lateral width while preserving axial height; Tip separately shapes
+the bulb above the nostrils, with a stronger positive contraction. Root and
+Bridge cover distinct short upper and longer dorsal bands. The same immutable
+source defines complete eye/brow/lip protection and smooth exterior falloff.
+Each field has fixed signed-cap admission before combined-field gradient and
+displacement checks; a tiny new sibling cannot abruptly re-budget prior work.
+Missing required nose/protection observations clear dense nasal requests and
+cannot restore circular kernels. Planner admission does not require proxy point
+emission. Historical Vision geometry remains compatible. See
+[dense geometry](docs/sdk/DENSE_FACE_REFACTOR.md).
 
 Unit controls normalize to `0...1`, signed controls to `-1...1`; nonfinite
 values become neutral. Algorithm-specific caps and combination budgets are
@@ -39,6 +45,55 @@ position over those caps; centered controls are neutral at .5, V-face/smoothing
 at 0. Its chin-length direction is shortening-positive, while direct API
 positive chin length remains longer. No slider view/state belongs to the SDK.
 See [mapping and implementation](docs/sdk/FACE_SHAPE_SLIDERS.md).
+
+Eleven eye geometry fields now accept both signs, including reconstruction,
+resolver caps and backend admission; combination budgets use absolute values.
+The existing keys, zero defaults and absolute caps are retained.
+`BeautyEyeShapeSlider` maps a host's 0...1 position with neutral at .5 and an
+inverse mapping for selection/undo. Its tilt polarity follows the reference:
+rightward lowers the outer corner and raises the inner corner, opposite direct
+positive `eyeTilt`. Observed-eye still images use a continuous local field;
+the first five controls have aperture-centered scale and shared image-axis
+position directions, with bounded source-RGB registration for position span
+and the size/length horizontal pivot. Ambiguous source evidence keeps the geometric frame;
+negative iris size requires a valid dense visible iris ring. Sparse positive
+pupil behavior remains compatible. Nonzero dense iris rendering blends two
+independent immutable-original input colors (shape-only and full iris), with
+four-center source ownership, alpha and protection checks on the full sample.
+A negative request may project only geometric aperture occlusion into a unique
+common interior interval; it cannot bypass an in-aperture alpha/protection
+rejection. Fixed observed-radius material ownership leaves exterior sclera on
+shape-only color. Failed iris sampling preserves eligible sibling shape work;
+zero-pupil and other old eye effects retain their single-source sampler. This
+does not add sequential rendered-output sampling or a final raster derivative
+claim. [Eye contract](docs/sdk/EYE_SHAPE_SLIDERS.md).
+
+All eight mouth geometry fields are signed, including `smile`,
+`lipPeakDefinition` and `lipPlump`. Reconstruction, mutable normalization,
+resolver caps, absolute combination budgets and backend admission agree;
+keys, zero defaults and absolute caps are retained. `BeautyMouthSlider` maps
+the external owner's centered positions over those caps and reverses size
+and vertical position to make rightward mean smaller/upward. Direct size
+positive still enlarges; direct Y positive moves down. Teeth whitening keeps
+its separate one-way mapping. See [mouth contract](docs/sdk/MOUTH_SLIDERS.md).
+
+Actual outer/inner lip observations now reach the shared still-image mouth
+map. Pixel-space mouth axes govern scale, vertical translation and rotation;
+horizontal position moves along upright image X with exactly zero field Y.
+The inner opening independently constrains Cupid's bow and lip thickness.
+Explicit invalid observed support exits without reviving template-point work.
+The legacy coarse route retains its positive behavior for old consumers.
+X/M/fullness slider components have independent source-fixed admission before
+their actual sum is bounded, preserving continuity when another control crosses
+neutral. Negative M follows the source flattening target within the tissue.
+Negative fullness projects its fixed endpoint through a shared-edge scalar
+minorant, then uses a calibrated continuous response with pose applied once;
+the complete fixed oral band, feature, halo and original safety limits remain.
+Thin-source positive M shortens only its exterior transition. Horizontal
+position uses an analytic source-support sweep with a shared material-corner
+plateau and fixed radial/terminal transition profiles. Visible whole-lip
+rigidity and reference amplitude require independent pixel evidence. See the
+[mouth contract](docs/sdk/MOUTH_SLIDERS.md) for implementation and limits.
 
 [BeautyConfiguration](BeautySDK/Sources/BeautyCore/Models/BeautyConfiguration.swift)
 has 11 stored fields and is captured by `BeautyEngine` at initialization.

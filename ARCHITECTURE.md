@@ -122,6 +122,10 @@ geometry points without row restrictions execute the complete admitted plan on C
 with `beauty.backend.cpuGeometryCapacityFallback = 1`. Direct Metal calls and
 row-restricted over-capacity plans retain typed failure. The retained
 `Warp.metal` and GPU/API boundaries remain pinned by the boundary scanner.
+The internal runtime uses uniform compute threadgroups with rounded-up width;
+all retained kernels guard padded image-edge threads. This supports older
+Apple3/A10 GPUs without nonuniform-dispatch support, retaining the same shader,
+pipelines, resource/error semantics and backend selection.
 
 Geometry providers feed one `BeautyGeometryEffectPipeline`. Dense still images
 use a full-canvas lattice with fixed triangle connectivity, pixel-metric influence,
@@ -147,6 +151,49 @@ fixed source kernels preserve protected regions. Each sampler has its own
 gradient/displacement bound; this is not one all-field sampling transaction.
 The target graph, model resources, retained shaders and pixel-buffer route are
 unchanged. [Exact face behavior](docs/sdk/FACE_SHAPE_SLIDERS.md).
+
+Six dense nasal fields use `BeautyContinuousNoseMap`, a request-local CPU-owned
+ROI map shared by both still executors. Planning records admitted work separately
+from legacy point counts; valid continuous work can have zero control points.
+The dense carrier suppresses old nasal kernels even when regional admission
+fails. Its eye-aligned axes and crest follow the immutable source, and complete
+eye/brow/lip envelopes bound its protected regions. It follows the general
+dense/legacy pass and precedes mouth and face/eye refinement. Signed field and
+combined-map limits remain local to this stage. The Vision-only compatibility
+route is retained. [Exact nasal contract](docs/sdk/DENSE_FACE_REFACTOR.md).
+
+Eight observed mouth fields also use a request-local CPU-owned continuous
+map shared by the two still executors. The adapter carries actual inner and
+outer lips; planning preserves admitted strengths without emitting duplicate
+legacy points. Shared preparation suppresses the old mouth points even when
+the observed map rejects. The source-bound mouth axes use pixel distances,
+and independently admitted inner support governs peak/thickness work. The
+map follows existing nose geometry and precedes face/eye refinement and rigid
+translation. No target, model, shader or pixel-buffer capability is added.
+See [mouth contract](docs/sdk/MOUTH_SLIDERS.md).
+
+Eleven observed eye fields use `BeautyContinuousEyeMap` in the same shared
+still-image stage, following face-contour refinement and before rigid translation.
+Pixel-space eye axes separate height, length and corners; the first five use
+aperture-centered scale and image-axis position controls. A bounded source-RGB
+edge check in the same request calibrates position span and the horizontal scale pivot.
+Lower-lid work also derives an upper-trace clearance from the observed contour,
+registers a bounded visible horizontal frame and confirms contrast at an already
+validated dense iris core. These request-local checks retain neither pixels nor
+new tissue labels and never replace regional support admission.
+The stage suppresses matching legacy points even when observed admission rejects;
+sparse positive pupil work retains its compatibility route. Dense visible iris
+support admits both iris-size signs. Nonzero dense iris work independently samples
+shape-only and full-iris colors from the same immutable input raster to this eye
+stage, then blends colors under fixed material/protection ownership. The full
+sample's four bilinear pixel centers must belong to its observed aperture, avoid
+protected features and match alpha; rejection keeps eligible shape-only work.
+Negative-only geometric occlusion projection still rechecks that ownership.
+This is not sequential sampling of rendered output or a second geometry stage;
+zero-pupil, sparse compatibility and the old eye fields retain their single-source
+sampler. Source-fixed grids and feature protection
+remain request-local; this adds no target, shader or pixel-buffer capability.
+[Eye mapping and limits](docs/sdk/EYE_SHAPE_SLIDERS.md).
 
 Skin smoothing/sharpening uses independent bounded detail branches with bilateral
 range weights in the shared CPU-owned texture stage, with

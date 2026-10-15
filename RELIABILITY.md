@@ -1,5 +1,83 @@
 # RELIABILITY.md
 
+## Continuous mouth bounds (2026-10-14)
+
+Fresh observed outer lips and valid eye/nose support admit the eight-field
+pixel-space mouth map. Invalid observed support abstains without restoring
+template-lip pulls; absent inner lips disable only M-shape and fullness. The
+mouth stage runs once in both selected still-image backends. Its source-fixed
+field and same-sign cap envelope bound gradient norm to .45 and displacement
+to the smaller of 20% mouth width and 6% face short-side span; pose can reduce
+this further. X position, M-shape and fullness retain independent source-fixed
+admission; their actual sum is rechecked against the same pose-reduced limits.
+Adding a near-neutral field does not budget its full endpoint against an
+existing edit, and low-strength combinations do not apply pose twice.
+Pure X uses an analytic upright image-horizontal field with exactly zero Y,
+one admitted plateau across the original source-support corner sweeps and
+fixed admission along each slider half. Clearance and radial/terminal profiles
+retain global gradient/norm certificates; actual finite-difference and pixel
+checks remain required. The radial upper profile has a C1 terminal connection
+at its fixed shell; other distance/min/max ties may be nonsmooth. X plus other
+mouth work uses bounds on the actual child samplers rather than treating analytic X as a
+bilinear lattice. Negative fullness retains its doubled lattice and uses a
+shared-edge scalar minorant for the fixed endpoint, followed by calibrated
+continuous response and actual final discrete bounds checks.
+Pure tilt recomputes a reduced rotation angle to retain rigid
+core distances. These are mouth-stage bounds, not an all-stage geometry bound.
+
+Source-defined mouth-local protection fields and pixels, incoming image-axis
+nose/eye RGBA copies, field exterior and source alpha remain exact. Pure X
+also has exact zero field inside its physical image boxes. M/fullness field
+values in those physical boxes are diagnostic only; copied RGBA remains
+protected. Local M/fullness work fixes the complete observed inner-opening
+band; mixed-alpha interpolation abstains. Missing-support, neutral/repeat/recovery and actual CPU/Metal pixels have separate targeted
+assertions. The signed smile/peak/fullness fields use absolute values in the
+existing applicable combination budget. Slider values do not guarantee a fixed
+visible amplitude on every face. See the
+[mouth contract and evidence](docs/sdk/MOUTH_SLIDERS.md).
+
+## Continuous eye field bounds (2026-10-11)
+
+Observed eyes establish source-fixed local axes and a bounded lattice on both
+still-image executors. Nonfinite, stale or implausible apertures exit locally;
+spacing requires two valid eyes and negative iris size requires a valid dense
+ring. Rejection does not restore coarse eye points. Each field has independent
+cap admission before the actual combination's displacement/gradient admission,
+so an infinitesimal sibling does not re-budget an existing edit.
+The total and shape-only bilinear fields have displacement at most 15% of the
+smaller admitted eye span and gradient Frobenius norm at most .45; pose may
+attenuate further. This lattice bound does not assert the mathematical derivative
+of the raster iris gate/feather or an all-stage limit. Source feature boxes and
+iris-component aperture gating preserve protected source pixels in combinations;
+mixed-alpha sampling abstains.
+Observed sparse eyes admit positive pupil compatibility only inside a valid
+source aperture with an interior pupil center; the edge feather cannot move
+eyelid-exterior pixels. It does not establish an iris radius or a negative-size
+domain, and invalid dense evidence does not fall back to sparse compatibility.
+Grids release per request and diagnostics exclude coordinates and pixels.
+See [implementation and input limits](docs/sdk/EYE_SHAPE_SLIDERS.md).
+
+## Continuous nose field bounds (2026-10-11)
+
+Fresh dense nasal support now uses an anatomy-aligned inverse field with complete
+source eye, brow and outer-lip exclusion. Missing regional observations clear the
+six nasal strengths in planning; a rejected dense map never restores legacy
+circular point pulls. Each signed field reserves its own full-strength shape
+before composition, so crossing a sibling's zero does not abruptly attenuate an
+existing edit. The composed nose map then admits displacement ≤6% of face span
+and gradient Frobenius norm ≤.45; pose may reduce it further. These are this
+stage's limits, not an all-stage budget. Alpha and protected source boxes remain
+exact; mixed-alpha interpolation abstains. Both selected backends share this
+CPU-owned stage. No shader or GPU API is added.
+
+The owner's host retains one-running/one-latest preview scheduling, a 16 ms
+start interval after the bounded Release measurements and immediate
+final-value flushing on release. Prepared renders
+reuse the immutable source's detection, while original-size export detects
+afresh. Bounded native timing measurements are recorded with the reference
+validation and actual build configuration; they do not establish sustained FPS,
+input-to-display latency, thermal behavior or power use.
+
 ## Continuous face contour bounds (2026-10-11)
 
 The eight-field contour sampler admits fresh observed contour, eye and registered
@@ -56,8 +134,10 @@ handles routine combination attenuation automatically without a quota toast.
 Aggregate source/legacy warning codes stay available in debug/results; actual
 missing support, no-face or typed failures remain visible to the owner.
 
-Dense static images use one shared CPU-owned inverse lattice on both selected
-backends. Finite point/input bounds, fixed canvas coverage, contractual row
+Both selected backends share the CPU-owned dense full-canvas inverse lattice;
+the continuous face-contour ROI sampler has its own later stage and bounds.
+These stages do not imply one all-field sampling transaction or one combined
+6% displacement bound. Finite point/input bounds, fixed canvas coverage and row
 knots and a per-triangle gradient bound replace silent point truncation or a
 fold-search assumption. Bad candidates or fully attenuated pose preserve the
 pre-map raster; independent color/source-raster stages keep their own contracts.
@@ -154,6 +234,7 @@ not make framework payloads or an engine safe for shared parallel use.
 | Empty provider | Remove its strengths, domains, counts, warnings/metrics and dispatch consistently. |
 | Local composition collision | Preserve the original source pixel. |
 | Explicit unavailable GPU | Terminal `.metalUnavailable`; no CPU retry or parity credit. |
+| Compute dispatch compatibility | Uniform threadgroups cover the bounded raster; retained kernel bounds checks reject padded edge threads. No nonuniform-only API is issued on Apple3/A10, preventing the observed Objective-C `APINotSupported` exception without disguising execution as CPU. |
 | Over-capacity GPU still geometry | Pre-dispatch full-plan CPU route only when no row-restricted point exists; emit its capacity metric. Direct Metal/row-restricted paths keep typed failure. |
 | Missing fixture opt-in | Plain SwiftPM may report its established skip; the complete gate rejects any skip. |
 
@@ -219,6 +300,11 @@ failure cannot be repaired into success. The old 75-case wrapper is historical.
 
 ## Mandatory SDK gate
 
+This is the complete owner-local SDK milestone gate. Routine fixes and
+document maintenance use the conditional scopes in
+[QUALITY_SCORE.md](QUALITY_SCORE.md#verification-gates); the heading does not
+make every edit a full-regression trigger.
+
 `bash scripts/run-no-skip-swiftpm.sh` performs archive verification, boundary
 self-test/live scan, example storage, historical v1.18 binding self-test/live
 check, sequential backend/runtime/feature/configuration/parity preflights,
@@ -265,6 +351,10 @@ Latest executed engineering checkpoints are linked from
 
 ## Dense nasal sampling and owner preview (2026-10-10)
 
+The nasal nodes and circular kernels below remain an internal compatibility
+mechanism. Current fresh-dense six-field still-image requests suppress those
+points and execute the separate `BeautyContinuousNoseMap` stage described above.
+
 Dense geometry keeps at most 32 anatomy knots plus 32 local control centers for
 nasal detail (124 columns / 188 rows including 64 raster cutoffs). Current and
 cap shapes both participate in the existing .45-gradient / 6%-face-span bound;
@@ -273,9 +363,9 @@ cells with nonzero vertices, using the same pixel-center interpolation and
 rounding as the independent full-canvas reference. This avoids per-pixel binary
 lookup and source-exact-area arithmetic, without new backend or persistent cache.
 
-The separate owner's editor limits preview starts at 40 ms, holds one in-flight
+The separate owner's editor limits preview starts at 16 ms, holds one in-flight
 render and one replaceable newest snapshot, and flushes a pending timer on
 release. In-flight synchronous SDK work finishes before the newest render can
-start; this is not a preemption or 25-fps guarantee. Output debug re-detection
+start; this is not a preemption or frame-rate guarantee. Output debug re-detection
 waits for settled editing. Simulator Debug measurements belong to the scoped
 repair receipt and make no target-device performance claim.

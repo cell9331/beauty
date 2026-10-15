@@ -194,7 +194,9 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
             )
         )
         let geometrizedBytes = stage.applyingDenseMap(to: renderedBytes)
-        let translatedBytes = stage.applyingTranslation(to: stage.applyingContinuousContour(to: geometrizedBytes))
+        let nasalBytes = stage.applyingContinuousNose(to: geometrizedBytes)
+        let mouthBytes = stage.applyingContinuousMouth(to: nasalBytes)
+        let translatedBytes = stage.applyingTranslation(to: stage.applyingContinuousContour(to: mouthBytes))
         guard let colorSpace = CGColorSpace(name: CGColorSpace.sRGB) else {
             throw BeautyError.unsupportedPixelFormat
         }

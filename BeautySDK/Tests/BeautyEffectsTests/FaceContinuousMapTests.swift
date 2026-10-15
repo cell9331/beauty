@@ -118,7 +118,7 @@ final class FaceContinuousMapTests: XCTestCase {
             (.vFace,\.faceVShape,BeautySafetyCaps.faceVShape),
             (.temple,\.templeFullness,BeautySafetyCaps.templeFullness),
             (.cheekbone,\.cheekboneSlim,BeautySafetyCaps.cheekboneSlim),
-            (.chinTaper,\.chinTaper,BeautySafetyCaps.chinTaper),
+            (.chinTaper,\.chinTaper,-BeautySafetyCaps.chinTaper),
             (.chinLength,\.chinLength,-BeautySafetyCaps.chinLength),
             (.contourSmooth,\.faceContourSmooth,BeautySafetyCaps.faceContourSmooth),
             (.hairline,\.hairlineHeight,BeautySafetyCaps.hairlineHeight)]

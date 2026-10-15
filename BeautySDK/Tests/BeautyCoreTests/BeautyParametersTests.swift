@@ -377,7 +377,7 @@ final class BeautyParametersTests: XCTestCase {
         XCTAssertEqual(legacyDecoded.chinLength, -0.64, accuracy: 0.0001)
     }
 
-    func testEYE01NewPositiveOnlyInputsNormalizeIndependently() {
+    func testEYE01EyeInputsNormalizeAccordingToSignedOrUnitContract() {
         let cases: [(name: String, value: Float, expected: Float)] = [
             ("negative", -1, 0),
             ("overflow", 2, 1),
@@ -402,7 +402,7 @@ final class BeautyParametersTests: XCTestCase {
             for testCase in cases {
                 XCTAssertEqual(
                     field.make(testCase.value)[keyPath: field.keyPath],
-                    testCase.expected,
+                    testCase.value == -1 && !["upperEyelidLift", "gazeCorrection", "eyeSymmetry"].contains(field.name) ? -1 : testCase.expected,
                     accuracy: 0.0001,
                     "\(field.name) \(testCase.name)"
                 )
@@ -458,13 +458,13 @@ final class BeautyParametersTests: XCTestCase {
         let normalized = parameters.normalized()
 
         XCTAssertEqual(normalized.eyeHeight, 1)
-        XCTAssertEqual(normalized.eyeLength, 0)
+        XCTAssertEqual(normalized.eyeLength, -1)
         XCTAssertEqual(normalized.upperEyelidLift, 0)
         XCTAssertEqual(normalized.pupilSize, 0)
         XCTAssertEqual(normalized.gazeCorrection, 0)
         XCTAssertEqual(normalized.lowerEyelidDrop, 1)
         XCTAssertEqual(normalized.eyeTilt, -1)
-        XCTAssertEqual(normalized.innerCornerOpen, 0)
+        XCTAssertEqual(normalized.innerCornerOpen, -1)
         XCTAssertEqual(normalized.outerCornerOpen, 1)
         XCTAssertEqual(normalized.eyeSymmetry, 0)
         XCTAssertEqual(parameters.eyeHeight, 2, "normalization returns a copy")
@@ -703,14 +703,14 @@ final class BeautyParametersTests: XCTestCase {
         XCTAssertEqual(parameters.filterIntensity, 1)
     }
 
-    func testEYE04EyeInputsNormalizePositiveOnlySignedOverflowAndNonFiniteValues() {
+    func testEYE04EyeInputsNormalizeSignedOverflowAndNonFiniteValues() {
         let overflow = BeautyParameters(
             eyeSize: -1,
             eyeDistance: 2,
             eyeYPosition: -2,
             eyeTailLift: 2
         )
-        XCTAssertEqual(overflow.eyeSize, 0, "eyeSize negative input")
+        XCTAssertEqual(overflow.eyeSize, -1, "eyeSize negative input")
         XCTAssertEqual(overflow.eyeDistance, 1, "eyeDistance positive overflow")
         XCTAssertEqual(overflow.eyeYPosition, -1, "eyeYPosition negative overflow")
         XCTAssertEqual(overflow.eyeTailLift, 1, "eyeTailLift positive overflow")
@@ -724,7 +724,7 @@ final class BeautyParametersTests: XCTestCase {
         XCTAssertEqual(oppositeOverflow.eyeSize, 1, "eyeSize positive overflow")
         XCTAssertEqual(oppositeOverflow.eyeDistance, -1, "eyeDistance negative overflow")
         XCTAssertEqual(oppositeOverflow.eyeYPosition, 1, "eyeYPosition positive overflow")
-        XCTAssertEqual(oppositeOverflow.eyeTailLift, 0, "eyeTailLift negative input")
+        XCTAssertEqual(oppositeOverflow.eyeTailLift, -1, "eyeTailLift negative input")
 
         let nonFiniteValues: [(name: String, value: Float)] = [
             ("NaN", .nan),
@@ -826,11 +826,11 @@ final class BeautyParametersTests: XCTestCase {
         XCTAssertTrue(parameters.noseTipLift.isNaN, "normalization does not mutate the source")
     }
 
-    func testMOUTH05MouthInputsNormalizeSignedPositiveOnlyOverflowAndNonFiniteValues() {
+    func testMOUTH05MouthInputsNormalizeSignedGeometryUnitColorOverflowAndNonFiniteValues() {
         let overflow = BeautyParameters(mouthSize: -2, mouthWidth: 2, smile: -1, lipColor: 2)
         XCTAssertEqual(overflow.mouthSize, -1)
         XCTAssertEqual(overflow.mouthWidth, 1)
-        XCTAssertEqual(overflow.smile, 0)
+        XCTAssertEqual(overflow.smile, -1)
         XCTAssertEqual(overflow.lipColor, 1)
 
         for value: Float in [.nan, .infinity, -.infinity] {
@@ -880,9 +880,11 @@ final class BeautyParametersTests: XCTestCase {
         }
     }
 
-    func testPhase38MOUTH02PositiveLipInputsNormalizeIndependently() {
+    func testPhase38MOUTH02SignedLipInputsNormalizeIndependently() {
         let cases: [(name: String, value: Float, expected: Float)] = [
-            ("negative", -1, 0),
+            ("negative", -1, -1),
+            ("negative overflow", -2, -1),
+            ("negative in range", -0.37, -0.37),
             ("overflow", 2, 1),
             ("peak in range", 0.21, 0.21),
             ("plump in range", 0.37, 0.37),
@@ -907,6 +909,17 @@ final class BeautyParametersTests: XCTestCase {
         }
     }
 
+    func testMouthSignedSmilePeakAndPlumpSurviveCodableAndNormalizedCopy() throws {
+        let parameters = BeautyParameters(smile: -0.42, lipPeakDefinition: -0.21, lipPlump: -0.19)
+        let decoded = try JSONDecoder().decode(BeautyParameters.self,
+            from: JSONEncoder().encode(parameters))
+        XCTAssertEqual(decoded, parameters)
+        XCTAssertEqual(decoded.normalized(), parameters)
+        XCTAssertEqual(decoded.smile, -0.42, accuracy: 0.00001)
+        XCTAssertEqual(decoded.lipPeakDefinition, -0.21, accuracy: 0.00001)
+        XCTAssertEqual(decoded.lipPlump, -0.19, accuracy: 0.00001)
+    }
+
     func testPhase38MOUTH01NormalizedCopyReappliesRulesAfterMutableAssignment() {
         var parameters = BeautyParameters(
             mouthYPosition: 0.11,
@@ -926,7 +939,7 @@ final class BeautyParametersTests: XCTestCase {
         XCTAssertEqual(normalized.mouthYPosition, 1)
         XCTAssertEqual(normalized.mouthTilt, -1)
         XCTAssertEqual(normalized.mouthXPosition, 0)
-        XCTAssertEqual(normalized.lipPeakDefinition, 0)
+        XCTAssertEqual(normalized.lipPeakDefinition, -1)
         XCTAssertEqual(normalized.lipPlump, 0)
         XCTAssertEqual(parameters.mouthYPosition, 2, "normalization returns a copy")
         XCTAssertEqual(parameters.mouthTilt, -2, "normalization returns a copy")

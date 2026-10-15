@@ -55,10 +55,9 @@
 行界以`floor(cutoff·H)/H`作为必选节点，不能被分位去重丢弃。
 输入尺寸受既有50,000,000像素限制；异常/超量/过小支撑拒绝整张候选映射，
 不静默丢点或把坏点clip成合格数据。颜色与独立source-raster sibling保留自身行为。
-鼻部dense核固定在source中心，实际/cap比例只改变位移。准入同时检查当前和cap形态的
-最大位移/梯度，避免较低档已触顶、强度增大反而变弱；最终当前映射仍满足原安全上限。
-鼻部size采用观测器官宽/长四向锚点，tip有独立中心；wing/lift扩大连续局部支撑，
-bridge在dense共同安全准入下增加候选幅度。没有observed鼻支撑时保留原兼容字段。
+上述鼻部节点与圆核保留在内部兼容测试；2026-10-11起dense静图六鼻部实际执行改为
+下述连续鼻场，对应旧点从共同geometry stage排除，不重复叠加。非dense的Vision
+兼容路线保持原行为；dense缺完整观测不再回退圆核。
 最大强度组合可能被共同减弱；字段点数是规划计数，不代表输出改善或每点足量位移。
 
 采样预计算每个输出行/列的单元与重心比例，只遍历至少一个非零顶点的单元；
@@ -83,6 +82,22 @@ raster准入。未改变滤波、着色、source-raster、neutral/canonical call
 日志记录或进入结果，所有权结束即释放；像素缓冲路线不接入此静图stage。
 
 ## 组合准入与宿主滑块
+
+2026-10-11 六项鼻部由
+[BeautyContinuousNoseMap](../../BeautySDK/Sources/BeautyEffects/Render/BeautyContinuousNoseMap.swift)
+执行：以实测双眼的像素轴及鼻crest/contour建立局部坐标，Size主要横向，Tip覆盖鼻球，
+Root与Bridge分别为短上段与长鼻侧，Wing/Lift独立。完整双眼、双眉、外唇包围域加2像素
+为固定区，并把保护边缘加入有界ROI格点；像素中心双线性采样只改RGB，alpha逐字节保留。
+已有dense carrier但fresh、完整鼻部或保护支撑无效时，planner清除六鼻字段；
+无dense的Vision兼容路线保留其原准入。连续场构造/尺寸/姿态拒绝保留raster，
+不恢复旧圆核。每字段以其signed cap形状固定准入，组合后再检查实际梯度≤.45、位移≤脸短边6%，
+避免四档提前平台及新增接近零的兄弟字段突然削弱旧项。该限制属于鼻场自身；与其他stage
+组合不等于一次重采样，也不承诺整体仍受同一个6%界约束。
+
+CPU及selected Metal在dense通用采样之后、连续脸型和刚性平移之前执行同一鼻场。
+planner的连续准入mask可使nose active而无代理点；geometryPointCount仍只数实际旧点。
+源定义与位移仅在请求内，诊断不返回坐标。旧Vision山根行界仍需CPU/typed Metal拒绝；
+dense鼻场没有该限制。实测参考说明与效果资格见taxonomy及本轮执行记录。
 
 2026-10-11 的八项脸型/下巴字段在实测下轮廓与外唇注册齐备时，改由
 [连续轮廓场](FACE_SHAPE_SLIDERS.md)执行；对应旧点不进入 legacy/dense map。
