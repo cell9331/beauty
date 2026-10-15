@@ -25,7 +25,6 @@
 
 ## 3. Active
 
-- [A-2026-10-15-qualified-branch-merges](plans/active/A-2026-10-15-qualified-branch-merges.md)：审核八分支，只合并已完成且通过的范围，保留未达标参考效果。
 
 当前无 Active 执行计划。478点静图核心改造已完成，记录见下方。
 
@@ -40,6 +39,11 @@ v1.25仍按`closed_with_unmet_objectives`结清，不恢复其自动效果研发
 原记录已在[历史索引](plans/history/README.md)对应的 completed 分片。Phase 93 的 owner-local `93-CHECKS.json` 与 Phase 95 independent review 属于历史证据，不是当前 Active 计划。
 
 ## 4. Completed / terminal dispositions
+
+### C-2026-10-15-qualified-branch-merges
+
+- 已审查八个分支：a16bc56d合并full-refactor及face-parsing祖先；4a7d0bad以tree不变方式记录remaining等价补丁祖先。五个含未达标参考效果或历史WIP的分支保留，不推送、不删除。
+- 实际定向70个去重用例最终通过（首次3个opt-in跳过，开启后36/0/0补齐）；另14项actual Metal一致性通过，归档/边界/11依赖变异检查通过。没有全量、真机或完整美图外观新声明。见[完整审查与验证](plans/history/2026-10/A-2026-10-15-qualified-branch-merges.md)。
 
 ### C-2026-10-09-dense-face-refactor
 

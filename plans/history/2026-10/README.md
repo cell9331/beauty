@@ -1,5 +1,7 @@
 # Completed plan index: 2026-10
 
+- [A-2026-10-15-qualified-branch-merges](A-2026-10-15-qualified-branch-merges.md)：八分支审查，三分支祖先纳入main、五分支保留；70去重定向用例及14项Metal一致性通过，未导入最新未达标参考效果。
+
 - [A-2026-10-09-dense-face-refactor](A-2026-10-09-dense-face-refactor.md)：478点静图核心改造，context复用、可见虹膜/姿态、固定画布网格与独立美肤分支；完整SDK1098/0/0、9 opt-ins，原生24/0/0。失败候选/范围保留，不签视频或全程GPU。
 
 - [A-2026-10-09-playbook-synthesis](A-2026-10-09-playbook-synthesis.md)：外部手册学习与六篇项目重构参考，纠正原理/代码骨架缺口；仅文档，2,452份既有非目标文件不变，文档/归档/边界通过。
