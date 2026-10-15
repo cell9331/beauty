@@ -305,9 +305,12 @@ struct FaceGeometry: Equatable, Sendable {
     let rightEyeSupport: BeautyEyeSemanticSupport?
     let freshness: LandmarkGeometryFreshness
     let observedEyebrowSupport: BeautyEyebrowSemanticSupport?
-    /// Negative width owns observed outer-lip support independently of legacy
-    /// mouth siblings. nil retains the legacy fixture contract; empty rejects.
+    /// Observed lip paths own the continuous still-image mouth route. nil
+    /// retains the coarse fixture contract; an empty observed path rejects.
     let observedOuterLips: [SIMD2<Float>]?
+    /// Kept independently: missing inner support disables peak/thickness work
+    /// without discarding valid whole-mouth geometry.
+    let observedInnerLips: [SIMD2<Float>]?
     let observedNoseSupport: BeautyObservedNoseSupport?
     let denseSupport: BeautyDenseFaceSupport?
 
@@ -332,6 +335,7 @@ struct FaceGeometry: Equatable, Sendable {
         freshness: LandmarkGeometryFreshness = .fresh,
         observedEyebrowSupport: BeautyEyebrowSemanticSupport? = nil,
         observedOuterLips: [SIMD2<Float>]? = nil,
+        observedInnerLips: [SIMD2<Float>]? = nil,
         observedNoseSupport: BeautyObservedNoseSupport? = nil,
         denseSupport: BeautyDenseFaceSupport? = nil
     ) {
@@ -352,6 +356,7 @@ struct FaceGeometry: Equatable, Sendable {
         self.freshness = freshness
         self.observedEyebrowSupport = observedEyebrowSupport
         self.observedOuterLips = observedOuterLips
+        self.observedInnerLips = observedInnerLips
         self.observedNoseSupport = observedNoseSupport
         self.denseSupport = denseSupport
     }

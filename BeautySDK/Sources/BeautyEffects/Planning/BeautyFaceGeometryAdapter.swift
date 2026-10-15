@@ -76,6 +76,9 @@ enum BeautyFaceGeometryAdapter {
         let observedOuterLips = observation.observedLipSupport.map { support in
             (support.outer ?? []).map { SIMD2<Float>(Float($0.x), Float($0.y)) }
         }
+        let observedInnerLips = observation.observedLipSupport.map { support in
+            (support.inner ?? []).map { SIMD2<Float>(Float($0.x), Float($0.y)) }
+        }
         let observedFaceSupport = observation.imageBounds
             .flatMap(exactPositiveBounds)
             .flatMap {
@@ -112,6 +115,7 @@ enum BeautyFaceGeometryAdapter {
                 rightEyeSupport: nil,
                 observedEyebrowSupport: observedBrowSupport,
                 observedOuterLips: observedOuterLips,
+                observedInnerLips: observedInnerLips,
                 observedNoseSupport: observation.observedNoseSupport,
                 denseSupport: mesh.map(BeautyDenseFaceSupport.init(mesh:))
             )
@@ -171,6 +175,7 @@ enum BeautyFaceGeometryAdapter {
             rightEyeSupport: rightSupport,
             observedEyebrowSupport: observedBrowSupport,
             observedOuterLips: observedOuterLips,
+            observedInnerLips: observedInnerLips,
             observedNoseSupport: observation.observedNoseSupport,
                 denseSupport: mesh.map(BeautyDenseFaceSupport.init(mesh:))
         )
