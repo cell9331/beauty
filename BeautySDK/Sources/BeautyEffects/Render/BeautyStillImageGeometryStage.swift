@@ -11,18 +11,78 @@ struct BeautyStillImageGeometryStage {
     private let width: Int
     private let height: Int
     private let continuousMap: BeautyContinuousFaceMap?
+    private let eyeMap: BeautyContinuousEyeMap?
+    private let noseMap: BeautyContinuousNoseMap?
+    private let mouthMap: BeautyContinuousMouthMap?
+    private let eyebrowMap: BeautyContinuousEyebrowMap?
     private let translationX: Float
     private let translationY: Float
 
     var usesDenseMap: Bool { face?.denseSupport != nil }
 
+    /// Only source-qualified decisions cross the cutpoint. No output raster
+    /// is used to resolve strengths or repeat source admission.
+    struct SourceAdmission {
+        let protectedLeftContour: Bool
+        let protectedRightContour: Bool
+        let suppressHeadWrap: Bool
+        let suppressPhiltrum: Bool
+    }
+
+    struct SourcePrefix: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
+        let rgba: [UInt8]
+        let admission: SourceAdmission
+
+        var description: String { "BeautyGeometrySourcePrefix(byteCount: \(rgba.count))" }
+        var debugDescription: String { description }
+        var customMirror: Mirror {
+            Mirror(self, children: ["byteCount": rgba.count], displayStyle: .struct)
+        }
+    }
+
+    private enum Preparation {
+        case original
+        case afterIris(SourceAdmission)
+    }
+
     init(sourceRGBA: [UInt8], width: Int, height: Int,
-         plan: BeautyEffectPlan, face: FaceGeometry?) {
+         plan: BeautyEffectPlan, face: FaceGeometry?, eyebrowSourceRGBA: [UInt8]? = nil) {
+        self.init(sourceRGBA: sourceRGBA, mapAdmissionRGBA: sourceRGBA,
+                  width: width, height: height, plan: plan, face: face,
+                  eyebrowSourceRGBA: eyebrowSourceRGBA, preparation: .original)
+    }
+
+    /// All source refiners and IR have already run on the original. Map
+    /// admission still reads the separately resized pre-refiner source.
+    init(postIrisRGBA: [UInt8], mapAdmissionRGBA: [UInt8], width: Int, height: Int,
+         plan: BeautyEffectPlan, face: FaceGeometry?, sourceAdmission: SourceAdmission,
+         eyebrowSourceRGBA: [UInt8]? = nil) {
+        self.init(sourceRGBA: postIrisRGBA, mapAdmissionRGBA: mapAdmissionRGBA,
+                  width: width, height: height, plan: plan, face: face,
+                  eyebrowSourceRGBA: eyebrowSourceRGBA, preparation: .afterIris(sourceAdmission))
+    }
+
+    private init(sourceRGBA: [UInt8], mapAdmissionRGBA: [UInt8], width: Int, height: Int,
+                 plan: BeautyEffectPlan, face: FaceGeometry?, eyebrowSourceRGBA: [UInt8]?,
+                 preparation: Preparation) {
         self.face = face
         self.width = width
         self.height = height
         continuousMap = face.flatMap { BeautyContinuousFaceMap(
             width: width, height: height, face: $0, strengths: plan.effectiveStrengths) }
+        var eyeStrengths = plan.effectiveStrengths
+        if face?.denseSupport != nil { eyeStrengths.pupilSize = 0 }
+        if case .afterIris = preparation { eyeStrengths.pupilSize = 0 }
+        eyeMap = face.flatMap { BeautyContinuousEyeMap(
+            width: width, height: height, face: $0, strengths: eyeStrengths,
+            sourceRGBA: mapAdmissionRGBA) }
+        noseMap = face.flatMap { BeautyContinuousNoseMap(
+            width: width, height: height, face: $0, strengths: plan.effectiveStrengths) }
+        mouthMap = face.flatMap { BeautyContinuousMouthMap(
+            width: width, height: height, face: $0, strengths: plan.effectiveStrengths) }
+        eyebrowMap = face.flatMap { BeautyContinuousEyebrowMap(
+            width: width, height: height, face: $0, strengths: plan.effectiveStrengths,
+            sourceRGBA: eyebrowSourceRGBA ?? mapAdmissionRGBA) }
         translationX = plan.effectiveStrengths.wholeFaceXPosition
         translationY = plan.effectiveStrengths.wholeFaceYPosition
         guard let face else {
@@ -31,6 +91,61 @@ struct BeautyStillImageGeometryStage {
             return
         }
 
+        let strengths = plan.effectiveStrengths
+        let admission: SourceAdmission
+        switch preparation {
+        case .original:
+            let prefix = Self.prepareSourcePrefix(sourceRGBA, width: width, height: height,
+                                                  plan: plan, face: face)
+            self.sourceRGBA = BeautyIrisScaleRemap(
+                width: width, height: height, face: face, strengths: strengths,
+                sourceRGBA: prefix.rgba)?.applyRGBA(prefix.rgba) ?? prefix.rgba
+            admission = prefix.admission
+        case .afterIris(let sourceAdmission):
+            self.sourceRGBA = sourceRGBA
+            admission = sourceAdmission
+        }
+
+        // Observed eyes own the continuous stage, including when its local
+        // admission rejects. Rejection never revives a coarse point proxy.
+        var pointStrengths = strengths
+        if face.denseSupport != nil { pointStrengths.pupilSize = 0 }
+        if case .afterIris = preparation { pointStrengths.pupilSize = 0 }
+        if BeautyContinuousEyeMap.replacesLegacy(for: face) {
+            for key in BeautyContinuousEyeMap.keys {
+                pointStrengths[keyPath: key] = 0
+            }
+        }
+        if BeautyContinuousEyebrowMap.replacesLegacy(for: face) {
+            for key in BeautyContinuousEyebrowMap.keys { pointStrengths[keyPath: key] = 0 }
+        }
+        let pointPlan = BeautyEffectPlan(activeDomains: plan.activeDomains,
+            skippedDomains: plan.skippedDomains, warnings: plan.warnings,
+            metrics: plan.metrics, effectiveStrengths: pointStrengths)
+        controlPoints = BeautyGeometryEffectPipeline.controlPoints(
+            for: pointPlan, face: face,
+            protectedLeftContour: admission.protectedLeftContour,
+            protectedRightContour: admission.protectedRightContour,
+            suppressHairlinePoints: strengths.hairlineHeight != 0,
+            suppressSubmentalPoints: strengths.doubleChinReduction != 0 ||
+                strengths.doubleChinReductionPro != 0,
+            suppressHeadWrapPoints: admission.suppressHeadWrap,
+            suppressForeheadPoints: strengths.foreheadHeight != 0,
+            suppressPhiltrumPoints: admission.suppressPhiltrum,
+            suppressWholeFaceTranslationPoints: true,
+            suppressContinuousFacePoints: BeautyContinuousFaceMap.replacesLegacy(for: face),
+            suppressContinuousNosePoints: BeautyContinuousNoseMap.replacesLegacy(for: face),
+            suppressContinuousMouthPoints: BeautyContinuousMouthMap.replacesLegacy(for: face)
+        )
+    }
+
+    static func prepareSourcePrefix(_ sourceRGBA: [UInt8], width: Int, height: Int,
+                                    plan: BeautyEffectPlan, face: FaceGeometry?) -> SourcePrefix {
+        guard let face else {
+            return SourcePrefix(rgba: sourceRGBA, admission: SourceAdmission(
+                protectedLeftContour: false, protectedRightContour: false,
+                suppressHeadWrap: false, suppressPhiltrum: false))
+        }
         let strengths = plan.effectiveStrengths
         let contour = FaceContourSubpixelRefiner.refineWithProtection(
             sourceRGBA, width: width, height: height, face: face,
@@ -42,7 +157,7 @@ struct BeautyStillImageGeometryStage {
                 hairline: strengths.hairlineHeight, forehead: strengths.foreheadHeight
             )
         )
-        self.sourceRGBA = SubmentalContourRefiner.apply(
+        let submental = SubmentalContourRefiner.apply(
             hairline, width: width, height: height, face: face,
             baseStrength: strengths.doubleChinReduction,
             proStrength: strengths.doubleChinReductionPro
@@ -58,19 +173,10 @@ struct BeautyStillImageGeometryStage {
             !PhiltrumSourceAdmission.hasRegisteredUpperLip(
                 contour.bytes, width: width, height: height, face: face
             )
-        controlPoints = BeautyGeometryEffectPipeline.controlPoints(
-            for: plan, face: face,
+        return SourcePrefix(rgba: submental, admission: SourceAdmission(
             protectedLeftContour: contour.protectedLeft,
             protectedRightContour: contour.protectedRight,
-            suppressHairlinePoints: strengths.hairlineHeight != 0,
-            suppressSubmentalPoints: strengths.doubleChinReduction != 0 ||
-                strengths.doubleChinReductionPro != 0,
-            suppressHeadWrapPoints: suppressHeadWrap,
-            suppressForeheadPoints: strengths.foreheadHeight != 0,
-            suppressPhiltrumPoints: suppressPhiltrum,
-            suppressWholeFaceTranslationPoints: true,
-            suppressContinuousFacePoints: BeautyContinuousFaceMap.replacesLegacy(for: face)
-        )
+            suppressHeadWrap: suppressHeadWrap, suppressPhiltrum: suppressPhiltrum))
     }
 
     /// Dense geometry is CPU-owned on either backend. A rejected map preserves
@@ -82,7 +188,20 @@ struct BeautyStillImageGeometryStage {
     }
 
     func applyingContinuousContour(to bytes: [UInt8]) -> [UInt8] {
-        continuousMap?.applyRGBA(bytes) ?? bytes
+        let contour = continuousMap?.applyRGBA(bytes) ?? bytes
+        return eyeMap?.applyRGBA(contour) ?? contour
+    }
+
+    func applyingContinuousNose(to bytes: [UInt8]) -> [UInt8] {
+        noseMap?.applyRGBA(bytes) ?? bytes
+    }
+
+    func applyingContinuousMouth(to bytes: [UInt8]) -> [UInt8] {
+        mouthMap?.applyRGBA(bytes) ?? bytes
+    }
+
+    func applyingContinuousEyebrows(to bytes: [UInt8]) -> [UInt8] {
+        eyebrowMap?.applyRGBA(bytes) ?? bytes
     }
 
     /// Rigid source-qualified translation remains after the selected sampler.

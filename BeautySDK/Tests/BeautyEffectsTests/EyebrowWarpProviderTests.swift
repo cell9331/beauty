@@ -639,7 +639,12 @@ final class EyebrowWarpProviderTests: XCTestCase {
         )
         assertRenderable(eligible.eyebrowPeakDefinition)
         XCTAssertTrue(noApex.eyebrowPeakDefinition.isEmpty)
-        XCTAssertTrue(negative.eyebrowPeakDefinition.isEmpty, "peak is positive-only")
+        assertRenderable(negative.eyebrowPeakDefinition)
+        XCTAssertEqual(eligible.eyebrowPeakDefinition.map(\.source), negative.eyebrowPeakDefinition.map(\.source))
+        for (positive, negative) in zip(eligible.eyebrowPeakDefinition, negative.eyebrowPeakDefinition) {
+            XCTAssertEqual(positive.target.x - positive.source.x, -(negative.target.x - negative.source.x), accuracy: 0.000_001)
+            XCTAssertEqual(positive.target.y - positive.source.y, -(negative.target.y - negative.source.y), accuracy: 0.000_001)
+        }
     }
 
     func testSeventeenFlaggedPredicatesRemainExecutableVocabulary() {

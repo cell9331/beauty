@@ -254,6 +254,30 @@ public final class BeautyEngine {
             preparedSource: prepared)
     }
 
+    /// Creates an owner preview from the prepared original with CPU rendering.
+    /// Iris resampling and its protection decisions precede thumbnail creation;
+    /// the remaining geometry runs once on the resulting preview raster.
+    /// The handle remains bound to the original, and masks use its canonical grid.
+    public func processIrisPreviewResult(
+        preparedImage: BeautyPreparedStillImage,
+        maximumPreviewEdge: Int = 960,
+        parameters: BeautyParameters,
+        textureExclusionMask: BeautyTextureExclusionMask? = nil
+    ) throws -> BeautyResult<CIImage> {
+        guard backendPolicy == .cpu,
+              (1...960).contains(maximumPreviewEdge),
+              let prepared = preparedStillImage,
+              prepared.handle.identifier == preparedImage.identifier else {
+            throw BeautyError.invalidInput
+        }
+        return try processStillImageResult(
+            image: prepared.image, metadata: prepared.metadata,
+            parameters: parameters, frameIndex: nil,
+            textureExclusionMask: textureExclusionMask, preparedSource: prepared,
+            irisPreviewMaximumEdge: maximumPreviewEdge
+        )
+    }
+
     /// Releases the prepared source and its observations without resetting
     /// unrelated detector/testing state. The prior handle immediately expires.
     public func releasePreparedStillImage() {
@@ -285,7 +309,8 @@ public final class BeautyEngine {
         parameters: BeautyParameters,
         frameIndex: Int?,
         textureExclusionMask: BeautyTextureExclusionMask? = nil,
-        preparedSource: BeautyPreparedStillImageState? = nil
+        preparedSource: BeautyPreparedStillImageState? = nil,
+        irisPreviewMaximumEdge: Int? = nil
     ) throws -> BeautyResult<CIImage> {
         let performanceStart = configuration.enablePerformanceLog
             ? DispatchTime.now().uptimeNanoseconds : nil
@@ -317,7 +342,8 @@ public final class BeautyEngine {
             } ?? productionAdmission
             : productionAdmission
 
-        guard admission.isEmpty == false || textureExclusionMask != nil else {
+        guard admission.isEmpty == false || textureExclusionMask != nil ||
+                irisPreviewMaximumEdge != nil else {
             return try withConfiguredResultMetadata(legacyStillImageResult(
                 image: image,
                 metadata: metadata,
@@ -348,7 +374,7 @@ public final class BeautyEngine {
             metadata: canonical.metadata,
             imageExtent: CGSize(width: canonical.width, height: canonical.height),
             parameters: validated,
-            requiresLocalSupport: true,
+            requiresLocalSupport: irisPreviewMaximumEdge == nil || !admission.isEmpty,
             skipDetectionForInterval: skipsDetection(frameIndex),
             preparedSource: preparedSource, canonicalDetection: true
         )
@@ -443,6 +469,26 @@ public final class BeautyEngine {
         }
 
         localRetouchTestingHooks?.record(.render)
+        if let irisPreviewMaximumEdge {
+            let preview = try BeautyIrisPreviewCutpoint.execute(
+                original: renderCarrier, plan: route.plan,
+                renderQuality: configuration.renderQuality,
+                selectedFaceObservation: requestContext.selectedFaceObservation,
+                maximumPreviewEdge: irisPreviewMaximumEdge,
+                textureExclusionMask: textureExclusionMask
+            )
+            var previewMetrics = route.plan.metrics
+            previewMetrics.merge(preview.metrics) { _, actual in actual }
+            if let sRGB = CGColorSpace(name: CGColorSpace.sRGB) {
+                localRetouchTestingHooks?.recordCanonicalRasterize(
+                    carrier: renderCarrier, colorSpace: sRGB
+                )
+            }
+            return withConfiguredResultMetadata(BeautyResult(
+                output: preview.output, warnings: route.plan.warnings,
+                metrics: previewMetrics, detectionSummary: route.detectionSummary
+            ), since: performanceStart)
+        }
         let request = try BeautyBackendRequest(
             policy: backendPolicy,
             input: .stillImage(renderCarrier.ciImage),

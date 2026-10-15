@@ -100,7 +100,7 @@ private struct Phase52RequestSnapshot: Sendable {
     let eyebrowSkipped: Bool
     let activeCount: Double
     let skippedEyebrowCount: Double
-    let geometryPointCount: Double
+    let continuousEyebrowFields: Double
 }
 
 private enum Phase46DegradationSupportClass: Equatable {
@@ -1201,14 +1201,13 @@ final class MissingLandmarkDegradationTests: XCTestCase {
             support: BeautyEyebrowSemanticSupport(left: degenerate, right: nil)
         )
         let degeneratePlan = BeautyEffectResolver.resolve(parameters: phase50AllEyebrowParameters, faceGeometry: degenerateFace)
-        XCTAssertNotEqual(degeneratePlan.effectiveStrengths.eyebrowYPosition, 0)
-        XCTAssertNotEqual(degeneratePlan.effectiveStrengths.eyebrowThickness, 0)
-        XCTAssertEqual(degeneratePlan.effectiveStrengths.eyebrowLength, 0)
-        XCTAssertEqual(degeneratePlan.effectiveStrengths.eyebrowSpacing, 0)
-        XCTAssertEqual(degeneratePlan.effectiveStrengths.eyebrowHeadSpacing, 0)
-        XCTAssertEqual(degeneratePlan.effectiveStrengths.eyebrowTilt, 0)
-        XCTAssertEqual(degeneratePlan.effectiveStrengths.eyebrowPeakDefinition, 0)
-        XCTAssertTrue(degeneratePlan.activeDomains.contains(.eyebrows))
+        for key in phase50EyebrowEffectiveKeyPaths {
+            XCTAssertEqual(degeneratePlan.effectiveStrengths[keyPath: key], 0,
+                           "a malformed side cannot grant continuous work to any field")
+        }
+        XCTAssertFalse(degeneratePlan.activeDomains.contains(.eyebrows))
+        XCTAssertTrue(degeneratePlan.skippedDomains.contains(.eyebrows))
+        XCTAssertNil(degeneratePlan.metrics["beauty.effects.continuousEyebrowFields"])
         assertRedacted(degeneratePlan)
     }
 
@@ -1246,7 +1245,7 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         for plan in [fresh, reused, stale, missing, noFace, freshAgain] { assertRedacted(plan) }
     }
 
-    func testBROW07ProviderEmptyRemovalKeepsSafeSiblingAndAggregateEvidence() {
+    func testBROW07DeadZoneLeavesSafeSiblingAndAggregateEvidence() {
         let face = phase50EyebrowFace(
             support: BeautyEyebrowSemanticSupport(
                 left: phase50EyebrowTrace(side: .left),
@@ -1254,16 +1253,34 @@ final class MissingLandmarkDegradationTests: XCTestCase {
             )
         )
         let plan = BeautyEffectResolver.resolve(
-            parameters: BeautyParameters(brightness: 0.2, eyebrowPeakDefinition: Float.ulpOfOne * 2),
+            parameters: BeautyParameters(brightness: 0.2, eyebrowPeakDefinition: Float.ulpOfOne),
             faceGeometry: face
         )
         XCTAssertEqual(plan.effectiveStrengths.eyebrowPeakDefinition, 0)
         XCTAssertFalse(plan.activeDomains.contains(.eyebrows))
-        XCTAssertTrue(plan.skippedDomains.contains(.eyebrows))
+        XCTAssertFalse(plan.skippedDomains.contains(.eyebrows), "An exact dead-zone value requests no eyebrow work.")
         XCTAssertTrue(plan.activeDomains.contains(.color))
         XCTAssertNil(plan.metrics["beauty.effects.geometryPointCount"])
         XCTAssertNil(plan.metrics["beauty.effects.geometryStrengthScale"])
         XCTAssertNil(plan.metrics["beauty.effects.weakenedCount"])
+        assertRedacted(plan)
+    }
+
+    func testBROW07ContinuousFieldRetainsRepresentableStrengthWithoutLegacyPoints() {
+        let face = phase50EyebrowFace(support: BeautyEyebrowSemanticSupport(
+            left: phase50EyebrowTrace(side: .left), right: phase50EyebrowTrace(side: .right)))
+        let requested = Float.ulpOfOne * 2
+        let plan = BeautyEffectResolver.resolve(
+            parameters: BeautyParameters(eyebrowPeakDefinition: requested), faceGeometry: face)
+        // Continuous admission has its own scalar dead zone; the superseded
+        // point emitter's coordinate epsilon is no longer a field-work test.
+        XCTAssertEqual(plan.effectiveStrengths.eyebrowPeakDefinition, requested)
+        XCTAssertTrue(plan.activeDomains.contains(.eyebrows))
+        XCTAssertFalse(plan.skippedDomains.contains(.eyebrows))
+        XCTAssertEqual(plan.metrics["beauty.effects.continuousEyebrowFields"], 1)
+        XCTAssertNil(plan.metrics["beauty.effects.geometryPointCount"])
+        XCTAssertTrue(EyebrowWarpProvider().planningEmissions(face: face,
+            strengths: plan.effectiveStrengths).points.isEmpty)
         assertRedacted(plan)
     }
 
@@ -1404,7 +1421,7 @@ final class MissingLandmarkDegradationTests: XCTestCase {
                         eyebrowSkipped: plan.skippedDomains.contains(.eyebrows),
                         activeCount: plan.metrics["beauty.effects.activeCount"] ?? 0,
                         skippedEyebrowCount: plan.metrics["beauty.effects.skippedEyebrowDomains"] ?? 0,
-                        geometryPointCount: plan.metrics["beauty.effects.geometryPointCount"] ?? 0
+                        continuousEyebrowFields: plan.metrics["beauty.effects.continuousEyebrowFields"] ?? 0
                     ))
                 }
             }
@@ -1453,7 +1470,7 @@ final class MissingLandmarkDegradationTests: XCTestCase {
                             eyebrowSkipped: plan.skippedDomains.contains(.eyebrows),
                             activeCount: plan.metrics["beauty.effects.activeCount"] ?? 0,
                             skippedEyebrowCount: plan.metrics["beauty.effects.skippedEyebrowDomains"] ?? 0,
-                            geometryPointCount: plan.metrics["beauty.effects.geometryPointCount"] ?? 0
+                            continuousEyebrowFields: plan.metrics["beauty.effects.continuousEyebrowFields"] ?? 0
                         )
                         siblingsCompleted.signal()
                         return snapshot
@@ -1505,7 +1522,7 @@ final class MissingLandmarkDegradationTests: XCTestCase {
             XCTAssertEqual(result.eyebrowSkipped, !valid, result.fieldName)
             XCTAssertEqual(result.activeCount, valid ? 1 : 0, result.fieldName)
             XCTAssertEqual(result.skippedEyebrowCount, valid ? 0 : 1, result.fieldName)
-            XCTAssertEqual(result.geometryPointCount > 0, valid, result.fieldName)
+            XCTAssertEqual(result.continuousEyebrowFields, valid ? 1 : 0, result.fieldName)
             XCTAssertEqual(
                 result.warningCodes.contains("eyebrow_inputs_missing"),
                 !valid,
@@ -1522,7 +1539,7 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         XCTAssertFalse(interruptedResult.warningCodes.contains("eyebrow_inputs_missing"))
         XCTAssertEqual(interruptedResult.activeCount, 1)
         XCTAssertEqual(interruptedResult.skippedEyebrowCount, 0)
-        XCTAssertGreaterThan(interruptedResult.geometryPointCount, 0)
+        XCTAssertEqual(interruptedResult.continuousEyebrowFields, 1)
         XCTAssertEqual(providerBarrier.releaseCount, 1)
         XCTAssertFalse(providerBarrier.waitTimedOut)
 
@@ -1536,7 +1553,8 @@ final class MissingLandmarkDegradationTests: XCTestCase {
             XCTAssertTrue(plan.activeDomains.contains(.eyebrows), "\(identity) \(row.name)")
             XCTAssertFalse(plan.skippedDomains.contains(.eyebrows), "\(identity) \(row.name)")
             XCTAssertFalse(plan.warnings.contains { $0.code == "eyebrow_inputs_missing" }, row.name)
-            XCTAssertGreaterThan(plan.metrics["beauty.effects.geometryPointCount"] ?? 0, 0, row.name)
+            XCTAssertEqual(plan.metrics["beauty.effects.continuousEyebrowFields"], 1, row.name)
+            XCTAssertNil(plan.metrics["beauty.effects.geometryPointCount"], row.name)
             assertRedacted(plan)
         }
         XCTAssertEqual(resolverEntered.count, 1)
@@ -1568,9 +1586,11 @@ final class MissingLandmarkDegradationTests: XCTestCase {
         points: [SIMD2<Float>]? = nil,
         apexIndex: Int? = 2
     ) -> BeautyEyebrowSemanticTrace {
-        let canonical = points ?? (side == .left
-            ? [.init(0.25, 0.40), .init(0.30, 0.36), .init(0.36, 0.34), .init(0.42, 0.37), .init(0.47, 0.41)]
-            : [.init(0.75, 0.40), .init(0.70, 0.36), .init(0.64, 0.34), .init(0.58, 0.37), .init(0.53, 0.41)])
+        guard let canonical = points else {
+            return EyebrowSafetyFixtures.trace(side: side, apexIndex: apexIndex)
+        }
+        // Explicit malformed-point rows intentionally bypass the adapter so
+        // continuous admission must reject the entire side, never its peer.
         return BeautyEyebrowSemanticTrace(
             side: side,
             points: canonical,

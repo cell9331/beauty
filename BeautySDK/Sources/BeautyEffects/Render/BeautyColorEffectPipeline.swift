@@ -195,6 +195,23 @@ public enum BeautyColorEffectPipeline {
         return output.cropped(to: image.extent)
     }
 
+    /// The existing CPU color/texture prefix, without any geometry. The iris
+    /// preview cutpoint uses this once on its canonical original carrier.
+    package static func prepareStillImagePrefix(
+        to canonicalImage: BeautyCanonicalStillImage,
+        plan: BeautyEffectPlan,
+        renderQuality: BeautyRenderQuality,
+        selectedFaceObservation: BeautyFaceObservation?,
+        textureExclusionMask: BeautyTextureExclusionMask?
+    ) -> CIImage {
+        applyColorEffects(
+            to: canonicalImage.ciImage, plan: plan, renderQuality: renderQuality,
+            face: selectedFaceObservation.map(BeautyFaceGeometryAdapter.makeGeometry(from:)),
+            textureFaceBounds: selectedFaceObservation?.imageBounds,
+            textureExclusionMask: textureExclusionMask
+        ).cropped(to: canonicalImage.ciImage.extent)
+    }
+
     private static func applyColorEffects(
         to image: CIImage,
         plan: BeautyEffectPlan,

@@ -98,6 +98,28 @@ final class MouthWarpProviderTests: XCTestCase {
         XCTAssertTrue(result.points.allSatisfy { $0.strength <= BeautySafetyCaps.smile })
     }
 
+    func testNewSignedSmilePeakAndPlumpReverseOnlyTheirLegacyField() {
+        let provider = MouthWarpProvider()
+        let pairs: [(String, [WarpControlPoint], [WarpControlPoint])] = [
+            ("smile", provider.fieldEmissions(face: .fixture, strengths: strengths(smile: 1)).smile,
+             provider.fieldEmissions(face: .fixture, strengths: strengths(smile: -1)).smile),
+            ("peak", provider.fieldEmissions(face: .fixture, strengths: strengths(lipPeakDefinition: 1)).lipPeakDefinition,
+             provider.fieldEmissions(face: .fixture, strengths: strengths(lipPeakDefinition: -1)).lipPeakDefinition),
+            ("plump", provider.fieldEmissions(face: .fixture, strengths: strengths(lipPlump: 1)).lipPlump,
+             provider.fieldEmissions(face: .fixture, strengths: strengths(lipPlump: -1)).lipPlump)
+        ]
+        for (name, positive, negative) in pairs {
+            XCTAssertFalse(positive.isEmpty, name)
+            XCTAssertEqual(positive.count, negative.count, name)
+            for (plus, minus) in zip(positive, negative) {
+                XCTAssertEqual(plus.source, minus.source, name)
+                XCTAssertEqual(plus.target.x - plus.source.x, minus.source.x - minus.target.x, accuracy: 0.000001, name)
+                XCTAssertEqual(plus.target.y - plus.source.y, minus.source.y - minus.target.y, accuracy: 0.000001, name)
+                XCTAssertEqual(plus.strength, minus.strength, name)
+            }
+        }
+    }
+
     func testMissingOuterLipsReturnsMissingMouthSkipReason() {
         let result = MouthWarpProvider().makeControlPoints(
             face: .missingMouth,
@@ -499,12 +521,12 @@ final class MouthWarpProviderTests: XCTestCase {
         var strengths = BeautyEffectiveStrengths()
         strengths.mouthSize = min(max(mouthSize, -BeautySafetyCaps.mouthSize), BeautySafetyCaps.mouthSize)
         strengths.mouthWidth = min(max(mouthWidth, -BeautySafetyCaps.mouthWidth), BeautySafetyCaps.mouthWidth)
-        strengths.smile = min(smile, BeautySafetyCaps.smile)
+        strengths.smile = min(max(smile, -BeautySafetyCaps.smile), BeautySafetyCaps.smile)
         strengths.mouthYPosition = min(max(mouthYPosition, -BeautySafetyCaps.mouthYPosition), BeautySafetyCaps.mouthYPosition)
         strengths.mouthTilt = min(max(mouthTilt, -BeautySafetyCaps.mouthTilt), BeautySafetyCaps.mouthTilt)
         strengths.mouthXPosition = min(max(mouthXPosition, -BeautySafetyCaps.mouthXPosition), BeautySafetyCaps.mouthXPosition)
-        strengths.lipPeakDefinition = min(lipPeakDefinition, BeautySafetyCaps.lipPeakDefinition)
-        strengths.lipPlump = min(lipPlump, BeautySafetyCaps.lipPlump)
+        strengths.lipPeakDefinition = min(max(lipPeakDefinition, -BeautySafetyCaps.lipPeakDefinition), BeautySafetyCaps.lipPeakDefinition)
+        strengths.lipPlump = min(max(lipPlump, -BeautySafetyCaps.lipPlump), BeautySafetyCaps.lipPlump)
         return strengths
     }
 

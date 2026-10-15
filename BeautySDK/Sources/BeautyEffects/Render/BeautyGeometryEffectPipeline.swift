@@ -41,11 +41,19 @@ enum BeautyGeometryEffectPipeline {
         suppressForeheadPoints: Bool = false,
         suppressPhiltrumPoints: Bool = false,
         suppressWholeFaceTranslationPoints: Bool = false,
-        suppressContinuousFacePoints: Bool = false
+        suppressContinuousFacePoints: Bool = false,
+        suppressContinuousNosePoints: Bool = false,
+        suppressContinuousMouthPoints: Bool = false
     ) -> [WarpControlPoint] {
         var prepared = plan.effectiveStrengths
         if suppressContinuousFacePoints {
             for key in BeautyContinuousFaceMap.keys { prepared[keyPath: key] = 0 }
+        }
+        if suppressContinuousNosePoints {
+            for key in BeautyContinuousNoseMap.keys { prepared[keyPath: key] = 0 }
+        }
+        if suppressContinuousMouthPoints {
+            for key in BeautyContinuousMouthMap.keys { prepared[keyPath: key] = 0 }
         }
         let controls = controlPoints(for: prepared, face: face)
         guard protectedLeftContour || protectedRightContour ||
@@ -159,7 +167,13 @@ enum BeautyGeometryEffectPipeline {
     ) -> CIImage {
         let requestsContinuous = face.observedFaceSupport != nil &&
             BeautyContinuousFaceMap.keys.contains { plan.effectiveStrengths[keyPath: $0] != 0 }
-        guard requestsContinuous || !controlPoints(for: plan, face: face).isEmpty else {
+        let requestsNose = BeautyContinuousNoseMap.replacesLegacy(for: face) &&
+            BeautyContinuousNoseMap.keys.contains { plan.effectiveStrengths[keyPath: $0] != 0 }
+        let requestsMouth = BeautyContinuousMouthMap.replacesLegacy(for: face) &&
+            BeautyContinuousMouthMap.keys.contains { plan.effectiveStrengths[keyPath: $0] != 0 }
+        let requestsEyebrows = BeautyContinuousEyebrowMap.replacesLegacy(for: face) &&
+            BeautyContinuousEyebrowMap.keys.contains { plan.effectiveStrengths[keyPath: $0] != 0 }
+        guard requestsContinuous || requestsNose || requestsMouth || requestsEyebrows || !controlPoints(for: plan, face: face).isEmpty else {
             return image.cropped(to: image.extent)
         }
 
@@ -193,7 +207,10 @@ enum BeautyGeometryEffectPipeline {
             ? stage.applyingDenseMap(to: stage.sourceRGBA)
             : warpedRGBABytes(stage.sourceRGBA, width: width, height: height,
                               points: stage.controlPoints.compactMap(RenderableWarpPoint.init))
-        let output = stage.applyingTranslation(to: stage.applyingContinuousContour(to: warpedBytes))
+        let nasalBytes = stage.applyingContinuousNose(to: warpedBytes)
+        let mouthBytes = stage.applyingContinuousMouth(to: nasalBytes)
+        let eyebrowBytes = stage.applyingContinuousEyebrows(to: mouthBytes)
+        let output = stage.applyingTranslation(to: stage.applyingContinuousContour(to: eyebrowBytes))
         let warped = CIImage(
             bitmapData: Data(output), bytesPerRow: rowBytes,
             size: CGSize(width: width, height: height),
@@ -209,7 +226,7 @@ enum BeautyGeometryEffectPipeline {
         UInt8(min(max(value, 0), 255))
     }
 
-    private static func warpedRGBABytes(
+    static func warpedRGBABytes(
         _ source: [UInt8],
         width: Int,
         height: Int,
@@ -349,7 +366,7 @@ enum BeautyGeometryEffectPipeline {
         )
     }
 
-    private struct RenderableWarpPoint {
+    struct RenderableWarpPoint {
         let pixelCenterSampling: Bool
         let target: SIMD2<Float>
         let displacement: SIMD2<Float>
