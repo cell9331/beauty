@@ -5,6 +5,21 @@ The current repository is an owner-local SDK-only SwiftPM package. Start with
 owner below. Code/tests own implemented behavior; dated design and experiment
 records do not create current tasks or override current contracts.
 
+## 文档职责与阅读边界
+
+| 类型 | 回答的问题 | 使用规则 |
+| --- | --- | --- |
+| [AGENTS](../AGENTS.md) | 在此仓库如何行动？ | 长期边界、任务路由和条件化命令；不复制完整契约、库存或历史账本。 |
+| 契约 owner / 当前实现指南 | 要求什么，现有行为与限制是什么？ | 按下方主题表读取；变更时替换失效声明，其他页面直接链接。 |
+| [PLANS](../PLANS.md) 与 Active / debt | 正在做什么，还有哪些缺口？ | 记录授权、执行状态和下一步；计划或工作树文件存在不等于已验证交付。 |
+| 日期回执、历史与 `.planning` 快照 | 当时实际验证了什么？ | 保留原字节、日期、输入和失败；不作为隐式续作队列或当前全量通过证据。 |
+| 导入手册与参考方案 | 有哪些可比较的思路？ | 用于研究；不自动授权命令、模型下载、API 或算法实现。 |
+
+每个契约由主题 owner 定义；代码/测试用于核实实际行为，不自动取消要求。
+出现冲突时定位漂移或实现缺陷，再同步 owner 与计划。文档维护与最小充分检查见
+[QUALITY_SCORE](../QUALITY_SCORE.md#documentation-maintenance) 和
+[计划模板](../plans/TEMPLATES.md)，避免将同一规则分别改写到多处。
+
 ## 按目录查找
 
 | 目录 | 内容 |
@@ -45,6 +60,8 @@ records do not create current tasks or override current contracts.
 | Host-supplied object + complete-lip texture masks | [HOST_TEXTURE_PROTECTION](sdk/HOST_TEXTURE_PROTECTION.md) |
 | Dense static-image semantics, map safety and resource reuse | [DENSE_FACE_REFACTOR](sdk/DENSE_FACE_REFACTOR.md) |
 | Face slider polarity, continuous fields and reference limits | [FACE_SHAPE_SLIDERS](sdk/FACE_SHAPE_SLIDERS.md) |
+| Eye slider directions, observed-eye geometry and iris support | [EYE_SHAPE_SLIDERS](sdk/EYE_SHAPE_SLIDERS.md) |
+| Explicit fixed-photo source, support reuse and handle lifecycle | [PREPARED_PHOTO_EDITING](sdk/PREPARED_PHOTO_EDITING.md) |
 | Git identity and remote operations | [GIT_OPERATIONS](operations/GIT_OPERATIONS.md) |
 | Fixture storage, previews and classified cleanup | [example-images](../example-images/README.md) |
 
@@ -56,6 +73,10 @@ Current citations should use the classified guide paths in the table directly.
 The root compatibility pages are navigation for older citations; they do not
 duplicate or override a contract. Dated `.planning/codebase/` maps link to these
 owners but retain their original analysis scope.
+The repository-root `beauty-sdk-playbook/` local import, when present, is not a
+second current documentation owner; use the classified reference and reviewed
+synthesis above. Current eye/nose/mouth refactors are tracked in PLANS and do
+not inherit completion from earlier geometry receipts.
 
 ## Learning and refactor references
 
@@ -113,3 +134,5 @@ The duplicate import and isolated unexecuted Core ML proposal were removed in
 Historical UI/Demo contents are available only from
 [verified archives](../archives/legacy-ui/README.md), restored into a fresh
 outside-repository temporary directory. They are not build or acceptance input.
+
+- [Mouth slider mappings and continuous geometry](sdk/MOUTH_SLIDERS.md): signed directions, inner-lip protection and reference evidence limits.

@@ -75,8 +75,17 @@ by purpose and original/canonical raster (at most six entries), while geometry,
 texture, masks and local composition execute per snapshot. Replacement, release
 and reset release the source/support and expire the handle. Ordinary still,
 encoded and indexed frame routes retain their existing fresh/cadence contracts.
-The external editor prepares each engine's fixed preview only; full-size export
-uses fresh support. See [prepared photo editing](docs/sdk/PREPARED_PHOTO_EDITING.md).
+The external editor normally prepares each engine's fixed thumbnail. The iris
+repair adds an explicit CPU `processIrisPreviewResult` entry and a separate
+original-bound host engine: canonical/local/color/texture/source refiners and
+iris run on the original, fixed ImageIO resize and source-owner clipping precede
+remaining preview geometry. It preserves the ordinary backend extent contract
+and fresh original export. C74 binds this route to actual original/preview
+photo checks on one existing simulator and the owner's iPad; the iPad original
+render also matches an independent CPU render exactly. This is scoped
+single-input evidence, with the lower gray-rim limit retained; see
+[iris contract](docs/sdk/EYE_SHAPE_SLIDERS.md) and
+[prepared photo editing](docs/sdk/PREPARED_PHOTO_EDITING.md).
 
 `BeautyFaceDetector.production()` chooses MediaPipe on iOS and Vision on macOS.
 The owner's external editor can import `OwnerDiagnostics` SPI and serialize a
@@ -122,6 +131,10 @@ geometry points without row restrictions execute the complete admitted plan on C
 with `beauty.backend.cpuGeometryCapacityFallback = 1`. Direct Metal calls and
 row-restricted over-capacity plans retain typed failure. The retained
 `Warp.metal` and GPU/API boundaries remain pinned by the boundary scanner.
+The internal runtime uses uniform compute threadgroups with rounded-up width;
+all retained kernels guard padded image-edge threads. This supports older
+Apple3/A10 GPUs without nonuniform-dispatch support, retaining the same shader,
+pipelines, resource/error semantics and backend selection.
 
 Geometry providers feed one `BeautyGeometryEffectPipeline`. Dense still images
 use a full-canvas lattice with fixed triangle connectivity, pixel-metric influence,
@@ -147,6 +160,69 @@ fixed source kernels preserve protected regions. Each sampler has its own
 gradient/displacement bound; this is not one all-field sampling transaction.
 The target graph, model resources, retained shaders and pixel-buffer route are
 unchanged. [Exact face behavior](docs/sdk/FACE_SHAPE_SLIDERS.md).
+
+Seven observed eyebrow fields use `BeautyContinuousEyebrowMap` in the shared
+still-image stage, after nose/mouth and before contour/eye/translation. Planning
+records continuous fields separately from legacy point counts. Source RGB
+profiles define compact support; inverse sampling reads immutable source RGBA
+and blends RGB within the source/target support union, retaining carrier alpha.
+No reconstructed skin/foreground layer is composited. Source ownership, protected organs and
+per-side pixel admission constrain application. Failed observed-source admission
+does not re-enable the old point route. Metal supplies its own color-only source
+carrier to eyebrow extraction when color composition is active, independently
+of sibling geometry, while retaining the existing main render order. This may
+add one bounded runtime transaction for that combination; no timing claim is
+made. [Eyebrow guide](docs/sdk/EYEBROW_SLIDERS.md).
+
+Six dense nasal fields use `BeautyContinuousNoseMap`, a request-local CPU-owned
+ROI map shared by both still executors. Planning records admitted work separately
+from legacy point counts; valid continuous work can have zero control points.
+The dense carrier suppresses old nasal kernels even when regional admission
+fails. Its eye-aligned axes and crest follow the immutable source, and complete
+eye/brow/lip envelopes bound its protected regions. It follows the general
+dense/legacy pass and precedes mouth and face/eye refinement. Signed field and
+combined-map limits remain local to this stage. The Vision-only compatibility
+route is retained. [Exact nasal contract](docs/sdk/DENSE_FACE_REFACTOR.md).
+
+Eight observed mouth fields also use a request-local CPU-owned continuous
+map shared by the two still executors. The adapter carries actual inner and
+outer lips; planning preserves admitted strengths without emitting duplicate
+legacy points. Shared preparation suppresses the old mouth points even when
+the observed map rejects. The source-bound mouth axes use pixel distances,
+and independently admitted inner support governs peak/thickness work. The
+map follows existing nose geometry and precedes face/eye refinement and rigid
+translation. No target, model, shader or pixel-buffer capability is added.
+See [mouth contract](docs/sdk/MOUTH_SLIDERS.md).
+
+Observed eye-shape fields use `BeautyContinuousEyeMap` in the same shared
+still-image stage, following face-contour refinement and before rigid translation.
+Pixel-space eye axes separate height, length and corners; the first five use
+aperture-centered scale and image-axis position controls. A bounded source-RGB
+edge check in the same request calibrates position span and the horizontal scale pivot.
+Lower-lid work also derives an upper-trace clearance from the observed contour,
+registers a bounded visible horizontal frame and confirms contrast at an already
+validated dense iris core. These request-local checks retain neither pixels nor
+new tissue labels and never replace regional support admission.
+The stage suppresses matching legacy points even when observed admission rejects;
+sparse positive pupil work retains its compatibility route. Dense pupil strength
+is removed from this map and legacy points; `BeautyIrisScaleRemap` independently
+handles admitted signed dense iris work in shared sourceRGBA after existing
+source-raster refiners and before geometry. Both backends consume the same
+CPU-owned radial-remapped raster; retained shaders/GPU APIs are unchanged.
+Source-only bounded circle registration can corroborate the horizontal-ring
+model with held-out samples; retaining its raw model alone does not qualify a
+repaired circle. Signed uniform scale and C1
+Hermite use source-derived geometry owners; destination coverage is separate from
+four-source-center ownership/opaque-alpha checks. C54's request-local AA material
+repair and same-radius observed-side color completion remain subject to those
+owners. The latter estimates limited observed colors, not hidden texture or
+anatomical recovery, and neither defines native appearance qualification.
+Unsafe required sampling rejects that eye without restoring the old dense iris
+lattice. Zero-pupil, sparse compatibility and the old ten shape fields retain
+their previous admission and sampling paths. Source-fixed grids and feature
+protection remain request-local; this adds no target, shader or pixel-buffer
+capability. [Iris mechanism and limits](docs/sdk/EYE_SHAPE_SLIDERS.md#独立-iris-remap)
+owns registration, sampling, glint exceptions and scoped qualification.
 
 Skin smoothing/sharpening uses independent bounded detail branches with bilateral
 range weights in the shared CPU-owned texture stage, with

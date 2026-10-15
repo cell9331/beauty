@@ -22,13 +22,15 @@
 
 ## 当前基线与候选设计
 
-以下同步到2026-10-10实际静图改造；精确规则见[当前改造契约](../sdk/DENSE_FACE_REFACTOR.md)。
+以下基线包含2026-10-11已验证的连续脸型改造；精确规则见
+[当前改造契约](../sdk/DENSE_FACE_REFACTOR.md)与[连续脸型契约](../sdk/FACE_SHAPE_SLIDERS.md)。
+眼、鼻、嘴的并行后续实现与验证状态从 [PLANS](../../PLANS.md) 进入，未完成工作不继承旧回执。
 
 | 主题 | BeautySDK 当前行为 | 可以研究的改进 |
 | --- | --- | --- |
 | 检测 | iOS MediaPipe 1.1.0 CPU image mode；macOS Vision；普通调用支撑在请求内，显式固定图片入口按source/用途复用有效检测。 | 单独定义视频时序、身份与过期规则后评估跟踪/滤波。 |
 | 连续图片编辑 | [固定图片token](../sdk/PREPARED_PHOTO_EDITING.md)深拷贝单源、用途/raster隔离、失败重试；Demo预览接入，原尺寸导出fresh。 | 此机制不能复用视频旧帧；native验证状态见PLANS。 |
-| 几何 | dense静图用固定连接全画布逆网格、像素距离/中心采样；CPU/GPU共享CPU阶段；legacy保留。 | GPU原生mesh另评估成本，不能声称已全程GPU。 |
+| 几何 | dense静图用固定连接全画布逆网格；八项连续脸型另用后置ROI网格，阶段各自限幅；CPU/GPU共享CPU阶段，legacy保留。 | 合并采样与GPU原生mesh另评估，不能声称已全字段单次采样或全程GPU。 |
 | 组合安全 | dense mapped 字段保留独立 cap；九个源字段单列预算，legacy 保留总预算；最终地图限制实际位移/梯度与姿态。 | 按独立输入域审查效果强度，安全限幅不等于视觉改善。 |
 | 纹理 | 有界双边低频与独立平滑/增强分支；dense五官几何保护并入旧粗域/host mask。 | 扩大足迹/多尺度/引导上采样另验收，当前不是完整Guided Filter。 |
 | 精确保护 | host 显式二值蒙版仅排除磨皮/锐化。 | 若改变保护对象或算法，另定义保护契约；478 点不提供语义分割。 |

@@ -1,5 +1,25 @@
 # Completed plan index: 2026-10
 
+- [A-2026-10-15-batched-local-commits](A-2026-10-15-batched-local-commits.md)：四批本地提交；未推送/合并，未改变眼瞳灰边未达标状态。
+
+- [A-2026-10-14-eye-iris-reference-delivery](A-2026-10-14-eye-iris-reference-delivery.md)：C74独立源空间IR/原图preview限定修复与sameID iPad安装；direct23/public1/facade6/fractional3、native原图/预览2、旧十+UI7及iPad照片2在各自scope通过。负端细灰边及完整参考未达保留；两次物理Panel准入失败不写为布局PASS，缓存14旧compiler文件未恢复。
+
+- [A-2026-10-14-mouth-thinning-research](A-2026-10-14-mouth-thinning-research.md)：单项收薄研究在候选前被用户要求的嘴部整体重做取代，`canceled`；无新候选/图片/研究编译。另有当前共享工作区36项定向集成检查通过，未覆盖用户新指出的唇外脸部稳定性；新线程从专用HANDOFF进入。
+
+- [A-2026-10-12-mouth-native-followup](A-2026-10-12-mouth-native-followup.md)：负收薄/image-X与响应限定改善交付；SDK31、public14及当前iPhone13Pro原final5/36PNG/14身份、8控制先冻结F/X独立数值/原生细节通过，iPad证据保留平台范围。App同ID打开，007/008预览和162项本机精确清理；参考幅度仍未达，设备目录清理未确认，旧失败及并行工作保留。
+
+- [A-2026-10-13-eye-physical-delivery](A-2026-10-13-eye-physical-delivery.md)：C32修复实际iPad暴露的下至/外角局部注册，原V2谓词和细节复核通过；最新8个不同最小SDK用例加一次扩展同回归，单一照片方法actual Metal原图20端点/CPU prepared预览40档各1/0/0。前五项10及未改动6端点与原设备C28 PNG exact，App同ID更新打开、设备owned媒体根独立确认移除；C28–C31失败、单已编辑源、P3/同零态/触摸/性能/全量边界保留。
+- [A-2026-10-12-eye-next-five-match](A-2026-10-12-eye-next-five-match.md)：C28下至/尾/倾斜/内外角原图与预览冻结响应/分离/保护及眼区复核通过；23 SDK、5滑杆及两次同方法CPU照片检查均0失败0跳过，旧五项同输入cap PNG10/10 exact。2104临时媒体与3探针结果清理；单张已有编辑源与P3/真机/完整美图边界保留。
+- [A-2026-10-12-eye-five-match](A-2026-10-12-eye-five-match.md)：前五项C7冻结端点幅度/跨轴/保护与眼区复核通过；22定向SDK、3滑杆均0失败0跳过，同一照片方法三配置各1/0/0，iPad实际Metal十端点与独立CPU RGBA完全一致。App更新打开、owned fixture移除、本机400临时文件精确清理；单张已编辑源，不声明同零态完整美图外观或全量回归。
+
+- [A-2026-10-12-mouth-amplitude](A-2026-10-12-mouth-amplitude.md)：M唇/负收薄/左右幅度与滑杆过零、pose组合优化；最终29定向SDK/5原生均0失败0跳过，实际Metal与公开/原生所选端点RGBA一致。完整参考幅度仍未达；005/006压缩预览及聚合保留，355临时派生图精确清理，未全量/真机性能回归。
+
+- [A-2026-10-11-eye-reference](A-2026-10-11-eye-reference.md)：十项连续眼形与dense虹膜/十一滑杆，过零与稀疏眼瞳保护修复；89相关SDK、10宿主、20实际形状端点方向/保护通过。稀疏眼瞳面积目标与完整美图外观未满足；无全量或原生MediaPipe肖像回归。
+
+- [A-2026-10-11-mouth-reference](A-2026-10-11-mouth-reference.md)：八项连续嘴部算法、双向M/丰唇/微笑及九控件映射；累计86相关SDK/11原生最终通过，最终同版SDK25/0/0含实际Metal、两照片2/0/0；14Vision/34原生输出独立复核。微笑/正丰唇改善，M/薄唇/左右参考幅度缺口保留；两压缩预览和失败记录保留，334临时媒体副本清理，未全量/真机回归。
+
+- [A-2026-10-11-agent-documentation](A-2026-10-11-agent-documentation.md)：AGENTS 与现行指南优化，按职责/授权/证据和影响范围修复漂移。链接、归档与控制自测通过；当前 boundary live 拒绝既有嘴部测试，SDK-GATE-01 保留；未运行 SwiftPM 或改动 SDK。
+
 - [A-2026-10-11-face-continuous](A-2026-10-11-face-continuous.md)：六signed/十滑杆helper/八项连续轮廓，小脸下巴修复；174相关SDK、38原图单字段输出、边界mutation/归档/库存/容量通过。完整美图外观与两图发际线/流畅仍未满足；无原生iOS或全量回归。
 
 - [A-2026-10-10-face-reference](A-2026-10-10-face-reference.md)：18张单参数脸型参考、两原图和26张macOS/Vision输出对照；signed候选5例4通过1失败已撤回，恢复后6/0/0，外观/双向缺口未修复。
