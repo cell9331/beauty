@@ -60,6 +60,39 @@ enum BeautyWideJawlineShadowTrial {
         let phase: Double, center: Double, width: Double
         let netDescent: Double, brightLuma: Double
     }
+    /// Native SOURCE support only. The coarse arc is a distance carrier and
+    /// cannot grant permission above an intervening registered dark-side bulge.
+    struct DenseDarkSideEnvelope {
+        private let start: Double, step: Double, phases: [Double?]
+        var columnCount: Int { phases.count }
+        var supportedColumnCount: Int { phases.compactMap { $0 }.count }
+
+        init?(start: Double, step: Double, phases: [Double?]) {
+            guard start.isFinite, step.isFinite, step > 0, phases.count >= 4,
+                  phases.allSatisfy({ $0?.isFinite ?? true }) else { return nil }
+            self.start = start; self.step = step; self.phases = phases
+        }
+
+        func phase(_ x: Double) -> Double? {
+            guard x.isFinite else { return nil }
+            let u = (x - start) / step
+            guard u.isFinite, u >= 1, u < Double(phases.count - 2) else { return nil }
+            let i = Int(floor(u))
+            guard let before = phases[i - 1], let a = phases[i],
+                  let b = phases[i + 1], let after = phases[i + 2] else { return nil }
+            let upperA = max(before, a, b), upperB = max(a, b, after)
+            let t = u - Double(i), eased = t * t * (3 - 2 * t)
+            return upperA + (upperB - upperA) * eased
+        }
+
+        func contains(localX: Double, localY: Double, originalBoundaryY: Double?, normalY: Double?) -> Bool {
+            guard localY.isFinite, let edge = originalBoundaryY, edge.isFinite,
+                  let ny = normalY, ny.isFinite, ny > 0.2, ny <= 1,
+                  let darkPhase = phase(localX) else { return false }
+            // Same source registration convention used by the 37 endpoints.
+            return localY > edge + darkPhase / ny
+        }
+    }
     private struct Box {
         let lo: SIMD2<Double>, hi: SIMD2<Double>
         func covers(_ p: SIMD2<Double>) -> Bool {
@@ -389,14 +422,12 @@ enum BeautyWideJawlineShadowTrial {
         counts["incompleteLocalSourceProfiles"] = localIncomplete
         counts["competingLocalSourceProfiles"] = localCompeting
         counts["splitLocalContextTracks"] = splitContextTracks - coarseSplitTracks
-        func registeredPhase(_ x: Double) -> Double? {
-            let u = (x - axialStart) / axialStep, i = Int(floor(u))
-            guard i >= 1, i + 2 < localProfiles.count,
-                  let before = localProfiles[i - 1], let a = localProfiles[i],
-                  let b = localProfiles[i + 1], let after = localProfiles[i + 2] else { return nil }
-            let upperA = max(before.phase, a.phase, b.phase)
-            let upperB = max(a.phase, b.phase, after.phase)
-            return upperA + (upperB - upperA) * smooth(u - Double(i))
+        guard let denseEnvelope = DenseDarkSideEnvelope(start: axialStart, step: axialStep,
+            phases: localProfiles.map { $0?.phase }) else { return refuse(.jawContrastUnavailable, counts) }
+        func registeredPhase(_ x: Double) -> Double? { denseEnvelope.phase(x) }
+        func beyondDenseDarkSide(_ q: SIMD2<Double>) -> Bool {
+            denseEnvelope.contains(localX: q.x, localY: q.y,
+                originalBoundaryY: f.boundary(q.x), normalY: normal(q.x)?.y)
         }
         // Source-observed lower-jaw arc, sampled by its ORIGINAL arc length.
         // These 36 segments are only a distance-query carrier. Each endpoint
@@ -496,6 +527,7 @@ enum BeautyWideJawlineShadowTrial {
             return material[(y - y0) * columns + x - x0]
         }
         var domainPixels = 0, footprintRejected = 0, disconnectedPixels = 0
+        var denseCenterRejected = 0, denseFootprintRejected = 0
         for y in y0...y1 { for x in x0...x1 {
             let j = (y - y0) * columns + x - x0
             let p = SIMD2(Double(x) + 0.5, Double(y) + 0.5), q = f.local(p)
@@ -503,13 +535,20 @@ enum BeautyWideJawlineShadowTrial {
                   r.geometricOffset > 0 else { continue }
             domainPixels += 1
             guard material[j] else { continue }
-            var completeTexel = true
+            guard beyondDenseDarkSide(q) else { denseCenterRejected += 1; continue }
+            var completeTexel = true, denseTexel = true
             for dy in [-0.5, 0.5] { for dx in [-0.5, 0.5] {
-                guard let corner = registered(f.local(p + SIMD2(dx, dy))),
+                let localCorner = f.local(p + SIMD2(dx, dy))
+                guard let corner = registered(localCorner),
                       corner.distance > 0, corner.distance < f.span * 0.22, corner.arcFade > 0,
                       corner.geometricOffset > 0 else { completeTexel = false; continue }
+                if !beyondDenseDarkSide(localCorner) { completeTexel = false; denseTexel = false }
             } }
-            guard completeTexel else { footprintRejected += 1; continue }
+            guard completeTexel else {
+                footprintRejected += 1
+                if !denseTexel { denseFootprintRejected += 1 }
+                continue
+            }
             // Native source samples, rather than an upsampled qualification
             // raster, prove skin continuity all the way from inside the jaw.
             let corridor = q - r.start
@@ -530,6 +569,8 @@ enum BeautyWideJawlineShadowTrial {
         counts["registeredDarkSideRayCount"] = rays.count
         counts["sourceDomainPixels"] = domainPixels
         counts["nativeFootprintRejectedPixels"] = footprintRejected
+        counts["denseDarkSideCenterRejectedPixels"] = denseCenterRejected
+        counts["denseDarkSideFootprintRejectedPixels"] = denseFootprintRejected
         counts["disconnectedMaterialPixels"] = disconnectedPixels
         counts["legacyNativeRangeRejectedPixels"] = rangeRejected
         // Source rejection boundaries receive their own compact C1 feather.
@@ -610,6 +651,12 @@ enum BeautyWideJawlineShadowTrial {
         }
         return Frame(origin: origin, axisX: axisX, axisY: axisY, span: span, chin: chin, curve: curve, features: features)
     }
+}
+
+extension BeautyWideJawlineShadowTrial.DenseDarkSideEnvelope: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
+    var description: String { "DenseDarkSideEnvelope(columns: \(columnCount), supported: \(supportedColumnCount))" }
+    var debugDescription: String { description }
+    var customMirror: Mirror { Mirror(self, children: ["columnCount": columnCount, "supportedColumnCount": supportedColumnCount]) }
 }
 
 extension BeautyWideJawlineShadowTrial.Evidence: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {

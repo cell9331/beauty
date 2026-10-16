@@ -87,6 +87,22 @@ final class BeautyEngineWideJawlineShadowTrialPhotoTests: XCTestCase {
             for key in ["exterior", "face", "clothes"] + fineNames {
                 XCTAssertEqual(source.sourceAuthority[key, default: 0], 0, "\(layer.id) gain-before authority: \(key)")
             }
+            // SOURCE-ONLY diagnostics are permitted even when the independent
+            // pre-gain authority audit fails. This never calls apply or saves
+            // an unqualified effect candidate; raw source/authority stay in the
+            // already-validated local ignored output directory.
+            try save(layer.image, output.appendingPathComponent("doc14-source-only-\(layer.id)-original.png"))
+            if let sourceEvidence = source.qualification.evidence {
+                var authorityRGBA = [UInt8](repeating: 0, count: layer.width * layer.height * 4)
+                for y in 0..<layer.height { for x in 0..<layer.width {
+                    let offset = (y * layer.width + x) * 4
+                    authorityRGBA[offset + 3] = 255
+                    if sourceEvidence.ownsSourceDomainPixel(x: x, y: y) {
+                        authorityRGBA[offset] = 255; authorityRGBA[offset + 1] = 255; authorityRGBA[offset + 2] = 255
+                    }
+                } }
+                try save(image(authorityRGBA, layer), output.appendingPathComponent("doc14-source-only-\(layer.id)-authority.png"))
+            }
             let qualified = source.sourceDetectionQualified && source.qualification.evidence != nil && policy.declarationFailures.values.allSatisfy { $0 == 0 } &&
                 policy.bands.allSatisfy { $0.filter { $0 }.count >= 16 } && source.sourceAuthority["pixels", default: 0] > 16 &&
                 (["exterior", "face", "clothes"] + fineNames).allSatisfy { source.sourceAuthority[$0, default: 0] == 0 }
@@ -222,7 +238,7 @@ final class BeautyEngineWideJawlineShadowTrialPhotoTests: XCTestCase {
             XCTFail("generated source policy malformed"); return
         }
         XCTAssertTrue(policy.declarationFailures.values.allSatisfy { $0 == 0 })
-        let original = Array(repeating: [UInt8(128), 128, 128, 255], count: count).flatMap { $0 }
+        let original: [UInt8] = Array(repeating: [UInt8(128), UInt8(128), UInt8(128), UInt8(255)], count: count).flatMap { $0 }
         XCTAssertFalse(policy.counts(original, original).activity[0].usefulEndpoint)
         var positive = original
         for p in 0..<96 { for c in 0..<3 { positive[p * 4 + c] -= 8 } }

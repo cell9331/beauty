@@ -25,7 +25,7 @@
 
 ## 3. Active
 
-- [A-2026-10-14-face-reference-protection](plans/active/A-2026-10-14-face-reference-protection.md)：`active`。两项去双下巴置灰，宿主12定向原生方法通过。流畅C48生成、Mac与原生MediaPipe照片保护/活动通过，所有者看三列后确认保留自然幅度。三项冻结控制7个预览输出与原SDK逐RGBA一致。发际线原生仍noop；下颌阴影原生少量越界且分段描线，均未交付，继续独立修复。选定集成保留并行眼眉更新，旧失败不覆盖，尚未安装算法候选。
+- [A-2026-10-14-face-reference-protection](plans/active/A-2026-10-14-face-reference-protection.md)：`active`。两项去双下巴置灰，宿主12定向原生方法通过。流畅C48所有者接受自然幅度；三项冻结控制7个预览与原SDK逐RGBA一致。发际线原生仍noop；doc14宽阴影及密集边界11生成方法通过，原生实际照片仍在着色前因hair/外域冲突拒绝。人工蒙版公式示意有视觉价值但非SDK交付，拟议固定官方分割模型本地验证待新授权；旧失败和并行眼眉更新保留，未安装算法候选。
 
 - [A-2026-10-15-iris-gray-panel-repair](plans/active/A-2026-10-15-iris-gray-panel-repair.md)：新明确授权修缩小极值灰边及真机Panel，其他区域exact保护不变；C74旧限定通过不作本轮外观达标。先独立源白材质/保护与原生美图细节验收，达标后才更新交付；旧阈值/失败/并行嘴鼻眉及当前App保留。
 
