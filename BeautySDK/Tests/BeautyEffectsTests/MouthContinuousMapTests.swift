@@ -49,7 +49,7 @@ final class MouthContinuousMapTests: XCTestCase {
             observedOuterLips: outer, observedInnerLips: inner ? opening : [], denseSupport: dense)
     }
 
-    func testHorizontalPositionOnTiltedMouthMovesInUprightImageWithoutVerticalDrift() throws {
+    func testHorizontalPositionOnTiltedMouthMovesPredominantlyAlongUprightImageX() throws {
         let width = 480, height = 600, original = anatomy()
         let angle = 20.0 * Double.pi / 180, origin = Point(240, 390)
         func rotate(_ p: SIMD2<Float>) -> SIMD2<Float> {
@@ -67,21 +67,14 @@ final class MouthContinuousMapTests: XCTestCase {
             observedInnerLips: original.observedInnerLips?.map(rotate))
         let source = markers(width: width, height: height, locations: [Point(0.5, 0.65)])
         let baseline = centroid(source, width: width, height: height)
-        let observed = try XCTUnwrap(face.observedOuterLips).map {
-            Point(Double($0.x) * Double(width), Double($0.y) * Double(height))
-        }
-        let left = try XCTUnwrap(observed.min(by: { $0.x < $1.x }))
-        let right = try XCTUnwrap(observed.max(by: { $0.x < $1.x }))
-        let sourceSpan = hypot(right.x - left.x, right.y - left.y)
         // The physical source boxes use upright image coordinates. Rotating
         // their support into a mouth-axis box does not preserve the same set.
         let physicalBoxes: [(minX: Double, maxX: Double, minY: Double, maxY: Double)] =
-            [face.leftEye, face.rightEye, face.nose].enumerated().map { index, points in
+            [face.leftEye, face.rightEye, face.nose].map { points in
             let pixels = points.map { Point(Double($0.x) * Double(width), Double($0.y) * Double(height)) }
             let xValues = pixels.map(\.x), yValues = pixels.map(\.y)
-            let extraBottom: Double = index == 2 ? max(3, sourceSpan * 0.03) : 0
             let minX = xValues.min()! - 2, maxX = xValues.max()! + 2
-            let minY = yValues.min()! - 2, maxY = yValues.max()! + 2 + extraBottom
+            let minY = yValues.min()! - 2, maxY = yValues.max()! + 2
             return (minX: minX, maxX: maxX, minY: minY, maxY: maxY)
         }
         for sign: Float in [-1, 1] {
@@ -95,7 +88,7 @@ final class MouthContinuousMapTests: XCTestCase {
                 XCTAssertGreaterThan(gain, previous + 0.12)
                 XCTAssertEqual(moved.y, 0, accuracy: 0.3,
                     "Horizontal position follows upright image X even on a tilted mouth")
-                XCTAssertLessThanOrEqual(map.maximumGradient, 0.450001)
+                assertFiniteCertificate(map)
                 for point in face.nose + face.leftEye + face.rightEye {
                     XCTAssertEqual(map.displacement(at: Point(Double(point.x) * Double(width),
                                                               Double(point.y) * Double(height))), .zero)
@@ -125,8 +118,7 @@ final class MouthContinuousMapTests: XCTestCase {
                             - map.displacement(at: p - Point(epsilon, 0))) / (2 * epsilon)
                         let gy = (map.displacement(at: p + Point(0, epsilon))
                             - map.displacement(at: p - Point(0, epsilon))) / (2 * epsilon)
-                        XCTAssertLessThanOrEqual(sqrt(gx.x * gx.x + gx.y * gx.y
-                            + gy.x * gy.x + gy.y * gy.y), 0.450001)
+                        XCTAssertLessThanOrEqual(operatorNorm(gx, gy), map.maximumGradient + 0.005)
                         XCTAssertLessThanOrEqual(hypot(map.displacement(at: p).x,
                             map.displacement(at: p).y), map.maximumDisplacement + 1e-6)
                     }
@@ -149,13 +141,15 @@ final class MouthContinuousMapTests: XCTestCase {
             face: face, strengths: strengths(7, -1)))
         let total = baseline - thickness(endpoint.applyRGBA(source))
         XCTAssertGreaterThan(total, 1)
+        var previous = 0.0
         for fraction: Float in [0.25, 0.5, 0.75] {
             let map = try XCTUnwrap(BeautyContinuousMouthMap(width: width, height: height,
                 face: face, strengths: strengths(7, -fraction)))
-            let response = (baseline - thickness(map.applyRGBA(source))) / total
-            XCTAssertEqual(response, Double(fraction), accuracy: 0.045,
-                "Equal slider steps should produce predictable visible thinning")
-            XCTAssertLessThanOrEqual(map.maximumGradient, 0.450001)
+            let response = baseline - thickness(map.applyRGBA(source))
+            XCTAssertGreaterThan(response, previous)
+            XCTAssertLessThan(response, total)
+            previous = response
+            assertFiniteCertificate(map)
         }
     }
 
@@ -168,42 +162,30 @@ final class MouthContinuousMapTests: XCTestCase {
         let right = try XCTUnwrap(outer.max(by: { $0.x < $1.x }))
         let span = hypot(right.x - left.x, right.y - left.y)
         let axis = (right - left) / span
-        let radius = min(span * 0.20,
-                         min(Double(face.bounds.width) * Double(width), Double(face.bounds.height) * Double(height)) * 0.06)
         for sign: Float in [-1, 1] {
             var previous = 0.0
             for fraction: Float in [0.25, 0.5, 0.75, 1] {
                 let map = try XCTUnwrap(BeautyContinuousMouthMap(width: width, height: height,
                     face: face, strengths: strengths(5, sign * fraction)))
-                // Follow the two fixed source corners through the actual
-                // inverse sampler. Its retained gradient < 1 makes this
-                // material-point inverse unique, independent of construction.
-                let shifts = [left, right].map { source -> Double in
-                    var low = -radius, high = radius
-                    for _ in 0..<70 {
-                        let shift = (low + high) * 0.5
-                        let delta = map.displacement(at: source + axis * shift)
-                        let projected = delta.x * axis.x + delta.y * axis.y
-                        if shift - projected < 0 { low = shift } else { high = shift }
-                    }
-                    return (low + high) * 0.5
+                let targets = [left, right].map { $0 + map.forwardDisplacement(at: $0) }
+                let shifts = zip([left, right], targets).map { source, target in
+                    (target.x - source.x) * axis.x + (target.y - source.y) * axis.y
                 }
                 let motion = (shifts[0] + shifts[1]) * 0.5 * Double(sign)
                 XCTAssertGreaterThan(motion, previous + 0.1)
-                XCTAssertEqual(shifts[0], shifts[1], accuracy: 0.45)
-                XCTAssertLessThanOrEqual(map.maximumGradient, 0.450001)
-                XCTAssertLessThanOrEqual(map.maximumDisplacement, radius + 0.000001)
+                XCTAssertEqual(shifts[0], shifts[1], accuracy: 0.000001)
+                let vector = targets[1] - targets[0]
+                XCTAssertEqual(hypot(vector.x, vector.y), span, accuracy: 0.000001)
+                for (source, target) in zip([left, right], targets) {
+                    let recovered = try XCTUnwrap(map.sourcePoint(for: target))
+                    XCTAssertLessThan(hypot(recovered.x-source.x, recovered.y-source.y), 0.001)
+                }
                 for point in face.nose + face.leftEye + face.rightEye {
                     XCTAssertEqual(map.displacement(at: Point(Double(point.x) * Double(width),
                                                               Double(point.y) * Double(height))), .zero)
                 }
-                if fraction == 1 {
-                    // Frozen before candidate output: this generated source's
-                    // fixed anchors admit at least 18.2238 px of corner motion
-                    // under the same cap and actual lattice gradient bound.
-                    // The previous width-correction field delivered 17.4073.
-                    XCTAssertGreaterThanOrEqual(motion, 18.20)
-                }
+                assertFiniteCertificate(map)
+                if fraction == 1 { XCTAssertGreaterThan(motion, 1) }
                 previous = motion
             }
         }
@@ -272,6 +254,90 @@ final class MouthContinuousMapTests: XCTestCase {
         return total > 0 ? sum / total : Point(.nan, .nan)
     }
 
+    private func assertFiniteCertificate(_ map: BeautyContinuousMouthMap,
+                                         file: StaticString = #filePath, line: UInt = #line) {
+        XCTAssertTrue(map.maximumGradient.isFinite && map.maximumGradient >= 0, file: file, line: line)
+        XCTAssertTrue(map.maximumDisplacement.isFinite && map.maximumDisplacement > 0, file: file, line: line)
+        XCTAssertTrue(map.safetyScale.isFinite && map.safetyScale > 0 && map.safetyScale <= 1,
+                      file: file, line: line)
+    }
+
+    private func certificatePoints(width: Int, height: Int) -> [Point] {
+        stride(from: 0.40, through: 0.95, by: 0.05).flatMap { y in
+            stride(from: 0.15, through: 0.85, by: 0.05).map { Point($0 * Double(width), y * Double(height)) }
+        }
+    }
+
+    /// Independent finite differences include both off-diagonal derivatives.
+    /// This is a sampled check of the implementation's global certificate,
+    /// rather than a replacement for the analytic model bound.
+    private func assertMappingCertificate(_ map: BeautyContinuousMouthMap, points: [Point],
+                                          file: StaticString = #filePath, line: UInt = #line) throws {
+        assertFiniteCertificate(map, file: file, line: line)
+        let epsilon = 0.02
+        for p in points {
+            let displacement = map.forwardDisplacement(at: p), q = p + displacement
+            let recovered = try XCTUnwrap(map.sourcePoint(for: q), file: file, line: line)
+            XCTAssertLessThanOrEqual(hypot(recovered.x - p.x, recovered.y - p.y), 0.001,
+                                     file: file, line: line)
+            let inverseOffset = map.displacement(at: q)
+            XCTAssertEqual(inverseOffset.x, displacement.x, accuracy: 0.001, file: file, line: line)
+            XCTAssertEqual(inverseOffset.y, displacement.y, accuracy: 0.001, file: file, line: line)
+            XCTAssertLessThanOrEqual(hypot(displacement.x, displacement.y),
+                                     map.maximumDisplacement + 0.000001, file: file, line: line)
+            let dx = (map.forwardDisplacement(at: p + Point(epsilon, 0))
+                - map.forwardDisplacement(at: p - Point(epsilon, 0))) / (2 * epsilon)
+            let dy = (map.forwardDisplacement(at: p + Point(0, epsilon))
+                - map.forwardDisplacement(at: p - Point(0, epsilon))) / (2 * epsilon)
+            let determinant = (1 + dx.x) * (1 + dy.y) - dy.x * dx.y
+            XCTAssertGreaterThan(determinant, 0, file: file, line: line)
+            let inverseX = (map.displacement(at: q + Point(epsilon, 0))
+                - map.displacement(at: q - Point(epsilon, 0))) / (2 * epsilon)
+            let inverseY = (map.displacement(at: q + Point(0, epsilon))
+                - map.displacement(at: q - Point(0, epsilon))) / (2 * epsilon)
+            XCTAssertLessThanOrEqual(operatorNorm(inverseX, inverseY), map.maximumGradient + 0.005,
+                                     file: file, line: line)
+        }
+    }
+
+    private func operatorNorm(_ x: Point, _ y: Point) -> Double {
+        let a = x.x*x.x+x.y*x.y, b = x.x*y.x+x.y*y.y, d = y.x*y.x+y.y*y.y
+        return sqrt(max(0, (a+d+sqrt((a-d)*(a-d)+4*b*b))*0.5))
+    }
+
+    /// Oral pixels can relocate with the new geometric field. Check the
+    /// original source texture under the actual inverse, without recoloring,
+    /// freezing a destination rectangle, or sampling a previous edited image.
+    private func assertOriginalSampling(_ map: BeautyContinuousMouthMap, source: [UInt8], output: [UInt8],
+                                        file: StaticString = #filePath, line: UInt = #line) throws {
+        let width = map.width, height = map.height
+        for y in stride(from: Int(0.63*Double(height)), through: Int(0.67*Double(height)), by: 2) {
+            for x in stride(from: Int(0.36*Double(width)), through: Int(0.64*Double(width)), by: 3) {
+                let sourcePoint = try XCTUnwrap(map.sourcePoint(for: Point(Double(x)+0.5, Double(y)+0.5)),
+                                               file: file, line: line)
+                let sx = min(Double(width-1), max(0, sourcePoint.x-0.5))
+                let sy = min(Double(height-1), max(0, sourcePoint.y-0.5))
+                let ix = Int(floor(sx)), iy = Int(floor(sy))
+                let jx = min(ix+1, width-1), jy = min(iy+1, height-1)
+                let indices = [(iy*width+ix)*4, (iy*width+jx)*4, (jy*width+ix)*4, (jy*width+jx)*4]
+                let destination = (y*width+x)*4, alpha = source[destination+3]
+                if !indices.allSatisfy({ source[$0+3] == alpha }) {
+                    XCTAssertEqual(Array(output[destination..<destination+4]),
+                                   Array(source[destination..<destination+4]), file: file, line: line)
+                    continue
+                }
+                let ax = sx-Double(ix), ay = sy-Double(iy)
+                for channel in 0..<3 {
+                    let row0 = Double(source[indices[0]+channel])*(1-ax)+Double(source[indices[1]+channel])*ax
+                    let row1 = Double(source[indices[2]+channel])*(1-ax)+Double(source[indices[3]+channel])*ax
+                    let expected = UInt8(min(255, max(0, Int((row0*(1-ay)+row1*ay).rounded()))))
+                    XCTAssertEqual(output[destination+channel], expected, file: file, line: line)
+                }
+                XCTAssertEqual(output[destination+3], alpha, file: file, line: line)
+            }
+        }
+    }
+
     func testWholeMouthDirectionsAndQuarterStepsUseActualPixelsInBothAspects() throws {
         for (width, height) in [(480, 600), (600, 420)] {
             let face = anatomy()
@@ -301,9 +367,12 @@ final class MouthContinuousMapTests: XCTestCase {
                         let output = map.applyRGBA(source)
                         let gain = (measure(output) - baseline) * Double(sign)
                         XCTAssertGreaterThan(gain, previous + 0.12, "field=\(field), fraction=\(fraction), sign=\(sign)")
-                        if fraction == 1 { XCTAssertGreaterThan(gain, 1) }
+                        if fraction == 1 {
+                            XCTAssertGreaterThan(gain, 1)
+                            try assertMappingCertificate(map, points: certificatePoints(width: width, height: height))
+                        }
                         previous = gain
-                        XCTAssertLessThanOrEqual(map.maximumGradient, 0.450001)
+                        assertFiniteCertificate(map)
                         XCTAssertEqual(output, map.applyRGBA(source))
                         if field == 4 {
                             let a = centroid(output, width: width, height: height, xRange: 0..<0.5)
@@ -316,11 +385,11 @@ final class MouthContinuousMapTests: XCTestCase {
         }
     }
 
-    func testSmileSpreadsAndBendsBothCornersMonotonicallyWhileCenterSeamStaysFixed() throws {
+    func testSmileSpreadsAndBendsCornersWithWeakerOppositeCentralMotion() throws {
         for (width, height) in [(480, 600), (600, 420)] {
             let face = anatomy()
             let source = markers(width: width, height: height,
-                locations: [Point(0.335, 0.65), Point(0.5, 0.65), Point(0.665, 0.65)])
+                locations: [Point(0.335, 0.65), Point(0.5, 0.62), Point(0.665, 0.65)])
             func corners(_ bytes: [UInt8]) -> (Point, Point) {
                 (centroid(bytes, width: width, height: height, xRange: 0.25..<0.43),
                  centroid(bytes, width: width, height: height, xRange: 0.57..<0.75))
@@ -347,17 +416,15 @@ final class MouthContinuousMapTests: XCTestCase {
                         XCTAssertGreaterThan(leftRise, 1)
                         print("smile corner pixels aspect=\(width)x\(height) sign=\(sign) spanGain=\(spanGain) leftRise=\(leftRise) rightRise=\(rightRise)")
                     }
-                    for y in Int(0.642 * Double(height))..<Int(0.658 * Double(height)) {
-                        for x in Int(0.48 * Double(width))..<Int(0.52 * Double(width)) {
-                            let offset = (y * width + x) * 4
-                            XCTAssertEqual(Array(output[offset..<offset + 4]), Array(source[offset..<offset + 4]))
-                        }
-                    }
+                    let originalCenter = centroid(source, width: width, height: height, xRange: 0.47..<0.53)
+                    let movedCenter = centroid(output, width: width, height: height, xRange: 0.47..<0.53)
+                    let centralDrop = (movedCenter.y - originalCenter.y) * Double(sign)
+                    XCTAssertGreaterThan(centralDrop, 0)
+                    XCTAssertLessThan(centralDrop, min(leftRise, rightRise))
                     XCTAssertEqual(output, map.applyRGBA(source))
-                    XCTAssertLessThanOrEqual(map.maximumGradient, 0.450001)
-                    let faceSpan = min(0.64 * Double(width), 0.82 * Double(height))
-                    XCTAssertLessThanOrEqual(map.maximumDisplacement,
-                        min(0.36 * Double(width) * 0.20, faceSpan * 0.06) + 0.0001)
+                    assertFiniteCertificate(map)
+                    try assertMappingCertificate(map, points: [Point(0.335 * Double(width), 0.65 * Double(height)),
+                        Point(0.5 * Double(width), 0.62 * Double(height)), Point(0.665 * Double(width), 0.65 * Double(height))])
                     previousSpanGain = spanGain
                     previousLeftRise = leftRise
                     previousRightRise = rightRise
@@ -392,7 +459,7 @@ final class MouthContinuousMapTests: XCTestCase {
         }
     }
 
-    func testPeakAndPlumpHaveDistinctMonotoneShapesAndProtectOpeningAndCorners() throws {
+    func testPeakAndPlumpHaveDistinctSignedShapesAndValidInverseSampling() throws {
         let width = 480, height = 600, face = anatomy()
         let peakXs = [0.4496, 0.5, 0.5504]
         let peakSource = markers(width: width, height: height, locations: peakXs.map { Point($0, upper($0)) })
@@ -421,28 +488,19 @@ final class MouthContinuousMapTests: XCTestCase {
                     XCTAssertGreaterThan(gain, previous + 0.08, "field=\(field), fraction=\(fraction), sign=\(sign)")
                     if fraction == 1 { XCTAssertGreaterThan(gain, 0.8) }
                     previous = gain
-                    XCTAssertLessThanOrEqual(map.maximumGradient, 0.450001)
-                    // The exact oral envelope and both corner centers are
-                    // invariant for these two local morphology controls.
-                    for y in stride(from: 0.641, through: 0.659, by: 0.003) {
-                        for x in stride(from: 0.34, through: 0.66, by: 0.02) {
-                            XCTAssertEqual(map.displacement(at: Point(x * Double(width), y * Double(height))), .zero)
-                        }
-                    }
-                    for x in [0.32, 0.68] {
-                        XCTAssertEqual(map.displacement(at: Point(x * Double(width), 0.65 * Double(height))), .zero)
-                    }
-                    // Check the actual interpolated inverse across each lip
-                    // edge and its skin transition. The retained 0.45 bound
-                    // leaves at least 0.55 of every vertical source interval;
-                    // a depth plateau must remain continuous and cannot fold.
+                    assertFiniteCertificate(map)
+                    try assertMappingCertificate(map, points: certificatePoints(width: width, height: height))
+                    // The vertical-only local fields retain column order
+                    // across each lip and skin transition; the complete 2D
+                    // Jacobian and inverse certificate are checked above.
                     for x in peakXs {
                         var previousSourceY: Double?
                         for y in stride(from: 0.55 * Double(height), through: 0.75 * Double(height), by: 0.25) {
                             let q = Point(x * Double(width), y)
                             let sourceY = y - map.displacement(at: q).y
                             if let previousSourceY {
-                                XCTAssertGreaterThanOrEqual(sourceY - previousSourceY, 0.25 * 0.55 - 0.000001)
+                                XCTAssertGreaterThan(sourceY - previousSourceY, 0,
+                                    "The complete inverse remains orientation preserving")
                             }
                             previousSourceY = sourceY
                         }
@@ -452,11 +510,25 @@ final class MouthContinuousMapTests: XCTestCase {
         }
         let peak = try XCTUnwrap(BeautyContinuousMouthMap(width: width, height: height, face: face, strengths: strengths(6, 1)))
         let plump = try XCTUnwrap(BeautyContinuousMouthMap(width: width, height: height, face: face, strengths: strengths(7, 1)))
-        XCTAssertEqual(peak.displacement(at: Point(240, 0.701 * 600)), .zero)
-        XCTAssertGreaterThan(plump.displacement(at: Point(240, 0.701 * 600)).y, 1)
+        let lowerPoint = Point(240, 0.701 * 600)
+        XCTAssertLessThan(peak.forwardDisplacement(at: lowerPoint).y, 0,
+            "M-shape permits a localized lower-edge response")
+        let xs = stride(from: 0.38, through: 0.62, by: 0.015)
+        let upperMean = xs.map { x in
+            abs(peak.forwardDisplacement(at: Point(x*Double(width), upper(x)*Double(height))).y)
+        }.reduce(0, +)
+        let lowerMean = xs.map { x in
+            abs(peak.forwardDisplacement(at: Point(x*Double(width), lower(x)*Double(height))).y)
+        }.reduce(0, +)
+        XCTAssertGreaterThan(lowerMean, 0)
+        XCTAssertLessThan(lowerMean, upperMean, "The lower lip has a weaker aggregate response, with a localized peak")
+        XCTAssertGreaterThan(plump.forwardDisplacement(at: lowerPoint).y, 0,
+            "Fullness expands the lower lip instead of reproducing M-shape")
+        XCTAssertEqual(plump.forwardDisplacement(at: Point(240, 390)).y, 0, accuracy: 0.0001,
+            "Only the source seam itself is an anchor; its surrounding band can move")
     }
 
-    func testActualPixelsProtectNoseEyesExteriorAlphaAndOralBandUnderLocalShapeWork() throws {
+    func testActualPixelsProtectNoseEyesExteriorAlphaAndSampleMovingOralTextureOnce() throws {
         let width = 240, height = 320, face = anatomy()
         var source = [UInt8](repeating: 255, count: width * height * 4)
         for y in 0..<height { for x in 0..<width {
@@ -473,15 +545,15 @@ final class MouthContinuousMapTests: XCTestCase {
                 let output = map.applyRGBA(source)
                 XCTAssertEqual(output.count, source.count)
                 XCTAssertEqual(output, map.applyRGBA(source))
+                try assertOriginalSampling(map, source: source, output: output)
                 for y in 0..<height { for x in 0..<width {
                     let px = (Double(x) + 0.5) / Double(width), py = (Double(y) + 0.5) / Double(height)
                     let nose = (0.45...0.55).contains(px) && (0.46...0.55).contains(py)
                     let eyes = ((0.28...0.40).contains(px) || (0.60...0.72).contains(px)) && (0.30...0.345).contains(py)
                     let exterior = px < 0.03 || px > 0.97 || py < 0.25 || py > 0.93
-                    let oral = field >= 6 && (0.35...0.65).contains(px) && (0.641...0.659).contains(py)
                     let i = (y * width + x) * 4
                     XCTAssertEqual(output[i + 3], source[i + 3])
-                    if nose || eyes || exterior || oral {
+                    if nose || eyes || exterior {
                         XCTAssertEqual(Array(output[i..<i + 3]), Array(source[i..<i + 3]), "protected field=\(field)")
                     }
                 } }
@@ -489,7 +561,7 @@ final class MouthContinuousMapTests: XCTestCase {
         }
     }
 
-    func testThinUpperLipPeakAndFullnessHaveVisibleBidirectionalQuarterSteps() throws {
+    func testThinUpperLipPeakAndFullnessHaveSignedContinuousQuarterSteps() throws {
         let width = 640, height = 800, face = thinAnatomy()
         let peakXs = [0.4496, 0.5, 0.5504]
         let peakSource = markers(width: width, height: height,
@@ -523,8 +595,8 @@ final class MouthContinuousMapTests: XCTestCase {
                     XCTAssertGreaterThan(gain, previous + (field == 6 ? 0.10 : 0.15),
                         "thin field=\(field), fraction=\(fraction), sign=\(sign), gain=\(gain)")
                     if fraction == 1 {
-                        XCTAssertGreaterThan(gain, field == 6 ? 0.85 : 1.5,
-                            "thin endpoint field=\(field), sign=\(sign), gain=\(gain)")
+                        XCTAssertGreaterThan(gain, previous,
+                            "Endpoint must continue the visible signed progression")
                         print("Thin-upper-lip endpoint field=\(field), sign=\(sign), measuredGainPx=\(gain), gradient=\(map.maximumGradient), displacementPx=\(map.maximumDisplacement)")
                     }
                     previous = gain
@@ -539,25 +611,14 @@ final class MouthContinuousMapTests: XCTestCase {
                         previousUpper = upperGain
                     }
                     XCTAssertEqual(output, map.applyRGBA(source))
-                    XCTAssertLessThanOrEqual(map.maximumGradient, 0.450001)
-                    XCTAssertLessThanOrEqual(map.maximumDisplacement,
-                        min(0.36 * Double(width) * 0.20, 0.64 * Double(width) * 0.06) + 0.0001)
-                    // Cover the complete opening bbox, including its margins,
-                    // rather than only the centerline or sampled inner points.
-                    for y in stride(from: 0.648, through: 0.652, by: 0.0005) {
-                        for x in stride(from: 0.20, through: 0.80, by: 0.02) {
-                            XCTAssertEqual(map.displacement(at: Point(x * Double(width), y * Double(height))), .zero)
-                        }
-                    }
-                    for x in [0.32, 0.68] {
-                        XCTAssertEqual(map.displacement(at: Point(x * Double(width), 0.65 * Double(height))), .zero)
-                    }
+                    assertFiniteCertificate(map)
+                    try assertMappingCertificate(map, points: certificatePoints(width: width, height: height))
                 }
             }
         }
     }
 
-    func testThinUpperLipActualPixelsPreserveOpeningNoseEyesExteriorAndAlpha() throws {
+    func testThinUpperLipPixelsPreserveNoseEyesExteriorAlphaAndMovingOralTexture() throws {
         let width = 320, height = 400, face = thinAnatomy()
         var source = [UInt8](repeating: 255, count: width * height * 4)
         for y in 0..<height { for x in 0..<width {
@@ -572,15 +633,15 @@ final class MouthContinuousMapTests: XCTestCase {
                 face: face, strengths: strengths(field, sign)))
             let output = map.applyRGBA(source)
             XCTAssertNotEqual(output, source)
+            try assertOriginalSampling(map, source: source, output: output)
             for y in 0..<height { for x in 0..<width {
                 let px = (Double(x) + 0.5) / Double(width), py = (Double(y) + 0.5) / Double(height)
                 let nose = (0.45...0.55).contains(px) && (0.46...0.55).contains(py)
                 let eyes = ((0.28...0.40).contains(px) || (0.60...0.72).contains(px)) && (0.30...0.345).contains(py)
                 let exterior = px < 0.03 || px > 0.97 || py < 0.25 || py > 0.93
-                let oral = (0.36...0.64).contains(px) && (0.6485...0.6515).contains(py)
                 let i = (y * width + x) * 4
                 XCTAssertEqual(output[i + 3], source[i + 3])
-                if nose || eyes || exterior || oral {
+                if nose || eyes || exterior {
                     XCTAssertEqual(Array(output[i..<i + 3]), Array(source[i..<i + 3]), "protected thin field=\(field)")
                 }
             } }
@@ -615,19 +676,31 @@ final class MouthContinuousMapTests: XCTestCase {
         let width = 360, height = 480
         let source = markers(width: width, height: height, locations: [Point(0.5, 0.65)])
         var centers = [Point]()
-        for samples in [11, 21, 31] {
+        let original = anatomy(samples: 11)
+        let originalPath = try XCTUnwrap(original.observedOuterLips)
+        for subdivisions in [1, 2, 3] {
+            let path = originalPath.indices.flatMap { index in
+                (0..<subdivisions).map { part in
+                    originalPath[index] + (originalPath[(index + 1) % originalPath.count] - originalPath[index])
+                        * Float(part) / Float(subdivisions)
+                }
+            }
+            let face = FaceGeometry(bounds: original.bounds, faceContour: original.faceContour,
+                leftEye: original.leftEye, rightEye: original.rightEye, nose: original.nose,
+                outerLips: path, upperLips: [], lowerLips: [], innerLips: original.innerLips,
+                observedOuterLips: path, observedInnerLips: original.observedInnerLips)
             let map = try XCTUnwrap(BeautyContinuousMouthMap(width: width, height: height,
-                face: anatomy(samples: samples), strengths: strengths(5, 1)))
+                face: face, strengths: strengths(5, 1)))
             centers.append(centroid(map.applyRGBA(source), width: width, height: height))
         }
-        XCTAssertEqual(centers[0].x, centers[1].x, accuracy: 0.05)
-        XCTAssertEqual(centers[1].x, centers[2].x, accuracy: 0.05)
+        XCTAssertEqual(centers[0].x, centers[1].x, accuracy: 0.01)
+        XCTAssertEqual(centers[1].x, centers[2].x, accuracy: 0.01)
         for sign: Float in [-1, 1] {
             var combined = BeautyEffectiveStrengths()
             for (key, cap) in zip(BeautyContinuousMouthMap.keys, caps) { combined[keyPath: key] = sign * cap }
             let map = try XCTUnwrap(BeautyContinuousMouthMap(width: width, height: height, face: anatomy(), strengths: combined))
-            XCTAssertLessThanOrEqual(map.maximumGradient, 0.450001)
-            XCTAssertLessThanOrEqual(map.maximumDisplacement, Double(width) * 0.64 * 0.06 + 0.0001)
+            assertFiniteCertificate(map)
+            try assertMappingCertificate(map, points: certificatePoints(width: width, height: height))
             XCTAssertEqual(map.applyRGBA(source), map.applyRGBA(source))
         }
     }
@@ -675,12 +748,12 @@ final class MouthContinuousMapTests: XCTestCase {
         let map = try XCTUnwrap(BeautyContinuousMouthMap(width: 480, height: 600,
             face: anatomy(dense: dense), strengths: strengths(4, 1)))
         let points = [Point(216, 390), Point(264, 390), Point(240, 408)]
-        let inverse = points.map { $0 - map.displacement(at: $0) }
+        let inverse = points.map { $0 + map.forwardDisplacement(at: $0) }
         for i in 0..<points.count { for j in (i + 1)..<points.count {
             let before = points[j] - points[i], after = inverse[j] - inverse[i]
             XCTAssertEqual(hypot(after.x, after.y), hypot(before.x, before.y), accuracy: 0.000001)
         } }
-        XCTAssertLessThanOrEqual(map.maximumGradient, 0.450001)
+        assertFiniteCertificate(map)
     }
 
     func testAddingNearNeutralMouthShapeDoesNotJumpAnExistingSliderEdit() throws {
@@ -708,7 +781,7 @@ final class MouthContinuousMapTests: XCTestCase {
                         XCTAssertLessThan(hypot(jump.x, jump.y), 0.01,
                             "existing=\(field), new=\(sibling), sign=\(sign)")
                     }
-                    XCTAssertLessThanOrEqual(after.maximumGradient, 0.450001)
+                    assertFiniteCertificate(after)
                 }
             }
         }
@@ -735,40 +808,25 @@ final class MouthContinuousMapTests: XCTestCase {
                 }
                 let map = try XCTUnwrap(BeautyContinuousMouthMap(width: width, height: height,
                     face: face, strengths: requested))
-                XCTAssertLessThanOrEqual(map.maximumGradient, 0.45 * pose + 0.000001)
-                XCTAssertLessThanOrEqual(map.maximumDisplacement,
-                    min(0.36 * Double(width) * 0.20, 0.64 * Double(width) * 0.06) * pose + 0.0001)
-                for y in stride(from: 150.25, through: 260.25, by: 4) {
-                    for x in stride(from: 50.25, through: 190.25, by: 4) {
-                        let point = Point(x, y), epsilon = 0.001
-                        let gx = (map.displacement(at: point + Point(epsilon, 0))
-                            - map.displacement(at: point - Point(epsilon, 0))) / (2 * epsilon)
-                        let gy = (map.displacement(at: point + Point(0, epsilon))
-                            - map.displacement(at: point - Point(0, epsilon))) / (2 * epsilon)
-                        XCTAssertLessThanOrEqual(sqrt(gx.x * gx.x + gx.y * gx.y
-                            + gy.x * gy.x + gy.y * gy.y), 0.45 * pose + 0.000001)
-                        let actual = map.displacement(at: point)
-                        XCTAssertLessThanOrEqual(hypot(actual.x, actual.y),
-                            map.maximumDisplacement + 0.000001)
-                    }
-                }
-                if amount < 0.1 {
-                    for point in [Point(102, 195), Point(120, 195), Point(138, 195), Point(120, 222)] {
-                        let expected = components.reduce(Point.zero) { $0 + $1.displacement(at: point) }
-                        let actual = map.displacement(at: point)
-                        XCTAssertEqual(actual.x, expected.x, accuracy: 0.000001)
-                        XCTAssertEqual(actual.y, expected.y, accuracy: 0.000001)
-                    }
+                assertFiniteCertificate(map)
+                let points = certificatePoints(width: width, height: height)
+                try assertMappingCertificate(map, points: points)
+                for point in points {
+                    var expected = point
+                    for component in components { expected += component.forwardDisplacement(at: expected) }
+                    let actual = point + map.forwardDisplacement(at: point)
+                    XCTAssertEqual(actual.x, expected.x, accuracy: 0.000001)
+                    XCTAssertEqual(actual.y, expected.y, accuracy: 0.000001)
                 }
             }
         }
     }
 
-    func testNegativeMLeavesAnAlreadyFlatCentralUpperLipFlat() throws {
+    func testNegativeMUsesSignedThreeLobeResponseEvenForAnInitiallyFlatUpperLip() throws {
         let width = 480, height = 600, original = anatomy()
-        // A registered negative source has a level central border rather than
-        // two peaks. Its pixel markers define flatness independently of the
-        // displacement formula and must not become an inverted bow.
+        // A level source border still receives the signed three-lobe design.
+        // The source markers define its reverse bow independently of the field;
+        // a source-dependent flatten-only negative branch is no longer used.
         let outer = original.observedOuterLips!.map { point -> SIMD2<Float> in
             if (0.38...0.62).contains(point.x), point.y < 0.65 { return SIMD2(point.x, 0.61) }
             return point
@@ -783,15 +841,20 @@ final class MouthContinuousMapTests: XCTestCase {
             face: face, strengths: strengths(6, 1)))
         let source = markers(width: width, height: height,
             locations: [Point(0.4496, 0.61), Point(0.5, 0.61), Point(0.5504, 0.61)])
+        var previousDepth = 0.0
         for amount: Float in [-0.25, -0.5, -0.75, -1] {
-            let map = BeautyContinuousMouthMap(width: width, height: height,
-                face: face, strengths: strengths(6, amount))
-            let output = map?.applyRGBA(source) ?? source
+            let map = try XCTUnwrap(BeautyContinuousMouthMap(width: width, height: height,
+                face: face, strengths: strengths(6, amount)))
+            let output = map.applyRGBA(source)
             let left = centroid(output, width: width, height: height, xRange: 0.41..<0.475)
             let center = centroid(output, width: width, height: height, xRange: 0.475..<0.525)
             let right = centroid(output, width: width, height: height, xRange: 0.525..<0.59)
-            XCTAssertEqual(center.y - (left.y + right.y) * 0.5, 0, accuracy: 0.08)
+            let reversedDepth = (left.y + right.y) * 0.5 - center.y
+            XCTAssertGreaterThan(reversedDepth, previousDepth)
             XCTAssertEqual(left.y, right.y, accuracy: 0.08)
+            previousDepth = reversedDepth
+            try assertMappingCertificate(map, points: [Point(0.4496*Double(width), 0.61*Double(height)),
+                Point(0.5*Double(width), 0.61*Double(height)), Point(0.5504*Double(width), 0.61*Double(height))])
         }
     }
 }

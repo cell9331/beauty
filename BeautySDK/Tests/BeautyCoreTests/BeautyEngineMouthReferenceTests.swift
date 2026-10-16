@@ -97,7 +97,7 @@ final class BeautyEngineMouthReferenceTests: XCTestCase {
         }
     }
 
-    func testSmileRaisesOrLowersBothCornersWithoutTranslatingCenter() throws {
+    func testSmileCornersAndWeakerCentralCounterMotionFollowSignedRequests() throws {
         let fixture = Fixture()
         let source = fixture.raster()
         let left = try fixture.marker(source, .left), right = try fixture.marker(source, .right)
@@ -112,14 +112,16 @@ final class BeautyEngineMouthReferenceTests: XCTestCase {
                 XCTAssertGreaterThan(db, previousRight + 0.08)
                 previousLeft = da; previousRight = db
                 XCTAssertEqual(da, db, accuracy: 0.35)
-                XCTAssertEqual(try fixture.marker(output.bytes, .upperCenter).y, center.y, accuracy: 0.35)
+                let centralDrop = (try fixture.marker(output.bytes, .upperCenter).y - center.y) * Double(sign)
+                XCTAssertGreaterThan(centralDrop, 0)
+                XCTAssertLessThan(centralDrop, min(da, db), "Central counter-motion is weaker than the corner lift")
             }
             XCTAssertGreaterThan(previousLeft, 1)
             XCTAssertGreaterThan(previousRight, 1)
         }
     }
 
-    func testCupidBowChangesPeakToCenterDifferenceAndKeepsOralPixelsExact() throws {
+    func testCupidBowChangesSignedShapeAndRetainsRelocatedOralTexture() throws {
         let fixture = Fixture()
         let source = fixture.raster()
         let baseline = try fixture.bowDepth(source)
@@ -131,14 +133,14 @@ final class BeautyEngineMouthReferenceTests: XCTestCase {
                 let amount = (try fixture.bowDepth(output.bytes) - baseline) * Double(sign)
                 XCTAssertGreaterThan(amount, previous + 0.015)
                 previous = amount
-                assertOralExact(source, output.bytes, fixture: fixture)
+                assertRelocatedOralTexture(source, output.bytes, fixture: fixture)
                 assertProtected(source, output.bytes, fixture: fixture)
             }
             XCTAssertGreaterThan(previous, 0.25)
         }
     }
 
-    func testPlumpChangesOuterLipThicknessAtBothSignsWithoutOpeningMouth() throws {
+    func testPlumpChangesOuterLipThicknessAndRetainsRelocatedOralTexture() throws {
         let fixture = Fixture()
         let source = fixture.raster()
         let baseline = try fixture.shape(source)
@@ -151,7 +153,7 @@ final class BeautyEngineMouthReferenceTests: XCTestCase {
                 XCTAssertGreaterThan(amount, previous + 0.03)
                 previous = amount
                 XCTAssertEqual(current.width, baseline.width, accuracy: 0.45)
-                assertOralExact(source, output.bytes, fixture: fixture)
+                assertRelocatedOralTexture(source, output.bytes, fixture: fixture)
             }
             XCTAssertGreaterThan(previous, 1)
         }
@@ -336,17 +338,24 @@ final class BeautyEngineMouthReferenceTests: XCTestCase {
                       file: file, line: line)
     }
 
-    private func assertOralExact(_ source: [UInt8], _ output: [UInt8], fixture: Fixture,
-                                file: StaticString = #filePath, line: UInt = #line) {
-        var exact = true
-        for y in 0..<fixture.height { for x in 0..<fixture.width {
-            let p = SIMD2((Double(x) + 0.5) / Double(fixture.width), (Double(y) + 0.5) / Double(fixture.height))
-            if pow((p.x - 0.5) / 0.112, 2) + pow((p.y - 0.7) / 0.009, 2) <= 1 {
-                let i = (y * fixture.width + x) * 4
-                if source[i..<(i + 4)] != output[i..<(i + 4)] { exact = false }
+    private func assertRelocatedOralTexture(_ source: [UInt8], _ output: [UInt8], fixture: Fixture,
+                                             file: StaticString = #filePath, line: UInt = #line) {
+        // This synthetic fixture tags oral texture with blue=198, distinct
+        // from skin/lip/marker pixels. Geometric resampling may move this
+        // material, but must retain its textured color range and opaque alpha.
+        func samples(_ bytes: [UInt8]) -> [(Int, Int)] {
+            stride(from: 0, to: bytes.count, by: 4).compactMap { offset in
+                let red = Int(bytes[offset]), green = Int(bytes[offset+1]), blue = Int(bytes[offset+2])
+                return abs(blue-198) <= 1 && red >= 218 && green >= 203 ? (red, green) : nil
             }
-        } }
-        XCTAssertTrue(exact, "the inner opening and teeth texture must remain exact", file: file, line: line)
+        }
+        let before = samples(source), after = samples(output)
+        XCTAssertGreaterThan(before.count, 20, file: file, line: line)
+        XCTAssertGreaterThan(after.count, before.count/3, "Relocated oral texture must remain present", file: file, line: line)
+        let red = after.map(\.0), green = after.map(\.1)
+        XCTAssertGreaterThan((red.max() ?? 0)-(red.min() ?? 0), 8, "Oral texture must not become a flat fill", file: file, line: line)
+        XCTAssertGreaterThan((green.max() ?? 0)-(green.min() ?? 0), 8, file: file, line: line)
+        XCTAssertTrue(stride(from: 3, to: output.count, by: 4).allSatisfy { output[$0] == source[$0] }, file: file, line: line)
     }
 
     private final class InvocationCounter: @unchecked Sendable {

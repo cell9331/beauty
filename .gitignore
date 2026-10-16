@@ -59,3 +59,7 @@ example-images/.output-pre-phase51/
 
 # Phase 54 local-only evidence review bundles and session exports.
 example-images/local-retouch-review/
+
+# Reference-analysis raw inputs, correspondences, fields, masks, and local scripts.
+# Reviewed aggregate Markdown remains trackable; binary evidence is ignored above.
+example-images/参考效果分析/**/本地测量/
