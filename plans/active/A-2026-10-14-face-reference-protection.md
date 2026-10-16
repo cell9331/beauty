@@ -1,14 +1,22 @@
 # A-2026-10-14-face-reference-protection
 
+## 2026-10-16 当前终止决定
+
+所有者明确要求即使未完成也保留现有实现并统一合入main，本次到此结束。
+本轮未实现的外观/保护目标按`closed_with_unmet_objectives`结清，不改写旧失败、
+阈值、历史限定通过或照片证据。以下旧下一步、待授权模型和候选计划不再自动执行；
+换思路需要新的明确范围。统一整合记录见[本轮收尾](../history/2026-10/A-2026-10-16-integrate-retained-effects.md)。
+
+
 | Field | Value |
 | --- | --- |
-| Status | `active` |
+| Status | `closed_with_unmet_objectives`（2026-10-16 所有者结束本轮） |
 | Owner | Codex |
 | Started | 2026-10-14 |
 | Scope | 独立分支核对脸型参考响应与保护；当前按所有者选择保留流畅C48，修发际线/下颌光度，两项去双下巴置灰，脸宽/太阳穴/颧骨冻结。 |
 | Source Request | 所有者要求新建分支，对照提供的脸型材料，修复不佳效果并保护其他内容。 |
 | Expected Behavior | 脸型有明确、平滑、连续的目标变化；鼻眉眼嘴细节、目标域外内容与alpha保持。参考缺失的零态/数值不假定存在。 |
-| Current Step | 宿主横向滑杆与置灰限定完成；C48所有者接受，H13仍noop。Doc14宽场及两tone已试验，密集边界收紧后原生仍有hair/外域冲突且中央缺支撑；人工蒙版公式示意已核对。拟议一次固定官方分割模型本地验证，尚待新授权，当前未下载/推理或安装试验算法。 |
+| Current Step | 现有代码按新授权合入main，本轮到此结束；未达标缺口保留，不继续旧候选或模型评估。 |
 | Verification Policy | 八项连续脸型、公开CPU/Metal路径、脸型修整及实际参考图的方向/幅度/保护/细节检查；只按具体依赖扩展，不跑全SDK。 |
 
 | Step | Status | Evidence |

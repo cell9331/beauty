@@ -616,7 +616,7 @@ audited_test_backend_hashes[
 # this reviewed source revision; mutations and new GPU declarations still fail.
 audited_test_backend_hashes[
     "BeautySDK/Tests/BeautyCoreTests/BeautyEngineFaceSliderTests.swift"
-] = "423afd2b347664774e78fa3dde7ff6fe671b183e8943c3d217a50bdadca28846"
+] = "b4f797b15c6580fbc511fe5fa017cb117d8ffc029b8dac48cf160c2f40b9acfc"
 # Eye slider pixels exercise only retained backend selection and executors.
 # This reviewed revision is admitted exactly; mutation still rejects API drift.
 audited_test_backend_hashes[
@@ -646,6 +646,9 @@ audited_test_backend_hashes[
 audited_test_backend_hashes[
     "BeautySDK/Tests/BeautyCoreTests/BeautyEngineRetainedIrisIntegrationTests.swift"
 ] = "3388d6b1d71b19edb34af20b3bede82b17f272fd3a3a314aa76210d47b5f7a80"
+audited_test_backend_hashes[
+    "BeautySDK/Tests/BeautyCoreTests/BeautyEngineSourceContourContextTests.swift"
+] = "26a9d5320f73d3fb1005682c2145e51e77949aac5c35a460baf7f4a4b5e54392"
 for base in (root / "BeautySDK/Sources", root / "BeautySDK/Tests"):
     if not base.exists():
         continue
@@ -896,7 +899,7 @@ PY
     printf '%s\n' 'enum BeautyRenderBackend { case gpu }' > "$fixture/BeautySDK/Sources/Backend.swift"
     expect_failure validate_post_archive "$fixture"
     rm "$fixture/BeautySDK/Sources/Backend.swift"
-    for cpu_test in BeautyEngineMouthNegativeTests BeautyEngineMouthLifecycleTests RepairedControlSafetyTests BeautyUpperEyelidLiveVisionTests BeautySkinTextureHostProtectionTests BeautyPreparedStillImageTests BeautyEngineFaceSliderTests BeautyEngineEyeSliderTests BeautyEngineIrisPreviewTests BeautyEngineMouthReferenceTests BeautyEngineEyebrowContinuousTests BeautyEngineRetainedIrisIntegrationTests; do
+    for cpu_test in BeautyEngineMouthNegativeTests BeautyEngineMouthLifecycleTests RepairedControlSafetyTests BeautyUpperEyelidLiveVisionTests BeautySkinTextureHostProtectionTests BeautyPreparedStillImageTests BeautyEngineFaceSliderTests BeautyEngineEyeSliderTests BeautyEngineIrisPreviewTests BeautyEngineMouthReferenceTests BeautyEngineEyebrowContinuousTests BeautyEngineRetainedIrisIntegrationTests BeautyEngineSourceContourContextTests; do
         cp "$PROJECT_ROOT/BeautySDK/Tests/BeautyCoreTests/$cpu_test.swift" \
             "$fixture/BeautySDK/Tests/BeautyCoreTests/$cpu_test.swift"
         validate_post_archive "$fixture" >/dev/null

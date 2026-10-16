@@ -315,8 +315,10 @@ if re.search(r"\bpublic\s+(?:class|struct|enum|protocol)\b", implementation):
     raise SystemExit("public parity API drifted into test targets")
 
 parameters = re.findall(r"^\s*public var ([A-Za-z][A-Za-z0-9]*):", text["parameters"], re.MULTILINE)
-if len(parameters) != 77 or len(set(parameters)) != 77:
+if len(parameters) != 78 or len(set(parameters)) != 78:
     raise SystemExit("BeautyParameters inventory changed")
+if "jawlineShadow" not in parameters:
+    raise SystemExit("retained jawlineShadow parameter missing")
 if "BeautyRenderBackend" in text["parameters"]:
     raise SystemExit("backend selector leaked into parameters")
 import runpy
@@ -324,7 +326,7 @@ try:
     runpy.run_path(sys.argv[2])["validate"](text["package"])
 except ValueError as error:
     raise SystemExit(str(error))
-if len(re.findall(r"^\s*RenderCase\(", text["renderer"], re.MULTILINE)) != 99:
+if len(re.findall(r"^\s*RenderCase\(", text["renderer"], re.MULTILINE)) != 100:
     raise SystemExit("renderer inventory changed")
 print("backend_parity_static_boundary_passed")
 PY

@@ -155,10 +155,13 @@ package enum BeautyIrisPreviewCutpoint {
         // The cutpoint is before all remaining geometry. Existing maps now
         // carry the composed iris and every sibling together, once, without
         // exporting or transporting an owner mask through their samplers.
+        let immutableViewSource = try thumbnail([UInt8](original.rgba8Data),
+            width: original.width, height: original.height, maximumEdge: maximumPreviewEdge)
         let stage = BeautyStillImageGeometryStage(
             postIrisRGBA: clipped, mapAdmissionRGBA: mapSource.rgba,
             width: baseline.width, height: baseline.height, plan: plan, face: face,
-            sourceAdmission: baselineAdmission, eyebrowSourceRGBA: mapSource.rgba)
+            sourceAdmission: baselineAdmission, eyebrowSourceRGBA: mapSource.rgba,
+            sourceOwnershipRGBA: immutableViewSource.rgba, jawlineShadowSourceRGBA: immutableViewSource.rgba)
         let selectedGeometry = stage.usesDenseMap
             ? stage.applyingDenseMap(to: stage.sourceRGBA)
             : BeautyGeometryEffectPipeline.warpedRGBABytes(

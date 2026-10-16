@@ -189,9 +189,11 @@ public enum BeautyColorEffectPipeline {
         )
 
         if let face {
+            let ownershipImage = BeautyContinuousFaceMap.requiresSourceOwnershipProof(
+                face: face, strengths: plan.effectiveStrengths) ? image : nil
             let shadowImage = plan.effectiveStrengths.jawlineShadow > 0 ? image : nil
             output = BeautyGeometryEffectPipeline.applyMVPProxy(to: output, plan: plan, face: face,
-                jawlineShadowSourceImage: shadowImage)
+                sourceOwnershipImage: ownershipImage, jawlineShadowSourceImage: shadowImage)
         }
 
         return output.cropped(to: image.extent)

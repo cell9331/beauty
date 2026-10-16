@@ -49,11 +49,11 @@ struct BeautyStillImageGeometryStage {
     }
 
     init(sourceRGBA: [UInt8], width: Int, height: Int,
-         plan: BeautyEffectPlan, face: FaceGeometry?, eyebrowSourceRGBA: [UInt8]? = nil,
+         plan: BeautyEffectPlan, face: FaceGeometry?, eyebrowSourceRGBA: [UInt8]? = nil, sourceOwnershipRGBA: [UInt8]? = nil,
          jawlineShadowSourceRGBA: [UInt8]? = nil) {
         self.init(sourceRGBA: sourceRGBA, mapAdmissionRGBA: sourceRGBA,
                   width: width, height: height, plan: plan, face: face,
-                  eyebrowSourceRGBA: eyebrowSourceRGBA, jawlineShadowSourceRGBA: jawlineShadowSourceRGBA,
+                  eyebrowSourceRGBA: eyebrowSourceRGBA, sourceOwnershipRGBA: sourceOwnershipRGBA, jawlineShadowSourceRGBA: jawlineShadowSourceRGBA,
                   preparation: .original)
     }
 
@@ -61,15 +61,15 @@ struct BeautyStillImageGeometryStage {
     /// admission still reads the separately resized pre-refiner source.
     init(postIrisRGBA: [UInt8], mapAdmissionRGBA: [UInt8], width: Int, height: Int,
          plan: BeautyEffectPlan, face: FaceGeometry?, sourceAdmission: SourceAdmission,
-         eyebrowSourceRGBA: [UInt8]? = nil, jawlineShadowSourceRGBA: [UInt8]? = nil) {
+         eyebrowSourceRGBA: [UInt8]? = nil, sourceOwnershipRGBA: [UInt8]? = nil, jawlineShadowSourceRGBA: [UInt8]? = nil) {
         self.init(sourceRGBA: postIrisRGBA, mapAdmissionRGBA: mapAdmissionRGBA,
                   width: width, height: height, plan: plan, face: face,
-                  eyebrowSourceRGBA: eyebrowSourceRGBA, jawlineShadowSourceRGBA: jawlineShadowSourceRGBA,
+                  eyebrowSourceRGBA: eyebrowSourceRGBA, sourceOwnershipRGBA: sourceOwnershipRGBA, jawlineShadowSourceRGBA: jawlineShadowSourceRGBA,
                   preparation: .afterIris(sourceAdmission))
     }
 
     private init(sourceRGBA: [UInt8], mapAdmissionRGBA: [UInt8], width: Int, height: Int,
-                 plan: BeautyEffectPlan, face: FaceGeometry?, eyebrowSourceRGBA: [UInt8]?,
+                 plan: BeautyEffectPlan, face: FaceGeometry?, eyebrowSourceRGBA: [UInt8]?, sourceOwnershipRGBA: [UInt8]?,
                  jawlineShadowSourceRGBA: [UInt8]?,
                  preparation: Preparation) {
         self.face = face
@@ -90,8 +90,12 @@ struct BeautyStillImageGeometryStage {
         }
         var geometryStrengths = plan.effectiveStrengths
         geometryStrengths.jawlineShadow = 0
-        continuousMap = face.flatMap { BeautyContinuousFaceMap(
-            width: width, height: height, face: $0, strengths: geometryStrengths) }
+        continuousMap = face.flatMap { geometry in
+            let proof = BeautyContinuousFaceMap.requiresSourceOwnershipProof(
+                face: geometry, strengths: geometryStrengths) ? (sourceOwnershipRGBA ?? mapAdmissionRGBA) : mapAdmissionRGBA
+            return BeautyContinuousFaceMap(width: width, height: height, face: geometry,
+                strengths: geometryStrengths, sourceRGBA: proof)
+        }
         var eyeStrengths = geometryStrengths
         if face?.denseSupport != nil { eyeStrengths.pupilSize = 0 }
         if case .afterIris = preparation { eyeStrengths.pupilSize = 0 }

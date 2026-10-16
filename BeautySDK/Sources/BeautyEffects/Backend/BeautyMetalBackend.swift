@@ -201,7 +201,8 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
         }
         let stage = BeautyStillImageGeometryStage(
             sourceRGBA: texturedBytes, width: dimensions.width, height: dimensions.height,
-            plan: plan, face: face, eyebrowSourceRGBA: eyebrowSourceRGBA
+            plan: plan, face: face, eyebrowSourceRGBA: eyebrowSourceRGBA, sourceOwnershipRGBA: bytes,
+            jawlineShadowSourceRGBA: bytes
         )
         let renderedBytes = try invokeRuntime(
             width: dimensions.width, height: dimensions.height,

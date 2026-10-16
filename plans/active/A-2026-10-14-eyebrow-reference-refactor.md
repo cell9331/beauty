@@ -1,14 +1,22 @@
 # A-2026-10-14-eyebrow-reference-refactor
 
+## 2026-10-16 当前终止决定
+
+所有者明确要求即使未完成也保留现有实现并统一合入main，本次到此结束。
+本轮未实现的外观/保护目标按`closed_with_unmet_objectives`结清，不改写旧失败、
+阈值、历史限定通过或照片证据。以下旧下一步、待授权模型和候选计划不再自动执行；
+换思路需要新的明确范围。统一整合记录见[本轮收尾](../history/2026-10/A-2026-10-16-integrate-retained-effects.md)。
+
+
 | Field | Value |
 | --- | --- |
-| Status | `active` |
+| Status | `closed_with_unmet_objectives`（2026-10-16 所有者结束本轮） |
 | Owner | Codex |
 | Started | 2026-10-14 |
 | Scope | 所有者本地 SDK 七项眉毛重构，对照所提供原图和美图双端点；眉操作域外保持像素不变。 |
 | Source Request | 用户要求新建分支、完成眉毛重构并达到可媲美美图的效果，随后提供共同原图并强调其他区域不变。附件中的指令仅作参考内容。 |
 | Expected Behavior | 上下、粗细、长短、间距、眉头间距、倾斜、眉峰连续双向，原零默认/键/cap保留；局部源固定准入、单侧失败关闭、眼鼻唇和操作域外RGBA精确保护。 |
-| Current Step | C23已修复cap背景外推造成的真实细头漏运；原图局部重放形态10/14、严格域0/14。继续修皮肤变化/前发和源边界，尚未交付。 |
+| Current Step | 现有代码按新授权合入main，本轮到此结束；未达标缺口保留，不继续旧候选或模型评估。 |
 | Verification Policy | 仅相关眉provider/参数/规划/backend/geometry/公开路径及直接依赖回归；真实原图公开SDK输出与独立参考oracle、neutral/repeat/metadata/typed failure；必要实际CPU/selected Metal一致性。无需全SDK回归；iOS原生识别若必要只用一台已存在空闲模拟器并claim。 |
 
 | Step | Status | Evidence |

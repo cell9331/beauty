@@ -1,8 +1,16 @@
 # A-2026-10-15-iris-gray-panel-repair
 
+## 2026-10-16 当前终止决定
+
+所有者明确要求即使未完成也保留现有实现并统一合入main，本次到此结束。
+本轮未实现的外观/保护目标按`closed_with_unmet_objectives`结清，不改写旧失败、
+阈值、历史限定通过或照片证据。以下旧下一步、待授权模型和候选计划不再自动执行；
+换思路需要新的明确范围。统一整合记录见[本轮收尾](../history/2026-10/A-2026-10-16-integrate-retained-effects.md)。
+
+
 | Field | Value |
 | --- | --- |
-| Status | `active` |
+| Status | `closed_with_unmet_objectives`（2026-10-16 所有者结束本轮） |
 | Owner | SDK iris repair / authorized external owner editor |
 | Started | 2026-10-15 |
 | Source Request | Owner explicitly requires removing shrinking-endpoint gray rim, resolving physical Panel and delivering only after Meitu comparison passes. |

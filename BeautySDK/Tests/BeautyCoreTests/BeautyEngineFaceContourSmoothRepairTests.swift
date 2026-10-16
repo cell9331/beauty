@@ -6,6 +6,48 @@ import XCTest
 @_spi(Testing) import BeautySDK
 
 final class BeautyEngineFaceContourSmoothRepairTests: XCTestCase {
+    func testFACE01SourceSmoothUsesSRGBAndRetainsNeutralRecovery() throws {
+        guard let path = ProcessInfo.processInfo.environment["BEAUTY_FACE_REFERENCE_INPUT"] else {
+            try testFACE01PublicFacadeChangesLateralPixelsAndRecoversAfterInvalidSupport()
+            return
+        }
+        let url = URL(fileURLWithPath: path).standardizedFileURL
+        let values = try url.resourceValues(forKeys: [.isRegularFileKey, .isSymbolicLinkKey, .fileSizeKey])
+        guard values.isRegularFile == true, values.isSymbolicLink != true,
+              let fileSize = values.fileSize, fileSize > 0,
+              fileSize <= BeautyConfiguration.defaultMaximumInputByteCount,
+              let image = CIImage(contentsOf: url, options: [.applyOrientationProperty: true])
+        else { XCTFail("invalid owner-local source"); return }
+        let metadata = BeautyInputMetadata(orientation: .up, source: .photo)
+        let engine = try BeautyEngine()
+        let baseline = try engine.processResult(image: image, metadata: metadata, parameters: .init())
+        let fullWidth = Int(baseline.output.extent.width), fullHeight = Int(baseline.output.extent.height)
+        let scale = min(1, 960 / Double(max(fullWidth, fullHeight)))
+        let preview = baseline.output.transformed(by: CGAffineTransform(scaleX: scale, y: scale))
+            .cropped(to: CGRect(x: 0, y: 0, width: floor(Double(fullWidth) * scale), height: floor(Double(fullHeight) * scale)))
+        for input in [baseline.output, preview] {
+            let width = Int(input.extent.width), height = Int(input.extent.height)
+            let source = Self.bytes(input, width: width, height: height)
+            let colorSpace = try XCTUnwrap(CGColorSpace(name: CGColorSpace.sRGB))
+            let context = CIContext(options: [.workingColorSpace: colorSpace, .outputColorSpace: colorSpace])
+            let cgImage = try XCTUnwrap(context.createCGImage(input, from: input.extent,
+                format: .RGBA8, colorSpace: colorSpace))
+            let prepared = try engine.prepareStillImage(image: cgImage, metadata: metadata)
+            let first = try engine.processResult(preparedImage: prepared, parameters: .init(faceContourSmooth: 0.25))
+            let again = try engine.processResult(preparedImage: prepared, parameters: .init(faceContourSmooth: 0.25))
+            let actual = Self.bytes(first.output, width: width, height: height)
+            XCTAssertEqual(first.output.extent, input.extent)
+            XCTAssertEqual(first.output.colorSpace?.name, CGColorSpace.sRGB)
+            XCTAssertTrue(actual == Self.bytes(again.output, width: width, height: height), "repeat")
+            XCTAssertTrue(stride(from: 3, to: actual.count, by: 4).allSatisfy { actual[$0] == source[$0] })
+            XCTAssertGreaterThan(Self.changedPixels(source, actual, width: width, height: height) { _, _ in true }, 16,
+                "source qualification must meaningfully act; a safe no-op remains unmet")
+            let restored = try engine.processResult(preparedImage: prepared, parameters: .init())
+            XCTAssertTrue(source == Self.bytes(restored.output, width: width, height: height), "neutral recovery")
+            assertRedacted(first)
+        }
+    }
+
     func testFACE01OrientedAndMirroredStillImagesRetainActiveOrFailClosedBehavior() throws {
         let width = 320
         let height = 320

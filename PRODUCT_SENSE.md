@@ -495,3 +495,15 @@ separate host throttles starts at 16 ms, replaces pending values and flushes on
 release; current-output debug detection waits for settled editing. Actual
 native timings and checks belong to the linked [plan](PLANS.md); the interval is
 a scheduling bound, not a frame-rate or input-to-display latency guarantee.
+
+## 2026-10-16 retained implementation consolidation
+
+The owner explicitly accepted consolidating the current brow, eye-shape, mouth,
+nose, face-contour and jaw-shadow implementations even where reference appearance
+or protection remains incomplete, and ended this optimization run. `jawlineShadow`
+remains an independent zero-default unit control capped at .25; the wide-shadow
+trial remains a separate internal experiment, not a newly qualified automatic
+material algorithm. Source-ownership/attachment research and the existing iris
+preview coexist with the continuous maps. This merge does not grant Meitu parity,
+reopen any pending model proposal, or require host/app changes. New optimization
+needs a separately defined approach. The other documentation thread is untouched.

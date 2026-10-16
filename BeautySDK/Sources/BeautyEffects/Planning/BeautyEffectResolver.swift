@@ -469,7 +469,7 @@ public enum BeautyEffectResolver {
         }
         if !staleGeometry, let faceGeometry {
             strengths = faceProvider
-                .fieldEmissions(face: faceGeometry, strengths: strengths)
+                .planningEmissions(face: faceGeometry, strengths: strengths)
                 .sanitizing(strengths)
             strengths = chinProvider
                 .fieldEmissions(face: faceGeometry, strengths: strengths)
@@ -578,7 +578,7 @@ public enum BeautyEffectResolver {
         }
 
         let finalFaceEmissions = staleGeometry ? nil : faceGeometry.map {
-            faceProvider.fieldEmissions(face: $0, strengths: strengths)
+            faceProvider.planningEmissions(face: $0, strengths: strengths)
         }
         let finalChinEmissions = staleGeometry ? nil : faceGeometry.map {
             chinProvider.fieldEmissions(face: $0, strengths: strengths)
@@ -630,7 +630,8 @@ public enum BeautyEffectResolver {
                 let faceShapePointCount =
                     (finalFaceEmissions?.points.count ?? 0) +
                     (finalChinEmissions?.points.count ?? 0)
-                if faceShapePointCount > 0 {
+                if finalFaceEmissions?.hasAdmittedWork == true ||
+                   (finalChinEmissions?.points.isEmpty == false) {
                     activeDomains.insert(.faceShape)
                     geometryPointCount += faceShapePointCount
                 } else if hadRequestedShippedFaceValues {
@@ -910,7 +911,7 @@ public enum BeautyEffectResolver {
                 usesDenseMap: faceGeometry.denseSupport != nil && faceGeometry.freshness == .fresh
             )
             var nextBaseline = faceProvider
-                .fieldEmissions(face: faceGeometry, strengths: resolution.strengths)
+                .planningEmissions(face: faceGeometry, strengths: resolution.strengths)
                 .sanitizing(retainedBaseline)
             nextBaseline = chinProvider
                 .fieldEmissions(face: faceGeometry, strengths: resolution.strengths)

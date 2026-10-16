@@ -306,7 +306,7 @@ final class ObservedCheekBoundaryRefinementTests: XCTestCase {
         let output = FaceContourSubpixelRefiner.refine(
             source, width: width, height: height, face: face, strength: 0.25
         )
-        XCTAssertEqual(output, source)
+        XCTAssertTrue(output == source)
     }
 
     func testProtectedContourSideDropsOnlyItsGeometryControls() throws {

@@ -1,5 +1,14 @@
 # SDK Effect Taxonomy
 
+## 2026-10-16 所有者保留实现并结束本轮
+
+眉、眼形、嘴、鼻、脸型与下颌阴影的现有代码按所有者新决定统一整合到main，
+即使参考外观/保护目标尚未达到。下表既有`implemented`只保留其原有有界输入资格，
+不等于本次美图参考通过；`partial`/`suspended`不因合并而提升。原照片灰边、眉域外
+变化、嘴部外观/保护、鼻部幅度、脸型及下颌材料冲突等未达目标保留，旧优化不再
+自动执行；新思路另定范围。详见[本轮收尾](../plans/history/2026-10/A-2026-10-16-integrate-retained-effects.md)。
+
+
 This is the current SDK-owned authority for supported effect grouping and the
 legacy `美型 / 五官` control vocabulary. It is intentionally independent of the
 archived application and UI-reference source trees.

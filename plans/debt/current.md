@@ -43,3 +43,12 @@
 - **BUILD-CACHE-IRIS-01：旧版本Release中间产物未完全恢复**（2026-10-15）：本次iPad候选的实际成功build被保存门拒绝：Xcode自动移除默认Release独立SDK依赖/编译缓存102个文件与7目录。当前完整App106 entries、dSYM9、readyBase/overlay及源码/旧runfiles exact；从现有精确SHA/mode副本只补回88个仍缺文件，零覆盖/无App回滚。余14个旧版本object/module/doc/sourceinfo文件未恢复，精确重建性未证明；不声称183个原文件全部保留。当前C74成功编译App另经真实source/config/signature/loadedSDK/test/照片gate绑定的补充finalizer接受并安装；原失败回执仍拒绝，不能倒改。禁止为恢复旧缓存覆盖现有App或整树清理。
 
 - **HOST-PANEL-ACTIVATION-01：真机Panel测试无法获得活动场景**（2026-10-15）：现已签名C74 App的两次Panel用例各执行1case/失败2assertions/0skip（xcresult为0passed/1failed），都在即时foregroundActive场景计数0失败，没有布局断言执行。第二次同设备显式activate/terminate-existing launch exit0后仍如此；设备实际解锁。失败原因尚未确认；代码存在只等待model.photo、未在首次场景入场前有界等待UIApplication active及唯一foregroundActive UIWindowScene的窗口，后置settle不能帮助初次入场，但不能据此将失败定因为时序。不得将结果写为布局缺陷、布局PASS或以放宽单场景断言绕过；后续测试修复应MainActor有界异步等待实际前台状态，超时保留失败和场景状态。当前C74照片2方法/四冻结检查通过且current source/App exact，未为该辅助harness问题修改冻结生产产物或重跑整个SDK。
+
+## 2026-10-16 owner closure of current reference-effect optimization
+
+Existing brow/eye-shape/mouth/nose/face/jaw-shadow code is retained in main by
+explicit owner decision despite unmet reference/protection objectives. These
+limitations are disclosed retained behavior, not an automatic repair queue.
+Existing photo failures and typed abstentions remain valid evidence; no new
+model/download/segmentation authorization follows from retaining their code.
+Any different approach needs new scope. See the current consolidation plan.

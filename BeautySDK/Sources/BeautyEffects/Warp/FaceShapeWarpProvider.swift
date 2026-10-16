@@ -23,6 +23,12 @@ struct FaceShapeWarpFieldEmissions: Equatable, Sendable {
     let faceContourSmooth: [WarpControlPoint]
     var templeFullness: [WarpControlPoint]
     var cheekboneSlim: [WarpControlPoint]
+    /// Geometry qualification for the independent source-raster hairline
+    /// refiner. This is not evidence that an RGB boundary has been admitted.
+    /// The real source edge and its protection remain owned by the refiner.
+    var sourceRefinementMask: UInt8 = 0
+
+    var hasAdmittedWork: Bool { sourceRefinementMask != 0 || !points.isEmpty }
 
     var points: [WarpControlPoint] {
         faceSlim + faceSmall + wholeFaceYPosition + wholeFaceXPosition + wholeFaceTilt + faceShortening + foreheadHeight + midfaceLength + philtrumLength + lowerFaceLength + headSmall + headWrap + cranialCrownHeight + hairlineHeight + wholeFaceSymmetry + doubleChinReduction + doubleChinReductionPro + faceVShape + jawSlim +
@@ -62,7 +68,8 @@ struct FaceShapeWarpFieldEmissions: Equatable, Sendable {
         if strengths.cranialCrownHeight != 0, cranialCrownHeight.isEmpty {
             sanitized.cranialCrownHeight = 0
         }
-        if strengths.hairlineHeight != 0, hairlineHeight.isEmpty {
+        if strengths.hairlineHeight != 0, hairlineHeight.isEmpty,
+           sourceRefinementMask & 1 == 0 {
             sanitized.hairlineHeight = 0
         }
         if strengths.wholeFaceSymmetry != 0, wholeFaceSymmetry.isEmpty {
@@ -90,6 +97,59 @@ struct FaceShapeWarpFieldEmissions: Equatable, Sendable {
 }
 
 struct FaceShapeWarpProvider: WarpControlPointProvider {
+    /// Keep the legacy point inventory intact while admitting geometrically
+    /// qualified hairline refinement that does not use face-box proxy kernels.
+    func planningEmissions(
+        face: FaceGeometry,
+        strengths: BeautyEffectiveStrengths
+    ) -> FaceShapeWarpFieldEmissions {
+        var result = fieldEmissions(face: face, strengths: strengths)
+        if Self.hasSourceHairlineGeometry(face: face, strength: strengths.hairlineHeight) {
+            result.sourceRefinementMask |= 1
+        }
+        return result
+    }
+
+    static func hasSourceHairlineGeometry(face: FaceGeometry, strength: Float) -> Bool {
+        let bounds = face.bounds
+        guard strength.isFinite, abs(strength) > Float.ulpOfOne,
+              abs(strength) <= BeautySafetyCaps.hairlineHeight,
+              face.freshness == .fresh,
+              bounds.width > 0, bounds.height > 0,
+              [bounds.minX, bounds.maxX, bounds.minY, bounds.maxY].allSatisfy({
+                  $0.isFinite && (0...1).contains($0)
+              }),
+              face.faceContour.count >= 6,
+              face.faceContour.allSatisfy({ sourceUnitPoint($0) }),
+              let contourMinX = face.faceContour.map(\.x).min(),
+              let contourMaxX = face.faceContour.map(\.x).max(),
+              let contourMinY = face.faceContour.map(\.y).min(),
+              let contourMaxY = face.faceContour.map(\.y).max(),
+              contourMaxX > contourMinX, contourMaxY > contourMinY,
+              let support = face.observedEyebrowSupport,
+              let left = support.left, let right = support.right,
+              left.side == .left, right.side == .right,
+              sourceBrowIsValid(left), sourceBrowIsValid(right)
+        else { return false }
+        return true
+    }
+
+    private static func sourceBrowIsValid(_ trace: BeautyEyebrowSemanticTrace) -> Bool {
+        guard trace.points.count >= 2,
+              trace.points.allSatisfy({ sourceUnitPoint($0) }),
+              sourceUnitPoint(trace.innerEndpoint), sourceUnitPoint(trace.outerEndpoint),
+              sourceUnitPoint(trace.center), trace.innerEndpoint != trace.outerEndpoint,
+              let first = trace.points.first,
+              trace.points.contains(where: { $0 != first })
+        else { return false }
+        return trace.apexIndex.map { trace.points.indices.contains($0) } ?? true
+    }
+
+    private static func sourceUnitPoint(_ point: SIMD2<Float>) -> Bool {
+        point.x.isFinite && point.y.isFinite &&
+            (0...1).contains(point.x) && (0...1).contains(point.y)
+    }
+
     func makeControlPoints(
         face: FaceGeometry,
         strengths: BeautyEffectiveStrengths

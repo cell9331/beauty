@@ -195,3 +195,18 @@ Frozen thresholds, failures, archives, snapshots and receipts retain their
 original bytes and scope. Unreferenced proposals or duplicate imports may be
 removed after confirming no current code/gate dependency and recording the
 reason; they do not create a new algorithm or model task.
+
+## 2026-10-16 retained-effect consolidation
+
+By explicit owner decision, existing brow/eye/mouth/nose/face/jaw-shadow code is
+retained in main despite incomplete reference objectives. Incremental build,
+202 contract/source checks, 24 minimal public checks, one uniform-threadgroup
+case and a separately counted 14-case actual Metal parity gate pass. The initial
+public endpoint matrix exposes CPU/GPU brow compact-exterior assertion failures
+and was interrupted rather than continuing the long matrix; it is not a pass.
+Those failures remain unlocated/unfixed, with original assertions unchanged.
+Five schema/marker control self-tests and SDK-only live/self-test pass after exact
+inventory updates (78 fields, 100 constructor sites) and reviewed dispatch/hash
+bindings. These are scoped checks, not full regression or appearance acceptance.
+[Disposition and failures](plans/history/2026-10/A-2026-10-16-integrate-retained-effects.md).
+The optimization run is closed with unmet objectives and no automatic continuation.

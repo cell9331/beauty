@@ -25,29 +25,7 @@
 
 ## 3. Active
 
-- C-2026-10-15-batched-local-commits：四批本地提交保存基础契约、效果集成、Metal兼容与文档；归档/边界检查通过，未重跑Swift测试，不改变效果资格。见[完成记录](plans/history/2026-10/A-2026-10-15-batched-local-commits.md)。
-
-- [A-2026-10-15-iris-gray-panel-repair](plans/active/A-2026-10-15-iris-gray-panel-repair.md)：灰边仍未达标、未最终交付。C75真机Panel原断言1/0/0；受限眼白光照修正及直接依赖37/0/0，流式存储调整后照明/保护复核3/0/0，原图C77双分辨率捕获2/0/0仍见下缘线。contact-matte及另行授权的SAM2.1 Tiny本地评估20次均未合格；当前原生重建因宿主并行引用缺少jawlineShadow字段而阻断。旧阈值/失败/并行嘴鼻眉及当前App保留。
-
-- [A-2026-10-14-eyebrow-reference-refactor](plans/active/A-2026-10-14-eyebrow-reference-refactor.md)：`active`，分支`codex/eyebrow-reference-refactor`；七项双向映射/连续源RGB候选已实现，C23修复cap细眉头漏运，原图重放形态10/14、严格域0/14，未交付。已授权8次本地SAM验证及固定mask原型整体失败，未集成；继续查皮肤变化与前发错接，保留原门和眼鼻嘴并行工作，不扩大宿主。
-
-- [嘴部整体重做](plans/active/A-2026-10-14-mouth-redesign-HANDOFF.md)：`active`，用户指定原图已在 iPad 核对预览身份；旧大小四端点嘴外泄漏已复现。playbook 全文/代码已复核，八项作用域已定义；两种隔离大小合成虽 U 外零变化，均因方向/外观拒绝（残边、填补、贴片硬边），未整合。下一前置是源嘴材料边界和暴露区纹理重建。生产74e、旧oracle及并行改动保留；不提交/推送，不能把机制测试通过当交付。
-
-
-
-
-### A-2026-10-11-nose-reference-implementation
-
-- Status: `verifying`。六项连续鼻场与16ms预览调度已实现；选定候选6，原13项鼻部SDK及7个不同相关原生用例通过。2026-10-12修复A10 GPU dispatch兼容问题，新增本轮16项直接SDK及3项iPad Release原生检查全部通过；同照片预览/原尺寸各90/90可靠端点、完整眼眉唇保护与12端点实际Metal一致性通过。已更新安装并打开iPad应用；正鼻尖仍稍宽圆，完整美图外观目标未结清，限量渲染耗时不代表拖动帧率或长稳。
-- Scope: 固定单项原图/参考端点与比例、轮廓、眼唇保护验收；连续鼻部场替代局部拉点，并验证真实MediaPipe输出与必要外观增强。
-- Plan: [实施假设、预先声明的像素/外观标准与最小验证](plans/active/A-2026-10-11-nose-reference-implementation.md)。不把旧生成测试或变化像素数当成此次外观达标。
-
-本轮脸型接线与连续轮廓修复已完成其限定实现，见下方 C-2026-10-11；完整美图外观一致及发际线/面部流畅原图缺口保留 FACE-REF-01。
-
-所有者编辑宿主的接线、范围、组合、调试显示与预览修复
-已记录在下方。旧 iOS 17.5 模拟器 Vision provider 的连续检测异常仍为历史限制；
-现行 iOS SDK 与宿主调试已使用 MediaPipe，该旧失败不是现行宿主阻塞，见[当前技术债](plans/debt/current.md)。
-v1.25仍按`closed_with_unmet_objectives`结清，不恢复其自动效果研发。
+当前本轮参考效果优化已按所有者决定结束，无继续执行队列。现有代码已统一保留到main，未达目标按closed_with_unmet_objectives处置；另一文档线程独立进行，不在本任务内。
 
 ## 3A. Historical Lifecycle Ledger（历史脚本锚点）
 
@@ -56,6 +34,13 @@ v1.25仍按`closed_with_unmet_objectives`结清，不恢复其自动效果研发
 原记录已在[历史索引](plans/history/README.md)对应的 completed 分片。Phase 93 的 owner-local `93-CHECKS.json` 与 Phase 95 independent review 属于历史证据，不是当前 Active 计划。
 
 ## 4. Completed / terminal dispositions
+
+### C-2026-10-16-integrate-retained-effects
+
+- 按所有者新决定，眉/眼形/嘴/鼻/脸型/下颌阴影现有代码和三个功能分支历史统一合入main，本轮优化结束。未达标目标closed_with_unmet_objectives；原分支/工作区、失败和归档保留，另一个文档线程不处理。
+- 构建及202定向、24最小公开、1线程分组和单列14 actual Metal parity检查通过；公开眉毛域外保护断言仍失败，未定位、未修复、原断言保留。没有完整SDK、原照片/真机或外观达标声明，未推送。
+- [整合选择、失败及终止范围](plans/history/2026-10/A-2026-10-16-integrate-retained-effects.md)。新思路另定范围，不恢复旧模型/调参队列。
+
 
 ### C-2026-10-15-branch-preservation-cleanup
 

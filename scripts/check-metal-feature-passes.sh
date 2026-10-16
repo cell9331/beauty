@@ -129,7 +129,7 @@ if "guard requiresCPUComposedCarrier else" not in retouch_payload:
 if "BeautyMetalLocalRetouchParameters" in pass_code:
     raise SystemExit("Metal local-retouch composition payload was reintroduced")
 for marker in (
-    "dispatchThreads", "MTLTextureDescriptor", "storageMode = .private",
+    "dispatchThreadgroups", "MTLTextureDescriptor", "storageMode = .private",
     "usage = [.shaderRead, .shaderWrite]", "defer", "tracked(",
     "createdResource()", "releasedResource()", "passes:",
 ):
@@ -192,7 +192,7 @@ for term in (
 
 parameters = re.findall(r"^\s*public var ([A-Za-z][A-Za-z0-9]*):", text["parameters"], re.MULTILINE)
 configuration = re.findall(r"^\s*public var ([A-Za-z][A-Za-z0-9]*):", text["configuration"], re.MULTILINE)
-if len(parameters) != 77 or len(set(parameters)) != 77:
+if len(parameters) != 78 or len(set(parameters)) != 78:
     raise SystemExit("BeautyParameters inventory changed")
 if len(configuration) != 11 or len(set(configuration)) != 11:
     raise SystemExit("BeautyConfiguration inventory changed")
@@ -204,7 +204,7 @@ except ValueError as error:
 manifest = json.loads(text["manifest"])
 if [item.get("id") for item in manifest.get("presets", [])] != ["natural", "clear", "refined", "male-natural", "id-photo-natural"]:
     raise SystemExit("preset inventory changed")
-if len(re.findall(r"^\s*RenderCase\(", text["renderer"], re.MULTILINE)) != 99:
+if len(re.findall(r"^\s*RenderCase\(", text["renderer"], re.MULTILINE)) != 100:
     raise SystemExit("renderer case inventory changed")
 
 metal_sources = sorted(
