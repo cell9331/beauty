@@ -164,6 +164,24 @@ safeAreaInset保持。宿主直接构建同仓库当前SDK源码，包含所有�
 日志采用固定字段白名单，只写stdout；App不写日志文件、不上传、不使用OS日志持久化，
 不打印照片/路径/文件名、EXIF、关键点/蒙版或原始错误。SDK自身的诊断配置与存储边界不变。
 
+每次实际执行的排队预览结束另打印一条`[BeautyEditor][preview_render] {JSON}`：
+`requestRevision/currentRevision/displayedRevision`分别表示本次请求、当前参数与已显示版本；
+`outcome`为`accepted/cancelled/discarded/failed`，`elapsedMs`为实际任务耗时，
+`activeControlCount`为本请求相对neutral的非零可用字段数量（canonical去重），
+`backend/detectionAvailability/usedFaceCount`是安全摘要，`warningCount/errorCode`不含自由文本。
+`matchesSource`通过固定sRGB RGBA8像素比较：`true`表示整张预览保持原图，失败时为`null`。
+组合中某项未处理不一定令整图相同，该字段也不能单独说明安全退出的原因。
+
+排查滑杆无变化时，先匹配松手的`revision`与完成日志的`requestRevision`；
+`accepted`且`displayedRevision`达到该版本才表示最终帧已显示。
+若`matchesSource:true`，查看页面的处理条件提示；若`failed`，查看稳定`errorCode`。
+连续拖动可能产生多个实际预览任务的完成日志，被队列覆盖的未执行请求不打印完成事件。
+
+为避免脸型CPU循环在Debug下持续数秒，当前本地SDK的iOS Debug `BeautyEffects`
+以`-O -assert-config Debug`编译；App和其他模块仍保持普通Debug。SDK效果模块的
+断点/局部变量检查可能受优化影响；Debug断言保留，macOS及Release配置不变。
+诊断未优化SDK时，将`-Onone`放到现有`OTHER_SWIFT_FLAGS`最后并增量重建；测性能前恢复。
+
 ## 验证
 
 实际执行、截图检查与限制见 [VALIDATION.md](VALIDATION.md)。默认测试输入是代码生成图，

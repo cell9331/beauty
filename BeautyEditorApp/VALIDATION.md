@@ -1219,3 +1219,31 @@ Debug build 成功，禁用签名，复用 `.build`；未启动或安装模拟�
 缺少 x86_64 符号失败；显式 `ARCHS=arm64 ONLY_ACTIVE_ARCH=YES` 后成功。
 本轮不声明 x86_64 支持、真机/UI回归、图片视觉达标或既有未完成效果已修复。
 缓存、原图、私有验证素材与结果包未提交。
+
+## 2026-10-16 — 脸型 Debug 延迟、原图识别与预览完成日志
+
+单台已有iPhone15Pro/iOS17.5模拟器，arm64，复用稳定.build；每轮原子claim后释放。
+同一已有授权肖像/实际MediaPipe单脸478点/生产PhotoRenderer CPU脸宽−100：
+原版10.611s，最终**382.099ms**，完整canonical RGBA与原版**exact**，
+仍7920字节变化、无警告。此为单个预览case，不能推广为A15真机或持续帧率。
+
+iOS Debug只优化SDK的BeautyEffects，保留Debug断言/DEBUG/testing，App等仍Onone。
+原生实际swiftc参数顺序已检查；source ownership/contour solver的等价缩减不放宽保护。
+同时修正provider Data比较导致相同像素被误判不同，改为固定紧行sRGB RGBA8预览比较，
+原尺寸导出跳过该比较。每个实际预览任务新增一条12字段preview_render完成stdout，
+可区分旧帧/最新帧、耗时、原图保持、取消和稳定失败码，无自由文本或图像/support。
+
+最终`face-preview-no-change/preview-final.xcresult`：**10方法/0失败/0跳过**。
+范围：真实负端点+neutral 1、73×97非整行宽度neutral/亮度1、完成日志3、
+原松手日志4、旧worker不能覆盖最终帧1。新日志case包含120次更新后最终−.6显示，
+请求与当前/显示版本独立、取消换图及SDK/editor/unknown错误的脱敏。
+独立离线SwiftPM **7个不同SDK case/0/0**（4 solver逐位等价+3 ownership/actual-stage），
+while改动后仅重复3个直接相关case，仍3/0/0；57项绑定和diff检查通过。
+
+失败保留：初次xctestrun格式误读、空sample、嵌套sandbox、async autoclosure编译错误；
+中间原生8方法1失败准确揭示neutral identity误判，修复后最终10/0/0。
+完整过程与范围见[修复记录](../plans/history/2026-10/A-2026-10-16-owner-editor-face-preview-no-change.md)。
+没有重跑全量SDK/App/UI，没有使用所有者反馈照片或安装/测试A15真机；
+未重新认定参考效果、任意照片准入、全组合、原尺寸性能或真机流畅度。
+最后无复现宏的普通Debug build成功，实际确认Effects优化且Debug断言保留、App仍Onone；
+测试后只更新文档，没有重复无关测试。

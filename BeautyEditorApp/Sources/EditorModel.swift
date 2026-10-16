@@ -34,6 +34,53 @@ struct SliderReleaseLog: Encodable {
     }
 }
 
+/// Preview completion metadata only. SDK warning codes and backend labels can
+/// contain caller-provided strings, so only counts and known labels are emitted.
+private struct PreviewRenderLog: Encodable {
+    enum Outcome: String, Encodable { case accepted, cancelled, discarded, failed }
+    let requestRevision: Int
+    let currentRevision: Int
+    let displayedRevision: Int
+    let outcome: Outcome
+    let activeControlCount: Int
+    let elapsedMs: Double
+    let backend: String
+    let detectionAvailability: String
+    let usedFaceCount: Int
+    let matchesSource: Bool?
+    let warningCount: Int
+    let errorCode: String
+
+    enum CodingKeys: String, CodingKey {
+        case requestRevision, currentRevision, displayedRevision, outcome, activeControlCount, elapsedMs
+        case backend, detectionAvailability, usedFaceCount, matchesSource, warningCount, errorCode
+    }
+
+    func encode(to encoder: any Encoder) throws {
+        var values = encoder.container(keyedBy: CodingKeys.self)
+        try values.encode(requestRevision, forKey: .requestRevision)
+        try values.encode(currentRevision, forKey: .currentRevision)
+        try values.encode(displayedRevision, forKey: .displayedRevision)
+        try values.encode(outcome, forKey: .outcome)
+        try values.encode(activeControlCount, forKey: .activeControlCount)
+        try values.encode(elapsedMs, forKey: .elapsedMs)
+        try values.encode(backend, forKey: .backend)
+        try values.encode(detectionAvailability, forKey: .detectionAvailability)
+        try values.encode(usedFaceCount, forKey: .usedFaceCount)
+        if let matchesSource { try values.encode(matchesSource, forKey: .matchesSource) }
+        else { try values.encodeNil(forKey: .matchesSource) }
+        try values.encode(warningCount, forKey: .warningCount)
+        try values.encode(errorCode, forKey: .errorCode)
+    }
+
+    var consoleLine: String? {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
+        guard let data = try? encoder.encode(self), let json = String(data: data, encoding: .utf8) else { return nil }
+        return "[BeautyEditor][preview_render] " + json
+    }
+}
+
 @MainActor @Observable
 final class EditorModel {
     private(set) var photo: ImportedPhoto?
@@ -65,6 +112,7 @@ final class EditorModel {
     @ObservationIgnored private let renderer: any PhotoRendering
     @ObservationIgnored private let photoWriter: any PhotoLibrarySaving
     @ObservationIgnored private let adjustmentLog: (String) -> Void
+    @ObservationIgnored private let previewLog: (String) -> Void
     @ObservationIgnored private var renderTask: Task<Void, Never>?
     @ObservationIgnored private var previewTimer: Task<Void, Never>?
     @ObservationIgnored private var lastPreviewStart: ContinuousClock.Instant?
@@ -85,11 +133,13 @@ final class EditorModel {
     init(renderer: any PhotoRendering = PhotoRenderer(),
          photoWriter: any PhotoLibrarySaving = PhotoLibraryWriter(),
          previewInterval: Duration = .milliseconds(16),
-         adjustmentLog: @escaping (String) -> Void = { print($0) }) {
+         adjustmentLog: @escaping (String) -> Void = { print($0) },
+         previewLog: @escaping (String) -> Void = { print($0) }) {
         self.renderer = renderer
         self.photoWriter = photoWriter
         self.previewInterval = max(.zero, previewInterval)
         self.adjustmentLog = adjustmentLog
+        self.previewLog = previewLog
     }
 
     var selectedTool: ToolDefinition { ToolCatalog.find(selectedToolID)! }
@@ -396,8 +446,19 @@ final class EditorModel {
         pendingPreview = nil
         lastPreviewStart = .now
         let worker = renderWorker
+        let neutral = BeautyParameters()
+        let activeControlCount = ToolCatalog.canonicalTools.filter {
+            $0.available && $0.sdkValue(in: request.snapshot.parameters) != $0.sdkValue(in: neutral)
+        }.count
+        let started = ContinuousClock.now
         renderTask = Task {
+            var outcome = PreviewRenderLog.Outcome.discarded
+            var completedResult: RenderedPhoto?
+            var errorCode = "none"
             defer {
+                logPreviewCompletion(requestRevision: request.revision, started: started,
+                                     activeControlCount: activeControlCount,
+                                     outcome: outcome, result: completedResult, errorCode: errorCode)
                 if worker == renderWorker {
                     renderTask = nil
                     if pendingPreview != nil {
@@ -411,17 +472,57 @@ final class EditorModel {
             }
             do {
                 let result = try await renderer.render(request.photo, snapshot: request.snapshot, fullResolution: false)
+                completedResult = result
                 try Task.checkCancellation()
                 if worker == renderWorker, self.photo?.id == request.photo.id,
                    request.revision > displayedRevision {
                     accept(result, revision: request.revision)
+                    outcome = .accepted
                 }
             } catch is CancellationError {
+                outcome = .cancelled
+                errorCode = "cancelled"
                 return
             } catch {
+                outcome = .failed
+                errorCode = previewErrorCode(error)
                 if request.revision == revision { errorMessage = message(for: error) }
             }
         }
+    }
+
+    private func logPreviewCompletion(requestRevision: Int, started: ContinuousClock.Instant,
+                                      activeControlCount: Int,
+                                      outcome: PreviewRenderLog.Outcome, result: RenderedPhoto?, errorCode: String) {
+        let elapsed = started.duration(to: .now).components
+        let milliseconds = Double(elapsed.seconds) * 1_000 + Double(elapsed.attoseconds) / 1_000_000_000_000_000
+        let knownBackends = ["CPU", "Metal", "CPU original iris preview", "CPU fallback", "CPU capacity fallback"]
+        let backend = result.map { knownBackends.contains($0.backendName) ? $0.backendName : "other" } ?? "unavailable"
+        let event = PreviewRenderLog(
+            requestRevision: requestRevision, currentRevision: revision, displayedRevision: displayedRevision,
+            outcome: outcome, activeControlCount: activeControlCount,
+            elapsedMs: milliseconds.isFinite ? max(0, milliseconds) : 0,
+            backend: backend, detectionAvailability: result?.detection?.availability.rawValue ?? "unavailable",
+            usedFaceCount: result?.detection?.usedFaceCount ?? 0, matchesSource: result?.matchesSource,
+            warningCount: max(0, max(result?.warningCount ?? 0, result?.warningCodes.count ?? 0)), errorCode: errorCode)
+        if let line = event.consoleLine { previewLog(line) }
+    }
+
+    private func previewErrorCode(_ error: Error) -> String {
+        if let error = error as? BeautyError { return "sdk." + error.code }
+        if let error = error as? EditorError {
+            return switch error {
+            case .invalidImage: "editor.invalid_image"
+            case .tooLarge: "editor.too_large"
+            case .unsupportedColor: "editor.unsupported_color"
+            case .invalidOrientation: "editor.invalid_orientation"
+            case .backgroundUnavailable: "editor.background_unavailable"
+            case .renderFailed: "editor.render_failed"
+            case .saveDenied: "editor.save_denied"
+            case .saveFailed: "editor.save_failed"
+            }
+        }
+        return "unknown"
     }
 
     private func suspendDebugAnalysis() {

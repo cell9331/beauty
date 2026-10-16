@@ -5,6 +5,9 @@ import SwiftUI
 import UniformTypeIdentifiers
 import Vision
 import XCTest
+#if BEAUTY_OWNER_FACE_PREVIEW_REPRO
+import CryptoKit
+#endif
 @testable import BeautyEditor
 
 enum TestImage {
@@ -390,6 +393,52 @@ enum TestImage {
 }
 
 @MainActor final class PhotoPipelineTests: XCTestCase {
+    func testPreviewIdentityComparesPixelsForUnalignedRowsAndDetectsRealChanges() async throws {
+        let renderer = PhotoRenderer(preferredBackend: .cpu)
+        let photo = try await renderer.load(TestImage.encoded(width: 73, height: 97))
+        let original = TestImage.pixels(photo.preview)
+        let neutral = try await renderer.render(photo, snapshot: EditorSnapshot(), fullResolution: false)
+        XCTAssertEqual(TestImage.pixels(neutral.image), original)
+        XCTAssertTrue(neutral.matchesSource)
+        var edit = EditorSnapshot()
+        edit.parameters.brightness = 0.1
+        let changed = try await renderer.render(photo, snapshot: edit, fullResolution: false)
+        XCTAssertNotEqual(TestImage.pixels(changed.image), original)
+        XCTAssertFalse(changed.matchesSource)
+    }
+
+    #if BEAUTY_OWNER_FACE_PREVIEW_REPRO
+    func testOwnerFaceSlimNegativePreviewActuallyChangesPixels() async throws {
+        let path = try XCTUnwrap(ProcessInfo.processInfo.environment["BEAUTY_TEST_IMAGE"])
+        let renderer = PhotoRenderer(preferredBackend: .cpu)
+        let photo = try await renderer.load(ImageInput.readBoundedFile(URL(fileURLWithPath: path)))
+        var edit = EditorSnapshot()
+        ToolCatalog.find("face.width")!.setValue(-100, in: &edit.parameters)
+        print("FACE_PREVIEW_REPRO_START face.width=-100 sdk=-0.6")
+        let rendered = try await renderer.render(photo, snapshot: edit, fullResolution: false)
+        let before = TestImage.pixels(photo.preview)
+        let after = TestImage.pixels(rendered.image)
+        let changed = zip(before, after).filter { $0 != $1 }.count
+        let receipt: [String: Any] = [
+            "changedBytes": changed, "usedFaceCount": rendered.detection?.usedFaceCount ?? 0,
+            "availability": rendered.detection?.availability.rawValue ?? "none",
+            "warnings": rendered.warningCodes, "metrics": rendered.metrics,
+            "milliseconds": rendered.renderMilliseconds, "backend": rendered.backendName
+        ]
+        let data = try JSONSerialization.data(withJSONObject: receipt, options: [.sortedKeys])
+        print("FACE_PREVIEW_REPRO_RESULT " + String(decoding: data, as: UTF8.self))
+        print("FACE_PREVIEW_REPRO_RGBA_SHA256 " + SHA256.hash(data: after).map { String(format: "%02x", $0) }.joined())
+        XCTAssertEqual(rendered.detection?.usedFaceCount, 1)
+        XCTAssertEqual(rendered.image.width, photo.preview.width)
+        XCTAssertEqual(rendered.image.height, photo.preview.height)
+        XCTAssertGreaterThan(changed, 0, "An admitted face-width preview must change actual pixels")
+        XCTAssertFalse(rendered.matchesSource)
+        let neutral = try await renderer.render(photo, snapshot: EditorSnapshot(), fullResolution: false)
+        XCTAssertEqual(TestImage.pixels(neutral.image), before)
+        XCTAssertTrue(neutral.matchesSource, "The completion log must identify a real unchanged output")
+    }
+    #endif
+
     func testFileImportUsesActualBoundedBytesAndRejectsEmptyAndOversizedFiles() throws {
         let url = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         defer { try? FileManager.default.removeItem(at: url) }
@@ -1959,5 +2008,193 @@ actor FakeRenderer: PhotoRendering {
         let deadline = Date().addingTimeInterval(5)
         while !predicate(), Date() < deadline { try await Task.sleep(for: .milliseconds(10)) }
         XCTAssertTrue(predicate(), "State did not settle")
+    }
+}
+
+@MainActor final class PreviewRenderLogTests: XCTestCase {
+    private let prefix = "[BeautyEditor][preview_render] "
+    private let fields: Set<String> = [
+        "requestRevision", "currentRevision", "displayedRevision", "outcome", "activeControlCount", "elapsedMs",
+        "backend", "detectionAvailability", "usedFaceCount", "matchesSource", "warningCount", "errorCode"
+    ]
+
+    func testQueuedPreviewLogsAcceptedIdentityThenLatestChangedResult() async throws {
+        var lines: [String] = []
+        let renderer = Renderer(.queued)
+        let model = EditorModel(renderer: renderer, previewInterval: .seconds(2),
+                                adjustmentLog: { _ in }, previewLog: { lines.append($0) })
+        try await load(model)
+        let importedRevision = model.displayedRevision
+        model.updateValue(1)
+        try await wait { await renderer.renderCount == 1 }
+        let firstRevision = model.revision
+        for step in 1...120 { model.updateValue(-Float(step) * 100 / 120) }
+        model.releaseSliderAdjustment(-100)
+        let finalRevision = model.revision
+        XCTAssertEqual(model.displayedRevision, importedRevision)
+        XCTAssertTrue(lines.isEmpty, "A pending request must not be reported as completed")
+        await renderer.releaseFirst()
+        try await wait { !model.isRendering && model.displayedRevision == finalRevision && lines.count == 2 }
+        let first = try parse(lines[0])
+        let final = try parse(lines[1])
+        XCTAssertEqual(first["outcome"] as? String, "accepted")
+        XCTAssertEqual(try number(first, "requestRevision"), Double(firstRevision))
+        XCTAssertEqual(try number(first, "currentRevision"), Double(finalRevision))
+        XCTAssertEqual(try number(first, "displayedRevision"), Double(firstRevision))
+        XCTAssertEqual(first["matchesSource"] as? Bool, true)
+        XCTAssertEqual(try number(first, "activeControlCount"), 1)
+        XCTAssertEqual(first["backend"] as? String, "other", "Untrusted backend labels must be normalized")
+        XCTAssertEqual(first["detectionAvailability"] as? String, "usable")
+        XCTAssertEqual(try number(first, "usedFaceCount"), 1)
+        XCTAssertEqual(try number(first, "warningCount"), 2)
+        XCTAssertEqual(final["outcome"] as? String, "accepted")
+        XCTAssertEqual(try number(final, "requestRevision"), Double(finalRevision))
+        XCTAssertEqual(try number(final, "currentRevision"), Double(finalRevision))
+        XCTAssertEqual(try number(final, "displayedRevision"), Double(finalRevision))
+        XCTAssertEqual(final["matchesSource"] as? Bool, false)
+        XCTAssertEqual(try number(final, "activeControlCount"), 1)
+        XCTAssertEqual(final["backend"] as? String, "CPU")
+        XCTAssertEqual(final["errorCode"] as? String, "none")
+        let values = await renderer.previewValues
+        XCTAssertEqual(values.count, 2, "Only the running request and latest pending request should render")
+        XCTAssertEqual(try XCTUnwrap(values.last), -0.6, accuracy: 0.0001)
+        XCTAssertNotEqual(TestImage.pixels(try XCTUnwrap(model.preview)),
+                          TestImage.pixels(try XCTUnwrap(model.photo).preview))
+    }
+
+    func testPreviewFailuresLogStableCodesWithoutErrorOrWarningPayloads() async throws {
+        let cases: [(Renderer.Mode, String)] = [
+            (.sdkFailure, "sdk.render_failed"), (.editorFailure, "editor.render_failed"), (.unknownFailure, "unknown")
+        ]
+        for (mode, code) in cases {
+            var lines: [String] = []
+            let model = EditorModel(renderer: Renderer(mode), previewLog: { lines.append($0) })
+            try await load(model)
+            let importedRevision = model.displayedRevision
+            model.updateValue(50)
+            model.endAdjustment()
+            try await wait { !model.isRendering && lines.count == 1 }
+            let record = try parse(try XCTUnwrap(lines.first))
+            XCTAssertEqual(record["outcome"] as? String, "failed")
+            XCTAssertEqual(record["errorCode"] as? String, code)
+            XCTAssertEqual(try number(record, "requestRevision"), Double(model.revision))
+            XCTAssertEqual(try number(record, "currentRevision"), Double(model.revision))
+            XCTAssertEqual(try number(record, "displayedRevision"), Double(importedRevision))
+            XCTAssertTrue(record["matchesSource"] is NSNull, "A failed render has no output identity result")
+            XCTAssertEqual(record["backend"] as? String, "unavailable")
+            XCTAssertEqual(record["detectionAvailability"] as? String, "unavailable")
+            XCTAssertEqual(try number(record, "usedFaceCount"), 0)
+            XCTAssertEqual(try number(record, "warningCount"), 0)
+            XCTAssertNotNil(model.errorMessage)
+        }
+    }
+
+    func testCancelledOldWorkerLogsCompletionWithoutChangingReplacementPreview() async throws {
+        var lines: [String] = []
+        let renderer = Renderer(.blocked)
+        let model = EditorModel(renderer: renderer, previewLog: { lines.append($0) })
+        try await load(model)
+        model.updateValue(50)
+        model.endAdjustment()
+        try await wait { await renderer.renderCount == 1 }
+        let oldRevision = model.revision
+        let oldPhotoID = try XCTUnwrap(model.photo).id
+        model.importPhoto(TestImage.encoded(width: 80, height: 112))
+        try await wait { !model.isLoading && model.photo?.id != oldPhotoID }
+        let replacementRevision = model.displayedRevision
+        let replacementPixels = TestImage.pixels(try XCTUnwrap(model.preview))
+        await renderer.releaseFirst()
+        try await wait { lines.count == 1 }
+        let record = try parse(try XCTUnwrap(lines.first))
+        XCTAssertEqual(record["outcome"] as? String, "cancelled")
+        XCTAssertEqual(record["errorCode"] as? String, "cancelled")
+        XCTAssertEqual(try number(record, "requestRevision"), Double(oldRevision))
+        XCTAssertEqual(try number(record, "currentRevision"), Double(model.revision))
+        XCTAssertEqual(try number(record, "displayedRevision"), Double(replacementRevision))
+        XCTAssertEqual(model.displayedRevision, replacementRevision)
+        XCTAssertEqual(TestImage.pixels(try XCTUnwrap(model.preview)), replacementPixels)
+        XCTAssertFalse(model.isRendering)
+    }
+
+    private func parse(_ line: String) throws -> [String: Any] {
+        XCTAssertTrue(line.hasPrefix(prefix))
+        XCTAssertFalse(line.contains("\n") || line.contains("\r"))
+        for forbidden in ["sensitive_payload", "/private/", "landmarks", "masks", "warningCodes", "metrics"] {
+            XCTAssertFalse(line.contains(forbidden), "Free-form render data must not enter the console")
+        }
+        let json = String(line.dropFirst(prefix.count))
+        let record = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(json.utf8)) as? [String: Any])
+        XCTAssertEqual(Set(record.keys), fields)
+        let elapsed = try number(record, "elapsedMs")
+        XCTAssertTrue(elapsed.isFinite)
+        XCTAssertGreaterThanOrEqual(elapsed, 0)
+        return record
+    }
+
+    private func number(_ record: [String: Any], _ key: String) throws -> Double {
+        try XCTUnwrap(record[key] as? NSNumber, key).doubleValue
+    }
+
+    private func load(_ model: EditorModel) async throws {
+        model.importPhoto(TestImage.encoded())
+        try await wait { !model.isLoading && model.photo != nil }
+    }
+
+    private func wait(_ predicate: () async -> Bool) async throws {
+        let deadline = ContinuousClock.now.advanced(by: .seconds(5))
+        while !(await predicate()), ContinuousClock.now < deadline {
+            try await Task.sleep(for: .milliseconds(10))
+        }
+        let settled = await predicate()
+        XCTAssertTrue(settled, "State did not settle")
+    }
+
+    private actor Renderer: PhotoRendering {
+        enum Mode: Sendable, Equatable { case queued, blocked, sdkFailure, editorFailure, unknownFailure }
+        private let mode: Mode
+        private let actual = PhotoRenderer()
+        private var firstGate: CheckedContinuation<Void, Never>?
+        private(set) var renderCount = 0
+        private(set) var previewValues: [Float] = []
+
+        init(_ mode: Mode) { self.mode = mode }
+        func load(_ data: Data) async throws -> ImportedPhoto { try await actual.load(data) }
+        func encodePNG(_ image: CGImage) async throws -> Data { try await actual.encodePNG(image) }
+        func releaseFirst() {
+            let gate = firstGate
+            firstGate = nil
+            gate?.resume()
+        }
+        func render(_ photo: ImportedPhoto, snapshot: EditorSnapshot, fullResolution: Bool) async throws -> RenderedPhoto {
+            renderCount += 1
+            let call = renderCount
+            previewValues.append(snapshot.parameters.faceSlim)
+            switch mode {
+            case .sdkFailure: throw BeautyError.renderFailed("/private/sensitive_payload.png landmarks masks")
+            case .editorFailure: throw EditorError.renderFailed
+            case .unknownFailure:
+                throw NSError(domain: "sensitive_payload", code: 42,
+                              userInfo: [NSLocalizedDescriptionKey: "/private/sensitive_payload.png landmarks masks"])
+            case .queued, .blocked:
+                if call == 1 { await withCheckedContinuation { firstGate = $0 } }
+            }
+            // Complete even after cancellation so the model must reject an old
+            // worker's real returned image rather than relying on cooperation.
+            let identity = mode == .queued && call == 1
+            let context = try XCTUnwrap(CGContext(data: nil, width: photo.preview.width, height: photo.preview.height,
+                                                  bitsPerComponent: 8, bytesPerRow: photo.preview.width * 4,
+                                                  space: CGColorSpace(name: CGColorSpace.sRGB)!,
+                                                  bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue))
+            context.draw(photo.preview, in: CGRect(x: 0, y: 0, width: photo.preview.width, height: photo.preview.height))
+            context.setFillColor(CGColor(red: 1, green: 0, blue: 0, alpha: 1))
+            context.fill(CGRect(x: 0, y: 0, width: 2, height: 2))
+            let image = identity ? photo.preview : try XCTUnwrap(context.makeImage())
+            return RenderedPhoto(image: image,
+                                 detection: BeautyDetectionSummary(availability: .usable, faceCount: 1, usedFaceCount: 1),
+                                 warningCount: 2,
+                                 warningCodes: ["sensitive_payload", "/private/sensitive_payload.png\nlandmarks masks"],
+                                 metrics: ["sensitive_payload": .infinity], matchesSource: identity,
+                                 backendName: identity ? "sensitive_payload" : "CPU")
+        }
     }
 }

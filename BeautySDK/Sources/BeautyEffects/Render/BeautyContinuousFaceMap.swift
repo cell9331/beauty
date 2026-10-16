@@ -460,19 +460,19 @@ struct BeautyContinuousFaceMap {
     /// Cyclic convex projections of the four cell-corner gradient constraints.
     /// The final common bound below contains any finite-iteration residual.
     /// No source pixels, observations or fields escape this request.
-    private static func boundedField(_ seed: [SIMD2<Double>], xs: [Double], ys: [Double],
+    static func boundedField(_ seed: [SIMD2<Double>], xs: [Double], ys: [Double],
         maximumGradient: Double, maximumDisplacement: Double) -> [SIMD2<Double>] {
         var field = seed
         let fixed = seed.map { $0 == .zero }
         func norm(_ p: SIMD2<Double>) -> Double { hypot(p.x, p.y) }
-        func project(_ a: Int, _ b: Int, _ c: Int, _ dx: Double, _ dy: Double) {
+        func project(_ a: Int, _ b: Int, _ c: Int, _ dx: Double, _ dy: Double) -> Bool {
             let ax = 1 / dx, ay = 1 / dy
             let gx = (field[b] - field[a]) * ax, gy = (field[c] - field[a]) * ay
-            guard sqrt(gx.x*gx.x + gx.y*gx.y + gy.x*gy.x + gy.y*gy.y) > maximumGradient else { return }
+            guard sqrt(gx.x*gx.x + gx.y*gx.y + gy.x*gy.x + gy.y*gy.y) > maximumGradient else { return false }
             let m00 = (fixed[a] ? 0 : ax*ax) + (fixed[b] ? 0 : ax*ax)
             let m11 = (fixed[a] ? 0 : ay*ay) + (fixed[c] ? 0 : ay*ay)
             let m01 = fixed[a] ? 0 : ax*ay
-            guard m00 + m11 > 0 else { return }
+            guard m00 + m11 > 0 else { return false }
             func reduced(_ multiplier: Double) -> (SIMD2<Double>, SIMD2<Double>) {
                 let determinant = 1 + multiplier * (m00 + m11)
                     + multiplier * multiplier * max(0, m00 * m11 - m01 * m01)
@@ -493,23 +493,33 @@ struct BeautyContinuousFaceMap {
             if !fixed[a] { field[a] += (x * ax + y * ay) * upper }
             if !fixed[b] { field[b] -= x * (ax * upper) }
             if !fixed[c] { field[c] -= y * (ay * upper) }
+            return true
         }
         // Narrow collars converge more slowly than the open contour. Keep
         // solving their local constraints before applying the final common
         // bound, which would otherwise weaken every unaffected jaw segment.
         for pass in 0..<64 {
+            var touched = false
             let rows = pass.isMultiple(of: 2) ? Array(0..<(ys.count - 1)) : Array((0..<(ys.count - 1)).reversed())
             let columns = pass.isMultiple(of: 2) ? Array(0..<(xs.count - 1)) : Array((0..<(xs.count - 1)).reversed())
             for row in rows { for col in columns {
                 let tl = row * xs.count + col, tr = tl + 1, bl = tl + xs.count, br = bl + 1
                 let dx = xs[col + 1] - xs[col], dy = ys[row + 1] - ys[row]
-                project(tl, tr, bl, dx, dy); project(tr, tl, br, dx, dy)
-                project(bl, br, tl, dx, dy); project(br, bl, tr, dx, dy)
+                if project(tl, tr, bl, dx, dy) { touched = true }
+                if project(tr, tl, br, dx, dy) { touched = true }
+                if project(bl, br, tl, dx, dy) { touched = true }
+                if project(br, bl, tr, dx, dy) { touched = true }
             } }
             for index in field.indices {
                 let length = norm(field[index])
-                if length > maximumDisplacement { field[index] *= maximumDisplacement / length }
+                if length > maximumDisplacement {
+                    field[index] *= maximumDisplacement / length
+                    touched = true
+                }
             }
+            // Every individual operator was an identity, so both traversal
+            // orders will remain bit-identical for all remaining passes.
+            if !touched { break }
         }
         return field
     }

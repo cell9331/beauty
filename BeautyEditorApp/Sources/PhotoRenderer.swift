@@ -295,14 +295,13 @@ actor PhotoRenderer: PhotoRendering {
                 backendName = "CPU capacity fallback"
             }
             let image = try materialize(output)
+            let matchesSource = !fullResolution && previewPixelsMatch(image, photo.preview)
             let elapsed = start.duration(to: .now)
-            let sourceData = fullResolution ? nil : photo.preview.dataProvider?.data
-            let outputData = image.dataProvider?.data
             var rendered = RenderedPhoto(image: image, detection: result.detectionSummary,
                                  warningCount: result.warnings.count,
                                  warningCodes: result.warnings.map(\.code), metrics: result.metrics,
                                  renderMilliseconds: Double(elapsed.components.seconds) * 1000 + Double(elapsed.components.attoseconds) / 1e15,
-                                 matchesSource: sourceData != nil && outputData != nil && sourceData.map { $0 as Data } == outputData.map { $0 as Data },
+                                 matchesSource: matchesSource,
                                  backendName: backendName)
             #if BEAUTY_OWNER_EYE_FIVE_CHECK
             rendered.ownerSourceRasterIdentity = lastOwnerSourceRasterIdentity
@@ -414,6 +413,23 @@ actor PhotoRenderer: PhotoRendering {
             throw EditorError.renderFailed
         }
         return result
+    }
+
+    /// Provider bytes may differ in row padding/layout for identical images.
+    /// Compare only canonical preview pixels; no original-size copies or cache.
+    private func previewPixelsMatch(_ output: CGImage, _ source: CGImage) -> Bool {
+        guard output.width == source.width, output.height == source.height else { return false }
+        let rowBytes = source.width * 4
+        let bounds = CGRect(x: 0, y: 0, width: source.width, height: source.height)
+        func pixels(_ image: CGImage) -> Data {
+            var data = Data(count: rowBytes * source.height)
+            data.withUnsafeMutableBytes { pointer in
+                context.render(CIImage(cgImage: image), toBitmap: pointer.baseAddress!, rowBytes: rowBytes,
+                               bounds: bounds, format: .RGBA8, colorSpace: sRGB)
+            }
+            return data
+        }
+        return pixels(output) == pixels(source)
     }
 
     private func personMask(_ photo: ImportedPhoto) throws -> CIImage {

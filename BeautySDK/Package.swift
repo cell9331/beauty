@@ -68,7 +68,13 @@ let package = Package(
         ),
         .target(
             name: "BeautyEffects",
-            dependencies: ["BeautyCore", "BeautyDetection", "BeautyRender", "BeautyResources"]
+            dependencies: ["BeautyCore", "BeautyDetection", "BeautyRender", "BeautyResources"],
+            // The owner iOS Demo must exercise optimized pixel loops even in
+            // Debug. Keep Debug assertions; App and other modules stay debuggable.
+            swiftSettings: [
+                .unsafeFlags(["-O", "-assert-config", "Debug"],
+                             .when(platforms: [.iOS], configuration: .debug))
+            ]
         ),
         .target(
             name: "BeautySDK",

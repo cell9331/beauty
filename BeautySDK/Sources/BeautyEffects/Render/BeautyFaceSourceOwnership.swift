@@ -127,6 +127,7 @@ enum BeautyFaceSourceOwnership {
         let origin: SIMD2<Double>, axisX: SIMD2<Double>, axisY: SIMD2<Double>
         let span: Double, chin: Double
         let curve: [SIMD2<Double>], polygon: [SIMD2<Double>], features: [Box]
+        let polygonMinimumY: Double, polygonMaximumY: Double
         let attachments: [Box]
         func local(_ p: SIMD2<Double>) -> SIMD2<Double> {
             let d = p - origin
@@ -140,23 +141,29 @@ enum BeautyFaceSourceOwnership {
                 && p.y + halfY >= $0.minY && p.y - halfY <= $0.maxY }
         }
         func inside(_ p: SIMD2<Double>) -> Bool {
-            var result = false, j = polygon.count - 1
-            for i in polygon.indices {
+            // Outside this half-open Y range every original edge-crossing
+            // predicate is false, independently of its intersection arithmetic.
+            guard p.y >= polygonMinimumY, p.y < polygonMaximumY else { return false }
+            var result = false, j = polygon.count - 1, i = 0
+            while i < polygon.count {
                 let a = polygon[i], b = polygon[j]
                 if (a.y > p.y) != (b.y > p.y),
                    p.x < (b.x - a.x) * (p.y - a.y) / (b.y - a.y) + a.x { result.toggle() }
                 j = i
+                i += 1
             }
             return result
         }
         func contourDistance(_ p: SIMD2<Double>) -> Double {
             var squared = Double.infinity
-            for i in 0..<(curve.count - 1) {
+            var i = 0
+            while i < curve.count - 1 {
                 let a = curve[i], d = curve[i + 1] - a, q = p - a
                 let denominator = d.x * d.x + d.y * d.y
                 let t = denominator > 0 ? min(1, max(0, (q.x * d.x + q.y * d.y) / denominator)) : 0
                 let v = q - d * t
                 squared = min(squared, v.x * v.x + v.y * v.y)
+                i += 1
             }
             return sqrt(squared)
         }
@@ -362,9 +369,8 @@ enum BeautyFaceSourceOwnership {
             if frame.features.contains(where: { $0.covers(p) }) { owners[i] = Material.protectedFeature.rawValue; continue }
             if frame.protectsAttachment(q) { geometricAttachmentPixels += 1; attachmentReserve[i] = true }
             interior[i] = frame.inside(q)
-            let d = frame.contourDistance(q)
             let reach = frame.span * (interior[i] ? 0.20 : 0.06) - 1
-            sweep[i] = frame.inScope(q, controls: controls) && d <= reach
+            sweep[i] = frame.inScope(q, controls: controls) && frame.contourDistance(q) <= reach
             let c = color(i), skinLike = palette.admits(c)
             let inHead = abs(q.x) <= frame.span * 0.82 && q.y >= -frame.chin * 0.95 && q.y <= frame.chin * 0.55
             let separated = hypot(c.chroma.x - palette.color.chroma.x, c.chroma.y - palette.color.chroma.y) >= 0.045
@@ -642,8 +648,16 @@ enum BeautyFaceSourceOwnership {
                     minY: attachmentTop, maxY: attachmentBottom))
             }
         }
+        var polygonMinimumY = curve[0].y, polygonMaximumY = curve[0].y, vertexIndex = 1
+        while vertexIndex < curve.count {
+            polygonMinimumY = min(polygonMinimumY, curve[vertexIndex].y)
+            polygonMaximumY = max(polygonMaximumY, curve[vertexIndex].y)
+            vertexIndex += 1
+        }
         return Frame(origin: origin, axisX: axisX, axisY: axisY, span: span, chin: chin,
-                     curve: curve, polygon: curve, features: features, attachments: attachments)
+                     curve: curve, polygon: curve, features: features,
+                     polygonMinimumY: polygonMinimumY, polygonMaximumY: polygonMaximumY,
+                     attachments: attachments)
     }
 
     private static func distanceTransform(editable: [Bool], width: Int, height: Int) -> [UInt16] {
