@@ -32,7 +32,7 @@ struct BeautyEditorChrome: View {
                          onChange: model.updateValue,
                          onEnd: model.endAdjustment)
                 .frame(height: 44)
-                .background(model.selectedTool.usesReferenceSlider ? Color.black : Color.clear)
+                .background(Color.white)
                 .accessibilityIdentifier("adjustment-slider")
             if model.category.showsScope {
                 Text("整体")

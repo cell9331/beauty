@@ -388,6 +388,83 @@ import XCTest
         attach(app, "brow-tools")
     }
 
+    func testSixCategoriesKeepWhiteSlidersAndBottomActionsReachable() throws {
+        let app = launchFixture()
+        let slider = app.sliders["adjustment-slider"]
+        XCTAssertTrue(slider.waitForExistence(timeout: 8))
+        let categories = app.scrollViews["category-scroll"]
+        let cases = [("face", "face.width", "face.hairline", false, true),
+                     ("ratio", "ratio.headSize", "ratio.faceLength", true, false),
+                     ("eye", "eye.size", "eye.lift", false, true),
+                     ("mouth", "mouth.size", "mouth.teethWhitening", false, false),
+                     ("nose", "nose.size", "nose.tip", false, false),
+                     ("brow", "brow.thickness", "brow.peak", false, false)]
+        func reveal(_ item: XCUIElement, in scroll: XCUIElement) {
+            for _ in 0..<12 {
+                if item.exists, scroll.frame.contains(CGPoint(x: item.frame.midX, y: item.frame.midY)), item.isHittable { return }
+                let right = item.exists && item.frame.midX < scroll.frame.minX
+                scroll.coordinate(withNormalizedOffset: CGVector(dx: right ? 0.35 : 0.65, dy: 0.5))
+                    .press(forDuration: 0.15, thenDragTo: scroll.coordinate(withNormalizedOffset:
+                        CGVector(dx: right ? 0.65 : 0.35, dy: 0.5)))
+            }
+            XCTAssertTrue(item.isHittable)
+        }
+        func value() throws -> Float { try XCTUnwrap(Float(try XCTUnwrap(slider.value as? String))) }
+        for (category, firstID, lastID, unit, reference) in cases {
+            let button = app.buttons["category-" + category]
+            reveal(button, in: categories)
+            button.tap()
+            let tools = app.scrollViews["tool-scroll"]
+            let first = app.buttons["tool-" + firstID]
+            reveal(first, in: tools)
+            first.tap()
+            XCTAssertEqual(slider.frame.height, 44, accuracy: 1)
+            if reference { referencePoint(slider, position: 0).tap() }
+            else { slider.adjust(toNormalizedSliderPosition: 0) }
+            XCTAssertEqual(try value(), unit ? 0 : -100, category)
+            if reference { try assertReferenceThumbPixels(app, slider: slider, value: unit ? 0 : -100, unit: unit) }
+            if reference { referencePoint(slider, position: 1).tap() }
+            else { slider.adjust(toNormalizedSliderPosition: 1) }
+            XCTAssertEqual(try value(), 100, category)
+            if reference { try assertReferenceThumbPixels(app, slider: slider, value: 100, unit: unit) }
+            if reference { referencePoint(slider, position: 0.25).tap() }
+            else { slider.adjust(toNormalizedSliderPosition: 0.25) }
+            let before = try value()
+            let start = reference ? referencePoint(slider, position: 0.25)
+                : slider.coordinate(withNormalizedOffset: CGVector(dx: 0.25, dy: 0.5))
+            let end = reference ? referencePoint(slider, position: 0.75)
+                : slider.coordinate(withNormalizedOffset: CGVector(dx: 0.75, dy: 0.5))
+            start.press(forDuration: 0.15, thenDragTo: end)
+            let after = try value()
+            XCTAssertGreaterThan(after - before, 30, category)
+            app.buttons["undo"].tap()
+            XCTAssertEqual(try value(), before, category)
+            app.buttons["redo"].tap()
+            XCTAssertEqual(try value(), after, category)
+            try assertSliderSurfaceIsWhite(app, slider: slider, reference: reference)
+            let last = app.buttons["tool-" + lastID]
+            reveal(last, in: tools)
+            XCTAssertTrue(last.isHittable, category)
+            last.tap()
+            XCTAssertEqual(last.value as? String, "已选中", category)
+            try assertSliderSurfaceIsWhite(app, slider: slider, reference: reference)
+            XCTAssertTrue(app.buttons["cancel-editing"].isHittable, category)
+            XCTAssertTrue(app.buttons["confirm-editing"].isHittable, category)
+            attach(app, category + "-white-slider-last-tool-generated-input")
+        }
+        app.buttons["confirm-editing"].tap()
+        XCTAssertTrue(app.buttons["resume-editing"].waitForExistence(timeout: 3))
+        app.buttons["resume-editing"].tap()
+        XCTAssertTrue(slider.waitForExistence(timeout: 3))
+        try assertSliderSurfaceIsWhite(app, slider: slider)
+        slider.adjust(toNormalizedSliderPosition: 0.75)
+        app.buttons["cancel-editing"].tap()
+        let discard = app.buttons["放弃调整"]
+        XCTAssertTrue(discard.waitForExistence(timeout: 3))
+        discard.tap()
+        XCTAssertTrue(app.buttons["resume-editing"].waitForExistence(timeout: 3))
+    }
+
     func testUnavailableEntriesRemainVisibleDisabledAndSilent() throws {
         let app = launchFixture()
         XCTAssertTrue(app.sliders["adjustment-slider"].waitForExistence(timeout: 8))
@@ -570,17 +647,16 @@ import XCTest
             }
             return rgba
         }
-        if unit, value > 15, value < 85 {
-            for position in [CGFloat(fraction) / 2, (CGFloat(fraction) + 1) / 2] {
-                let rgba = try pixel(CGPoint(x: frame.minX + 12 + (frame.width - 24) * position, y: frame.midY))
-                for channel in 0..<3 {
-                    if position < CGFloat(fraction) {
-                        XCTAssertGreaterThan(rgba[channel], 245, "One-way fill must start at the left endpoint")
-                    } else {
-                        XCTAssertGreaterThan(rgba[channel], 25)
-                        XCTAssertLessThan(rgba[channel], 65, "Unfilled one-way track must remain dark grey")
-                    }
-                }
+        let origin: CGFloat = unit ? 0 : 0.5
+        for position: CGFloat in [0.125, 0.25, 0.375, 0.625, 0.75, 0.875] {
+            guard abs(position - CGFloat(fraction)) * (frame.width - 24) > 14,
+                  unit || abs(position - 0.5) * (frame.width - 24) > 5 else { continue }
+            let filled = position > min(origin, CGFloat(fraction)) && position < max(origin, CGFloat(fraction))
+            let expected = filled ? [242, 61, 87] : [233, 234, 237]
+            let rgba = try pixel(CGPoint(x: frame.minX + 12 + (frame.width - 24) * position, y: frame.midY))
+            for channel in 0..<3 {
+                XCTAssertLessThanOrEqual(abs(Int(rgba[channel]) - expected[channel]), 6,
+                                         "Track must retain its accent fill and light grey inactive section; value=\(value), position=\(position)")
             }
         }
         for offset in [CGPoint(x: -8, y: 0), CGPoint(x: 8, y: 0),
@@ -588,12 +664,61 @@ import XCTest
             let rgba = try pixel(CGPoint(x: center.x + offset.x, y: center.y + offset.y))
             for channel in 0..<3 { XCTAssertGreaterThan(rgba[channel], 245, "Reference thumb must be round and whole; value=\(value), point=\(center), offset=\(offset), slider=\(frame), window=\(screen), raster=\(image.width)x\(image.height)") }
         }
-        for point in [CGPoint(x: center.x, y: center.y - 11),
-                      CGPoint(x: center.x, y: center.y + 11),
+        for point in [CGPoint(x: center.x, y: center.y - 18),
+                      CGPoint(x: center.x, y: center.y + 18),
                       CGPoint(x: frame.minX + 1, y: frame.midY),
                       CGPoint(x: frame.maxX - 1, y: frame.midY)] {
             let rgba = try pixel(point)
-            for channel in 0..<3 { XCTAssertLessThan(rgba[channel], 5, "Full thumb must stay inside the black slider band; value=\(value), point=\(point), frame=\(frame)") }
+            for channel in 0..<3 { XCTAssertGreaterThan(rgba[channel], 245, "Slider band must stay white beyond the thumb shadow; value=\(value), point=\(point), frame=\(frame)") }
+        }
+    }
+
+    private func assertSliderSurfaceIsWhite(_ app: XCUIApplication, slider: XCUIElement, reference: Bool = false) throws {
+        let windows = app.windows.containing(.slider, identifier: "adjustment-slider")
+        XCTAssertEqual(windows.count, 1)
+        let window = windows.firstMatch
+        let screen = window.frame
+        let image = try XCTUnwrap(window.screenshot().image.cgImage)
+        let scale = CGFloat(image.width) / screen.width
+        let white = [255, 255, 255]
+        var samples = [(CGPoint(x: slider.frame.midX, y: slider.frame.minY + 3), white),
+                       (CGPoint(x: slider.frame.midX, y: slider.frame.maxY - 3), white),
+                       (CGPoint(x: screen.minX + screen.width / 4, y: screen.maxY - 2), white)]
+        if !reference {
+            // Check the actual raster: UISlider's tint property alone cannot
+            // detect a later SwiftUI environment override to system blue.
+            for position: CGFloat in [0.125, 0.875] {
+                samples.append((CGPoint(x: slider.frame.minX + slider.frame.width * position,
+                                        y: slider.frame.midY), [233, 234, 237]))
+            }
+        }
+        func pixel(_ point: CGPoint) throws -> [UInt8] {
+            let sample = try XCTUnwrap(image.cropping(to: CGRect(x: ((point.x - screen.minX) * scale).rounded(.down),
+                                                               y: ((point.y - screen.minY) * scale).rounded(.down),
+                                                               width: 1, height: 1)))
+            var rgba = [UInt8](repeating: 0, count: 4)
+            try rgba.withUnsafeMutableBytes { bytes in
+                let context = try XCTUnwrap(CGContext(data: bytes.baseAddress, width: 1, height: 1, bitsPerComponent: 8,
+                                                      bytesPerRow: 4, space: CGColorSpaceCreateDeviceRGB(),
+                                                      bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue))
+                context.draw(sample, in: CGRect(x: 0, y: 0, width: 1, height: 1))
+            }
+            return rgba
+        }
+        for (point, expected) in samples {
+            // Native UISlider's alignment rectangle can place its 2pt raster
+            // slightly off the accessibility frame's midline. Require the same
+            // grey within that narrow band; a blue fill cannot satisfy it.
+            let offsets: [CGFloat] = expected == white ? [0] : [0, -0.5, 0.5, -1, 1, -1.5, 1.5, -2, 2]
+            let colors = try offsets.map { try pixel(CGPoint(x: point.x, y: point.y + $0)) }
+            let rgba = try XCTUnwrap(colors.min { a, b in
+                (0..<3).reduce(0) { $0 + abs(Int(a[$1]) - expected[$1]) }
+                    < (0..<3).reduce(0) { $0 + abs(Int(b[$1]) - expected[$1]) }
+            })
+            for channel in 0..<3 {
+                XCTAssertLessThanOrEqual(abs(Int(rgba[channel]) - expected[channel]), 6,
+                                         "Slider surface/track and container bottom must retain their light palette at \(point)")
+            }
         }
     }
     private func attach(_ app: XCUIApplication, _ name: String) {

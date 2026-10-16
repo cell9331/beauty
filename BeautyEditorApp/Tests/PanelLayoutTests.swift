@@ -23,6 +23,10 @@ import XCTest
             slider.setNeedsLayout()
             slider.layoutIfNeeded()
             let (inactive, fill, neutral) = try layers()
+            try assertColor(slider.backgroundColor?.cgColor, matches: .white)
+            try assertColor(inactive.backgroundColor, matches: UIColor(red: 233/255, green: 234/255, blue: 237/255, alpha: 1))
+            try assertColor(fill.backgroundColor, matches: UIColor(BeautyStyle.accent))
+            try assertColor(neutral.backgroundColor, matches: UIColor(red: 181/255, green: 184/255, blue: 190/255, alpha: 1))
             let thumb = slider.thumbRect(forBounds: slider.bounds, trackRect: track, value: value)
             XCTAssertEqual(inactive.frame, track)
             XCTAssertEqual(neutral.frame, CGRect(x: 137, y: 19, width: 6, height: 6))
@@ -30,6 +34,9 @@ import XCTest
             XCTAssertEqual(fill.frame.maxX, max(track.midX, thumb.midX), accuracy: 0.001)
             XCTAssertEqual(slider.referenceValue(at: thumb.midX), value, accuracy: 0.00002)
             let visible = try XCTUnwrap(slider.layer.sublayers?.first { $0.name == "reference-eye-thumb" })
+            try assertColor(visible.backgroundColor, matches: .white)
+            try assertColor(visible.borderColor, matches: UIColor(red: 233/255, green: 234/255, blue: 237/255, alpha: 1))
+            XCTAssertEqual(visible.borderWidth, 1)
             XCTAssertEqual(visible.frame, CGRect(x: thumb.midX - 10, y: thumb.midY - 10, width: 20, height: 20))
             XCTAssertGreaterThanOrEqual(visible.frame.minX, slider.bounds.minX + 2)
             XCTAssertLessThanOrEqual(visible.frame.maxX, slider.bounds.maxX - 2)
@@ -49,6 +56,11 @@ import XCTest
         XCTAssertTrue(fill.isHidden)
         XCTAssertEqual(neutral.frame.size, CGSize(width: 2, height: 6))
         XCTAssertEqual(slider.trackRect(forBounds: slider.bounds).width, 280)
+        try assertColor(slider.backgroundColor?.cgColor, matches: .white)
+        try assertColor(slider.minimumTrackTintColor?.cgColor,
+                        matches: UIColor(red: 233/255, green: 234/255, blue: 237/255, alpha: 1))
+        try assertColor(slider.maximumTrackTintColor?.cgColor,
+                        matches: UIColor(red: 233/255, green: 234/255, blue: 237/255, alpha: 1))
     }
 
     func testFaceReferenceTrackUsesItsActualNeutralForSignedAndOneWayValues() throws {
@@ -139,23 +151,24 @@ import XCTest
                                                                         width: 1, height: 1)))
                 return TestImage.pixels(sample)
             }
-            // Native pixels, rather than only overridden thumbRect, prove the
-            // visible circle has its four full extremities and stays on black.
+            // Native pixels verify white interiors; layer assertions above also
+            // distinguish the 20pt grey-bordered circle from its white surface.
             for offset in [CGPoint(x: -8, y: 0), CGPoint(x: 8, y: 0),
                            CGPoint(x: 0, y: -8), CGPoint(x: 0, y: 8)] {
                 let rgba = try pixel(CGPoint(x: center.x + offset.x, y: center.y + offset.y))
                 for channel in 0..<3 { XCTAssertGreaterThan(rgba[channel], 245) }
             }
-            for localPoint in [CGPoint(x: center.x, y: center.y - 11),
-                               CGPoint(x: center.x, y: center.y + 11),
+            for localPoint in [CGPoint(x: center.x, y: center.y - 18),
+                               CGPoint(x: center.x, y: center.y + 18),
                                CGPoint(x: 1, y: eyeSlider.bounds.midY),
                                CGPoint(x: eyeSlider.bounds.maxX - 1, y: eyeSlider.bounds.midY)] {
                 let rgba = try pixel(localPoint)
                 for channel in 0..<3 {
-                    XCTAssertLessThan(rgba[channel], 5,
+                    XCTAssertGreaterThan(rgba[channel], 245,
                                       "value=\(value), local=\(localPoint), bounds=\(eyeSlider.bounds), frame=\(eyeSlider.convert(eyeSlider.bounds, to: window))")
                 }
             }
+            try assertReferenceTrackPixels(slider: eyeSlider, value: value, pixel: pixel)
         }
         model.beginAdjustment()
         model.updateValue(0)
@@ -244,10 +257,12 @@ import XCTest
             }
             for point in [CGPoint(x: 1, y: slider.bounds.midY),
                           CGPoint(x: slider.bounds.maxX - 1, y: slider.bounds.midY),
-                          CGPoint(x: thumb.midX, y: thumb.midY - 11)] {
+                          CGPoint(x: thumb.midX, y: thumb.midY - 18),
+                          CGPoint(x: thumb.midX, y: thumb.midY + 18)] {
                 let rgba = try pixel(point)
-                for channel in 0..<3 { XCTAssertLessThan(rgba[channel], 5) }
+                for channel in 0..<3 { XCTAssertGreaterThan(rgba[channel], 245) }
             }
+            try assertReferenceTrackPixels(slider: slider, value: value, pixel: pixel)
             let name = value < 0 ? "left" : value > 0 ? "right" : "neutral"
             attach(window, name: "native-iris-reference-" + name + "-generated-input")
         }
@@ -257,6 +272,36 @@ import XCTest
                                                                         width: 1, height: 1)))
         let bottom = TestImage.pixels(bottomSample)
         for channel in 0..<3 { XCTAssertGreaterThan(bottom[channel], 245) }
+    }
+
+    private func assertColor(_ color: CGColor?, matches expected: UIColor,
+                             file: StaticString = #filePath, line: UInt = #line) throws {
+        let actual = UIColor(cgColor: try XCTUnwrap(color, file: file, line: line))
+        var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alpha: CGFloat = 0
+        var expectedRed: CGFloat = 0, expectedGreen: CGFloat = 0, expectedBlue: CGFloat = 0, expectedAlpha: CGFloat = 0
+        XCTAssertTrue(actual.getRed(&red, green: &green, blue: &blue, alpha: &alpha), file: file, line: line)
+        XCTAssertTrue(expected.getRed(&expectedRed, green: &expectedGreen, blue: &expectedBlue, alpha: &expectedAlpha), file: file, line: line)
+        for (actual, expected) in zip([red, green, blue, alpha], [expectedRed, expectedGreen, expectedBlue, expectedAlpha]) {
+            XCTAssertEqual(actual, expected, accuracy: 1/255, file: file, line: line)
+        }
+    }
+
+    private func assertReferenceTrackPixels(slider: DesignSlider, value: Float,
+                                           pixel: (CGPoint) throws -> Data) throws {
+        let track = slider.trackRect(forBounds: slider.bounds)
+        let fraction = CGFloat((value - slider.minimumValue) / (slider.maximumValue - slider.minimumValue))
+        let origin: CGFloat = slider.showsCenter ? 0.5 : 0
+        for position: CGFloat in [0.125, 0.25, 0.375, 0.625, 0.75, 0.875] {
+            guard abs(position - fraction) * track.width > 14,
+                  !slider.showsCenter || abs(position - 0.5) * track.width > 5 else { continue }
+            let filled = position > min(origin, fraction) && position < max(origin, fraction)
+            let expected = filled ? [242, 61, 87] : [233, 234, 237]
+            let rgba = try pixel(CGPoint(x: track.minX + track.width * position, y: track.midY))
+            for channel in 0..<3 {
+                XCTAssertLessThanOrEqual(abs(Int(rgba[channel]) - expected[channel]), 6,
+                                         "value=\(value), track position=\(position), filled=\(filled)")
+            }
+        }
     }
 
     private func singleActiveHostScene() async throws -> UIWindowScene {

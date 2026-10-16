@@ -1,5 +1,38 @@
 # 本地验证
 
+## 2026-10-16 同仓库当前 SDK 与白色滑杆
+
+三个依赖入口（project.yml、生成工程、Package.swift）均固定同仓库 `../BeautySDK`，
+本次直接增量构建当前源码。六个眉工具改用当前 SDK helper：眉峰 signed，倾斜右侧
+外端向下；尖下巴 setter 去掉旧版本兼容分支，统一当前 helper。工具仍59个、可用52个、
+canonical字段57个，停用资格及 SDK 算法未改。
+
+所有滑杆白底、浅灰轨、白圆配浅灰边和轻阴影；脸/眼 reference 的粉色段从真实零点延伸，
+其他原生滑杆双灰轨。原生 track 使用 original 可伸缩图，避免 SwiftUI 环境 tint 恢复系统蓝。
+保留44pt触摸区、signed/unit范围、点按/连续拖动、历史和唯一底部safeAreaInset。
+
+仅复用已有 **iPhone15Pro / iOS17.5 / 2CE927C9-9303-4A9B-9C03-F28C42045186**，
+现有字体/竖屏。迁入后的本路径沿用`.build`为稳定DerivedData，保留`.build/index-build`
+SwiftPM缓存，无clean。每段设备操作由共享claim CLI原子占用，固定单destination、
+`-parallel-testing-enabled NO -maximum-concurrent-test-simulator-destinations 1`，全部已释放。
+构建使用`build-for-testing CODE_SIGNING_ALLOWED=NO ARCHS=arm64 ONLY_ACTIVE_ARCH=YES`，
+执行用`test-without-building`并按下表方法筛选。
+
+| 实际检查点（本地 ignored `.verification/sdk-white-sliders/`） | 结果与范围 |
+| --- | --- |
+| `native.xcresult` | **17/0/0**：5个参数契约（含两项新眉部/历史）、4个生产renderer像素/neutral/prepared/原尺寸PNG导出、4个面板、4个真实UI方法。初次截图仍发现原生灰轨被染蓝；该checkpoint不作为最终配色通过。 |
+| `native-light-track.xcresult` | original灰轨生产修正后 **4通过/1失败/0跳过**：四面板通过，六分类UI新轨道像素断言失败，单行midline读白色（距灰色目标22）。失败保留；随后采样在accessibility中线±2pt寻找2pt原生轨，每通道RGB容差仍6，不允许蓝色通过。 |
+| `native-light-track-recheck.xcresult` | 只复验受影响六分类方法，**1/0/0**，57.302s；六分类首项两端、真实连续拖动、undo/redo、末项可达与选择、白底/双灰轨/底边像素、确认/继续和取消/放弃通过。独立xcresult摘要一致。 |
+| 静态与构建 | 当前源码增量build-for-testing通过；57字段/cap及三依赖路径检查、60设计资产/59工具图标位置检查、`git diff --check`通过。 |
+
+本轮共17个不同相关方法分别通过，末轮仅重跑实际受影响UI，不把它写成最终一次17/0/0。
+已查看`final-screenshots/`的六张全容器原生截图：各分类均白底白圆浅灰轨，无蓝色或黑色
+滑杆块；底部白背景连续，Home Indicator和按钮安全区正常，末项与必要操作可达。
+截图中的平面色块是临时代码生成无脸输入，提示与原图保留符合既有契约。
+
+本次未执行完整SDK/App回归、字体/方向/设备矩阵、真人/生成肖像效果新验收或真机安装。
+现有眉部保护与其他参考效果未达标范围仍由SDK现行记录拥有，本次接线/UI不重签效果资格。
+
 ## 2026-10-10 固定原图连续编辑
 
 借鉴连续处理中的固定输入复用：预览按照片和CPU/Metal engine准备不可变原图，

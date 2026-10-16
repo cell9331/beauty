@@ -261,6 +261,69 @@ enum TestImage {
         }
     }
 
+    func testBrowControlsUseCurrentSDKCenteredDirectionsAndPreserveOtherFields() throws {
+        let controls: [(String, String, BeautyEyebrowSlider)] = [
+            ("brow.thickness", "eyebrowThickness", .thickness),
+            ("brow.length", "eyebrowLength", .length),
+            ("brow.spacing", "eyebrowSpacing", .spacing),
+            ("brow.innerSpacing", "eyebrowHeadSpacing", .headSpacing),
+            ("brow.tilt", "eyebrowTilt", .tilt),
+            ("brow.peak", "eyebrowPeakDefinition", .peak)
+        ]
+        XCTAssertEqual(ToolCatalog.tools(in: .brow).map(\.id), controls.map { $0.0 })
+        var baseline = BeautyParameters(eyeSize: -0.18, noseWingSlim: 0.21, mouthWidth: -0.12)
+        baseline.eyebrowYPosition = 0.11
+        let baselineFields = try dictionary(baseline)
+        for (id, field, helper) in controls {
+            let tool = try XCTUnwrap(ToolCatalog.find(id))
+            XCTAssertEqual(tool.field, field, id)
+            XCTAssertEqual(tool.range, .signed, id)
+            XCTAssertEqual(tool.eyebrowSlider, helper, id)
+            XCTAssertEqual(tool.value(in: baseline), 0, accuracy: 0.0001, id)
+            for value: Float in [-100, -37.125, 0, 37.125, 100] {
+                var adjusted = baseline
+                tool.setValue(value, in: &adjusted)
+                XCTAssertEqual(adjusted, helper.applying(position: (value / 100 + 1) / 2, to: baseline), id)
+                let polarity: Float = field == "eyebrowTilt" ? -1 : 1
+                XCTAssertEqual(tool.sdkValue(in: adjusted), value / 100 * 0.25 * polarity,
+                               accuracy: 0.000001, id)
+                XCTAssertEqual(tool.value(in: adjusted), value, accuracy: 0.0001, id)
+                let restored = try JSONDecoder().decode(BeautyParameters.self, from: JSONEncoder().encode(adjusted))
+                XCTAssertEqual(tool.value(in: restored), value, accuracy: 0.0001, id)
+                let updatedFields = try dictionary(adjusted)
+                for other in baselineFields.keys where other != field {
+                    XCTAssertEqual(updatedFields[other], baselineFields[other], id + " must preserve " + other)
+                }
+            }
+            for invalid: Float in [.nan, .infinity, -.infinity] {
+                var adjusted = baseline
+                tool.setValue(invalid, in: &adjusted)
+                XCTAssertEqual(adjusted, baseline, id)
+            }
+        }
+    }
+
+    func testBrowPeakNegativeRangeAndTiltRestoreThroughHistory() throws {
+        let peak = try XCTUnwrap(ToolCatalog.find("brow.peak"))
+        let tilt = try XCTUnwrap(ToolCatalog.find("brow.tilt"))
+        let previous = EditorSnapshot(parameters: BeautyParameters(mouthWidth: -0.12))
+        var current = previous
+        peak.setValue(-63.75, in: &current.parameters)
+        tilt.setValue(37.125, in: &current.parameters)
+        XCTAssertEqual(current.parameters.eyebrowPeakDefinition, -0.159375, accuracy: 0.000001)
+        XCTAssertEqual(current.parameters.eyebrowTilt, -0.0928125, accuracy: 0.000001)
+        var history = EditHistory()
+        history.record(previous, replacing: current)
+        let undone = try XCTUnwrap(history.undo(current))
+        XCTAssertEqual(undone, previous)
+        let restored = try XCTUnwrap(history.redo(undone))
+        XCTAssertEqual(peak.value(in: restored.parameters), -63.75, accuracy: 0.0001)
+        XCTAssertEqual(tilt.value(in: restored.parameters), 37.125, accuracy: 0.0001)
+        XCTAssertEqual(restored.parameters.mouthWidth, previous.parameters.mouthWidth)
+        XCTAssertEqual(peak.value(in: BeautyParameters(eyebrowPeakDefinition: -0.125)), -50, accuracy: 0.0001)
+        XCTAssertEqual(tilt.value(in: BeautyParameters(eyebrowTilt: 0.125)), -50, accuracy: 0.0001)
+    }
+
     func testAliasesRemainSynchronizedAndSuspendedToolCannotActivate() {
         var parameters = BeautyParameters()
         ToolCatalog.find("face.jawline")!.setValue(35, in: &parameters)

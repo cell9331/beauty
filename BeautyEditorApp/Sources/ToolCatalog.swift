@@ -62,7 +62,7 @@ enum ToolCatalog {
         ToolDefinition(id: "brow.spacing", title: "间距", category: .brow, field: "eyebrowSpacing", range: .signed, promo: false, pro: false, smart: false, note: nil),
         ToolDefinition(id: "brow.innerSpacing", title: "眉头间距", category: .brow, field: "eyebrowHeadSpacing", range: .signed, promo: false, pro: false, smart: false, note: nil),
         ToolDefinition(id: "brow.tilt", title: "倾斜", category: .brow, field: "eyebrowTilt", range: .signed, promo: false, pro: false, smart: false, note: nil),
-        ToolDefinition(id: "brow.peak", title: "眉峰", category: .brow, field: "eyebrowPeakDefinition", range: .unit, promo: false, pro: false, smart: false, note: nil)
+        ToolDefinition(id: "brow.peak", title: "眉峰", category: .brow, field: "eyebrowPeakDefinition", range: .signed, promo: false, pro: false, smart: false, note: nil)
     ]
     // These SF Symbols are available before our iOS 17 minimum. Existing
     // design assets remain unchanged; new algorithm controls use native icons.

@@ -65,6 +65,7 @@ struct ToolDefinition: Identifiable, Sendable {
             return (range == .signed ? 2 * position - 1 : position) * 100
         }
         if let eyeSlider { return (eyeSlider.position(in: parameters) * 2 - 1) * 100 }
+        if let eyebrowSlider { return (eyebrowSlider.position(in: parameters) * 2 - 1) * 100 }
         guard let keyPath else { return 0 }
         return parameters[keyPath: keyPath] / maximumSDKStrength * 100
     }
@@ -73,14 +74,8 @@ struct ToolDefinition: Identifiable, Sendable {
         guard available else { return }
         if let faceSlider {
             let normalized = range.normalized(value)
-            if faceSlider == .chinTaper {
-                // The adjacent SDK helper predates right=rounder. Keep the
-                // authorized direction explicit so either SDK revision agrees.
-                parameters.chinTaper = -normalized * maximumSDKStrength
-            } else {
-                let position = range == .signed ? (normalized + 1) / 2 : normalized
-                parameters = faceSlider.applying(position: position, to: parameters)
-            }
+            let position = range == .signed ? (normalized + 1) / 2 : normalized
+            parameters = faceSlider.applying(position: position, to: parameters)
             return
         }
         if let mouthSlider {
@@ -91,6 +86,10 @@ struct ToolDefinition: Identifiable, Sendable {
         }
         if let eyeSlider {
             parameters = eyeSlider.applying(position: (range.normalized(value) + 1) / 2, to: parameters)
+            return
+        }
+        if let eyebrowSlider {
+            parameters = eyebrowSlider.applying(position: (range.normalized(value) + 1) / 2, to: parameters)
             return
         }
         guard let keyPath else { return }
@@ -165,6 +164,19 @@ struct ToolDefinition: Identifiable, Sendable {
         case "lipPlump": .fullness
         case "smile": .smile
         case "teethWhitening": .teethWhitening
+        default: nil
+        }
+    }
+
+    // The current SDK owns centered brow ranges and the reference tilt polarity.
+    var eyebrowSlider: BeautyEyebrowSlider? {
+        switch field {
+        case "eyebrowThickness": .thickness
+        case "eyebrowLength": .length
+        case "eyebrowSpacing": .spacing
+        case "eyebrowHeadSpacing": .headSpacing
+        case "eyebrowTilt": .tilt
+        case "eyebrowPeakDefinition": .peak
         default: nil
         }
     }

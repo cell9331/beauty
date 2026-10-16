@@ -67,7 +67,6 @@ final class DesignSlider: UISlider {
     private let referenceFill = CALayer()
     private let referenceThumb = CALayer()
     private static let legacyTrack = UIColor(red: 233/255, green: 234/255, blue: 237/255, alpha: 1)
-    private static let referenceTrackColor = UIColor(red: 47/255, green: 49/255, blue: 49/255, alpha: 1)
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -85,6 +84,7 @@ final class DesignSlider: UISlider {
     required init?(coder: NSCoder) { fatalError("Use init(frame:)") }
 
     private func configureAppearance() {
+        backgroundColor = .white
         if referenceStyle {
             let clear = UIGraphicsImageRenderer(size: CGSize(width: 1, height: 1)).image { _ in }
             setMinimumTrackImage(clear, for: .normal)
@@ -95,32 +95,53 @@ final class DesignSlider: UISlider {
             let thumb = UIGraphicsImageRenderer(size: CGSize(width: 44, height: 44)).image { _ in }
             setThumbImage(thumb, for: .normal)
             setThumbImage(thumb, for: .highlighted)
-            referenceTrack.backgroundColor = Self.referenceTrackColor.cgColor
-            referenceFill.backgroundColor = UIColor.white.cgColor
+            referenceTrack.backgroundColor = Self.legacyTrack.cgColor
+            referenceFill.backgroundColor = UIColor(BeautyStyle.accent).cgColor
             referenceThumb.backgroundColor = UIColor.white.cgColor
-            centerMark.backgroundColor = UIColor.white.cgColor
+            referenceThumb.borderColor = Self.legacyTrack.cgColor
+            referenceThumb.borderWidth = 1
+            referenceThumb.shadowColor = UIColor.black.cgColor
+            referenceThumb.shadowOpacity = 0.12
+            referenceThumb.shadowRadius = 2
+            referenceThumb.shadowOffset = CGSize(width: 0, height: 1)
+            centerMark.backgroundColor = UIColor(red: 181/255, green: 184/255, blue: 190/255, alpha: 1).cgColor
         } else {
             centerMark.removeFromSuperlayer()
             layer.addSublayer(centerMark)
-            setMinimumTrackImage(nil, for: .normal)
-            setMaximumTrackImage(nil, for: .normal)
+            // SwiftUI can reapply its environment tint after makeUIView. Original
+            // track images keep the native control grey even when that tint changes.
+            let track = UIGraphicsImageRenderer(size: CGSize(width: 3, height: 2)).image { _ in
+                Self.legacyTrack.setFill()
+                UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: 3, height: 2), cornerRadius: 1).fill()
+            }.resizableImage(withCapInsets: UIEdgeInsets(top: 0, left: 1, bottom: 0, right: 1))
+                .withRenderingMode(.alwaysOriginal)
+            setMinimumTrackImage(track, for: .normal)
+            setMaximumTrackImage(track, for: .normal)
+            // Native UISlider fills from its minimum, not the signed neutral.
+            // Keep both native halves grey rather than suggesting a nonzero value.
             minimumTrackTintColor = Self.legacyTrack
             maximumTrackTintColor = Self.legacyTrack
             centerMark.backgroundColor = UIColor(red: 181/255, green: 184/255, blue: 190/255, alpha: 1).cgColor
-            if let asset = UIImage(named: "slider_thumb") {
-                let thumb = UIGraphicsImageRenderer(size: CGSize(width: 44, height: 44)).image { _ in
-                    asset.draw(in: CGRect(x: 0, y: 0, width: 44, height: 44))
-                }
-                setThumbImage(thumb, for: .normal)
-                setThumbImage(thumb, for: .highlighted)
+            let thumb = UIGraphicsImageRenderer(size: CGSize(width: 44, height: 44)).image { renderer in
+                let circle = UIBezierPath(ovalIn: CGRect(x: 12.5, y: 12.5, width: 19, height: 19))
+                renderer.cgContext.setShadow(offset: CGSize(width: 0, height: 1), blur: 2,
+                                             color: UIColor.black.withAlphaComponent(0.12).cgColor)
+                UIColor.white.setFill()
+                circle.fill()
+                renderer.cgContext.setShadow(offset: .zero, blur: 0, color: nil)
+                Self.legacyTrack.setStroke()
+                circle.lineWidth = 1
+                circle.stroke()
             }
+            setThumbImage(thumb, for: .normal)
+            setThumbImage(thumb, for: .highlighted)
         }
         invalidateIntrinsicContentSize()
         setNeedsLayout()
     }
 
     // UIKit's legacy slider alignment rectangle is narrower than its bounds.
-    // SwiftUI paints the black band in that alignment rectangle, so reference
+    // SwiftUI paints the slider surface in that alignment rectangle, so reference
     // controls need matching bounds to preserve their two-point endpoint margin.
     override var alignmentRectInsets: UIEdgeInsets {
         referenceStyle ? .zero : super.alignmentRectInsets
