@@ -7,6 +7,44 @@ import XCTest
 @testable import BeautyEffects
 
 final class BeautyDenseGeometryTests: XCTestCase {
+    func testOptimizedSamplerIsByteIdenticalToIndependentPerPixelReference() throws {
+        for (width, height) in [(192, 128), (128, 192), (193, 127), (31, 29)] {
+            var cutoff = point(y: 0.43); cutoff.exclusiveMaximumY = 0.50
+            let map = try XCTUnwrap(BeautyDenseGeometryMap(width: width, height: height, face: denseFace(),
+                points: [cutoff, point(0.60, y: 0.66, dx: -0.018, dy: 0.017, radius: 0.15)]))
+            let source = raster(width: width, height: height)
+            func reference() -> [UInt8] {
+        var output = source
+        for y in 0..<height {
+            for x in 0..<width {
+                let point = SIMD2<Double>(
+                    (Double(x) + 0.5) / Double(width), (Double(y) + 0.5) / Double(height))
+                let delta = map.displacement(at: point)
+                guard abs(delta.x) + abs(delta.y) > 1e-10 else { continue }
+                let sx = min(Double(width - 1), max(0, Double(x) - delta.x))
+                let sy = min(Double(height - 1), max(0, Double(y) - delta.y))
+                let x0 = Int(floor(sx))
+                let y0 = Int(floor(sy))
+                let x1 = min(x0 + 1, width - 1)
+                let y1 = min(y0 + 1, height - 1)
+                let fx = sx - Double(x0)
+                let fy = sy - Double(y0)
+                for channel in 0..<4 {
+                    let a = Double(source[(y0 * width + x0) * 4 + channel])
+                    let b = Double(source[(y0 * width + x1) * 4 + channel])
+                    let c = Double(source[(y1 * width + x0) * 4 + channel])
+                    let d = Double(source[(y1 * width + x1) * 4 + channel])
+                    let value = (a + (b - a) * fx) * (1 - fy) + (c + (d - c) * fx) * fy
+                    output[(y * width + x) * 4 + channel] = UInt8(min(255, max(0, Int(value.rounded()))))
+                }
+            }
+        }
+        return output
+            }
+            XCTAssertEqual(map.applyRGBA(source), reference())
+        }
+    }
+
     private func denseFace(matrix: [Float]? = nil) throws -> FaceGeometry {
         var points = (0..<478).map { i in
             SIMD3<Float>(0.2 + Float(i % 23) / 40, 0.15 + Float(i / 23) / 30, 0)

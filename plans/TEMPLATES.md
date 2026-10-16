@@ -1,11 +1,14 @@
 # Planning templates and verification rules
 
-## 6. Plan Template
+## Plan Template
 
-Create a new plan by copying this structure and filling every field before implementation starts.
+Prefer updating an existing matching plan. New tasks use
+`plans/active/A-YYYY-MM-DD-short-slug.md`; fill the scope and verification policy
+before implementation. The ID stays stable when moved to history. PLANS and
+its indexes contain a summary/link rather than a second full plan.
 
 ```markdown
-### P-YYYY-MM-DD-short-slug
+# A-YYYY-MM-DD-short-slug
 
 | Field | Value |
 | --- | --- |
@@ -14,8 +17,9 @@ Create a new plan by copying this structure and filling every field before imple
 | Started | YYYY-MM-DD |
 | Scope | One sentence describing the bounded task. |
 | Source Request | User request, issue, or triggering document. |
+| Expected Behavior | Observable change and preserved contracts; distinguish implementation from effect qualification. |
 | Current Step | First concrete step. |
-| Verification Policy | Commands or checks required before completion. |
+| Verification Policy | Smallest sufficient commands/oracles and direct dependent paths; explain any required full regression. |
 
 Checklist:
 
@@ -31,11 +35,19 @@ Open Questions:
 | Question | Current Decision |
 | --- | --- |
 | Decision needed | Decision owner and current state. |
+
+Preservation and exclusions:
+
+- Existing/concurrent edits, frozen evidence and out-of-scope paths to preserve.
+- What this task does not claim or authorize.
 ```
 
-## 7. Completion Template
+## Completion Template
 
-When moving a plan to Completed, include:
+Move the same plan to `plans/history/YYYY-MM/<ID>.md`; add its link to the
+month index and a `C-...` summary in PLANS. Keep failed attempts and their
+meaning. Use `completed` only for the declared achieved scope; a bounded
+terminal `closed_with_unmet_objectives` is not a delivered effect.
 
 ```markdown
 ### C-YYYY-MM-DD-short-slug
@@ -43,10 +55,13 @@ When moving a plan to Completed, include:
 | Field | Value |
 | --- | --- |
 | Completed | YYYY-MM-DD |
+| Status | `completed` or the actual terminal state from PLANS. |
 | Scope | What changed. |
+| Rationale | Why this change was needed. |
 | Files | Files created or modified. |
 | Verification | Commands or checks run, with result. |
 | Build | Build/test status, or explicit reason not run. |
+| Limits | Unverified scope, remaining risk and separate effect qualification. |
 
 Outcome:
 
@@ -54,7 +69,7 @@ Outcome:
 - Remaining risk, if any.
 ```
 
-## 8. Verification Log Rules
+## Verification Log Rules
 
 Verification records must include:
 
@@ -62,6 +77,14 @@ Verification records must include:
 - Result observed.
 - Scope of confidence.
 - Any skipped checks and reason.
+- Exact executed-test scope, failures/skips and whether Metal actually ran;
+  distinguish a control self-test from SDK execution and a dated receipt from a new run.
+
+Choose checks using [QUALITY_SCORE](../QUALITY_SCORE.md#verification-gates).
+Pure prose does not require compiling/rerunning the SDK; a behavior change needs
+its relevant tests and applicable independent pixel oracle. Complete milestone
+closeout retains the complete no-skip gate. Never shrink scope by disabling a
+verifier, bypassing a required gate or reporting zero executed tests as success.
 
 Acceptable examples:
 

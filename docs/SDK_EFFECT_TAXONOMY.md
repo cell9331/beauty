@@ -18,7 +18,7 @@ unfinished tuning. Generated images remain eligible acceptance inputs.
 The owner hid this case from default renderer batches, `--list-cases`, help
 and recommended examples in 2026-10-01. The explicitly reopened v1.25 automatic
 eyelid-tone and patch-protection branches each exhausted two methods/four versions
-without qualification. They are now [closed as unmet](RETOUCH_FINAL_DISPOSITION_2026-10-03.md)
+without qualification. They are now [closed as unmet](history/retouch/RETOUCH_FINAL_DISPOSITION_2026-10-03.md)
 under the owner's terminal instruction; neither is queued for automatic continuation.
 The 77 public fields, 99 registered cases and 98 default/discoverable cases remain.
 Explicit `--case upperEyelidFullnessReduction_1p00` remains compatible.
@@ -30,12 +30,12 @@ falsifiable hypothesis, fixed positive/negative inputs, joint effect and
 protection checks, and a termination rule. No model architecture or eventual
 success is presumed. General requests to continue do not reopen this work.
 The [product contract](../PRODUCT_SENSE.md) retains historical references;
-the [research record](UPPER_EYELID_AND_SKIN_SEMANTICS_RESEARCH.md) records the
+the [research record](history/upper-eyelid/UPPER_EYELID_AND_SKIN_SEMANTICS_RESEARCH.md) records the
 findings. No external application UI is changed by this SDK-only disposition.
 
 ## Boundary
 
-The [current image-effect acceptance policy](IMAGE_EFFECT_ACCEPTANCE.md)
+The [current image-effect acceptance policy](validation/IMAGE_EFFECT_ACCEPTANCE.md)
 permits owner-authorized generated portrait-like positive/negative inputs to
 complete an owner-local effect qualification. No row remains `partial` merely
 because qualifying images are generated rather than genuine human portraits.
@@ -92,10 +92,15 @@ normalize to `-1...1`; `filterId` is an optional logical resource identifier.
 
 `skinSmoothing` and `skinSharpen` use bounded independent luminance-detail
 branches with bilateral range weights on admitted opaque, low-contrast neighborhoods.
-The 2026-10-09 [dense still-image contract](DENSE_FACE_REFACTOR.md) adds visible
+The 2026-10-09 [dense still-image contract](sdk/DENSE_FACE_REFACTOR.md) adds visible
 iris-ring use, pose attenuation, fixed-canvas geometry safety and geometric
-texture exclusions. Those scoped tests do not requalify every existing control
-on arbitrary iOS portraits; Vision/legacy receipts retain their original domains. Generated skin-colored
+texture exclusions.
+The same contract separates independently capped dense-map fields from the
+conservative source-raster/translation group; legacy geometry retains its old
+scalar quota. Actual dense composition is bounded by the final map, not the
+cross-region parameter sum. This changes combination admission, not row status.
+Those scoped tests do not requalify every existing control on arbitrary iOS
+portraits; Vision/legacy receipts retain their original domains. Generated skin-colored
 cheek and soft-edge positives, flat negatives, and protected facial features
 pass owner-local public-pixel tests. The 2026-09-27 public route additionally
 requires a fresh selected face and confines texture to a conservative interior
@@ -108,12 +113,12 @@ An optional owner-supplied binary still-image exclusion mask now protects
 specified same-colored non-skin pixels on both CPU and Metal-selected texture
 routes while unmasked cheek texture remains active; malformed or mismatched
 masks fail typed. The SDK does not automatically identify unmarked objects.
-The [2026-10-03 finite feasibility probe](TEXTURE_SEMANTIC_FEASIBILITY_2026-10-03.md)
+The [2026-10-03 finite feasibility probe](history/retouch/TEXTURE_SEMANTIC_FEASIBILITY_2026-10-03.md)
 rejected its only automatic candidate and initially paused general unmasked
 object identification. The subsequent v1.25 patch-domain repair rejected four versions and closed as
 unmet; no automatic detector is integrated or queued. A low-contrast lip extending outside the coarse exclusion also
 failed; arbitrary lip pixels are not guaranteed by these guards and may need an
-explicit owner mask. The [host union guide](HOST_TEXTURE_PROTECTION.md) now
+explicit owner mask. The [host union guide](sdk/HOST_TEXTURE_PROTECTION.md) now
 verifies this explicit object + lip workflow using the same generated source;
 it supplies additional host information rather than an automatic classifier.
 Existing bounded skin-control qualifications remain valid.
@@ -155,57 +160,57 @@ names and visual organization are intentionally omitted from the active contract
 | 比例 | 人中 | implemented | `philtrumLength` | A source-registered visible upper-lip band admits the bounded local still-image warp. On two skin variants and four aligned generated nose/lip forms, both signed requests change visible nose-to-lip distance beyond 0.5 pixel while nose movement stays below 0.5 pixel, mouth width within 1 pixel and brow/eye pixels exact. An 8-pixel offset lip or absent visible lip exits unchanged; missing nose/lip observation and no-face exit unchanged. Neutral, repeat, exterior, alpha, extent, orientation/mirror, typed recovery and CPU/Metal parity pass. Owner-local generated-image 2D scope; no general lip segmentation. |
 | 比例 | 下庭 | implemented | `lowerFaceLength` | On two skin values and three generated lip/chin-height forms, both signed requests change visible lip-to-chin distance beyond 0.5 pixel while visible upper lip and brow/eye/mouth source regions remain exact. Chin contour adjacent-column steps stay within 3 pixels; missing lip observation and no-face stay exact, with neutral, repeat, exterior, alpha, extent, orientation/mirror and typed recovery passing. Owner-local generated-image 2D lower-face proportion only. |
 | 比例 | 短脸 | implemented | `faceShortening` | On two source-qualified generated long-face skin variants, four bounded points shorten the complete visible hair-top-to-chin span beyond the frozen 1-pixel threshold. A matched short-face source/observation remains exact. Visible eye and mouth widths stay within 1 pixel and the nose region stays exact; exterior, alpha, neutral, repeat, orientation/mirror and typed recovery pass. This is owner-local generated-image qualification of a 2D effect, not a skull or depth claim. |
-| 脸型 | 脸宽 | implemented | `faceSlim` | Bounded contour narrowing. |
-| 脸型 | 小脸 | implemented | `faceSmall` | Bounded small-face geometry. |
+| 脸型 | 脸宽 | implemented | `faceSlim` | Signed continuous contour width on observed/lip-registered still images; coarse positive route retained. |
+| 脸型 | 小脸 | implemented | `faceSmall` | Signed continuous lower-face scaling; repaired small-face chin scalloping in the scoped reference check. |
 | 脸型 | 面部流畅 | implemented | `faceContourSmooth` | The lower-cheek source-edge alignment passes two predeclared public CPU generated-portrait rough/smooth oracles, including a deep-skin, oblique-light, cheek-crossing-hair pair. Code-generated skin tones, opposing light, chromatic boundaries and short/sustained dark occlusion cover direction and protected regions. Weak or contradictory edges fail closed; a sustained occlusion closes only its affected contour side in both CPU and Metal point selection. Neutral, repeat, alpha and target/protection checks pass for these inputs. This owner-local evidence does not qualify real-person populations, devices or commercial visual quality. |
-| 脸型 | 太阳穴 | implemented | `templeFullness` | Upper-lateral contour geometry. |
-| 脸型 | 颧骨 | implemented | `cheekboneSlim` | Mid-lateral contour geometry. |
+| 脸型 | 太阳穴 | implemented | `templeFullness` | Signed upper-lateral contour geometry; above-eye support is a 2-D extension. |
+| 脸型 | 颧骨 | implemented | `cheekboneSlim` | Signed lateral cheekbone contour field. |
 | 脸型 | 下巴长短 | implemented | `chinLength` | Signed chin-length geometry. |
 | 脸型 | 去双下巴 | implemented | `doubleChinReduction` | On an admitted continuous outer submental skin protrusion, generated still-image center depth shrinks over 5 pixels and area over 5% across two skin values and two bulge depths. Flat chins, internal dark folds and detached light collars remain exact; upper face, exterior, alpha, extent, repeat, no-face, neutral, CPU/Metal parity, orientation/mirror and typed recovery pass. Owner-local generated-image 2D outer-contour class only; no internal fat identification. |
 | 脸型 | 去双下巴 Pro | implemented | `doubleChinReductionPro` | On the same admitted outer protrusions, Pro reduces center depth over 1 pixel and area over 5% further than base while adjacent contour-column steps stay within 3 pixels. The flat, internal-fold and detached-collar negatives remain exact, with upper-face protection, repeat, CPU/Metal parity and existing metadata/recovery gates. Owner-local generated-image 2D outer-contour tier only; no internal fat identification. |
-| 脸型 | 尖下巴 | implemented | `chinTaper` | Centerline-gated chin taper. |
+| 脸型 | 尖下巴 | implemented | `chinTaper` | Signed lower-chin taper; continuous registered route, coarse positive compatibility. |
 | 脸型 | V脸 | implemented | `faceVShape` | Bounded V-shape geometry. |
-| 脸型 | 下颌角 | implemented | `jawSlim` | Bounded jaw narrowing. |
+| 脸型 | 下颌角 | implemented | `jawSlim` | Signed continuous jaw narrowing/widening on registered still images. |
 | 脸型 | 下颌线 | implemented | `jawSlim` | Explicit alias-backed row; no distinct public parameter claim. |
 | 脸型 | 发际线 | implemented | `hairlineHeight` | On still images with a coherent high-contrast dark-hair/lighter-skin boundary, bounded signed resampling moves flat and wavy generated source boundaries in both directions on two skin variants while keeping adjacent columns continuous. Hairless, low-contrast, short forehead-decoration and observed-brow-overlap negatives remain exact; tested brow, eye, mouth, exterior, alpha, extent, repeat, orientation/mirror and typed recovery pass. Owner-local generated-image 2D qualification for this admitted class only; general hair segmentation and light-hair effects are not claimed. |
-| 眼睛 | 大小 | implemented | `eyeSize` | Eye-aperture size geometry. |
-| 眼睛 | 上下 | implemented | `eyeYPosition` | Signed vertical position. |
-| 眼睛 | 眼高 | implemented | `eyeHeight` | Contour-height geometry. |
-| 眼睛 | 长度 | implemented | `eyeLength` | Contour-length geometry. |
-| 眼睛 | 眼距 | implemented | `eyeDistance` | Signed paired spacing. |
+| 眼睛 | 大小 | implemented | `eyeSize` | Signed observed-eye size geometry. Centered host mapping and input limits in [eye contract](sdk/EYE_SHAPE_SLIDERS.md). |
+| 眼睛 | 上下 | implemented | `eyeYPosition` | Signed local vertical position; positive moves down. |
+| 眼睛 | 眼高 | implemented | `eyeHeight` | Signed aperture-height geometry, separate from iris size and eye length. |
+| 眼睛 | 长度 | implemented | `eyeLength` | Signed aperture-length geometry with separate height. |
+| 眼睛 | 眼距 | implemented | `eyeDistance` | Signed spacing requires two valid observed eyes. |
 | 眼睛 | 去脂 | suspended | `upperEyelidFullnessReduction` | Bounded upper-eyelid luminance correction retained for explicit-call compatibility. No qualified natural-appearance range or fat/tissue identification. Default renderer presentation is suspended; v1.25 bounded research closed with unmet objectives; no automatic continuation. API, safety and research evidence do not qualify the effect. |
 | 眼睛 | 提肌 | implemented | `upperEyelidLift` | Upper-contour geometry; not `去脂`. |
-| 眼睛 | 眼瞳大小 | implemented | `pupilSize` | Owner-retained signed dense source-radial effect; extreme shrink gray edge remains, optimization paused 2026-10-15. [Scope](sdk/IRIS_SIZE.md). |
+| 眼睛 | 眼瞳大小 | implemented | `pupilSize` | Dense observed source iris uses independent signed radial remap with aperture/source ownership; iris strength is excluded from dense eye-lattice geometry. Explicit CPU original-first preview resizes and clips by original owner before remaining geometry. [Mechanism and scoped qualification](sdk/EYE_SHAPE_SLIDERS.md). Observed sparse eyes retain positive aperture-contained compatibility without claiming iris radius; negative abstains. Unobserved coarse positive compatibility remains. |
 | 眼睛 | 眼神矫正 | implemented | `gazeCorrection` | Per-eye request-local pupil-to-own-center correction with no peer borrowing; strict aperture containment and source-safe local rejection. |
-| 眼睛 | 眼睑下至 | implemented | `lowerEyelidDrop` | Lower-contour geometry. |
-| 眼睛 | 眼尾上扬 | implemented | `eyeTailLift` | Outer-eye lift geometry. |
-| 眼睛 | 倾斜 | implemented | `eyeTilt` | Signed paired-contour rotation. |
+| 眼睛 | 眼睑下至 | implemented | `lowerEyelidDrop` | Signed outer-half lower-lid geometry, protecting the inner half. |
+| 眼睛 | 眼尾上扬 | implemented | `eyeTailLift` | Signed outer-corner lift; positive raises the outer corner. |
+| 眼睛 | 倾斜 | implemented | `eyeTilt` | Signed local-eye rotation. Direct positive raises outer corners; the centered reference host helper reverses this polarity. |
 | 眼睛 | 祛红血丝 | implemented | `scleraRednessReduction` | Opaque still-image per-eye local color only. |
-| 眼睛 | 内眼角 | implemented | `innerCornerOpen` | Independent inner-corner geometry. |
-| 眼睛 | 外眼角 | implemented | `outerCornerOpen` | Independent outer-corner geometry. |
+| 眼睛 | 内眼角 | implemented | `innerCornerOpen` | Independent signed inner-corner geometry. |
+| 眼睛 | 外眼角 | implemented | `outerCornerOpen` | Independent signed outer-corner geometry. |
 | 眼睛 | 对称 | implemented | `eyeSymmetry` | Bounded paired symmetry correction. |
-| 嘴唇 | 大小 | implemented | `mouthSize` | Signed whole-mouth size geometry. |
-| 嘴唇 | 宽度 | implemented | `mouthWidth` | Signed mouth width; Phase94 verifies bounded negative contraction on the registered generated source while retaining positive output. |
-| 嘴唇 | 上下 | implemented | `mouthYPosition` | Signed vertical position. |
-| 嘴唇 | 倾斜 | implemented | `mouthTilt` | Signed mouth rotation. |
-| 嘴唇 | 左右 | implemented | `mouthXPosition` | Signed horizontal position. |
-| 嘴唇 | M唇 | implemented | `lipPeakDefinition` | Upper-lip peak geometry. |
-| 嘴唇 | 丰唇 | implemented | `lipPlump` | True lip geometry; never `lipColor`. |
-| 嘴唇 | 微笑 | implemented | `smile` | Bounded smile geometry. |
+| 嘴唇 | 大小 | implemented | `mouthSize` | Signed observed whole-mouth pixel-space scaling; direct positive enlarges, host slider reverses. See [mouth contract](sdk/MOUTH_SLIDERS.md). |
+| 嘴唇 | 宽度 | implemented | `mouthWidth` | Signed observed whole-mouth width, preserving height. Phase94 remains evidence for its explicit legacy corner route; current continuous behavior has separate tests. |
+| 嘴唇 | 上下 | implemented | `mouthYPosition` | Signed whole-mouth vertical position; direct positive is down, host right endpoint is up. |
+| 嘴唇 | 倾斜 | implemented | `mouthTilt` | Signed pixel-space mouth rotation; positive is clockwise in upright top-left coordinates. |
+| 嘴唇 | 左右 | implemented | `mouthXPosition` | Signed upright image-horizontal position with exactly zero field Y and a source-fixed analytic support-sweep plateau; positive is rightward. Visible whole-lip rigidity and reference amplitude remain independently measured and observation-dependent; see [current evidence](sdk/MOUTH_SLIDERS.md#验证范围与外观限制). |
+| 嘴唇 | M唇 | implemented | `lipPeakDefinition` | Signed upper-lip peak geometry; negative relaxes the source bow, positive defines two peaks. Observed route requires inner support and protects the opening. |
+| 嘴唇 | 丰唇 | implemented | `lipPlump` | Signed lip thickness geometry; negative thins through a fixed scalar-minorant endpoint and calibrated continuous response, positive plumps. Observed route uses outer/inner lips and protects the opening; never `lipColor`. Reference thickness equality is not established; see [mouth contract](sdk/MOUTH_SLIDERS.md). |
+| 嘴唇 | 微笑 | implemented | `smile` | Signed continuous corner bending on observed support; negative lowers corners, positive raises them. |
 | 嘴唇 | 白牙 | implemented | `teethWhitening` | Opaque still-image request-local color work. |
-| 鼻子 | 大小 | implemented | `noseSlim` | Bounded nose-size geometry. |
-| 鼻子 | 提升 | implemented | `noseTipLift` | Independent tip lift. |
-| 鼻子 | 鼻翼 | implemented | `noseWingSlim` | Nose-wing narrowing. |
-| 鼻子 | 山根 | implemented | `noseRootNarrowing` | Independent inner dorsal surface narrowing with source-owned bridge protection. Repaired observed paired-eye path requires CPU; retained Metal rejects its unsupported raster cutoff with typed invalidInput. Never aliases `noseBridge`. |
-| 鼻子 | 鼻梁 | implemented | `noseBridge` | Bridge definition. |
-| 鼻子 | 鼻尖 | implemented | `noseTipSize` | Signed tip-size geometry. |
-| 眉毛 | 上下 | implemented | `eyebrowYPosition` | Signed bilateral vertical translation. |
-| 眉毛 | 粗细 | implemented | `eyebrowThickness` | Signed geometry-only trace thickness. |
+| 鼻子 | 大小 | implemented | `noseSlim` | Fresh dense support uses broad lateral width adjustment with stable axial base height, following independently measured reference semantics. Complete eye/brow/lip protection is required. Vision compatibility remains lateral narrowing. |
+| 鼻子 | 提升 | implemented | `noseTipLift` | Signed lower-nose lift/lowering with continuous transition toward the middle nose and protected lips. This is a bounded 2-D field, not whole-nose rigid translation or coordinated philtrum reconstruction. |
+| 鼻子 | 鼻翼 | implemented | `noseWingSlim` | Signed lower lateral alar-width adjustment with source-fixed complete eye/brow/lip protection on dense support. General nostril-shape/naturalness qualification remains limited. |
+| 鼻子 | 山根 | implemented | `noseRootNarrowing` | Independent short upper nasal side band on fresh dense support, distinct from Bridge; no root-height or lighting estimate. The shared CPU-owned nose stage works with either selected backend. Only retained Vision row-limited geometry keeps typed Metal rejection. |
+| 鼻子 | 鼻梁 | implemented | `noseBridge` | Continuous longer dorsal-side width adjustment, with distinct lower-side coupling; complete protected feature boxes remain fixed. No dedicated relighting or 3-D height pass. |
+| 鼻子 | 鼻尖 | implemented | `noseTipSize` | Local bulb-width shaping above the nostrils, stronger positive contraction and milder negative expansion, with bounded base motion. Vision retains its earlier lower-nose radial field. General Meitu appearance parity is not established by this implementation alone. |
+| 眉毛 | 上下 | implemented | `eyebrowYPosition` | Signed image-vertical source RGB deformation; direct positive moves down. |
+| 眉毛 | 粗细 | implemented | `eyebrowThickness` | Signed source-profile thickness deformation. |
 | 眉毛 | 长短 | implemented | `eyebrowLength` | Signed outer-endpoint length geometry. |
 | 眉毛 | 间距 | implemented | `eyebrowSpacing` | Signed whole-brow spacing. |
-| 眉毛 | 眉头间距 | implemented | `eyebrowHeadSpacing` | Signed inner-head-only spacing along each side's canonical axis; per-side fail-closed and distinct from whole-brow spacing. |
+| 眉毛 | 眉头间距 | implemented | `eyebrowHeadSpacing` | Signed image-horizontal inner-head spacing; outer quarter stays fixed, per-side source admission applies. Current photographic qualification remains in the active eyebrow plan. |
 | 眉毛 | 倾斜 | implemented | `eyebrowTilt` | Signed local rotation. |
-| 眉毛 | 眉峰 | implemented | `eyebrowPeakDefinition` | Bounded interior-apex geometry. |
+| 眉毛 | 眉峰 | implemented | `eyebrowPeakDefinition` | Signed image-vertical peak emphasis/flattening, bounded by source admission. |
 <!-- SDK_LEGACY_TAXONOMY_END -->
 
 Of the 63 listed rows, 62 are `implemented` at their stated owner-local scope
@@ -214,6 +219,63 @@ The 15 controls qualified in September 2026 retain their explicit
 generated-image, image-plane admission limits. None of these row statuses
 establishes general portrait quality, 3D geometry, device performance or
 commercial visual quality.
+
+### Nose reference scope (2026-10-11)
+
+All six controls retain signed ranges, zero defaults and unchanged caps. Fresh
+dense still images now use a continuous source-fixed nasal map, with complete
+eye/brow/lip observations required and protected boxes held exact. The nasal
+field retains .45 gradient / 6%-face-span displacement limits independently of
+the other still-image stages. Legacy Vision semantics and frozen evidence remain.
+
+The [owner screenshot comparison](../plans/history/2026-10/A-2026-10-10-nose-screenshot-comparison.md)
+was reproduced with isolated production MediaPipe output: the old Size distorted
+base height and old Size/Wing/Lift/Tip affected protected pixels. Independently
+measured Meitu endpoints show predominantly horizontal Size behavior and strong
+upper-bulb Tip shaping, correcting the earlier qualitative uniform width/height
+hypothesis before candidate output. Current native preview and original-size
+outputs match all 90 frozen reliable endpoint checks without threshold changes;
+all 48 preview settings and 12 original endpoints preserve complete native
+eye/brow/lip envelopes exactly. Positive Tip bulb appearance still has a small
+width-profile difference, kept separate from reliable feature matches, and is
+being calibrated in [current work](../PLANS.md). Broader resampled display
+rectangles retain their inequality diagnostics. Old generated
+marker passes do not establish this portrait's reference appearance, general
+naturalness, 3-D nose height or lighting. See [current debt](../plans/debt/current.md).
+The completed [audit](../plans/history/2026-10/A-2026-10-10-nose-reference-audit.md)
+retains its pre-repair findings; [current work](../PLANS.md) owns the repair evidence.
+
+### Face sliders and reference limits (2026-10-11)
+
+`faceSlim`, `faceSmall`, `jawSlim`, `templeFullness`, `cheekboneSlim` and
+`chinTaper` now accept signed reconstruction/normalization with unchanged keys,
+zero defaults and absolute caps. `BeautyFaceShapeSlider` maps ten owner-host
+0...1 positions to full caps: centered controls neutral at .5; V-face/smoothing
+neutral at 0; its right chin-length endpoint shortens without changing direct
+positive=longer API polarity. [Mapping and implementation](sdk/FACE_SHAPE_SLIDERS.md).
+
+Eight observed/lip-registered still-image face/chin fields use a continuous
+source-anchored local-frame contour band on CPU and Metal-selected rendering,
+suppressing corresponding old pulls. Independent generated source markers
+verify opposite directions, four quarter levels (>0.1 px per increase, >1 px
+at cap), exact eye/mouth/exterior/alpha and determinism on two aspect ratios,
+with sparse and synthetic dense carriers. A smooth generated chin acquires no
+new scallops. Public facade tests additionally cover actual CPU/Metal equality,
+neutral/no-face, metadata, invalidInput and recovery. Final related SwiftPM
+scope is **174 / 0 failures / 0 skips**; it is not full SDK or native iOS evidence.
+
+Both authorized originals were rerendered as 38 isolated macOS/Vision outputs.
+The small-face chin undulation on the first portrait is removed; eight geometry
+fields show target-directed changes. The supplementary soft hairline boundary
+passes its generated distributed-edge oracle but remains inactive on both
+portraits; contour smoothing also stays baseline-exact. This does not establish
+Meitu numeric/appearance equality, source hair segmentation, bangs handling or
+iOS/MediaPipe portrait qualification. Raw media stays local and ignored.
+
+The prior three-field mirrored candidate was rejected and withdrawn; that
+[dated failure](../plans/history/2026-10/A-2026-10-10-face-reference.md) is preserved.
+The new continuous implementation and its distinct scope are recorded in the
+[repair receipt](../plans/history/2026-10/A-2026-10-11-face-continuous.md).
 
 ## Non-legacy SDK groups
 
@@ -243,6 +305,15 @@ surface is 77 fields and five presets, with 99 registered renderer cases and
 explicit name for diagnostic compatibility.
 `implemented` is an owner-local engineering status only and never authorizes
 external distribution or commercial release.
+
+## Historical qualification records
+
+The sections below preserve Phase 90–94 and v1.23 evidence in their original
+qualification scopes. Their 62-field/75-case inventories, Phase 95 assignments
+and pending language refer to those checkpoints; they do not override the
+current inventory/rows above or create work in [PLANS](../PLANS.md).
+Subsequent dense-map and diagnostic changes are described by current owners,
+without rewriting these pixel thresholds or signed results.
 
 ## Historical Phase 90 Chin Repair and Contour Deferral
 

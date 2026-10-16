@@ -4,8 +4,8 @@
 
 **Result: closed_with_unmet_objectives.** 两个自动目标均未交付；各两方法四版本
 已拒绝，按所有者“连续执行至能力边界、结束旧问题”的最新要求停止本轮研发。
-[最终处置](../docs/RETOUCH_FINAL_DISPOSITION_2026-10-03.md)与
-[终局需求表](REQUIREMENTS.md)是当前入口。[R3范围](../docs/RETOUCH_TERMINAL_SCOPE_2026-10-03.md)
+[最终处置](../docs/history/retouch/RETOUCH_FINAL_DISPOSITION_2026-10-03.md)与
+[终局需求表](REQUIREMENTS.md)是当前入口。[R3范围](../docs/history/retouch/RETOUCH_TERMINAL_SCOPE_2026-10-03.md)
 只改变关闭方式，不降低冻结阈值或重新签发失败。
 
 | 原阶段 | 实际完成部分 | 最终处置 |

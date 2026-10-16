@@ -1,6 +1,6 @@
 struct ChinWarpFieldEmissions: Equatable, Sendable {
     let chinLength: [WarpControlPoint]
-    let chinTaper: [WarpControlPoint]
+    var chinTaper: [WarpControlPoint]
 
     var points: [WarpControlPoint] {
         chinLength + chinTaper
@@ -30,7 +30,21 @@ struct ChinWarpProvider: WarpControlPointProvider {
         face: FaceGeometry,
         strengths: BeautyEffectiveStrengths
     ) -> ChinWarpFieldEmissions {
-        ChinWarpFieldEmissions(
+        if strengths.chinTaper < 0 {
+            var positive = strengths; positive.chinTaper = -strengths.chinTaper
+            var result = fieldEmissions(face: face, strengths: positive)
+            guard BeautyContinuousFaceMap.replacesLegacy(for: face) else {
+                result.chinTaper = []
+                return result
+            }
+            result.chinTaper = result.chinTaper.map { p in
+                WarpControlPoint(source: p.source, target: p.source * 2 - p.target,
+                    radius: p.radius, strength: p.strength, falloff: p.falloff)
+            }
+            if !result.chinTaper.allSatisfy({ isFiniteUnitPoint($0.target) }) { result.chinTaper = [] }
+            return result
+        }
+        return ChinWarpFieldEmissions(
             chinLength: !face.faceContour.isEmpty &&
                 abs(strengths.chinLength) > Float.ulpOfOne
                 ? chinLengthPoints(face: face, strength: strengths.chinLength)

@@ -1,0 +1,254 @@
+{
+  "schema_version": 1,
+  "record_date": "2026-10-15",
+  "status": "active_repair_not_appearance_qualified",
+  "scope": "Owner-only negative iris gray-rim repair and selected iPad Panel; no final delivery",
+  "source": {
+    "sha256": "b856e9fd768cd5ec4c32d3f7ef28403ad2923711c03f5ecc7f52adbbb802f75a",
+    "width": 1728,
+    "height": 2304,
+    "same_frame_original": true
+  },
+  "implementation": {
+    "conditional_affine_white_illumination": true,
+    "all_source_fit_residual_maximum_codes": 1,
+    "whole_field_range_admission": true,
+    "source_donor_owner_expanded": false,
+    "destination_owner_expanded": false,
+    "uniform_radial_core_preserved": true,
+    "contact_matte_integrated": false,
+    "retained_shader_gpu_api_changed": false,
+    "slider_changed": false
+  },
+  "sdk_targeted": {
+    "executed": 37,
+    "failures": 0,
+    "skips": 0,
+    "seconds": 921.977,
+    "classes": {
+      "BeautyIrisScaleRemapTests": 23,
+      "BeautyIrisExposedScleraTests": 5,
+      "BeautyEngineIrisPreviewTests": 6,
+      "BeautyEngineIrisPreviewFractionalProtectionTests": 3
+    },
+    "log_sha256": "6f3f440aa74179257d739fd33d9f28d7f603f4ac82e12bf9a8d403cf3ff51434",
+    "ordinary_affine_max_rgb_error": [
+      0,
+      0
+    ],
+    "steep_affine_max_rgb_error": [
+      1,
+      1
+    ],
+    "earlier_steep_baseline_max_rgb_error": [
+      4,
+      5
+    ],
+    "earlier_steep_failure_assertions": 2,
+    "original_23_test_sha256": "f94a7ff22d3ba4268114163f35d93733b072f842d6e3dfce551066fde62349f9",
+    "full_sdk_regression": false,
+    "source_remap_sha256": "b10d48b7f88cf982bfd6efb40f0219bb9085db2df49f8c5c2a0c4ee5b47ad868"
+  },
+  "source_sha256": {
+    "BeautyIrisScaleRemap.swift": "797bcd44615cf1120c07037bcbafd46d0f17ca89fcd8c0b3505f141d4f0f1db8",
+    "BeautyIrisExposedScleraTests.swift": "28ab3b44e5705ca91077c7e28505d7ee803dc01d357d00282bf28cb53e6975a7"
+  },
+  "physical_panel": {
+    "candidate": "C75 validation-only host with unchanged C74 SDK",
+    "executed": 1,
+    "passed": 1,
+    "failures": 0,
+    "skips": 0,
+    "seconds": 1.661,
+    "native_generated_input_screenshots_inspected": 3,
+    "existing_assertions_retained": true,
+    "same_id_data_preserved": true,
+    "prior_two_scene_guard_failures_preserved": true,
+    "touch_quality_tested": false,
+    "actual_receipt_sha256": "44d3abde04cdcf83c9a9d848757e436b37d507253ea5b2bece79379ab954c2a9"
+  },
+  "fresh_original_baseline_capture": {
+    "candidate": "C77 unchanged C74 SDK",
+    "executed": 2,
+    "failures": 0,
+    "skips": 0,
+    "full_and_preview": true,
+    "receipt_sha256": "5a3c70f66c146c9c64bd338e812fbaf60341acd50d6d7ba32618f7d8ac1f99ff",
+    "gray_line_visual_pass": false
+  },
+  "contact_counterfactual": {
+    "production_integrated": false,
+    "pixels_changed": 169,
+    "finite_confirmed_iris_changed": 1,
+    "finite_unknown_changed": 168,
+    "finite_protected_eyelid_changed": 0,
+    "finite_protected_eyelid_count": 448,
+    "alpha_and_declared_exterior_exact": true,
+    "source_I_holdout_failed": 152,
+    "source_I_holdout_total": 175,
+    "native_unmasked_J_control_count": 112,
+    "native_unmasked_J_max_error_codes": 0,
+    "gray_line_visual_pass": false,
+    "qualified": false
+  },
+  "authorized_model_experiment": {
+    "model": "SAM 2.1 Hiera Tiny",
+    "code_commit": "2b90b9f5ceec907a1c18123530e92e794ad901a4",
+    "weight_revision": "de431c4043854a71d8101e17995dfe596bf101a5",
+    "weight_sha256": "7402e0d864fa82708a20fbd15bc84245c2f26dff0eb43a4b5b93452deb34be69",
+    "license": "Apache-2.0 code and checkpoint",
+    "local_cpu_executions": 20,
+    "fixed_configuration_and_perturbations": true,
+    "prompt_or_threshold_search": false,
+    "baseline_predicted_pixels": [
+      147,
+      91
+    ],
+    "contact_iris_witness_covered": [
+      0,
+      0
+    ],
+    "contact_iris_witness_total": [
+      231,
+      365
+    ],
+    "minimum_perturbation_iou": 0.47643979057591623,
+    "maximum_perturbation_xor_pixels": 100,
+    "qualified": false,
+    "integrated": false,
+    "aggregate_sha256": "1b9d2f9c637b4b14523f1d2ce1677acc230a2eb225eacd4b310c36eafd5afb97",
+    "decision_sha256": "ceff23760f3112acb66025078402cfc43befbf2e0343850be1298249abf0b126",
+    "config_sha256": "4d531a23889708e37cf965292def8c53e0613eefa0f1020852d3d716fb53f822",
+    "dependency_lock_sha256": "b19789149a04362a3e854983276449b05cede2c7e4e422b43bd2e41d78ebcd7c",
+    "owned_cache_cleanup": {
+      "removed_files": 129,
+      "removed_logical_bytes": 97562895,
+      "retained_model_environment_evidence_logical_bytes": 670596404,
+      "shared_cache_touched": false,
+      "cleanup_receipt_sha256": "88057959368696026320bf489dcd313350beced21957e2a23cebce058cf5dbcf"
+    },
+    "target_binding_correction": {
+      "local_cpu_executions": 10,
+      "configuration_frozen_before_inference": true,
+      "baseline_predicted_pixels": [
+        783,
+        855
+      ],
+      "contact_iris_witness_covered": [
+        114,
+        121
+      ],
+      "contact_iris_witness_total": [
+        231,
+        365
+      ],
+      "finite_protected_lid_intersections": [
+        0,
+        0
+      ],
+      "unknown_intersections": [
+        21,
+        10
+      ],
+      "unknown_intersection_range": [
+        [
+          17,
+          46
+        ],
+        [
+          6,
+          14
+        ]
+      ],
+      "minimum_perturbation_iou": 0.77054,
+      "maximum_perturbation_xor_pixels": 229,
+      "qualified": false,
+      "stop_condition_triggered": true,
+      "additional_downloads": false,
+      "config_sha256": "8b7efbb3ce2f439e0ddb0c0ec76f9ba77f316722b4a2e762b9ec93d903f5298a",
+      "aggregate_sha256": "491f040910f5acb20de54bd01d0be318592bb0f8ee42f089a63cfefd65c82981",
+      "decision_sha256": "5dbfb07321019d5410e0f7556d1c3aa92d103e316b9beb3a65d53536d7016b43"
+    },
+    "initial_configuration_cpu_executions": 10,
+    "initial_configuration_decision": "Reject this fixed prompt configuration: selects small glint regions and provides no contact iris owner; not a claim that every SAM2 prompt fails",
+    "decision": "Stop: the fixed target-binding correction admits uncertain contact pixels; no integration or further configurations"
+  },
+  "appearance_qualified": false,
+  "delivery_accepted": false,
+  "new_iris_fix_installed_on_device": false,
+  "limitations": [
+    "Lower iris/lid gray line remains; no Meitu-equivalent appearance claim.",
+    "Current illumination candidate has targeted macOS checks; new native capture remains unqualified after writer interruptions and unrelated Host compilation failure.",
+    "Single-frame source and finite witnesses do not establish general semantic iris/lid separation.",
+    "No full SDK/App regression, physical touch quality, performance, thermal or population claim."
+  ],
+  "blur_aware_source_hypothesis": {
+    "fixed_parameters": 475,
+    "training_and_holdout_separate": true,
+    "profiles_fit": 140,
+    "duplicate_source_cell_abstentions": 26,
+    "numerical_solver_abstentions": 9,
+    "holdout_passes": 0,
+    "holdout_maximum_codes": 4,
+    "minimum_actual_holdout_errors": [
+      9.486,
+      7.744
+    ],
+    "qualified": false,
+    "integrated": false
+  },
+  "current_code_native_attempts": [
+    {
+      "candidate": "C78",
+      "build_invoked": false,
+      "executed": 0,
+      "preflight_rejected_concurrent_writer": true,
+      "receipt_sha256": "79a36abcac6aa2963d43ecd383efb00ccb99ddec87bd9a947e4114f73300e497",
+      "current_code_portrait_fallback_verified": false
+    },
+    {
+      "candidate": "C79",
+      "build_exit_code": 0,
+      "build_receipt_sha256": "5b2ab1457efb7868a59b33658f76c880b97299e46c570c494cfbbcb06a88fd3e",
+      "capture_executed": 0,
+      "capture_interrupted_unproved_writer": true,
+      "capture_receipt_sha256": "62905160258fcff27a1c144ac9e7a42052039434744f03bd734b415bc711c1b8",
+      "source_immutable_app_and_input_exact_after": true,
+      "claim_released": true
+    },
+    {
+      "candidate": "C81",
+      "build_invoked": true,
+      "build_exit_code": 65,
+      "executed": 0,
+      "source_hashes_unchanged": true,
+      "cache_lock_released": true,
+      "build_receipt_sha256": "366677d67256e5253c0b1dba3d5ff9920da080c03dd4329abfd79bc9e1f2ad77",
+      "failure": "Parallel external Host references BeautyParameters.jawlineShadow absent from current SDK; parallel edits preserved"
+    }
+  ],
+  "final_streaming_refactor": {
+    "source_remap_sha256": "797bcd44615cf1120c07037bcbafd46d0f17ca89fcd8c0b3505f141d4f0f1db8",
+    "behavior": "Same ordered samples/moments/residuals with two streaming owner-gated passes; remove window-sized sample RGB/point array",
+    "fitting_auxiliary_memory": "constant-size statistics; full renderer retains its existing buffers",
+    "executed": 3,
+    "failures": 0,
+    "skips": 0,
+    "seconds": 59.822,
+    "scope": [
+      "ordinary source-defined illumination",
+      "steep source-defined illumination",
+      "excluded RGB and alpha taint"
+    ],
+    "log_sha256": "dbcf342dba6016ffd65dd1efcdb34b1cce0db5c436449340346bbfab266a754b",
+    "ordinary_affine_max_rgb_error": [
+      0,
+      0
+    ],
+    "steep_affine_max_rgb_error": [
+      1,
+      1
+    ],
+    "original_23_and_preview_suites_not_rerun_for_storage_only_change": true
+  }
+}

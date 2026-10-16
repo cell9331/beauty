@@ -50,7 +50,7 @@ The following branch-level labels describe the historical Phase 17 vocabulary:
 
 - Folders preserve the historical `editor-shell`, `beauty-shaping` and `skin-retouch` reference grouping. They do not add application or UI scope to the SDK-only repository.
 - `SHAPE_FEATURE_LEDGER.md`, `FEATURE_MATRIX.md` and branch pages are background material. Current per-effect status comes from the taxonomy; current work comes from [PLANS.md](../../PLANS.md).
-- An unsupported or suspended reference tool is not an automatic future milestone. Historical implementation instructions and acceptance recipes must not override the current [image-effect acceptance policy](../IMAGE_EFFECT_ACCEPTANCE.md).
+- An unsupported or suspended reference tool is not an automatic future milestone. Historical implementation instructions and acceptance recipes must not override the current [image-effect acceptance policy](../validation/IMAGE_EFFECT_ACCEPTANCE.md).
 
 ## Excluded From This Milestone
 

@@ -13,7 +13,7 @@ portraits are optional; missing real photos cannot block a new effect gate.
 For effect acceptance, predeclare a target-bearing positive, a negative, and
 source-fixed protected regions, then judge the actual output direction and
 non-worsening as well as pixels and metadata. See
-[current acceptance policy](../IMAGE_EFFECT_ACCEPTANCE.md). Commands and
+[current acceptance policy](../validation/IMAGE_EFFECT_ACCEPTANCE.md). Commands and
 phase-numbered evidence below preserve their historical input/output paths.
 
 The dated results below cover their then-current skin, color, filter, geometry, teeth and sclera paths; they do not certify later code snapshots.

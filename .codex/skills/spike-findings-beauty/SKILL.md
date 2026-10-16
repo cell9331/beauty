@@ -16,7 +16,7 @@ texture, luminance, privacy, latency, memory, and integration ownership.
 
 Spike sessions wrapped: 2026-07-29 (001a–005, then 006/009/010); 2026-07-30 (011, 012, and 013 appends)
 
-The current owner policy in `docs/IMAGE_EFFECT_ACCEPTANCE.md` supersedes the
+The current owner policy in `docs/validation/IMAGE_EFFECT_ACCEPTANCE.md` supersedes the
 spikes' old requirement for genuine human photographs. Authorized generated
 portrait positives and negatives can complete an SDK effect qualification if
 their own frozen direction, protection, visual/pixel, and metadata oracle passes.
@@ -33,7 +33,12 @@ Spike results and their original fixture outcomes remain historical.
 - `去脂` must not alias `eyeHeight`, `upperEyelidLift`, brow movement, or global
   smoothing.
 - Missing, malformed, closed, blinking, occluded, or low-confidence support fails closed per region.
-- Raw masks, landmarks, pupil positions, teeth geometry, and vein patterns are request-local and absent from public or persisted diagnostics.
+- Raw masks, landmarks, pupil positions, teeth geometry, and vein patterns are
+  request-local and absent from standard public result diagnostics and all
+  persisted evidence. The separately authorized owner-only `OwnerDiagnostics`
+  SPI may return transient upright x/y points for the owner's local overlay;
+  description/debug/reflection remain aggregate. This existing exception is
+  governed by `SECURITY.md` and does not expose raw masks, z/pose arrays or logs.
 - The old AI-generated spike fixtures proved only the checks they actually ran.
   New authorized generated portraits can provide full positive/negative effect
   evidence; genuine photos are optional. Review output at original detail when
@@ -44,7 +49,7 @@ Spike results and their original fixture outcomes remain historical.
   appearance effect qualification has failed. Do not treat the 2026-08-25
   provisional acceptance or this spike recipe as a current effect claim or
   instruction to continue research. Restart requires an explicit owner request
-  and a new testable approach under `docs/IMAGE_EFFECT_ACCEPTANCE.md`.
+  and a new testable approach under `docs/validation/IMAGE_EFFECT_ACCEPTANCE.md`.
 - API compatibility, mechanical safety and effect qualification are separate
   evidence categories. A luminance proxy does not establish eyelid fullness;
   neither more tests nor safer output alone establishes useful effect.
@@ -56,7 +61,7 @@ Spike results and their original fixture outcomes remain historical.
 | Area | Reference | Key Finding |
 | --- | --- | --- |
 | Upper-eyelid fullness | `references/upper-eyelid-fullness.md` | Historical tone/frequency safety findings; current去脂 is suspended and hidden by default, with explicit API compatibility only. No automatic improvement task. |
-| Teeth whitening | `references/teeth-whitening.md` | Seeded adaptive growth improves side-tooth mechanics without dropping the fixed baseline, but licensed protected-tissue review remains mandatory. |
+| Teeth whitening | `references/teeth-whitening.md` | Seeded adaptive growth improves bounded side-tooth mechanics; input rights and independent target/protected-tissue oracles remain mandatory, and authorized generated inputs are eligible under the current policy. |
 | Sclera redness | `references/sclera-redness.md` | Guard each eye before scoring, feather then re-clip to the hard envelope, and verify the final transform with a color-adversarial oracle; generated positive/negative effect calibration is eligible. |
 | Still-image integration | `references/still-image-integration.md` | Normalize orientation/color once before Vision and rendering, detect once, fail locally, preserve hard containment, derive every accepted edit from the original pixel under one explicit mask owner, reject unexpected overlap, and use bounded—not topology-identical—cross-profile criteria. |
 | Licensed fixture evaluation | `references/licensed-fixture-evaluation.md` | Historical reviewer required a complete approved bundle; current generated-image effect acceptance can use an equivalent feature-specific oracle without a genuine-human requirement. |

@@ -112,7 +112,7 @@ enum EyebrowSafetyFixtures {
             publicValue: \.eyebrowPeakDefinition,
             effectiveValue: \.eyebrowPeakDefinition,
             emission: { $0.eyebrowPeakDefinition },
-            isSigned: false,
+            isSigned: true,
             cap: BeautySafetyCaps.eyebrowPeakDefinition,
             reusedStrength: 0.125,
             maximumRadiusFraction: 0.055,

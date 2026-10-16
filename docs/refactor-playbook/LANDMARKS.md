@@ -36,7 +36,14 @@ Face Landmarker 是定位与表情任务，不提供身份识别结果。
 
 MediaPipe 接收已正向的 `MPImage`，不得再经过 Vision 的翻y/方向路径。
 Vision 仍由 [CoordinateMapper](../../BeautySDK/Sources/BeautyDetection/CoordinateMapper.swift)
-从左下归一化转换。当前公开SDK不输出原始点，也不承诺UI叠加坐标接口。
+从左下归一化转换。标准 `BeautyResult` 只包含脱敏摘要、聚合指标和固定事件。
+所有者本地宿主另可通过 `OwnerDiagnostics` SPI 使用
+[BeautyOwnerLandmarkDetector](../../BeautySDK/Sources/BeautySDK/BeautyOwnerLandmarkDetector.swift)，
+在独立、串行调用的 detector 上复检已经正向的预览/输出 `CGImage`。
+有效 iOS mesh 返回原顺序478个归一化 x/y 点；macOS 保留 Vision 的已有区域点，
+不合成478点，未检测到脸时返回空点集。它不输出原始 z/姿态矩阵，
+description/debug/reflection 只显示模型与数量；原始点仅用于瞬时显示，不进入持久证据。
+宿主仍负责裁切、缩放和预览镜像；该 SPI 不改变标准结果或渲染引擎的观测生命周期。
 
 距离类运算需先将 `x/y` 换到相同单位：`p = (u·W, v·H)`。
 归一化方形空间直接取欧氏距离在宽屏/竖屏会改变圆形半径；引入新规则时应显式
@@ -55,7 +62,7 @@ Vision 仍由 [CoordinateMapper](../../BeautySDK/Sources/BeautyDetection/Coordin
 [资源与布局记录](../../BeautySDK/ThirdParty/MediaPipe/README.md)拥有。
 当前在近等尺度、正交与右手旋转检查后，以正向z余弦衰减dense统一映射；
 背向/强侧转退出映射，roll不削弱正脸。矩阵不直接乘到像素上；
-具体规则见[实现契约](../DENSE_FACE_REFACTOR.md)。
+具体规则见[实现契约](../sdk/DENSE_FACE_REFACTOR.md)。
 
 未来若计算 yaw/pitch/roll，要先定义坐标轴、左右符号、旋转顺序与镜像下的解释，
 确认3×3部分满足所采用的旋转分解条件；存在尺度/数值残差时先归一化或正交化，
@@ -72,7 +79,10 @@ Vision 仍由 [CoordinateMapper](../../BeautySDK/Sources/BeautyDetection/Coordin
 
 ## 时域稳定性是另一份契约
 
-当前 CPU image mode 是逐次图片推理；复用模型初始化，不复用结果。
+当前 CPU image mode provider 是逐次图片推理，复用模型初始化；普通调用不复用结果。
+显式[固定图片编辑入口](../sdk/PREPARED_PHOTO_EDITING.md)在engine层保存单个不可变
+source按用途/raster的usable/noFace结果，失败仍重试，换图/release/reset清除。
+这是同一张原图的参数快照优化，不是下面的视频跟踪或旧帧支撑复用。
 indexed camera/video 的跳帧会撤销依赖人脸的效果，`detectionFrameInterval` 不代表跟踪。
 官方 video/liveStream 模式具有不同调用和时间戳要求，且 `numFaces = 1` 才应用其平滑。
 见 [官方 iOS 模式说明](https://ai.google.dev/edge/mediapipe/solutions/vision/face_landmarker/ios)。

@@ -5,6 +5,12 @@ struct NoseWarpFieldEmissions: Equatable, Sendable {
     let noseBridge: [WarpControlPoint]
     let noseRootNarrowing: [WarpControlPoint]
     let noseTipLift: [WarpControlPoint]
+    /// Dense still images use a continuous field, with no proxy control points.
+    /// Keeping admission separate avoids making planner work depend on whether
+    /// the superseded circular kernels could emit at this particular anatomy.
+    var continuousFieldMask: UInt8 = 0
+
+    var hasAdmittedWork: Bool { continuousFieldMask != 0 || !points.isEmpty }
 
     var points: [WarpControlPoint] {
         noseSlim +
@@ -17,22 +23,22 @@ struct NoseWarpFieldEmissions: Equatable, Sendable {
 
     func sanitizing(_ strengths: BeautyEffectiveStrengths) -> BeautyEffectiveStrengths {
         var sanitized = strengths
-        if strengths.noseSlim != 0, noseSlim.isEmpty {
+        if strengths.noseSlim != 0, noseSlim.isEmpty, continuousFieldMask & 1 == 0 {
             sanitized.noseSlim = 0
         }
-        if strengths.noseWingSlim != 0, noseWingSlim.isEmpty {
+        if strengths.noseWingSlim != 0, noseWingSlim.isEmpty, continuousFieldMask & 2 == 0 {
             sanitized.noseWingSlim = 0
         }
-        if strengths.noseTipSize != 0, noseTipSize.isEmpty {
+        if strengths.noseTipSize != 0, noseTipSize.isEmpty, continuousFieldMask & 4 == 0 {
             sanitized.noseTipSize = 0
         }
-        if strengths.noseBridge != 0, noseBridge.isEmpty {
+        if strengths.noseBridge != 0, noseBridge.isEmpty, continuousFieldMask & 8 == 0 {
             sanitized.noseBridge = 0
         }
-        if strengths.noseRootNarrowing != 0, noseRootNarrowing.isEmpty {
+        if strengths.noseRootNarrowing != 0, noseRootNarrowing.isEmpty, continuousFieldMask & 16 == 0 {
             sanitized.noseRootNarrowing = 0
         }
-        if strengths.noseTipLift != 0, noseTipLift.isEmpty {
+        if strengths.noseTipLift != 0, noseTipLift.isEmpty, continuousFieldMask & 32 == 0 {
             sanitized.noseTipLift = 0
         }
         return sanitized
@@ -40,17 +46,35 @@ struct NoseWarpFieldEmissions: Equatable, Sendable {
 }
 
 struct NoseWarpProvider: WarpControlPointProvider {
+    /// The dense still-image contract fails closed when source nose or complete
+    /// protection support is unavailable. Vision retains its existing route.
+    func planningEmissions(face: FaceGeometry, strengths: BeautyEffectiveStrengths) -> NoseWarpFieldEmissions {
+        guard BeautyContinuousNoseMap.replacesLegacy(for: face) else {
+            return fieldEmissions(face: face, strengths: strengths)
+        }
+        var result = NoseWarpFieldEmissions(noseSlim: [], noseWingSlim: [], noseTipSize: [],
+                                            noseBridge: [], noseRootNarrowing: [], noseTipLift: [])
+        guard BeautyContinuousNoseMap.isEligible(face: face) else { return result }
+        for (index, key) in BeautyContinuousNoseMap.keys.enumerated() {
+            let strength = strengths[keyPath: key]
+            if strength.isFinite, abs(strength) > Float.ulpOfOne {
+                result.continuousFieldMask |= UInt8(1 << index)
+            }
+        }
+        return result
+    }
+
     func makeControlPoints(
         face: FaceGeometry,
         strengths: BeautyEffectiveStrengths
     ) -> WarpControlPointResult {
         let emissions = fieldEmissions(face: face, strengths: strengths)
-        let requestedWork = strengths.noseSlim > 0 ||
-            strengths.noseWingSlim > 0 ||
+        let requestedWork = abs(strengths.noseSlim) > Float.ulpOfOne ||
+            abs(strengths.noseWingSlim) > Float.ulpOfOne ||
             abs(strengths.noseTipSize) > Float.ulpOfOne ||
-            strengths.noseBridge > 0 ||
-            strengths.noseRootNarrowing > 0 ||
-            strengths.noseTipLift > 0
+            abs(strengths.noseBridge) > Float.ulpOfOne ||
+            abs(strengths.noseRootNarrowing) > Float.ulpOfOne ||
+            abs(strengths.noseTipLift) > Float.ulpOfOne
 
         return WarpControlPointResult(
             points: emissions.points,
@@ -63,26 +87,143 @@ struct NoseWarpProvider: WarpControlPointProvider {
         strengths: BeautyEffectiveStrengths
     ) -> NoseWarpFieldEmissions {
         let center = LandmarkGeometryHelper.center(of: face.nose)
+        // Dense source anatomy gives size/tip their own centers. Legacy positive
+        // fields remain compatible; negative controls reverse admitted vectors.
+        let dense = face.denseSupport != nil && face.freshness == .fresh && face.observedNoseSupport != nil
         return NoseWarpFieldEmissions(
-            noseSlim: strengths.noseSlim > 0
-                ? center.map { slimPoints(face: face, center: $0, strength: strengths.noseSlim) } ?? []
-                : [],
-            noseWingSlim: strengths.noseWingSlim > 0
-                ? center.map { wingPoints(face: face, center: $0, strength: strengths.noseWingSlim) } ?? []
-                : [],
-            noseTipSize: abs(strengths.noseTipSize) > Float.ulpOfOne
-                ? center.map { tipPoints(face: face, center: $0, strength: strengths.noseTipSize) } ?? []
-                : [],
-            noseBridge: strengths.noseBridge > 0
-                ? center.map { bridgePoints(face: face, center: $0, strength: strengths.noseBridge) } ?? []
-                : [],
-            noseRootNarrowing: strengths.noseRootNarrowing > 0
-                ? rootNarrowingPoints(face: face, strength: strengths.noseRootNarrowing)
-                : [],
-            noseTipLift: strengths.noseTipLift > 0
-                ? tipLiftPoints(face: face, strength: strengths.noseTipLift)
-                : []
+            noseSlim: signedField(face: face, strength: strengths.noseSlim, cap: BeautySafetyCaps.noseSlim) { value in
+                dense ? denseSizePoints(face: face, strength: value)
+                    : center.map { slimPoints(face: face, center: $0, strength: value) } ?? []
+            },
+            noseWingSlim: signedField(face: face, strength: strengths.noseWingSlim, cap: BeautySafetyCaps.noseWingSlim) { value in
+                dense ? denseWingPoints(face: face, strength: value)
+                    : center.map { wingPoints(face: face, center: $0, strength: value) } ?? []
+            },
+            noseTipSize: signedField(face: face, strength: strengths.noseTipSize, cap: BeautySafetyCaps.noseTipSize) { value in
+                dense ? denseTipPoints(face: face, strength: value)
+                    : center.map { tipPoints(face: face, center: $0, strength: value) } ?? []
+            },
+            noseBridge: signedField(face: face, strength: strengths.noseBridge, cap: BeautySafetyCaps.noseBridge) { value in
+                center.map { bridgePoints(face: face, center: $0, strength: value) } ?? []
+            },
+            noseRootNarrowing: signedField(face: face, strength: strengths.noseRootNarrowing, cap: BeautySafetyCaps.noseRootNarrowing, root: true) {
+                rootNarrowingPoints(face: face, strength: $0)
+            },
+            noseTipLift: signedField(face: face, strength: strengths.noseTipLift, cap: BeautySafetyCaps.noseTipLift) { value in
+                dense ? denseLiftPoints(face: face, strength: value) : tipLiftPoints(face: face, strength: value)
+            }
         )
+    }
+
+    private func signedField(face: FaceGeometry, strength: Float, cap: Float, root: Bool = false,
+                             positive: (Float) -> [WarpControlPoint]) -> [WarpControlPoint] {
+        guard strength.isFinite, abs(strength) > Float.ulpOfOne else { return [] }
+        let points = positive(abs(strength)).map { point in
+            var point = point
+            if face.denseSupport != nil, face.freshness == .fresh {
+                point.samplingCenter = point.source
+                point.admissionFraction = min(1, abs(strength) / cap)
+            }
+            return point
+        }
+        guard strength < 0 else { return points }
+        var result: [WarpControlPoint] = []
+        for point in points {
+            let target = point.source - (point.target - point.source)
+            guard isValidSupportPoint(target, in: face.bounds) else { return [] }
+            var radius = point.radius
+            if root {
+                // Outward roots must remain medial to the observed eye boxes.
+                // Shrink their footprint, never clamp the target onto an eye.
+                for eye in [face.leftEyeSupport, face.rightEyeSupport].compactMap({ $0 }) {
+                    guard let minY = eye.contour.map(\.y).min(), let maxY = eye.contour.map(\.y).max(),
+                          target.y + radius > minY, target.y - radius < maxY else { continue }
+                    let clearance = eye.contour.map { abs($0.x - target.x) }.min() ?? 0
+                    radius = min(radius, clearance * (1 - 64 * Float.ulpOfOne))
+                }
+                guard radius >= 0.001, phase93ContainsDisk(target, radius: radius, bounds: face.bounds) else { return [] }
+            }
+            var reversed = WarpControlPoint(source: point.source, target: target, radius: radius,
+                                            strength: abs(strength), falloff: point.falloff)
+            reversed.pixelCenterSampling = point.pixelCenterSampling
+            reversed.exclusiveMaximumY = point.exclusiveMaximumY
+            reversed.samplingCenter = point.samplingCenter
+            reversed.admissionFraction = point.admissionFraction
+            result.append(reversed)
+        }
+        return result
+    }
+
+    private func denseContour(in face: FaceGeometry) -> [SIMD2<Float>]? {
+        guard let support = face.observedNoseSupport,
+              (3...32).contains(support.contour.count), (3...32).contains(support.crest.count) else { return nil }
+        let points = (support.contour + support.crest).map { SIMD2<Float>(Float($0.x), Float($0.y)) }
+        guard points.allSatisfy({ isValidSupportPoint($0, in: face.bounds) }),
+              let left = points.map(\.x).min(), let right = points.map(\.x).max(),
+              let top = points.map(\.y).min(), let bottom = points.map(\.y).max(),
+              right - left > 0.001, bottom - top > 0.001 else { return nil }
+        return points
+    }
+
+    /// Size contracts both dimensions of the observed organ, not just its two
+    /// horizontal extrema. Four cardinal anchors avoid contour point pile-up.
+    private func denseSizePoints(face: FaceGeometry, strength: Float) -> [WarpControlPoint] {
+        guard let contour = denseContour(in: face) else { return [] }
+        let left = contour.map(\.x).min()!, right = contour.map(\.x).max()!
+        let top = contour.map(\.y).min()!, bottom = contour.map(\.y).max()!
+        let center = SIMD2<Float>((left + right) * 0.5, (top + bottom) * 0.5)
+        let anchors = [SIMD2<Float>(left, center.y), SIMD2<Float>(right, center.y),
+                       SIMD2<Float>(center.x, top), SIMD2<Float>(center.x, bottom)]
+        let radius = min(face.bounds.width * 0.13, (right - left) * 0.55)
+        return densePoints(face: face, anchors: anchors, radius: radius, strength: strength) {
+            $0 + (center - $0) * (0.28 * strength / BeautySafetyCaps.noseSlim)
+        }
+    }
+
+    private func denseWingPoints(face: FaceGeometry, strength: Float) -> [WarpControlPoint] {
+        guard denseContour(in: face) != nil, let tip = validatedTipSupport(in: face),
+              let left = tip.first, let right = tip.last, right.x > left.x else { return [] }
+        let span = right.x - left.x
+        let centerX = (left.x + right.x) * 0.5
+        return densePoints(face: face, anchors: [left, right], radius: face.bounds.width * 0.12,
+                           strength: strength) {
+            SIMD2<Float>($0.x + (centerX - $0.x) * (0.38 * strength / BeautySafetyCaps.noseWingSlim), $0.y)
+        }.filter { abs($0.target.x - $0.source.x) <= span * 0.5 }
+    }
+
+    private func denseTipPoints(face: FaceGeometry, strength: Float) -> [WarpControlPoint] {
+        guard denseContour(in: face) != nil, let tip = validatedTipSupport(in: face),
+              let mesh = face.denseSupport?.mesh else { return [] }
+        let p = mesh.points[1]
+        let center = SIMD2<Float>(p.x, p.y)
+        guard isValidSupportPoint(center, in: face.bounds) else { return [] }
+        let halfX = min(face.bounds.width * 0.055, (tip.last!.x - tip.first!.x) * 0.30)
+        let halfY = face.bounds.height * 0.028
+        let anchors = [center + SIMD2<Float>(-halfX, 0), center + SIMD2<Float>(halfX, 0),
+                       center + SIMD2<Float>(0, -halfY), center + SIMD2<Float>(0, halfY)]
+        return densePoints(face: face, anchors: anchors, radius: face.bounds.width * 0.075, strength: strength) {
+            $0 + (center - $0) * (0.35 * strength / BeautySafetyCaps.noseTipSize)
+        }
+    }
+
+    private func denseLiftPoints(face: FaceGeometry, strength: Float) -> [WarpControlPoint] {
+        guard denseContour(in: face) != nil, let tip = validatedTipSupport(in: face) else { return [] }
+        return densePoints(face: face, anchors: tip, radius: face.bounds.width * 0.13, strength: strength) {
+            SIMD2<Float>($0.x, $0.y - face.bounds.height * 0.030 * strength / BeautySafetyCaps.noseTipLift)
+        }
+    }
+
+    private func densePoints(face: FaceGeometry, anchors: [SIMD2<Float>], radius: Float,
+                             strength: Float, target: (SIMD2<Float>) -> SIMD2<Float>) -> [WarpControlPoint] {
+        guard radius > 0.001, anchors.allSatisfy({ isValidSupportPoint($0, in: face.bounds) }) else { return [] }
+        var result: [WarpControlPoint] = []
+        for source in anchors {
+            let destination = target(source)
+            guard isValidSupportPoint(destination, in: face.bounds) else { return [] }
+            result.append(WarpControlPoint(source: source, target: destination, radius: radius,
+                                           strength: strength, falloff: 1))
+        }
+        return result
     }
 
     func validatedRootPair(in face: FaceGeometry) -> (left: SIMD2<Float>, right: SIMD2<Float>)? {
@@ -339,7 +480,7 @@ struct NoseWarpProvider: WarpControlPointProvider {
             : min(face.bounds.width * 0.06, (upper - lower) * 0.4, halfSpan * 1.5)
         guard halfSpan > 0, radius.isFinite, radius > 0.0001 else { return [] }
         let requested = min(face.bounds.width * 0.025,
-                            halfSpan * 0.5, radius * (root ? 0.7 : 0.1125))
+                            halfSpan * 0.5, radius * (root ? 0.7 : (face.denseSupport == nil ? 0.1125 : 0.45)))
         let magnitude = Double(requested) * Double(strength / cap) * (1 - 32 * Double(Float.ulpOfOne))
         var points: [WarpControlPoint] = []
         let centerY = (lower + upper) * 0.5
@@ -359,6 +500,7 @@ struct NoseWarpProvider: WarpControlPointProvider {
                                           strength: strength, falloff: 1))
         }
         if root { return HorizontalInwardWarpSafety.admitted(points, maximumSlope: 0.8) }
+        if face.denseSupport != nil { return points }
         let budget = points.reduce(0.0) { $0 + 2 * abs(Double($1.target.x - $1.source.x)) / Double($1.radius) }
         return budget <= 0.45 ? points : []
     }

@@ -46,9 +46,21 @@ summary 保留原始 outcome，原 detection timing 若存在也只是原检测�
 
 ## 编辑 Demo
 
-独立 BeautyEditorApp 的 PhotoRenderer 在 actor 内按照片、CPU/Metal engine
-分别保留 preview token。同一 preview 连续参数使用固定 source；换图清除 token。
-导出重解码原尺寸并通过普通入口fresh检测；不能把960px preview支撑直接用于原图。
+独立 BeautyEditorApp 的 PhotoRenderer 在 actor 内通常按照片、CPU/Metal engine
+分别保留 thumbnail-bound preview token。同一 preview 连续参数使用固定 source。
+当前iris整改增加显式例外：非零pupilSize预览使用独立CPU engine及原图绑定token，
+调用[source-first iris preview API](EYE_SHAPE_SLIDERS.md#原图先行的-iris-preview-api)。
+其原图检测缓存与原CPU/Metal缩略图缓存隔离，不以960px支撑替代原图；每次参数
+重算原图iris及请求内owner，结果与owner/mask不进入prepared缓存。C60/C61默认
+mask=nil基准另在原源缩图后运行view color/texture/refiners；原尺寸IR prefix独立，
+BO缩图仅支持精确未变化copy guard，几何hard owner仍授权clip，不缓存输出或
+RGB语义mask。原图grid显式mask保持原prefix基准，不借到view。零iris仍走原
+thumbnail入口。换图释放各engine的source/support及三类token，release/reset也
+使对应handle失效；同engine只能保留当前一个source。C61定向fractional3与facade6
+及C74实际原图/explicit CPU preview的单图冻结门已通过；这些只证明该输入和API
+范围，细灰rim限制仍保留。旧十项保留/宿主UI6正在准备，iPad未新build/install，
+未重新交付，也不声明一般外观或性能。
+导出仍重解码原尺寸并通过普通入口fresh检测；不能把960px preview支撑直接用于原图。
 既有单worker/最新请求、过期结果拦截、CPU fallback、调试独立复检与背景合成不变。
 没有新视频导入、摄像头、时序滤波、语义蒙版、效果解锁或真实设备性能声明。
 

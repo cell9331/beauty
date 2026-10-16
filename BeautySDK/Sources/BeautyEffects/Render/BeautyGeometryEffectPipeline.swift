@@ -40,9 +40,22 @@ enum BeautyGeometryEffectPipeline {
         suppressHeadWrapPoints: Bool = false,
         suppressForeheadPoints: Bool = false,
         suppressPhiltrumPoints: Bool = false,
-        suppressWholeFaceTranslationPoints: Bool = false
+        suppressWholeFaceTranslationPoints: Bool = false,
+        suppressContinuousFacePoints: Bool = false,
+        suppressContinuousNosePoints: Bool = false,
+        suppressContinuousMouthPoints: Bool = false
     ) -> [WarpControlPoint] {
-        let controls = controlPoints(for: plan, face: face)
+        var prepared = plan.effectiveStrengths
+        if suppressContinuousFacePoints {
+            for key in BeautyContinuousFaceMap.keys { prepared[keyPath: key] = 0 }
+        }
+        if suppressContinuousNosePoints {
+            for key in BeautyContinuousNoseMap.keys { prepared[keyPath: key] = 0 }
+        }
+        if suppressContinuousMouthPoints {
+            for key in BeautyContinuousMouthMap.keys { prepared[keyPath: key] = 0 }
+        }
+        let controls = controlPoints(for: prepared, face: face)
         guard protectedLeftContour || protectedRightContour ||
                 suppressHairlinePoints || suppressSubmentalPoints ||
                 suppressHeadWrapPoints || suppressForeheadPoints ||
@@ -113,7 +126,10 @@ enum BeautyGeometryEffectPipeline {
             to: image,
             plan: plan,
             face: face,
-            colorSpace: face.denseSupport == nil ? CGColorSpaceCreateDeviceRGB() :
+            colorSpace: face.denseSupport == nil &&
+                !(BeautyContinuousFaceMap.replacesLegacy(for: face) &&
+                  BeautyContinuousFaceMap.keys.contains { plan.effectiveStrengths[keyPath: $0] != 0 })
+                ? CGColorSpaceCreateDeviceRGB() :
                 (image.colorSpace ?? CGColorSpace(name: CGColorSpace.sRGB)!)
         )
     }
@@ -149,7 +165,15 @@ enum BeautyGeometryEffectPipeline {
         colorSpace: CGColorSpace,
         onRasterize: (() -> Void)? = nil
     ) -> CIImage {
-        guard !controlPoints(for: plan, face: face).isEmpty else {
+        let requestsContinuous = face.observedFaceSupport != nil &&
+            BeautyContinuousFaceMap.keys.contains { plan.effectiveStrengths[keyPath: $0] != 0 }
+        let requestsNose = BeautyContinuousNoseMap.replacesLegacy(for: face) &&
+            BeautyContinuousNoseMap.keys.contains { plan.effectiveStrengths[keyPath: $0] != 0 }
+        let requestsMouth = BeautyContinuousMouthMap.replacesLegacy(for: face) &&
+            BeautyContinuousMouthMap.keys.contains { plan.effectiveStrengths[keyPath: $0] != 0 }
+        let requestsEyebrows = BeautyContinuousEyebrowMap.replacesLegacy(for: face) &&
+            BeautyContinuousEyebrowMap.keys.contains { plan.effectiveStrengths[keyPath: $0] != 0 }
+        guard requestsContinuous || requestsNose || requestsMouth || requestsEyebrows || !controlPoints(for: plan, face: face).isEmpty else {
             return image.cropped(to: image.extent)
         }
 
@@ -183,7 +207,10 @@ enum BeautyGeometryEffectPipeline {
             ? stage.applyingDenseMap(to: stage.sourceRGBA)
             : warpedRGBABytes(stage.sourceRGBA, width: width, height: height,
                               points: stage.controlPoints.compactMap(RenderableWarpPoint.init))
-        let output = stage.applyingTranslation(to: warpedBytes)
+        let nasalBytes = stage.applyingContinuousNose(to: warpedBytes)
+        let mouthBytes = stage.applyingContinuousMouth(to: nasalBytes)
+        let eyebrowBytes = stage.applyingContinuousEyebrows(to: mouthBytes)
+        let output = stage.applyingTranslation(to: stage.applyingContinuousContour(to: eyebrowBytes))
         let warped = CIImage(
             bitmapData: Data(output), bytesPerRow: rowBytes,
             size: CGSize(width: width, height: height),

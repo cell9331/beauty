@@ -22,10 +22,10 @@ Implement from:
 - `RELIABILITY.md`
 - `PRODUCT_SENSE.md`
 - `QUALITY_SCORE.md`
-- `docs/02_development_stages_full_plan.md`
-- `docs/03_architecture_spm_skeleton.md`
-- `docs/05_public_api_design.md`
-- `docs/08_metal_render_pipeline_design.md`
+- `docs/history/design/02_development_stages_full_plan.md`
+- `docs/history/design/03_architecture_spm_skeleton.md`
+- `docs/history/design/05_public_api_design.md`
+- `docs/history/design/08_metal_render_pipeline_design.md`
 
 ## File Structure
 

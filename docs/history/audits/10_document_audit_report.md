@@ -40,15 +40,15 @@ P2-12 docs_total.json 已移动到 docs/_source/。
 审计范围：
 
 ```text
-docs/01_product_feature_plan.md
-docs/02_development_stages_full_plan.md
-docs/03_architecture_spm_skeleton.md
-docs/04_development_spec.md
-docs/05_public_api_design.md
-docs/06_beauty_parameters_spec.md
-docs/07_face_landmarks_coordinate_system.md
-docs/08_metal_render_pipeline_design.md
-docs/09_algorithm_effects_implementation.md
+docs/history/design/01_product_feature_plan.md
+docs/history/design/02_development_stages_full_plan.md
+docs/history/design/03_architecture_spm_skeleton.md
+docs/history/design/04_development_spec.md
+docs/history/design/05_public_api_design.md
+docs/history/design/06_beauty_parameters_spec.md
+docs/history/design/07_face_landmarks_coordinate_system.md
+docs/history/design/08_metal_render_pipeline_design.md
+docs/history/design/09_algorithm_effects_implementation.md
 docs/README.md
 ```
 
@@ -106,12 +106,12 @@ docs/README.md
 
 证据：
 
-- `docs/04_development_spec.md:619` 要求 `process` 不允许阻塞主线程。
-- `docs/05_public_api_design.md:1055` 到 `docs/05_public_api_design.md:1057` 要求初始化和处理不要在主线程高频执行。
-- `docs/08_metal_render_pipeline_design.md:1423` 到 `docs/08_metal_render_pipeline_design.md:1456` 建议第一版 API 可以同步。
-- `docs/08_metal_render_pipeline_design.md:1914` 到 `docs/08_metal_render_pipeline_design.md:1915` 在示例中 `commit()` 后直接 `waitUntilCompleted()`。
-- `docs/08_metal_render_pipeline_design.md:1935` 到 `docs/08_metal_render_pipeline_design.md:1936` 明确说明 `waitUntilCompleted` 会阻塞调用线程并可能掉帧。
-- `docs/08_metal_render_pipeline_design.md:2006` 又要求实时链路不要频繁 `waitUntilCompleted()`。
+- `docs/history/design/04_development_spec.md:619` 要求 `process` 不允许阻塞主线程。
+- `docs/history/design/05_public_api_design.md:1055` 到 `docs/history/design/05_public_api_design.md:1057` 要求初始化和处理不要在主线程高频执行。
+- `docs/history/design/08_metal_render_pipeline_design.md:1423` 到 `docs/history/design/08_metal_render_pipeline_design.md:1456` 建议第一版 API 可以同步。
+- `docs/history/design/08_metal_render_pipeline_design.md:1914` 到 `docs/history/design/08_metal_render_pipeline_design.md:1915` 在示例中 `commit()` 后直接 `waitUntilCompleted()`。
+- `docs/history/design/08_metal_render_pipeline_design.md:1935` 到 `docs/history/design/08_metal_render_pipeline_design.md:1936` 明确说明 `waitUntilCompleted` 会阻塞调用线程并可能掉帧。
+- `docs/history/design/08_metal_render_pipeline_design.md:2006` 又要求实时链路不要频繁 `waitUntilCompleted()`。
 
 问题：
 
@@ -134,10 +134,10 @@ docs/README.md
 
 证据：
 
-- `docs/04_development_spec.md:857` 到 `docs/04_development_spec.md:867` 定义的 `BeautyError` 不包含 `commandQueueCreationFailed`、`presetDecodeFailed`、`lutDecodeFailed`。
-- `docs/05_public_api_design.md:884` 到 `docs/05_public_api_design.md:897` 包含 `commandQueueCreationFailed`、`presetDecodeFailed`、`lutDecodeFailed`。
-- `docs/08_metal_render_pipeline_design.md:198` 到 `docs/08_metal_render_pipeline_design.md:199` 直接使用 `BeautyError.commandQueueCreationFailed`。
-- `docs/04_development_spec.md:1032` 创建 command queue 失败时使用的是 `renderFailed("Failed to create command queue")`。
+- `docs/history/design/04_development_spec.md:857` 到 `docs/history/design/04_development_spec.md:867` 定义的 `BeautyError` 不包含 `commandQueueCreationFailed`、`presetDecodeFailed`、`lutDecodeFailed`。
+- `docs/history/design/05_public_api_design.md:884` 到 `docs/history/design/05_public_api_design.md:897` 包含 `commandQueueCreationFailed`、`presetDecodeFailed`、`lutDecodeFailed`。
+- `docs/history/design/08_metal_render_pipeline_design.md:198` 到 `docs/history/design/08_metal_render_pipeline_design.md:199` 直接使用 `BeautyError.commandQueueCreationFailed`。
+- `docs/history/design/04_development_spec.md:1032` 创建 command queue 失败时使用的是 `renderFailed("Failed to create command queue")`。
 
 问题：
 
@@ -158,11 +158,11 @@ docs/README.md
 
 证据：
 
-- `docs/05_public_api_design.md:271` 到 `docs/05_public_api_design.md:281` 定义了包含 `preferredProcessingSize`、`maximumFaceCount`、`enablePerformanceLog`、`enableDebugMode` 等字段的完整配置。
-- `docs/05_public_api_design.md:953` 到 `docs/05_public_api_design.md:955` 又单独定义了只包含 `logLevel` 的 `BeautyConfiguration`。
-- `docs/07_face_landmarks_coordinate_system.md:541` 到 `docs/07_face_landmarks_coordinate_system.md:544` 建议在 `BeautyConfiguration` 增加 `isInputMirrored`、`isPreviewMirrored`。
-- `docs/04_development_spec.md:827` 只有空结构示例 `public struct BeautyConfiguration: Sendable {}`。
-- `docs/03_architecture_spm_skeleton.md:650` 附近也有另一份配置定义。
+- `docs/history/design/05_public_api_design.md:271` 到 `docs/history/design/05_public_api_design.md:281` 定义了包含 `preferredProcessingSize`、`maximumFaceCount`、`enablePerformanceLog`、`enableDebugMode` 等字段的完整配置。
+- `docs/history/design/05_public_api_design.md:953` 到 `docs/history/design/05_public_api_design.md:955` 又单独定义了只包含 `logLevel` 的 `BeautyConfiguration`。
+- `docs/history/design/07_face_landmarks_coordinate_system.md:541` 到 `docs/history/design/07_face_landmarks_coordinate_system.md:544` 建议在 `BeautyConfiguration` 增加 `isInputMirrored`、`isPreviewMirrored`。
+- `docs/history/design/04_development_spec.md:827` 只有空结构示例 `public struct BeautyConfiguration: Sendable {}`。
+- `docs/history/design/03_architecture_spm_skeleton.md:650` 附近也有另一份配置定义。
 
 问题：
 
@@ -183,10 +183,10 @@ docs/README.md
 
 证据：
 
-- `docs/02_development_stages_full_plan.md:337` 到 `docs/02_development_stages_full_plan.md:346` 要求阶段 2 实现 `brightness`、`contrast`、`saturation`、`temperature`、`tint`、`exposure`、`highlight`、`shadow`、`sharpness`。
-- `docs/04_development_spec.md:2237` 到 `docs/04_development_spec.md:2245` 第二阶段只列出 `brightness`、`contrast`、`saturation`、`temperature`、`sharpness`、`filterId`、`filterIntensity`。
-- `docs/06_beauty_parameters_spec.md:1123` 到 `docs/06_beauty_parameters_spec.md:1134` 把 `brightness`、`contrast`、`saturation`、`temperature`、`tint`、`exposure`、`highlight`、`shadow` 放到“后续可扩展”。
-- `docs/06_beauty_parameters_spec.md:1388` 到 `docs/06_beauty_parameters_spec.md:1418` 的 1.0 最终参数列表不包含这些颜色参数，只包含 `skinSharpen`、`filterId`、`filterIntensity` 等。
+- `docs/history/design/02_development_stages_full_plan.md:337` 到 `docs/history/design/02_development_stages_full_plan.md:346` 要求阶段 2 实现 `brightness`、`contrast`、`saturation`、`temperature`、`tint`、`exposure`、`highlight`、`shadow`、`sharpness`。
+- `docs/history/design/04_development_spec.md:2237` 到 `docs/history/design/04_development_spec.md:2245` 第二阶段只列出 `brightness`、`contrast`、`saturation`、`temperature`、`sharpness`、`filterId`、`filterIntensity`。
+- `docs/history/design/06_beauty_parameters_spec.md:1123` 到 `docs/history/design/06_beauty_parameters_spec.md:1134` 把 `brightness`、`contrast`、`saturation`、`temperature`、`tint`、`exposure`、`highlight`、`shadow` 放到“后续可扩展”。
+- `docs/history/design/06_beauty_parameters_spec.md:1388` 到 `docs/history/design/06_beauty_parameters_spec.md:1418` 的 1.0 最终参数列表不包含这些颜色参数，只包含 `skinSharpen`、`filterId`、`filterIntensity` 等。
 
 问题：
 
@@ -208,12 +208,12 @@ docs/README.md
 
 证据：
 
-- `docs/03_architecture_spm_skeleton.md:162` 使用 `BeautyWarp.metal`。
-- `docs/03_architecture_spm_skeleton.md:1320` 任务也写 `BeautyWarp.metal`。
-- `docs/02_development_stages_full_plan.md:640` 使用 `BeautyWarp.metal`。
-- `docs/04_development_spec.md:237` 使用 `Warp.metal`。
-- `docs/08_metal_render_pipeline_design.md:142` 使用 `Warp.metal`。
-- `docs/09_algorithm_effects_implementation.md:81` 使用 `Warp.metal`。
+- `docs/history/design/03_architecture_spm_skeleton.md:162` 使用 `BeautyWarp.metal`。
+- `docs/history/design/03_architecture_spm_skeleton.md:1320` 任务也写 `BeautyWarp.metal`。
+- `docs/history/design/02_development_stages_full_plan.md:640` 使用 `BeautyWarp.metal`。
+- `docs/history/design/04_development_spec.md:237` 使用 `Warp.metal`。
+- `docs/history/design/08_metal_render_pipeline_design.md:142` 使用 `Warp.metal`。
+- `docs/history/design/09_algorithm_effects_implementation.md:81` 使用 `Warp.metal`。
 
 问题：
 
@@ -233,12 +233,12 @@ docs/README.md
 
 证据：
 
-- `docs/04_development_spec.md:101` 到 `docs/04_development_spec.md:103` 把错误码、日志、性能统计列为 SDK 范围。
-- `docs/04_development_spec.md:442` 把 `Logger` 放进 `BeautyCore`。
-- `docs/04_development_spec.md:870` 到 `docs/04_development_spec.md:891` 只定义了 `BeautyLogLevel` 和隐私限制。
-- `docs/05_public_api_design.md:936` 到 `docs/05_public_api_design.md:971` 定义了日志 API 和规则。
-- `docs/02_development_stages_full_plan.md:1684` 到 `docs/02_development_stages_full_plan.md:1686` 要求错误码、日志系统、性能监控。
-- `docs/02_development_stages_full_plan.md:1749` 到 `docs/02_development_stages_full_plan.md:1750` 把 `SDK Logger` 和 `ErrorCode 文档` 作为阶段产物。
+- `docs/history/design/04_development_spec.md:101` 到 `docs/history/design/04_development_spec.md:103` 把错误码、日志、性能统计列为 SDK 范围。
+- `docs/history/design/04_development_spec.md:442` 把 `Logger` 放进 `BeautyCore`。
+- `docs/history/design/04_development_spec.md:870` 到 `docs/history/design/04_development_spec.md:891` 只定义了 `BeautyLogLevel` 和隐私限制。
+- `docs/history/design/05_public_api_design.md:936` 到 `docs/history/design/05_public_api_design.md:971` 定义了日志 API 和规则。
+- `docs/history/design/02_development_stages_full_plan.md:1684` 到 `docs/history/design/02_development_stages_full_plan.md:1686` 要求错误码、日志系统、性能监控。
+- `docs/history/design/02_development_stages_full_plan.md:1749` 到 `docs/history/design/02_development_stages_full_plan.md:1750` 把 `SDK Logger` 和 `ErrorCode 文档` 作为阶段产物。
 
 问题：
 
@@ -262,9 +262,9 @@ docs/README.md
 
 证据：
 
-- `docs/06_beauty_parameters_spec.md:1388` 写“最终建议 1.0 包含 22 个参数”。
-- `docs/06_beauty_parameters_spec.md:1390` 到 `docs/06_beauty_parameters_spec.md:1418` 实际列出了 23 项，包括 `filterId` 和 `filterIntensity`。
-- `docs/02_development_stages_full_plan.md:716` 到 `docs/02_development_stages_full_plan.md:739` 的阶段 5 参数列表同样是 23 项。
+- `docs/history/design/06_beauty_parameters_spec.md:1388` 写“最终建议 1.0 包含 22 个参数”。
+- `docs/history/design/06_beauty_parameters_spec.md:1390` 到 `docs/history/design/06_beauty_parameters_spec.md:1418` 实际列出了 23 项，包括 `filterId` 和 `filterIntensity`。
+- `docs/history/design/02_development_stages_full_plan.md:716` 到 `docs/history/design/02_development_stages_full_plan.md:739` 的阶段 5 参数列表同样是 23 项。
 
 问题：
 
@@ -282,8 +282,8 @@ docs/README.md
 
 证据：
 
-- `docs/03_architecture_spm_skeleton.md:1235` 到 `docs/03_architecture_spm_skeleton.md:1239` 的 `BeautyRenderer.render` 骨架以 `fatalError("TODO")` 结束。
-- `docs/04_development_spec.md:846` 到 `docs/04_development_spec.md:852` 说明开发期临时占位提交前必须移除。
+- `docs/history/design/03_architecture_spm_skeleton.md:1235` 到 `docs/history/design/03_architecture_spm_skeleton.md:1239` 的 `BeautyRenderer.render` 骨架以 `fatalError("TODO")` 结束。
+- `docs/history/design/04_development_spec.md:846` 到 `docs/history/design/04_development_spec.md:852` 说明开发期临时占位提交前必须移除。
 
 问题：
 
@@ -302,10 +302,10 @@ docs/README.md
 
 证据：
 
-- `docs/05_public_api_design.md:1084` 到 `docs/05_public_api_design.md:1102` 要求实时相机优先支持 `kCVPixelFormatType_32BGRA` / `BGRA`。
-- `docs/08_metal_render_pipeline_design.md:257`、`docs/08_metal_render_pipeline_design.md:341`、`docs/08_metal_render_pipeline_design.md:1342` 到 `docs/08_metal_render_pipeline_design.md:1344` 多处固定 BGRA 输入输出。
-- `docs/08_metal_render_pipeline_design.md:1500` 到 `docs/08_metal_render_pipeline_design.md:1504` 的 App 侧 `AVCaptureVideoDataOutput` 示例只设置了 `alwaysDiscardsLateVideoFrames`，没有设置 `videoSettings`。
-- `docs/05_public_api_design.md:777` 到 `docs/05_public_api_design.md:813` 和 `docs/05_public_api_design.md:1125` 到 `docs/05_public_api_design.md:1174` 的相机接入示例也没有展示 BGRA `videoSettings`。
+- `docs/history/design/05_public_api_design.md:1084` 到 `docs/history/design/05_public_api_design.md:1102` 要求实时相机优先支持 `kCVPixelFormatType_32BGRA` / `BGRA`。
+- `docs/history/design/08_metal_render_pipeline_design.md:257`、`docs/history/design/08_metal_render_pipeline_design.md:341`、`docs/history/design/08_metal_render_pipeline_design.md:1342` 到 `docs/history/design/08_metal_render_pipeline_design.md:1344` 多处固定 BGRA 输入输出。
+- `docs/history/design/08_metal_render_pipeline_design.md:1500` 到 `docs/history/design/08_metal_render_pipeline_design.md:1504` 的 App 侧 `AVCaptureVideoDataOutput` 示例只设置了 `alwaysDiscardsLateVideoFrames`，没有设置 `videoSettings`。
+- `docs/history/design/05_public_api_design.md:777` 到 `docs/history/design/05_public_api_design.md:813` 和 `docs/history/design/05_public_api_design.md:1125` 到 `docs/history/design/05_public_api_design.md:1174` 的相机接入示例也没有展示 BGRA `videoSettings`。
 
 问题：
 
@@ -329,9 +329,9 @@ videoOutput.videoSettings = [
 
 证据：
 
-- `docs/03_architecture_spm_skeleton.md:629` 的 API 摘要里 `public init(configuration: BeautyConfiguration = .default)` 没有 `throws`。
-- `docs/03_architecture_spm_skeleton.md:1127` 的骨架实现里 `public init(configuration: BeautyConfiguration = .default) throws` 有 `throws`。
-- `docs/04_development_spec.md:598` 和 `docs/05_public_api_design.md:116` 都要求 `init` 是 `throws`。
+- `docs/history/design/03_architecture_spm_skeleton.md:629` 的 API 摘要里 `public init(configuration: BeautyConfiguration = .default)` 没有 `throws`。
+- `docs/history/design/03_architecture_spm_skeleton.md:1127` 的骨架实现里 `public init(configuration: BeautyConfiguration = .default) throws` 有 `throws`。
+- `docs/history/design/04_development_spec.md:598` 和 `docs/history/design/05_public_api_design.md:116` 都要求 `init` 是 `throws`。
 
 问题：
 

@@ -1,24 +1,155 @@
 # RELIABILITY.md
 
-## 2026-10-15 retained iris-size execution
+## Continuous mouth bounds (2026-10-14)
 
-Dense pupil-size suppresses legacy iris points even if its separate radial source
-sampler rejects. Original-first CPU preview validates its handle, backend and
-1...960 limit before execution; source masks remain on the original grid. The
-known extreme-shrink gray edge remains, and optimization is paused by owner
-decision. [Current scope](docs/sdk/IRIS_SIZE.md) does not promise arbitrary semantic
-boundary correctness or Meitu appearance parity.
+Fresh observed outer lips and valid eye/nose support admit the eight-field
+pixel-space mouth map. Invalid observed support abstains without restoring
+template-lip pulls; absent inner lips disable only M-shape and fullness. The
+mouth stage runs once in both selected still-image backends. Its source-fixed
+field and same-sign cap envelope bound gradient norm to .45 and displacement
+to the smaller of 20% mouth width and 6% face short-side span; pose can reduce
+this further. X position, M-shape and fullness retain independent source-fixed
+admission; their actual sum is rechecked against the same pose-reduced limits.
+Adding a near-neutral field does not budget its full endpoint against an
+existing edit, and low-strength combinations do not apply pose twice.
+Pure X uses an analytic upright image-horizontal field with exactly zero Y,
+one admitted plateau across the original source-support corner sweeps and
+fixed admission along each slider half. Clearance and radial/terminal profiles
+retain global gradient/norm certificates; actual finite-difference and pixel
+checks remain required. The radial upper profile has a C1 terminal connection
+at its fixed shell; other distance/min/max ties may be nonsmooth. X plus other
+mouth work uses bounds on the actual child samplers rather than treating analytic X as a
+bilinear lattice. Negative fullness retains its doubled lattice and uses a
+shared-edge scalar minorant for the fixed endpoint, followed by calibrated
+continuous response and actual final discrete bounds checks.
+Pure tilt recomputes a reduced rotation angle to retain rigid
+core distances. These are mouth-stage bounds, not an all-stage geometry bound.
+
+Source-defined mouth-local protection fields and pixels, incoming image-axis
+nose/eye RGBA copies, field exterior and source alpha remain exact. Pure X
+also has exact zero field inside its physical image boxes. M/fullness field
+values in those physical boxes are diagnostic only; copied RGBA remains
+protected. Local M/fullness work fixes the complete observed inner-opening
+band; mixed-alpha interpolation abstains. Missing-support, neutral/repeat/recovery and actual CPU/Metal pixels have separate targeted
+assertions. The signed smile/peak/fullness fields use absolute values in the
+existing applicable combination budget. Slider values do not guarantee a fixed
+visible amplitude on every face. See the
+[mouth contract and evidence](docs/sdk/MOUTH_SLIDERS.md).
+
+## Continuous eye field bounds (2026-10-11)
+
+Observed eyes establish source-fixed local axes and a bounded lattice on both
+still-image executors. Nonfinite, stale or implausible apertures exit locally;
+spacing requires two valid eyes and negative iris size requires a valid dense
+ring. Rejection does not restore coarse eye points. Each field has independent
+cap admission before the actual combination's displacement/gradient admission,
+so an infinitesimal sibling does not re-budget an existing edit.
+The total and shape-only bilinear fields have displacement at most 15% of the
+smaller admitted eye span and gradient Frobenius norm at most .45; pose may
+attenuate further. This lattice bound does not assert the mathematical derivative
+of the raster iris gate/feather or an all-stage limit. Source feature boxes and
+iris-component aperture gating preserve protected source pixels in combinations;
+mixed-alpha sampling abstains.
+Observed sparse eyes admit positive pupil compatibility only inside a valid
+source aperture with an interior pupil center; the edge feather cannot move
+eyelid-exterior pixels. It does not establish an iris radius or a negative-size
+domain, and invalid dense evidence does not fall back to sparse compatibility.
+Grids release per request and diagnostics exclude coordinates and pixels.
+See [implementation and input limits](docs/sdk/EYE_SHAPE_SLIDERS.md).
+
+## Continuous nose field bounds (2026-10-11)
+
+Fresh dense nasal support now uses an anatomy-aligned inverse field with complete
+source eye, brow and outer-lip exclusion. Missing regional observations clear the
+six nasal strengths in planning; a rejected dense map never restores legacy
+circular point pulls. Each signed field reserves its own full-strength shape
+before composition, so crossing a sibling's zero does not abruptly attenuate an
+existing edit. The composed nose map then admits displacement ≤6% of face span
+and gradient Frobenius norm ≤.45; pose may reduce it further. These are this
+stage's limits, not an all-stage budget. Alpha and protected source boxes remain
+exact; mixed-alpha interpolation abstains. Both selected backends share this
+CPU-owned stage. No shader or GPU API is added.
+
+The owner's host retains one-running/one-latest preview scheduling, a 16 ms
+start interval after the bounded Release measurements and immediate
+final-value flushing on release. Prepared renders
+reuse the immutable source's detection, while original-size export detects
+afresh. Bounded native timing measurements are recorded with the reference
+validation and actual build configuration; they do not establish sustained FPS,
+input-to-display latency, thermal behavior or power use.
+
+## Continuous face contour bounds (2026-10-11)
+
+The eight-field contour sampler admits fresh observed contour, eye and registered
+outer-lip support, finite strengths and bounded dimensions. Invalid support
+returns the supplied raster; registered routes do not restore old contour
+points. Stable source/cap shape admits a grid with displacement ≤6% contour
+span and bilinear gradient Frobenius norm ≤.45, so its inverse map has minimum
+singular value ≥.55. Other geometry stages retain their independent limits;
+there is no new all-stage 6% bound or performance guarantee. Fixed feature-edge
+knots, exact ROI copies and unchanged alpha avoid interpolation into protected
+boxes; transitions across unlike alpha abstain. Source color space and extent
+are preserved on this route. Raw coordinates are excluded from diagnostics.
+
+The supplementary soft hairline route requires contiguous dark-hair/skin
+transitions, skin color, opaque samples, smooth column progression and brow
+clearance. Invalid brow samples exit before integer conversion. Head wrap keeps
+its prior hard-edge admission, rather than borrowing this new soft support.
+Bangs-like dips and missing/ambiguous boundaries abstain. It admits
+the tested distributed generated edge; both actual owner portraits still exit
+unchanged. This is not a hair segmentation or reconstruction capability.
+
+## Prepared fixed-photo editing (2026-10-10)
+
+Explicit preparation reuses detection only on the same engine-owned deep-copied
+photo, separately by original/canonical raster and detection purpose. It never
+uses prior edited output or another purpose's support. Cache only usable/no-face
+outcomes; partial, low-confidence and inference failures retry. Invalid handles
+fail before inference, and prepare failure preserves the prior valid source.
+Reset/replacement/release removes source and observations; caller serialization
+still applies. The aggregate reuse flag does not imply a new inference/timing
+measurement on a cache hit. The external editor retains revision guards and
+one-running/one-latest scheduling; its original-size export detects afresh.
+No fps, physical-device latency, video tracking or new effect claim follows.
+
+## Owner-only diagnostic re-detection (2026-10-09)
+
+The external editor's former independent Vision overlay was not switched when
+the SDK iOS factory changed. `OwnerDiagnostics` now reuses that factory and pinned
+model with one separately serialized, reusable detector. Invalid input throws the
+existing canonicalizer's typed error before inference; unavailable/no-face output
+returns an empty point snapshot with the detector summary, never stale or invented
+points and never a silent iOS Vision fallback. Reset releases its native task.
+The host's debug failure remains pixel-inert and its revision guards still apply.
+Native 478-point/UI/continuous-render checks are recorded separately from old
+Vision failures and general device performance.
 
 ## 2026-10-09 dense static-image execution
 
-Dense static images use one shared CPU-owned inverse lattice on both selected
-backends. Finite point/input bounds, fixed canvas coverage, contractual row
+Dense mapped combinations no longer consume the old cross-region scalar quota.
+Independent field caps and final displacement/gradient/pose bounds remain active;
+source-raster-dependent fields and legacy support retain conservative conflict
+admission. The external owner editor preserves requested slider snapshots and
+handles routine combination attenuation automatically without a quota toast.
+Aggregate source/legacy warning codes stay available in debug/results; actual
+missing support, no-face or typed failures remain visible to the owner.
+
+Both selected backends share the CPU-owned dense full-canvas inverse lattice;
+the continuous face-contour ROI sampler has its own later stage and bounds.
+These stages do not imply one all-field sampling transaction or one combined
+6% displacement bound. Finite point/input bounds, fixed canvas coverage and row
 knots and a per-triangle gradient bound replace silent point truncation or a
 fold-search assumption. Bad candidates or fully attenuated pose preserve the
 pre-map raster; independent color/source-raster stages keep their own contracts.
+Both still-image executors use one request-local geometry preparation owner;
+failed source admission continues to exclude the corresponding proxy points
+while valid siblings survive. Reusing the prepared face/points does not retain
+them between requests or change pixel-buffer, neutral, typed-failure or color
+ordering behavior. Shared diagnostic construction retains the same checked
+pixel-count bound and result validation.
 Valid iris work only uses ring points inside the eyelid; closed/invalid sides
 cannot authorize size/gaze editing. Invalid/crossing oval cannot authorize texture.
-The [dense contract](docs/DENSE_FACE_REFACTOR.md) owns exact limits; native/profile
+The [dense contract](docs/sdk/DENSE_FACE_REFACTOR.md) owns exact limits; native/profile
 accuracy and useful appearance across unknown inputs remain unqualified.
 
 Named Core Image contexts are shared framework resources, with only three fixed
@@ -32,8 +163,10 @@ Same-engine caller serialization is still mandatory.
 The default iOS engine now uses pinned MediaPipe Tasks 1.1.0 CPU image mode;
 macOS retains Vision. The previous simulator Vision failure remains a historical
 finding about that provider, not a claim that its platform internals were fixed.
-The synchronous native task is lazily reused, while every scheduled call produces
-fresh request-local observations. `reset()` releases the native task. Neutral,
+The synchronous native task is lazily reused. Ordinary scheduled calls produce
+fresh request-local observations; explicit prepared-photo renders may reuse
+valid observations bound to their fixed source. `reset()` releases the native
+task and prepared source/support. Neutral,
 disabled and interval-skipped calls do not initialize or run it.
 
 Native iOS face budgets above 32 abstain before C++ graph allocation. Oversized
@@ -101,6 +234,7 @@ not make framework payloads or an engine safe for shared parallel use.
 | Empty provider | Remove its strengths, domains, counts, warnings/metrics and dispatch consistently. |
 | Local composition collision | Preserve the original source pixel. |
 | Explicit unavailable GPU | Terminal `.metalUnavailable`; no CPU retry or parity credit. |
+| Compute dispatch compatibility | Uniform threadgroups cover the bounded raster; retained kernel bounds checks reject padded edge threads. No nonuniform-only API is issued on Apple3/A10, preventing the observed Objective-C `APINotSupported` exception without disguising execution as CPU. |
 | Over-capacity GPU still geometry | Pre-dispatch full-plan CPU route only when no row-restricted point exists; emit its capacity metric. Direct Metal/row-restricted paths keep typed failure. |
 | Missing fixture opt-in | Plain SwiftPM may report its established skip; the complete gate rejects any skip. |
 
@@ -111,13 +245,14 @@ public error/report content.
 
 ## Request recovery and bounds
 
-Still-image retouch canonicalizes once, detects/maps once, creates one request
+Still-image retouch canonicalizes once, resolves support once, creates one request
 context, derives independent units from original pixels and composes once.
 Rejected eyes/features do not poison siblings or subsequent requests. Texture
 requires fresh face bounds on both still-image and pixel-buffer routes; disabled,
 missing or interval-skipped support leaves it inert. Indexed camera/video frames
-never recover support from a prior frame. Geometry's package-internal freshness
-rules do not imply observation reuse in the public facade.
+never recover support from a prior frame. Ordinary facade calls remain fresh;
+the explicit prepared-photo route reuses only support from its immutable source,
+with the same per-request field and pixel admission.
 
 Source-admitted still-image refiners suppress corresponding legacy point
 emissions even if source admission fails. Hairline/forehead ambiguity, brow
@@ -125,6 +260,18 @@ overlap, absent registered lip support, detached head foreground and unsupported
 submental boundaries fail source-exact within their qualified tests. The direct
 color pipeline cannot discover a face and cannot authorize texture without
 package-internal supplied face bounds.
+
+Observed eyebrow work has separate planning and pixel admission. A nonzero
+continuous-field metric does not guarantee extracted material or visible output.
+Source/target support and inverse-sample ownership are checked before RGB is blended;
+rejected sampling, alpha, feature or sibling-geometry conflicts preserve the
+supplied carrier on that side. Independent source-fixed component bounds and
+the final sum retain the `.45` sampled gradient and `.15` source-chord travel
+ceilings. These bound the displacement field, not the spatial derivative of the
+RGB support blend, semantic foreground ownership or general appearance.
+The selected Metal color+brow combination may run one
+additional color-only raster transaction to establish byte-exact source
+ownership; actual device timing, thermal and energy remain unmeasured.
 
 All decoded inputs obey `maximumInputPixelCount`, default/hard maximum
 50,000,000. Encoded stills additionally obey the 32 MiB default byte limit and
@@ -139,7 +286,7 @@ explicit legacy calls preserve compatibility and safe rejection. Reconstruction,
 quantization and calibrated Vision checks do not repair its failed natural
 appearance. Coarse skin/eye/lip guards also do not reliably protect all
 skin-colored objects or low-contrast lip borders. The
-[explicit union mask](docs/HOST_TEXTURE_PROTECTION.md) protects known pixels
+[explicit union mask](docs/sdk/HOST_TEXTURE_PROTECTION.md) protects known pixels
 from texture only. EYE/SEG closure leaves these limits visible without creating
 an automatic continuation or claiming universal rejection of unknown inputs.
 
@@ -154,7 +301,7 @@ Requested/succeeded/failed/skipped counts must reconcile; report-write failure
 also prevents success. Test-only render/encode failure seams are not CLI flags
 or public SDK APIs. Child capture and temporary outputs are bounded.
 
-The [current batch tool](docs/CURRENT_BATCH_VALIDATION.md) checks independent
+The [current batch tool](docs/validation/CURRENT_BATCH_VALIDATION.md) checks independent
 ordered inventory and two decoded outputs per input/case. `passed`, `abstained`,
 `effect_failed`, `execution_error` and `unverified` are separate outcomes:
 exit 0 satisfies the declared pixel rules, 1 is effect failure, 2 execution/input
@@ -164,6 +311,11 @@ whose parent exited. Missing output, extra output, nonzero child exit or receipt
 failure cannot be repaired into success. The old 75-case wrapper is historical.
 
 ## Mandatory SDK gate
+
+This is the complete owner-local SDK milestone gate. Routine fixes and
+document maintenance use the conditional scopes in
+[QUALITY_SCORE.md](QUALITY_SCORE.md#verification-gates); the heading does not
+make every edit a full-regression trigger.
 
 `bash scripts/run-no-skip-swiftpm.sh` performs archive verification, boundary
 self-test/live scan, example storage, historical v1.18 binding self-test/live
@@ -183,7 +335,7 @@ active/archive paths and normalized failure reasons without rebinding old receip
 
 Actual image output must pass the owning pixels/metadata oracle; script completion
 alone cannot qualify an effect. Generated inputs are eligible under the
-[acceptance policy](docs/IMAGE_EFFECT_ACCEPTANCE.md). Missing physical devices or
+[acceptance policy](docs/validation/IMAGE_EFFECT_ACCEPTANCE.md). Missing physical devices or
 optional user feedback never blocks this gate.
 
 ## Storage, archive and observations
@@ -208,3 +360,26 @@ becomes a sanitized reproducible issue in [PLANS.md](PLANS.md). Current known
 simulator failures remain distinct from successful bounded SDK/host evidence.
 Latest executed engineering checkpoints are linked from
 [QUALITY_SCORE.md](QUALITY_SCORE.md); document edits never re-sign them.
+
+## Dense nasal sampling and owner preview (2026-10-10)
+
+The nasal nodes and circular kernels below remain an internal compatibility
+mechanism. Current fresh-dense six-field still-image requests suppress those
+points and execute the separate `BeautyContinuousNoseMap` stage described above.
+
+Dense geometry keeps at most 32 anatomy knots plus 32 local control centers for
+nasal detail (124 columns / 188 rows including 64 raster cutoffs). Current and
+cap shapes both participate in the existing .45-gradient / 6%-face-span bound;
+invalid sampling centers/fractions fail map admission. Sampling visits only
+cells with nonzero vertices, using the same pixel-center interpolation and
+rounding as the independent full-canvas reference. This avoids per-pixel binary
+lookup and source-exact-area arithmetic, without new backend or persistent cache.
+
+The separate owner's editor limits preview starts at 16 ms, holds one in-flight
+render and one replaceable newest snapshot, and flushes a pending timer on
+release. In-flight synchronous SDK work finishes before the newest render can
+start; this is not a preemption or frame-rate guarantee. Output debug re-detection
+waits for settled editing. Simulator Debug measurements belong to the scoped
+repair receipt and make no target-device performance claim.
+
+当前保留眼瞳的调用及灰边限制见[IRIS_SIZE](docs/sdk/IRIS_SIZE.md)。

@@ -420,6 +420,7 @@ final class BeautyEffectResolverTests: XCTestCase {
             ("head spacing", BeautyParameters(eyebrowHeadSpacing: 1), \.eyebrowHeadSpacing, 0.25),
             ("tilt", BeautyParameters(eyebrowTilt: -1), \.eyebrowTilt, -0.25),
             ("peak", BeautyParameters(eyebrowPeakDefinition: 1), \.eyebrowPeakDefinition, 0.25),
+            ("peak negative", BeautyParameters(eyebrowPeakDefinition: -1), \.eyebrowPeakDefinition, -0.25),
         ]
 
         for (name, parameters, keyPath, expected) in rows {
@@ -430,7 +431,8 @@ final class BeautyEffectResolverTests: XCTestCase {
             XCTAssertTrue(plan.activeDomains.contains(.eyebrows), name)
             XCTAssertFalse(plan.activeDomains.contains(.eyes), name)
             XCTAssertFalse(plan.activeDomains.contains(.faceShape), name)
-            XCTAssertGreaterThan(plan.metrics["beauty.effects.geometryPointCount"] ?? 0, 0, name)
+            XCTAssertEqual(plan.metrics["beauty.effects.continuousEyebrowFields"], 1, name)
+            XCTAssertNil(plan.metrics["beauty.effects.geometryPointCount"], name)
             assertRedacted(plan)
         }
     }
@@ -519,11 +521,12 @@ final class BeautyEffectResolverTests: XCTestCase {
 
         for row in phase46ResolverRows {
             let negative = row.makeParameters(-1)
-            XCTAssertFalse(
+            XCTAssertEqual(
                 BeautyEffectResolver.requiresFaceGeometry(parameters: negative),
+                row.name != "faceContourSmooth",
                 "\(row.name) negative normalized input"
             )
-            XCTAssertEqual(negative[keyPath: row.publicValue], 0, row.name)
+            XCTAssertEqual(negative[keyPath: row.publicValue], row.name == "faceContourSmooth" ? 0 : -1, row.name)
 
             let overflow = row.makeParameters(1)
             XCTAssertTrue(BeautyEffectResolver.requiresFaceGeometry(parameters: overflow), row.name)
@@ -592,7 +595,13 @@ final class BeautyEffectResolverTests: XCTestCase {
             ("positive infinity", .infinity, 0, 0),
             ("negative infinity", -.infinity, 0, 0),
         ]
-        let face = FaceGeometry.phase46AsymmetricComplete
+        let coarse = FaceGeometry.phase46AsymmetricComplete
+        let face = FaceGeometry(bounds: coarse.bounds, faceContour: coarse.faceContour,
+            observedFaceSupport: coarse.observedFaceSupport,
+            leftEye: coarse.leftEye, rightEye: coarse.rightEye,
+            outerLips: coarse.outerLips,
+            observedOuterLips: [SIMD2(0.42,0.52),SIMD2(0.58,0.52),
+                                SIMD2(0.58,0.58),SIMD2(0.42,0.58)])
 
         XCTAssertEqual(phase46ResolverRows.count, 4)
         XCTAssertEqual(Set(phase46ResolverRows.map(\.name)).count, 4)
@@ -604,31 +613,34 @@ final class BeautyEffectResolverTests: XCTestCase {
                     faceGeometry: face
                 )
                 let label = "\(row.name) \(input.name)"
+                let signedNegative = row.name != "faceContourSmooth" && input.value == -1
+                let expected: Float = signedNegative ? -0.25 : input.expected
+                let cappedCount: Double = signedNegative ? 1 : input.cappedCount
 
                 XCTAssertEqual(
                     plan.effectiveStrengths[keyPath: row.effectiveValue],
-                    input.expected,
+                    expected,
                     accuracy: 0.000_001,
                     label
                 )
                 XCTAssertEqual(
                     plan.metrics["beauty.effects.cappedCount"],
-                    input.cappedCount,
+                    cappedCount,
                     label
                 )
                 XCTAssertEqual(
                     plan.warnings.filter { $0.code == "beauty_strength_capped" }.count,
-                    input.cappedCount == 1 ? 1 : 0,
+                    cappedCount == 1 ? 1 : 0,
                     label
                 )
                 XCTAssertEqual(
                     row.emissionPoints(face, plan.effectiveStrengths).isEmpty,
-                    input.expected == 0,
+                    expected == 0,
                     label
                 )
                 XCTAssertEqual(
                     plan.activeDomains.contains(.faceShape),
-                    input.expected > 0,
+                    expected != 0,
                     label
                 )
                 XCTAssertFalse(plan.skippedDomains.contains(.faceShape), label)
@@ -715,6 +727,9 @@ final class BeautyEffectResolverTests: XCTestCase {
             ("X negative", BeautyParameters(mouthXPosition: -1), \.mouthXPosition, -0.25),
             ("peak", BeautyParameters(lipPeakDefinition: 1), \.lipPeakDefinition, 0.25),
             ("plump", BeautyParameters(lipPlump: 1), \.lipPlump, 0.25),
+            ("peak negative", BeautyParameters(lipPeakDefinition: -1), \.lipPeakDefinition, -0.25),
+            ("plump negative", BeautyParameters(lipPlump: -1), \.lipPlump, -0.25),
+            ("smile negative", BeautyParameters(smile: -1), \.smile, -0.50),
         ]
 
         for (name, parameters, keyPath, expected) in cases {
@@ -731,19 +746,26 @@ final class BeautyEffectResolverTests: XCTestCase {
         }
     }
 
-    func testPhase38NegativePositiveOnlyLipInputsAreSilentNoOps() {
-        let cases: [(String, BeautyParameters, KeyPath<BeautyEffectiveStrengths, Float>)] = [
-            ("peak", BeautyParameters(lipPeakDefinition: -1), \.lipPeakDefinition),
-            ("plump", BeautyParameters(lipPlump: -1), \.lipPlump),
+    func testPhase38NegativeLipInputsRetainSignedGeometryAndMissingSupportAbstains() {
+        let cases: [(String, BeautyParameters, KeyPath<BeautyEffectiveStrengths, Float>, Float)] = [
+            ("peak", BeautyParameters(lipPeakDefinition: -1), \.lipPeakDefinition, -0.25),
+            ("plump", BeautyParameters(lipPlump: -1), \.lipPlump, -0.25),
+            ("smile", BeautyParameters(smile: -1), \.smile, -0.50),
         ]
-        for (name, parameters, keyPath) in cases {
+        for (name, parameters, keyPath, cap) in cases {
             let plan = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: .fixture)
-            XCTAssertFalse(BeautyEffectResolver.requiresFaceGeometry(parameters: parameters), name)
-            XCTAssertEqual(plan.effectiveStrengths[keyPath: keyPath], 0, name)
-            XCTAssertFalse(plan.activeDomains.contains(.mouth), name)
+            XCTAssertTrue(BeautyEffectResolver.requiresFaceGeometry(parameters: parameters), name)
+            XCTAssertEqual(plan.effectiveStrengths[keyPath: keyPath], cap, name)
+            XCTAssertTrue(plan.activeDomains.contains(.mouth), name)
             XCTAssertFalse(plan.skippedDomains.contains(.mouth), name)
-            XCTAssertEqual(plan.metrics["beauty.effects.cappedCount"], 0, name)
-            XCTAssertTrue(plan.warnings.isEmpty, name)
+            XCTAssertEqual(plan.metrics["beauty.effects.cappedCount"], 1, name)
+            XCTAssertEqual(plan.warnings.filter { $0.code == "beauty_strength_capped" }.count, 1, name)
+            let missing = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: nil)
+            XCTAssertEqual(missing.effectiveStrengths[keyPath: keyPath], 0, name)
+            XCTAssertFalse(missing.activeDomains.contains(.mouth), name)
+            XCTAssertTrue(missing.skippedDomains.contains(.mouth), name)
+            assertRedacted(plan)
+            assertRedacted(missing)
         }
     }
 
@@ -757,6 +779,9 @@ final class BeautyEffectResolverTests: XCTestCase {
             ("X negative", BeautyParameters(mouthXPosition: -0.25), BeautyParameters(mouthXPosition: -1), \.mouthXPosition, -0.25),
             ("peak", BeautyParameters(lipPeakDefinition: 0.25), BeautyParameters(lipPeakDefinition: 1), \.lipPeakDefinition, 0.25),
             ("plump", BeautyParameters(lipPlump: 0.25), BeautyParameters(lipPlump: 1), \.lipPlump, 0.25),
+            ("peak negative", BeautyParameters(lipPeakDefinition: -0.25), BeautyParameters(lipPeakDefinition: -1), \.lipPeakDefinition, -0.25),
+            ("plump negative", BeautyParameters(lipPlump: -0.25), BeautyParameters(lipPlump: -1), \.lipPlump, -0.25),
+            ("smile negative", BeautyParameters(smile: -0.50), BeautyParameters(smile: -1), \.smile, -0.50),
         ]
 
         for (name, exactParameters, overflowParameters, keyPath, expected) in cases {
@@ -797,26 +822,16 @@ final class BeautyEffectResolverTests: XCTestCase {
         }
     }
 
-    func testEYE04NegativePositiveOnlyEyeInputsAreNoOps() {
-        let cases: [(name: String, parameters: BeautyParameters, publicKeyPath: KeyPath<BeautyParameters, Float>, effectiveKeyPath: KeyPath<BeautyEffectiveStrengths, Float>)] = [
-            ("negative eyeSize", BeautyParameters(eyeSize: -1), \.eyeSize, \.eyeSize),
-            ("negative eyeTailLift", BeautyParameters(eyeTailLift: -1), \.eyeTailLift, \.eyeTailLift),
-        ]
-
-        for entry in cases {
-            let plan = BeautyEffectResolver.resolve(
-                parameters: entry.parameters,
-                faceGeometry: .fixture
-            )
-
-            XCTAssertEqual(entry.parameters[keyPath: entry.publicKeyPath], 0, entry.name)
-            XCTAssertEqual(plan.effectiveStrengths[keyPath: entry.effectiveKeyPath], 0, entry.name)
-            XCTAssertFalse(BeautyEffectResolver.requiresFaceGeometry(parameters: entry.parameters), entry.name)
-            XCTAssertFalse(plan.activeDomains.contains(.eyes), entry.name)
-            XCTAssertFalse(plan.skippedDomains.contains(.eyes), entry.name)
-            XCTAssertFalse(plan.warnings.contains { $0.code == "eye_inputs_missing" }, entry.name)
-            XCTAssertFalse(plan.warnings.contains { $0.code == "beauty_strength_capped" }, entry.name)
-            XCTAssertEqual(plan.metrics["beauty.effects.cappedCount"], 0, entry.name)
+    func testEYE04NegativeEyeInputsActivateSignedGeometry() {
+        for (parameters, key, cap) in [
+            (BeautyParameters(eyeSize: -1), \BeautyEffectiveStrengths.eyeSize, BeautySafetyCaps.eyeSize),
+            (BeautyParameters(eyeTailLift: -1), \BeautyEffectiveStrengths.eyeTailLift, BeautySafetyCaps.eyeTailLift)
+        ] {
+            let plan = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: phase91GazeFace(leftPupil: SIMD2(0.38,0.42), rightPupil: SIMD2(0.62,0.42)))
+            XCTAssertEqual(plan.effectiveStrengths[keyPath: key], -cap, accuracy: 0.0001)
+            XCTAssertTrue(BeautyEffectResolver.requiresFaceGeometry(parameters: parameters))
+            XCTAssertTrue(plan.activeDomains.contains(.eyes))
+            XCTAssertEqual(plan.metrics["beauty.effects.cappedCount"], 1)
         }
     }
 
@@ -836,7 +851,7 @@ final class BeautyEffectResolverTests: XCTestCase {
             let cappedCount: Double
         }
 
-        let positiveFields = [
+        let fields = [
             Field(name: "eyeHeight", cap: BeautySafetyCaps.eyeHeight, makeParameters: { BeautyParameters(eyeHeight: $0) }, publicValue: \.eyeHeight, effectiveValue: \.eyeHeight),
             Field(name: "eyeLength", cap: BeautySafetyCaps.eyeLength, makeParameters: { BeautyParameters(eyeLength: $0) }, publicValue: \.eyeLength, effectiveValue: \.eyeLength),
             Field(name: "upperEyelidLift", cap: BeautySafetyCaps.upperEyelidLift, makeParameters: { BeautyParameters(upperEyelidLift: $0) }, publicValue: \.upperEyelidLift, effectiveValue: \.upperEyelidLift),
@@ -856,18 +871,21 @@ final class BeautyEffectResolverTests: XCTestCase {
             Row(name: "negative infinity", input: -.infinity, normalized: 0, effectiveMultiplier: 0, cappedCount: 0),
         ]
 
-        for field in positiveFields {
+        for field in fields {
             for row in rows {
                 let input = row.name == "exact cap" ? field.cap : row.input
-                let expectedPublic = row.name == "exact cap" ? field.cap : row.normalized
+                let signedNegative = row.name == "negative" && !["upperEyelidLift", "gazeCorrection", "eyeSymmetry"].contains(field.name)
+                let expectedPublic = signedNegative ? Float(-1) : (row.name == "exact cap" ? field.cap : row.normalized)
+                let expectedEffective = signedNegative ? -field.cap : field.cap * row.effectiveMultiplier
+                let expectedCappedCount = signedNegative ? 1.0 : row.cappedCount
                 let parameters = field.makeParameters(input)
                 let plan = BeautyEffectResolver.resolve(parameters: parameters)
                 let message = "\(field.name) \(row.name)"
 
                 XCTAssertEqual(parameters[keyPath: field.publicValue], expectedPublic, accuracy: 0.000_001, message)
-                XCTAssertEqual(plan.effectiveStrengths[keyPath: field.effectiveValue], field.cap * row.effectiveMultiplier, accuracy: 0.000_001, message)
-                XCTAssertEqual(plan.metrics["beauty.effects.cappedCount"], row.cappedCount, message)
-                XCTAssertEqual(plan.warnings.filter { $0.code == "beauty_strength_capped" }.count, row.cappedCount == 0 ? 0 : 1, message)
+                XCTAssertEqual(plan.effectiveStrengths[keyPath: field.effectiveValue], expectedEffective, accuracy: 0.000_001, message)
+                XCTAssertEqual(plan.metrics["beauty.effects.cappedCount"], expectedCappedCount, message)
+                XCTAssertEqual(plan.warnings.filter { $0.code == "beauty_strength_capped" }.count, expectedCappedCount == 0 ? 0 : 1, message)
                 assertRedacted(plan)
             }
         }
@@ -931,7 +949,7 @@ final class BeautyEffectResolverTests: XCTestCase {
         XCTAssertLessThan(all.effectiveStrengths.noseTipSize, 0)
     }
 
-    func testPhase35NOSE03NegativePositiveOnlyInputsAreSilentNoOps() {
+    func testPhase35NOSE03NegativeNoseInputsActivateSignedGeometry() {
         let cases: [(BeautyParameters, KeyPath<BeautyParameters, Float>, KeyPath<BeautyEffectiveStrengths, Float>)] = [
             (BeautyParameters(noseSlim: -1), \.noseSlim, \.noseSlim),
             (BeautyParameters(noseWingSlim: -1), \.noseWingSlim, \.noseWingSlim),
@@ -942,12 +960,12 @@ final class BeautyEffectResolverTests: XCTestCase {
 
         for (parameters, publicKeyPath, effectiveKeyPath) in cases {
             let plan = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: .fixture)
-            XCTAssertEqual(parameters[keyPath: publicKeyPath], 0)
-            XCTAssertEqual(plan.effectiveStrengths[keyPath: effectiveKeyPath], 0)
-            XCTAssertFalse(BeautyEffectResolver.requiresFaceGeometry(parameters: parameters))
-            XCTAssertFalse(plan.activeDomains.contains(.nose))
+            XCTAssertEqual(parameters[keyPath: publicKeyPath], -1)
+            XCTAssertLessThan(plan.effectiveStrengths[keyPath: effectiveKeyPath], 0)
+            XCTAssertTrue(BeautyEffectResolver.requiresFaceGeometry(parameters: parameters))
+            XCTAssertTrue(plan.activeDomains.contains(.nose))
             XCTAssertFalse(plan.skippedDomains.contains(.nose))
-            XCTAssertEqual(plan.metrics["beauty.effects.cappedCount"], 0)
+            XCTAssertEqual(plan.metrics["beauty.effects.cappedCount"], 1)
             assertRedacted(plan)
         }
     }
@@ -986,7 +1004,7 @@ final class BeautyEffectResolverTests: XCTestCase {
             Row(name: "zero", input: 0, normalized: 0, effective: 0, cappedCount: 0, eligible: false),
             Row(name: "exact cap", input: 0.25, normalized: 0.25, effective: 0.25, cappedCount: 0, eligible: true),
             Row(name: "public overflow", input: 1, normalized: 1, effective: 0.25, cappedCount: 1, eligible: true),
-            Row(name: "negative", input: -1, normalized: 0, effective: 0, cappedCount: 0, eligible: false),
+            Row(name: "negative", input: -1, normalized: -1, effective: -0.25, cappedCount: 1, eligible: true),
             Row(name: "nan", input: .nan, normalized: 0, effective: 0, cappedCount: 0, eligible: false),
             Row(name: "positive infinity", input: .infinity, normalized: 0, effective: 0, cappedCount: 0, eligible: false),
             Row(name: "negative infinity", input: -.infinity, normalized: 0, effective: 0, cappedCount: 0, eligible: false),
@@ -1386,30 +1404,31 @@ final class BeautyEffectResolverTests: XCTestCase {
         freshness: LandmarkGeometryFreshness = .fresh,
         includeRight: Bool = true
     ) -> FaceGeometry {
-        func trace(side: BeautyObservedEyebrowSide) -> BeautyEyebrowSemanticTrace {
-            let points: [SIMD2<Float>] = side == .left
-                ? [.init(0.25, 0.40), .init(0.30, 0.36), .init(0.36, 0.34), .init(0.42, 0.37), .init(0.47, 0.41)]
-                : [.init(0.75, 0.40), .init(0.70, 0.36), .init(0.64, 0.34), .init(0.58, 0.37), .init(0.53, 0.41)]
-            return BeautyEyebrowSemanticTrace(
-                side: side,
-                points: points,
-                innerEndpoint: points[0],
-                outerEndpoint: points[points.count - 1],
-                center: points.reduce(.zero, +) / Float(points.count),
-                apexIndex: 2
-            )
-        }
-        let left = trace(side: .left)
-        let right = includeRight ? trace(side: .right) : nil
+        let base = FaceGeometry.fixture
+        let bounds = FaceBounds(x: 0.1, y: 0.1, width: 0.8, height: 0.8)
+        let left = EyebrowSafetyFixtures.trace(side: .left, bounds: bounds)
+        let right = includeRight ? EyebrowSafetyFixtures.trace(side: .right, bounds: bounds) : nil
         return FaceGeometry(
-            bounds: FaceBounds(x: 0.1, y: 0.1, width: 0.8, height: 0.8),
-            faceContour: FaceGeometry.fixture.faceContour,
-            leftEye: FaceGeometry.fixture.leftEye,
-            rightEye: FaceGeometry.fixture.rightEye,
-            nose: FaceGeometry.fixture.nose,
-            outerLips: FaceGeometry.fixture.outerLips,
+            bounds: bounds,
+            faceContour: base.faceContour,
+            observedFaceSupport: base.observedFaceSupport,
+            leftEye: base.leftEye,
+            rightEye: base.rightEye,
+            nose: base.nose,
+            noseRoot: base.noseRoot,
+            noseTip: base.noseTip,
+            outerLips: base.outerLips,
+            upperLips: base.upperLips,
+            lowerLips: base.lowerLips,
+            innerLips: base.innerLips,
+            leftEyeSupport: base.leftEyeSupport,
+            rightEyeSupport: base.rightEyeSupport,
             freshness: freshness,
-            observedEyebrowSupport: BeautyEyebrowSemanticSupport(left: left, right: right)
+            observedEyebrowSupport: BeautyEyebrowSemanticSupport(left: left, right: right),
+            observedOuterLips: base.observedOuterLips,
+            observedInnerLips: base.observedInnerLips,
+            observedNoseSupport: base.observedNoseSupport,
+            denseSupport: base.denseSupport
         )
     }
 

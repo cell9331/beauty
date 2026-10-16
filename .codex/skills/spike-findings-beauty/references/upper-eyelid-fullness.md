@@ -7,7 +7,7 @@
 it from default renderer discovery/batches and recommended examples. Natural-
 appearance effect qualification has failed. See the repository's current
 `PLANS.md`, `docs/SDK_EFFECT_TAXONOMY.md` and
-`docs/UPPER_EYELID_AND_SKIN_SEMANTICS_RESEARCH.md` for the governing decision.
+`docs/history/upper-eyelid/UPPER_EYELID_AND_SKIN_SEMANTICS_RESEARCH.md` for the governing decision.
 
 The retained mechanism performs bounded upper-lid luminance correction. Its
 brightness proxy does not reliably identify fullness on natural backgrounds;

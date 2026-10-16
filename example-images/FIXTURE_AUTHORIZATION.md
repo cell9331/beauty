@@ -1,7 +1,7 @@
 # Local Fixture Authorization Boundary
 
 Current superseding policy: [owner-authorized generated portrait-like images
-may supply full positive/negative SDK effect evidence](../docs/IMAGE_EFFECT_ACCEPTANCE.md).
+may supply full positive/negative SDK effect evidence](../docs/validation/IMAGE_EFFECT_ACCEPTANCE.md).
 Genuine human portraits are optional. The historical feature-specific review
 core and fixture decisions below retain their original meaning; their old
 `mechanics_only` or AI-generated labels do not impose a new real-photo gate.

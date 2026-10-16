@@ -530,7 +530,17 @@ let cases = [
     )
 ]
 
-let rendererOutcome = RendererCLI.run(arguments: Array(CommandLine.arguments.dropFirst()), cases: cases)
+// Explicit opt-in reference sliders leave the frozen default inventory intact.
+let faceSliderCases = BeautyFaceShapeSlider.allCases.flatMap { control in
+    [Float(0), 0.25, 0.5, 0.75, 1].enumerated().map { index, position in
+        RenderCase(id: "faceSlider_\(control.rawValue)_\(index)",
+            displayName: "\(control.rawValue) slider \(position)",
+            parameters: control.applying(position: position, to: BeautyParameters()),
+            includedInDefaultBatch: false)
+    }
+}
+
+let rendererOutcome = RendererCLI.run(arguments: Array(CommandLine.arguments.dropFirst()), cases: cases + faceSliderCases)
 if !rendererOutcome.stdout.isEmpty {
     FileHandle.standardOutput.write(Data(rendererOutcome.stdout.utf8))
 }

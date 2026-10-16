@@ -158,13 +158,16 @@ package enum BeautyIrisPreviewCutpoint {
         let stage = BeautyStillImageGeometryStage(
             postIrisRGBA: clipped, mapAdmissionRGBA: mapSource.rgba,
             width: baseline.width, height: baseline.height, plan: plan, face: face,
-            sourceAdmission: baselineAdmission)
+            sourceAdmission: baselineAdmission, eyebrowSourceRGBA: mapSource.rgba)
         let selectedGeometry = stage.usesDenseMap
             ? stage.applyingDenseMap(to: stage.sourceRGBA)
             : BeautyGeometryEffectPipeline.warpedRGBABytes(
                 stage.sourceRGBA, width: baseline.width, height: baseline.height,
                 points: stage.controlPoints.compactMap(BeautyGeometryEffectPipeline.RenderableWarpPoint.init))
-        let outputRGBA = stage.applyingTranslation(to: selectedGeometry)
+        let nasal = stage.applyingContinuousNose(to: selectedGeometry)
+        let mouth = stage.applyingContinuousMouth(to: nasal)
+        let eyebrows = stage.applyingContinuousEyebrows(to: mouth)
+        let outputRGBA = stage.applyingTranslation(to: stage.applyingContinuousContour(to: eyebrows))
         try requireOpaque(outputRGBA, width: baseline.width, height: baseline.height)
         let output = CIImage(bitmapData: Data(outputRGBA), bytesPerRow: baseline.width * 4,
                              size: CGSize(width: baseline.width, height: baseline.height),

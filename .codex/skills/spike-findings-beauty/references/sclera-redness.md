@@ -2,7 +2,7 @@
 
 Current policy: authorized generated eye portraits can provide positive and
 negative effect acceptance; genuine human photos are optional. See
-`docs/IMAGE_EFFECT_ACCEPTANCE.md`.
+`docs/validation/IMAGE_EFFECT_ACCEPTANCE.md`.
 
 ## Requirements
 

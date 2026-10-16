@@ -5,16 +5,20 @@
 v1.25 is **closed_with_unmet_objectives** under the owner's instruction to work
 continuously to the capability boundary and end the two old unresolved tracks.
 Each branch exhausted two methods/four versions without a qualified candidate.
-The [final disposition](../docs/RETOUCH_FINAL_DISPOSITION_2026-10-03.md) records
-measurements, industry alternatives and the fresh SDK gate: **1076/0/0, 9 opt-ins**. Original failures,
+The [final disposition](../docs/history/retouch/RETOUCH_FINAL_DISPOSITION_2026-10-03.md) records
+measurements, industry alternatives and the 2026-10-03 closure SDK gate: **1076/0/0, 9 opt-ins**. Original failures,
 thresholds and frozen input contracts remain unchanged.
 
 No automatic eyelid-tone or skin-colored patch detector is newly available.
 Upper-eyelid fullness remains suspended/default-hidden with explicit compatibility.
 Host object + complete-lip union masks and the current 98/99 batch tool remain
-usable. Production is unchanged: 77 fields, 62 implemented bounded taxonomy rows
+usable. Closure preserved the public inventory: 77 fields, 62 implemented bounded taxonomy rows
 and one suspended row. Generated inputs remain eligible; lack of genuine portraits
-or physical devices was not the stopping reason.
+or physical devices was not the stopping reason. Later owner-authorized iOS
+MediaPipe, dense still-image and diagnostic changes are documented in current
+[ARCHITECTURE](../ARCHITECTURE.md) and [PLANS](../PLANS.md); current measured
+inventory and executed checkpoints belong to [QUALITY_SCORE](../QUALITY_SCORE.md).
+The closure result neither forbids those independent tasks nor reopens EYE/SEG.
 
 ## Current milestone: none
 
@@ -851,7 +855,7 @@ The verified SDK-only slice implements exactly `大小`, `宽度`, and `微笑`.
 ## Next work (2026-10-03)
 
 None is automatically scheduled. v1.25 ended with two unmet automatic objectives;
-see the [terminal record](../docs/RETOUCH_FINAL_DISPOSITION_2026-10-03.md).
+see the [terminal record](../docs/history/retouch/RETOUCH_FINAL_DISPOSITION_2026-10-03.md).
 Existing supported SDK work can proceed without reopening these effect gaps.
 Old plans, frozen recipes and source receipts retain their original identities.
 
