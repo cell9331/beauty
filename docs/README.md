@@ -136,5 +136,3 @@ Historical UI/Demo contents are available only from
 outside-repository temporary directory. They are not build or acceptance input.
 
 - [Mouth slider mappings and continuous geometry](sdk/MOUTH_SLIDERS.md): signed directions, inner-lip protection and reference evidence limits.
-
-眼瞳保留版本见[sdk/IRIS_SIZE.md](sdk/IRIS_SIZE.md)。

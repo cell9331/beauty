@@ -250,7 +250,7 @@ failure, and further parameter tuning is not known to solve it. The
 [research record](docs/history/upper-eyelid/UPPER_EYELID_AND_SKIN_SEMANTICS_RESEARCH.md) and
 [quality evidence](QUALITY_SCORE.md) retain the concrete results.
 
-The 77-field API retains `upperEyelidFullnessReduction`, its zero default,
+The 78-field API retains `upperEyelidFullnessReduction`, its zero default,
 range, Codable behavior, explicit still-image calls and safety regressions.
 API compatibility does not mean effect acceptance. Of 99 registered renderer
 cases, 98 appear in the default catalog and batch. The old
@@ -297,6 +297,14 @@ frozen smoothing/sharpening direction thresholds. This supplies independent
 host information; coarse automatic feature protection remains unqualified.
 
 ## Current qualified 2D shape controls (2026-10-01)
+
+The later owner request separates the jawline appearance control from jaw
+angle geometry. Local hosts can request `jawlineShadow` (`0...1`, capped at
+`.25`, default zero) for a bounded source-qualified shadow below the jaw.
+It changes luminance only, preserves alpha and does not alias `jawSlim` or
+move image coordinates. Unsupported source evidence leaves the image exact;
+this branch's reference/protection qualification is tracked separately in the
+[active face plan](plans/active/A-2026-10-14-face-reference-protection.md).
 
 The original 15 additional controls are `implemented` within the owner-local
 generated-image domains below. The [final qualification table](plans/history/2026-10/A-2026-09-27-remaining-effect-qualification.md)
@@ -487,5 +495,3 @@ separate host throttles starts at 16 ms, replaces pending values and flushes on
 release; current-output debug detection waits for settled editing. Actual
 native timings and checks belong to the linked [plan](PLANS.md); the interval is
 a scheduling bound, not a frame-rate or input-to-display latency guarantee.
-
-当前保留眼瞳的调用及灰边限制见[IRIS_SIZE](docs/sdk/IRIS_SIZE.md)。

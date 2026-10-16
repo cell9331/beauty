@@ -17,6 +17,9 @@ struct BeautyStillImageGeometryStage {
     private let eyebrowMap: BeautyContinuousEyebrowMap?
     private let translationX: Float
     private let translationY: Float
+    private let jawlineShadow: BeautyJawlineShadow.Evidence?
+    private let jawlineShadowStrength: Float
+    let jawlineShadowRefusal: BeautyJawlineShadow.Refusal?
 
     var usesDenseMap: Bool { face?.denseSupport != nil }
 
@@ -46,42 +49,61 @@ struct BeautyStillImageGeometryStage {
     }
 
     init(sourceRGBA: [UInt8], width: Int, height: Int,
-         plan: BeautyEffectPlan, face: FaceGeometry?, eyebrowSourceRGBA: [UInt8]? = nil) {
+         plan: BeautyEffectPlan, face: FaceGeometry?, eyebrowSourceRGBA: [UInt8]? = nil,
+         jawlineShadowSourceRGBA: [UInt8]? = nil) {
         self.init(sourceRGBA: sourceRGBA, mapAdmissionRGBA: sourceRGBA,
                   width: width, height: height, plan: plan, face: face,
-                  eyebrowSourceRGBA: eyebrowSourceRGBA, preparation: .original)
+                  eyebrowSourceRGBA: eyebrowSourceRGBA, jawlineShadowSourceRGBA: jawlineShadowSourceRGBA,
+                  preparation: .original)
     }
 
     /// All source refiners and IR have already run on the original. Map
     /// admission still reads the separately resized pre-refiner source.
     init(postIrisRGBA: [UInt8], mapAdmissionRGBA: [UInt8], width: Int, height: Int,
          plan: BeautyEffectPlan, face: FaceGeometry?, sourceAdmission: SourceAdmission,
-         eyebrowSourceRGBA: [UInt8]? = nil) {
+         eyebrowSourceRGBA: [UInt8]? = nil, jawlineShadowSourceRGBA: [UInt8]? = nil) {
         self.init(sourceRGBA: postIrisRGBA, mapAdmissionRGBA: mapAdmissionRGBA,
                   width: width, height: height, plan: plan, face: face,
-                  eyebrowSourceRGBA: eyebrowSourceRGBA, preparation: .afterIris(sourceAdmission))
+                  eyebrowSourceRGBA: eyebrowSourceRGBA, jawlineShadowSourceRGBA: jawlineShadowSourceRGBA,
+                  preparation: .afterIris(sourceAdmission))
     }
 
     private init(sourceRGBA: [UInt8], mapAdmissionRGBA: [UInt8], width: Int, height: Int,
                  plan: BeautyEffectPlan, face: FaceGeometry?, eyebrowSourceRGBA: [UInt8]?,
+                 jawlineShadowSourceRGBA: [UInt8]?,
                  preparation: Preparation) {
         self.face = face
         self.width = width
         self.height = height
+        jawlineShadowStrength = plan.effectiveStrengths.jawlineShadow
+        // Metal enters with the pre-colour raster; CPU supplies an explicit
+        // immutable pre-colour proof. A present malformed proof stays present.
+        if jawlineShadowStrength > 0, let face,
+           BeautyJawlineShadow.hasIndependentSourceCoordinates(plan.effectiveStrengths) {
+            let qualification = BeautyJawlineShadow.assess(
+                sourceRGBA: jawlineShadowSourceRGBA ?? mapAdmissionRGBA, width: width, height: height, face: face)
+            jawlineShadow = qualification.evidence
+            jawlineShadowRefusal = qualification.refusal
+        } else {
+            jawlineShadow = nil
+            jawlineShadowRefusal = jawlineShadowStrength > 0 ? .unsupportedScope : nil
+        }
+        var geometryStrengths = plan.effectiveStrengths
+        geometryStrengths.jawlineShadow = 0
         continuousMap = face.flatMap { BeautyContinuousFaceMap(
-            width: width, height: height, face: $0, strengths: plan.effectiveStrengths) }
-        var eyeStrengths = plan.effectiveStrengths
+            width: width, height: height, face: $0, strengths: geometryStrengths) }
+        var eyeStrengths = geometryStrengths
         if face?.denseSupport != nil { eyeStrengths.pupilSize = 0 }
         if case .afterIris = preparation { eyeStrengths.pupilSize = 0 }
         eyeMap = face.flatMap { BeautyContinuousEyeMap(
             width: width, height: height, face: $0, strengths: eyeStrengths,
             sourceRGBA: mapAdmissionRGBA) }
         noseMap = face.flatMap { BeautyContinuousNoseMap(
-            width: width, height: height, face: $0, strengths: plan.effectiveStrengths) }
+            width: width, height: height, face: $0, strengths: geometryStrengths) }
         mouthMap = face.flatMap { BeautyContinuousMouthMap(
-            width: width, height: height, face: $0, strengths: plan.effectiveStrengths) }
+            width: width, height: height, face: $0, strengths: geometryStrengths) }
         eyebrowMap = face.flatMap { BeautyContinuousEyebrowMap(
-            width: width, height: height, face: $0, strengths: plan.effectiveStrengths,
+            width: width, height: height, face: $0, strengths: geometryStrengths,
             sourceRGBA: eyebrowSourceRGBA ?? mapAdmissionRGBA) }
         translationX = plan.effectiveStrengths.wholeFaceXPosition
         translationY = plan.effectiveStrengths.wholeFaceYPosition
@@ -91,7 +113,7 @@ struct BeautyStillImageGeometryStage {
             return
         }
 
-        let strengths = plan.effectiveStrengths
+        let strengths = geometryStrengths
         let admission: SourceAdmission
         switch preparation {
         case .original:
@@ -109,6 +131,10 @@ struct BeautyStillImageGeometryStage {
         // Observed eyes own the continuous stage, including when its local
         // admission rejects. Rejection never revives a coarse point proxy.
         var pointStrengths = strengths
+        // Observed source smoothing owns the raster even when its local admission refuses.
+        if face.observedFaceSupport != nil {
+            pointStrengths.faceContourSmooth = 0
+        }
         if face.denseSupport != nil { pointStrengths.pupilSize = 0 }
         if case .afterIris = preparation { pointStrengths.pupilSize = 0 }
         if BeautyContinuousEyeMap.replacesLegacy(for: face) {
@@ -206,9 +232,12 @@ struct BeautyStillImageGeometryStage {
 
     /// Rigid source-qualified translation remains after the selected sampler.
     func applyingTranslation(to bytes: [UInt8]) -> [UInt8] {
-        guard let face else { return bytes }
+        // Both executors reach this point after their pointwise colour pass.
+        // The immutable evidence never replaces the current stage's RGB bytes.
+        let shaded = jawlineShadow?.apply(to: bytes, strength: jawlineShadowStrength) ?? bytes
+        guard let face else { return shaded }
         return WholeFaceTranslationRefiner.apply(
-            bytes, width: width, height: height, face: face,
+            shaded, width: width, height: height, face: face,
             xStrength: translationX, yStrength: translationY
         )
     }

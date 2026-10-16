@@ -169,6 +169,10 @@ package struct BeautyBackendRequest: @unchecked Sendable {
         guard normalized(plan) else {
             throw BeautyError.invalidInput
         }
+        // This source-qualified intent is owned by the still-image raster stage.
+        guard input.kind == .stillImage || plan.effectiveStrengths.jawlineShadow == 0 else {
+            throw BeautyError.invalidInput
+        }
 
         let dimensions: (width: Int, height: Int)
         switch input {
@@ -262,6 +266,7 @@ package struct BeautyBackendRequest: @unchecked Sendable {
             plan.effectiveStrengths.gazeCorrection,
             plan.effectiveStrengths.eyeSymmetry,
             plan.effectiveStrengths.lipColor,
+            plan.effectiveStrengths.jawlineShadow,
         ]
         let signedStrengths: [Float] = [
             plan.effectiveStrengths.smile,

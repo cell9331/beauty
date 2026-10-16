@@ -35,6 +35,7 @@ public enum BeautyEffectResolver {
             normalized.doubleChinReductionPro,
             normalized.faceVShape,
             normalized.jawSlim,
+            normalized.jawlineShadow,
             normalized.chinLength,
             normalized.faceContourSmooth,
             normalized.templeFullness,
@@ -236,6 +237,7 @@ public enum BeautyEffectResolver {
         )
         strengths.faceVShape = capUnit(normalized.faceVShape, cap: BeautySafetyCaps.faceVShape, cappedCount: &cappedCount)
         strengths.jawSlim = capSigned(normalized.jawSlim, cap: BeautySafetyCaps.jawSlim, cappedCount: &cappedCount)
+        strengths.jawlineShadow = capUnit(normalized.jawlineShadow, cap: BeautySafetyCaps.jawlineShadow, cappedCount: &cappedCount)
         strengths.chinLength = capSigned(normalized.chinLength, cap: BeautySafetyCaps.chinLength, cappedCount: &cappedCount)
         strengths.faceContourSmooth = capUnit(
             normalized.faceContourSmooth,
@@ -764,9 +766,25 @@ public enum BeautyEffectResolver {
             }
         }
 
+        // This local colour intent is independent of geometric point work.
+        // RGB admission happens later, over immutable canonical source pixels.
+        if normalized.jawlineShadow > 0 {
+            if let faceGeometry, BeautyJawlineShadow.hasGeometrySupport(faceGeometry),
+               BeautyJawlineShadow.hasIndependentSourceRequest(normalized),
+               BeautyJawlineShadow.hasIndependentSourceCoordinates(strengths) {
+                activeDomains.insert(.jawlineShadow)
+                metrics["beauty.effects.jawlineShadow.sourceQualificationDeferred"] = 1
+            } else {
+                strengths.jawlineShadow = 0
+                skippedDomains.insert(.jawlineShadow)
+                extraWarnings.append(BeautyValidationWarning(code: "jawline_shadow_source_scope_unavailable",
+                    message: "Jawline shading requires fresh complete support and an independent source-coordinate scope."))
+            }
+        }
+
         if noUsableFace {
             let skippedFaceDependentCount = skippedDomains
-                .intersection([.skin, .faceShape, .eyes, .eyebrows, .nose, .mouth, .lipColor])
+                .intersection([.skin, .faceShape, .eyes, .eyebrows, .nose, .mouth, .lipColor, .jawlineShadow])
                 .count
             if skippedFaceDependentCount > 0 {
                 metrics["beauty.effects.skippedFaceDomains"] = Double(skippedFaceDependentCount)

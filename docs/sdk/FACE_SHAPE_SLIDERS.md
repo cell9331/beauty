@@ -24,6 +24,13 @@
 
 双向控件中性为 `0.5`，V 脸与面部流畅为 `0`。宿主接线：
 
+独立宿主的「下颌线」不再与「下颌角」共用 `jawSlim`。它直接映射新增
+`jawlineShadow`：0…100 对应 0…0.25，左端原状、右端增强下颌下方阴影。
+该字段不属于上述十项几何 enum；不修改采样坐标、不计几何预算，旧 `jawSlim`
+与旧 JSON 缺 key 的默认零语义保留。源几何、皮肤佐证、已有明暗界限和保护
+共同准入，证据不足原像素保持；与其它几何组合时只拒绝阴影，保留其它原行为。
+实际效果和保护资格由现行脸型计划分别记录，不按有字段或有变化宣布美图等价。
+
 ```swift
 parameters = BeautyFaceShapeSlider.chinLength.applying(
     position: sliderPosition, to: parameters

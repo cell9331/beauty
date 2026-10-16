@@ -110,12 +110,7 @@ inspected. This validation-only installation retains the C74 SDK algorithm.
 C77 captures the newly supplied full-resolution original and its preview with
 2 passed native capture cases, 0 failed, 0 skipped; independent appearance review
 still rejects the lower iris/lid contact line. Gray-rim qualification and final
-updated delivery remain open. The current illumination candidate passes37
-scoped SDK/preview cases; C81 current-source native build fails because a
-parallel Host change references the absent SDK `jawlineShadow` field. That
-parallel work is preserved, with no new final device update. The local SAM2
-evaluation stops on unknown-pixel admission and is not integrated.
-Existing source/reference oracles and failed
+updated delivery remain open. Existing source/reference oracles and failed
 receipts remain unchanged. No full App regression or physical touch-quality
 claim is made.
 Application source, interaction evidence and native UI validation remain in the

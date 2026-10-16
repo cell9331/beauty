@@ -22,6 +22,13 @@ owner-only use; research-only data and derived models stay in a noncommercial la
 
 ## Input and resource admission
 
+The owner-scoped `jawlineShadow` branch uses transient original-image
+geometry and local material corroboration to qualify a bounded luminance
+band. RGB similarity alone does not establish skin ownership. No source
+pixels, masks or landmarks enter persistent receipts. Unsupported evidence,
+nonopaque input and incompatible geometry combinations reject this branch;
+it introduces no model, remote request, shader or distribution permission.
+
 On 2026-10-09 the owner explicitly authorized downloading official MediaPipe
 Face Landmarker assets and creating an independent local iOS test project.
 The subsequent explicit request to integrate it into BeautySDK authorizes the
@@ -44,19 +51,9 @@ storage; persistent evidence is allowlisted aggregates and hashes only. This
 permission adds no SDK resource, runtime download, App integration, training,
 dataset, second model, image upload or distribution path, and does not reopen
 closed EYE/SEG. A model mask/logit is not a true mixed-pixel alpha or semantic
-ownership certificate. The initial fixed prompt and one source-only target-binding correction total20
-CPU predictions. The correction admits uncertain contact pixels and triggers
-the stated stop condition; the model is not integrated and grants no automatic
-follow-up model or download.
-
-On 2026-10-15 the owner separately authorizes reuse of that existing fixed
-SAM2.1 Tiny checkpoint and isolated CPU environment for at most eight local
-eyebrow predictions on the already authorized portrait. This adds no download,
-training, upload, distribution or SDK/App integration permission. Four
-source-only prompt configurations per side are frozen before inference;
-derived masks stay ignored and remain hypotheses, not alpha/ownership
-certificates. The [eyebrow plan](plans/active/A-2026-10-14-eyebrow-reference-refactor.md)
-owns this separate experiment and any fixed-mask prototype checks.
+ownership certificate. The fixed experiment completes10 CPU predictions but
+misses the required contact iris witnesses and is rejected; it grants no
+automatic follow-up model or integration.
 
 Public inputs require finite positive dimensions and checked byte/pixel
 multiplication. `maximumInputPixelCount` defaults/caps at 50,000,000;

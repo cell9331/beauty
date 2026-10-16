@@ -189,7 +189,9 @@ public enum BeautyColorEffectPipeline {
         )
 
         if let face {
-            output = BeautyGeometryEffectPipeline.applyMVPProxy(to: output, plan: plan, face: face)
+            let shadowImage = plan.effectiveStrengths.jawlineShadow > 0 ? image : nil
+            output = BeautyGeometryEffectPipeline.applyMVPProxy(to: output, plan: plan, face: face,
+                jawlineShadowSourceImage: shadowImage)
         }
 
         return output.cropped(to: image.extent)

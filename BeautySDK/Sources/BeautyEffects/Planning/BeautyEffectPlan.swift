@@ -55,6 +55,7 @@ public struct BeautyEffectiveStrengths: Equatable, Sendable {
     public var doubleChinReductionPro: Float = 0
     public var faceVShape: Float = 0
     public var jawSlim: Float = 0
+    public var jawlineShadow: Float = 0
     public var chinLength: Float = 0
     public var faceContourSmooth: Float = 0
     public var templeFullness: Float = 0

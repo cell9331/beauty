@@ -11,7 +11,7 @@ not alternative current models or a continuation queue.
 ## Parameters and configuration
 
 [BeautyParameters](BeautySDK/Sources/BeautyCore/Models/BeautyParameters.swift)
-has 77 stored fields: 76 numeric controls and optional logical `filterId`.
+has 78 stored fields: 77 numeric controls and optional logical `filterId`.
 All six nose fields (`noseSlim`, `noseWingSlim`, `noseTipSize`, `noseBridge`,
 `noseRootNarrowing`, `noseTipLift`) are signed, including reconstruction and
 mutable normalization. Keys, zero defaults and absolute safety caps are unchanged.
@@ -45,6 +45,15 @@ position over those caps; centered controls are neutral at .5, V-face/smoothing
 at 0. Its chin-length direction is shortening-positive, while direct API
 positive chin length remains longer. No slider view/state belongs to the SDK.
 See [mapping and implementation](docs/sdk/FACE_SHAPE_SLIDERS.md).
+
+`jawlineShadow` is a separate unit control with zero default and a `.25`
+effect cap. It adjusts luminance in a source-qualified narrow band below the
+jaw, without coordinate resampling or changes to `jawSlim`. Source geometry,
+local material evidence and feature/attachment protection are request-local;
+the fixed source decides eligibility and current-stage pixels provide color.
+Unsupported source evidence and incompatible geometry combinations reject
+the shadow independently. It does not join the geometry strength budget.
+This new branch remains under scoped qualification in the active face plan.
 
 Eleven eye geometry fields now accept both signs, including reconstruction,
 resolver caps and backend admission; combination budgets use absolute values.
@@ -371,5 +380,3 @@ source-defined direction/negative/protection/metadata/repeat/failure evidence.
 Generated inputs are eligible; genuine portraits and physical devices are
 optional. Exact status and bounded input ranges belong to the taxonomy,
 not historical candidates, changed-pixel counts or full-suite success alone.
-
-当前保留眼瞳的调用及灰边限制见[IRIS_SIZE](docs/sdk/IRIS_SIZE.md)。

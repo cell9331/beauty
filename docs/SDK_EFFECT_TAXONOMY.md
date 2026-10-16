@@ -20,7 +20,8 @@ and recommended examples in 2026-10-01. The explicitly reopened v1.25 automatic
 eyelid-tone and patch-protection branches each exhausted two methods/four versions
 without qualification. They are now [closed as unmet](history/retouch/RETOUCH_FINAL_DISPOSITION_2026-10-03.md)
 under the owner's terminal instruction; neither is queued for automatic continuation.
-The 77 public fields, 99 registered cases and 98 default/discoverable cases remain.
+The retained API now has 78 fields, with 99 registered cases and 98
+default/discoverable cases. The independent jawline field does not reopen this research.
 Explicit `--case upperEyelidFullnessReduction_1p00` remains compatible.
 No row or inventory count is promoted. Compatibility, hiding, research closure and
 retained safety tests do not confer effect qualification.
@@ -74,14 +75,14 @@ contract without renaming or aliasing unsupported behavior.
 
 ## Current public parameter inventory
 
-The current contract contains exactly 77 stored fields: 76 numeric controls and
+The current contract contains exactly 78 stored fields: 77 numeric controls and
 the optional `filterId`. Unit controls normalize to `0...1`; signed controls
 normalize to `-1...1`; `filterId` is an optional logical resource identifier.
 
 <!-- SDK_PARAMETER_INVENTORY_BEGIN -->
 - Skin: `skinSmoothing`, `skinWhitening`, `skinRosy`, `skinSharpen`
 - Global tone: `brightness`, `contrast`, `saturation`, `temperature`, `tint`, `exposure`, `highlight`, `shadow`
-- Face: `faceSlim`, `faceSmall`, `wholeFaceYPosition`, `wholeFaceXPosition`, `wholeFaceTilt`, `faceShortening`, `foreheadHeight`, `midfaceLength`, `philtrumLength`, `lowerFaceLength`, `headSmall`, `headWrap`, `cranialCrownHeight`, `hairlineHeight`, `wholeFaceSymmetry`, `doubleChinReduction`, `doubleChinReductionPro`, `faceVShape`, `jawSlim`, `chinLength`, `faceContourSmooth`, `templeFullness`, `cheekboneSlim`, `chinTaper`
+- Face: `faceSlim`, `faceSmall`, `wholeFaceYPosition`, `wholeFaceXPosition`, `wholeFaceTilt`, `faceShortening`, `foreheadHeight`, `midfaceLength`, `philtrumLength`, `lowerFaceLength`, `headSmall`, `headWrap`, `cranialCrownHeight`, `hairlineHeight`, `wholeFaceSymmetry`, `doubleChinReduction`, `doubleChinReductionPro`, `faceVShape`, `jawSlim`, `jawlineShadow`, `chinLength`, `faceContourSmooth`, `templeFullness`, `cheekboneSlim`, `chinTaper`
 - Eyes: `eyeSize`, `eyeDistance`, `eyeYPosition`, `eyeTailLift`, `eyeHeight`, `eyeLength`, `upperEyelidLift`, `pupilSize`, `gazeCorrection`, `lowerEyelidDrop`, `eyeTilt`, `innerCornerOpen`, `outerCornerOpen`, `eyeSymmetry`
 - Eyebrows: `eyebrowYPosition`, `eyebrowThickness`, `eyebrowLength`, `eyebrowSpacing`, `eyebrowHeadSpacing`, `eyebrowTilt`, `eyebrowPeakDefinition`
 - Nose: `noseSlim`, `noseWingSlim`, `noseTipSize`, `noseBridge`, `noseRootNarrowing`, `noseTipLift`
@@ -171,7 +172,7 @@ names and visual organization are intentionally omitted from the active contract
 | 脸型 | 尖下巴 | implemented | `chinTaper` | Signed lower-chin taper; continuous registered route, coarse positive compatibility. |
 | 脸型 | V脸 | implemented | `faceVShape` | Bounded V-shape geometry. |
 | 脸型 | 下颌角 | implemented | `jawSlim` | Signed continuous jaw narrowing/widening on registered still images. |
-| 脸型 | 下颌线 | implemented | `jawSlim` | Explicit alias-backed row; no distinct public parameter claim. |
+| 脸型 | 下颌线 | partial | `jawlineShadow` | Independent unit luminance control below the source jaw; zero default, capped at .25. Replaces the host alias to jaw-angle geometry without changing `jawSlim`. Source-qualified material and a narrow fixed band gate the tonal change; unsupported evidence refuses. Public photo/reference qualification remains in the active face plan; field existence is not an appearance claim. |
 | 脸型 | 发际线 | implemented | `hairlineHeight` | On still images with a coherent high-contrast dark-hair/lighter-skin boundary, bounded signed resampling moves flat and wavy generated source boundaries in both directions on two skin variants while keeping adjacent columns continuous. Hairless, low-contrast, short forehead-decoration and observed-brow-overlap negatives remain exact; tested brow, eye, mouth, exterior, alpha, extent, repeat, orientation/mirror and typed recovery pass. Owner-local generated-image 2D qualification for this admitted class only; general hair segmentation and light-hair effects are not claimed. |
 | 眼睛 | 大小 | implemented | `eyeSize` | Signed observed-eye size geometry. Centered host mapping and input limits in [eye contract](sdk/EYE_SHAPE_SLIDERS.md). |
 | 眼睛 | 上下 | implemented | `eyeYPosition` | Signed local vertical position; positive moves down. |
@@ -204,13 +205,13 @@ names and visual organization are intentionally omitted from the active contract
 | 鼻子 | 山根 | implemented | `noseRootNarrowing` | Independent short upper nasal side band on fresh dense support, distinct from Bridge; no root-height or lighting estimate. The shared CPU-owned nose stage works with either selected backend. Only retained Vision row-limited geometry keeps typed Metal rejection. |
 | 鼻子 | 鼻梁 | implemented | `noseBridge` | Continuous longer dorsal-side width adjustment, with distinct lower-side coupling; complete protected feature boxes remain fixed. No dedicated relighting or 3-D height pass. |
 | 鼻子 | 鼻尖 | implemented | `noseTipSize` | Local bulb-width shaping above the nostrils, stronger positive contraction and milder negative expansion, with bounded base motion. Vision retains its earlier lower-nose radial field. General Meitu appearance parity is not established by this implementation alone. |
-| 眉毛 | 上下 | implemented | `eyebrowYPosition` | Signed image-vertical source RGB deformation; direct positive moves down. |
-| 眉毛 | 粗细 | implemented | `eyebrowThickness` | Signed source-profile thickness deformation. |
+| 眉毛 | 上下 | implemented | `eyebrowYPosition` | Signed bilateral vertical translation. |
+| 眉毛 | 粗细 | implemented | `eyebrowThickness` | Signed geometry-only trace thickness. |
 | 眉毛 | 长短 | implemented | `eyebrowLength` | Signed outer-endpoint length geometry. |
 | 眉毛 | 间距 | implemented | `eyebrowSpacing` | Signed whole-brow spacing. |
-| 眉毛 | 眉头间距 | implemented | `eyebrowHeadSpacing` | Signed image-horizontal inner-head spacing; outer quarter stays fixed, per-side source admission applies. Current photographic qualification remains in the active eyebrow plan. |
+| 眉毛 | 眉头间距 | implemented | `eyebrowHeadSpacing` | Signed inner-head-only spacing along each side's canonical axis; per-side fail-closed and distinct from whole-brow spacing. |
 | 眉毛 | 倾斜 | implemented | `eyebrowTilt` | Signed local rotation. |
-| 眉毛 | 眉峰 | implemented | `eyebrowPeakDefinition` | Signed image-vertical peak emphasis/flattening, bounded by source admission. |
+| 眉毛 | 眉峰 | implemented | `eyebrowPeakDefinition` | Bounded interior-apex geometry. |
 <!-- SDK_LEGACY_TAXONOMY_END -->
 
 Of the 63 listed rows, 62 are `implemented` at their stated owner-local scope
@@ -300,7 +301,7 @@ promote a row. Do not
 promote from archived UI presence, a disabled control, provider-only mechanics,
 or a future plan. The Phase-79 archive continues to record exact 61-field,
 five-preset, 74-case absence at its historical close. The current owner-accepted
-surface is 77 fields and five presets, with 99 registered renderer cases and
+surface is 78 fields and five presets, with 99 registered renderer cases and
 98 in the default/discoverable catalog. The hidden case remains available by
 explicit name for diagnostic compatibility.
 `implemented` is an owner-local engineering status only and never authorizes

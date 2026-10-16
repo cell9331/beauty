@@ -24,6 +24,7 @@ enum BeautySafetyCaps {
     static let doubleChinReductionPro: Float = 0.25
     static let faceVShape: Float = 0.50
     static let jawSlim: Float = 0.45
+    static let jawlineShadow: Float = 0.25
     static let chinLength: Float = 0.35
 
     // Final evidence-backed contour/chin geometry caps (Phase 48).

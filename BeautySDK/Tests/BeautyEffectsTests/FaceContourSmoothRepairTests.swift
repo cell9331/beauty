@@ -7,6 +7,423 @@ import BeautyCore
 @testable import BeautyEffects
 
 final class FaceContourSmoothRepairTests: XCTestCase {
+    private func sourceCleanFixture(kind: Int = 0) throws -> [UInt8] {
+        let width = 800, height = 800, face = FaceGeometry.phase46AsymmetricComplete
+        let runs = try XCTUnwrap(FaceContourLateralRuns.make(from:
+            try XCTUnwrap(face.observedFaceSupport?.contour)))
+        func center(_ run: FaceContourLateralRuns.Run, _ y: Float) -> Float? {
+            guard let first = run.ordered.first, let last = run.ordered.last,
+                  y >= first.y, y < last.y else { return nil }
+            for (a, b) in zip(run.ordered, run.ordered.dropFirst()) where y >= a.y && y <= b.y {
+                return (a.x + (b.x - a.x) * (y - a.y) / (b.y - a.y)) * Float(width)
+            }
+            return nil
+        }
+        var source = [UInt8](repeating: 255, count: width * height * 4)
+        for y in 0..<height {
+            let left = center(runs[0], (Float(y) + 0.5) / Float(height)).map { $0 - 12 }
+            let right = center(runs[1], (Float(y) + 0.5) / Float(height)).map { $0 + 12 }
+            let wave = Float(4 * sin(Double(y) * 2 * .pi / 28))
+            for x in 0..<width {
+                let q = Float(x), i = (y * width + x) * 4
+                let inside = left.map { q >= $0 + wave } == true && right.map { q <= $0 - wave } == true
+                let hair = (kind == 1 ? (424..<528) : (424..<448)).contains(y) &&
+                    (left.map { q >= $0 - 10 && q <= $0 + 12 } == true ||
+                     right.map { q >= $0 - 12 && q <= $0 + 10 } == true)
+                let competing = kind == 2 && (left.map { q >= $0 - 20 && q < $0 - 14 } == true ||
+                    right.map { q > $0 + 14 && q <= $0 + 20 } == true)
+                let color: [UInt8] = hair ? [22, 20, 18] : inside || competing ? [170, 120, 105] : [220, 220, 220]
+                for c in 0..<3 { source[i + c] = color[c] }
+                if (300..<500).contains(x) {
+                    source[i] = UInt8(110 + (x * 7 + y * 3) % 100)
+                    source[i + 1] = UInt8(90 + (x * 5 + y * 11) % 80)
+                    source[i + 2] = UInt8(65 + (x * 3 + y * 7) % 80)
+                }
+                if kind == 3 && y >= 448 { source[i + 3] = 254 }
+            }
+        }
+        return source
+    }
+
+    private func sourceCleanRoughness(_ bytes: [UInt8], left: Bool) throws -> Double {
+        let width = 800
+        let points = try (480..<520).map { y -> Int in
+            let columns = left ? Array(100..<300) : Array((500..<700).reversed())
+            return try XCTUnwrap(columns.first { x in
+                let i = (y * width + x) * 4
+                return Int(bytes[i]) - Int(bytes[i + 2]) > 20
+            })
+        }
+        let lag = 6
+        var total = 0
+        for i in lag..<(points.count - lag) {
+            let secondDifference = points[i - lag] - 2 * points[i] + points[i + lag]
+            total += abs(secondDifference)
+        }
+        return Double(total) / Double(points.count - 2 * lag)
+    }
+
+    func testCompleteSourceCurveFitRetainsBroadCurvatureAndCentersRoughResidual() throws {
+        let count = 96
+        var clean = [Float](), rough = [Float](), weights = [Float]()
+        for i in 0..<count {
+            let t = 2 * Float(i) / Float(count - 1) - 1
+            let curve = 200 + 4 * t + 8 * t * t + 2 * t * t * t
+            clean.append(curve)
+            rough.append(curve + 0.8 * Float(sin(Double(i) * 2 * .pi / 13)))
+            let end = min(1, Float(i) / 20, Float(count - 1 - i) / 20)
+            weights.append(end * end * (3 - 2 * end))
+        }
+        let retained = try XCTUnwrap(FaceContourSubpixelRefiner.sourceCleanCurveTargets(clean, weights: weights))
+        let smoothed = try XCTUnwrap(FaceContourSubpixelRefiner.sourceCleanCurveTargets(rough, weights: weights))
+        var maximumCleanError: Float = 0, weightedResidual: Double = 0
+        var sourceCurvature: Double = 0, targetCurvature: Double = 0
+        for i in 0..<count {
+            maximumCleanError = max(maximumCleanError, abs(retained[i] - clean[i]))
+            weightedResidual += Double(smoothed[i] - rough[i]) * Double(weights[i])
+            if i > 0, i + 1 < count {
+                sourceCurvature += Double(abs(rough[i - 1] - 2 * rough[i] + rough[i + 1]))
+                targetCurvature += Double(abs(smoothed[i - 1] - 2 * smoothed[i] + smoothed[i + 1]))
+            }
+        }
+        XCTAssertLessThan(maximumCleanError, 0.001)
+        XCTAssertEqual(weightedResidual, 0, accuracy: 0.001)
+        XCTAssertLessThan(targetCurvature, sourceCurvature)
+        XCTAssertNil(FaceContourSubpixelRefiner.sourceCleanCurveTargets(Array(clean.prefix(39)),
+            weights: Array(weights.prefix(39))))
+        XCTAssertNil(FaceContourSubpixelRefiner.sourceCleanCurveTargets(clean,
+            weights: [Float](repeating: 0, count: count)))
+    }
+
+    func testCompleteSourceFairingCannotLeaveLocalSourceEnvelope() throws {
+        let count = 96, radius = 24, peak = count / 2
+        var source = [Float](repeating: 0, count: count), weights = source
+        source[peak] = 1
+        for i in 0..<count {
+            let end = min(1, Float(i) / 20, Float(count - 1 - i) / 20)
+            weights[i] = end * end * (3 - 2 * end)
+        }
+        let target = try XCTUnwrap(FaceContourSubpixelRefiner.sourceCleanCurveTargets(source,
+            weights: weights, smoothingRadius: radius))
+        var outsideChanges = 0
+        for i in target.indices {
+            XCTAssertGreaterThanOrEqual(target[i], 0)
+            XCTAssertLessThanOrEqual(target[i], 1)
+            if abs(i - peak) > radius, target[i] != source[i] { outsideChanges += 1 }
+        }
+        XCTAssertEqual(outsideChanges, 0, "source window with no supported peak stays exact")
+        XCTAssertEqual(target[0], source[0]); XCTAssertEqual(target[1], source[1])
+        XCTAssertEqual(target[count - 2], source[count - 2]); XCTAssertEqual(target[count - 1], source[count - 1])
+        let residual = target.indices.reduce(Double.zero) { $0 + Double(target[$1] - source[$1]) * Double(weights[$1]) }
+        XCTAssertEqual(residual, 0, accuracy: 0.001)
+    }
+
+    func testSourceCleanSegmentsImproveRoughnessBesideProtectedHairAndRetainSourceCore() throws {
+        let source = try sourceCleanFixture(), face = FaceGeometry.phase46AsymmetricComplete
+        let neutral = FaceContourSubpixelRefiner.refine(source, width: 800, height: 800, face: face, strength: 0)
+        XCTAssertTrue(neutral == source)
+        var previous = [try sourceCleanRoughness(source, left: true), try sourceCleanRoughness(source, left: false)]
+        for fraction: Float in [0.25, 0.5, 0.75, 1] {
+            let strength = BeautySafetyCaps.faceContourSmooth * fraction
+            let output = FaceContourSubpixelRefiner.refineWithProtection(source, width: 800,
+                height: 800, face: face, strength: strength)
+            XCTAssertTrue(output.protectedLeft); XCTAssertTrue(output.protectedRight)
+            XCTAssertEqual(output.sourceTrace.count, 2)
+            let traceCounts = output.sourceTrace.enumerated().map { side, trace in
+                "side=\(side),hair=\(trace.protectedHairRows),clean=\(trace.cleanBoundaryRows),segment=\(trace.maximumCleanSegmentRows),analysisAdmitted=\(trace.analysisAdmittedCleanSegments),recentered=\(trace.sourceRecenteredRows),nativeAmbiguous=\(trace.nativeAmbiguousRows),nativeWeak=\(trace.nativeWeakRows),nativeRequalified=\(trace.nativeRequalifiedRows),nativeRejected=\(trace.nativeRejectedCandidateRows),nativeHairGuards=\(trace.nativeHairGuardRows),sourceHaloCount=\(trace.nativeSourceHairHaloCount),sourceHaloPixels=\(trace.nativeSourceHairHaloPixels),sourceHairWidth=\(trace.maximumNativeSourceHairWidth),haloRejectedWidth=\(trace.nativeSourceHairHaloRejectedWidth),rejectedHairWidth=\(trace.maximumRejectedNativeSourceHairWidth),haloRejectedSplit=\(trace.nativeSourceHairHaloRejectedContourSplit),haloRejectedEndpoints=\(trace.nativeSourceHairHaloRejectedEndpoints),nativeCandidates=\(trace.nativeCandidatePixels),nativeBefore=\(trace.maximumNativeShiftBeforeConstraint),nativeAfter=\(trace.maximumNativeShiftAfterConstraint),nativeChanged=\(trace.nativeChangedPixels),nativeAdmitted=\(trace.admittedCleanSegments)"
+            }.joined(separator: ";")
+            XCTAssertTrue(output.sourceTrace.allSatisfy { $0.admittedCleanSegments > 0 },
+                "fraction=\(fraction);\(traceCounts)")
+            for (i, left) in [true, false].enumerated() {
+                let roughness = try sourceCleanRoughness(output.bytes, left: left)
+                XCTAssertLessThanOrEqual(roughness, previous[i] + 0.05, "fraction=\(fraction),side=\(i);\(traceCounts)")
+                if fraction == 1 { XCTAssertLessThan(roughness, try sourceCleanRoughness(source, left: left) * 0.95,
+                    "fraction=\(fraction),side=\(i);\(traceCounts)") }
+                previous[i] = roughness
+            }
+            var protected = 0, active = 0, alpha = 0, nearHair = 0, interiorCore = 0, exterior = 0
+            for y in 0..<800 { for x in 0..<800 {
+                let i = (y * 800 + x) * 4
+                let changed = (0..<4).contains { source[i + $0] != output.bytes[i + $0] }
+                if changed { active += 1 }
+                if changed && (y < 470 || (300..<500).contains(x) || x < 100 || x >= 700) { protected += 1 }
+                if changed && y < 470 { nearHair += 1 }
+                if changed && (300..<500).contains(x) { interiorCore += 1 }
+                if changed && (x < 100 || x >= 700) { exterior += 1 }
+                if source[i + 3] != output.bytes[i + 3] { alpha += 1 }
+            } }
+            XCTAssertGreaterThan(active, 16)
+            XCTAssertEqual(protected, 0, "fraction=\(fraction),nearHair=\(nearHair),interiorCore=\(interiorCore),exterior=\(exterior);\(traceCounts)")
+            XCTAssertEqual(alpha, 0)
+            XCTAssertTrue(output.bytes == FaceContourSubpixelRefiner.refine(source, width: 800,
+                height: 800, face: face, strength: strength), "repeat")
+        }
+    }
+
+    func testSourceCleanSegmentsCannotCrossSustainedHairCompetitionOrTransparentSupport() throws {
+        for kind in [1, 2, 3] {
+            let source = try sourceCleanFixture(kind: kind)
+            let output = FaceContourSubpixelRefiner.refineWithProtection(source, width: 800,
+                height: 800, face: .phase46AsymmetricComplete, strength: BeautySafetyCaps.faceContourSmooth)
+            XCTAssertTrue(output.bytes == source, "source-only negative kind=\(kind)")
+            XCTAssertTrue(output.sourceTrace.allSatisfy { $0.admittedCleanSegments == 0 })
+        }
+    }
+
+    private func completeSourceFace(invalidNose: Bool = false) -> FaceGeometry {
+        let base = FaceGeometry.phase46AsymmetricComplete
+        func rectangle(_ a: Float, _ b: Float, _ c: Float, _ d: Float) -> [SIMD2<Float>] {
+            [SIMD2(a, c), SIMD2(b, c), SIMD2(b, d), SIMD2(a, d)]
+        }
+        func brow(_ side: BeautyObservedEyebrowSide) -> BeautyEyebrowSemanticTrace {
+            let p = side == .left ? rectangle(0.38, 0.46, 0.32, 0.34) : rectangle(0.54, 0.62, 0.32, 0.34)
+            return BeautyEyebrowSemanticTrace(side: side, points: p,
+                innerEndpoint: side == .left ? p[1] : p[0], outerEndpoint: side == .left ? p[0] : p[1],
+                center: (p[0] + p[2]) * 0.5, apexIndex: 0)
+        }
+        var nasal = base.nose.map { CoordinatePoint(x: Double($0.x), y: Double($0.y)) }
+        if invalidNose { nasal[0] = CoordinatePoint(x: .nan, y: 0.45) }
+        return FaceGeometry(bounds: base.bounds, faceContour: base.faceContour,
+            observedFaceSupport: base.observedFaceSupport,
+            leftEye: rectangle(0.39, 0.46, 0.37, 0.40), rightEye: rectangle(0.54, 0.61, 0.37, 0.40),
+            nose: base.nose, noseRoot: base.noseRoot, noseTip: base.noseTip,
+            outerLips: base.outerLips, upperLips: base.upperLips, lowerLips: base.lowerLips, innerLips: base.innerLips,
+            freshness: .fresh, observedEyebrowSupport: BeautyEyebrowSemanticSupport(left: brow(.left), right: brow(.right)),
+            observedOuterLips: base.outerLips, observedNoseSupport: BeautyObservedNoseSupport(crest: nasal, contour: nasal))
+    }
+
+    /// Scope reconstruction uses only the predefined source geometry. Neither
+    /// this scope nor the unchanged roughness rows are selected from output.
+    private func completeSourceScope(_ face: FaceGeometry) throws -> BeautyContourTransitionScope {
+        func pixel(_ p: SIMD2<Float>) -> SIMD2<Double> { SIMD2(Double(p.x) * 800, Double(p.y) * 800) }
+        func mean(_ p: [SIMD2<Float>]) -> SIMD2<Double> { p.map(pixel).reduce(.zero, +) / Double(p.count) }
+        let vector = mean(face.rightEye) - mean(face.leftEye)
+        let axisX = vector / hypot(vector.x, vector.y), axisY = SIMD2(-axisX.y, axisX.x)
+        let origin = (mean(face.leftEye) + mean(face.rightEye)) * 0.5
+        func local(_ p: SIMD2<Double>) -> SIMD2<Double> {
+            let d = p - origin
+            return SIMD2(d.x * axisX.x + d.y * axisX.y, d.x * axisY.x + d.y * axisY.y)
+        }
+        let raw = try XCTUnwrap(face.observedFaceSupport).contour.map(pixel), points = raw.map(local)
+        let span = points.map(\.x).max()! - points.map(\.x).min()!, chin = points.map(\.y).max()!
+        let nose = try XCTUnwrap(face.observedNoseSupport)
+        let bottom = (nose.crest + nose.contour).map { local(SIMD2($0.x * 800, $0.y * 800)).y }.max()!
+        return try XCTUnwrap(BeautyContourTransitionScope(width: 800, height: 800, contour: raw,
+            origin: origin, axisX: axisX, axisY: axisY, span: span, chin: chin,
+            lowerBound: max(chin * 0.32, bottom + span * 0.008)))
+    }
+
+    func testCompleteObservedSourceFairingImprovesFrozenRoughnessInsideNarrowScope() throws {
+        let source = try sourceCleanFixture(), face = completeSourceFace(), scope = try completeSourceScope(face)
+        let neutral = FaceContourSubpixelRefiner.refine(source, width: 800, height: 800, face: face, strength: 0)
+        XCTAssertTrue(neutral == source)
+        let output = FaceContourSubpixelRefiner.refineWithProtection(source, width: 800, height: 800,
+            face: face, strength: BeautySafetyCaps.faceContourSmooth)
+        var changed = 0, outside = 0, darkCore = 0, central = 0, alpha = 0
+        for y in 0..<800 { for x in 0..<800 {
+            let i = (y * 800 + x) * 4
+            let delta = source[i..<i + 4] != output.bytes[i..<i + 4]
+            if delta {
+                changed += 1
+                if !scope.allowsDestination(x: x, y: y) { outside += 1 }
+                if max(source[i], source[i + 1], source[i + 2]) < 70 { darkCore += 1 }
+                if (300..<500).contains(x) { central += 1 }
+            }
+            if source[i + 3] != output.bytes[i + 3] { alpha += 1 }
+        } }
+        XCTAssertGreaterThan(changed, 16, "safe refusal cannot satisfy a source-smoothing positive")
+        XCTAssertEqual(outside, 0)
+        XCTAssertEqual(darkCore, 0)
+        XCTAssertEqual(central, 0)
+        XCTAssertEqual(alpha, 0)
+        for left in [true, false] {
+            XCTAssertLessThan(try sourceCleanRoughness(output.bytes, left: left),
+                try sourceCleanRoughness(source, left: left) * 0.95,
+                "the same fixed source rows must actually become smoother")
+        }
+        XCTAssertEqual(output.sourceTrace.count, 2)
+        XCTAssertTrue(output.sourceTrace.allSatisfy { $0.nativeMappedFieldPixels > 0 &&
+            $0.maximumNativeGeometryGradient > 0 && $0.maximumNativeGeometryGradient <= 0.450001 })
+        XCTAssertTrue(output.bytes == FaceContourSubpixelRefiner.refine(source, width: 800, height: 800,
+            face: face, strength: BeautySafetyCaps.faceContourSmooth))
+    }
+
+    func testCompleteObservedSourceRefusalDoesNotReviveDetectorRegistration() throws {
+        let face = completeSourceFace()
+        for kind in [1, 2, 3] {
+            let source = try sourceCleanFixture(kind: kind)
+            let output = FaceContourSubpixelRefiner.refineWithProtection(source, width: 800, height: 800,
+                face: face, strength: BeautySafetyCaps.faceContourSmooth)
+            XCTAssertTrue(output.bytes == source, "the original sustained-hair/competition/alpha negative stays fixed")
+        }
+        let pixel: [UInt8] = [170, 120, 105, 255]
+        let uniform: [UInt8] = Array(repeating: pixel, count: 800 * 800).flatMap { $0 }
+        XCTAssertTrue(uniform == FaceContourSubpixelRefiner.refine(uniform, width: 800, height: 800,
+            face: face, strength: BeautySafetyCaps.faceContourSmooth))
+        let source = try sourceCleanFixture()
+        XCTAssertTrue(source == FaceContourSubpixelRefiner.refine(source, width: 800, height: 800,
+            face: completeSourceFace(invalidNose: true), strength: BeautySafetyCaps.faceContourSmooth))
+    }
+
+    /// This new permission is fixed from source geometry before any render:
+    /// a local occluder inside the already admitted narrow transition can
+    /// follow the trusted contour. The same material outside it stays exact.
+    /// It does not supersede the original dominant-hair/competition negatives.
+    func testCompleteRawShapeTermCanMoveLocalTransitionOcclusionWithoutCopyingItsExterior() throws {
+        let face = completeSourceFace(), scope = try completeSourceScope(face)
+        let runs = try XCTUnwrap(FaceContourLateralRuns.make(from:
+            try XCTUnwrap(face.observedFaceSupport?.contour)))
+        var source = try sourceCleanFixture(), insideOcclusion = Set<Int>(), outsideHair = Set<Int>()
+        for row in 486...502 {
+            let y = (Float(row) + 0.5) / 800
+            for run in runs {
+                guard let pair = zip(run.ordered, run.ordered.dropFirst()).first(where: { y >= $0.0.y && y <= $0.1.y }) else { continue }
+                let center = Int(((pair.0.x + (pair.1.x - pair.0.x) * (y - pair.0.y) /
+                    (pair.1.y - pair.0.y)) * 800).rounded())
+                for x in (center - 2)...(center + 2) where scope.allowsDestination(x: x, y: row) {
+                    let p = row * 800 + x
+                    insideOcclusion.insert(p)
+                    source[p * 4] = 22; source[p * 4 + 1] = 20; source[p * 4 + 2] = 18
+                }
+            }
+        }
+        for row in 450...535 { for x in [79, 80, 81, 718, 719, 720] {
+            XCTAssertFalse(scope.allowsDestination(x: x, y: row))
+            let p = row * 800 + x
+            outsideHair.insert(p)
+            source[p * 4] = 22; source[p * 4 + 1] = 20; source[p * 4 + 2] = 18
+        } }
+        XCTAssertFalse(insideOcclusion.isEmpty)
+        let output = FaceContourSubpixelRefiner.refineWithProtection(source, width: 800, height: 800,
+            face: face, strength: BeautySafetyCaps.faceContourSmooth)
+        var changed = 0, localOcclusionChanged = 0, exterior = 0, outsideHairChanged = 0, alpha = 0, central = 0
+        for p in 0..<(800 * 800) {
+            let i = p * 4, differs = (0..<4).contains { source[i + $0] != output.bytes[i + $0] }
+            if differs {
+                changed += 1
+                if insideOcclusion.contains(p) { localOcclusionChanged += 1 }
+                if outsideHair.contains(p) { outsideHairChanged += 1 }
+                if !scope.allowsDestination(x: p % 800, y: p / 800) { exterior += 1 }
+                if (300..<500).contains(p % 800) { central += 1 }
+            }
+            if source[i + 3] != output.bytes[i + 3] { alpha += 1 }
+        }
+        XCTAssertGreaterThan(changed, 16)
+        XCTAssertGreaterThan(localOcclusionChanged, 0, "local dark material is permitted by source geometry, not relabelled skin")
+        XCTAssertEqual(exterior, 0); XCTAssertEqual(outsideHairChanged, 0)
+        XCTAssertEqual(alpha, 0); XCTAssertEqual(central, 0)
+        XCTAssertTrue(output.sourceTrace.contains { $0.admittedGeometryShapeRows > 0 && $0.geometryShapeOnlyRows > 0 })
+        XCTAssertTrue(output.sourceTrace.allSatisfy { $0.maximumNativeGeometryGradient <= 0.450001 })
+        XCTAssertTrue(output.bytes == FaceContourSubpixelRefiner.refine(source, width: 800, height: 800,
+            face: face, strength: BeautySafetyCaps.faceContourSmooth))
+    }
+
+    /// Actual source detection and adapter, with aggregate gate outcomes only.
+    /// Without the owner-local source, the ordinary generated positive/negative
+    /// smoothing contract is exercised instead of leaving an empty execution.
+    func testFACE01ProductionSourceContourAdmissionDiagnostics() throws {
+        guard let path = ProcessInfo.processInfo.environment["BEAUTY_FACE_REFERENCE_INPUT"] else {
+            try testFACE01GeneratedRoughSilhouetteHasSmootherMeasuredBoundary()
+            return
+        }
+        let url = URL(fileURLWithPath: path).standardizedFileURL
+        let values = try url.resourceValues(forKeys: [.isRegularFileKey, .isSymbolicLinkKey, .fileSizeKey])
+        guard values.isRegularFile == true, values.isSymbolicLink != true,
+              let fileSize = values.fileSize, fileSize > 0,
+              fileSize <= BeautyConfiguration.defaultMaximumInputByteCount,
+              let image = CIImage(contentsOf: url, options: [.applyOrientationProperty: true]),
+              image.extent.width.isFinite, image.extent.height.isFinite,
+              image.extent.width >= 2, image.extent.height >= 2,
+              image.extent.width * image.extent.height <= CGFloat(BeautyConfiguration.defaultMaximumInputPixelCount)
+        else { XCTFail("invalid owner-local source"); return }
+        let colorSpace = try XCTUnwrap(CGColorSpace(name: CGColorSpace.sRGB))
+        let context = CIContext(options: [.workingColorSpace: colorSpace, .outputColorSpace: colorSpace])
+        let metadata = BeautyInputMetadata(orientation: .up, source: .photo)
+        func raster(_ image: CIImage, width: Int, height: Int) -> ([UInt8], CIImage) {
+            let extent = CGRect(x: 0, y: 0, width: Double(width), height: Double(height))
+            var source = [UInt8](repeating: 0, count: width * height * 4)
+            context.render(image, toBitmap: &source, rowBytes: width * 4, bounds: extent,
+                format: .RGBA8, colorSpace: colorSpace)
+            return (source, CIImage(bitmapData: Data(source), bytesPerRow: width * 4,
+                size: extent.size, format: .RGBA8, colorSpace: colorSpace))
+        }
+        let fullWidth = Int(image.extent.width), fullHeight = Int(image.extent.height)
+        let (fullSource, fullImage) = raster(image.transformed(by: CGAffineTransform(
+            translationX: -image.extent.minX, y: -image.extent.minY)), width: fullWidth, height: fullHeight)
+        let scale = min(1, 960 / Double(max(fullWidth, fullHeight)))
+        let width = Int(floor(Double(fullWidth) * scale)), height = Int(floor(Double(fullHeight) * scale))
+        let (previewSource, previewImage) = raster(fullImage.transformed(by: CGAffineTransform(scaleX: scale,
+            y: scale)), width: width, height: height)
+        for (label, source, input, width, height) in [
+            ("full", fullSource, fullImage, fullWidth, fullHeight),
+            ("preview960", previewSource, previewImage, width, height)
+        ] {
+            var detector = BeautyFaceDetector.production()
+            let detection = detector.detect(image: input, metadata: metadata,
+                imageExtent: input.extent.size, purpose: .geometryAndLocalSupport)
+            XCTAssertEqual(detection.summary.availability, .usable)
+            XCTAssertEqual(detection.observations.count, 1)
+            let observation = try XCTUnwrap(detection.observations.first)
+            let face = BeautyFaceGeometryAdapter.makeGeometry(from: observation)
+            var strengths = BeautyEffectiveStrengths(); strengths.faceContourSmooth = BeautySafetyCaps.faceContourSmooth
+            let emission = FaceShapeWarpProvider().fieldEmissions(face: face, strengths: strengths)
+            let plan = BeautyEffectResolver.resolve(parameters: BeautyParameters(faceContourSmooth:
+                BeautySafetyCaps.faceContourSmooth), faceGeometry: face)
+            let direct = FaceContourSubpixelRefiner.refineWithProtection(source, width: width,
+                height: height, face: face, strength: BeautySafetyCaps.faceContourSmooth)
+            var changed = 0, alpha = 0
+            for p in 0..<(width * height) {
+                let i = p * 4
+                if (0..<4).contains(where: { direct.bytes[i + $0] != source[i + $0] }) { changed += 1 }
+                if direct.bytes[i + 3] != source[i + 3] { alpha += 1 }
+            }
+            let aggregate: [String: Any] = ["kind": "production-source-contour-smooth-gate-diagnostic",
+                "layer": label, "observedContourCount": face.observedFaceSupport?.contour.count ?? 0,
+                "observedContourEligible": face.observedFaceSupport?.contourEligible ?? false,
+                "lateralRunCount": face.observedFaceSupport.flatMap { FaceContourLateralRuns.make(from: $0.contour) }?.count ?? 0,
+                "proxyPointCount": emission.faceContourSmooth.count,
+                "retainedStrength": plan.effectiveStrengths.faceContourSmooth,
+                "activeFaceDomain": plan.activeDomains.contains(.faceShape),
+                "directChangedPixels": changed, "directAlphaChangedPixels": alpha,
+                "protectedLeftSourceHair": direct.protectedLeft, "protectedRightSourceHair": direct.protectedRight,
+                "sourceRunTraces": direct.sourceTrace.map { trace -> [String: Any] in
+                    ["activeRows": trace.activeRows, "protectedHairRows": trace.protectedHairRows,
+                     "cleanBoundaryRows": trace.cleanBoundaryRows, "maximumCleanSegmentRows": trace.maximumCleanSegmentRows,
+                     "admittedCleanSegments": trace.admittedCleanSegments, "cleanAnalysisLongEdge": trace.cleanAnalysisLongEdge,
+                     "analysisAdmittedCleanSegments": trace.analysisAdmittedCleanSegments,
+                     "nativeCandidatePixels": trace.nativeCandidatePixels,
+                     "maximumNativeShiftBeforeConstraint": trace.maximumNativeShiftBeforeConstraint,
+                     "maximumNativeShiftAfterConstraint": trace.maximumNativeShiftAfterConstraint,
+                     "sourceRecenteredRows": trace.sourceRecenteredRows,
+                     "nativeAmbiguousRows": trace.nativeAmbiguousRows,
+                     "nativeWeakRows": trace.nativeWeakRows,
+                     "nativeRequalifiedRows": trace.nativeRequalifiedRows,
+                     "nativeRejectedCandidateRows": trace.nativeRejectedCandidateRows,
+                     "nativeHairGuardRows": trace.nativeHairGuardRows,
+                     "nativeMappedFieldPixels": trace.nativeMappedFieldPixels,
+                     "nativeDomainRejectedPixels": trace.nativeDomainRejectedPixels,
+                     "nativeCoreRejectedPixels": trace.nativeCoreRejectedPixels,
+                     "nativeBandRejectedPixels": trace.nativeBandRejectedPixels,
+                     "nativeFootprintRejectedPixels": trace.nativeFootprintRejectedPixels,
+                     "nativeSourceHairHaloCount": trace.nativeSourceHairHaloCount,
+                     "nativeSourceHairHaloPixels": trace.nativeSourceHairHaloPixels,
+                     "maximumNativeSourceHairWidth": trace.maximumNativeSourceHairWidth,
+                     "maximumRejectedNativeSourceHairWidth": trace.maximumRejectedNativeSourceHairWidth,
+                     "nativeSourceHairHaloRejectedWidth": trace.nativeSourceHairHaloRejectedWidth,
+                     "nativeSourceHairHaloRejectedContourSplit": trace.nativeSourceHairHaloRejectedContourSplit,
+                     "nativeSourceHairHaloRejectedEndpoints": trace.nativeSourceHairHaloRejectedEndpoints,
+                     "nativeChangedPixels": trace.nativeChangedPixels,
+                     "nativeGeometryRejectedPixels": trace.nativeGeometryRejectedPixels,
+                     "nativeGeometryFootprintRejectedPixels": trace.nativeGeometryFootprintRejectedPixels,
+                     "maximumNativeGeometryGradient": trace.maximumNativeGeometryGradient,
+                     "admittedGeometryShapeRows": trace.admittedGeometryShapeRows,
+                     "geometryShapeOnlyRows": trace.geometryShapeOnlyRows]
+                }]
+            let data = try JSONSerialization.data(withJSONObject: aggregate, options: [.sortedKeys])
+            print(String(decoding: data, as: UTF8.self))
+        }
+    }
+
     func testFACE01ExistingProviderEmitsOneCenteredObservedContourCorrection() throws {
         let provider = FaceShapeWarpProvider()
         let face = Self.face
