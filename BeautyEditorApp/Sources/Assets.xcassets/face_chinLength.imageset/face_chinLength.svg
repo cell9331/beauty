@@ -1,0 +1,6 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="84" height="84" viewBox="0 0 84 84" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="icon">
+<path id="subject/face" d="M25.5 18C30 14.1 35.4 12 42 12C48.6 12 54 14.1 58.5 18C62.4 21.9 64.5 27.3 64.5 33.9C64.5 48.3 55.5 60 42 64.2C28.5 60 19.5 48.3 19.5 33.9C19.5 27.3 21.6 21.9 25.5 18Z" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" stroke="#151515"/>
+<path id="modifier/chin-length" d="M42 64.5V76.5M46.2 68.7L42 64.5L37.8 68.7M46.2 72.3L42 76.5L37.8 72.3" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" stroke="#151515"/>
+</g>
+</svg>

@@ -263,7 +263,8 @@ for relative in current_text_files:
     if match:
         raise SystemExit(f"stale app/Xcode/UI dependency in {relative}: {match.group(0)}")
 
-ignored_prefixes = (".git/", ".planning/milestones/", ".planning/phases/")
+# Owner-authorized host is separate from SDK targets; all other roots retain the gate.
+ignored_prefixes = (".git/", ".planning/milestones/", ".planning/phases/", "BeautyEditorApp/")
 
 def is_ignored_build_tree(path, relative):
     """Prune only real, gitignored directories whose exact name is .build."""

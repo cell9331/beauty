@@ -1,0 +1,6 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="120" height="66" viewBox="0 0 120 66" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="track">
+<path d="M0 33C0 14.7746 14.7746 0 33 0H87C105.225 0 120 14.7746 120 33V33C120 51.2254 105.225 66 87 66H33C14.7746 66 0 51.2254 0 33V33Z" fill="white" fill-opacity="0.18"/>
+<circle id="thumb" cx="33" cy="33" r="27" fill="white"/>
+</g>
+</svg>

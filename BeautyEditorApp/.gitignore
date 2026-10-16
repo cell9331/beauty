@@ -1,0 +1,10 @@
+.DS_Store
+.build/
+.verification/
+.swiftpm/
+**/xcuserdata/
+LocalInput/
+*.xcresult
+
+# Original host design assets are required by the asset catalog.
+!Sources/Assets.xcassets/**/*.svg

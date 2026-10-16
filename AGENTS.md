@@ -1,3 +1,9 @@
+<!-- OWNER_HOST_COLOCATION_20261016 -->
+> 2026-10-16 所有者明确要求将 BeautyEditorApp 移入本仓库并提交备份。
+> 当前应用宿主只位于 `BeautyEditorApp/`，依赖同仓库 `BeautySDK/`；
+> 下文历史“应用必须在仓库外”的位置限制由此取代。SDK target 仍禁止依赖应用、SwiftUI 或 UI 测试；
+> 不恢复历史 UI，不改变效果资格或授权分发范围。
+
 # AGENTS.md
 
 Spend time on thinking; you do not need to use the commentary channel to report progress to me.

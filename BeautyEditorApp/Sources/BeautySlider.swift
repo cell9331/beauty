@@ -1,0 +1,226 @@
+import SwiftUI
+import UIKit
+
+struct BeautySlider: UIViewRepresentable {
+    let value: Float
+    let range: ControlRange
+    let enabled: Bool
+    let title: String
+    var referenceStyle = false
+    let onBegin: () -> Void
+    let onChange: (Float) -> Void
+    let onEnd: () -> Void
+
+    func makeUIView(context: Context) -> DesignSlider {
+        let slider = DesignSlider()
+        slider.addTarget(context.coordinator, action: #selector(Coordinator.begin), for: .touchDown)
+        slider.addTarget(context.coordinator, action: #selector(Coordinator.changed(_:)), for: .valueChanged)
+        slider.addTarget(context.coordinator, action: #selector(Coordinator.end),
+                         for: [.touchUpInside, .touchUpOutside, .touchCancel])
+        slider.accessibilityIdentifier = "adjustment-slider"
+        return slider
+    }
+
+    func updateUIView(_ slider: DesignSlider, context: Context) {
+        context.coordinator.parent = self
+        slider.minimumValue = range.bounds.lowerBound
+        slider.maximumValue = range.bounds.upperBound
+        slider.value = value
+        slider.isEnabled = enabled
+        slider.showsCenter = range == .signed
+        slider.referenceStyle = referenceStyle
+        slider.accessibilityLabel = title
+        slider.accessibilityValue = String(Int(value.rounded()))
+        slider.setNeedsLayout()
+    }
+
+    func makeCoordinator() -> Coordinator { Coordinator(parent: self) }
+    @MainActor final class Coordinator: NSObject {
+        var parent: BeautySlider
+        init(parent: BeautySlider) { self.parent = parent }
+        @objc func begin() { parent.onBegin() }
+        @objc func changed(_ slider: DesignSlider) {
+            parent.onChange(slider.value)
+            if !slider.isTracking && !slider.referenceTouchActive { parent.onEnd() }
+        }
+        @objc func end() { parent.onEnd() }
+    }
+}
+
+final class DesignSlider: UISlider {
+    var showsCenter = false
+    var referenceStyle = false {
+        didSet {
+            guard referenceStyle != oldValue else { return }
+            configureAppearance()
+        }
+    }
+    // Compatibility for the existing eye panel contracts. The same geometry
+    // now also serves centered and one-way face controls.
+    var referenceEyeStyle: Bool {
+        get { referenceStyle }
+        set { referenceStyle = newValue }
+    }
+    private(set) var referenceTouchActive = false
+    private let centerMark = CALayer()
+    private let referenceTrack = CALayer()
+    private let referenceFill = CALayer()
+    private let referenceThumb = CALayer()
+    private static let legacyTrack = UIColor(red: 233/255, green: 234/255, blue: 237/255, alpha: 1)
+    private static let referenceTrackColor = UIColor(red: 47/255, green: 49/255, blue: 49/255, alpha: 1)
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        referenceTrack.name = "reference-eye-track"
+        referenceFill.name = "reference-eye-fill"
+        referenceThumb.name = "reference-eye-thumb"
+        centerMark.name = "slider-neutral-mark"
+        layer.addSublayer(referenceTrack)
+        layer.addSublayer(referenceFill)
+        layer.addSublayer(centerMark)
+        layer.addSublayer(referenceThumb)
+        isContinuous = true
+        configureAppearance()
+    }
+    required init?(coder: NSCoder) { fatalError("Use init(frame:)") }
+
+    private func configureAppearance() {
+        if referenceStyle {
+            let clear = UIGraphicsImageRenderer(size: CGSize(width: 1, height: 1)).image { _ in }
+            setMinimumTrackImage(clear, for: .normal)
+            setMaximumTrackImage(clear, for: .normal)
+            // UISlider's internal thumb view can offset its image relative to the
+            // overridden thumbRect. Draw the visible circle from our source geometry;
+            // the transparent system image preserves the 44pt native control footprint.
+            let thumb = UIGraphicsImageRenderer(size: CGSize(width: 44, height: 44)).image { _ in }
+            setThumbImage(thumb, for: .normal)
+            setThumbImage(thumb, for: .highlighted)
+            referenceTrack.backgroundColor = Self.referenceTrackColor.cgColor
+            referenceFill.backgroundColor = UIColor.white.cgColor
+            referenceThumb.backgroundColor = UIColor.white.cgColor
+            centerMark.backgroundColor = UIColor.white.cgColor
+        } else {
+            centerMark.removeFromSuperlayer()
+            layer.addSublayer(centerMark)
+            setMinimumTrackImage(nil, for: .normal)
+            setMaximumTrackImage(nil, for: .normal)
+            minimumTrackTintColor = Self.legacyTrack
+            maximumTrackTintColor = Self.legacyTrack
+            centerMark.backgroundColor = UIColor(red: 181/255, green: 184/255, blue: 190/255, alpha: 1).cgColor
+            if let asset = UIImage(named: "slider_thumb") {
+                let thumb = UIGraphicsImageRenderer(size: CGSize(width: 44, height: 44)).image { _ in
+                    asset.draw(in: CGRect(x: 0, y: 0, width: 44, height: 44))
+                }
+                setThumbImage(thumb, for: .normal)
+                setThumbImage(thumb, for: .highlighted)
+            }
+        }
+        invalidateIntrinsicContentSize()
+        setNeedsLayout()
+    }
+
+    // UIKit's legacy slider alignment rectangle is narrower than its bounds.
+    // SwiftUI paints the black band in that alignment rectangle, so reference
+    // controls need matching bounds to preserve their two-point endpoint margin.
+    override var alignmentRectInsets: UIEdgeInsets {
+        referenceStyle ? .zero : super.alignmentRectInsets
+    }
+
+    override func trackRect(forBounds bounds: CGRect) -> CGRect {
+        let inset: CGFloat = referenceStyle ? 12 : 0
+        let height: CGFloat = referenceStyle ? 3 : 2
+        return CGRect(x: bounds.minX + inset, y: bounds.midY - height / 2,
+                      width: max(0, bounds.width - 2 * inset), height: height)
+    }
+    override func thumbRect(forBounds bounds: CGRect, trackRect rect: CGRect, value: Float) -> CGRect {
+        let fraction = CGFloat(min(1, max(0, (value - minimumValue) / max(1, maximumValue - minimumValue))))
+        return CGRect(x: rect.minX + rect.width * fraction - 22, y: bounds.midY - 22, width: 44, height: 44)
+    }
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        centerMark.isHidden = !showsCenter
+        referenceTrack.isHidden = !referenceStyle
+        referenceFill.isHidden = !referenceStyle
+        referenceThumb.isHidden = !referenceStyle
+        if referenceStyle {
+            // Track, fill and visible circle share exactly the same center mapping.
+            referenceTrack.removeFromSuperlayer()
+            referenceFill.removeFromSuperlayer()
+            centerMark.removeFromSuperlayer()
+            referenceThumb.removeFromSuperlayer()
+            layer.insertSublayer(referenceTrack, at: 0)
+            layer.insertSublayer(referenceFill, at: 1)
+            layer.insertSublayer(centerMark, at: 2)
+            layer.addSublayer(referenceThumb)
+            let track = trackRect(forBounds: bounds)
+            let thumb = thumbRect(forBounds: bounds, trackRect: track, value: value)
+            referenceTrack.frame = track
+            referenceTrack.cornerRadius = 1.5
+            let neutralX = showsCenter ? track.midX : track.minX
+            referenceFill.frame = CGRect(x: min(neutralX, thumb.midX), y: track.minY,
+                                         width: abs(thumb.midX - neutralX), height: track.height)
+            referenceFill.cornerRadius = 1.5
+            centerMark.frame = CGRect(x: track.midX - 3, y: bounds.midY - 3, width: 6, height: 6)
+            centerMark.cornerRadius = 3
+            referenceThumb.frame = CGRect(x: thumb.midX - 10, y: bounds.midY - 10, width: 20, height: 20)
+            referenceThumb.cornerRadius = 10
+        } else {
+            centerMark.frame = CGRect(x: bounds.midX - 1, y: bounds.midY - 3, width: 2, height: 6)
+            centerMark.cornerRadius = 0
+        }
+        CATransaction.commit()
+    }
+
+    // Reference controls accept a track tap or a continuous drag from any point.
+    // Keep floating-point values throughout; the spoken/displayed value alone is rounded.
+    func referenceValue(at x: CGFloat) -> Float {
+        let track = trackRect(forBounds: bounds)
+        guard x.isFinite, track.width > 0 else { return (minimumValue + maximumValue) / 2 }
+        let fraction = min(1, max(0, (x - track.minX) / track.width))
+        return minimumValue + Float(fraction) * (maximumValue - minimumValue)
+    }
+    private func updateReferenceValue(at x: CGFloat) {
+        let next = referenceValue(at: x)
+        guard next != value else { return }
+        value = next
+        setNeedsLayout()
+        layoutIfNeeded()
+        sendActions(for: .valueChanged)
+    }
+    override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
+        guard referenceStyle else { return super.beginTracking(touch, with: event) }
+        guard isEnabled else { return false }
+        referenceTouchActive = true
+        sendActions(for: .touchDown)
+        updateReferenceValue(at: touch.location(in: self).x)
+        return true
+    }
+    override func continueTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
+        guard referenceStyle else { return super.continueTracking(touch, with: event) }
+        updateReferenceValue(at: touch.location(in: self).x)
+        return true
+    }
+    override func endTracking(_ touch: UITouch?, with event: UIEvent?) {
+        if referenceStyle, let touch { updateReferenceValue(at: touch.location(in: self).x) }
+        super.endTracking(touch, with: event)
+        referenceTouchActive = false
+    }
+    override func cancelTracking(with event: UIEvent?) {
+        super.cancelTracking(with: event)
+        referenceTouchActive = false
+    }
+    override func accessibilityIncrement() {
+        guard referenceStyle else { super.accessibilityIncrement(); return }
+        value = min(maximumValue, value + 1)
+        sendActions(for: .valueChanged)
+        setNeedsLayout()
+    }
+    override func accessibilityDecrement() {
+        guard referenceStyle else { super.accessibilityDecrement(); return }
+        value = max(minimumValue, value - 1)
+        sendActions(for: .valueChanged)
+        setNeedsLayout()
+    }
+}

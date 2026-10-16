@@ -1,0 +1,6 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="84" height="84" viewBox="0 0 84 84" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="icon">
+<path id="subject/face" d="M25.5 19.5C30 15 35.4 12.6 42 12.6C48.6 12.6 54 15 58.5 19.5C62.4 23.7 64.5 29.4 64.5 36.6C64.5 52.2 55.5 64.8 42 69.3C28.5 64.8 19.5 52.2 19.5 36.6C19.5 29.4 21.6 23.7 25.5 19.5Z" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" stroke="#151515"/>
+<path id="modifier/cheekbone" d="M9.3 48.6C13.2 49.2 16.5 48 19.5 45M15.9 48.6L19.5 45L16.2 41.7M74.7 48.6C70.8 49.2 67.5 48 64.5 45M68.1 48.6L64.5 45L67.8 41.7" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" stroke="#151515"/>
+</g>
+</svg>

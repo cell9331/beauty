@@ -1,0 +1,9 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="84" height="84" viewBox="0 0 84 84" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="icon">
+<path id="subject/face" d="M25.5 19.5C30 15 35.4 12.6 42 12.6C48.6 12.6 54 15 58.5 19.5C62.4 23.7 64.5 29.4 64.5 36.6C64.5 52.2 55.5 64.8 42 69.3C28.5 64.8 19.5 52.2 19.5 36.6C19.5 29.4 21.6 23.7 25.5 19.5Z" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" stroke="#151515"/>
+<path id="modifier/temple-left-main" d="M30.9 30.6C30.9 32.2569 29.5569 33.6 27.9 33.6C26.2431 33.6 24.9 32.2569 24.9 30.6C24.9 28.9431 26.2431 27.6 27.9 27.6C29.5569 27.6 30.9 28.9431 30.9 30.6Z" stroke-width="4.5" stroke="#151515"/>
+<path id="modifier/temple-right-main" d="M59.1 30.6C59.1 32.2569 57.7569 33.6 56.1 33.6C54.4431 33.6 53.1 32.2569 53.1 30.6C53.1 28.9431 54.4431 27.6 56.1 27.6C57.7569 27.6 59.1 28.9431 59.1 30.6Z" stroke-width="4.5" stroke="#151515"/>
+<path id="modifier/temple-left-secondary" d="M30.6 39.3C30.6 40.4598 29.6598 41.4 28.5 41.4C27.3402 41.4 26.4 40.4598 26.4 39.3C26.4 38.1402 27.3402 37.2 28.5 37.2C29.6598 37.2 30.6 38.1402 30.6 39.3Z" stroke-width="4.5" stroke="#151515"/>
+<path id="modifier/temple-right-secondary" d="M57.6 39.3C57.6 40.4598 56.6598 41.4 55.5 41.4C54.3402 41.4 53.4 40.4598 53.4 39.3C53.4 38.1402 54.3402 37.2 55.5 37.2C56.6598 37.2 57.6 38.1402 57.6 39.3Z" stroke-width="4.5" stroke="#151515"/>
+</g>
+</svg>

@@ -1,0 +1,7 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="84" height="84" viewBox="0 0 84 84" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="icon">
+<path id="subject" d="M21 42C28.2 34.5 34.8 33.6 42 39C49.2 33.6 55.8 34.5 63 42C57 49.2 49.8 52.5 42 52.5C34.2 52.5 27 49.2 21 42Z" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" stroke="#151515"/>
+<path id="centerline" d="M25.5 42H58.5" stroke-width="4.5" stroke-linecap="round" stroke="#151515"/>
+<path id="modifier" d="M15 25.5C21 16.5 30 12 39 12M25.5 25.5H15V15M69 58.5C63 67.5 54 72 45 72M58.5 58.5H69V69" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" stroke="#151515"/>
+</g>
+</svg>

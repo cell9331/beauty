@@ -1,0 +1,6 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="84" height="84" viewBox="0 0 84 84" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="icon">
+<path id="subject/brow" d="M15 43.5C27 27.9 42.3 22.2 67.5 29.7C52.2 29.4 36 33.9 17.7 47.1L15 43.5Z" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" stroke="#151515"/>
+<path id="modifier/length" d="M15 58.5H66M21 64.5L15 58.5L21 52.5M60 64.5L66 58.5L60 52.5" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" stroke="#151515"/>
+</g>
+</svg>

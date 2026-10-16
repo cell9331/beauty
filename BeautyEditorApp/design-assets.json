@@ -1,0 +1,697 @@
+{
+  "file_key": "l4srrGA4qSkYGT09nuAxXz",
+  "frame_nodes": {
+    "face": [
+      "4:487",
+      "4:363",
+      "4:677"
+    ],
+    "ratio": [
+      "4:301",
+      "4:427"
+    ],
+    "eye": [
+      "4:120",
+      "4:549"
+    ],
+    "mouth": [
+      "4:2",
+      "4:242"
+    ],
+    "nose": [
+      "4:615",
+      "4:182"
+    ],
+    "brow": [
+      "4:62"
+    ],
+    "protection_on": [
+      "68:1443"
+    ]
+  },
+  "asset_count": 60,
+  "assets": [
+    {
+      "name": "face_width",
+      "width": "84",
+      "height": "84",
+      "bytes": 682,
+      "sha256": "25287c4c26553c51f933b7c116bfc21120889e7b22a4b2dbbdf111ff95ebd438",
+      "reference_nodes": [
+        "4:487",
+        "4:363",
+        "4:677"
+      ]
+    },
+    {
+      "name": "face_size",
+      "width": "84",
+      "height": "84",
+      "bytes": 682,
+      "sha256": "ac5b7d8e6822afe71cc3cac069c9ca7389eceedfe45cfd69d63cc22708836bdf",
+      "reference_nodes": [
+        "4:487",
+        "4:363",
+        "4:677"
+      ]
+    },
+    {
+      "name": "face_contourSmooth",
+      "width": "84",
+      "height": "84",
+      "bytes": 993,
+      "sha256": "ef8335633dae9a9fb3be7600258d622b33a7e40f22f449d62c4f6191d2c18646",
+      "reference_nodes": [
+        "4:487",
+        "4:363",
+        "4:677"
+      ]
+    },
+    {
+      "name": "face_temple",
+      "width": "84",
+      "height": "84",
+      "bytes": 1437,
+      "sha256": "d7396887664ff22caa02774426a62cdb9efe2f837088d741b74e29cf94da97f3",
+      "reference_nodes": [
+        "4:487",
+        "4:363",
+        "4:677"
+      ]
+    },
+    {
+      "name": "face_cheekbone",
+      "width": "84",
+      "height": "84",
+      "bytes": 732,
+      "sha256": "ebdd76524cee4af91fefe577d4728517630767bbe0c783e78775a6387f27d93e",
+      "reference_nodes": [
+        "4:487",
+        "4:363",
+        "4:677"
+      ]
+    },
+    {
+      "name": "face_chinLength",
+      "width": "84",
+      "height": "84",
+      "bytes": 664,
+      "sha256": "53196d565db39369f4121ef2340391964398d0b5ce5b66673a900f2ed6a8427e",
+      "reference_nodes": [
+        "4:487",
+        "4:363",
+        "4:677"
+      ]
+    },
+    {
+      "name": "face_doubleChin",
+      "width": "84",
+      "height": "84",
+      "bytes": 819,
+      "sha256": "28e1562666f7b8955f6c61b2dc3b7d148665e0ba700cd4088a5bfb8b111d059e",
+      "reference_nodes": [
+        "4:487",
+        "4:363",
+        "4:677"
+      ]
+    },
+    {
+      "name": "face_doubleChinRefine",
+      "width": "84",
+      "height": "84",
+      "bytes": 1006,
+      "sha256": "612a5bd9bad061a176b95821788211e02b93820df03021233d8aa82724feb245",
+      "reference_nodes": [
+        "4:487",
+        "4:363",
+        "4:677"
+      ]
+    },
+    {
+      "name": "face_chinPoint",
+      "width": "84",
+      "height": "84",
+      "bytes": 926,
+      "sha256": "f98bd44747d65654b93e279c7a2f4102e9284581167b24efe5ce1547faf473ac",
+      "reference_nodes": [
+        "4:487",
+        "4:363",
+        "4:677"
+      ]
+    },
+    {
+      "name": "face_vShape",
+      "width": "84",
+      "height": "84",
+      "bytes": 737,
+      "sha256": "0b151cc2fd4b9b57fa97bba98e0d5c16f609b153911814e4fd7ad5cd6708047c",
+      "reference_nodes": [
+        "4:487",
+        "4:363",
+        "4:677"
+      ]
+    },
+    {
+      "name": "face_jawAngle",
+      "width": "84",
+      "height": "84",
+      "bytes": 944,
+      "sha256": "1138cbc2a9daf7c9383334745f4fc4c64d619aef53fc47fc98c7465820a3ed1e",
+      "reference_nodes": [
+        "4:487",
+        "4:363",
+        "4:677"
+      ]
+    },
+    {
+      "name": "face_jawline",
+      "width": "84",
+      "height": "84",
+      "bytes": 924,
+      "sha256": "fdfd5db4e3e1858e099aa2bd77d8596a0cd6efe38d30ee973a84381308ea253d",
+      "reference_nodes": [
+        "4:487",
+        "4:363",
+        "4:677"
+      ]
+    },
+    {
+      "name": "face_hairline",
+      "width": "84",
+      "height": "84",
+      "bytes": 792,
+      "sha256": "f6ca476b7cd73b86d021d91ecc5170557d0e252b15cac49fd4ef4e8644b315cd",
+      "reference_nodes": [
+        "4:487",
+        "4:363",
+        "4:677"
+      ]
+    },
+    {
+      "name": "ratio_headSize",
+      "width": "84",
+      "height": "84",
+      "bytes": 837,
+      "sha256": "1c3d5e1a119f23811646b810268017a6c374ca9bcbfa69aeffb5a02207e4e3f1",
+      "reference_nodes": [
+        "4:301",
+        "4:427"
+      ]
+    },
+    {
+      "name": "ratio_headToFace",
+      "width": "84",
+      "height": "84",
+      "bytes": 1250,
+      "sha256": "5b756104ca091017f91530c05b6363d1a759b54b5856f3c0f45a83d5c8e6679a",
+      "reference_nodes": [
+        "4:301",
+        "4:427"
+      ]
+    },
+    {
+      "name": "ratio_cranialTop",
+      "width": "84",
+      "height": "84",
+      "bytes": 906,
+      "sha256": "c05afa187c4537348dcff8a30ccc0f77f2a41c8bf060e62d0329ecca98269db3",
+      "reference_nodes": [
+        "4:301",
+        "4:427"
+      ]
+    },
+    {
+      "name": "ratio_forehead",
+      "width": "84",
+      "height": "84",
+      "bytes": 687,
+      "sha256": "6eaa49f5e3861474df5edf922a4b57a256fada6dce362235f6463798a3bd3e0c",
+      "reference_nodes": [
+        "4:301",
+        "4:427"
+      ]
+    },
+    {
+      "name": "ratio_midface",
+      "width": "84",
+      "height": "84",
+      "bytes": 686,
+      "sha256": "6baa3f07556917bdd7dcea40886100124a850fb56d33e0aa98261dffa76a5c8f",
+      "reference_nodes": [
+        "4:301",
+        "4:427"
+      ]
+    },
+    {
+      "name": "ratio_philtrum",
+      "width": "84",
+      "height": "84",
+      "bytes": 731,
+      "sha256": "9f335e0461ec1ac7c8d77aecd5e02c8dce17772f1f6b61a7141a6bb7f770d996",
+      "reference_nodes": [
+        "4:301",
+        "4:427"
+      ]
+    },
+    {
+      "name": "ratio_lowerFace",
+      "width": "84",
+      "height": "84",
+      "bytes": 932,
+      "sha256": "c083b4bc9663014ad191263350221de1390e17fed8ab9eb3f10431ced88c6ec0",
+      "reference_nodes": [
+        "4:301",
+        "4:427"
+      ]
+    },
+    {
+      "name": "ratio_faceLength",
+      "width": "84",
+      "height": "84",
+      "bytes": 688,
+      "sha256": "3a566c6386eaf1ad6512b913c9d9b7f2b861444c07309ac321a0c2ddb98e87fa",
+      "reference_nodes": [
+        "4:301",
+        "4:427"
+      ]
+    },
+    {
+      "name": "eye_lift",
+      "width": "84",
+      "height": "84",
+      "bytes": 822,
+      "sha256": "a8c44a6351503d7f9aeb3cd5a094ddcd268be4a78a0e92151eff6a092be984f4",
+      "reference_nodes": [
+        "4:120",
+        "4:549"
+      ]
+    },
+    {
+      "name": "eye_tilt",
+      "width": "84",
+      "height": "84",
+      "bytes": 793,
+      "sha256": "68b1c37147f4f2c02cda99c53399e11aa3a35f7668a7e983ed21e2fa1eeeccce",
+      "reference_nodes": [
+        "4:120",
+        "4:549"
+      ]
+    },
+    {
+      "name": "eye_redness",
+      "width": "84",
+      "height": "84",
+      "bytes": 820,
+      "sha256": "e58010962470b44e3e838f8a40c964420b9b9265379cbcb992726f3f58f1b5d4",
+      "reference_nodes": [
+        "4:120",
+        "4:549"
+      ]
+    },
+    {
+      "name": "eye_innerCorner",
+      "width": "84",
+      "height": "84",
+      "bytes": 924,
+      "sha256": "d7803a4cbba44e8118ac55213ac7a8668f0b7624a81772ea73eb279bf26b3ed7",
+      "reference_nodes": [
+        "4:120",
+        "4:549"
+      ]
+    },
+    {
+      "name": "eye_outerCorner",
+      "width": "84",
+      "height": "84",
+      "bytes": 927,
+      "sha256": "f0f12d878224bd4250a8098cecfddfeb8ff990fcc6e9dbed9dd901eae1e2786b",
+      "reference_nodes": [
+        "4:120",
+        "4:549"
+      ]
+    },
+    {
+      "name": "eye_symmetry",
+      "width": "84",
+      "height": "84",
+      "bytes": 818,
+      "sha256": "4be9d6e4310cbef616ce0221285de2ce0009bed35b9289817600029e36252fc5",
+      "reference_nodes": [
+        "4:120",
+        "4:549"
+      ]
+    },
+    {
+      "name": "eye_fatRemoval",
+      "width": "84",
+      "height": "84",
+      "bytes": 1041,
+      "sha256": "4f3b57eb9b3cf4a62f9c57cd4846fc84b9d4b67e1fa49e15264d7d6b137f9cb8",
+      "reference_nodes": [
+        "4:120",
+        "4:549"
+      ]
+    },
+    {
+      "name": "eye_lidLift",
+      "width": "84",
+      "height": "84",
+      "bytes": 790,
+      "sha256": "664fb2735c4f71c5b05085ea2e3b58adf4aa9e5f690de156ca0b2014ee710115",
+      "reference_nodes": [
+        "4:120",
+        "4:549"
+      ]
+    },
+    {
+      "name": "eye_eyelidSize",
+      "width": "84",
+      "height": "84",
+      "bytes": 793,
+      "sha256": "f5cabe98e03e8dec67f09d0a88f3800b281b454e9801d2a6e42e8c6260f6209a",
+      "reference_nodes": [
+        "4:120",
+        "4:549"
+      ]
+    },
+    {
+      "name": "eye_gazeCorrection",
+      "width": "84",
+      "height": "84",
+      "bytes": 742,
+      "sha256": "7bdb2318071de598fafda7a16d236cbbc171bf7622166fa49164676f92e36cf3",
+      "reference_nodes": [
+        "4:120",
+        "4:549"
+      ]
+    },
+    {
+      "name": "eye_lowerLid",
+      "width": "84",
+      "height": "84",
+      "bytes": 1250,
+      "sha256": "7003741a5d7da385a32aa53d47b9a4c80c5f23ec39bae9d8012920873021705b",
+      "reference_nodes": [
+        "4:120",
+        "4:549"
+      ]
+    },
+    {
+      "name": "eye_tailLift",
+      "width": "84",
+      "height": "84",
+      "bytes": 798,
+      "sha256": "a6bac65081c7c593f6df5e0da140ca5316909a3ed003f62fd71ded11824ead1a",
+      "reference_nodes": [
+        "4:120",
+        "4:549"
+      ]
+    },
+    {
+      "name": "mouth_size",
+      "width": "84",
+      "height": "84",
+      "bytes": 695,
+      "sha256": "410923b908be85c69c34560a167496a90cb9ed73701bf8ecb1bd848f64406653",
+      "reference_nodes": [
+        "4:2",
+        "4:242"
+      ]
+    },
+    {
+      "name": "mouth_width",
+      "width": "84",
+      "height": "84",
+      "bytes": 685,
+      "sha256": "bccad45ab8657995184f34acace356287e8683d9fa88702028e0958287b040b7",
+      "reference_nodes": [
+        "4:2",
+        "4:242"
+      ]
+    },
+    {
+      "name": "mouth_positionY",
+      "width": "84",
+      "height": "84",
+      "bytes": 695,
+      "sha256": "0709aef1d6c7fa00e90729bc0c195b71afd367570c326b4c9b46323ec6380bcc",
+      "reference_nodes": [
+        "4:2",
+        "4:242"
+      ]
+    },
+    {
+      "name": "mouth_tilt",
+      "width": "84",
+      "height": "84",
+      "bytes": 709,
+      "sha256": "d330cc31dbdea23b7f33c3778e17cb12b83e23aacd5bb7e414324d817c07fe80",
+      "reference_nodes": [
+        "4:2",
+        "4:242"
+      ]
+    },
+    {
+      "name": "mouth_positionX",
+      "width": "84",
+      "height": "84",
+      "bytes": 680,
+      "sha256": "c44182c726aefe4c7893f7863b28bc03df3cfa112c768a6407772461884e14c1",
+      "reference_nodes": [
+        "4:2",
+        "4:242"
+      ]
+    },
+    {
+      "name": "mouth_mShape",
+      "width": "84",
+      "height": "84",
+      "bytes": 588,
+      "sha256": "471637bd7bdfc8e41b0833b1bb6bc989377a65f6dc261eae41d543851f5dabbd",
+      "reference_nodes": [
+        "4:2",
+        "4:242"
+      ]
+    },
+    {
+      "name": "mouth_fullness",
+      "width": "28",
+      "height": "28",
+      "bytes": 664,
+      "sha256": "cab7bbc9e2f3400bd8dbf443d576b80b2ef7a9e26aa90f87d7fa4b7b92137367",
+      "reference_nodes": [
+        "4:2",
+        "4:242"
+      ]
+    },
+    {
+      "name": "mouth_smile",
+      "width": "28",
+      "height": "28",
+      "bytes": 664,
+      "sha256": "cab7bbc9e2f3400bd8dbf443d576b80b2ef7a9e26aa90f87d7fa4b7b92137367",
+      "reference_nodes": [
+        "4:2",
+        "4:242"
+      ]
+    },
+    {
+      "name": "mouth_teethWhitening",
+      "width": "28",
+      "height": "28",
+      "bytes": 664,
+      "sha256": "cab7bbc9e2f3400bd8dbf443d576b80b2ef7a9e26aa90f87d7fa4b7b92137367",
+      "reference_nodes": [
+        "4:2",
+        "4:242"
+      ]
+    },
+    {
+      "name": "nose_size",
+      "width": "84",
+      "height": "84",
+      "bytes": 722,
+      "sha256": "8c77aed4eed9ab29cd46be3e8299cdd2674065236ee51c7e32d98e62315d0d81",
+      "reference_nodes": [
+        "4:615",
+        "4:182"
+      ]
+    },
+    {
+      "name": "nose_lift",
+      "width": "84",
+      "height": "84",
+      "bytes": 665,
+      "sha256": "6c9e4390e43e8a1cd57b4fe257512fa8adb6816b6999b6e9088df6fac80853ff",
+      "reference_nodes": [
+        "4:615",
+        "4:182"
+      ]
+    },
+    {
+      "name": "nose_ala",
+      "width": "84",
+      "height": "84",
+      "bytes": 881,
+      "sha256": "e39d2bf26012fe563844be7eb0541ac81e3c30e7f807cfd7d637dcfb30a28c19",
+      "reference_nodes": [
+        "4:615",
+        "4:182"
+      ]
+    },
+    {
+      "name": "nose_root",
+      "width": "84",
+      "height": "84",
+      "bytes": 683,
+      "sha256": "81d3b0f5422cd769a23aa446732972eba722029e26c2ab76370a8cea6966d8dd",
+      "reference_nodes": [
+        "4:615",
+        "4:182"
+      ]
+    },
+    {
+      "name": "nose_bridge",
+      "width": "84",
+      "height": "84",
+      "bytes": 831,
+      "sha256": "42f9feebf24abfa73a928de5604b844c72161d5f338743fbd42937de517c8ff8",
+      "reference_nodes": [
+        "4:615",
+        "4:182"
+      ]
+    },
+    {
+      "name": "nose_tip",
+      "width": "84",
+      "height": "84",
+      "bytes": 769,
+      "sha256": "eb5768a675d2cbe1544c813f897c04ef5cd2a433028dc7b640771e52565d0c4c",
+      "reference_nodes": [
+        "4:615",
+        "4:182"
+      ]
+    },
+    {
+      "name": "brow_thickness",
+      "width": "84",
+      "height": "84",
+      "bytes": 551,
+      "sha256": "b907d4fbc7a1500f293e1d260b1cf5d0aeebf83556fd99ca1c3ad3676f7ffbad",
+      "reference_nodes": [
+        "4:62"
+      ]
+    },
+    {
+      "name": "brow_length",
+      "width": "84",
+      "height": "84",
+      "bytes": 555,
+      "sha256": "64772a5024fa06b92a1b39b2cf6f2218d1e7c5d7848cc14c447e2c0174aa6bf5",
+      "reference_nodes": [
+        "4:62"
+      ]
+    },
+    {
+      "name": "brow_spacing",
+      "width": "84",
+      "height": "84",
+      "bytes": 642,
+      "sha256": "de64adc363d32f14c6c1d71ddd56fb52a6928a93a9789c29393e17e2045d29ca",
+      "reference_nodes": [
+        "4:62"
+      ]
+    },
+    {
+      "name": "brow_innerSpacing",
+      "width": "84",
+      "height": "84",
+      "bytes": 643,
+      "sha256": "c993177605d4365e2edda692dbe714d67e0a6d15fa5ddb671529003f0f7c829a",
+      "reference_nodes": [
+        "4:62"
+      ]
+    },
+    {
+      "name": "brow_tilt",
+      "width": "84",
+      "height": "84",
+      "bytes": 556,
+      "sha256": "fce1e103b161e0cacbb975dcdb4d15e9f8c5250b35f283d786420b026efe1657",
+      "reference_nodes": [
+        "4:62"
+      ]
+    },
+    {
+      "name": "brow_peak",
+      "width": "84",
+      "height": "84",
+      "bytes": 705,
+      "sha256": "df8b370bf5905f58be9b4362d35fcc02fbce977dac5017d0ab605b6ea1735247",
+      "reference_nodes": [
+        "4:62"
+      ]
+    },
+    {
+      "name": "slider_thumb",
+      "width": "132",
+      "height": "132",
+      "bytes": 439,
+      "sha256": "f5b64996c18b17e9ba770162e5174642c4495366937d78c98771a1e4d7ec67a1",
+      "reference_nodes": [
+        "4:487"
+      ]
+    },
+    {
+      "name": "protection_off",
+      "width": "120",
+      "height": "66",
+      "bytes": 425,
+      "sha256": "b796715c86eee10ae396f43bbe6190bcfaa407fd6dc20b9d6cb3de1e5d9ea4d5",
+      "reference_nodes": [
+        "4:487"
+      ]
+    },
+    {
+      "name": "action_close",
+      "width": "72",
+      "height": "72",
+      "bytes": 323,
+      "sha256": "fbe2d9310fb9029ba43a7e86e7c6b6750e4df990e1b8ae77d44529e493c296ad",
+      "reference_nodes": [
+        "4:487"
+      ]
+    },
+    {
+      "name": "action_confirm",
+      "width": "72",
+      "height": "72",
+      "bytes": 323,
+      "sha256": "b22aadfdeb960185f284a4458b33e021587e9f38fe0153917ad961109afc9169",
+      "reference_nodes": [
+        "4:487"
+      ]
+    },
+    {
+      "name": "smart_indicator",
+      "width": "36",
+      "height": "36",
+      "bytes": 529,
+      "sha256": "98a0045a7577b0556850e8f1cb4e2cf3dd5e08fc02751a9ccafbb1f2715d6963",
+      "reference_nodes": [
+        "4:487"
+      ]
+    },
+    {
+      "name": "protection_on",
+      "width": "40",
+      "height": "22",
+      "bytes": 401,
+      "sha256": "ceb63dbbfd2efff5e5e7778738f546843a1afaf608a8fc57013bf7fe7dc4b3d1",
+      "reference_nodes": [
+        "68:1443"
+      ]
+    }
+  ],
+  "note": "Exact Figma SVG payloads. Imported photo content and temporary download URLs are omitted."
+}

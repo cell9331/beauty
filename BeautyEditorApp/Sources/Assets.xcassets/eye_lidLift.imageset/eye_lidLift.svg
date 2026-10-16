@@ -1,0 +1,7 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="84" height="84" viewBox="0 0 84 84" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="icon">
+<path id="subject/eye" d="M13.5 45C20.4 34.2 30 28.8 42 28.8C54 28.8 63.6 34.2 70.5 45C63.6 55.8 54 61.2 42 61.2C30 61.2 20.4 55.8 13.5 45Z" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" stroke="#151515"/>
+<path id="subject/iris" d="M51.6 45C51.6 50.3019 47.3019 54.6 42 54.6C36.6981 54.6 32.4 50.3019 32.4 45C32.4 39.6981 36.6981 35.4 42 35.4C47.3019 35.4 51.6 39.6981 51.6 45Z" stroke-width="4.5" stroke="#151515"/>
+<path id="modifier/lift-upper-lid" d="M42 24V11.4M48 17.4L42 11.4L36 17.4" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" stroke="#151515"/>
+</g>
+</svg>
