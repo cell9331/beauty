@@ -14,6 +14,7 @@ Spend time on thinking; you do not need to use the commentary channel to report 
 - 当前产品面是 `BeautySDK` SwiftPM library 与 SDK-owned command-line validation。
 - 原应用/UI 只属于 `archives/legacy-ui/` 历史材料，不是构建、测试或需求输入。
 - 具体约束由专项文档承载；每次改动记录改了什么、为什么、如何验证。
+- 图片效果复现或优化，先测清参考效果，再选择机制：根据可用的原图与参考输出进行对齐和对比，区分几何位移与亮度、颜色变化，按需测量作用范围、强度和边界衰减，再据此选择并验证实现机制。不得仅凭功能名称或现有实现预定算法。
 
 ## 2. 阅读顺序
 
