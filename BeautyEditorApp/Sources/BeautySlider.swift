@@ -2,6 +2,7 @@ import SwiftUI
 import UIKit
 
 struct BeautySlider: UIViewRepresentable {
+    let toolID: String
     let value: Float
     let range: ControlRange
     let enabled: Bool
@@ -10,19 +11,17 @@ struct BeautySlider: UIViewRepresentable {
     let onBegin: () -> Void
     let onChange: (Float) -> Void
     let onEnd: () -> Void
+    let onRelease: (Float) -> Void
 
     func makeUIView(context: Context) -> DesignSlider {
         let slider = DesignSlider()
-        slider.addTarget(context.coordinator, action: #selector(Coordinator.begin), for: .touchDown)
-        slider.addTarget(context.coordinator, action: #selector(Coordinator.changed(_:)), for: .valueChanged)
-        slider.addTarget(context.coordinator, action: #selector(Coordinator.end),
-                         for: [.touchUpInside, .touchUpOutside, .touchCancel])
+        context.coordinator.install(on: slider)
         slider.accessibilityIdentifier = "adjustment-slider"
         return slider
     }
 
     func updateUIView(_ slider: DesignSlider, context: Context) {
-        context.coordinator.parent = self
+        context.coordinator.update(parent: self)
         slider.minimumValue = range.bounds.lowerBound
         slider.maximumValue = range.bounds.upperBound
         slider.value = value
@@ -34,16 +33,59 @@ struct BeautySlider: UIViewRepresentable {
         slider.setNeedsLayout()
     }
 
+    static func dismantleUIView(_ slider: DesignSlider, coordinator: Coordinator) {
+        coordinator.invalidateTouch()
+    }
+
     func makeCoordinator() -> Coordinator { Coordinator(parent: self) }
     @MainActor final class Coordinator: NSObject {
-        var parent: BeautySlider
+        private var parent: BeautySlider
+        private var activeToolID: String?
+        private var discardingTouch = false
         init(parent: BeautySlider) { self.parent = parent }
-        @objc func begin() { parent.onBegin() }
-        @objc func changed(_ slider: DesignSlider) {
-            parent.onChange(slider.value)
-            if !slider.isTracking && !slider.referenceTouchActive { parent.onEnd() }
+
+        func install(on slider: DesignSlider) {
+            slider.addTarget(self, action: #selector(begin), for: .touchDown)
+            slider.addTarget(self, action: #selector(changed(_:)), for: .valueChanged)
+            slider.addTarget(self, action: #selector(released(_:)), for: [.touchUpInside, .touchUpOutside])
+            slider.addTarget(self, action: #selector(cancelled), for: .touchCancel)
         }
-        @objc func end() { parent.onEnd() }
+
+        func update(parent next: BeautySlider) {
+            if next.toolID != parent.toolID || !next.enabled { invalidateTouch() }
+            parent = next
+        }
+
+        func invalidateTouch() {
+            if activeToolID != nil { discardingTouch = true }
+            activeToolID = nil
+        }
+
+        @objc func begin() {
+            guard parent.enabled, !discardingTouch, activeToolID == nil else { return }
+            activeToolID = parent.toolID
+            parent.onBegin()
+        }
+        @objc func changed(_ slider: DesignSlider) {
+            guard !discardingTouch, parent.enabled, slider.isEnabled else { return }
+            parent.onChange(slider.value)
+            // Accessibility changes have no touch-up event. Finish their edit
+            // silently; a real touch release has its own callback below.
+            if activeToolID == nil && !slider.isTracking && !slider.referenceTouchActive { parent.onEnd() }
+        }
+        @objc func released(_ slider: DesignSlider) {
+            let matchesTool = !discardingTouch && activeToolID == parent.toolID
+            activeToolID = nil
+            discardingTouch = false
+            guard matchesTool, parent.enabled, slider.isEnabled else { return }
+            parent.onRelease(slider.value)
+        }
+        @objc func cancelled() {
+            let shouldEnd = !discardingTouch
+            activeToolID = nil
+            discardingTouch = false
+            if shouldEnd { parent.onEnd() }
+        }
     }
 }
 

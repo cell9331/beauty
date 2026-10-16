@@ -1,5 +1,29 @@
 # 本地验证
 
+## 2026-10-16 Demo滑杆松手console日志
+
+所有者授权为每个可调工具增加松手日志。真实touch-up与cancel/非touch收尾分开，
+同一手势只输出一次，保留最终浮点值、历史合并和release flush；换工具/禁用后丢弃旧手势，
+四个UI闭包按捕获toolID校验，防止SwiftUI刷新前旧触摸串到新工具。
+15字段固定白名单JSON仅打印stdout，不含图片/路径/关键点/蒙版/错误文本，不改SDK日志或算法。
+
+复用已有 **iPhone15Pro/iOS17.5/2CE927C9-9303-4A9B-9C03-F28C42045186**，
+现有字体/竖屏；稳定`.build`增量build-for-testing两次均成功，无clean。每次设备阶段由共享
+claim CLI原子领取并释放；单destination、parallel-testing NO、maximum并发destination 1。
+仅按真实方法名筛选test-without-building，本地ignored证据根为`.verification/slider-release-logging/`。
+
+| 实际证据 | 结果与范围 |
+| --- | --- |
+| `native.xcresult` | **7通过/1失败/0跳过**：4个日志model方法通过，覆盖52个可调工具149次release的字段/数值/正负范围/cap/15键白名单/JSON/ISO时间、最终值/单undo、静默边界及preview pending/flush；2个事件桥方法和六分类真实UI通过。取消/AX桥方法错误假设离屏legacy UISlider的系统accessibility方法必发valueChanged，实际2 !>2；原失败保留。 |
+| 首轮后的修正 | 非touch `.valueChanged` 仍严格验证静默收尾与零release；只有自定义reference AX方法断言会发事件，不改系统AX生产行为。同时根据独立review补齐旧手势丢弃和捕获toolID校验，避免修改/误报新工具。日志model未再改，不重复其已通过4方法。 |
+| `native-final.xcresult` | **5/0/0**：4个原生事件/整合方法（inside/outside、去重、cancel/AX、换ID/禁用/移除、默认console logger与单步undo）+六分类实际拖动/端点/undo/redo/末项/确认恢复取消及底部白背景UI；独立xcresult摘要一致。 |
+| 默认stdout核对 | host unit整合方法通过生产默认`print`输出**2条**：reference脸宽和legacy嘴大小；独立解析前缀、真实工具ID、最终值与精确15字段通过。此处不是把注入sink冒充真实stdout，也不声称已从UI测试子App捕获6条stdout。 |
+| 静态与截图 | bindings/diff检查通过；保存六分类全容器截图，实际查看本轮脸/眉截图，白色滑杆与底部避让保持。未新加产品UI或日志展示面板。 |
+
+本轮9个不同相关方法分别通过（首轮4 model +末轮5），不称为一次9/0/0或全App/SDK回归。
+控件外抬手路径仅以UIControl事件方法验证，六分类UI使用正常内部拖动；未执行物理VoiceOver、
+扩展字体/方向/设备矩阵、真机安装、Release独立执行或图片效果新验收。
+
 ## 2026-10-16 同仓库当前 SDK 与白色滑杆
 
 三个依赖入口（project.yml、生成工程、Package.swift）均固定同仓库 `../BeautySDK`，

@@ -3,6 +3,186 @@ import XCTest
 @testable import BeautyEditor
 
 @MainActor final class PanelLayoutTests: XCTestCase {
+    func testSliderTouchReleaseBridgeEmitsOnceForInsideAndOutside() {
+        for reference in [false, true] {
+            var began = 0
+            var changes: [Float] = []
+            var releases: [Float] = []
+            var silentEnds = 0
+            let parent = BeautySlider(toolID: "face.width", value: 0, range: .signed,
+                                      enabled: true, title: "脸宽", referenceStyle: reference,
+                                      onBegin: { began += 1 }, onChange: { changes.append($0) },
+                                      onEnd: { silentEnds += 1 }, onRelease: { releases.append($0) })
+            let coordinator = parent.makeCoordinator()
+            let slider = DesignSlider(frame: CGRect(x: 0, y: 0, width: 280, height: 44))
+            slider.minimumValue = -100
+            slider.maximumValue = 100
+            slider.referenceStyle = reference
+            coordinator.install(on: slider)
+            let terminalEvents: [UIControl.Event] = [.touchUpInside, .touchUpOutside]
+            for (index, terminal) in terminalEvents.enumerated() {
+                slider.sendActions(for: .touchDown)
+                slider.sendActions(for: .touchDown)
+                XCTAssertEqual(began, index + 1, "Duplicate down events must share one touch session")
+                for value: Float in [-37.125, 0, 62.5] {
+                    slider.value = value
+                    slider.sendActions(for: .valueChanged)
+                }
+                XCTAssertEqual(releases.count, index, "Continuous changes must not emit release callbacks")
+                XCTAssertEqual(silentEnds, 0, "An active touch must not be finalized before its release")
+                slider.sendActions(for: terminal)
+                // Both terminal events, or a duplicate event, still end only
+                // the session established by the latest touch-down.
+                slider.sendActions(for: .touchUpInside)
+                slider.sendActions(for: .touchUpOutside)
+                XCTAssertEqual(releases, Array(repeating: 62.5, count: index + 1))
+                XCTAssertEqual(silentEnds, 0, "The release callback owns touch finalization")
+            }
+            XCTAssertEqual(changes, [-37.125, 0, 62.5, -37.125, 0, 62.5])
+        }
+    }
+
+    func testSliderCancellationAndAccessibilityChangesDoNotEmitTouchRelease() {
+        for reference in [false, true] {
+            var releases: [Float] = []
+            var changes = 0
+            var silentEnds = 0
+            let parent = BeautySlider(toolID: "eye.size", value: 0, range: .signed,
+                                      enabled: true, title: "大小", referenceStyle: reference,
+                                      onBegin: {}, onChange: { _ in changes += 1 },
+                                      onEnd: { silentEnds += 1 }, onRelease: { releases.append($0) })
+            let coordinator = parent.makeCoordinator()
+            let slider = DesignSlider()
+            slider.minimumValue = -100
+            slider.maximumValue = 100
+            slider.referenceStyle = reference
+            coordinator.install(on: slider)
+            slider.sendActions(for: .touchDown)
+            slider.value = 25
+            slider.sendActions(for: .valueChanged)
+            let beforeCancel = silentEnds
+            slider.sendActions(for: .touchCancel)
+            XCTAssertEqual(silentEnds, beforeCancel + 1, "Cancellation must retain silent edit finalization")
+            slider.sendActions(for: .touchUpInside)
+            slider.sendActions(for: .touchUpOutside)
+            XCTAssertTrue(releases.isEmpty)
+            // No touch-down: these are non-touch value changes and the native
+            // accessibility entry points, not a simulated finger release.
+            slider.value = 40
+            let beforeNonTouch = silentEnds
+            slider.sendActions(for: .valueChanged)
+            XCTAssertEqual(silentEnds, beforeNonTouch + 1)
+            let beforeAccessibility = changes
+            slider.accessibilityIncrement()
+            slider.accessibilityDecrement()
+            if reference {
+                XCTAssertGreaterThan(changes, beforeAccessibility)
+            }
+            XCTAssertGreaterThan(silentEnds, beforeCancel + 1)
+            slider.sendActions(for: .touchUpInside)
+            XCTAssertTrue(releases.isEmpty)
+        }
+    }
+
+    func testSliderTouchContextInvalidatesOnToolChangeDisableAndRemoval() {
+        for reference in [false, true] {
+            var releases: [Float] = []
+            var changes: [Float] = []
+            func parent(_ toolID: String, enabled: Bool = true) -> BeautySlider {
+                BeautySlider(toolID: toolID, value: 0, range: .signed,
+                             enabled: enabled, title: "大小", referenceStyle: reference,
+                             onBegin: {}, onChange: { changes.append($0) }, onEnd: {},
+                             onRelease: { releases.append($0) })
+            }
+            let initial = parent("eye.size")
+            let coordinator = initial.makeCoordinator()
+            let slider = DesignSlider()
+            slider.maximumValue = 100
+            slider.value = 25
+            slider.referenceStyle = reference
+            coordinator.install(on: slider)
+            slider.sendActions(for: .touchDown)
+            coordinator.update(parent: parent("eye.size"))
+            slider.sendActions(for: .touchUpInside)
+            XCTAssertEqual(releases, [25], "An ordinary view update must retain the current touch")
+
+            slider.sendActions(for: .touchDown)
+            coordinator.update(parent: parent("eye.length"))
+            slider.value = 40
+            slider.sendActions(for: .valueChanged)
+            slider.sendActions(for: .touchDown)
+            slider.sendActions(for: .valueChanged)
+            XCTAssertTrue(changes.isEmpty, "An invalidated gesture must not change the newly selected tool")
+            slider.sendActions(for: .touchUpInside)
+            XCTAssertEqual(releases, [25], "A stale touch must not report the newly selected tool")
+            slider.sendActions(for: .valueChanged)
+            XCTAssertEqual(changes, [40], "Non-touch changes must resume after the discarded gesture ends")
+
+            slider.sendActions(for: .touchDown)
+            coordinator.update(parent: parent("eye.length", enabled: false))
+            coordinator.update(parent: parent("eye.length"))
+            slider.value = 60
+            slider.sendActions(for: .valueChanged)
+            XCTAssertEqual(changes, [40], "Re-enabling must keep discarding the unfinished gesture")
+            slider.sendActions(for: .touchUpOutside)
+            XCTAssertEqual(releases, [25], "Re-enabling must not revive a cancelled touch")
+
+            slider.sendActions(for: .touchDown)
+            slider.isEnabled = false
+            slider.sendActions(for: .touchUpInside)
+            slider.isEnabled = true
+            slider.sendActions(for: .touchUpInside)
+            XCTAssertEqual(releases, [25], "Disabled terminal events must consume the stale touch")
+
+            slider.sendActions(for: .touchDown)
+            BeautySlider.dismantleUIView(slider, coordinator: coordinator)
+            slider.sendActions(for: .touchUpInside)
+            XCTAssertEqual(releases, [25], "Removed controls must not report a later terminal event")
+        }
+    }
+
+    func testSliderNativeEventBridgeUsesDefaultConsoleLoggerAndOneUndo() async throws {
+        for toolID in ["face.width", "mouth.size"] {
+            let model = EditorModel(renderer: FakeRenderer())
+            model.importPhoto(TestImage.encoded())
+            let deadline = Date().addingTimeInterval(5)
+            while (model.photo == nil || model.isLoading), Date() < deadline {
+                try await Task.sleep(for: .milliseconds(10))
+            }
+            XCTAssertNotNil(model.photo)
+            XCTAssertFalse(model.controlsDisabled)
+            let tool = try XCTUnwrap(ToolCatalog.find(toolID))
+            model.selectCategory(tool.category)
+            model.selectTool(tool)
+            let parent = BeautySlider(toolID: toolID, value: model.value, range: tool.range,
+                                      enabled: true, title: tool.title, referenceStyle: tool.usesReferenceSlider,
+                                      onBegin: model.beginAdjustment, onChange: model.updateValue,
+                                      onEnd: model.endAdjustment, onRelease: model.releaseSliderAdjustment)
+            let coordinator = parent.makeCoordinator()
+            let slider = DesignSlider(frame: CGRect(x: 0, y: 0, width: 280, height: 44))
+            slider.minimumValue = tool.range.bounds.lowerBound
+            slider.maximumValue = tool.range.bounds.upperBound
+            slider.referenceStyle = tool.usesReferenceSlider
+            coordinator.install(on: slider)
+            slider.sendActions(for: .touchDown)
+            for value: Float in [-25.5, 0, 37.125] {
+                slider.value = value
+                slider.sendActions(for: .valueChanged)
+            }
+            XCTAssertFalse(model.canUndo, "Continuous changes must remain one unfinished transaction")
+            slider.sendActions(for: .touchUpInside)
+            slider.sendActions(for: .touchUpOutside)
+            XCTAssertEqual(model.value, 37.125, accuracy: 0.0001, toolID)
+            XCTAssertTrue(model.canUndo)
+            model.undo()
+            XCTAssertEqual(model.value, 0, accuracy: 0.0001, toolID)
+            XCTAssertFalse(model.canUndo, "One release must produce exactly one undo entry")
+            XCTAssertTrue(model.canRedo)
+            model.redo()
+            XCTAssertEqual(model.value, 37.125, accuracy: 0.0001, toolID)
+        }
+    }
+
     func testFirstFiveReferenceTrackHasCenteredFillAndContinuousValues() throws {
         let slider = DesignSlider(frame: CGRect(x: 0, y: 0, width: 280, height: 44))
         slider.minimumValue = -100

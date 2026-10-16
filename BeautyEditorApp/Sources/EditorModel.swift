@@ -8,6 +8,32 @@ struct SharedPhoto: Identifiable {
     let url: URL
 }
 
+/// Console-only allowlist: user controls and preview state, never image/support data.
+struct SliderReleaseLog: Encodable {
+    let timestamp: String
+    let category: String
+    let toolID: String
+    let toolName: String
+    let sdkField: String
+    let startValue: Float
+    let value: Float
+    let minimumValue: Float
+    let maximumValue: Float
+    let sdkValue: Float
+    let sdkCap: Float
+    let revision: Int
+    let previewRevision: Int
+    let previewPending: Bool
+    let backgroundProtection: Bool
+
+    var consoleLine: String? {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
+        guard let data = try? encoder.encode(self), let json = String(data: data, encoding: .utf8) else { return nil }
+        return "[BeautyEditor][slider_release] " + json
+    }
+}
+
 @MainActor @Observable
 final class EditorModel {
     private(set) var photo: ImportedPhoto?
@@ -38,6 +64,7 @@ final class EditorModel {
 
     @ObservationIgnored private let renderer: any PhotoRendering
     @ObservationIgnored private let photoWriter: any PhotoLibrarySaving
+    @ObservationIgnored private let adjustmentLog: (String) -> Void
     @ObservationIgnored private var renderTask: Task<Void, Never>?
     @ObservationIgnored private var previewTimer: Task<Void, Never>?
     @ObservationIgnored private var lastPreviewStart: ContinuousClock.Instant?
@@ -57,10 +84,12 @@ final class EditorModel {
 
     init(renderer: any PhotoRendering = PhotoRenderer(),
          photoWriter: any PhotoLibrarySaving = PhotoLibraryWriter(),
-         previewInterval: Duration = .milliseconds(16)) {
+         previewInterval: Duration = .milliseconds(16),
+         adjustmentLog: @escaping (String) -> Void = { print($0) }) {
         self.renderer = renderer
         self.photoWriter = photoWriter
         self.previewInterval = max(.zero, previewInterval)
+        self.adjustmentLog = adjustmentLog
     }
 
     var selectedTool: ToolDefinition { ToolCatalog.find(selectedToolID)! }
@@ -160,6 +189,24 @@ final class EditorModel {
         history.record(previous, replacing: snapshot)
         dragStart = nil
         flushPreview()
+    }
+
+    /// Only native touch-up calls this. Other transaction/lifecycle endings stay silent.
+    func releaseSliderAdjustment(_ finalValue: Float) {
+        guard let initial = dragStart, photo != nil, !controlsDisabled, selectedTool.available else { return }
+        let tool = selectedTool
+        updateValue(finalValue)
+        endAdjustment()
+        let event = SliderReleaseLog(
+            timestamp: Date().ISO8601Format(), category: tool.category.rawValue,
+            toolID: tool.id, toolName: tool.title, sdkField: tool.field!,
+            startValue: tool.value(in: initial.parameters), value: tool.value(in: snapshot.parameters),
+            minimumValue: tool.range.bounds.lowerBound, maximumValue: tool.range.bounds.upperBound,
+            sdkValue: tool.sdkValue(in: snapshot.parameters), sdkCap: tool.maximumSDKStrength,
+            revision: revision, previewRevision: displayedRevision,
+            previewPending: isRendering || pendingPreview != nil || displayedRevision != revision,
+            backgroundProtection: snapshot.protectBackground)
+        if let line = event.consoleLine { adjustmentLog(line) }
     }
 
     func undo() {

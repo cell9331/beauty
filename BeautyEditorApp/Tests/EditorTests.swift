@@ -1757,3 +1757,207 @@ actor FakeRenderer: PhotoRendering {
         XCTAssertTrue(predicate(), "State did not settle")
     }
 }
+
+@MainActor final class SliderReleaseLoggingTests: XCTestCase {
+    private let prefix = "[BeautyEditor][slider_release] "
+    private let allowedFields: Set<String> = [
+        "timestamp", "category", "toolID", "toolName", "sdkField", "startValue", "value",
+        "minimumValue", "maximumValue", "sdkValue", "sdkCap", "revision", "previewRevision",
+        "previewPending", "backgroundProtection"
+    ]
+
+    func testEveryAvailableToolLogsOneSortedPrivateDataFreeRecordPerRelease() async throws {
+        var lines: [String] = []
+        let model = EditorModel(renderer: FakeRenderer(), adjustmentLog: { lines.append($0) })
+        try await load(model)
+        let tools = ToolCatalog.all.filter(\.available)
+        XCTAssertEqual(tools.count, 52)
+        for tool in tools {
+            model.selectCategory(tool.category)
+            model.selectTool(tool)
+            let values: [Float] = tool.range == .signed ? [-37.125, 0, 41.75] : [0, 41.75]
+            for requested in values {
+                let count = lines.count
+                let startValue = model.value
+                model.beginAdjustment()
+                model.releaseSliderAdjustment(requested)
+                XCTAssertEqual(lines.count, count + 1, tool.id)
+                let record = try parse(try XCTUnwrap(lines.last))
+                XCTAssertEqual(record["category"] as? String, tool.category.rawValue, tool.id)
+                XCTAssertEqual(record["toolID"] as? String, tool.id)
+                XCTAssertEqual(record["toolName"] as? String, tool.title, tool.id)
+                XCTAssertEqual(record["sdkField"] as? String, tool.field, tool.id)
+                XCTAssertEqual(try number(record, "startValue"), Double(startValue), accuracy: 0.0001, tool.id)
+                XCTAssertEqual(try number(record, "value"), Double(requested), accuracy: 0.0001, tool.id)
+                XCTAssertEqual(try number(record, "minimumValue"), Double(tool.range.bounds.lowerBound), tool.id)
+                XCTAssertEqual(try number(record, "maximumValue"), Double(tool.range.bounds.upperBound), tool.id)
+                XCTAssertEqual(try number(record, "sdkValue"), Double(tool.sdkValue(in: model.snapshot.parameters)),
+                               accuracy: 0.000001, tool.id)
+                XCTAssertEqual(try number(record, "sdkCap"), Double(tool.maximumSDKStrength), accuracy: 0.000001, tool.id)
+                XCTAssertEqual(try number(record, "revision"), Double(model.revision), tool.id)
+                XCTAssertEqual(try number(record, "previewRevision"), Double(model.displayedRevision), tool.id)
+                XCTAssertEqual(record["previewPending"] as? Bool, model.displayedRevision != model.revision, tool.id)
+                XCTAssertEqual(record["backgroundProtection"] as? Bool, model.snapshot.protectBackground, tool.id)
+            }
+        }
+        try await wait { !model.isRendering && model.displayedRevision == model.revision }
+    }
+
+    func testFinalReleaseValueLogsOnceAndKeepsOneUndoStepForAllTicks() async throws {
+        var lines: [String] = []
+        let model = EditorModel(renderer: FakeRenderer(), adjustmentLog: { lines.append($0) })
+        try await load(model)
+        let initial = model.snapshot
+        model.beginAdjustment()
+        model.updateValue(12.5)
+        model.updateValue(-22.75)
+        model.updateValue(30)
+        XCTAssertTrue(lines.isEmpty)
+        model.releaseSliderAdjustment(37.125)
+        XCTAssertEqual(lines.count, 1)
+        let record = try parse(try XCTUnwrap(lines.first))
+        XCTAssertEqual(try number(record, "startValue"), 0)
+        XCTAssertEqual(try number(record, "value"), 37.125, accuracy: 0.0001)
+        XCTAssertEqual(try number(record, "sdkValue"), 0.22275, accuracy: 0.000001)
+        XCTAssertEqual(model.value, 37.125, accuracy: 0.0001)
+        XCTAssertEqual(model.history.undoStack.count, 1)
+        let final = model.snapshot
+        model.endAdjustment()
+        model.releaseSliderAdjustment(75)
+        XCTAssertEqual(model.snapshot, final)
+        XCTAssertEqual(lines.count, 1)
+        model.undo()
+        XCTAssertEqual(model.snapshot, initial)
+        model.redo()
+        XCTAssertEqual(model.snapshot, final)
+        XCTAssertEqual(lines.count, 1, "Undo, redo and generic adjustment ends must stay silent")
+        try await wait { !model.isRendering && model.displayedRevision == model.revision }
+    }
+
+    func testOnlyRealReleaseSessionsLogIncludingUnchangedValue() async throws {
+        var lines: [String] = []
+        let model = EditorModel(renderer: FakeRenderer(), adjustmentLog: { lines.append($0) })
+        model.releaseSliderAdjustment(20)
+        model.beginAdjustment()
+        model.releaseSliderAdjustment(20)
+        XCTAssertTrue(lines.isEmpty, "No photo cannot produce an adjustment record")
+        try await load(model)
+        model.releaseSliderAdjustment(20)
+        XCTAssertTrue(lines.isEmpty, "A release without a session must stay silent")
+
+        model.beginAdjustment()
+        model.releaseSliderAdjustment(0)
+        XCTAssertEqual(lines.count, 1, "An unchanged real gesture still has one release")
+        let unchanged = try parse(try XCTUnwrap(lines.first))
+        XCTAssertEqual(try number(unchanged, "startValue"), 0)
+        XCTAssertEqual(try number(unchanged, "value"), 0)
+        XCTAssertTrue(model.history.undoStack.isEmpty)
+        model.releaseSliderAdjustment(20)
+        XCTAssertEqual(model.value, 0)
+
+        model.beginAdjustment()
+        model.updateValue(20)
+        model.endAdjustment()
+        model.beginAdjustment()
+        model.updateValue(30)
+        model.selectCategory(.mouth)
+        model.beginAdjustment()
+        model.updateValue(-25)
+        model.selectTool(try XCTUnwrap(ToolCatalog.find("mouth.width")))
+        model.beginAdjustment()
+        model.updateValue(15)
+        model.confirmEditing()
+        model.resumeEditing()
+        model.beginAdjustment()
+        model.updateValue(25)
+        model.cancelEditing()
+        model.releaseSliderAdjustment(30)
+        XCTAssertEqual(lines.count, 1, "Updates, generic end, switching, confirmation and cancellation stay silent")
+
+        model.resumeEditing()
+        model.beginAdjustment()
+        model.updateValue(35)
+        model.importPhoto(TestImage.encoded())
+        XCTAssertTrue(model.controlsDisabled)
+        model.releaseSliderAdjustment(40)
+        XCTAssertEqual(lines.count, 1, "A blocked release must stay silent")
+        try await wait { !model.isLoading && model.photo != nil }
+        model.releaseSliderAdjustment(40)
+        XCTAssertEqual(lines.count, 1, "Replacement clears the previous gesture")
+    }
+
+    func testReleaseFlushesLatestRequestAndReportsActualDisplayedPreviewRevision() async throws {
+        var lines: [String] = []
+        let renderer = FakeRenderer()
+        let model = EditorModel(renderer: renderer, previewInterval: .seconds(2),
+                                adjustmentLog: { lines.append($0) })
+        try await load(model)
+        model.updateValue(20)
+        try await wait { !model.isRendering && model.displayedRevision == model.revision }
+        model.endAdjustment()
+        let displayedBeforeRelease = model.displayedRevision
+        let countBeforeRelease = await renderer.renderCount
+        XCTAssertEqual(countBeforeRelease, 1)
+
+        model.beginAdjustment()
+        model.updateValue(30)
+        model.updateValue(40)
+        let start = ContinuousClock.now
+        model.releaseSliderAdjustment(90)
+        XCTAssertEqual(lines.count, 1)
+        let pending = try parse(try XCTUnwrap(lines.first))
+        XCTAssertEqual(try number(pending, "startValue"), 20, accuracy: 0.0001)
+        XCTAssertEqual(try number(pending, "value"), 90, accuracy: 0.0001)
+        XCTAssertEqual(try number(pending, "revision"), Double(model.revision))
+        XCTAssertEqual(try number(pending, "previewRevision"), Double(displayedBeforeRelease))
+        XCTAssertLessThan(try number(pending, "previewRevision"), try number(pending, "revision"))
+        XCTAssertEqual(pending["previewPending"] as? Bool, true)
+        try await wait { !model.isRendering && model.displayedRevision == model.revision }
+        XCTAssertLessThan(start.duration(to: .now), .seconds(1), "Release must bypass the two-second timer")
+        let values = await renderer.previewValues
+        XCTAssertEqual(values.count, 2, "Intermediate values must remain coalesced")
+        XCTAssertEqual(try XCTUnwrap(values.last), 0.54, accuracy: 0.0001)
+        XCTAssertEqual(model.history.undoStack.count, 2)
+
+        model.beginAdjustment()
+        model.releaseSliderAdjustment(90)
+        XCTAssertEqual(lines.count, 2)
+        let settled = try parse(try XCTUnwrap(lines.last))
+        XCTAssertEqual(settled["previewPending"] as? Bool, false)
+        XCTAssertEqual(try number(settled, "previewRevision"), try number(settled, "revision"))
+    }
+
+    private func parse(_ line: String) throws -> [String: Any] {
+        XCTAssertTrue(line.hasPrefix(prefix))
+        XCTAssertFalse(line.contains("\n") || line.contains("\r"), "Each release must produce one line")
+        let json = String(line.dropFirst(prefix.count))
+        let record = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(json.utf8)) as? [String: Any])
+        XCTAssertEqual(Set(record.keys), allowedFields, "Only control and revision metadata may be logged")
+        let positions = try allowedFields.sorted().map { key in
+            try XCTUnwrap(json.range(of: "\"" + key + "\":")).lowerBound
+        }
+        XCTAssertEqual(positions, positions.sorted(), "JSON keys must have a stable sorted order")
+        let timestamp = try XCTUnwrap(record["timestamp"] as? String)
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        let precise = formatter.date(from: timestamp)
+        formatter.formatOptions = [.withInternetDateTime]
+        XCTAssertNotNil(precise ?? formatter.date(from: timestamp), "Timestamp must be ISO8601")
+        return record
+    }
+
+    private func number(_ record: [String: Any], _ key: String) throws -> Double {
+        try XCTUnwrap(record[key] as? NSNumber, key).doubleValue
+    }
+
+    private func load(_ model: EditorModel) async throws {
+        model.importPhoto(TestImage.encoded())
+        try await wait { !model.isLoading && model.photo != nil }
+    }
+
+    private func wait(_ predicate: () -> Bool) async throws {
+        let deadline = Date().addingTimeInterval(5)
+        while !predicate(), Date() < deadline { try await Task.sleep(for: .milliseconds(10)) }
+        XCTAssertTrue(predicate(), "State did not settle")
+    }
+}

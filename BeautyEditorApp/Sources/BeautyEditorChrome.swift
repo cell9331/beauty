@@ -23,14 +23,26 @@ struct BeautyEditorChrome: View {
     }
 
     private var adjustmentRow: some View {
-        HStack(spacing: 12) {
-            BeautySlider(value: model.value, range: model.selectedTool.range,
+        let toolID = model.selectedTool.id
+        return HStack(spacing: 12) {
+            BeautySlider(toolID: toolID,
+                         value: model.value, range: model.selectedTool.range,
                          enabled: !model.controlsDisabled && model.selectedTool.available,
                          title: model.selectedTool.title,
                          referenceStyle: model.selectedTool.usesReferenceSlider,
-                         onBegin: model.beginAdjustment,
-                         onChange: model.updateValue,
-                         onEnd: model.endAdjustment)
+                         onBegin: {
+                             guard model.selectedToolID == toolID else { return }
+                             model.beginAdjustment()
+                         }, onChange: { value in
+                             guard model.selectedToolID == toolID else { return }
+                             model.updateValue(value)
+                         }, onEnd: {
+                             guard model.selectedToolID == toolID else { return }
+                             model.endAdjustment()
+                         }, onRelease: { value in
+                             guard model.selectedToolID == toolID else { return }
+                             model.releaseSliderAdjustment(value)
+                         })
                 .frame(height: 44)
                 .background(Color.white)
                 .accessibilityIdentifier("adjustment-slider")

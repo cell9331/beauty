@@ -151,6 +151,19 @@ safeAreaInset保持。宿主直接构建同仓库当前SDK源码，包含所有�
   SDK 仍执行自身资源/输入/计算预算 admission。全尺寸失败会提示，保留编辑状态。
   编辑状态在内存中，退出 App 后不恢复。2026-10-12 已在所有者 iPad 上验证鼻部预览、原尺寸导出和实际 CPU/Metal 输出，见 VALIDATION；iPad UI 布局、横屏和超大字体专项仍未验证。
 
+## Demo 滑杆松手日志
+
+每个可调工具在手指于控件内或控件外抬起时向控制台打印一条
+`[BeautyEditor][slider_release] {JSON}`，Debug和Release均可用；在Xcode控制台搜索该前缀。
+包含UTC时间、分类、工具ID/名称、SDK字段、手势初值/最终浮点值、滑杆范围、实际SDK请求值/cap、
+参数版本、已显示预览版本、预览待更新标志和背景保护开关。`value`是显示范围内的调节值，
+`sdkValue`是映射后的SDK请求值；`previewPending:true`表示最终请求尚未显示，不能当成效果已完成。
+
+`slider_release`在连续拖动时不逐帧打印；一次手势即使数值没变化也只打印一次。取消触摸、切换工具/分类、
+进入后台和VoiceOver的非触摸收尾不冒充手指松手。原来的历史合并与松手flush保持。
+日志采用固定字段白名单，只写stdout；App不写日志文件、不上传、不使用OS日志持久化，
+不打印照片/路径/文件名、EXIF、关键点/蒙版或原始错误。SDK自身的诊断配置与存储边界不变。
+
 ## 验证
 
 实际执行、截图检查与限制见 [VALIDATION.md](VALIDATION.md)。默认测试输入是代码生成图，
