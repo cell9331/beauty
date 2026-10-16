@@ -59,6 +59,7 @@ enum ToolCatalog {
         ToolDefinition(id: "nose.tip", title: "鼻尖", category: .nose, field: "noseTipSize", range: .signed, promo: false, pro: false, smart: false, note: nil),
         ToolDefinition(id: "brow.thickness", title: "粗细", category: .brow, field: "eyebrowThickness", range: .signed, promo: false, pro: false, smart: false, note: nil),
         ToolDefinition(id: "brow.length", title: "长短", category: .brow, field: "eyebrowLength", range: .signed, promo: false, pro: false, smart: false, note: nil),
+        ToolDefinition(id: "brow.positionY", title: "上下", category: .brow, field: "eyebrowYPosition", range: .signed, promo: false, pro: false, smart: false, note: nil),
         ToolDefinition(id: "brow.spacing", title: "间距", category: .brow, field: "eyebrowSpacing", range: .signed, promo: false, pro: false, smart: false, note: nil),
         ToolDefinition(id: "brow.innerSpacing", title: "眉头间距", category: .brow, field: "eyebrowHeadSpacing", range: .signed, promo: false, pro: false, smart: false, note: nil),
         ToolDefinition(id: "brow.tilt", title: "倾斜", category: .brow, field: "eyebrowTilt", range: .signed, promo: false, pro: false, smart: false, note: nil),
@@ -72,6 +73,7 @@ enum ToolCatalog {
         "eye.length": "arrow.left.and.right",
         "eye.spacing": "arrow.left.and.right",
         "eye.irisSize": "circle.circle",
+        "brow.positionY": "arrow.up.and.down",
     ]
     // Mirrors the SDK resolver's admission caps, checked by check-sdk-bindings.py.
     // 100 on the slider means the admitted maximum rather than an early plateau.
@@ -129,6 +131,7 @@ enum ToolCatalog {
         "noseTipSize": 0.30,
         "eyebrowThickness": 0.25,
         "eyebrowLength": 0.25,
+        "eyebrowYPosition": 0.25,
         "eyebrowSpacing": 0.25,
         "eyebrowHeadSpacing": 0.25,
         "eyebrowTilt": 0.25,

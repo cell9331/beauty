@@ -21,7 +21,7 @@ final class BeautyStillImageGeometryStageTests: XCTestCase {
             XCTAssertEqual(counters.changedPixelCount, expected)
             XCTAssertTrue(counters.preservesAlpha)
             XCTAssertTrue(counters.preservesExtent)
-            XCTAssertEqual(Mirror(reflecting: counters).children.count, 8)
+            XCTAssertEqual(Mirror(reflecting: counters).children.count, 9)
         }
     }
 

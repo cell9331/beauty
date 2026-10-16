@@ -169,13 +169,15 @@ package enum BeautyIrisPreviewCutpoint {
                 points: stage.controlPoints.compactMap(BeautyGeometryEffectPipeline.RenderableWarpPoint.init))
         let nasal = stage.applyingContinuousNose(to: selectedGeometry)
         let mouth = stage.applyingContinuousMouth(to: nasal)
-        let eyebrows = stage.applyingContinuousEyebrows(to: mouth)
+        var eyebrowAdmittedSides = 0
+        let eyebrows = stage.applyingContinuousEyebrows(to: mouth,
+            onAppliedSideCount: { eyebrowAdmittedSides = $0 })
         let outputRGBA = stage.applyingTranslation(to: stage.applyingContinuousContour(to: eyebrows))
         try requireOpaque(outputRGBA, width: baseline.width, height: baseline.height)
         let output = CIImage(bitmapData: Data(outputRGBA), bytesPerRow: baseline.width * 4,
                              size: CGSize(width: baseline.width, height: baseline.height),
                              format: .RGBA8, colorSpace: resources.sRGB)
-        return Result(output: output, metrics: [
+        var metrics: [String: Double] = [
             "beauty.irisPreview.originalFirstCPU": 1,
             "beauty.irisPreview.maximumEdge": Double(maximumPreviewEdge),
             "beauty.irisPreview.sourceWidth": Double(original.width),
@@ -188,7 +190,11 @@ package enum BeautyIrisPreviewCutpoint {
             "beauty.irisPreview.colorTexturePasses": 1 + previewBaselinePrefixPasses,
             "beauty.irisPreview.sourceRefinerPasses": 1 + previewBaselinePrefixPasses,
             "beauty.irisPreview.postGeometryPasses": 1
-        ])
+        ]
+        if BeautyBackendDiagnostics.requestsEyebrowAdmission(plan) {
+            metrics[BeautyBackendDiagnostics.eyebrowAdmissionMetric] = Double(eyebrowAdmittedSides)
+        }
+        return Result(output: output, metrics: metrics)
     }
 
     private static func requireOpaque(_ rgba: [UInt8], width: Int, height: Int) throws {

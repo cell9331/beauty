@@ -11,6 +11,11 @@ package struct BeautyCPUBackend: BeautyBackendExecutor, Sendable {
     package init() {}
 
     package func execute(_ request: BeautyBackendRequest) throws -> BeautyBackendResult {
+        var eyebrowAdmittedSideCount: Int? = request.inputKind == .stillImage &&
+            BeautyBackendDiagnostics.requestsEyebrowAdmission(request.plan) ? 0 : nil
+        let onEyebrowAppliedSideCount: (Int) -> Void = { count in
+            if eyebrowAdmittedSideCount != nil { eyebrowAdmittedSideCount = count }
+        }
         let output: BeautyBackendOutput
         switch request.input {
         case .pixelBuffer(let pixelBuffer):
@@ -32,7 +37,8 @@ package struct BeautyCPUBackend: BeautyBackendExecutor, Sendable {
                     plan: request.plan,
                     renderQuality: request.renderQuality,
                     selectedFaceObservation: request.selectedFaceSupport,
-                    textureExclusionMask: request.textureExclusionMask
+                    textureExclusionMask: request.textureExclusionMask,
+                    onEyebrowAppliedSideCount: onEyebrowAppliedSideCount
                 )
             } else {
                 rendered = BeautyColorEffectPipeline.apply(
@@ -40,7 +46,8 @@ package struct BeautyCPUBackend: BeautyBackendExecutor, Sendable {
                     plan: request.plan,
                     renderQuality: request.renderQuality,
                     selectedFaceObservation: request.selectedFaceSupport,
-                    textureExclusionMask: request.textureExclusionMask
+                    textureExclusionMask: request.textureExclusionMask,
+                    onEyebrowAppliedSideCount: onEyebrowAppliedSideCount
                 )
             }
             output = .stillImage(rendered)
@@ -50,7 +57,8 @@ package struct BeautyCPUBackend: BeautyBackendExecutor, Sendable {
         let diagnostics = BeautyBackendDiagnostics(
             width: dimensions.width,
             height: dimensions.height,
-            compositionSummary: request.compositionSummary
+            compositionSummary: request.compositionSummary,
+            eyebrowAdmittedSideCount: eyebrowAdmittedSideCount
         )
         return try BeautyBackendResult(
             output: output,

@@ -416,6 +416,7 @@ final class EditorModel {
         pendingPreview = (photo, snapshot, revision)
         isRendering = true
         successMessage = nil
+        detectionMessage = nil
         suspendDebugAnalysis()
         if immediate { flushPreview() } else { armPreviewTimer() }
     }
@@ -584,6 +585,9 @@ final class EditorModel {
         lastRender = result
         displayedRevision = revision
         refreshDebugLandmarks()
+        // Completed older frames may keep the preview responsive during a
+        // drag, but their admission belongs to an obsolete parameter snapshot.
+        guard revision == self.revision else { return }
         switch result.detection?.availability {
         case .noFace, .lowConfidence, .disabled, .skipped:
             detectionMessage = "未获得可用人脸，相关调整保持原图。请试试清晰的正面人像。"
@@ -592,12 +596,34 @@ final class EditorModel {
         default:
             if result.warningCodes.contains(where: { $0.hasSuffix("inputs_missing") }) {
                 detectionMessage = "部分五官缺少可用关键点，对应工具保持原图；其他调整保留。"
-            } else if revision == self.revision && result.matchesSource && snapshot.parameters != EditorSnapshot().parameters {
-                detectionMessage = "此照片未满足当前工具的处理条件，本次输出保持原图。"
             } else {
-                detectionMessage = nil
+                detectionMessage = processingConditionMessage(for: result)
             }
         }
+    }
+
+    private func processingConditionMessage(for result: RenderedPhoto) -> String? {
+        guard snapshot.parameters != EditorSnapshot().parameters else { return nil }
+        let neutral = BeautyParameters()
+        let requested = ToolCatalog.canonicalTools.filter {
+            $0.available && $0.sdkValue(in: snapshot.parameters) != $0.sdkValue(in: neutral)
+        }
+        let onlyEyebrows = !requested.isEmpty && requested.allSatisfy { $0.field?.hasPrefix("eyebrow") == true }
+        if requested.contains(where: { $0.field?.hasPrefix("eyebrow") == true }),
+           let admittedSides = result.metrics["beauty.effects.eyebrowAdmittedSideCount"],
+           admittedSides.isFinite, admittedSides >= 0 {
+            if admittedSides == 0 {
+                return onlyEyebrows && result.matchesSource
+                    ? "此照片未满足当前工具的处理条件，本次输出保持原图。"
+                    : "眉毛区域未满足处理条件，本次眉毛调整未应用；其他调整保留。"
+            }
+            // Actual sampler admission is independent of 8-bit output changes.
+            // A valid subpixel request can quantize to identical source bytes.
+            if onlyEyebrows { return nil }
+        }
+        guard result.matchesSource else { return nil }
+        // Pixel equality alone cannot identify an unsupported photo/tool.
+        return "当前强度未产生可见变化，可继续调整滑杆。"
     }
 
     private func message(for error: Error) -> String {

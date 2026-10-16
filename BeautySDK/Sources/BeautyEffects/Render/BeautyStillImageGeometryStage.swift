@@ -230,8 +230,9 @@ struct BeautyStillImageGeometryStage {
         mouthMap?.applyRGBA(bytes) ?? bytes
     }
 
-    func applyingContinuousEyebrows(to bytes: [UInt8]) -> [UInt8] {
-        eyebrowMap?.applyRGBA(bytes) ?? bytes
+    func applyingContinuousEyebrows(to bytes: [UInt8], onAppliedSideCount: ((Int) -> Void)? = nil) -> [UInt8] {
+        guard let eyebrowMap else { onAppliedSideCount?(0); return bytes }
+        return eyebrowMap.applyRGBA(bytes, onAppliedSideCount: onAppliedSideCount)
     }
 
     /// Rigid source-qualified translation remains after the selected sampler.

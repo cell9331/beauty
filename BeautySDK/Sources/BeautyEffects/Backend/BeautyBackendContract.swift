@@ -62,6 +62,17 @@ package struct BeautyBackendDiagnostics: Equatable, Sendable {
     package let failureCount: Int
     package let collisionCount: Int
     package let changedPixelCount: Int
+    package let eyebrowAdmittedSideCount: Int?
+
+    package static let eyebrowAdmissionMetric = "beauty.effects.eyebrowAdmittedSideCount"
+    package var metrics: [String: Double] {
+        eyebrowAdmittedSideCount.map { [Self.eyebrowAdmissionMetric: Double($0)] } ?? [:]
+    }
+
+    static func requestsEyebrowAdmission(_ plan: BeautyEffectPlan) -> Bool {
+        plan.activeDomains.contains(.eyebrows) || plan.skippedDomains.contains(.eyebrows) ||
+            BeautyContinuousEyebrowMap.keys.contains { plan.effectiveStrengths[keyPath: $0] != 0 }
+    }
 
     package init(
         width: Int,
@@ -71,7 +82,8 @@ package struct BeautyBackendDiagnostics: Equatable, Sendable {
         unitCount: Int = 0,
         failureCount: Int = 0,
         collisionCount: Int = 0,
-        changedPixelCount: Int = 0
+        changedPixelCount: Int = 0,
+        eyebrowAdmittedSideCount: Int? = nil
     ) {
         self.width = width
         self.height = height
@@ -81,11 +93,13 @@ package struct BeautyBackendDiagnostics: Equatable, Sendable {
         self.failureCount = failureCount
         self.collisionCount = collisionCount
         self.changedPixelCount = changedPixelCount
+        self.eyebrowAdmittedSideCount = eyebrowAdmittedSideCount
     }
 
     /// The same bounded composition counters cross either execution policy.
     package init(width: Int, height: Int,
-                 compositionSummary: BeautyLocalRetouchCompositionSummary?) {
+                 compositionSummary: BeautyLocalRetouchCompositionSummary?,
+                 eyebrowAdmittedSideCount: Int? = nil) {
         let pixelCount = width.multipliedReportingOverflow(by: height)
         let limit = pixelCount.overflow
             ? BeautyConfiguration.defaultMaximumInputPixelCount
@@ -95,7 +109,8 @@ package struct BeautyBackendDiagnostics: Equatable, Sendable {
             unitCount: min(compositionSummary?.acceptedUnitCount ?? 0, limit),
             failureCount: min(compositionSummary?.rejectedUnitCount ?? 0, limit),
             collisionCount: min(compositionSummary?.collisionPixelCount ?? 0, limit),
-            changedPixelCount: min(compositionSummary?.changedPixelCount ?? 0, limit)
+            changedPixelCount: min(compositionSummary?.changedPixelCount ?? 0, limit),
+            eyebrowAdmittedSideCount: eyebrowAdmittedSideCount
         )
     }
 }
@@ -381,6 +396,10 @@ package struct BeautyBackendResult: @unchecked Sendable {
         for request: BeautyBackendRequest,
         output: BeautyBackendOutput
     ) -> Bool {
+        if let count = diagnostics.eyebrowAdmittedSideCount {
+            guard (0...2).contains(count), request.inputKind == .stillImage,
+                  BeautyBackendDiagnostics.requestsEyebrowAdmission(request.plan) else { return false }
+        }
         guard diagnostics.width > 0,
               diagnostics.height > 0,
               diagnostics.preservesAlpha,

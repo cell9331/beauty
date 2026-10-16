@@ -99,9 +99,14 @@ final class BeautyContinuousEyebrowMapTests: XCTestCase {
             for index in 0..<7 {
                 let map = try XCTUnwrap(BeautyContinuousEyebrowMap(width: width, height: height,
                     face: face, strengths: strengths(index, sign), sourceRGBA: source))
-                let result = map.applyRGBA(source)
+                var appliedCounts = [Int]()
+                let result = map.applyRGBA(source, onAppliedSideCount: { appliedCounts.append($0) })
+                XCTAssertEqual(appliedCounts, [2], "both admitted sides actually retain source ownership")
                 XCTAssertNotEqual(source, result, "field \(index) sign \(sign)")
-                XCTAssertLessThanOrEqual(map.maximumGradient, 0.450001)
+                XCTAssertLessThanOrEqual(map.maximumInverseContraction, BeautyContinuousEyebrowMap.gradientBudget + 1e-9)
+                if ![3,4].contains(index) {
+                    XCTAssertLessThanOrEqual(map.maximumGradient,BeautyContinuousEyebrowMap.gradientBudget+1e-9)
+                }
                 XCTAssertLessThanOrEqual(map.maximumDisplacement, 0.21 * Double(width) * 0.150001)
                 XCTAssertEqual(result, map.applyRGBA(source))
                 let before = metric(source, side: true, band: -0.10...1.18)
@@ -134,6 +139,106 @@ final class BeautyContinuousEyebrowMapTests: XCTestCase {
         }
     }
 
+    func testSignedSingleControlsKeepRespondingAtEveryQuarterStep() throws {
+        let face = try face(flat: true), original = source(face: face)
+        let frame = try XCTUnwrap(BeautyEyebrowSourceGeometry.frame(face: face, width: width, height: height))
+        let traces = try [XCTUnwrap(face.observedEyebrowSupport?.left),
+                          XCTUnwrap(face.observedEyebrowSupport?.right)]
+        let levels: [Float] = [0.25, 0.50, 0.75, 1]
+        // Source-defined core positions: thickness must be off the ridge;
+        // length must be past its anchor; head spacing must be before its zero.
+        let locations = [0.45, 0.45, 0.85, 0.15, 0.12, 0.0, 0.65]
+        let minimumFullMotion = [0.25, 0.02, 0.25, 0.20, 0.20, 0.0, 0.10]
+        func dot(_ a: SIMD2<Double>, _ b: SIMD2<Double>) -> Double { a.x*b.x+a.y*b.y }
+        func pixel(_ p: SIMD2<Float>) -> SIMD2<Double> {
+            SIMD2(Double(p.x)*Double(width)-0.5, Double(p.y)*Double(height)-0.5)
+        }
+        let neutral = BeautyContinuousEyebrowMap(width: width, height: height, face: face,
+            strengths: BeautyEffectiveStrengths(), sourceRGBA: original)
+        XCTAssertNil(neutral)
+        XCTAssertEqual(neutral?.applyRGBA(original) ?? original, original, "neutral preserves every source byte")
+
+        for index in [0, 1, 2, 3, 4, 6] { for sign: Float in [-1, 1] {
+            let maps = try levels.map { level in
+                try XCTUnwrap(BeautyContinuousEyebrowMap(width: width, height: height,
+                    face: face, strengths: strengths(index, sign*level), sourceRGBA: original),
+                    "field \(index), sign \(sign), level \(level) must remain admitted")
+            }
+            for trace in traces {
+                let outward = frame.horizontal * (trace.side == .left ? -1.0 : 1.0)
+                let head = pixel(trace.innerEndpoint), tail = pixel(trace.outerEndpoint)
+                let length = dot(tail-head, outward)
+                let point = head + outward*(length*locations[index]) + frame.vertical*(index == 1 ? 2.0 : 0.0)
+                let displacements = maps.map { $0.displacement(at: point) }
+                let full = try XCTUnwrap(displacements.last), magnitude = hypot(full.x, full.y)
+                let axis = [2, 3, 4].contains(index) ? outward : frame.vertical
+                let expectedSign = Double(sign) * (index == 6 ? -1.0 : 1.0)
+                let label = "field \(index), sign \(sign), side \(trace.side)"
+                XCTAssertGreaterThan(dot(full,axis)*expectedSign, minimumFullMotion[index],
+                    "\(label): the chosen source core point is a positive motion control")
+                XCTAssertEqual(dot(full, SIMD2(-axis.y,axis.x)), 0, accuracy: 1e-9,
+                    "\(label): the single control retains its horizontal or vertical direction")
+                var previous = SIMD2<Double>.zero
+                for (level, displacement) in zip(levels,displacements) {
+                    let expected = full * Double(level)
+                    XCTAssertEqual(displacement.x, expected.x, accuracy: 1e-8, "\(label), level \(level)")
+                    XCTAssertEqual(displacement.y, expected.y, accuracy: 1e-8, "\(label), level \(level)")
+                    if magnitude > 0 {
+                        XCTAssertGreaterThan(dot(displacement-previous,full)/magnitude, magnitude*0.20,
+                            "\(label): every quarter step must add motion, including 75% to full")
+                    }
+                    previous = displacement
+                }
+            }
+        } }
+    }
+
+    func testSignedTiltQuarterStepsScaleRigidAngleThroughTheFullSliderRange() throws {
+        let face = try face(flat: true), original = source(face: face)
+        let frame = try XCTUnwrap(BeautyEyebrowSourceGeometry.frame(face: face, width: width, height: height))
+        let traces = try [XCTUnwrap(face.observedEyebrowSupport?.left),
+                          XCTUnwrap(face.observedEyebrowSupport?.right)]
+        let levels: [Float] = [0.25, 0.50, 0.75, 1]
+        func dot(_ a: SIMD2<Double>, _ b: SIMD2<Double>) -> Double { a.x*b.x+a.y*b.y }
+        func pixel(_ p: SIMD2<Float>) -> SIMD2<Double> {
+            SIMD2(Double(p.x)*Double(width)-0.5, Double(p.y)*Double(height)-0.5)
+        }
+        for sign: Float in [-1, 1] {
+            let maps = try levels.map { level in
+                try XCTUnwrap(BeautyContinuousEyebrowMap(width: width, height: height,
+                    face: face, strengths: strengths(5, sign*level), sourceRGBA: original))
+            }
+            for trace in traces {
+                let outward = frame.horizontal * (trace.side == .left ? -1.0 : 1.0)
+                let head = pixel(trace.innerEndpoint), tail = pixel(trace.outerEndpoint)
+                let length = dot(tail-head, outward)
+                // Both points lie inside the flat source core, away from the
+                // end tapers. A rigid rotation preserves this segment's length.
+                let a = head + outward*(length*0.15), b = head + outward*(length*0.85)
+                let sourceVector = b-a, sourceLength = hypot(sourceVector.x, sourceVector.y)
+                let angles = maps.map { map -> Double in
+                    let targetVector = (b+map.displacement(at:b))-(a+map.displacement(at:a))
+                    XCTAssertEqual(hypot(targetVector.x,targetVector.y), sourceLength, accuracy: 1e-8,
+                        "a single tilt must remain rigid on the source core at every level")
+                    let cross = sourceVector.x*targetVector.y-sourceVector.y*targetVector.x
+                    return atan2(cross,dot(sourceVector,targetVector))
+                }
+                let full = try XCTUnwrap(angles.last)
+                let orientation = trace.side == .left ? 1.0 : -1.0
+                XCTAssertGreaterThan(full*Double(sign)*orientation, 0.002,
+                    "the independent segment oracle must observe actual tilt in the requested direction")
+                var previous = 0.0
+                for (level,angle) in zip(levels,angles) {
+                    XCTAssertEqual(angle,full*Double(level),accuracy:1e-9,
+                        "finite rotation angle must follow the slider; displacement itself need not be linear")
+                    XCTAssertGreaterThan(abs(angle-previous),abs(full)*0.20,
+                        "every tilt quarter step must add angle, including 75% to full")
+                    previous = angle
+                }
+            }
+        }
+    }
+
     func testEveryExteriorFeatureAndAlphaByteIsExactForAllFieldsAndMixedSigns() throws {
         let face = try face(), opaque = source(face: face), transparent = source(face: face, alphaStripe: true)
         var cases = (0..<7).flatMap { i in [strengths(i, -1), strengths(i, 1)] }
@@ -156,12 +261,17 @@ final class BeautyContinuousEyebrowMapTests: XCTestCase {
                     p.y >= Double(path.map(\.y).min()!) * Double(height) - 2 &&
                     p.y <= Double(path.map(\.y).max()!) * Double(height) + 2
                 }
-                if !map.operationContains(p) || protected {
+                // The generated photograph above uses edge-origin centres;
+                // the displacement API follows the new integer-centre contract.
+                if !map.operationContains(p - SIMD2(0.5, 0.5)) || protected {
                     for c in 0..<4 { protectedDelta += abs(Int(output[i + c]) - Int(source[i + c])) }
                 }
             } }
             XCTAssertEqual(alphaDelta, 0); XCTAssertEqual(protectedDelta, 0)
-            XCTAssertLessThanOrEqual(map.maximumGradient, 0.450001)
+            XCTAssertLessThanOrEqual(map.maximumInverseContraction, BeautyContinuousEyebrowMap.gradientBudget + 1e-9)
+            if s.eyebrowSpacing == 0 && s.eyebrowHeadSpacing == 0 {
+                XCTAssertLessThanOrEqual(map.maximumGradient,BeautyContinuousEyebrowMap.gradientBudget+1e-9)
+            }
         }
     }
 
@@ -184,6 +294,25 @@ final class BeautyContinuousEyebrowMapTests: XCTestCase {
         }
     }
 
+    func testContinuousSupportMovesNeighboringSkinWithoutHairCoverageBlending() throws {
+        let face = try face(flat: true), original = source(face: face)
+        let map = try XCTUnwrap(BeautyContinuousEyebrowMap(width: width, height: height,
+            face: face, strengths: strengths(0, 1), sourceRGBA: original))
+        let output = map.applyRGBA(original)
+        var movedSkin = 0
+        // This source-defined window is entirely above the flat hair tube.
+        // A mask that only transports dark hair leaves these skin pixels still.
+        for y in 105..<119 { for x in 100..<120 {
+            let i = (y * width + x) * 4
+            XCTAssertGreaterThan(original[i], 100)
+            if output[i] != original[i] || output[i+1] != original[i+1] || output[i+2] != original[i+2] {
+                movedSkin += 1
+            }
+            XCTAssertEqual(output[i+3], original[i+3])
+        } }
+        XCTAssertGreaterThan(movedSkin, 100)
+    }
+
     func testInvalidSideFailsLocallyWithoutBorrowingPeerAndSpacingRequiresPair() throws {
         let valid = try trace(.left), point = SIMD2<Float>(0.7, 0.3)
         let invalid = BeautyEyebrowSemanticTrace(side: .right, points: [point, point, point, point],
@@ -203,7 +332,11 @@ final class BeautyContinuousEyebrowMapTests: XCTestCase {
         XCTAssertEqual(peerDelta, 0)
         XCTAssertNil(BeautyContinuousEyebrowMap(width: width, height: height, face: face, strengths: strengths(3, 1), sourceRGBA: source))
         let flat = try self.face(flat: true)
-        XCTAssertNil(BeautyContinuousEyebrowMap(width: width, height: height, face: flat, strengths: strengths(6, 1), sourceRGBA: self.source(face: flat)))
+        let flatSource = self.source(face: flat)
+        let peak = try XCTUnwrap(BeautyContinuousEyebrowMap(width: width, height: height,
+            face: flat, strengths: strengths(6, 1), sourceRGBA: flatSource))
+        XCTAssertNotEqual(peak.applyRGBA(flatSource), flatSource,
+                          "a calibrated displacement peak does not require a source anatomical apex")
     }
 
     func testWholeSpacingIsAtomicAfterOneSideLosesSourceOwnership() throws {
@@ -215,7 +348,10 @@ final class BeautyContinuousEyebrowMapTests: XCTestCase {
         let point=(Int(0.285*Double(height))*width+Int(0.66*Double(width)))*4
         XCTAssertLessThan(changed[point],100,"source control lies in the actual right eyebrow")
         changed[point] += 20
-        XCTAssertEqual(spacing.applyRGBA(changed),changed,"one refused side cancels whole spacing")
+        var spacingCounts = [Int]()
+        XCTAssertEqual(spacing.applyRGBA(changed,onAppliedSideCount:{ spacingCounts.append($0) }),changed,
+                       "one refused side cancels whole spacing")
+        XCTAssertEqual(spacingCounts,[0],"planned sides are not actual applied sides after pair refusal")
 
         let headStrength=strengths(4,0.6)
         let head=try XCTUnwrap(BeautyContinuousEyebrowMap(width:width,height:height,face:face,
@@ -223,8 +359,12 @@ final class BeautyContinuousEyebrowMapTests: XCTestCase {
         var combination=headStrength;combination.eyebrowSpacing=BeautyContinuousEyebrowMap.caps[3]
         let mixed=try XCTUnwrap(BeautyContinuousEyebrowMap(width:width,height:height,face:face,
             strengths:combination,sourceRGBA:original))
-        let expected=head.applyRGBA(changed),actual=mixed.applyRGBA(changed)
+        var headCounts = [Int](), mixedCounts = [Int]()
+        let expected=head.applyRGBA(changed,onAppliedSideCount:{ headCounts.append($0) })
+        let actual=mixed.applyRGBA(changed,onAppliedSideCount:{ mixedCounts.append($0) })
         XCTAssertEqual(actual,expected,"independent fields survive the pair refusal")
+        XCTAssertEqual(headCounts,[1],"the side whose source changed must not be counted")
+        XCTAssertEqual(mixedCounts,[1],"only the safe independent side survives pair refusal")
         var leftChanged=false
         for y in 0..<height { for x in 0..<(width/2) {
             let i=(y*width+x)*4
@@ -240,31 +380,89 @@ final class BeautyContinuousEyebrowMapTests: XCTestCase {
         var combination=headStrength;combination.eyebrowSpacing = -BeautyContinuousEyebrowMap.caps[3]
         let control=try XCTUnwrap(BeautyContinuousEyebrowMap(width:width,height:height,face:face,
             strengths:combination,sourceRGBA:original))
-        let transported=control.applyRGBA(original)
+        let transported=control.applyRGBA(original), independent=head.applyRGBA(original)
+        XCTAssertNotEqual(transported,original,"the combined request has an actual positive control")
+        XCTAssertNotEqual(independent,original,"the independent head field has an actual positive control")
+        let right=try XCTUnwrap(face.observedEyebrowSupport?.right)
+        let tailX=Double(right.outerEndpoint.x)*Double(width)-0.5
+        let browLength=Double(right.outerEndpoint.x-right.innerEndpoint.x)*Double(width)
         var candidate:Int?
+        // At the head these fields share the same support, so an independent
+        // head field is not a valid stationary control there. Instead choose
+        // bare skin beyond the tail: spacing still has a finite transition,
+        // head spacing is already zero, and RGB source measurements at r<=L
+        // do not read this remote destination's alpha.
         search: for y in Int(0.22*Double(height))..<Int(0.39*Double(height)) {
-            for x in (width/2)..<Int(0.56*Double(width)-0.12*0.21*Double(width)) {
-                let i=(y*width+x)*4,p=SIMD2(Double(x)+0.5,Double(y)+0.5)
-                if original[i] >= 100,transported[i] != original[i],!head.operationContains(p) {
+            for x in Int(ceil(tailX+5))..<Int(floor(tailX+0.18*browLength)) {
+                let i=(y*width+x)*4,p=SIMD2(Double(x),Double(y))
+                let spacingChangesPixel=(0..<3).contains { transported[i+$0] != original[i+$0] }
+                let headPreservesPixel=(0..<4).allSatisfy { independent[i+$0] == original[i+$0] }
+                if original[i] >= 100,spacingChangesPixel,headPreservesPixel,!head.operationContains(p) {
                     candidate=i;break search
                 }
             }
         }
-        let i=try XCTUnwrap(candidate,"positive control exposes a right-side destination outside the source and independent head field")
+        let i=try XCTUnwrap(candidate,"positive control exposes tail-side spacing motion outside the independent head field")
         var translucent=original;translucent[i+3]=254
         var admissions=[String]()
         let actualMap=try XCTUnwrap(BeautyContinuousEyebrowMap(width:width,height:height,face:face,
             strengths:combination,sourceRGBA:translucent,onAdmission:{ admissions.append($0) }))
-        XCTAssertTrue(admissions.contains("eyebrow_left_material_admitted"))
-        XCTAssertTrue(admissions.contains("eyebrow_right_material_admitted"))
-        XCTAssertTrue(admissions.contains("eyebrow_right_sampling_rejected"),"failure occurs after both materials were admitted")
+        XCTAssertTrue(admissions.contains("eyebrow_left_source_geometry_admitted"))
+        XCTAssertTrue(admissions.contains("eyebrow_right_source_geometry_admitted"))
+        XCTAssertTrue(admissions.contains("eyebrow_right_sampling_rejected"),"failure occurs after both source geometries were admitted")
         XCTAssertTrue(admissions.contains("eyebrow_spacing_pair_rejected"))
         let expectedMap=try XCTUnwrap(BeautyContinuousEyebrowMap(width:width,height:height,face:face,
             strengths:headStrength,sourceRGBA:translucent))
-        let expected=expectedMap.applyRGBA(translucent),actual=actualMap.applyRGBA(translucent)
+        var expectedCounts=[Int](),actualCounts=[Int]()
+        let expected=expectedMap.applyRGBA(translucent,onAppliedSideCount:{ expectedCounts.append($0) })
+        let actual=actualMap.applyRGBA(translucent,onAppliedSideCount:{ actualCounts.append($0) })
         XCTAssertEqual(actual,expected)
         XCTAssertNotEqual(actual,translucent,"safe independent head fields remain active")
+        XCTAssertEqual(expectedCounts,[2],"the remote alpha marker cannot reject either independent head field")
+        XCTAssertEqual(actualCounts,[2],"after pair cancellation both independent siblings actually apply")
         XCTAssertEqual(actual[i+3],254)
+    }
+
+    func testWholeSpacingAndPeakFallBackToSafePeakAfterEitherSideLosesOwnership() throws {
+        let face=try face(),original=source(face:face)
+        let peakStrength=strengths(6,0.8)
+        let peak=try XCTUnwrap(BeautyContinuousEyebrowMap(width:width,height:height,face:face,
+            strengths:peakStrength,sourceRGBA:original))
+        var combined=peakStrength
+        combined.eyebrowSpacing=BeautyContinuousEyebrowMap.caps[3]*0.8
+        let map=try XCTUnwrap(BeautyContinuousEyebrowMap(width:width,height:height,face:face,
+            strengths:combined,sourceRGBA:original))
+        var initialCounts=[Int]()
+        let initial=map.applyRGBA(original,onAppliedSideCount:{ initialCounts.append($0) })
+        XCTAssertEqual(initialCounts,[2])
+        XCTAssertNotEqual(initial,original,"the original pair is an actual positive control")
+        XCTAssertLessThanOrEqual(map.maximumInverseContraction,BeautyContinuousEyebrowMap.gradientBudget+1e-9)
+        for refusedSide in [BeautyObservedEyebrowSide.left,.right] {
+            let trace=try XCTUnwrap(refusedSide == .left
+                ? face.observedEyebrowSupport?.left : face.observedEyebrowSupport?.right)
+            let point=trace.points[2]
+            let x=Int((Double(point.x)*Double(width)-0.5).rounded())
+            let y=Int((Double(point.y)*Double(height)-0.5).rounded())
+            let offset=(y*width+x)*4
+            XCTAssertLessThan(original[offset],100,"the refusal marker belongs to this source hair core")
+            var changed=original
+            changed[offset] += 20
+            var peakCounts=[Int](),mixedCounts=[Int]()
+            let expected=peak.applyRGBA(changed,onAppliedSideCount:{ peakCounts.append($0) })
+            let actual=map.applyRGBA(changed,onAppliedSideCount:{ mixedCounts.append($0) })
+            XCTAssertEqual(peakCounts,[1],"\(refusedSide): the modified side loses peak source ownership")
+            XCTAssertEqual(mixedCounts,[1],"\(refusedSide): whole spacing cancels and only the safe peak remains")
+            XCTAssertEqual(actual,expected,"\(refusedSide): the applied result equals the independently built peak-only fallback")
+            var safeChanged=0,refusedChanged=0
+            for yy in 0..<height { for xx in 0..<width {
+                let i=(yy*width+xx)*4
+                guard (0..<4).contains(where:{ actual[i+$0] != changed[i+$0] }) else { continue }
+                let onRefusedSide=refusedSide == .left ? xx < width/2 : xx >= width/2
+                if onRefusedSide { refusedChanged += 1 } else { safeChanged += 1 }
+            } }
+            XCTAssertEqual(refusedChanged,0,"\(refusedSide): no spacing or peak may write the refused side")
+            XCTAssertGreaterThan(safeChanged,0,"\(refusedSide): the safe peer must retain actual peak texture motion")
+        }
     }
 
     func testWholeSpacingRejectsAlphaChangedOnlyInInterpolationFootprint() throws {
@@ -278,14 +476,101 @@ final class BeautyContinuousEyebrowMapTests: XCTestCase {
             for x in (width/2)..<width {
                 let i=(y*width+x)*4,p=SIMD2(Double(x)+0.5,Double(y)+0.5)
                 let above=SIMD2(p.x,p.y-1)
-                if original[i] >= 100,map.operationContains(above),!map.operationContains(p) {
+                if original[i] >= 100,map.operationContains(above - SIMD2(0.5,0.5)),!map.operationContains(p - SIMD2(0.5,0.5)) {
                     candidate=i;break search
                 }
             }
         }
         let i=try XCTUnwrap(candidate,"opaque skin adjacent to the raw operation boundary is outside its writable union")
         var changed=original;changed[i+3]=254
-        XCTAssertEqual(map.applyRGBA(changed),changed,"a late alpha mismatch in the inverse interpolation basis cancels the pair")
+        var appliedCounts = [Int]()
+        XCTAssertEqual(map.applyRGBA(changed,onAppliedSideCount:{ appliedCounts.append($0) }),changed,
+                       "a late alpha mismatch in the inverse interpolation basis cancels the pair")
+        XCTAssertEqual(appliedCounts,[0])
+    }
+
+    func testSubQuantizationFieldsAreAppliedEvenWhenAllOutputBytesRemainExact() throws {
+        let face = try face(), original = source(face: face)
+        for index in [1, 2] {
+            let map = try XCTUnwrap(BeautyContinuousEyebrowMap(width: width, height: height,
+                face: face, strengths: strengths(index, 1e-8), sourceRGBA: original))
+            XCTAssertEqual(map.admittedBrowCount, 2)
+            XCTAssertGreaterThan(map.maximumDisplacement, 0)
+            var appliedCounts = [Int]()
+            let output = map.applyRGBA(original,onAppliedSideCount:{ appliedCounts.append($0) })
+            XCTAssertEqual(output,original,"a sub-quantization field may preserve every RGB byte")
+            XCTAssertEqual(appliedCounts,[2],"actual ownership is independent of integer RGB changes")
+        }
+    }
+
+    func testAnalyticBudgetCoversFiniteDifferenceGradientsAcrossWholeCanvas() throws {
+        let face = try face(), original = source(face: face)
+        var cases = (0..<7).map { strengths($0, $0.isMultiple(of: 2) ? 1 : -1) }
+        var mixed = BeautyEffectiveStrengths()
+        for index in 0..<7 {
+            mixed[keyPath: BeautyContinuousEyebrowMap.keys[index]] =
+                BeautyContinuousEyebrowMap.caps[index] * (index.isMultiple(of: 2) ? -1 : 1)
+        }
+        cases.append(mixed)
+        let epsilon = 1e-3
+        for values in cases {
+            let map = try XCTUnwrap(BeautyContinuousEyebrowMap(width: width, height: height,
+                face: face, strengths: values, sourceRGBA: original))
+            var measuredMaximum = 0.0, minimumDeterminant = Double.infinity
+            // This grid covers both sides, the stationary ownership band, all
+            // support transitions and protected regions. Numerical samples are
+            // lower bounds only; production supplies the analytic global bound.
+            for y in stride(from: 0.0, through: Double(height), by: 4) {
+                for x in stride(from: 0.0, through: Double(width), by: 4) {
+                    let p = SIMD2(x,y)
+                    let dx = (map.displacement(at: p + SIMD2(epsilon,0)) -
+                              map.displacement(at: p - SIMD2(epsilon,0))) / (2*epsilon)
+                    let dy = (map.displacement(at: p + SIMD2(0,epsilon)) -
+                              map.displacement(at: p - SIMD2(0,epsilon))) / (2*epsilon)
+                    let xx=dx.x*dx.x+dx.y*dx.y, yy=dy.x*dy.x+dy.y*dy.y
+                    let xy=dx.x*dy.x+dx.y*dy.y
+                    let norm=sqrt(max(0,(xx+yy+sqrt((xx-yy)*(xx-yy)+4*xy*xy))*0.5))
+                    measuredMaximum=max(measuredMaximum,norm)
+                    minimumDeterminant=min(minimumDeterminant,(1+dx.x)*(1+dy.y)-dy.x*dx.y)
+                }
+            }
+            XCTAssertGreaterThan(measuredMaximum,0,"the grid must observe actual field motion")
+            XCTAssertLessThanOrEqual(measuredMaximum,map.maximumGradient+1e-6)
+            XCTAssertLessThanOrEqual(map.maximumInverseContraction,BeautyContinuousEyebrowMap.gradientBudget+1e-9)
+            if values.eyebrowSpacing == 0 && values.eyebrowHeadSpacing == 0 {
+                XCTAssertLessThanOrEqual(map.maximumGradient,BeautyContinuousEyebrowMap.gradientBudget+1e-9)
+            }
+            XCTAssertGreaterThan(minimumDeterminant,0,"the observed forward Jacobians retain orientation")
+        }
+    }
+
+    func testProtectionFarBelowFullSupportDoesNotClipAxialTransitions() throws {
+        let base = try face(), original = source(face: base)
+        func withNose(_ minimumX: Float, _ maximumX: Float) -> FaceGeometry {
+            FaceGeometry(bounds: base.bounds, faceContour: base.faceContour,
+                leftEye: base.leftEye, rightEye: base.rightEye,
+                nose: [SIMD2(minimumX,0.60),SIMD2(maximumX,0.60),
+                       SIMD2(maximumX,0.65),SIMD2(minimumX,0.65)],
+                outerLips: base.outerLips, observedEyebrowSupport: base.observedEyebrowSupport)
+        }
+        // Both independent nose boxes are vertically remote from the complete
+        // source support. Changing only their horizontal reach cannot alter the
+        // head/tail transition or silently reduce an eyebrow's amplitude.
+        let broad = withNose(0.46,0.54), narrow = withNose(0.49,0.51)
+        let traces = [base.observedEyebrowSupport?.left,base.observedEyebrowSupport?.right].compactMap { $0 }
+        for index in [2,4] {
+            let a = try XCTUnwrap(BeautyContinuousEyebrowMap(width: width, height: height,
+                face: broad, strengths: strengths(index,1), sourceRGBA: original))
+            let b = try XCTUnwrap(BeautyContinuousEyebrowMap(width: width, height: height,
+                face: narrow, strengths: strengths(index,1), sourceRGBA: original))
+            for trace in traces { for point in trace.points {
+                let pixel = SIMD2(Double(point.x)*Double(width)-0.5,Double(point.y)*Double(height)-0.5)
+                let difference = a.displacement(at:pixel)-b.displacement(at:pixel)
+                XCTAssertLessThan(hypot(difference.x,difference.y),1e-9)
+            } }
+            XCTAssertEqual(a.maximumGradient,b.maximumGradient,accuracy:1e-9)
+            XCTAssertEqual(a.maximumDisplacement,b.maximumDisplacement,accuracy:1e-9)
+        }
     }
 
     func testWeakCompleteHeadBeyondCoreMovesAgainstBrighterLocalSkin() throws {
@@ -442,8 +727,11 @@ final class BeautyContinuousEyebrowMapTests: XCTestCase {
         let map = try XCTUnwrap(BeautyContinuousEyebrowMap(width: width, height: height, face: face, strengths: strengths(3, 1), sourceRGBA: opaque))
         // This horizontal shift always includes two unlike-alpha columns in
         // its bilinear support; it cannot blend their RGB or overwrite alpha.
-        XCTAssertEqual(map.applyRGBA(source), source)
-        XCTAssertEqual(map.applyRGBA([1, 2, 3]), [1, 2, 3])
+        var transparentCounts = [Int](), invalidSizeCounts = [Int]()
+        XCTAssertEqual(map.applyRGBA(source,onAppliedSideCount:{ transparentCounts.append($0) }), source)
+        XCTAssertEqual(transparentCounts,[0])
+        XCTAssertEqual(map.applyRGBA([1, 2, 3],onAppliedSideCount:{ invalidSizeCounts.append($0) }), [1, 2, 3])
+        XCTAssertEqual(invalidSizeCounts,[0])
         let mirror = String(reflecting: map)
         XCTAssertFalse(mirror.contains("offsets")); XCTAssertFalse(mirror.contains("line"))
         XCTAssertEqual(Set(Mirror(reflecting: map).children.compactMap(\.label)), ["width", "height", "browCount"])

@@ -72,6 +72,10 @@ struct ToolDefinition: Identifiable, Sendable {
 
     func setValue(_ value: Float, in parameters: inout BeautyParameters) {
         guard available else { return }
+        // The centered slider displays whole integers. Every position shown
+        // as zero must also request the SDK's exact neutral value; preserve
+        // continuous precision as soon as the display shows a nonzero value.
+        let value = range == .signed && value.isFinite && value.rounded() == 0 ? 0 : value
         if let faceSlider {
             let normalized = range.normalized(value)
             let position = range == .signed ? (normalized + 1) / 2 : normalized
@@ -173,6 +177,7 @@ struct ToolDefinition: Identifiable, Sendable {
         switch field {
         case "eyebrowThickness": .thickness
         case "eyebrowLength": .length
+        case "eyebrowYPosition": .verticalPosition
         case "eyebrowSpacing": .spacing
         case "eyebrowHeadSpacing": .headSpacing
         case "eyebrowTilt": .tilt
@@ -237,6 +242,7 @@ struct ToolDefinition: Identifiable, Sendable {
         case "noseTipSize": \BeautyParameters.noseTipSize
         case "eyebrowThickness": \BeautyParameters.eyebrowThickness
         case "eyebrowLength": \BeautyParameters.eyebrowLength
+        case "eyebrowYPosition": \BeautyParameters.eyebrowYPosition
         case "eyebrowSpacing": \BeautyParameters.eyebrowSpacing
         case "eyebrowHeadSpacing": \BeautyParameters.eyebrowHeadSpacing
         case "eyebrowTilt": \BeautyParameters.eyebrowTilt

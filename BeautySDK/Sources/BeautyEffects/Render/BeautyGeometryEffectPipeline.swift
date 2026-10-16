@@ -123,7 +123,8 @@ enum BeautyGeometryEffectPipeline {
     /// Deterministic still-image warp used until the production Metal FaceWarpPass consumes control points directly.
     static func applyMVPProxy(to image: CIImage, plan: BeautyEffectPlan, face: FaceGeometry,
         sourceOwnershipImage: CIImage? = nil,
-        jawlineShadowSourceImage: CIImage? = nil) -> CIImage {
+        jawlineShadowSourceImage: CIImage? = nil,
+        onEyebrowAppliedSideCount: ((Int) -> Void)? = nil) -> CIImage {
         applyMVPProxy(
             to: image,
             plan: plan,
@@ -138,7 +139,8 @@ enum BeautyGeometryEffectPipeline {
                 ? CGColorSpaceCreateDeviceRGB() :
                 (image.colorSpace ?? CGColorSpace(name: CGColorSpace.sRGB)!)),
             sourceOwnershipImage: sourceOwnershipImage,
-            jawlineShadowSourceImage: jawlineShadowSourceImage
+            jawlineShadowSourceImage: jawlineShadowSourceImage,
+            onEyebrowAppliedSideCount: onEyebrowAppliedSideCount
         )
     }
 
@@ -150,9 +152,11 @@ enum BeautyGeometryEffectPipeline {
         canonicalImage: BeautyCanonicalStillImage,
         plan: BeautyEffectPlan,
         face: FaceGeometry,
+        onEyebrowAppliedSideCount: ((Int) -> Void)? = nil,
         onRasterize: ((BeautyCanonicalStillImage, CGColorSpace) -> Void)? = nil
     ) -> CIImage {
         guard let colorSpace = CGColorSpace(name: CGColorSpace.sRGB) else {
+            onEyebrowAppliedSideCount?(0)
             return image.cropped(to: canonicalImage.ciImage.extent)
         }
         var ownershipSource: [UInt8]?
@@ -172,6 +176,7 @@ enum BeautyGeometryEffectPipeline {
             colorSpace: colorSpace,
             sourceOwnershipRGBA: ownershipSource,
             jawlineShadowSourceRGBA: shadowSource,
+            onEyebrowAppliedSideCount: onEyebrowAppliedSideCount,
             onRasterize: {
                 onRasterize?(canonicalImage, colorSpace)
             }
@@ -187,8 +192,11 @@ enum BeautyGeometryEffectPipeline {
         sourceOwnershipImage: CIImage? = nil,
         jawlineShadowSourceRGBA: [UInt8]? = nil,
         jawlineShadowSourceImage: CIImage? = nil,
+        onEyebrowAppliedSideCount: ((Int) -> Void)? = nil,
         onRasterize: (() -> Void)? = nil
     ) -> CIImage {
+        var eyebrowAdmittedSides = 0
+        defer { onEyebrowAppliedSideCount?(eyebrowAdmittedSides) }
         let requestsContinuous = face.observedFaceSupport != nil &&
             BeautyContinuousFaceMap.keys.contains { plan.effectiveStrengths[keyPath: $0] != 0 }
         let requestsNose = BeautyContinuousNoseMap.replacesLegacy(for: face) &&
@@ -263,7 +271,8 @@ enum BeautyGeometryEffectPipeline {
                               points: stage.controlPoints.compactMap(RenderableWarpPoint.init))
         let nasalBytes = stage.applyingContinuousNose(to: warpedBytes)
         let mouthBytes = stage.applyingContinuousMouth(to: nasalBytes)
-        let eyebrowBytes = stage.applyingContinuousEyebrows(to: mouthBytes)
+        let eyebrowBytes = stage.applyingContinuousEyebrows(to: mouthBytes,
+            onAppliedSideCount: { eyebrowAdmittedSides = $0 })
         let output = stage.applyingTranslation(to: stage.applyingContinuousContour(to: eyebrowBytes))
         let warped = CIImage(
             bitmapData: Data(output), bytesPerRow: rowBytes,

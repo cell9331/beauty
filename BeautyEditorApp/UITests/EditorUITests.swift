@@ -287,6 +287,121 @@ import XCTest
         attach(app, "nose-signed-negative")
     }
 
+    func testSevenBrowToolsScrollAndVerticalSliderRestoreWithSafeBottomAction() throws {
+        let app = launchFixture()
+        let slider = app.sliders["adjustment-slider"]
+        XCTAssertTrue(slider.waitForExistence(timeout: 8))
+        let windows = app.windows.containing(.slider, identifier: "adjustment-slider")
+        XCTAssertEqual(windows.count, 1)
+        let window = windows.firstMatch
+        func value() throws -> Float { try XCTUnwrap(Float(try XCTUnwrap(slider.value as? String))) }
+        @discardableResult func reveal(_ item: XCUIElement, in scroll: XCUIElement) -> Int {
+            for attempt in 0..<12 {
+                let viewport = scroll.frame.intersection(window.frame)
+                if item.exists, !item.frame.isEmpty,
+                   viewport.contains(CGPoint(x: item.frame.midX, y: item.frame.midY)), item.isHittable { return attempt }
+                let goesRight = item.exists && item.frame.midX < scroll.frame.minX
+                scroll.coordinate(withNormalizedOffset: CGVector(dx: goesRight ? 0.35 : 0.65, dy: 0.5))
+                    .press(forDuration: 0.15, thenDragTo: scroll.coordinate(withNormalizedOffset:
+                        CGVector(dx: goesRight ? 0.65 : 0.35, dy: 0.5)))
+            }
+            XCTFail("Requested brow/category control must enter its scroll viewport")
+            return 12
+        }
+        let category = app.buttons["category-brow"]
+        reveal(category, in: app.scrollViews["category-scroll"])
+        category.tap()
+        let tools = app.scrollViews["tool-scroll"]
+        let thickness = app.buttons["tool-brow.thickness"]
+        XCTAssertEqual(thickness.value as? String, "已选中", "Adding vertical movement preserves the existing default")
+        // Brow controls use the ordinary native slider, independently of the
+        // eye reference track/thumb geometry and its pixel oracle.
+        slider.adjust(toNormalizedSliderPosition: 0.7)
+        let retainedThickness = try value()
+        XCTAssertGreaterThan(retainedThickness, 20)
+        let peak = app.buttons["tool-brow.peak"]
+        // Reveal the far end before selecting neighboring tools, whose
+        // automatic centering could otherwise conceal a missing drag check.
+        var toolbarDrags = reveal(peak, in: tools)
+        peak.tap()
+        XCTAssertEqual(peak.value as? String, "已选中")
+        for id in ["brow.thickness", "brow.length", "brow.positionY", "brow.spacing",
+                   "brow.innerSpacing", "brow.tilt", "brow.peak"] {
+            let button = app.buttons["tool-" + id]
+            toolbarDrags += reveal(button, in: tools)
+            button.tap()
+            XCTAssertEqual(button.value as? String, "已选中", id)
+            if id != "brow.thickness" { XCTAssertEqual(try value(), 0, id + " keeps its independent neutral value") }
+        }
+        XCTAssertGreaterThan(toolbarDrags, 0, "The last brow tool must be reached by actual horizontal scrolling")
+        XCTAssertTrue(peak.isHittable)
+        XCTAssertEqual(peak.value as? String, "已选中")
+        attach(app, "brow-seven-peak-generated-input-full-window")
+
+        let vertical = app.buttons["tool-brow.positionY"]
+        reveal(vertical, in: tools)
+        vertical.tap()
+        XCTAssertEqual(vertical.value as? String, "已选中")
+        XCTAssertEqual(slider.label, "上下")
+        XCTAssertEqual(try value(), 0)
+        slider.adjust(toNormalizedSliderPosition: 0.8)
+        let positive = try value()
+        XCTAssertGreaterThan(positive, 30)
+        slider.adjust(toNormalizedSliderPosition: 0.2)
+        let negative = try value()
+        XCTAssertLessThan(negative, -30)
+        app.buttons["undo"].tap()
+        XCTAssertEqual(try value(), positive, "Undo restores the selected vertical field")
+        app.buttons["redo"].tap()
+        XCTAssertEqual(try value(), negative)
+        attach(app, "brow-positionY-selected-negative-generated-input-full-window")
+
+        reveal(thickness, in: tools)
+        thickness.tap()
+        XCTAssertEqual(try value(), retainedThickness, "Vertical edits and history must preserve the thickness field")
+        reveal(vertical, in: tools)
+        vertical.tap()
+        XCTAssertEqual(try value(), negative)
+        // Ordinary UISlider AX adjustment is approximate. Close the loop on
+        // the actual displayed value instead of treating normalized .5 as an
+        // exact touch location. Keep the exact neutral assertion below.
+        var neutralPosition: CGFloat = 0.5
+        var lowerNeutralPosition: CGFloat?
+        var upperNeutralPosition: CGFloat?
+        var beforeNeutral = try value()
+        for _ in 0..<8 {
+            beforeNeutral = try value()
+            slider.adjust(toNormalizedSliderPosition: neutralPosition)
+            let observed = try value()
+            if observed == 0 { break }
+            if observed < 0 { lowerNeutralPosition = neutralPosition }
+            else { upperNeutralPosition = neutralPosition }
+            if let lower = lowerNeutralPosition, let upper = upperNeutralPosition {
+                neutralPosition = (lower + upper) / 2
+            } else {
+                neutralPosition = min(1, max(0, neutralPosition - CGFloat(observed) / 200))
+            }
+        }
+        XCTAssertEqual(try value(), 0, "Centered ordinary slider must request exact neutral")
+        app.buttons["undo"].tap()
+        XCTAssertEqual(try value(), beforeNeutral, "Undo restores the last native adjustment before exact neutral")
+        app.buttons["redo"].tap()
+        XCTAssertEqual(try value(), 0)
+        XCTAssertEqual(vertical.value as? String, "已选中")
+
+        let confirm = app.buttons["confirm-editing"]
+        XCTAssertTrue(confirm.isHittable)
+        XCTAssertTrue(window.frame.contains(confirm.frame), "The entire confirm hit area stays inside its actual app window")
+        XCTAssertGreaterThanOrEqual(confirm.frame.width, 43)
+        XCTAssertGreaterThanOrEqual(confirm.frame.height, 43)
+        XCTAssertLessThan(confirm.frame.maxY, window.frame.maxY, "The bottom action leaves space below its complete hit area")
+        // Full app captures retain the current container and Home Indicator;
+        // they are generated fixtures, with no portrait or landmark payload.
+        attach(app, "brow-positionY-selected-neutral-safe-bottom-generated-input-full-window")
+        confirm.tap()
+        XCTAssertTrue(app.buttons["resume-editing"].waitForExistence(timeout: 3), "The verified bottom action must respond to a real tap")
+    }
+
     func testImportEntryPointsAndCancelPhotoPicker() throws {
         let app = XCUIApplication()
         app.launch()

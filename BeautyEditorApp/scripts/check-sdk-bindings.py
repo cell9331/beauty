@@ -29,6 +29,7 @@ for field in eye_fields:
     assert re.search(r'field: "' + field + r'", range: \.signed', catalog), f'Eye range drift: {field}'
 assert 'eyeSlider.applying(position:' in state and 'eyeSlider.position(in:' in state
 brow_helpers = {'eyebrowThickness': 'thickness', 'eyebrowLength': 'length',
+                'eyebrowYPosition': 'verticalPosition',
                 'eyebrowSpacing': 'spacing', 'eyebrowHeadSpacing': 'headSpacing',
                 'eyebrowTilt': 'tilt', 'eyebrowPeakDefinition': 'peak'}
 assert 'var eyebrowSlider: BeautyEyebrowSlider?' in state
@@ -36,11 +37,13 @@ for field, helper in brow_helpers.items():
     assert re.search(r'field: "' + field + r'", range: \.signed', catalog), f'Brow range drift: {field}'
     assert f'case "{field}": .{helper}' in state, f'Brow helper drift: {field}'
 assert 'eyebrowSlider.applying(position:' in state and 'eyebrowSlider.position(in:' in state
+assert re.search(r'id: "brow.positionY".*category: \.brow, field: "eyebrowYPosition", range: \.signed', catalog)
+assert '"brow.positionY": "arrow.up.and.down"' in catalog, 'Brow vertical control must use its native direction symbol'
 resolver = (sdk / 'BeautyEffects/Warp/GeometryConflictResolver.swift').read_text()
 assert re.search(r'totalThreshold: Float = 1\.0', resolver), 'Legacy geometry budget drift'
 assert 'usesDenseMap: Bool = false' in resolver, 'SDK dense combination route missing'
 assert 'setValuePreservingGeometryBudget' not in state, 'Obsolete host quota must not return'
 assert re.search(r'id: "face.jawline".*field: "jawlineShadow", range: \.unit', catalog)
 assert 'field != "jawlineShadow"' in state, 'Photometric jawline must not enter geometry totals'
-assert len(fields) == 57
-print('57 canonical bindings/caps match the same-repository SDK; centered brow helpers and SDK-owned admission verified')
+assert len(fields) == 58
+print('58 canonical bindings/caps match the same-repository SDK; all seven centered brow helpers and SDK-owned admission verified')

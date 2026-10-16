@@ -137,12 +137,14 @@ public enum BeautyColorEffectPipeline {
         plan: BeautyEffectPlan,
         renderQuality: BeautyRenderQuality = .balanced,
         selectedFaceObservation: BeautyFaceObservation?,
-        textureExclusionMask: BeautyTextureExclusionMask? = nil
+        textureExclusionMask: BeautyTextureExclusionMask? = nil,
+        onEyebrowAppliedSideCount: ((Int) -> Void)? = nil
     ) -> CIImage {
         let face = selectedFaceObservation.map(BeautyFaceGeometryAdapter.makeGeometry(from:))
         return apply(to: image, plan: plan, renderQuality: renderQuality,
                      face: face, textureFaceBounds: selectedFaceObservation?.imageBounds,
-                     textureExclusionMask: textureExclusionMask)
+                     textureExclusionMask: textureExclusionMask,
+                     onEyebrowAppliedSideCount: onEyebrowAppliedSideCount)
     }
 
     package static func apply(
@@ -151,6 +153,7 @@ public enum BeautyColorEffectPipeline {
         renderQuality: BeautyRenderQuality = .balanced,
         selectedFaceObservation: BeautyFaceObservation?,
         textureExclusionMask: BeautyTextureExclusionMask? = nil,
+        onEyebrowAppliedSideCount: ((Int) -> Void)? = nil,
         onCanonicalRasterize: ((BeautyCanonicalStillImage, CGColorSpace) -> Void)? = nil
     ) -> CIImage {
         let face = selectedFaceObservation.map(BeautyFaceGeometryAdapter.makeGeometry(from:))
@@ -169,8 +172,11 @@ public enum BeautyColorEffectPipeline {
                 canonicalImage: canonicalImage,
                 plan: plan,
                 face: face,
+                onEyebrowAppliedSideCount: onEyebrowAppliedSideCount,
                 onRasterize: onCanonicalRasterize
             )
+        } else {
+            onEyebrowAppliedSideCount?(0)
         }
 
         return output.cropped(to: canonicalImage.ciImage.extent)
@@ -180,7 +186,8 @@ public enum BeautyColorEffectPipeline {
         to image: CIImage, plan: BeautyEffectPlan,
         renderQuality: BeautyRenderQuality = .balanced, face: FaceGeometry?,
         textureFaceBounds: CoordinateRect? = nil,
-        textureExclusionMask: BeautyTextureExclusionMask? = nil
+        textureExclusionMask: BeautyTextureExclusionMask? = nil,
+        onEyebrowAppliedSideCount: ((Int) -> Void)? = nil
     ) -> CIImage {
         var output = applyColorEffects(
             to: image, plan: plan, renderQuality: renderQuality,
@@ -193,7 +200,10 @@ public enum BeautyColorEffectPipeline {
                 face: face, strengths: plan.effectiveStrengths) ? image : nil
             let shadowImage = plan.effectiveStrengths.jawlineShadow > 0 ? image : nil
             output = BeautyGeometryEffectPipeline.applyMVPProxy(to: output, plan: plan, face: face,
-                sourceOwnershipImage: ownershipImage, jawlineShadowSourceImage: shadowImage)
+                sourceOwnershipImage: ownershipImage, jawlineShadowSourceImage: shadowImage,
+                onEyebrowAppliedSideCount: onEyebrowAppliedSideCount)
+        } else {
+            onEyebrowAppliedSideCount?(0)
         }
 
         return output.cropped(to: image.extent)

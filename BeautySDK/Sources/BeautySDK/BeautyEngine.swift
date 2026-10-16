@@ -510,7 +510,8 @@ public final class BeautyEngine {
         return withConfiguredResultMetadata(BeautyResult(
             output: try Self.stillImageOutput(from: backendResult),
             warnings: route.plan.warnings,
-            metrics: metrics(route.plan.metrics, usedCapacityFallback: usedCapacityFallback),
+            metrics: metrics(route.plan.metrics.merging(backendResult.diagnostics.metrics) { _, actual in actual },
+                             usedCapacityFallback: usedCapacityFallback),
             detectionSummary: route.detectionSummary
         ), since: performanceStart)
     }
@@ -606,7 +607,8 @@ public final class BeautyEngine {
         return BeautyResult(
             output: try Self.stillImageOutput(from: backendResult),
             warnings: route.plan.warnings,
-            metrics: metrics(route.plan.metrics, usedCapacityFallback: usedCapacityFallback),
+            metrics: metrics(route.plan.metrics.merging(backendResult.diagnostics.metrics) { _, actual in actual },
+                             usedCapacityFallback: usedCapacityFallback),
             detectionSummary: route.detectionSummary
         )
     }

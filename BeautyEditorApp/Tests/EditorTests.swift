@@ -196,8 +196,8 @@ enum TestImage {
     }
 
     func testEveryToolChangesOnlyItsCanonicalField() throws {
-        XCTAssertEqual(ToolCatalog.all.count, 59)
-        XCTAssertEqual(ToolCatalog.all.filter(\.available).count, 52)
+        XCTAssertEqual(ToolCatalog.all.count, 60)
+        XCTAssertEqual(ToolCatalog.all.filter(\.available).count, 53)
         let baseline = try dictionary(BeautyParameters())
         for tool in ToolCatalog.all where tool.available {
             var parameters = BeautyParameters()
@@ -257,7 +257,8 @@ enum TestImage {
     }
 
     func testNewEyeControlsHaveAvailableNativeSymbols() {
-        XCTAssertEqual(ToolCatalog.systemSymbols.count, 5)
+        XCTAssertEqual(ToolCatalog.systemSymbols.count, 6)
+        XCTAssertEqual(ToolCatalog.find("brow.positionY")?.systemSymbol, "arrow.up.and.down")
         for (id, symbol) in ToolCatalog.systemSymbols {
             XCTAssertEqual(ToolCatalog.find(id)?.systemSymbol, symbol)
             XCTAssertNotNil(UIImage(systemName: symbol), id)
@@ -268,16 +269,19 @@ enum TestImage {
         let controls: [(String, String, BeautyEyebrowSlider)] = [
             ("brow.thickness", "eyebrowThickness", .thickness),
             ("brow.length", "eyebrowLength", .length),
+            ("brow.positionY", "eyebrowYPosition", .verticalPosition),
             ("brow.spacing", "eyebrowSpacing", .spacing),
             ("brow.innerSpacing", "eyebrowHeadSpacing", .headSpacing),
             ("brow.tilt", "eyebrowTilt", .tilt),
             ("brow.peak", "eyebrowPeakDefinition", .peak)
         ]
         XCTAssertEqual(ToolCatalog.tools(in: .brow).map(\.id), controls.map { $0.0 })
-        var baseline = BeautyParameters(eyeSize: -0.18, noseWingSlim: 0.21, mouthWidth: -0.12)
-        baseline.eyebrowYPosition = 0.11
-        let baselineFields = try dictionary(baseline)
+        var original = BeautyParameters(eyeSize: -0.18, noseWingSlim: 0.21, mouthWidth: -0.12)
+        original.eyebrowYPosition = 0.11
+        original.eyebrowThickness = -0.09
         for (id, field, helper) in controls {
+            let baseline = helper.applying(position: 0.5, to: original)
+            let baselineFields = try dictionary(baseline)
             let tool = try XCTUnwrap(ToolCatalog.find(id))
             XCTAssertEqual(tool.field, field, id)
             XCTAssertEqual(tool.range, .signed, id)
@@ -287,7 +291,7 @@ enum TestImage {
                 var adjusted = baseline
                 tool.setValue(value, in: &adjusted)
                 XCTAssertEqual(adjusted, helper.applying(position: (value / 100 + 1) / 2, to: baseline), id)
-                let polarity: Float = field == "eyebrowTilt" ? -1 : 1
+                let polarity: Float = ["eyebrowYPosition", "eyebrowTilt"].contains(field) ? -1 : 1
                 XCTAssertEqual(tool.sdkValue(in: adjusted), value / 100 * 0.25 * polarity,
                                accuracy: 0.000001, id)
                 XCTAssertEqual(tool.value(in: adjusted), value, accuracy: 0.0001, id)
@@ -309,12 +313,15 @@ enum TestImage {
     func testBrowPeakNegativeRangeAndTiltRestoreThroughHistory() throws {
         let peak = try XCTUnwrap(ToolCatalog.find("brow.peak"))
         let tilt = try XCTUnwrap(ToolCatalog.find("brow.tilt"))
+        let vertical = try XCTUnwrap(ToolCatalog.find("brow.positionY"))
         let previous = EditorSnapshot(parameters: BeautyParameters(mouthWidth: -0.12))
         var current = previous
         peak.setValue(-63.75, in: &current.parameters)
         tilt.setValue(37.125, in: &current.parameters)
+        vertical.setValue(-42.125, in: &current.parameters)
         XCTAssertEqual(current.parameters.eyebrowPeakDefinition, -0.159375, accuracy: 0.000001)
         XCTAssertEqual(current.parameters.eyebrowTilt, -0.0928125, accuracy: 0.000001)
+        XCTAssertEqual(current.parameters.eyebrowYPosition, 0.1053125, accuracy: 0.000001)
         var history = EditHistory()
         history.record(previous, replacing: current)
         let undone = try XCTUnwrap(history.undo(current))
@@ -322,9 +329,11 @@ enum TestImage {
         let restored = try XCTUnwrap(history.redo(undone))
         XCTAssertEqual(peak.value(in: restored.parameters), -63.75, accuracy: 0.0001)
         XCTAssertEqual(tilt.value(in: restored.parameters), 37.125, accuracy: 0.0001)
+        XCTAssertEqual(vertical.value(in: restored.parameters), -42.125, accuracy: 0.0001)
         XCTAssertEqual(restored.parameters.mouthWidth, previous.parameters.mouthWidth)
         XCTAssertEqual(peak.value(in: BeautyParameters(eyebrowPeakDefinition: -0.125)), -50, accuracy: 0.0001)
         XCTAssertEqual(tilt.value(in: BeautyParameters(eyebrowTilt: 0.125)), -50, accuracy: 0.0001)
+        XCTAssertEqual(vertical.value(in: BeautyParameters(eyebrowYPosition: 0.125)), -50, accuracy: 0.0001)
     }
 
     func testAliasesRemainSynchronizedAndSuspendedToolCannotActivate() {
@@ -376,7 +385,7 @@ enum TestImage {
         XCTAssertEqual(ToolCatalog.geometryTotal(in: parameters), total)
         ToolCatalog.find("eye.redness")!.setValue(100, in: &parameters)
         XCTAssertEqual(ToolCatalog.geometryTotal(in: parameters), total)
-        XCTAssertEqual(ToolCatalog.canonicalTools.count, 57)
+        XCTAssertEqual(ToolCatalog.canonicalTools.count, 58)
     }
     func testLandmarksAlignWithPortraitAndLandscapeLetterboxing() {
         let portrait = DebugLandmarkProjection.imageRect(imageSize: CGSize(width: 960, height: 1200), viewport: CGSize(width: 393, height: 600))
@@ -2195,6 +2204,252 @@ actor FakeRenderer: PhotoRendering {
                                  warningCodes: ["sensitive_payload", "/private/sensitive_payload.png\nlandmarks masks"],
                                  metrics: ["sensitive_payload": .infinity], matchesSource: identity,
                                  backendName: identity ? "sensitive_payload" : "CPU")
+        }
+    }
+}
+
+@MainActor final class CenteredSliderAdmissionTests: XCTestCase {
+    func testDisplayedZeroMapsEveryCenteredToolToExactNeutralWithoutRoundingNonzeroValues() throws {
+        let tools = ToolCatalog.canonicalTools.filter { $0.available && $0.range == .signed }
+        XCTAssertFalse(tools.isEmpty)
+        for tool in tools {
+            for value: Float in [-0.499, -0.248754, 0, 0.248754, 0.499] {
+                var parameters = BeautyParameters()
+                tool.setValue(100, in: &parameters)
+                XCTAssertNotEqual(tool.sdkValue(in: parameters), 0, tool.id)
+                tool.setValue(value, in: &parameters)
+                XCTAssertEqual(tool.sdkValue(in: parameters), 0, tool.id + " displayed zero must be SDK zero")
+                XCTAssertEqual(tool.value(in: parameters), 0, tool.id)
+            }
+            for value: Float in [-0.75, -0.5, 0.5, 0.75, 37.125] {
+                var parameters = BeautyParameters()
+                tool.setValue(value, in: &parameters)
+                XCTAssertNotEqual(tool.sdkValue(in: parameters), 0, tool.id)
+                XCTAssertEqual(tool.value(in: parameters), value, accuracy: 0.0001,
+                               tool.id + " displayed nonzero values keep continuous precision")
+            }
+        }
+        let unit = try XCTUnwrap(ToolCatalog.canonicalTools.first { $0.available && $0.range == .unit })
+        var unitParameters = BeautyParameters()
+        unit.setValue(0.248754, in: &unitParameters)
+        XCTAssertNotEqual(unit.sdkValue(in: unitParameters), 0, "Unit controls do not have a centered neutral detent")
+    }
+
+    func testBrowHundredToZeroToSmallNonzeroRetainsExactNeutralAndAdmittedQuantization() async throws {
+        for (control, tool) in browControls() {
+            let renderer = Renderer(.admitted)
+            let model = makeModel(renderer)
+            try await load(model)
+            select(tool, in: model)
+            model.updateValue(100); model.endAdjustment()
+            try await settled(model)
+            let endpoint = control.slider.applying(position: 1, to: .init())
+            XCTAssertEqual(model.snapshot.parameters, endpoint, control.field + " changes the intended SDK field")
+            XCTAssertEqual(model.snapshot.parameters[keyPath: control.parameter],
+                           endpoint[keyPath: control.parameter], control.field)
+            XCTAssertEqual(try XCTUnwrap(model.lastRender).metrics["beauty.effects.eyebrowAdmittedSideCount"], 2,
+                           control.field + " renderer observes this field as active")
+            XCTAssertNil(model.detectionMessage, control.field + " actual admission is independent of pixel equality")
+            model.updateValue(0); model.endAdjustment()
+            try await settled(model)
+            XCTAssertEqual(model.snapshot.parameters[keyPath: control.parameter], 0, control.field)
+            XCTAssertEqual(model.snapshot.parameters, BeautyParameters(), control.field + " fully returns to neutral")
+            XCTAssertNil(try XCTUnwrap(model.lastRender).metrics["beauty.effects.eyebrowAdmittedSideCount"],
+                         control.field + " neutral is not an active eyebrow request")
+            XCTAssertNil(model.detectionMessage, control.field)
+            let neutralRevision = model.revision
+            model.updateValue(0.248754); model.endAdjustment()
+            XCTAssertEqual(model.snapshot.parameters[keyPath: control.parameter], 0, control.field)
+            XCTAssertEqual(model.revision, neutralRevision, control.field + " another displayed zero stays neutral")
+            XCTAssertNil(model.detectionMessage, control.field)
+            model.updateValue(0.75); model.endAdjustment()
+            try await settled(model)
+            XCTAssertGreaterThan(abs(model.snapshot.parameters[keyPath: control.parameter]), 0, control.field)
+            XCTAssertEqual(model.snapshot.parameters,
+                           control.slider.applying(position: (0.75 / 100 + 1) / 2, to: .init()), control.field)
+            XCTAssertEqual(model.value, 0.75, accuracy: 0.0001, control.field)
+            let quantized = try XCTUnwrap(model.lastRender)
+            XCTAssertTrue(quantized.matchesSource, control.field)
+            XCTAssertEqual(quantized.metrics["beauty.effects.eyebrowAdmittedSideCount"], 2, control.field)
+            XCTAssertNil(model.detectionMessage, control.field + " small admitted requests may quantize to source bytes")
+        }
+    }
+
+    func testActualSamplingRejectionMissingInputsAndNoFaceStillReportTheirConditions() async throws {
+        for (control, tool) in browControls() {
+            for (mode, expected) in [(Mode.rejected, "未满足当前工具的处理条件"),
+                                     (.missingInputs, "缺少可用关键点"), (.noFace, "未获得可用人脸")] {
+                let model = makeModel(Renderer(mode))
+                try await load(model)
+                select(tool, in: model)
+                model.updateValue(100); model.endAdjustment()
+                try await settled(model)
+                XCTAssertNotEqual(model.snapshot.parameters[keyPath: control.parameter], 0, control.field)
+                XCTAssertTrue(try XCTUnwrap(model.detectionMessage).contains(expected), control.field)
+            }
+        }
+    }
+
+    func testPixelEqualityWithoutAdmissionEvidenceDoesNotClaimUnsupportedOrSuccessfulProcessing() async throws {
+        for (control, tool) in browControls() {
+            let model = makeModel(Renderer(.unknown))
+            try await load(model)
+            select(tool, in: model)
+            model.updateValue(1); model.endAdjustment()
+            try await settled(model)
+            XCTAssertNotEqual(model.snapshot.parameters[keyPath: control.parameter], 0, control.field)
+            let message = try XCTUnwrap(model.detectionMessage)
+            XCTAssertTrue(message.contains("未产生可见变化"), control.field)
+            XCTAssertFalse(message.contains("未满足") || message.contains("成功"), control.field)
+        }
+    }
+
+    func testActualBrowRejectionStillReportsItsScopeWhenSiblingChangesOutputPixels() async throws {
+        for (control, tool) in browControls() {
+            let model = makeModel(Renderer(.rejectedWithChangedSibling))
+            try await load(model)
+            select(try XCTUnwrap(ToolCatalog.find("face.width")), in: model)
+            model.updateValue(40); model.endAdjustment()
+            try await settled(model)
+            select(tool, in: model)
+            model.updateValue(100); model.endAdjustment()
+            try await settled(model)
+            let rendered = try XCTUnwrap(model.lastRender)
+            XCTAssertFalse(rendered.matchesSource, control.field)
+            XCTAssertNotEqual(TestImage.pixels(rendered.image), TestImage.pixels(try XCTUnwrap(model.photo).preview), control.field)
+            XCTAssertEqual(rendered.metrics["beauty.effects.eyebrowAdmittedSideCount"], 0, control.field)
+            XCTAssertNotEqual(model.snapshot.parameters[keyPath: control.parameter], 0, control.field)
+            XCTAssertGreaterThan(model.snapshot.parameters.faceSlim, 0, control.field)
+            let message = try XCTUnwrap(model.detectionMessage)
+            XCTAssertTrue(message.contains("眉毛区域未满足处理条件"), control.field)
+            XCTAssertTrue(message.contains("其他调整保留"), control.field)
+            XCTAssertFalse(message.contains("本次输出保持原图"), control.field)
+        }
+    }
+
+    func testOlderRejectedRevisionCannotRestoreToastWhileNeutralRequestIsPending() async throws {
+        for (control, tool) in browControls() {
+            let renderer = Renderer(.rejected, blockedCalls: [1, 2])
+            let model = makeModel(renderer)
+            try await load(model)
+            select(tool, in: model)
+            model.updateValue(100); model.endAdjustment()
+            XCTAssertNotEqual(model.snapshot.parameters[keyPath: control.parameter], 0, control.field)
+            let oldRevision = model.revision
+            try await wait { await renderer.renderCount == 1 }
+            model.updateValue(0); model.endAdjustment()
+            let neutralRevision = model.revision
+            XCTAssertGreaterThan(neutralRevision, oldRevision, control.field)
+            XCTAssertEqual(model.snapshot.parameters[keyPath: control.parameter], 0, control.field)
+            await renderer.release(1)
+            try await wait { await renderer.renderCount == 2 }
+            XCTAssertEqual(model.displayedRevision, oldRevision, control.field + " old frames may update the preview")
+            XCTAssertNil(model.detectionMessage, control.field + " obsolete failure cannot describe the neutral request")
+            await renderer.release(2)
+            try await settled(model)
+            XCTAssertEqual(model.displayedRevision, neutralRevision, control.field)
+            XCTAssertEqual(model.snapshot.parameters[keyPath: control.parameter], 0, control.field)
+            XCTAssertNil(model.detectionMessage, control.field)
+        }
+    }
+
+    private struct BrowControl {
+        let field: String
+        let parameter: KeyPath<BeautyParameters, Float>
+        let slider: BeautyEyebrowSlider
+    }
+    private static let expectedBrowControls: [BrowControl] = [
+        .init(field: "eyebrowYPosition", parameter: \.eyebrowYPosition, slider: .verticalPosition),
+        .init(field: "eyebrowThickness", parameter: \.eyebrowThickness, slider: .thickness),
+        .init(field: "eyebrowLength", parameter: \.eyebrowLength, slider: .length),
+        .init(field: "eyebrowSpacing", parameter: \.eyebrowSpacing, slider: .spacing),
+        .init(field: "eyebrowHeadSpacing", parameter: \.eyebrowHeadSpacing, slider: .headSpacing),
+        .init(field: "eyebrowTilt", parameter: \.eyebrowTilt, slider: .tilt),
+        .init(field: "eyebrowPeakDefinition", parameter: \.eyebrowPeakDefinition, slider: .peak)
+    ]
+    private func browControls(file: StaticString = #filePath, line: UInt = #line) -> [(BrowControl, ToolDefinition)] {
+        Self.expectedBrowControls.compactMap { control in
+            let matches = ToolCatalog.canonicalTools.filter { $0.available && $0.field == control.field }
+            XCTAssertEqual(matches.count, 1, control.field + " must have a real selectable ToolCatalog entry", file: file, line: line)
+            guard let tool = matches.first else { return nil }
+            XCTAssertEqual(tool.range, .signed, control.field, file: file, line: line)
+            XCTAssertEqual(tool.eyebrowSlider, control.slider, control.field, file: file, line: line)
+            return (control, tool)
+        }
+    }
+    private func select(_ tool: ToolDefinition, in model: EditorModel,
+                        file: StaticString = #filePath, line: UInt = #line) {
+        model.selectCategory(tool.category)
+        model.selectTool(tool)
+        XCTAssertEqual(model.category, tool.category, file: file, line: line)
+        XCTAssertEqual(model.selectedToolID, tool.id, file: file, line: line)
+        XCTAssertEqual(model.selectedTool.field, tool.field, file: file, line: line)
+    }
+
+    private func makeModel(_ renderer: Renderer) -> EditorModel {
+        EditorModel(renderer: renderer, previewInterval: .zero, adjustmentLog: { _ in }, previewLog: { _ in })
+    }
+    private func load(_ model: EditorModel) async throws {
+        model.importPhoto(TestImage.encoded())
+        try await wait { !model.isLoading && model.photo != nil }
+    }
+    private func settled(_ model: EditorModel) async throws {
+        try await wait { !model.isRendering && model.displayedRevision == model.revision }
+    }
+    private func wait(_ predicate: () async -> Bool) async throws {
+        let deadline = ContinuousClock.now.advanced(by: .seconds(5))
+        while !(await predicate()), ContinuousClock.now < deadline {
+            try await Task.sleep(for: .milliseconds(10))
+        }
+        let value = await predicate()
+        XCTAssertTrue(value, "State did not settle")
+    }
+    private enum Mode: Sendable { case admitted, rejected, rejectedWithChangedSibling, missingInputs, noFace, unknown }
+    private actor Renderer: PhotoRendering {
+        private let actual = PhotoRenderer()
+        private let mode: Mode
+        private let blockedCalls: Set<Int>
+        private var gates = [Int: CheckedContinuation<Void, Never>]()
+        private(set) var renderCount = 0
+        init(_ mode: Mode, blockedCalls: Set<Int> = []) { self.mode = mode; self.blockedCalls = blockedCalls }
+        func load(_ data: Data) async throws -> ImportedPhoto { try await actual.load(data) }
+        func encodePNG(_ image: CGImage) async throws -> Data { try await actual.encodePNG(image) }
+        func release(_ call: Int) { gates.removeValue(forKey: call)?.resume() }
+        func render(_ photo: ImportedPhoto, snapshot: EditorSnapshot, fullResolution: Bool) async throws -> RenderedPhoto {
+            renderCount += 1
+            let call = renderCount
+            if blockedCalls.contains(call) { await withCheckedContinuation { gates[call] = $0 } }
+            let parameters = snapshot.parameters
+            let active = [parameters.eyebrowYPosition, parameters.eyebrowThickness, parameters.eyebrowLength,
+                          parameters.eyebrowSpacing, parameters.eyebrowHeadSpacing, parameters.eyebrowTilt,
+                          parameters.eyebrowPeakDefinition].contains { $0 != 0 }
+            var detection: BeautyDetectionSummary = active
+                ? .init(availability: .usable, faceCount: 1, usedFaceCount: 1) : .notRun
+            var metrics: [String: Double] = [:]
+            var warnings: [String] = []
+            if active {
+                switch mode {
+                case .admitted: metrics["beauty.effects.eyebrowAdmittedSideCount"] = 2
+                case .rejected, .rejectedWithChangedSibling: metrics["beauty.effects.eyebrowAdmittedSideCount"] = 0
+                case .missingInputs: warnings = ["eyebrow_inputs_missing"]
+                case .noFace: detection = .noFace
+                case .unknown: break
+                }
+            }
+            var image = photo.preview
+            var matchesSource = true
+            if case .rejectedWithChangedSibling = mode, snapshot.parameters.faceSlim != 0 {
+                let context = try XCTUnwrap(CGContext(data: nil, width: image.width, height: image.height,
+                    bitsPerComponent: 8, bytesPerRow: image.width*4, space: CGColorSpace(name: CGColorSpace.sRGB)!,
+                    bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue))
+                context.draw(image, in: CGRect(x: 0, y: 0, width: image.width, height: image.height))
+                context.setFillColor(CGColor(red: 1, green: 0, blue: 0, alpha: 1))
+                context.fill(CGRect(x: 0, y: 0, width: 2, height: 2))
+                image = try XCTUnwrap(context.makeImage())
+                matchesSource = false
+            }
+            return RenderedPhoto(image: image, detection: detection, warningCount: warnings.count,
+                                 warningCodes: warnings, metrics: metrics, matchesSource: matchesSource)
         }
     }
 }

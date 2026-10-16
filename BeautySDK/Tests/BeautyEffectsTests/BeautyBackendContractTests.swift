@@ -282,7 +282,7 @@ final class BeautyBackendContractTests: XCTestCase {
         XCTAssertEqual(first.diagnostics.failureCount, 1)
         XCTAssertEqual(first.diagnostics.collisionCount, 1)
         XCTAssertEqual(first.diagnostics.changedPixelCount, 2)
-        XCTAssertEqual(Mirror(reflecting: first.diagnostics).children.count, 8)
+        XCTAssertEqual(Mirror(reflecting: first.diagnostics).children.count, 9)
     }
 
     func testResultRejectsDiagnosticsThatDoNotPreserveAlpha() throws {

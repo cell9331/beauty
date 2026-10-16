@@ -54,6 +54,9 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
                 throw BeautyError.invalidInput
             }
 
+            var eyebrowAdmittedSideCount: Int? = request.inputKind == .stillImage &&
+                BeautyBackendDiagnostics.requestsEyebrowAdmission(request.plan) ? 0 : nil
+
             let output: BeautyBackendOutput
             switch request.input {
             case .pixelBuffer(let pixelBuffer):
@@ -75,7 +78,10 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
                     renderQuality: request.renderQuality,
                     selectedFaceSupport: request.selectedFaceSupport,
                     textureExclusionMask: request.textureExclusionMask,
-                    compositionSummary: request.compositionSummary
+                    compositionSummary: request.compositionSummary,
+                    onEyebrowAppliedSideCount: { count in
+                        if eyebrowAdmittedSideCount != nil { eyebrowAdmittedSideCount = count }
+                    }
                 ))
             }
 
@@ -83,7 +89,8 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
             let diagnostics = BeautyBackendDiagnostics(
                 width: dimensions.width,
                 height: dimensions.height,
-                compositionSummary: request.compositionSummary
+                compositionSummary: request.compositionSummary,
+                eyebrowAdmittedSideCount: eyebrowAdmittedSideCount
             )
             return try BeautyBackendResult(
                 output: output,
@@ -154,7 +161,8 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
         renderQuality: BeautyRenderQuality,
         selectedFaceSupport: BeautyFaceObservation?,
         textureExclusionMask: BeautyTextureExclusionMask?,
-        compositionSummary: BeautyLocalRetouchCompositionSummary?
+        compositionSummary: BeautyLocalRetouchCompositionSummary?,
+        onEyebrowAppliedSideCount: ((Int) -> Void)? = nil
     ) throws -> CIImage {
         let extent = image.extent
         guard let dimensions = BeautyBackendRequest.checkedDimensions(for: extent) else {
@@ -217,7 +225,8 @@ package final class BeautyMetalBackend: BeautyBackendExecutor, @unchecked Sendab
         let geometrizedBytes = stage.applyingDenseMap(to: renderedBytes)
         let nasalBytes = stage.applyingContinuousNose(to: geometrizedBytes)
         let mouthBytes = stage.applyingContinuousMouth(to: nasalBytes)
-        let eyebrowBytes = stage.applyingContinuousEyebrows(to: mouthBytes)
+        let eyebrowBytes = stage.applyingContinuousEyebrows(to: mouthBytes,
+            onAppliedSideCount: onEyebrowAppliedSideCount)
         let translatedBytes = stage.applyingTranslation(to: stage.applyingContinuousContour(to: eyebrowBytes))
         guard let colorSpace = CGColorSpace(name: CGColorSpace.sRGB) else {
             throw BeautyError.unsupportedPixelFormat

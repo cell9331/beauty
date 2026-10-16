@@ -12,8 +12,8 @@ swift = "\n".join(p.read_text() for p in (root / "Sources").glob("*.swift"))
 tools = set(re.findall(r'ToolDefinition\(id: "([^"]+)"', swift))
 catalog = (root / "Sources" / "ToolCatalog.swift").read_text()
 symbol_section = catalog.split('static let systemSymbols: [String: String] = [', 1)[1].split(']', 1)[0]
-symbol_tools = set(re.findall(r'"(eye\.[^"]+)": "[^"]+"', symbol_section))
-assert symbol_tools == {"eye.size", "eye.positionY", "eye.length", "eye.spacing", "eye.irisSize"}
+symbol_tools = set(re.findall(r'"([^"]+\.[^"]+)": "[^"]+"', symbol_section))
+assert symbol_tools == {"eye.size", "eye.positionY", "eye.length", "eye.spacing", "eye.irisSize", "brow.positionY"}
 assert symbol_tools <= tools
 assert 'Image(systemName: symbol)' in swift and 'ToolCatalog.systemSymbols[id]' in swift
 expected = {name.replace(".", "_") for name in tools - symbol_tools} | {
