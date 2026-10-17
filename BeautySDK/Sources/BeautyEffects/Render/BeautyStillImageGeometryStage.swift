@@ -20,8 +20,11 @@ struct BeautyStillImageGeometryStage {
     private let jawlineShadow: BeautyJawlineShadow.Evidence?
     private let jawlineShadowStrength: Float
     let jawlineShadowRefusal: BeautyJawlineShadow.Refusal?
+    /// Present even when the explicit research route refuses. It must never
+    /// be mistaken for an absent request and revived through a legacy mapper.
+    let irisFollowingResult: BeautyIrisFollowingResult?
 
-    var usesDenseMap: Bool { face?.denseSupport != nil }
+    var usesDenseMap: Bool { irisFollowingResult == nil && face?.denseSupport != nil }
 
     /// Only source-qualified decisions cross the cutpoint. No output raster
     /// is used to resolve strengths or repeat source admission.
@@ -50,11 +53,11 @@ struct BeautyStillImageGeometryStage {
 
     init(sourceRGBA: [UInt8], width: Int, height: Int,
          plan: BeautyEffectPlan, face: FaceGeometry?, eyebrowSourceRGBA: [UInt8]? = nil, sourceOwnershipRGBA: [UInt8]? = nil,
-         jawlineShadowSourceRGBA: [UInt8]? = nil) {
+         jawlineShadowSourceRGBA: [UInt8]? = nil, irisGeometryRoute: BeautyIrisGeometryRoute = .legacy) {
         self.init(sourceRGBA: sourceRGBA, mapAdmissionRGBA: sourceRGBA,
                   width: width, height: height, plan: plan, face: face,
                   eyebrowSourceRGBA: eyebrowSourceRGBA, sourceOwnershipRGBA: sourceOwnershipRGBA, jawlineShadowSourceRGBA: jawlineShadowSourceRGBA,
-                  preparation: .original)
+                  preparation: .original, irisGeometryRoute: irisGeometryRoute)
     }
 
     /// All source refiners and IR have already run on the original. Map
@@ -65,16 +68,45 @@ struct BeautyStillImageGeometryStage {
         self.init(sourceRGBA: postIrisRGBA, mapAdmissionRGBA: mapAdmissionRGBA,
                   width: width, height: height, plan: plan, face: face,
                   eyebrowSourceRGBA: eyebrowSourceRGBA, sourceOwnershipRGBA: sourceOwnershipRGBA, jawlineShadowSourceRGBA: jawlineShadowSourceRGBA,
-                  preparation: .afterIris(sourceAdmission))
+                  preparation: .afterIris(sourceAdmission), irisGeometryRoute: .legacy)
     }
 
     private init(sourceRGBA: [UInt8], mapAdmissionRGBA: [UInt8], width: Int, height: Int,
                  plan: BeautyEffectPlan, face: FaceGeometry?, eyebrowSourceRGBA: [UInt8]?, sourceOwnershipRGBA: [UInt8]?,
                  jawlineShadowSourceRGBA: [UInt8]?,
-                 preparation: Preparation) {
+                 preparation: Preparation, irisGeometryRoute: BeautyIrisGeometryRoute) {
         self.face = face
         self.width = width
         self.height = height
+        if case .calibrated(let request) = irisGeometryRoute {
+            // Calibrations bind exactly this immutable stage input. No old IR,
+            // source refiner, point proxy, dense map, or continuous eye field
+            // participates, including after a refusal.
+            let result: BeautyIrisFollowingResult
+            if !BeautyIrisGeometryRoute.permitsIsolatedGeometry(plan.effectiveStrengths) {
+                result = BeautyIrisGeometryRoute.refusal(request, sourceRGBA: sourceRGBA,
+                    reason: .unsupportedStageCombination)
+            } else {
+                result = BeautyIrisFollowingMap.render(request, sourceRGBA: sourceRGBA,
+                    width: width, height: height,
+                    availableObservedSides: BeautyIrisGeometryRoute.availableObservedSides(face, width: width, height: height))
+            }
+            irisFollowingResult = result
+            self.sourceRGBA = result.rgba
+            controlPoints = []
+            continuousMap = nil
+            eyeMap = nil
+            noseMap = nil
+            mouthMap = nil
+            eyebrowMap = nil
+            translationX = 0
+            translationY = 0
+            jawlineShadow = nil
+            jawlineShadowStrength = 0
+            jawlineShadowRefusal = nil
+            return
+        }
+        irisFollowingResult = nil
         jawlineShadowStrength = plan.effectiveStrengths.jawlineShadow
         // Metal enters with the pre-colour raster; CPU supplies an explicit
         // immutable pre-colour proof. A present malformed proof stays present.
@@ -237,6 +269,7 @@ struct BeautyStillImageGeometryStage {
 
     /// Rigid source-qualified translation remains after the selected sampler.
     func applyingTranslation(to bytes: [UInt8]) -> [UInt8] {
+        guard irisFollowingResult == nil else { return bytes }
         // Both executors reach this point after their pointwise colour pass.
         // The immutable evidence never replaces the current stage's RGB bytes.
         let shaded = jawlineShadow?.apply(to: bytes, strength: jawlineShadowStrength) ?? bytes

@@ -196,9 +196,20 @@ final class BeautyEngineEyeSliderTests: XCTestCase {
     }
 
     func testPublicEyeDirectionsFourStepsFeatureSeparationAndActualMetal() throws {
+        try assertPublicDirectionsFourStepsFeatureSeparationAndActualMetal(probes)
+    }
+
+    func testTiltOnlyPreservesReferencePolarityDirectionsAndActualMetal() throws {
+        let tilt = try XCTUnwrap(probes.first { $0.slider == .tilt })
+        XCTAssertEqual(tilt.slider.applying(position: 0, to: .init()).eyeTilt, tilt.cap)
+        XCTAssertEqual(tilt.slider.applying(position: 1, to: .init()).eyeTilt, -tilt.cap)
+        try assertPublicDirectionsFourStepsFeatureSeparationAndActualMetal([tilt])
+    }
+
+    private func assertPublicDirectionsFourStepsFeatureSeparationAndActualMetal(_ selected: [Probe]) throws {
         let cpu = try engine(), gpu = try engine(gpu: true)
         let metadata = BeautyInputMetadata(orientation: .up, source: .testFixture)
-        for probe in probes {
+        for probe in selected {
             let source = image(probe), before = pixels(source)
             let baseline = centroids(before, channel: 0), controls = centroids(before, channel: 1)
             for sign: Float in [-1, 1] {
