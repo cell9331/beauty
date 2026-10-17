@@ -856,6 +856,49 @@ struct BeautyContinuousEyeMap {
         return sampleRGB(source,position:SIMD2(full.x,projectedY),alpha:alpha,aperture:aperture)
     }
 
+    @inline(__always)
+    private func interpolatedOrdinaryOffset(row:Int,col:Int,fx:Double,fy:Double) -> SIMD2<Double> {
+        let i=row*xs.count+col
+        let top=offsets[i]*(1-fx)+offsets[i+1]*fx
+        let bottom=offsets[i+xs.count]*(1-fx)+offsets[i+xs.count+1]*fx
+        return top*(1-fy)+bottom*fy
+    }
+
+    /// Read-only comparison seam for the ordinary, non-iris sampling lattice.
+    /// `point` is an ARRAY sample index (first pixel center is 0,0); the actual
+    /// renderer evaluates its displacement lattice at `point + 0.5` and samples
+    /// immutable source at `point - d`. No nominal eye formula is reconstructed.
+    /// This describes unclipped coordinates for OPAQUE-source comparisons only;
+    /// it makes no alpha, ownership, iris, or generalized rendering promise.
+    /// Any iris carrier/aperture, invalid image point, or required source clamp
+    /// returns nil. An ordinary point outside the active grid is exact identity.
+    func ordinaryUnclippedSampleIndex(at point:SIMD2<Double>) -> SIMD2<Double>? {
+        guard irisOffsets.isEmpty,irisApertures.isEmpty,sparseIrisOffsets.isEmpty,
+              sparsePupilApertures.isEmpty,densePupilApertures.isEmpty,
+              point.x.isFinite,point.y.isFinite,
+              point.x >= 0,point.x <= Double(width-1),point.y >= 0,point.y <= Double(height-1)
+        else { return nil }
+        let px=point.x+0.5,py=point.y+0.5
+        guard px >= xs[0],px < xs.last!,py >= ys[0],py < ys.last! else { return point }
+        func cell(_ value:Double,_ nodes:[Double]) -> Int {
+            var low=0,high=nodes.count-1
+            while low+1 < high {
+                let middle=(low+high)/2
+                if value >= nodes[middle] { low=middle } else { high=middle }
+            }
+            return low
+        }
+        let col=cell(px,xs),row=cell(py,ys)
+        let fx=(px-xs[col])/(xs[col+1]-xs[col]),fy=(py-ys[row])/(ys[row+1]-ys[row])
+        let d=interpolatedOrdinaryOffset(row:row,col:col,fx:fx,fy:fy)
+        guard abs(d.x)+abs(d.y) > 1e-10 else { return point }
+        let source=point-d
+        guard source.x.isFinite,source.y.isFinite,
+              source.x >= 0,source.x <= Double(width-1),source.y >= 0,source.y <= Double(height-1)
+        else { return nil }
+        return source
+    }
+
     func applyRGBA(_ source:[UInt8]) -> [UInt8] {
         guard source.count == width*height*4 else { return source }
         var output=source,row=0
@@ -869,9 +912,7 @@ struct BeautyContinuousEyeMap {
                 guard px >= xs[0],px < xs.last! else { continue }
                 while col+1 < xs.count-1 && px >= xs[col+1] { col += 1 }
                 let fx=(px-xs[col])/(xs[col+1]-xs[col]),i=row*xs.count+col
-                let top=offsets[i]*(1-fx)+offsets[i+1]*fx
-                let bottom=offsets[i+xs.count]*(1-fx)+offsets[i+xs.count+1]*fx
-                var d=top*(1-fy)+bottom*fy
+                var d=interpolatedOrdinaryOffset(row:row,col:col,fx:fx,fy:fy)
                 let p=SIMD2(px,py)
                 if let aperture=densePupilApertures.first(where: { Self.contains(p,$0.contour) }) {
                     let allIrisTop=irisOffsets[i]*(1-fx)+irisOffsets[i+1]*fx

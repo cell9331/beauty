@@ -13,6 +13,14 @@ package enum BeautyIrisPreviewCutpoint {
         CustomDebugStringConvertible, CustomReflectable {
         package let output: CIImage
         package let metrics: [String: Double]
+        package let irisFollowingResult: BeautyIrisFollowingResult?
+
+        package init(output: CIImage, metrics: [String: Double],
+                     irisFollowingResult: BeautyIrisFollowingResult? = nil) {
+            self.output = output
+            self.metrics = metrics
+            self.irisFollowingResult = irisFollowingResult
+        }
 
         package var description: String {
             "BeautyIrisPreviewResult(width: \(Int(output.extent.width)), height: \(Int(output.extent.height)), cpu: true)"
@@ -61,13 +69,20 @@ package enum BeautyIrisPreviewCutpoint {
         renderQuality: BeautyRenderQuality = .balanced,
         selectedFaceObservation: BeautyFaceObservation?,
         maximumPreviewEdge: Int = 960,
-        textureExclusionMask: BeautyTextureExclusionMask? = nil
+        textureExclusionMask: BeautyTextureExclusionMask? = nil,
+        irisGeometryRoute: BeautyIrisGeometryRoute = .legacy
     ) throws -> Result {
         guard (1...960).contains(maximumPreviewEdge), original.width > 0, original.height > 0,
               original.width <= BeautyConfiguration.defaultMaximumInputPixelCount / original.height,
               textureExclusionMask == nil ||
                 (textureExclusionMask!.width == original.width && textureExclusionMask!.height == original.height)
         else { throw BeautyError.invalidInput }
+
+        if case .calibrated = irisGeometryRoute {
+            return try executeCalibrated(original: original, plan: plan, renderQuality: renderQuality,
+                selectedFaceObservation: selectedFaceObservation, maximumPreviewEdge: maximumPreviewEdge,
+                textureExclusionMask: textureExclusionMask, route: irisGeometryRoute)
+        }
 
         let colorSource = BeautyColorEffectPipeline.prepareStillImagePrefix(
             to: original, plan: plan, renderQuality: renderQuality,
@@ -195,6 +210,99 @@ package enum BeautyIrisPreviewCutpoint {
             metrics[BeautyBackendDiagnostics.eyebrowAdmissionMetric] = Double(eyebrowAdmittedSides)
         }
         return Result(output: output, metrics: metrics)
+    }
+
+    /// The explicit candidate runs on the actual full source and is resized
+    /// only after its one inverse sample. It never enters the legacy owner's
+    /// eye-aperture clip, IR branch, or post-eye geometry composition.
+    private static func executeCalibrated(
+        original: BeautyCanonicalStillImage, plan: BeautyEffectPlan,
+        renderQuality: BeautyRenderQuality, selectedFaceObservation: BeautyFaceObservation?,
+        maximumPreviewEdge: Int, textureExclusionMask: BeautyTextureExclusionMask?,
+        route: BeautyIrisGeometryRoute
+    ) throws -> Result {
+        let supported = BeautyIrisGeometryRoute.permitsIsolatedGeometry(plan.effectiveStrengths)
+        let needsPrefix = supported && BeautyIrisGeometryRoute.hasSourcePrefixEffects(plan.effectiveStrengths)
+        let actualSource: [UInt8]
+        if needsPrefix {
+            let color = BeautyColorEffectPipeline.prepareStillImagePrefix(
+                to: original, plan: plan, renderQuality: renderQuality,
+                selectedFaceObservation: selectedFaceObservation, textureExclusionMask: textureExclusionMask)
+            actualSource = try rasterize(color, width: original.width, height: original.height,
+                context: BeautyImageContexts.context(for: resources.sRGB))
+        } else {
+            // Preserve original bytes without a color-space round trip when
+            // this isolated candidate has no source-prefix effect.
+            actualSource = [UInt8](original.rgba8Data)
+        }
+        let stage = BeautyStillImageGeometryStage(sourceRGBA: actualSource,
+            width: original.width, height: original.height, plan: plan,
+            face: selectedFaceObservation.map(BeautyFaceGeometryAdapter.makeGeometry(from:)),
+            irisGeometryRoute: route)
+        guard let result = stage.irisFollowingResult else {
+            throw BeautyError.renderFailed("iris_following_route")
+        }
+        // Both views use the exact same source floor taps, weights and channel
+        // rounding. Equal full-resolution footprints therefore remain exactly
+        // equal, even for fractional resize coordinates near support edges.
+        let outputRaster = try calibratedThumbnail(result.rgba, width: original.width,
+            height: original.height, maximumEdge: maximumPreviewEdge)
+        let output = CIImage(bitmapData: Data(outputRaster.rgba), bytesPerRow: outputRaster.width * 4,
+            size: CGSize(width: outputRaster.width, height: outputRaster.height),
+            format: .RGBA8, colorSpace: resources.sRGB)
+        var metrics: [String: Double] = [
+            "beauty.irisFollowingPreview.calibratedCPU": 1,
+            "beauty.irisFollowingPreview.originalMapAttempts": supported ? 1 : 0,
+            "beauty.irisFollowingPreview.sourcePrefixPasses": needsPrefix ? 1 : 0,
+            "beauty.irisFollowingPreview.resizePasses": 1,
+            "beauty.irisFollowingPreview.maximumEdge": Double(maximumPreviewEdge),
+            "beauty.irisFollowingPreview.sourceWidth": Double(original.width),
+            "beauty.irisFollowingPreview.sourceHeight": Double(original.height),
+            "beauty.irisFollowingPreview.outputWidth": Double(outputRaster.width),
+            "beauty.irisFollowingPreview.outputHeight": Double(outputRaster.height),
+            "beauty.irisFollowingPreview.appliedEyeCount": Double(result.appliedEyeCount),
+            "beauty.irisFollowingPreview.refusedEyeCount": Double(result.refusedEyeCount)
+        ]
+        for (reason, count) in result.refusalCounts {
+            metrics["beauty.irisFollowingPreview.refusal.\(reason.rawValue)"] = Double(count)
+        }
+        return Result(output: output, metrics: metrics, irisFollowingResult: result)
+    }
+
+    /// Defined research preview sampler: center-aligned bilinear RGBA8/sRGB,
+    /// edge-clamped taps, rounded dimensions, no upsampling and no owner mask.
+    private static func calibratedThumbnail(_ rgba: [UInt8], width: Int, height: Int,
+                                            maximumEdge: Int) throws -> Raster {
+        try requireOpaque(rgba, width: width, height: height)
+        let scale = min(1, Double(maximumEdge) / Double(max(width, height)))
+        let outputWidth = max(1, Int((Double(width) * scale).rounded()))
+        let outputHeight = max(1, Int((Double(height) * scale).rounded()))
+        if width == outputWidth && height == outputHeight {
+            return Raster(width: width, height: height, rgba: rgba)
+        }
+        var output = [UInt8](repeating: 255, count: outputWidth * outputHeight * 4)
+        for row in 0..<outputHeight {
+            let y = max(0, min(Double(height - 1),
+                (Double(row) + 0.5) * Double(height) / Double(outputHeight) - 0.5))
+            let y0 = Int(floor(y)), y1 = min(y0 + 1, height - 1), fy = y - Double(y0)
+            for column in 0..<outputWidth {
+                let x = max(0, min(Double(width - 1),
+                    (Double(column) + 0.5) * Double(width) / Double(outputWidth) - 0.5))
+                let x0 = Int(floor(x)), x1 = min(x0 + 1, width - 1), fx = x - Double(x0)
+                let indices = [(y0 * width + x0) * 4, (y0 * width + x1) * 4,
+                               (y1 * width + x0) * 4, (y1 * width + x1) * 4]
+                let destination = (row * outputWidth + column) * 4
+                for channel in 0..<3 {
+                    let top = Double(rgba[indices[0] + channel]) * (1 - fx)
+                        + Double(rgba[indices[1] + channel]) * fx
+                    let bottom = Double(rgba[indices[2] + channel]) * (1 - fx)
+                        + Double(rgba[indices[3] + channel]) * fx
+                    output[destination + channel] = UInt8(max(0, min(255,
+                        (top * (1 - fy) + bottom * fy).rounded())))
+                }
+            }
+        }
+        return Raster(width: outputWidth, height: outputHeight, rgba: output)
     }
 
     private static func requireOpaque(_ rgba: [UInt8], width: Int, height: Int) throws {

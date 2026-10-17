@@ -1,10 +1,14 @@
 # Eye reference displacement analysis
 
-[Reference-analysis library](../README.md) · [Input inventory](输入清单.md) · [Shared candidate mathematics](实现公共约定.md) · [Validation and limits](验证记录.md)
+[Reference-analysis library](../README.md) · [Input inventory](输入清单.md) · [Shared candidate mathematics](实现公共约定.md) · [Validation and limits](验证记录.md) · [Current eleven-control comparison](十一项当前实现对照.md) · [Original seventeen-control audit](实现差异统计.md) · [Migration plan](改造计划.md) · [Evidence gaps](证据缺口.md)
 
 Analysis started 2026-10-16 and reviewed 2026-10-17 on branch `codex/eye-displacement-analysis-20261016`. This study examines every eye control represented by the supplied screenshot set: **23 screenshots, 12 selected controls, and 5 additional visible menu controls without effect samples**. The latter receive explicit evidence-gap records. This is not a claim to cover controls absent from the supplied menus or other versions of the application.
 
-The English documents describe measured geometry, competing explanations, a minimal candidate forward field, and tests that could disprove it. No SDK or host implementation, model download, rendered candidate qualification, or new algorithm project is included. UI names identify inputs; they do not establish proprietary mechanisms. Heatmap colors encode displacement, not an appearance/color study.
+The original English study describes measured geometry, competing explanations, a minimal candidate forward field, and tests that could disprove it. That analysis did not change the SDK/host. UI names identify inputs; they do not establish proprietary mechanisms. Heatmap colors encode displacement, not an appearance/color study.
+
+The follow-up [migration plan](改造计划.md), prepared on 2026-10-17, gives first priority to iris size, upper-eyelid adjustment and tilt, with individual plans for all 17 controls and a separate [evidence-gap register](证据缺口.md). The subsequently authorized [iris implementation record](眼瞳大小/实施与验证.md) now documents an explicit calibrated research route, 44 distinct directed test passes and actual photo replay. Its effect gate remains unpassed; default/editor behavior and the other 16 controls are unchanged by that implementation.
+
+The owner retained the current iris outcome, then deferred/skipped further 去脂 work. Its [test-only experiment and failed/insufficient evidence](去脂/实施与验证.md) remain preserved, with scalar/default/host behavior unchanged. The next [tilt execution record](倾斜/实施与验证.md) establishes the current conditional relative-endpoint baseline and 30 distinct directed test passes. Its production formula is retained; the reference-effect gate is unqualified.
 
 ## Feature-by-feature results
 
@@ -68,4 +72,4 @@ Evidence figures provide endpoint crops, signed dx/dy heatmaps with complete com
 
 The function-level `证据/` figures are retained locally and remain ignored by Git. Shared and feature-local `本地测量/` directories hold raw observations, correspondence arrays, fields, control receipts and script snapshots under the existing ignore rule. The English aggregate documents are trackable. Without the authorized local images/evidence, a repository clone contains the conclusions and limits but cannot reproduce the measurements or display the local figures.
 
-Verification covers this input inventory, stable alignment, geometric measurements, selected synthetic controls, formula review, documents, references and ignore rules. It includes **no SDK build, simulator/device run, full regression or rendered candidate acceptance**. The [validation record](验证记录.md) distinguishes passed checks from failed or unmeasured qualifications.
+The original analysis verification covers the input inventory, stable alignment, geometric measurements, selected synthetic controls, formula review, documents, references and ignore rules, with no SDK build or rendered-candidate acceptance at that time. The subsequent [iris implementation record](眼瞳大小/实施与验证.md) adds focused Swift builds/tests and actual photo replay, without a simulator/device run, full regression or reference-effect acceptance. The [validation record](验证记录.md) distinguishes these scopes.
