@@ -125,6 +125,80 @@ final class BeautyMouthMShapeCalibrationTests: XCTestCase {
                        accuracy: 1e-15)
     }
 
+    func testOwnerPreferredProfileScalesSourceDisplacementAndCompleteDerivatives() throws {
+        let calibration = BeautyMouthMShapeParameters.referenceCalibration
+        let preference = BeautyMouthMShapeParameters.ownerPreferredCalibration
+        XCTAssertEqual(calibration.profileGain, 1)
+        XCTAssertEqual(preference.profileGain, 1.5)
+        let original = try model(parameters: calibration)
+        let enhanced = try model(parameters: preference)
+        let firstProfile = original.configuration.mShape.profile
+        let secondProfile = enhanced.configuration.mShape.profile
+        XCTAssertEqual(firstProfile.knots.count, 11)
+        XCTAssertEqual(secondProfile.knots.count, firstProfile.knots.count)
+        for (a, b) in zip(firstProfile.knots, secondProfile.knots) {
+            XCTAssertEqual(a.x, b.x)
+            XCTAssertEqual(b.y, a.y * 1.5, accuracy: 1e-15)
+        }
+        XCTAssertEqual(secondProfile.maximumValue, firstProfile.maximumValue * 1.5, accuracy: 1e-15)
+        XCTAssertEqual(secondProfile.maximumDerivative, firstProfile.maximumDerivative * 1.5, accuracy: 1e-14)
+        // At identical source points the lower component is outside support.
+        // These cover profile x transitions and both vertical feather terms.
+        let points = [Point(0, -0.10), Point(0.045, -0.06), Point(0.09, 0.01),
+                      Point(-0.23, -0.16), Point(0.40, 0)]
+        for point in points {
+            let a = original.sample(field: .mShape, strength: 1, at: point)
+            let b = enhanced.sample(field: .mShape, strength: 1, at: point)
+            for (first, second) in [(a.displacement, b.displacement),
+                                    (a.gradientX, b.gradientX), (a.gradientY, b.gradientY)] {
+                XCTAssertEqual(second.x, first.x * 1.5, accuracy: 1e-13)
+                XCTAssertEqual(second.y, first.y * 1.5, accuracy: 1e-13)
+            }
+        }
+    }
+
+    func testOwnerPreferredProfileLeavesLowerFieldAndSourceProtectionUnchanged() throws {
+        let original = try model(parameters: .referenceCalibration, protectedTop: -0.17)
+        let enhanced = try model(parameters: .ownerPreferredCalibration, protectedTop: -0.17)
+        let lower = try XCTUnwrap(original.configuration.mShape.lowerCenter)
+        let enhancedLower = try XCTUnwrap(enhanced.configuration.mShape.lowerCenter)
+        XCTAssertEqual(lower.center, enhancedLower.center)
+        XCTAssertEqual(lower.radius, enhancedLower.radius)
+        XCTAssertEqual(lower.vector, enhancedLower.vector)
+        // The upper profile has ended throughout these local lower-edge points.
+        let points = [lower.center, lower.center + Point(0.04, -0.04),
+                      lower.center + Point(-0.03, 0.06),
+                      lower.center + Point(0, lower.radius.y * 0.75)]
+        for point in points {
+            let a = original.sample(field: .mShape, strength: 1, at: point)
+            let b = enhanced.sample(field: .mShape, strength: 1, at: point)
+            XCTAssertEqual(a.displacement, b.displacement)
+            XCTAssertEqual(a.gradientX, b.gradientX)
+            XCTAssertEqual(a.gradientY, b.gradientY)
+        }
+        let source = try XCTUnwrap(original.configuration.mShape.sourceEnvelope)
+        let enhancedSource = try XCTUnwrap(enhanced.configuration.mShape.sourceEnvelope)
+        XCTAssertEqual(source.outerMin, enhancedSource.outerMin)
+        XCTAssertEqual(source.outerMax, enhancedSource.outerMax)
+        XCTAssertEqual(source.innerMin, enhancedSource.innerMin)
+        XCTAssertEqual(source.innerMax, enhancedSource.innerMax)
+        var unprotectedConfiguration = original.configuration
+        unprotectedConfiguration.mShape.sourceEnvelope = nil
+        let unprotected = try XCTUnwrap(Model(configuration: unprotectedConfiguration))
+        XCTAssertGreaterThan(unprotected.sample(field: .mShape, strength: 1,
+            at: Point(0, source.outerMin.y)).displacement.y, 0)
+        for x in [-0.3, 0, 0.3] {
+            for y in [source.outerMin.y, source.outerMin.y - 0.001] {
+                for m in [original, enhanced] {
+                    let s = m.sample(field: .mShape, strength: 1, at: Point(x, y))
+                    XCTAssertEqual(s.displacement, .zero)
+                    XCTAssertEqual(s.gradientX, .zero)
+                    XCTAssertEqual(s.gradientY, .zero)
+                }
+            }
+        }
+    }
+
     func testClippedUpperTailRetainsFiniteFeatherAndFullLipPeak() throws {
         // A valid protection boundary truncates the requested upper tail.
         // Previously this gap produced a 1e-4W feather and about 135 of
@@ -190,6 +264,10 @@ final class BeautyMouthMShapeCalibrationTests: XCTestCase {
         p = .referenceCalibration; p.centralPlateauHalfWidth = p.shoulderPosition
         XCTAssertNil(configuration(p))
         p = .referenceCalibration; p.centralShoulderRatio = 1.1
+        XCTAssertNil(configuration(p))
+        p = .referenceCalibration; p.profileGain = 0
+        XCTAssertNil(configuration(p))
+        p = .referenceCalibration; p.profileGain = .nan
         XCTAssertNil(configuration(p))
         p = .referenceCalibration
         XCTAssertNil(p.configuration(upperDepth: 0.1, lowerDepth: 0.18,

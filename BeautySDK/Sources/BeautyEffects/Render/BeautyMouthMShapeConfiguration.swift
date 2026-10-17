@@ -11,6 +11,9 @@ struct BeautyMouthMShapeParameters: Sendable {
     var outerRebound: Double = 0.0022
     var cornerPeak: Double = -0.003041
     var lowerEdgePeak: Double = -0.00392
+    /// Owner visibility preference for the complete upper profile, applied
+    /// before Profile derives its bounds. The lower-edge peak is independent.
+    var profileGain: Double = 1
 
     var shoulderPosition: Double = 0.1508
     /// Zero keeps the nine-node compatibility control. A positive value
@@ -37,15 +40,24 @@ struct BeautyMouthMShapeParameters: Sendable {
     /// intentionally retains a residual weak-skin-tail mismatch.
     static let referenceCalibration = Self()
 
+    /// The owner requested a more visible M shape after reviewing the device
+    /// result. This policy enhances the calibrated upper profile by 50%; it is
+    /// not a new reference measurement and does not boost the lower-edge peak.
+    static let ownerPreferredCalibration: Self = {
+        var parameters = referenceCalibration
+        parameters.profileGain = 1.5
+        return parameters
+    }()
+
     var isValid: Bool {
-        let values = [centralPeak, shoulderPeak, outerRebound, cornerPeak, lowerEdgePeak,
+        let values = [centralPeak, shoulderPeak, outerRebound, cornerPeak, lowerEdgePeak, profileGain,
                       shoulderPosition, centralPlateauHalfWidth, centralShoulderRatio,
                       reboundPosition, cornerPosition, supportRadius,
                       upperTail, upperPlateauEndInUpperDepth, profileEndInLowerDepth,
                       lowerCenterInLowerDepth, lowerHorizontalRadius, lowerVerticalRadiusInLowerDepth]
         return values.allSatisfy(\.isFinite)
             && centralPeak > 0 && shoulderPeak < 0 && outerRebound >= 0
-            && cornerPeak <= 0 && lowerEdgePeak <= 0
+            && cornerPeak <= 0 && lowerEdgePeak <= 0 && profileGain > 0
             && 0 < shoulderPosition && shoulderPosition < reboundPosition
             && centralPlateauHalfWidth >= 0 && centralPlateauHalfWidth < shoulderPosition
             && centralShoulderRatio > 0 && centralShoulderRatio <= 1
@@ -83,6 +95,10 @@ struct BeautyMouthMShapeParameters: Sendable {
             Point(reboundPosition, outerRebound), Point(cornerPosition, cornerPeak),
             Point(supportRadius, 0)
         ]
+        // Scale all central/shoulder/rebound/corner amplitudes together. Doing
+        // this before construction includes the gain in the complete profile
+        // displacement and derivative bounds used by endpoint admission.
+        knots = knots.map { Point($0.x, $0.y * profileGain) }
         guard let profile = Model.Profile(knots: knots) else { return nil }
 
         let upperEnd = -upperDepth - upperTail
@@ -125,7 +141,7 @@ struct BeautyMouthMShapeParameters: Sendable {
 
 extension BeautyMouthReferenceGeometry {
     func makeMShapeConfiguration(
-        parameters: BeautyMouthMShapeParameters = .referenceCalibration
+        parameters: BeautyMouthMShapeParameters = .ownerPreferredCalibration
     ) -> BeautyMouthReferenceModel.MShape? {
         parameters.configuration(upperDepth: upperDepth, lowerDepth: lowerDepth,
                                  top: top, bottom: bottom, protectedTop: protectedTop)
