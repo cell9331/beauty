@@ -29,10 +29,20 @@ struct BeautyContinuousMouthMap {
     private let rasterMaximum: Point
 
     init?(width: Int,height: Int,face: FaceGeometry,strengths: BeautyEffectiveStrengths) {
+        guard let geometry=BeautyMouthReferenceGeometry(width:width,height:height,face:face),
+              let configuration=geometry.configuration() else { return nil }
+        self.init(width:width,height:height,geometry:geometry,configuration:configuration,strengths:strengths)
+    }
+
+    /// Realize an explicit source geometry/model pair through the same
+    /// admission, inverse and sampler as the face-observation route. This also
+    /// lets focused field tests vary a configuration without duplicating math.
+    init?(width: Int,height: Int,geometry: BeautyMouthReferenceGeometry,
+          configuration: Model.Configuration,strengths: BeautyEffectiveStrengths) {
         guard width > 1,height > 1,width <= BeautyConfiguration.defaultMaximumInputPixelCount / height,
               Self.keys.allSatisfy({ strengths[keyPath:$0].isFinite }),
-              let geometry=BeautyMouthReferenceGeometry(width:width,height:height,face:face),
-              let configuration=geometry.configuration(),let model=Model(configuration:configuration) else { return nil }
+              configuration.seam.knots == geometry.seam.knots,
+              let model=Model(configuration:configuration) else { return nil }
         let caps:[Float]=[BeautySafetyCaps.mouthSize,BeautySafetyCaps.mouthWidth,BeautySafetyCaps.smile,
             BeautySafetyCaps.mouthYPosition,BeautySafetyCaps.mouthTilt,BeautySafetyCaps.mouthXPosition,
             BeautySafetyCaps.lipPeakDefinition,BeautySafetyCaps.lipPlump]
@@ -111,6 +121,9 @@ struct BeautyContinuousMouthMap {
         for field in active {
             let e=envelopes[field.rawValue]
             var a=e.outerMin,b=e.outerMax
+            if field == .fullness, let upper = configuration.fullness.upperEnvelope {
+                a.x=min(a.x,upper.outerMin.x);b.x=max(b.x,upper.outerMax.x)
+            }
             if field == .mShape || field == .fullness { a.y += geometry.seam.minimumValue;b.y += geometry.seam.maximumValue }
             lo=Point(min(lo.x,a.x),min(lo.y,a.y));hi=Point(max(hi.x,b.x),max(hi.y,b.y))
         }

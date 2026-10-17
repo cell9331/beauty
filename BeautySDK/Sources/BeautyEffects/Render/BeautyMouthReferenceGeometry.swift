@@ -127,16 +127,7 @@ struct BeautyMouthReferenceGeometry {
         var rotated = envelope(innerX: 0.52, outerX: 0.90, innerTop: top - 0.005, innerBottom: bottom + 0.005,
                                outerTop: top - 0.25, outerBottom: bottom + 0.40)
         rotated.radial = .init(center: center, radiusX: 0.80, radiusUp: max(0.36,upperDepth + 0.28), radiusDown: lowerDepth + 0.40, innerRadius: 0.73)
-        let tissueMin = -upperDepth - 0.25
-        let tissue = Model.Envelope(innerMin: Point(-0.43, -upperDepth * 0.75),
-            innerMax: Point(0.43, 0.002), outerMin: Point(-0.72, tissueMin),
-            outerMax: Point(0.72, lowerDepth + 0.12))
-        let fullness = Model.Envelope(innerMin: Point(-0.29, max(-upperDepth - 0.005,max(-upperDepth - 0.24,protectedTop - seam.minimumValue)+0.0001)),
-            innerMax: Point(0.29, lowerDepth + 0.005),
-            outerMin: Point(-0.52, max(-upperDepth - 0.24, protectedTop - seam.minimumValue)),
-            outerMax: Point(0.52, lowerDepth + 0.30))
-        guard let profile = Model.Profile(knots: [Point(-0.60,0),Point(-0.16,-0.0039),Point(-0.06,0.0065),Point(0,0.0078),
-                                                   Point(0.06,0.0065),Point(0.16,-0.0040),Point(0.60,0)]) else { return nil }
+        guard let mShape = makeMShapeConfiguration(), let fullness = makeFullnessConfiguration() else { return nil }
         // Initial endpoint calibration: normalized pair constraints. Choosing
         // symmetric responses around zero is a design assumption, not measured
         // neutral or single-end strength. See the local calibration report.
@@ -146,13 +137,8 @@ struct BeautyMouthReferenceGeometry {
             vertical: .init(vector: vectorToLocal(Point(0.00235,0.035565)), envelope: whole),
             tilt: .init(angle: 0.1375, envelope: rotated, center: center),
             horizontal: .init(vector: vectorToLocal(Point(0.096,0.00049)), envelope: whole),
-            mShape: .init(profile: profile, envelope: tissue,
-                lowerCenter: .init(center: Point(0,lowerDepth * 0.94),radius: Point(0.19,max(0.04,lowerDepth * 0.50)),
-                                   vector: Point(0,-0.025)),
-                sourceEnvelope: envelope(innerX: 0.80,outerX: 0.90,innerTop: top - 0.06,innerBottom: bottom + 0.20,outerTop: protectedTop,outerBottom: bottom + 0.30),
-                profileEnvelope: .init(innerMin: Point(-1,tissueMin - 0.01),innerMax: Point(1,0.002),
-                    outerMin: Point(-2,tissueMin - 0.10),outerMax: Point(2,0.075))),
-            fullness: .init(upperRate: 0.30,lowerRate: 0.40,blendHalfWidth: 0.012,envelope: fullness),
+            mShape: mShape,
+            fullness: fullness,
             smile: .init(lobes: [
                 .init(center: Point(-0.45,0.01),radius: Point(0.58,0.34),vector: Point(-0.032,-0.060)),
                 .init(center: Point(0,center.y - upperDepth * 0.55),radius: Point(0.40,0.18),vector: Point(0.001,0.0055)),

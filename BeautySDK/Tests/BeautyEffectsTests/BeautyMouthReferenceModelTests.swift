@@ -99,7 +99,7 @@ final class BeautyMouthReferenceModelTests: XCTestCase {
             XCTAssertLessThanOrEqual(abs(sample.value), profile.maximumValue + 1e-12)
             XCTAssertLessThanOrEqual(abs(sample.derivative), profile.maximumDerivative + 1e-12)
         }
-        XCTAssertNil(Model.Profile(knots: (0..<10).map { Point(Double($0), 0) }))
+        XCTAssertNil(Model.Profile(knots: (0..<12).map { Point(Double($0), 0) }))
     }
 
     func testIndependentMProfileEnvelopeStopsEarlyAndPreservesLowerEdgePeak() throws {
@@ -650,12 +650,87 @@ final class BeautyMouthReferenceModelTests: XCTestCase {
         }
     }
 
+    func testFullnessSourceProtectionIncludesCompleteProductAndSeamDerivatives() throws {
+        var c = try configuration()
+        c.fullness.depthCurvature = 0.65
+        c.fullness.upperDepth = 0.14; c.fullness.lowerDepth = 0.15
+        c.fullness.upperEnvelope = c.fullness.envelope
+        c.fullness.upperEnvelope?.innerMin.x *= 1.35
+        c.fullness.upperEnvelope?.innerMax.x *= 1.35
+        c.fullness.upperEnvelope?.outerMin.x *= 1.35
+        c.fullness.upperEnvelope?.outerMax.x *= 1.35
+        c.fullness.sourceEnvelope = .init(innerMin: Point(-0.45, -0.15), innerMax: Point(0.45, 0.18),
+                                         outerMin: Point(-0.75, -0.35), outerMax: Point(0.75, 0.39))
+        let model = try XCTUnwrap(Model(configuration: c)), h = 1e-7
+        for strength in [-1.0, 0.37, 1.0] {
+            let bounds = model.bounds(field: .fullness, strength: strength)
+            for p in [Point(-0.6, -0.23), Point(-0.2, -0.24), Point(0.1, 0.25), Point(0.6, 0.28),
+                      Point(-0.6, -0.08), Point(-0.2, -0.08), Point(0.1, 0.10),
+                      Point(0.65, 0.005), Point(0.65, -0.01)] {
+                let a = model.sample(field: .fullness, strength: strength, at: p)
+                func d(_ q: Point) -> Point { model.sample(field: .fullness, strength: strength, at: q).displacement }
+                let dx = (d(p + Point(h, 0)) - d(p - Point(h, 0))) / (2 * h)
+                let dy = (d(p + Point(0, h)) - d(p - Point(0, h))) / (2 * h)
+                XCTAssertLessThan(hypot(dx.x - a.gradientX.x, dx.y - a.gradientX.y), 2e-8)
+                XCTAssertLessThan(hypot(dy.x - a.gradientY.x, dy.y - a.gradientY.y), 2e-8)
+                XCTAssertLessThanOrEqual(spectralNorm(a.gradientX, a.gradientY), bounds.maximumGradient)
+                XCTAssertLessThanOrEqual(hypot(a.displacement.x, a.displacement.y), bounds.maximumDisplacement)
+            }
+            let protected = model.sample(field: .fullness, strength: strength, at: Point(0, -0.35))
+            XCTAssertEqual(protected.displacement, .zero)
+            XCTAssertEqual(protected.gradientX, .zero)
+            XCTAssertEqual(protected.gradientY, .zero)
+        }
+    }
+
+    func testFullnessCertificateEnclosesSourceBranchesAcrossCurvedSeamForBothSigns() throws {
+        var c = try configuration()
+        c.seam = try XCTUnwrap(Model.Seam(knots: [Point(-0.5, -0.06), Point(0, 0.07), Point(0.5, -0.06)]))
+        c.fullness.upperDepth = 0.14; c.fullness.lowerDepth = 0.15
+        c.fullness.upperEnvelope = c.fullness.envelope
+        c.fullness.upperEnvelope?.innerMin.x *= 1.4
+        c.fullness.upperEnvelope?.innerMax.x *= 1.4
+        c.fullness.upperEnvelope?.outerMin.x *= 1.4
+        c.fullness.upperEnvelope?.outerMax.x *= 1.4
+        for upperFeather in [0.006, 0.04, 0.18] {
+          for curvature in [0.0, 0.65, 1.0] {
+            c.fullness.depthCurvature = curvature
+            c.fullness.sourceEnvelope = .init(innerMin: Point(-0.45, -0.28 + upperFeather),
+                innerMax: Point(0.45, 0.21), outerMin: Point(-0.75, -0.28), outerMax: Point(0.75, 0.33))
+            let model = try XCTUnwrap(Model(configuration: c))
+            for strength in [-1.0, -0.23, 0.41, 1.0] {
+                let minimum = model.minimumVerticalDerivativeForFullness(strength: strength)
+                XCTAssertTrue(minimum.isFinite)
+                let scale = min(1, minimum < 0 ? 0.78 / -minimum : 1)
+                // These points check the enclosure algebra; the production
+                // certificate itself encloses whole intervals and branches.
+                for ix in 0...24 { for iy in 0...180 {
+                    let p = Point(-0.8 + 1.6 * Double(ix) / 24, -0.6 + 1.2 * Double(iy) / 180)
+                    let a = model.sample(field: .fullness, strength: strength, at: p)
+                    XCTAssertGreaterThanOrEqual(a.gradientY.y, minimum - 1e-12)
+                    XCTAssertGreaterThanOrEqual(1 + scale * a.gradientY.y, 0.22 - 1e-12)
+                    XCTAssertEqual(a.displacement.x, 0)
+                } }
+            }
+          }
+        }
+    }
+
     func testInvalidConfigurationFailsClosed() throws {
         XCTAssertNil(Model.Seam(knots: [Point(0, 0), Point(0, 0.1)]))
         XCTAssertNil(Model.Profile(knots: [Point(-1, 0), Point(0, 0.1), Point(1, 0)]))
         var c = try configuration()
         c.fullness.blendHalfWidth = 0
         XCTAssertNil(Model(configuration: c))
+        c = try configuration()
+        c.fullness.depthCurvature = 1.01
+        XCTAssertNil(Model(configuration: c))
+        c.fullness.depthCurvature = 0.5; c.fullness.upperDepth = 0
+        XCTAssertNil(Model(configuration: c))
+        c = try configuration()
+        c.fullness.upperEnvelope = c.fullness.envelope
+        c.fullness.upperEnvelope?.innerMin.y += 0.01
+        XCTAssertNil(Model(configuration: c), "The lateral blend certificate requires a common vertical envelope")
         c = try configuration()
         c.size.envelope.outerMin.x = c.size.envelope.innerMin.x
         XCTAssertNil(Model(configuration: c))
@@ -668,6 +743,14 @@ final class BeautyMouthReferenceModelTests: XCTestCase {
         c = try configuration()
         c.fullness.envelope.radial = .init(center: .zero, radiusX: 1, radiusUp: 1, radiusDown: 1, innerRadius: 0.4)
         XCTAssertNil(Model(configuration: c), "The one-dimensional fullness certificate excludes radial factors")
+        c = try configuration()
+        c.fullness.sourceEnvelope = c.fullness.envelope
+        c.fullness.sourceEnvelope?.radial = .init(center: .zero, radiusX: 1, radiusUp: 1, radiusDown: 1, innerRadius: 0.4)
+        XCTAssertNil(Model(configuration: c), "Absolute source protection must also remain separable")
+        c.fullness.sourceEnvelope?.radial = nil
+        let invalidTop = c.fullness.sourceEnvelope!.outerMin.y
+        c.fullness.sourceEnvelope?.innerMin.y = invalidTop
+        XCTAssertNil(Model(configuration: c))
         c = try configuration()
         c.smile.centralEnvelope = .init(innerMin: Point(-0.2, -0.1), innerMax: Point(0.2, 0.1),
                                         outerMin: Point(-0.2, -0.2), outerMax: Point(0.3, 0.2))

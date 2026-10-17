@@ -125,6 +125,7 @@ final class BeautyMouthReferenceIntegrationTests: XCTestCase {
                 for siblingDirection: Float in [-1, 1] {
                     var previousForwardDifference = Double.infinity
                     var previousInverseDifference = Double.infinity
+                    var previousInverseErrorBound = 0.0
                     for fraction: Float in [0.01, 0.0001, 0.000001] {
                         let position = 0.5 + siblingDirection * fraction * 0.5
                         let parameters = siblingControl.applying(position: position, to: existingParameters)
@@ -133,6 +134,7 @@ final class BeautyMouthReferenceIntegrationTests: XCTestCase {
                         let composite = try XCTUnwrap(BeautyContinuousMouthMap(width: width, height: height,
                             face: face, strengths: plan.effectiveStrengths))
                         var maximumForwardDifference = 0.0, maximumInverseDifference = 0.0
+                        var maximumInverseErrorBound = 0.0
                         for source in sources {
                             let existingDisplacement = existing.forwardDisplacement(at: source)
                             let compositeDisplacement = composite.forwardDisplacement(at: source)
@@ -144,6 +146,17 @@ final class BeautyMouthReferenceIntegrationTests: XCTestCase {
                             let inverseDifference = compositeSource - existingSource
                             maximumInverseDifference = max(maximumInverseDifference,
                                 hypot(inverseDifference.x, inverseDifference.y))
+                            let a = existingSource + existing.forwardDisplacement(at: existingSource) - query
+                            let b = compositeSource + composite.forwardDisplacement(at: compositeSource) - query
+                            let existingResidual = hypot(a.x, a.y), compositeResidual = hypot(b.x, b.y)
+                            XCTAssertLessThanOrEqual(existingResidual, 0.00010001)
+                            XCTAssertLessThanOrEqual(compositeResidual, 0.00010001)
+                            // The solver budgets target residual, not source
+                            // error. Convert each measured residual through
+                            // its certified inverse Lipschitz bound.
+                            maximumInverseErrorBound = max(maximumInverseErrorBound,
+                                (1 + existing.maximumGradient) * existingResidual
+                                    + (1 + composite.maximumGradient) * compositeResidual)
                         }
                         let label = "\(existingControl.rawValue)+epsilon*\(siblingControl.rawValue)"
                         let limit = Double(max(width, height)) * Double(fraction) * 4 + 0.0001
@@ -152,9 +165,11 @@ final class BeautyMouthReferenceIntegrationTests: XCTestCase {
                         XCTAssertLessThanOrEqual(maximumForwardDifference,
                             previousForwardDifference * 0.05 + 0.0001, label)
                         XCTAssertLessThanOrEqual(maximumInverseDifference,
-                            previousInverseDifference * 0.05 + 0.0001, label)
+                            previousInverseDifference * 0.05
+                                + max(0.0001, maximumInverseErrorBound + previousInverseErrorBound * 0.05), label)
                         previousForwardDifference = maximumForwardDifference
                         previousInverseDifference = maximumInverseDifference
+                        previousInverseErrorBound = maximumInverseErrorBound
                     }
                 }
             }

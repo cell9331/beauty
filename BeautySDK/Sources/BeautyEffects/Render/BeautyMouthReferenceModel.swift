@@ -169,6 +169,22 @@ struct BeautyMouthReferenceModel: Sendable {
             return (knots[knots.count - 1].y, 0)
         }
 
+        /// Outward interval Horner evaluation on every intersected cubic.
+        /// This bounds whole source intervals, including constant exterior.
+        fileprivate func valueRange(from low: Double, to high: Double) -> (Double, Double) {
+            var lower = min(sample(at: low).value, sample(at: high).value).nextDown
+            var upper = max(sample(at: low).value, sample(at: high).value).nextUp
+            for segment in segments {
+                let a = max(low, segment.x), b = min(high, segment.x + segment.h)
+                guard a < b else { continue }
+                let t = (Interval(a, b) - .point(segment.x)) / segment.h
+                let value = ((Interval.point(segment.a) * t + .point(segment.b)) * t
+                    + .point(segment.c)) * t + .point(segment.d)
+                lower = min(lower, value.lower); upper = max(upper, value.upper)
+            }
+            return (lower, upper)
+        }
+
         private struct Segment: Sendable {
             var x: Double, h: Double, a: Double, b: Double, c: Double, d: Double
             func value(_ t: Double) -> Double { ((a * t + b) * t + c) * t + d }
@@ -192,7 +208,7 @@ struct BeautyMouthReferenceModel: Sendable {
         let maximumDerivative: Double
 
         init?(knots: [Point]) {
-            guard (5...9).contains(knots.count), knots.first?.y == 0, knots.last?.y == 0,
+            guard (5...11).contains(knots.count), knots.first?.y == 0, knots.last?.y == 0,
                   knots.allSatisfy({ $0.x.isFinite && $0.y.isFinite }),
                   zip(knots, knots.dropFirst()).allSatisfy({ $0.0.x < $0.1.x }) else { return nil }
             let derivative = zip(knots, knots.dropFirst()).map { 1.875 * abs($0.1.y - $0.0.y) / ($0.1.x - $0.0.x) }.max()!
@@ -272,6 +288,17 @@ struct BeautyMouthReferenceModel: Sendable {
         var lowerRate: Double
         var blendHalfWidth: Double
         var envelope: Envelope
+        /// Absolute source protection is independent of the curved seam.
+        var sourceEnvelope: Envelope? = nil
+        /// Source-depth response: zero retains the linear stretch; one uses
+        /// a C1 ramp from the seam to the observed lip depth. Outside that
+        /// depth the response remains bounded by the original linear field.
+        var depthCurvature: Double = 0
+        var upperDepth: Double = 1
+        var lowerDepth: Double = 1
+        /// Optional upper-lip lateral support. Its vertical envelope matches
+        /// `envelope`; a C2 seam blend joins the two lateral widths.
+        var upperEnvelope: Envelope? = nil
     }
     struct Smile: Sendable {
         /// Left corner, central reverse peak, right corner. Vectors need not
@@ -303,13 +330,24 @@ struct BeautyMouthReferenceModel: Sendable {
                          c.fullness.envelope, c.smile.envelope]
         if let source = c.mShape.sourceEnvelope { envelopes.append(source) }
         if let profile = c.mShape.profileEnvelope { envelopes.append(profile) }
+        if let source = c.fullness.sourceEnvelope { envelopes.append(source) }
+        if let upper = c.fullness.upperEnvelope { envelopes.append(upper) }
         if let central = c.smile.centralEnvelope { envelopes.append(central) }
         guard envelopes.allSatisfy(\.isValid),
               [c.size.rates, c.size.center, c.width.rates, c.width.center,
                c.vertical.vector, c.horizontal.vector, c.tilt.center].allSatisfy(Self.finite),
               c.tilt.angle.isFinite, c.fullness.upperRate.isFinite, c.fullness.lowerRate.isFinite,
               c.fullness.blendHalfWidth.isFinite, c.fullness.blendHalfWidth > 0,
+              c.fullness.depthCurvature.isFinite, (0...1).contains(c.fullness.depthCurvature),
+              c.fullness.upperDepth.isFinite, c.fullness.upperDepth > 0,
+              c.fullness.lowerDepth.isFinite, c.fullness.lowerDepth > 0,
               c.fullness.envelope.radial == nil,
+              c.fullness.sourceEnvelope?.radial == nil,
+              c.fullness.upperEnvelope?.radial == nil,
+              c.fullness.upperEnvelope.map({ $0.outerMin.y == c.fullness.envelope.outerMin.y
+                && $0.innerMin.y == c.fullness.envelope.innerMin.y
+                && $0.innerMax.y == c.fullness.envelope.innerMax.y
+                && $0.outerMax.y == c.fullness.envelope.outerMax.y }) != false,
               c.smile.lobes.count == 3, c.smile.lobes.allSatisfy(\.isValid),
               c.mShape.lowerCenter?.isValid != false else { return nil }
         self.configuration = c
@@ -370,15 +408,28 @@ struct BeautyMouthReferenceModel: Sendable {
             return result
         case .fullness:
             let c = configuration.fullness, seam = configuration.seam.sample(at: p.x)
-            let t = p.y - seam.value, w = c.envelope.sample(at: Point(p.x, t))
-            guard w.value != 0 else { return .zero }
+            let t = p.y - seam.value, z = Point(p.x, t)
+            let down = c.envelope.sample(at: z), up = c.upperEnvelope?.sample(at: z) ?? down
+            guard down.value != 0 || up.value != 0 else { return .zero }
+            let blend = Self.fullnessBlend(c, at: t)
+            let w = (1 - blend.value) * up.value + blend.value * down.value
+            let wx = (1 - blend.value) * up.gradient.x + blend.value * down.gradient.x
+            let twy = t * ((1 - blend.value) * up.gradient.y + blend.value * down.gradient.y)
+                + blend.tTimesDerivative * (down.value - up.value)
             let transition = Self.fullnessRate(c, at: t)
             let rate = transition.rate
             let v = rate * t, vt = rate + transition.tTimesDerivative
-            let dt = w.gradient.y * v + w.value * vt
-            let ds = w.gradient.x * v - seam.slope * dt
-            return Sample(displacement: Point(0, strength * w.value * v),
-                          gradientX: Point(0, strength * ds), gradientY: Point(0, strength * dt))
+            let dt = twy * rate + w * vt
+            let ds = wx * v - seam.slope * dt
+            var result = Sample(displacement: Point(0, strength * w * v),
+                                gradientX: Point(0, strength * ds), gradientY: Point(0, strength * dt))
+            if let source = c.sourceEnvelope {
+                let z = source.sample(at: p), displacement = result.displacement
+                result = Sample(displacement: displacement * z.value,
+                                gradientX: result.gradientX * z.value + displacement * z.gradient.x,
+                                gradientY: result.gradientY * z.value + displacement * z.gradient.y)
+            }
+            return result
         case .smile:
             let c = configuration.smile, w = c.envelope.sample(at: p)
             guard w.value != 0 else { return .zero }
@@ -433,15 +484,25 @@ struct BeautyMouthReferenceModel: Sendable {
                             + displacement * sourceGradient)
         case .fullness:
             let c = configuration.fullness, slope = configuration.seam.maximumSlope
-            let g = c.envelope.gradientBounds
+            var g = c.envelope.gradientBounds
+            if let upper = c.upperEnvelope {
+                let h = upper.gradientBounds
+                g = Point(max(g.x, h.x), max(g.y, h.y))
+            }
             let envelopeGradient = hypot(g.x + slope * g.y, g.y)
             let rate = max(abs(c.upperRate), abs(c.lowerRate))
             let t = max(abs(c.envelope.outerMin.y), abs(c.envelope.outerMax.y))
             // b' is confined to |t|<=delta. max S5'=1.875, hence
             // |t b'| <= 0.9375 |bDown-bUp| independently of delta.
-            let derivative = rate + 0.9375 * abs(c.lowerRate - c.upperRate)
-            return Bounds(maximumDisplacement: u * rate * t,
-                          maximumGradient: u * (rate * t * envelopeGradient + derivative * hypot(1, slope)))
+            // max r*S3'(r)=8/9. The depth ramp is constant for r>=1.
+            let derivative = rate * (1 + (8.0 / 9.0) * c.depthCurvature)
+                + 0.9375 * abs(c.lowerRate - c.upperRate)
+                + (c.upperEnvelope == nil ? 0 : 0.9375 * rate)
+            let displacement = u * rate * t
+            let sourceGradient = c.sourceEnvelope.map { Self.norm($0.gradientBounds) } ?? 0
+            return Bounds(maximumDisplacement: displacement,
+                          maximumGradient: u * (rate * t * envelopeGradient + derivative * hypot(1, slope))
+                            + displacement * sourceGradient)
         case .smile:
             let c = configuration.smile
             if let central = c.centralEnvelope {
@@ -464,20 +525,61 @@ struct BeautyMouthReferenceModel: Sendable {
     /// fullness keeps source x unchanged, so `1 + result > 0` proves strict
     /// monotonicity of every entire vertical source column (exterior included).
     ///
-    /// Write D_y=u*w_x(s)*h(t), h(t)=w_y(t)*b(t)*t. For fixed source s,
-    /// dt/dy=1 and 0<=w_x<=1. Therefore the derivative is bounded by the
-    /// interval hull of zero and u*h'. We bound h' on a finite exact covering
+    /// Write D_y=u*X(s,t)*Z(s,y)*h(t), h(t)=w_y(t)*b(t)*t*K(t). For fixed source s,
+    /// dt/dy=1. Its derivative is u*[X*(Z*h'+Z_y*h)+Z*h*X_t]. The source
+    /// envelope's separate x factor is in [0,1], so its omission followed by
+    /// a hull with zero is conservative. We bound this on an exact covering
     /// of its analytic pieces with outward-rounded interval arithmetic; the
     /// subdivisions bound whole intervals, rather than evaluating grid points.
     func minimumVerticalDerivativeForFullness(strength: Double) -> Double {
         guard strength.isFinite else { return -.infinity }
         guard strength != 0 else { return 0 }
         let c = configuration.fullness, e = c.envelope, delta = c.blendHalfWidth
-        let cuts = Array(Set([e.outerMin.y, e.innerMin.y, e.innerMax.y, e.outerMax.y,
+        var breakpoints = [e.outerMin.y, e.innerMin.y, e.innerMax.y, e.outerMax.y,
                               max(e.outerMin.y, min(e.outerMax.y, -delta)),
-                              max(e.outerMin.y, min(e.outerMax.y, delta))])).sorted()
+                              max(e.outerMin.y, min(e.outerMax.y, delta))]
+        if c.depthCurvature != 0 {
+            breakpoints += [-c.upperDepth, 0, c.lowerDepth].map { max(e.outerMin.y, min(e.outerMax.y, $0)) }
+        }
+        if let source = c.sourceEnvelope {
+            for y in [source.outerMin.y, source.innerMin.y, source.innerMax.y, source.outerMax.y] {
+                for seam in [configuration.seam.minimumValue, configuration.seam.maximumValue] {
+                    breakpoints.append(max(e.outerMin.y, min(e.outerMax.y, y - seam)))
+                }
+            }
+        }
+        let cuts = Array(Set(breakpoints)).sorted()
         var lower = 0.0, upper = 0.0
-        for index in 0..<(cuts.count - 1) {
+        // The absolute protection transition and seam are correlated in x.
+        // Keep this correlation in continuous column boxes; a global seam
+        // range paired with every x weight needlessly suppresses the field.
+        var columns = [(Double, Double)]()
+        if c.sourceEnvelope != nil || c.upperEnvelope != nil {
+            let u = c.upperEnvelope ?? e
+            let outerLow = min(e.outerMin.x, u.outerMin.x), outerHigh = max(e.outerMax.x, u.outerMax.x)
+            let xs = Array(Set([e.outerMin.x, e.outerMax.x, e.innerMin.x, e.innerMax.x,
+                               u.outerMin.x, u.outerMax.x, u.innerMin.x, u.innerMax.x]
+                + configuration.seam.knots.map(\.x).filter { $0 > outerLow && $0 < outerHigh })).sorted()
+            for (a, b) in zip(xs, xs.dropFirst()) {
+                for part in 0..<8 {
+                    columns.append((part == 0 ? a : a + (b - a) * Double(part) / 8,
+                                    part == 7 ? b : a + (b - a) * Double(part + 1) / 8))
+                }
+            }
+        } else { columns = [(e.outerMin.x, e.outerMax.x)] }
+        for column in columns {
+          let seamRange = configuration.seam.valueRange(from: column.0, to: column.1)
+          // The source envelope's own horizontal factor is in [0,1]; it
+          // cannot make the lower bound worse than its hull with zero.
+          let downX = c.sourceEnvelope == nil && c.upperEnvelope == nil ? Interval(0, 1)
+            : Self.axisEnvelopeRange(Interval(column.0, column.1), outerLow: e.outerMin.x,
+                innerLow: e.innerMin.x, innerHigh: e.innerMax.x, outerHigh: e.outerMax.x).value
+          let upX: Interval
+          if let u = c.upperEnvelope {
+            upX = Self.axisEnvelopeRange(Interval(column.0, column.1), outerLow: u.outerMin.x,
+                innerLow: u.innerMin.x, innerHigh: u.innerMax.x, outerHigh: u.outerMax.x).value
+          } else { upX = downX }
+          for index in 0..<(cuts.count - 1) {
             let a = cuts[index], b = cuts[index + 1]
             guard b > a else { continue }
             for segment in 0..<64 {
@@ -487,12 +589,30 @@ struct BeautyMouthReferenceModel: Sendable {
                 let t = Interval(lo, hi)
                 let vertical = Self.verticalEnvelopeInterval(t, envelope: e)
                 let response = Self.fullnessRateInterval(c, at: t)
-                let derivative = vertical.derivative * response.rate * t
+                let xWeight: Interval, txPrime: Interval
+                if c.upperEnvelope != nil {
+                    let blend = Self.fullnessBlendInterval(c, at: t)
+                    xWeight = ((Interval.point(1) - blend.value) * upX + blend.value * downX).clampedUnit
+                    txPrime = (downX - upX) * blend.tTimesDerivative
+                } else { xWeight = downX; txPrime = .point(0) }
+                var derivative = vertical.derivative * response.rate * t
                     + vertical.value * (response.rate + response.tTimesDerivative)
+                var sourceValue = Interval.point(1)
+                if let source = c.sourceEnvelope {
+                    // One source-y interval covers every possible seam value.
+                    // It can cross several source-envelope branches: split
+                    // and hull all of them instead of treating it as plateau.
+                    let y = t + Interval(seamRange.0, seamRange.1)
+                    let z = Self.verticalEnvelopeRange(y, envelope: source)
+                    derivative = z.value * derivative + z.derivative * vertical.value * response.rate * t
+                    sourceValue = z.value
+                }
+                derivative = xWeight * derivative + sourceValue * vertical.value * response.rate * txPrime
                 guard derivative.lower.isFinite, derivative.upper.isFinite else { return -.infinity }
                 lower = min(lower, derivative.lower)
                 upper = max(upper, derivative.upper)
             }
+          }
         }
         // Negative strength reverses the interval ordering. Multiplication is
         // also rounded outwards; the exterior and zero x-weight contribute 0.
@@ -568,14 +688,38 @@ struct BeautyMouthReferenceModel: Sendable {
     }
 
     private static func fullnessRate(_ c: Fullness, at t: Double) -> (rate: Double, tTimesDerivative: Double) {
-        if t <= -c.blendHalfWidth { return (c.upperRate, 0) }
-        if t >= c.blendHalfWidth { return (c.lowerRate, 0) }
+        let rate: Double, tTimesDerivative: Double
+        if t <= -c.blendHalfWidth { rate = c.upperRate; tTimesDerivative = 0 }
+        else if t >= c.blendHalfWidth { rate = c.lowerRate; tTimesDerivative = 0 }
+        else {
         // Computing t*b'(t) directly avoids a potentially huge intermediate
         // b' when the source seam blend is exceptionally narrow.
         let normalized = t / c.blendHalfWidth, z = (normalized + 1) * 0.5
         let difference = c.lowerRate - c.upperRate
-        return (c.upperRate + difference * smooth5(z),
-                difference * 0.5 * normalized * smooth5Derivative(z))
+            rate = c.upperRate + difference * smooth5(z)
+            tTimesDerivative = difference * 0.5 * normalized * smooth5Derivative(z)
+        }
+        let r = min(1, abs(t) / (t < 0 ? c.upperDepth : c.lowerDepth))
+        let k = 1 - c.depthCurvature + c.depthCurvature * r * r * (3 - 2 * r)
+        let tkPrime = c.depthCurvature * 6 * r * r * (1 - r)
+        return (rate * k, tTimesDerivative * k + rate * tkPrime)
+    }
+
+    private static func fullnessBlend(_ c: Fullness, at t: Double) -> (value: Double, tTimesDerivative: Double) {
+        if t <= -c.blendHalfWidth { return (0, 0) }
+        if t >= c.blendHalfWidth { return (1, 0) }
+        let normalized = t / c.blendHalfWidth, z = (normalized + 1) * 0.5
+        return (smooth5(z), 0.5 * normalized * smooth5Derivative(z))
+    }
+
+    private static func fullnessBlendInterval(_ c: Fullness, at t: Interval)
+        -> (value: Interval, tTimesDerivative: Interval) {
+        if t.upper <= -c.blendHalfWidth { return (.point(0), .point(0)) }
+        if t.lower >= c.blendHalfWidth { return (.point(1), .point(0)) }
+        let normalized = t / c.blendHalfWidth
+        let z = ((normalized + .point(1)) * .point(0.5)).clampedUnit
+        let derivative = Interval.point(30) * z * z * (.point(1) - z) * (.point(1) - z)
+        return (smooth5Interval(z), .point(0.5) * normalized * derivative)
     }
 
     private static func verticalEnvelopeInterval(_ t: Interval, envelope e: Envelope)
@@ -594,16 +738,56 @@ struct BeautyMouthReferenceModel: Sendable {
         return (.point(1), .point(0))
     }
 
+    /// Enclose the complete piecewise cubic, including exterior and every
+    /// transition crossed by an arbitrary source-y interval.
+    private static func verticalEnvelopeRange(_ y: Interval, envelope e: Envelope)
+        -> (value: Interval, derivative: Interval) {
+        axisEnvelopeRange(y, outerLow: e.outerMin.y, innerLow: e.innerMin.y,
+                          innerHigh: e.innerMax.y, outerHigh: e.outerMax.y)
+    }
+
+    private static func axisEnvelopeRange(_ y: Interval, outerLow: Double, innerLow: Double,
+                                          innerHigh: Double, outerHigh: Double)
+        -> (value: Interval, derivative: Interval) {
+        let cuts = [y.lower] + [outerLow, innerLow, innerHigh, outerHigh]
+            .filter { $0 > y.lower && $0 < y.upper } + [y.upper]
+        // Only the y coordinates are used by verticalEnvelopeInterval.
+        let e = Envelope(innerMin: Point(-1, innerLow), innerMax: Point(1, innerHigh),
+                         outerMin: Point(-2, outerLow), outerMax: Point(2, outerHigh))
+        var valueLow = Double.infinity, valueHigh = -Double.infinity
+        var derivativeLow = Double.infinity, derivativeHigh = -Double.infinity
+        for (lo, hi) in zip(cuts, cuts.dropFirst()) {
+            let part = verticalEnvelopeInterval(Interval(lo, hi), envelope: e)
+            valueLow = min(valueLow, part.value.lower); valueHigh = max(valueHigh, part.value.upper)
+            derivativeLow = min(derivativeLow, part.derivative.lower)
+            derivativeHigh = max(derivativeHigh, part.derivative.upper)
+        }
+        return (Interval(valueLow, valueHigh), Interval(derivativeLow, derivativeHigh))
+    }
+
     private static func fullnessRateInterval(_ c: Fullness, at t: Interval)
         -> (rate: Interval, tTimesDerivative: Interval) {
-        if t.upper <= -c.blendHalfWidth { return (.point(c.upperRate), .point(0)) }
-        if t.lower >= c.blendHalfWidth { return (.point(c.lowerRate), .point(0)) }
+        let rate: Interval, tTimesDerivative: Interval
+        if t.upper <= -c.blendHalfWidth { rate = .point(c.upperRate); tTimesDerivative = .point(0) }
+        else if t.lower >= c.blendHalfWidth { rate = .point(c.lowerRate); tTimesDerivative = .point(0) }
+        else {
         let normalized = t / c.blendHalfWidth
         let z = ((normalized + .point(1)) * .point(0.5)).clampedUnit
         let difference = Interval.point(c.lowerRate) - .point(c.upperRate)
         let derivative = Interval.point(30) * z * z * (.point(1) - z) * (.point(1) - z)
-        return (.point(c.upperRate) + difference * smooth5Interval(z),
-                difference * .point(0.5) * normalized * derivative)
+            rate = .point(c.upperRate) + difference * smooth5Interval(z)
+            tTimesDerivative = difference * .point(0.5) * normalized * derivative
+        }
+        guard c.depthCurvature != 0 else { return (rate, tTimesDerivative) }
+        // The exact covering includes zero and both lip depths, so each
+        // interval lies on one side of the seam and of each saturation cut.
+        let depth = t.upper <= 0 ? c.upperDepth : c.lowerDepth
+        let absolute = t.upper <= 0 ? Interval(-t.upper, -t.lower) : t
+        let r = (absolute / depth).clampedUnit
+        let a = Interval.point(c.depthCurvature)
+        let k = .point(1) - a + a * smooth3Interval(r)
+        let tkPrime = a * .point(6) * r * r * (.point(1) - r)
+        return (rate * k, tTimesDerivative * k + rate * tkPrime)
     }
 
     private static func smooth3Interval(_ t: Interval) -> Interval {
@@ -632,7 +816,7 @@ struct BeautyMouthReferenceModel: Sendable {
         var upper: Double
         init(_ lower: Double, _ upper: Double) { self.lower = lower; self.upper = upper }
         static func point(_ x: Double) -> Self { Self(x, x) }
-        var clampedUnit: Self { Self(max(0, lower), min(1, upper)) }
+        var clampedUnit: Self { Self(min(1, max(0, lower)), min(1, max(0, upper))) }
         static func + (a: Self, b: Self) -> Self {
             Self((a.lower + b.lower).nextDown, (a.upper + b.upper).nextUp)
         }
