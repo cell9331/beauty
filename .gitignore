@@ -15,8 +15,8 @@ example-images/parked-generated/
 example-images/.output-pre-phase51/
 .serena/
 
-# Binary image and creative media assets stay local. Keep text manifests such as
-# Assets.xcassets/Contents.json tracked so project structure remains reproducible.
+# Binary image and creative media assets stay local unless explicitly allowed below.
+# Keep text manifests such as Assets.xcassets/Contents.json tracked for reproducibility.
 *.[pP][nN][gG]
 *.[jJ][pP][gG]
 *.[jJ][pP][eE][gG]
@@ -61,5 +61,26 @@ example-images/.output-pre-phase51/
 example-images/local-retouch-review/
 
 # Reference-analysis raw inputs, correspondences, fields, masks, and local scripts.
-# Reviewed aggregate Markdown remains trackable; binary evidence is ignored above.
+# Reviewed aggregate Markdown remains trackable; approved binary exceptions follow.
 example-images/参考效果分析/**/本地测量/
+
+# User-approved mouth-analysis evidence: these 19 files travel with the repository.
+!/example-images/参考效果分析/嘴唇/M唇/证据/SDK剖面复核.png
+!/example-images/参考效果分析/嘴唇/M唇/证据/SDK幅度增强对照.png
+!/example-images/参考效果分析/嘴唇/M唇/证据/SDK方向范围复核.png
+!/example-images/参考效果分析/嘴唇/M唇/证据/SDK端点重放.png
+!/example-images/参考效果分析/嘴唇/M唇/证据/位移证据.png
+!/example-images/参考效果分析/嘴唇/上下/证据/位移证据.png
+!/example-images/参考效果分析/嘴唇/丰唇/证据/SDK方向范围复核.png
+!/example-images/参考效果分析/嘴唇/丰唇/证据/SDK端点重放.png
+!/example-images/参考效果分析/嘴唇/丰唇/证据/SDK轮廓与纹理复核.png
+!/example-images/参考效果分析/嘴唇/丰唇/证据/位移证据.png
+!/example-images/参考效果分析/嘴唇/丰唇/证据/轮廓与强化对应.png
+!/example-images/参考效果分析/嘴唇/倾斜/证据/位移证据.png
+!/example-images/参考效果分析/嘴唇/倾斜/证据/独立旋转核验.png
+!/example-images/参考效果分析/嘴唇/大小/证据/位移证据.png
+!/example-images/参考效果分析/嘴唇/宽度/证据/位移证据.png
+!/example-images/参考效果分析/嘴唇/左右/证据/位移证据.png
+!/example-images/参考效果分析/嘴唇/微笑/证据/位移证据.png
+!/example-images/参考效果分析/嘴唇/证据/M唇与丰唇修复真机对照.png
+!/example-images/参考效果分析/嘴唇/证据/输入总览.jpg
