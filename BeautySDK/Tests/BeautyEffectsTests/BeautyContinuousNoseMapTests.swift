@@ -112,7 +112,7 @@ final class BeautyContinuousNoseMapTests: XCTestCase {
         ("wing", \.noseWingSlim, 0.35, SIMD2(0.43,0.63), SIMD2(0.57,0.63)),
         ("tip", \.noseTipSize, 0.30, SIMD2(0.475,0.585), SIMD2(0.525,0.585)),
         ("bridge", \.noseBridge, 0.30, SIMD2(0.455,0.51), SIMD2(0.545,0.51)),
-        ("root", \.noseRootNarrowing, 0.25, SIMD2(0.46,0.385), SIMD2(0.54,0.385)),
+        ("root", \.noseRootNarrowing, 0.25, SIMD2(0.46,0.29), SIMD2(0.54,0.29)),
         ("lift", \.noseTipLift, 0.25, SIMD2(0.5,0.615), SIMD2(0.5,0.615))
     ]
 
