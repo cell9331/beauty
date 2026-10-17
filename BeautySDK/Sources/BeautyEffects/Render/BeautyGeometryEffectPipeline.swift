@@ -160,7 +160,8 @@ enum BeautyGeometryEffectPipeline {
             return image.cropped(to: canonicalImage.ciImage.extent)
         }
         var ownershipSource: [UInt8]?
-        if BeautyContinuousFaceMap.requiresSourceOwnershipProof(face: face, strengths: plan.effectiveStrengths) {
+        if plan.effectiveStrengths.hairlineHeight != 0 ||
+            BeautyContinuousFaceMap.requiresSourceOwnershipProof(face: face, strengths: plan.effectiveStrengths) {
             ownershipSource = CGFloat(canonicalImage.width) == image.extent.width &&
                 CGFloat(canonicalImage.height) == image.extent.height &&
                 canonicalImage.ciImage.extent == image.extent ? Array(canonicalImage.rgba8Data) : []
@@ -199,6 +200,9 @@ enum BeautyGeometryEffectPipeline {
         defer { onEyebrowAppliedSideCount?(eyebrowAdmittedSides) }
         let requestsContinuous = face.observedFaceSupport != nil &&
             BeautyContinuousFaceMap.keys.contains { plan.effectiveStrengths[keyPath: $0] != 0 }
+        let requestsFaceDisplacement = BeautyFaceDisplacementMap.keys.contains {
+            plan.effectiveStrengths[keyPath: $0] != 0
+        }
         let requestsNose = BeautyContinuousNoseMap.replacesLegacy(for: face) &&
             BeautyContinuousNoseMap.keys.contains { plan.effectiveStrengths[keyPath: $0] != 0 }
         let requestsMouth = BeautyContinuousMouthMap.replacesLegacy(for: face) &&
@@ -208,7 +212,7 @@ enum BeautyGeometryEffectPipeline {
         let requestsEyebrows = BeautyContinuousEyebrowMap.replacesLegacy(for: face) &&
             BeautyContinuousEyebrowMap.keys.contains { plan.effectiveStrengths[keyPath: $0] != 0 }
         let requestsJawlineShadow = plan.effectiveStrengths.jawlineShadow > 0
-        guard requestsContinuous || requestsNose || requestsMouth || requestsHairline || requestsEyebrows || requestsJawlineShadow ||
+        guard requestsFaceDisplacement || requestsContinuous || requestsNose || requestsMouth || requestsHairline || requestsEyebrows || requestsJawlineShadow ||
               !controlPoints(for: plan, face: face).isEmpty else {
             return image.cropped(to: image.extent)
         }

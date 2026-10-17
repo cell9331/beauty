@@ -35,7 +35,8 @@ final class JawlineShadowSourceProfileTests: XCTestCase {
             observedOuterLips: box(0.4125, 0.5875, 0.5875, 0.635),
             observedNoseSupport: BeautyObservedNoseSupport(crest: nasal, contour: nasal))
     }
-    private func source(scale: Double, varying: Bool, strand: Bool = false) -> (Int, Int, [UInt8]) {
+    private func source(scale: Double, varying: Bool, strand: Bool = false,
+                        transitionWidth: Double = 5, neckChroma: Bool = false) -> (Int, Int, [UInt8]) {
         let w = Int(320 * scale), h = Int(400 * scale)
         var bytes = [UInt8](repeating: 255, count: w * h * 4)
         for y in 0..<h { for x in 0..<w {
@@ -44,11 +45,23 @@ final class JawlineShadowSourceProfileTests: XCTestCase {
             var rgb: [Double] = [35, 80, 110]
             if (abs(px - 160) <= 100 && py >= 90 && py <= jaw) ||
                 ((90...230).contains(px) && py >= jaw && py < 340) {
-                let u = min(1, max(0, (offset + 2.5) / 5))
+                let u = min(1, max(0, (offset + transitionWidth * 0.5) / transitionWidth))
                 let gain = 1 - 0.14 * u * u * (3 - 2 * u)
-                rgb = [210, 158, 125].map { Double($0) * gain }
+                // The independently generated neck family remains close to
+                // the face. A warmer under-jaw region is close to BOTH neck
+                // families, although outside the single face-family radius.
+                let base: [Double]
+                if neckChroma && py > jaw + 3 {
+                    base = py < jaw + 10 ? [200, 138, 88] : [200, 143, 100]
+                } else { base = [210, 158, 125] }
+                rgb = base.map { $0 * gain }
             }
-            if strand && abs(px - 160) < 1 && py > jaw - 8 && py < jaw + 14 { rgb = [28, 24, 20] }
+            // Include every native texel intersecting the physical strand.
+            // At half size, centers are 159/161: a center-only abs<1 test
+            // generates NO strand while the independent oracle expects one.
+            if strand && abs(px - 160) < 1 + 0.5 / scale && py > jaw - 8 && py < jaw + 14 {
+                rgb = [28, 24, 20]
+            }
             let p = (y * w + x) * 4
             for c in 0..<3 { bytes[p + c] = UInt8(rgb[c].rounded()) }
         } }
@@ -87,31 +100,129 @@ final class JawlineShadowSourceProfileTests: XCTestCase {
         } }
     }
 
-    func testAddedSourceLightingCannotDominateTheKnownOriginalContrast() throws {
-        let bright = [210, 158, 125]
-        let dark = bright.map { Int((Double($0) * 0.86).rounded()) }
-        for scale in [1.0, 0.5] {
-            let (w, h, bytes) = source(scale: scale, varying: false)
-            let evidence = try XCTUnwrap(BeautyJawlineShadow.assess(sourceRGBA: bytes, width: w, height: h, face: face()).evidence)
+    func testNewShadowEntersAfterActualSourceCentreWithoutWaitingForSourceDarkPercentile() throws {
+        for scale in [1.0, 0.5] { for transition in [5.0, 12.0] {
+            let (w, h, bytes) = source(scale: scale, varying: false, transitionWidth: transition)
+            let q = BeautyJawlineShadow.assess(sourceRGBA: bytes, width: w, height: h, face: face())
+            let evidence = try XCTUnwrap(q.evidence,
+                "source centre scale=\(scale) width=\(transition): \(q.aggregates)")
+            XCTAssertEqual(q.aggregates["sourceCenterEntryRegistration"], 1)
             var previous = 0
             for fraction: Float in [0.25, 0.5, 0.75, 1] {
                 let output = evidence.apply(to: bytes, strength: 0.25 * fraction)
-                var total = 0, sourceContrastExceeded = 0, alpha = 0
-                for p in stride(from: 0, to: bytes.count, by: 4) {
-                    if output[p + 3] != bytes[p + 3] { alpha += 1 }
-                    for c in 0..<3 {
-                        let delta = Int(bytes[p + c]) - Int(output[p + c])
-                        total += delta
-                        // One byte accounts for native source quantization,
-                        // rather than granting another contrast multiplier.
-                        if Double(delta) > Double(bright[c] - dark[c]) * Double(fraction) + 1 { sourceContrastExceeded += 1 }
+                var upperChanged = 0, entryCount = 0, entryDarkening = 0, alphaChanged = 0
+                for y in 0..<h { for x in 0..<w {
+                    let p = (y * w + x) * 4
+                    let px = (Double(x) + 0.5) / scale, py = (Double(y) + 0.5) / scale
+                    let delta = Int(bytes[p + 1]) - Int(output[p + 1])
+                    if py <= edge(px) && output[p..<(p + 4)] != bytes[p..<(p + 4)] { upperChanged += 1 }
+                    if output[p + 3] != bytes[p + 3] { alphaChanged += 1 }
+                    // Independent source geometry, 1.0--1.8% of its known
+                    // 200px face width beyond the true jaw centre. This is
+                    // unrelated to the production profile/weight buffers.
+                    if abs(px - 160) < 12 && (2.0...3.6).contains(py - edge(px)) {
+                        entryCount += 1; entryDarkening += delta
                     }
-                }
-                XCTAssertEqual(sourceContrastExceeded, 0)
-                XCTAssertEqual(alpha, 0)
-                XCTAssertGreaterThan(total, previous, "the contrast bound cannot be met by a no-op")
+                } }
+                XCTAssertEqual(upperChanged, 0, "the actual face bright side remains exact")
+                XCTAssertEqual(alphaChanged, 0)
+                XCTAssertGreaterThan(entryCount, 8)
+                XCTAssertGreaterThan(Double(entryDarkening) / Double(entryCount), Double(fraction) * 8,
+                    "new shadow must join the known jaw without source-90% plus a second entry feather")
+                XCTAssertGreaterThan(entryDarkening, previous)
+                previous = entryDarkening
+            }
+        } }
+    }
+
+    func testWideFieldPreservesMaterialAndUsefulTailWithoutPerRayLightingGain() throws {
+        for scale in [1.0, 0.5] {
+            let (w, h, bytes) = source(scale: scale, varying: false, strand: true)
+            let q = BeautyJawlineShadow.assess(sourceRGBA: bytes, width: w, height: h, face: face())
+            let evidence = try XCTUnwrap(q.evidence)
+            XCTAssertEqual(q.aggregates["qualifiedNeckFamilies"], 2)
+            var previous = 0
+            for fraction: Float in [0.25, 0.5, 0.75, 1] {
+                let output = evidence.apply(to: bytes, strength: 0.25 * fraction)
+                var total = 0, tailTotal = 0, tailCount = 0, protectedLeaks = 0
+                var belowStrandTotal = 0, belowStrandCount = 0
+                for y in 0..<h { for x in 0..<w {
+                    let p = (y * w + x) * 4
+                    let px = (Double(x) + 0.5) / scale, py = (Double(y) + 0.5) / scale
+                    let offset = py - edge(px)
+                    let changed = output[p..<(p + 4)] != bytes[p..<(p + 4)]
+                    let sourceStrand = abs(px - 160) < 1 + 0.5 / scale &&
+                        py > edge(px) - 8 && py < edge(px) + 14
+                    if changed && (py <= edge(px) || sourceStrand || py >= 340) { protectedLeaks += 1 }
+                    XCTAssertEqual(output[p + 3], bytes[p + 3])
+                    for c in 0..<3 {
+                        let delta = Int(bytes[p + c]) - Int(output[p + c]); total += delta
+                        XCTAssertGreaterThanOrEqual(delta, 0)
+                        XCTAssertLessThanOrEqual(Double(delta), Double(bytes[p + c]) * 0.18 + 0.5)
+                    }
+                    // This independent source window is 0.10--0.15 face
+                    // widths below the known jaw: the previous thin field
+                    // was identically zero here, regardless of gain.
+                    if (135...150).contains(px) && (20...30).contains(offset) {
+                        tailCount += 1; tailTotal += Int(bytes[p + 1]) - Int(output[p + 1])
+                    }
+                    // The source strand ends at jaw+14. Verified native skin
+                    // below it is connected around its sides, while the strand
+                    // itself above remains protected by the independent oracle.
+                    if abs(px - 160) < 1 + 0.5 / scale && (20...30).contains(offset) {
+                        belowStrandCount += 1
+                        belowStrandTotal += Int(bytes[p + 1]) - Int(output[p + 1])
+                    }
+                } }
+                XCTAssertEqual(protectedLeaks, 0)
+                XCTAssertGreaterThan(tailCount, 12)
+                XCTAssertGreaterThan(Double(tailTotal) / Double(tailCount), Double(fraction) * 3)
+                XCTAssertGreaterThan(belowStrandCount, 4)
+                XCTAssertGreaterThan(Double(belowStrandTotal) / Double(belowStrandCount), Double(fraction) * 3,
+                    "a native foreign strand cannot cut a whole verified source-skin column below its endpoint")
+                XCTAssertGreaterThan(total, previous)
                 XCTAssertTrue(output == evidence.apply(to: bytes, strength: 0.25 * fraction))
                 previous = total
+            }
+        }
+    }
+
+    func testOriginalBilateralNeckFamiliesOwnTheirWarmSourceMaterialWithoutOwningForeignStrand() throws {
+        for scale in [1.0, 0.5] {
+            let (w, h, bytes) = source(scale: scale, varying: false, strand: true, neckChroma: true)
+            let q = BeautyJawlineShadow.assess(sourceRGBA: bytes, width: w, height: h, face: face())
+            let evidence = try XCTUnwrap(q.evidence, "bilateral neck source scale=\(scale): \(q.aggregates)")
+            XCTAssertEqual(q.aggregates["bilateralNeckMaterialCorroboration"], 1)
+            var previous = 0
+            for fraction: Float in [0.25, 0.5, 0.75, 1] {
+                let output = evidence.apply(to: bytes, strength: fraction * 0.25)
+                var count = 0, darkening = 0, protectedLeaks = 0
+                for y in 0..<h { for x in 0..<w {
+                    let p = (y * w + x) * 4
+                    let px = (Double(x) + 0.5) / scale, py = (Double(y) + 0.5) / scale
+                    let offset = py - edge(px)
+                    let changed = output[p..<(p + 4)] != bytes[p..<(p + 4)]
+                    let foreign = abs(px - 160) < 1 + 0.5 / scale && offset > -8 && offset < 14
+                    if changed && (py <= edge(px) || foreign || py >= 340) { protectedLeaks += 1 }
+                    XCTAssertEqual(output[p + 3], bytes[p + 3])
+                    for c in 0..<3 {
+                        let delta = Int(bytes[p + c]) - Int(output[p + c])
+                        XCTAssertGreaterThanOrEqual(delta, 0)
+                        XCTAssertLessThanOrEqual(Double(delta), Double(bytes[p + c]) * 0.18 + 0.5)
+                    }
+                    // Fixed source region wholly inside the deliberately
+                    // warm band. Keep the native foreign footprint outside
+                    // this independent positive oracle at both raster sizes.
+                    if (9...18).contains(abs(px - 160)) && (5...8).contains(offset) {
+                        count += 1; darkening += Int(bytes[p + 1]) - Int(output[p + 1])
+                    }
+                } }
+                XCTAssertEqual(protectedLeaks, 0)
+                XCTAssertGreaterThan(count, 4)
+                XCTAssertGreaterThan(Double(darkening) / Double(count), Double(fraction) * 3,
+                    "verified source neck chroma cannot create a false material hole at the entrance")
+                XCTAssertGreaterThan(darkening, previous)
+                previous = darkening
             }
         }
     }

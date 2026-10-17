@@ -5,13 +5,20 @@ import XCTest
 @testable import BeautyEffects
 
 final class FaceContinuousMapTests: XCTestCase {
-    private func face(dense: Bool = false, count: Int = 21) throws -> FaceGeometry {
+    private func face(dense: Bool = false, count: Int = 21, qualified: Bool = false) throws -> FaceGeometry {
         let contour = (0..<count).map { i -> SIMD2<Float> in
             let a = Float(i) / Float(count-1) * .pi
             return SIMD2(0.5 - 0.24*cos(a), 0.36 + 0.42*sin(a))
         }
         func box(_ x: Float, _ y: Float, _ w: Float, _ h: Float) -> [SIMD2<Float>] {
             [SIMD2(x,y), SIMD2(x+w,y), SIMD2(x+w,y+h), SIMD2(x,y+h)]
+        }
+        func eye(_ side: BeautyObservedEyeSide, _ x: Float) -> BeautyEyeSemanticSupport {
+            let path = box(x, 0.30, 0.10, 0.06)
+            return BeautyEyeSemanticSupport(side: side, contour: path,
+                upper: Array(path.prefix(2)), lower: Array(path.suffix(2)),
+                inner: [path[0]], outer: [path[1]], corners: [path[0], path[1]],
+                center: (path[0] + path[2]) * 0.5, pupil: nil, span: SIMD2(0.10, 0.06), tilt: 0)
         }
         let mesh = dense ? try XCTUnwrap(BeautyFaceMesh(points: (0..<478).map {
             SIMD3<Float>(0.18 + Float($0 % 23)/36, 0.10 + Float($0/23)/27, 0)
@@ -22,7 +29,12 @@ final class FaceContinuousMapTests: XCTestCase {
                 medianLine: [SIMD2(0.5,0.34),SIMD2(0.5,0.55),SIMD2(0.5,0.78)], apexIndex: count/2),
             leftEye: box(0.34,0.30,0.10,0.06), rightEye: box(0.56,0.30,0.10,0.06),
             outerLips: box(0.40,0.57,0.20,0.07),
+            leftEyeSupport: qualified ? eye(.left, 0.34) : nil,
+            rightEyeSupport: qualified ? eye(.right, 0.56) : nil,
             observedOuterLips: box(0.40,0.57,0.20,0.07),
+            observedNoseSupport: qualified ? BeautyObservedNoseSupport(
+                crest: [CoordinatePoint(x: 0.5, y: 0.40), CoordinatePoint(x: 0.5, y: 0.46), CoordinatePoint(x: 0.5, y: 0.52)],
+                contour: [CoordinatePoint(x: 0.46, y: 0.51), CoordinatePoint(x: 0.5, y: 0.54), CoordinatePoint(x: 0.54, y: 0.51)]) : nil,
             denseSupport: mesh.map(BeautyDenseFaceSupport.init(mesh:)))
     }
 
@@ -118,7 +130,7 @@ final class FaceContinuousMapTests: XCTestCase {
             (.vFace,\.faceVShape,BeautySafetyCaps.faceVShape),
             (.temple,\.templeFullness,BeautySafetyCaps.templeFullness),
             (.cheekbone,\.cheekboneSlim,BeautySafetyCaps.cheekboneSlim),
-            (.chinTaper,\.chinTaper,-BeautySafetyCaps.chinTaper),
+            (.chinTaper,\.chinTaper,BeautySafetyCaps.chinTaper),
             (.chinLength,\.chinLength,-BeautySafetyCaps.chinLength),
             (.contourSmooth,\.faceContourSmooth,BeautySafetyCaps.faceContourSmooth),
             (.hairline,\.hairlineHeight,BeautySafetyCaps.hairlineHeight)]
@@ -129,7 +141,7 @@ final class FaceContinuousMapTests: XCTestCase {
                 slider.neutralPosition == 0 ? 0 : -cap)
             XCTAssertEqual(slider.applying(position:1,to:BeautyParameters(noseBridge:0.1)).noseBridge,0.1)
         }
-        let anatomy=try face()
+        let anatomy=try face(qualified:true)
         let parameters=BeautyParameters(faceSlim:-1,faceSmall:-1,jawSlim:-1,templeFullness:-1,cheekboneSlim:-1,chinTaper:-1)
         let plan=BeautyEffectResolver.resolve(parameters:parameters,faceGeometry:anatomy)
         XCTAssertLessThan(plan.effectiveStrengths.faceSlim,0)

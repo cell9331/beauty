@@ -28,7 +28,7 @@ final class BeautyStillImageGeometryStageTests: XCTestCase {
     func testMissingFaceCannotAuthorizeGeometryOrTranslation() {
         let pixels = CPUReferenceFixtureFactory.geometryPattern(width: 160, height: 192).rgba8
         let plan = BeautyEffectResolver.resolve(
-            parameters: BeautyParameters(faceSlim: 0.15, wholeFaceXPosition: 0.05),
+            parameters: BeautyParameters(jawSlim: 0.15, wholeFaceXPosition: 0.05),
             faceGeometry: .fixture
         )
         XCTAssertFalse(BeautyGeometryEffectPipeline.controlPoints(for: plan, face: .fixture).isEmpty)
@@ -47,14 +47,17 @@ final class BeautyStillImageGeometryStageTests: XCTestCase {
         let skin: [UInt8] = [170, 125, 110, 255]
         let source = Array(repeating: skin, count: 160 * 192).flatMap { $0 }
         for face in [FaceGeometry.fixture, try denseFace()] {
+            // These coarse fixtures have no independently observed nasal core,
+            // so jaw is refused. The existing head field is a separate admitted
+            // sibling and must survive the source-refiner rejection below.
             let sibling = BeautyEffectResolver.resolve(
-                parameters: BeautyParameters(faceSlim: 0.15), faceGeometry: face
+                parameters: BeautyParameters(headSmall: 0.15), faceGeometry: face
             )
             let mixed = BeautyEffectResolver.resolve(
                 parameters: BeautyParameters(
-                    faceSlim: 0.15, faceContourSmooth: 0.05,
+                    jawSlim: 0.15, faceContourSmooth: 0.05,
                     wholeFaceYPosition: 0.05, wholeFaceXPosition: -0.05,
-                    foreheadHeight: 0.05, philtrumLength: -0.05, headWrap: 0.05,
+                    foreheadHeight: 0.05, philtrumLength: -0.05, headSmall: 0.15, headWrap: 0.05,
                     hairlineHeight: -0.05, doubleChinReduction: 0.05,
                     doubleChinReductionPro: 0.05
                 ), faceGeometry: face
@@ -65,15 +68,17 @@ final class BeautyStillImageGeometryStageTests: XCTestCase {
             let actual = BeautyStillImageGeometryStage(
                 sourceRGBA: source, width: 160, height: 192, plan: mixed, face: face
             )
+            XCTAssertEqual(mixed.effectiveStrengths.jawSlim, 0)
+            XCTAssertGreaterThan(sibling.effectiveStrengths.headSmall, 0)
             XCTAssertFalse(expected.controlPoints.isEmpty)
             XCTAssertGreaterThan(
                 BeautyGeometryEffectPipeline.controlPoints(for: mixed, face: face).count,
                 expected.controlPoints.count
             )
-            XCTAssertEqual(actual.sourceRGBA, source)
+            XCTAssertTrue(actual.sourceRGBA == source)
             XCTAssertEqual(actual.controlPoints, expected.controlPoints)
             let warped = actual.applyingDenseMap(to: actual.sourceRGBA)
-            XCTAssertEqual(actual.applyingTranslation(to: warped), warped)
+            XCTAssertTrue(actual.applyingTranslation(to: warped) == warped)
         }
     }
 
@@ -84,22 +89,22 @@ final class BeautyStillImageGeometryStageTests: XCTestCase {
         ])
         let face = try denseFace()
         let plan = BeautyEffectResolver.resolve(
-            parameters: BeautyParameters(faceSlim: 0.15), faceGeometry: face
+            parameters: BeautyParameters(headSmall: 0.15), faceGeometry: face
         )
         let rejected = BeautyStillImageGeometryStage(
             sourceRGBA: source, width: 160, height: 192, plan: plan, face: backFacing
         )
         XCTAssertTrue(rejected.usesDenseMap)
         XCTAssertFalse(rejected.controlPoints.isEmpty)
-        XCTAssertEqual(rejected.applyingDenseMap(to: source), source)
+        XCTAssertTrue(rejected.applyingDenseMap(to: source) == source)
 
         let recovered = BeautyStillImageGeometryStage(
             sourceRGBA: source, width: 160, height: 192, plan: plan, face: face
         )
         let output = recovered.applyingDenseMap(to: recovered.sourceRGBA)
-        XCTAssertNotEqual(output, source)
-        XCTAssertEqual(output, recovered.applyingDenseMap(to: recovered.sourceRGBA))
-        XCTAssertEqual(rejected.applyingDenseMap(to: source), source)
+        XCTAssertFalse(output == source)
+        XCTAssertTrue(output == recovered.applyingDenseMap(to: recovered.sourceRGBA))
+        XCTAssertTrue(rejected.applyingDenseMap(to: source) == source)
         for y in 0..<192 {
             for x in 0..<160 {
                 let offset = (y * 160 + x) * 4

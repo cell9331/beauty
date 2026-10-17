@@ -120,12 +120,14 @@ final class JawlineShadowTests: XCTestCase {
                         // This oracle uses the generating analytic boundary,
                         // rather than reading the implementation's weights.
                         let d = Double(y) + 0.5 - boundary(Double(x) + 0.5)
-                        if abs(Double(x) + 0.5 - 160) >= 61 || d <= -1 || d >= 11 { domainLeaks += 1 }
+                        let h = (Double(x) + 0.5 - 160) / 100
+                        let normalDistance = d / hypot(1, 1.7 * h / sqrt(max(0.000001, 1 - h * h)))
+                        if abs(Double(x) + 0.5 - 160) >= 81 || d <= 0 || normalDistance >= 56 { domainLeaks += 1 }
                     }
-                    let protected = y < 270 || y >= 325 || x < 90 || x >= 230 ||
+                    let protected = Double(y) + 0.5 <= boundary(Double(x) + 0.5) || y >= 340 || x < 90 || x >= 230 ||
                         ((175...176).contains(x) && (280...322).contains(y))
                     if protected && changedPixel { protectedLeaks += 1 }
-                    if (140...165).contains(x), (3...7).contains(Double(y) + 0.5 - boundary(Double(x) + 0.5)) {
+                    if (140...165).contains(x), (12...25).contains(Double(y) + 0.5 - boundary(Double(x) + 0.5)) {
                         targetCount += 1; targetDarkening += Int(input[p]) - Int(output[p])
                     }
                 } }
@@ -146,7 +148,7 @@ final class JawlineShadowTests: XCTestCase {
         for kind in [Kind.uniform, .splitPalette, .disconnected] {
             let q = BeautyJawlineShadow.assess(sourceRGBA: source(kind), width: width, height: height, face: face())
             XCTAssertNil(q.evidence, "negative \(kind)")
-            XCTAssertNotNil(q.refusal)
+            XCTAssertNotNil(q.refusal, "negative \(kind): \(q.aggregates)")
         }
         for geometry in [face(freshness: .stale), face(freshness: .reused), face(missingNose: true)] {
             XCTAssertEqual(BeautyJawlineShadow.assess(sourceRGBA: source(), width: width, height: height, face: geometry).refusal, .invalidSupport)
@@ -180,7 +182,7 @@ final class JawlineShadowTests: XCTestCase {
     }
 
     func testGeometryAndTextureCombinationsRejectOnlyNewToneIntent() {
-        for sibling: WritableKeyPath<BeautyParameters, Float> in [\.jawSlim, \.faceSlim, \.wholeFaceYPosition, \.skinSmoothing, \.skinSharpen] {
+        for sibling: WritableKeyPath<BeautyParameters, Float> in [\.chinLength, \.faceSlim, \.wholeFaceYPosition, \.skinSmoothing, \.skinSharpen] {
             var base = BeautyParameters(); base[keyPath: sibling] = 0.2
             var mixed = base; mixed.jawlineShadow = 0.25
             let original = BeautyEffectResolver.resolve(parameters: base, faceGeometry: face())
@@ -195,6 +197,20 @@ final class JawlineShadowTests: XCTestCase {
         p.wholeFaceTilt = 0.000001
         XCTAssertEqual(BeautyEffectResolver.resolve(parameters: p, faceGeometry: face()).effectiveStrengths.jawlineShadow, 0,
             "a nonzero geometry request cannot regain the tonal scope after provider sanitization")
+    }
+
+    func testAuditedSourceFixedFieldsMayShareSourceToneWhileOtherGeometryRemainsRejected() {
+        var parameters = BeautyParameters(jawlineShadow: 0.25)
+        parameters.jawSlim = 0.2; parameters.hairlineHeight = -0.2
+        XCTAssertTrue(BeautyJawlineShadow.hasIndependentSourceRequest(parameters))
+        var strengths = BeautyEffectiveStrengths()
+        strengths.jawlineShadow = 0.25; strengths.jawSlim = 0.2; strengths.hairlineHeight = -0.2
+        XCTAssertTrue(BeautyJawlineShadow.hasIndependentSourceCoordinates(strengths))
+        let resolved = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: face())
+        XCTAssertEqual(resolved.effectiveStrengths.jawlineShadow, 0.25)
+        parameters.chinLength = 0.001; strengths.chinLength = 0.001
+        XCTAssertFalse(BeautyJawlineShadow.hasIndependentSourceRequest(parameters))
+        XCTAssertFalse(BeautyJawlineShadow.hasIndependentSourceCoordinates(strengths))
     }
 
     /// A separate analytic lighting carrier has the same geometry and skin
@@ -248,8 +264,10 @@ final class JawlineShadowTests: XCTestCase {
                     if active {
                         changed += 1
                         let d = py - boundary(px)
-                        if abs(px - 160) >= 61 || d <= -1 || d >= 11 { exterior += 1 }
-                        if py < 270 || py >= 325 || px < 90 || px >= 230 ||
+                        let h = (px - 160) / 100
+                        let normalDistance = d / hypot(1, 1.7 * h / sqrt(max(0.000001, 1 - h * h)))
+                        if abs(px - 160) >= 81 || d <= 0 || normalDistance >= 56 { exterior += 1 }
+                        if py <= boundary(px) || py >= 340 || px < 90 || px >= 230 ||
                             ((175...176).contains(px) && (280...322).contains(py)) { protected += 1 }
                         if abs(px - 160) < 2 { centerRows.insert(y) }
                     }
@@ -257,7 +275,7 @@ final class JawlineShadowTests: XCTestCase {
                 XCTAssertEqual(exterior, 0); XCTAssertEqual(protected, 0); XCTAssertEqual(alpha, 0)
                 XCTAssertGreaterThan(changed, 16, "soft lighting must remain useful at both native raster sizes")
                 XCTAssertGreaterThan(darkening, prior)
-                if fraction == 1 { XCTAssertGreaterThanOrEqual(centerRows.count, Int(4 * scale), "a fine painted edge cannot qualify as broad lighting") }
+                if fraction == 1 { XCTAssertGreaterThanOrEqual(centerRows.count, Int(24 * scale), "a fine painted edge cannot qualify as broad lighting") }
                 XCTAssertTrue(output == evidence.apply(to: bytes, strength: 0.25 * fraction))
                 prior = darkening
             }

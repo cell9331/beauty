@@ -81,12 +81,12 @@ final class FaceSmoothSourceStageTests: XCTestCase {
         return BeautyEffectPlan(activeDomains: [.faceShape], effectiveStrengths: strengths)
     }
 
-    func testAcceptedObservedSourceSmoothOwnsDenseRasterAndKeepsSiblingPoints() throws {
+    func testRetiredRGBSmootherDoesNotPreprocessSourceOrRestoreProxiesWhenNewMapRefuses() throws {
         let face = try denseObservedFace(), source = try roughSource(face: face)
         let smooth = plan(smooth: true)
         XCTAssertFalse(FaceShapeWarpProvider().fieldEmissions(face: face,
             strengths: smooth.effectiveStrengths).faceContourSmooth.isEmpty,
-            "the planning proxy must exist for this regression to detect duplicate ownership")
+            "the legacy inventory must exist for this regression to detect a revived proxy")
         let refined = FaceContourSubpixelRefiner.refineWithProtection(source, width: width,
             height: height, face: face, strength: smooth.effectiveStrengths.faceContourSmooth)
         XCTAssertFalse(refined.protectedLeft)
@@ -94,22 +94,32 @@ final class FaceSmoothSourceStageTests: XCTestCase {
         let changed = stride(from: 0, to: source.count, by: 4).filter {
             source[$0..<$0 + 4] != refined.bytes[$0..<$0 + 4]
         }.count
-        XCTAssertGreaterThan(changed, 16, "source ownership requires a useful active raster")
+        XCTAssertGreaterThan(changed, 16, "the retired RGB smoother must actually alter this independent control")
+        // This fixture deliberately supplies no observed lip/nasal paths. A
+        // working retired RGB smoother cannot qualify the new displacement map.
+        XCTAssertNil(face.observedOuterLips)
+        XCTAssertNil(face.observedNoseSupport)
+        XCTAssertNil(BeautyFaceDisplacementMap(width: width, height: height,
+                                              face: face, strengths: smooth.effectiveStrengths))
         let stage = BeautyStillImageGeometryStage(sourceRGBA: source, width: width, height: height,
             plan: smooth, face: face)
         XCTAssertTrue(stage.usesDenseMap)
-        XCTAssertTrue(stage.sourceRGBA == refined.bytes)
-        XCTAssertTrue(stage.controlPoints.isEmpty, "the accepted source raster cannot also emit smooth proxies")
+        XCTAssertEqual(stage.sourceRGBA, source)
+        XCTAssertNotEqual(stage.sourceRGBA, refined.bytes)
+        XCTAssertTrue(stage.controlPoints.isEmpty, "map refusal cannot revive the retired smooth proxy")
+        XCTAssertEqual(stage.applyingContinuousContour(to: stage.sourceRGBA), source)
+        XCTAssertEqual(stage.applyingDenseMap(to: stage.sourceRGBA), source)
         let sibling = BeautyStillImageGeometryStage(sourceRGBA: source, width: width, height: height,
             plan: plan(smooth: false, crown: true), face: face)
         let mixed = BeautyStillImageGeometryStage(sourceRGBA: source, width: width, height: height,
             plan: plan(smooth: true, crown: true), face: face)
         XCTAssertFalse(sibling.controlPoints.isEmpty)
-        XCTAssertTrue(mixed.controlPoints == sibling.controlPoints, "suppress only the source-owned smooth field")
-        XCTAssertTrue(mixed.sourceRGBA == refined.bytes)
+        XCTAssertTrue(mixed.controlPoints == sibling.controlPoints, "smooth refusal must preserve the admitted crown points")
+        XCTAssertEqual(mixed.sourceRGBA, source)
+        XCTAssertNotEqual(mixed.sourceRGBA, refined.bytes)
     }
 
-    func testRejectedObservedSourceSmoothCannotRestoreDenseProxyOrRemoveSibling() throws {
+    func testMissingObservedPathsAndUniformSourceCannotRestoreSmoothProxyOrRemoveCrownSibling() throws {
         let face = try denseObservedFace()
         let pixel: [UInt8] = [170, 125, 110, 255]
         let source: [UInt8] = Array(repeating: pixel, count: width * height).flatMap { $0 }
@@ -119,11 +129,15 @@ final class FaceSmoothSourceStageTests: XCTestCase {
         let refined = FaceContourSubpixelRefiner.refineWithProtection(source, width: width,
             height: height, face: face, strength: smooth.effectiveStrengths.faceContourSmooth)
         XCTAssertTrue(refined.bytes == source, "a uniform source supplies no silhouette to refine")
+        XCTAssertNil(BeautyFaceDisplacementMap(width: width, height: height,
+                                              face: face, strengths: smooth.effectiveStrengths))
         let stage = BeautyStillImageGeometryStage(sourceRGBA: source, width: width, height: height,
             plan: smooth, face: face)
         XCTAssertTrue(stage.usesDenseMap)
         XCTAssertTrue(stage.sourceRGBA == source)
-        XCTAssertTrue(stage.controlPoints.isEmpty, "source refusal must not revive a smooth proxy")
+        XCTAssertTrue(stage.controlPoints.isEmpty, "missing observed paths must not revive a smooth proxy")
+        XCTAssertEqual(stage.applyingContinuousContour(to: stage.sourceRGBA), source)
+        XCTAssertEqual(stage.applyingDenseMap(to: stage.sourceRGBA), source)
         let sibling = BeautyStillImageGeometryStage(sourceRGBA: source, width: width, height: height,
             plan: plan(smooth: false, crown: true), face: face)
         let mixed = BeautyStillImageGeometryStage(sourceRGBA: source, width: width, height: height,

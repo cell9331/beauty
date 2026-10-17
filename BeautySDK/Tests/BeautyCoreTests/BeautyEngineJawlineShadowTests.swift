@@ -71,6 +71,9 @@ final class BeautyEngineJawlineShadowTests: XCTestCase {
                 let gain = 1 - 0.06 * t * t * (3 - 2 * t)
                 rgb = [210, 158, 125].map { Double($0) * gain }
             }
+            // A separate foreign native strand crosses the otherwise
+            // qualified source neck; it must not authorize its own corridor.
+            if (175...176).contains(x) && (280...322).contains(y) { rgb = [28, 24, 20] }
             let p = (y * width + x) * 4
             for c in 0..<3 { bytes[p + c] = UInt8(rgb[c].rounded()) }
         } }
@@ -125,17 +128,33 @@ final class BeautyEngineJawlineShadowTests: XCTestCase {
             XCTAssertEqual(result.metrics["beauty.detection.geometryRequired"], 1)
             XCTAssertEqual(result.metrics["beauty.effects.jawlineShadow.sourceQualificationDeferred"], 1)
             var changed = 0, protectedChanged = 0, brighter = 0, alphaChanged = 0
+            var tailDarkening = 0, tailCount = 0, budgetExceeded = 0
             for y in 0..<height { for x in 0..<width {
                 let p = (y * width + x) * 4
+                let px = Double(x) + 0.5, py = Double(y) + 0.5
+                let jaw = 130 + 170 * sqrt(max(0, 1 - pow((px - 160) / 100, 2)))
                 if output[p..<(p + 4)] != baseline[p..<(p + 4)] {
                     changed += 1
-                    if y < 265 || y >= 325 || x < 95 || x >= 225 { protectedChanged += 1 }
+                    // Independent analytic source classes: face core,
+                    // foreign strand, lower background and neck sides.
+                    if py <= jaw || py >= 340 || px < 90 || px >= 230 ||
+                        ((175...176).contains(x) && (280...322).contains(y)) { protectedChanged += 1 }
                 }
                 if output[p + 3] != baseline[p + 3] { alphaChanged += 1 }
-                for c in 0..<3 where output[p + c] > baseline[p + c] { brighter += 1 }
+                for c in 0..<3 {
+                    if output[p + c] > baseline[p + c] { brighter += 1 }
+                    if Double(output[p + c]) < Double(baseline[p + c]) * 0.82 - 0.5 { budgetExceeded += 1 }
+                }
+                if (140...165).contains(px), (20...30).contains(py - jaw) {
+                    tailCount += 1; tailDarkening += Int(baseline[p + 1]) - Int(output[p + 1])
+                }
             } }
             XCTAssertGreaterThan(changed, 32, "a planned request must actually shade this qualified generated source")
             XCTAssertEqual(protectedChanged, 0); XCTAssertEqual(brighter, 0); XCTAssertEqual(alphaChanged, 0)
+            XCTAssertEqual(budgetExceeded, 0)
+            XCTAssertGreaterThan(tailCount, 32)
+            XCTAssertGreaterThan(Double(tailDarkening) / Double(tailCount), 3,
+                "public output must contain the new broad tail on both current-colour baselines")
             XCTAssertTrue(pixels(try engine.processResult(image: image, metadata: metadata, parameters: base).output) == baseline)
         }
     }

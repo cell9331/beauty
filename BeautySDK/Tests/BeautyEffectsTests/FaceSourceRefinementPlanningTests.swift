@@ -1,4 +1,5 @@
 import BeautyCore
+import BeautyDetection
 import CoreGraphics
 import CoreImage
 import Foundation
@@ -8,9 +9,8 @@ import XCTest
 final class FaceSourceRefinementPlanningTests: XCTestCase {
     private let size = 512
 
-    /// The real cap/skin edge lies above the detected face box. Its complete
-    /// paired brow support is valid, while both old circular proxies overlap
-    /// the brow clearance and must continue to emit zero control points.
+    /// Complete independent face/eye/lip/brow observations qualify an attempt.
+    /// Pixel qualification and the broad field remain separate from planning.
     private func anatomy(
         freshness: LandmarkGeometryFreshness = .fresh,
         defect: Int = 0
@@ -19,14 +19,14 @@ final class FaceSourceRefinementPlanningTests: XCTestCase {
             let a = Float(i) / 10 * .pi
             return SIMD2(0.5 - 0.3 * cos(a), 0.42 + 0.38 * sin(a))
         }
-        let leftPoints = [SIMD2<Float>(0.3, 0.45), SIMD2<Float>(0.4, 0.45)]
-        let rightPoints = [SIMD2<Float>(0.6, 0.45), SIMD2<Float>(0.7, 0.45)]
+        let leftPoints = (0...4).map { SIMD2<Float>(0.3 + Float($0) * 0.025, 0.45) }
+        let rightPoints = (0...4).map { SIMD2<Float>(0.6 + Float($0) * 0.025, 0.45) }
         let left = BeautyEyebrowSemanticTrace(side: defect == 3 ? .right : .left,
             points: defect == 4 ? [SIMD2(.nan, .nan)] : leftPoints,
-            innerEndpoint: defect == 5 ? SIMD2(.nan, .nan) : leftPoints[1],
+            innerEndpoint: defect == 5 ? SIMD2(.nan, .nan) : leftPoints[4],
             outerEndpoint: leftPoints[0], center: SIMD2(0.35, 0.45), apexIndex: 0)
         let right = BeautyEyebrowSemanticTrace(side: .right, points: rightPoints,
-            innerEndpoint: rightPoints[0], outerEndpoint: rightPoints[1],
+            innerEndpoint: rightPoints[0], outerEndpoint: rightPoints[4],
             center: SIMD2(0.65, 0.45), apexIndex: 0)
         if defect == 6 { contour = [] }
         if defect == 7 { contour[2] = SIMD2(.nan, .nan) }
@@ -39,8 +39,27 @@ final class FaceSourceRefinementPlanningTests: XCTestCase {
         } else {
             support = BeautyEyebrowSemanticSupport(left: left, right: right)
         }
+        func box(_ center: SIMD2<Float>, _ radius: SIMD2<Float>) -> [SIMD2<Float>] {
+            [center + SIMD2(-radius.x, -radius.y), center + SIMD2(radius.x, -radius.y),
+             center + SIMD2(radius.x, radius.y), center + SIMD2(-radius.x, radius.y)]
+        }
+        func eye(_ side: BeautyObservedEyeSide, _ center: SIMD2<Float>) -> BeautyEyeSemanticSupport {
+            let path = box(center, SIMD2(0.04, 0.014))
+            return BeautyEyeSemanticSupport(side: side, contour: path,
+                upper: Array(path.prefix(2)), lower: Array(path.suffix(2)), inner: [path[0]], outer: [path[1]],
+                corners: [path[0], path[1]], center: center, pupil: center,
+                span: SIMD2(0.08, 0.028), tilt: 0)
+        }
+        let leftEye = eye(.left, SIMD2(0.392, 0.52)), rightEye = eye(.right, SIMD2(0.608, 0.52))
+        let lips = box(SIMD2(0.5, 0.69), SIMD2(0.065, 0.018))
         return FaceGeometry(bounds: FaceBounds(x: 0.2, y: 0.38, width: 0.6, height: 0.42),
-            faceContour: contour, freshness: freshness, observedEyebrowSupport: support)
+            faceContour: contour,
+            observedFaceSupport: defect == 9 ? nil : BeautyFaceSemanticSupport(contour: contour, medianLine: nil, apexIndex: 5),
+            leftEye: leftEye.contour, rightEye: rightEye.contour, outerLips: lips,
+            leftEyeSupport: defect == 10 ? nil : leftEye,
+            rightEyeSupport: defect == 11 ? nil : rightEye,
+            freshness: freshness, observedEyebrowSupport: support,
+            observedOuterLips: defect == 12 ? nil : lips)
     }
 
     private func boundary(_ x: Int, bangs: Bool = false) -> Double {
@@ -61,6 +80,9 @@ final class FaceSourceRefinementPlanningTests: XCTestCase {
                     bytes[i + c] = UInt8(skin[c])
                 }
             }
+            if kind == 4 && (160...180).contains(y) {
+                bytes[i] = 50; bytes[i + 1] = 45; bytes[i + 2] = 40
+            }
             // Patterned source-fixed brow/forehead core and distant hair make
             // incidental color-space or proxy work observable byte-for-byte.
             if y >= 225 || x < 128 || x > 384 {
@@ -68,7 +90,6 @@ final class FaceSourceRefinementPlanningTests: XCTestCase {
                 bytes[i + 1] = UInt8(25 + (x * 7 + y * 11) % 170)
                 bytes[i + 2] = UInt8(20 + (x * 5 + y * 13) % 160)
             }
-            if x < 80 && y < 80 { for c in 0..<4 { bytes[i + c] = 0 } }
         } }
         return bytes
     }
@@ -108,9 +129,7 @@ final class FaceSourceRefinementPlanningTests: XCTestCase {
             for fraction: Float in [0.25, 0.5, 0.75, 1] {
                 let strength = sign * BeautySafetyCaps.hairlineHeight * fraction
                 var values = BeautyEffectiveStrengths(); values.hairlineHeight = strength
-                let old = provider.fieldEmissions(face: face, strengths: values)
                 let qualified = provider.planningEmissions(face: face, strengths: values)
-                XCTAssertTrue(old.points.isEmpty)
                 XCTAssertTrue(qualified.points.isEmpty, "source work must not add a fake proxy")
                 XCTAssertEqual(qualified.sourceRefinementMask, 1)
                 XCTAssertTrue(qualified.hasAdmittedWork)
@@ -136,7 +155,10 @@ final class FaceSourceRefinementPlanningTests: XCTestCase {
                 var protectedPixels = 0, alphaPixels = 0
                 for y in 0..<size { for x in 0..<size {
                     let i = (y * size + x) * 4
-                    if abs(Double(y) - boundary(x)) > 32 || x < 128 || x > 384 || y >= 225 {
+                    let crownCore = (220...292).contains(x) && y < 32
+                    let leftBrowCore = (170...188).contains(x) && (228...232).contains(y)
+                    let rightBrowCore = (324...342).contains(x) && (228...232).contains(y)
+                    if crownCore || leftBrowCore || rightBrowCore || x < 8 || x > 504 || y >= 300 {
                         if (0..<4).contains(where: { source[i + $0] != output[i + $0] }) { protectedPixels += 1 }
                     }
                     if source[i + 3] != output[i + 3] { alphaPixels += 1 }
@@ -152,7 +174,7 @@ final class FaceSourceRefinementPlanningTests: XCTestCase {
     func testMalformedMissingAndExpiredSupportCannotKeepZeroProxySourceWork() throws {
         let colorSpace = try XCTUnwrap(CGColorSpace(name: CGColorSpace.sRGB))
         let source = pixels(), input = image(source, colorSpace: colorSpace)
-        var faces = (1...8).map { anatomy(defect: $0) }
+        var faces = (1...12).map { anatomy(defect: $0) }
         faces += [anatomy(freshness: .stale), anatomy(freshness: .reused)]
         for face in faces { for sign: Float in [-1, 1] {
             let strength = sign * BeautySafetyCaps.hairlineHeight
@@ -176,10 +198,12 @@ final class FaceSourceRefinementPlanningTests: XCTestCase {
         XCTAssertFalse(missing.activeDomains.contains(.faceShape))
     }
 
-    func testGeometryQualificationDoesNotAdmitHairlessBangsOrIncompleteSourceEdges() throws {
+    func testGeometryQualificationDoesNotAdmitHairlessAmbiguousOrTransparentSource() throws {
         let face = anatomy(), colorSpace = try XCTUnwrap(CGColorSpace(name: CGColorSpace.sRGB))
-        for kind in [1, 2, 3] {
-            let source = pixels(kind: kind), input = image(source, colorSpace: colorSpace)
+        for kind in [1, 4, 5] {
+            var source = pixels(kind: kind)
+            if kind == 5 { for channel in 0..<4 { source[channel] = 0 } }
+            let input = image(source, colorSpace: colorSpace)
             for sign: Float in [-1, 1] {
                 var parameters = BeautyParameters(); parameters.hairlineHeight = sign * BeautySafetyCaps.hairlineHeight
                 let plan = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: face)
@@ -194,24 +218,27 @@ final class FaceSourceRefinementPlanningTests: XCTestCase {
         let face = anatomy(), provider = FaceShapeWarpProvider()
         var parameters = BeautyParameters()
         parameters.hairlineHeight = BeautySafetyCaps.hairlineHeight
-        parameters.faceSlim = BeautySafetyCaps.faceSlim
-        parameters.faceSmall = BeautySafetyCaps.faceSmall
+        // Complete source geometry qualifies hairline. Missing independent
+        // nasal support still rejects the separately owned jaw/V fields.
+        parameters.jawSlim = BeautySafetyCaps.jawSlim
+        parameters.faceVShape = BeautySafetyCaps.faceVShape
         var values = BeautyEffectiveStrengths()
         values.hairlineHeight = parameters.hairlineHeight
-        values.faceSlim = parameters.faceSlim; values.faceSmall = parameters.faceSmall
         let expected = GeometryConflictResolver().resolve(strengths: values).strengths
         var iterations = [BeautyRetainedMaskIteration]()
         let plan = BeautyEffectResolver.resolve(parameters: parameters, faceGeometry: face,
             onRetainedMaskIteration: { iterations.append($0) })
         XCTAssertEqual(plan.effectiveStrengths, expected)
+        XCTAssertEqual(plan.effectiveStrengths.faceVShape, 0)
+        XCTAssertEqual(plan.effectiveStrengths.jawSlim, 0)
         XCTAssertGreaterThan(plan.effectiveStrengths.hairlineHeight, 0)
         XCTAssertTrue(iterations.allSatisfy { $0.retainedFieldNames.contains("hairlineHeight") })
         let final = provider.planningEmissions(face: face, strengths: plan.effectiveStrengths)
         XCTAssertTrue(final.hairlineHeight.isEmpty)
-        XCTAssertGreaterThan(final.points.count, 0)
-        XCTAssertEqual(plan.metrics["beauty.effects.geometryPointCount"], Double(final.points.count))
+        XCTAssertTrue(final.points.isEmpty)
+        XCTAssertNil(plan.metrics["beauty.effects.geometryPointCount"])
         let siblingKeys: [WritableKeyPath<BeautyEffectiveStrengths, Float>] = [
-            \.faceSlim, \.faceSmall, \.jawSlim, \.faceVShape, \.foreheadHeight,
+            \.foreheadHeight,
             \.headSmall, \.cranialCrownHeight, \.wholeFaceXPosition
         ]
         for key in siblingKeys {
@@ -219,5 +246,13 @@ final class FaceSourceRefinementPlanningTests: XCTestCase {
             XCTAssertEqual(provider.planningEmissions(face: face, strengths: sibling),
                 provider.fieldEmissions(face: face, strengths: sibling), "zero hairline preserves sibling planning")
         }
+        var vOnly = BeautyEffectiveStrengths(); vOnly.faceVShape = 0.1
+        XCTAssertFalse(provider.fieldEmissions(face: face, strengths: vOnly).faceVShape.isEmpty,
+            "the old V inventory exists but cannot qualify the new source field")
+        let rejectedV = provider.planningEmissions(face: face, strengths: vOnly)
+        XCTAssertTrue(rejectedV.points.isEmpty)
+        XCTAssertEqual(rejectedV.continuousFaceMask, 0)
+        XCTAssertFalse(rejectedV.hasAdmittedWork)
+        XCTAssertEqual(rejectedV.sanitizing(vOnly).faceVShape, 0)
     }
 }
