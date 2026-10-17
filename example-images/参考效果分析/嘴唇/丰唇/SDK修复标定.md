@@ -1,6 +1,6 @@
 # 丰唇 SDK 修复标定
 
-日期：2026-10-17。基于 `c871bfff` 原生基线继续改造的工作树候选。**可进入新版原生输出与所有者外观验收，尚不认定参考复现通过。** 本页的新版数值来自固定的新鲜 iOS 原生观测在 macOS 上重建后运行的实际 Swift SDK 映射；没有重新执行新版真机检测、facade 或 CPU/Metal 像素输出，不能沿用[基线复核](SDK对照复核.md)的执行次数与保护结果。
+日期：2026-10-17。本页记录基于 `c871bfff` 原生基线继续改造时的固定观测标定过程。下列数值来自新鲜 iOS 原生观测在 macOS 上重建后运行的实际 Swift SDK 映射，不属于随后真机渲染的执行次数。该版后续独立的新鲜原生检测、facade 及 CPU/Metal 输出验证见[公共修复记录](../M唇与丰唇修复记录.md)；所有者已确认本轮嘴部功能暂定收尾，见[人工验收](../人工验收.md)，尚存参考差异保留。不能沿用[基线复核](SDK对照复核.md)的次数或保护结果作为新版证明。
 
 所有位移均为统一到 1170×1608 截图照片网格的低端→高端端点跨度，x 向右、y 向下。699×960 预览按独立 x/y 尺度及像素中心换算。参考没有共同零态，名义系数不是中性到端点的实测强度，端点总差也未除二。
 
@@ -14,9 +14,12 @@
 t = y - seam(x)
 B(t) = S5(clamp((t / delta + 1) / 2, 0, 1))
 K(t) = 1 - a + a * S3(clamp(abs(t) / depth(t), 0, 1))
-A(x,t) = (1-B) * upperRate * Xupper(x) + B * lowerRate * Xlower(x)
-Dlocal(x,y,u) = (0, u * Z(x,y) * Y(t) * t * K(t) * A(x,t))
+b(t) = (1-B) * upperRate + B * lowerRate
+X(x,t) = (1-B) * Xupper(x) + B * Xlower(x)
+Dlocal(x,y,u) = (0, u * Z(x,y) * Y(t) * t * K(t) * b(t) * X(x,t))
 ```
+
+响应率 `b` 与横向包络 `X` 分别混合后相乘，与实际 `Model.sample` 一致；不能把两者合并为上下加权乘积之和。此处为说明公式纠正，既有数值来自实际 Swift 查询，不由旧文档公式重算。
 
 `S3` 为三次 smoothstep，`S5` 为五次 smoothstep；`depth(t)` 采用源观测的上下深度。`a=0` 保留线性组织响应，较大 `a` 抑制唇缝附近与内部响应，到观测深度恢复原幅。上下横向包络共用纵向范围，仅上唇的横向边界乘相对宽度因子。模型保留局部竖直约束，没有增设未经验证的 screenX 平移。
 
@@ -32,7 +35,7 @@ Dlocal(x,y,u) = (0, u * Z(x,y) * Y(t) * t * K(t) * A(x,t))
 | depthCurvature | 0.112500 | 深度响应混合量 |
 | upperWidthScale | 1.234375 | 上唇横向支撑相对下唇的倍率 |
 
-配置见 [BeautyMouthFullnessConfiguration.swift](../../../../BeautySDK/Sources/BeautyEffects/Render/BeautyMouthFullnessConfiguration.swift)，源厚度、保护、曲线导数及上下支撑独立行为的定向测试见 [BeautyMouthFullnessCalibrationTests.swift](../../../../BeautySDK/Tests/BeautyEffectsTests/BeautyMouthFullnessCalibrationTests.swift)。
+对应 `main` 分支仓库相对路径：配置为 `BeautySDK/Sources/BeautyEffects/Render/BeautyMouthFullnessConfiguration.swift`；源厚度、保护、曲线导数及上下支撑独立行为的定向测试为 `BeautySDK/Tests/BeautyEffectsTests/BeautyMouthFullnessCalibrationTests.swift`。
 
 ## 分区结果：同时保留改善与退化
 
@@ -84,4 +87,4 @@ Dlocal(x,y,u) = (0, u * Z(x,y) * Y(t) * t * K(t) * A(x,t))
 
 本轮实际 Swift 搜索评估 236 个候选；选定候选保留全部 324 条既有查询，逆解失败 0，所有拒绝和曲线缺覆盖均保留。此前证书密网诊断使用当时的旧六参数配置，不能冒充本次八参数候选的新诊断；其作用仅为检查连续证明的保守程度。
 
-新版 fresh 原生检测、CPU/Metal 实际输出、预选观察窗字节保护，以及所有者外观验收仍须独立记录。基线的原生执行次数、逆残差和像素保护结论不自动继承。白牙没有改动，也未增加其验收资格。
+固定观测标定与后续真机验证分别记录：新版新鲜原生检测、CPU/Metal 实际输出及预选观察窗字节保护见[公共修复记录](../M唇与丰唇修复记录.md)，所有者阶段确认见[人工验收](../人工验收.md)。基线的原生执行次数、逆残差和像素保护结论没有自动继承。白牙没有改动，也未增加其验收资格。
