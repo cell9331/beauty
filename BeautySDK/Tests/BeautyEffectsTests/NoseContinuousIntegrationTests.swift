@@ -108,7 +108,12 @@ final class NoseContinuousIntegrationTests: XCTestCase {
     }
 
     func testNoseAndSelectedFaceEyeMouthSiblingsAllSurviveComposition() throws {
-        let observation = try ContinuousNoseTestFixture.observation()
+        let originalMesh = try XCTUnwrap(ContinuousNoseTestFixture.observation().mesh)
+        // Cross-region composition requires image margin for the complete neck support.
+        let mesh = try XCTUnwrap(BeautyFaceMesh(points: originalMesh.points.map {
+            SIMD3($0.x, 0.04 + 0.90 * $0.y, $0.z)
+        }, facialTransformation: originalMesh.facialTransformation))
+        let observation = try XCTUnwrap(MediaPipeFaceTopology.observation(from: mesh))
         let face = BeautyFaceGeometryAdapter.makeGeometry(from: observation)
         let source = raster()
         let nose = BeautyParameters(noseWingSlim: 0.25)
@@ -127,10 +132,10 @@ final class NoseContinuousIntegrationTests: XCTestCase {
             XCTAssertTrue(plan.activeDomains.contains(domain))
             XCTAssertEqual(plan.effectiveStrengths.noseWingSlim, nosePlan.effectiveStrengths.noseWingSlim, accuracy: 0.00001)
             let output = try pixels(BeautyCPUBackend().execute(request(plan: plan, observation: observation, source: source)))
-            XCTAssertNotEqual(siblingPixels, source)
-            XCTAssertNotEqual(output, source)
-            XCTAssertNotEqual(output, nosePixels, "sibling discarded")
-            XCTAssertNotEqual(output, siblingPixels, "nose discarded")
+            XCTAssertTrue(siblingPixels != source, "\(domain) sibling has no visible pixel effect")
+            XCTAssertTrue(output != source, "\(domain) composition has no visible pixel effect")
+            XCTAssertTrue(output != nosePixels, "\(domain) sibling discarded")
+            XCTAssertTrue(output != siblingPixels, "\(domain) nose discarded")
             XCTAssertEqual(output, try pixels(BeautyCPUBackend().execute(request(plan: plan, observation: observation, source: source))))
         }
     }

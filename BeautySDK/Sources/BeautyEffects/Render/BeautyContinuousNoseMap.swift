@@ -96,6 +96,23 @@ struct BeautyContinuousNoseMap {
         guard faceSpan.isFinite, faceSpan >= 4 else { return nil }
         let boxes = Self.protectionPaths(dense).map { Box(points: $0.map(pixel), padding: 2) }
         let half = nasalWidth * 0.5
+        // The crest starts below the glabella on dense meshes. Anchor the
+        // root between the observed medial brows and inner canthi instead of
+        // reusing the first crest point as its center.
+        let brows = face.observedEyebrowSupport!
+        let browHead = (local(pixel(brows.left!.innerEndpoint)) +
+                        local(pixel(brows.right!.innerEndpoint))) * 0.5
+        let leftInner = left.contour.map { local(pixel($0)) }.max { $0.x < $1.x }!
+        let rightInner = right.contour.map { local(pixel($0)) }.min { $0.x < $1.x }!
+        let canthusY = (leftInner.y + rightInner.y) * 0.5
+        let rootAnchorValid = Self.valid(brows.left!.innerEndpoint) &&
+            Self.valid(brows.right!.innerEndpoint) &&
+            brows.left!.innerEndpoint == brows.left!.points.first! &&
+            brows.right!.innerEndpoint == brows.right!.points.first! &&
+            browHead.y < canthusY && canthusY < rootY + length * 0.15
+        let rootCenterY = rootAnchorValid ? browHead.y + (canthusY - browHead.y) * 0.30 : rootY
+        let rootTop = rootAnchorValid ? rootCenterY - length * 0.30 : rootY - length * 0.25
+        let rootBottom = min(rootCenterY + length * 0.46, rootY + length * 0.30)
         func centerX(_ y: Double) -> Double {
             if y <= crest[0].y { return crest[0].x }
             for i in 1..<crest.count where y <= crest[i].y {
@@ -108,15 +125,35 @@ struct BeautyContinuousNoseMap {
                        SIMD2(x1 + nasalWidth * 0.8, rootY - length * 0.25),
                        SIMD2(x0 - nasalWidth * 0.8, baseY + length * 0.40),
                        SIMD2(x1 + nasalWidth * 0.8, baseY + length * 0.40)].map(image)
-        let minX = max(0, corners.map(\.x).min()!), maxX = min(w, corners.map(\.x).max()!)
-        let minY = max(0, corners.map(\.y).min()!), maxY = min(h, corners.map(\.y).max()!)
+        let rootCorners = [SIMD2(x0 - nasalWidth * 0.8, rootTop),
+                           SIMD2(x1 + nasalWidth * 0.8, rootTop)].map(image)
+        let minX = max(0, (corners + rootCorners).map(\.x).min()!)
+        let maxX = min(w, (corners + rootCorners).map(\.x).max()!)
+        let minY = max(0, (corners + rootCorners).map(\.y).min()!)
+        let maxY = min(h, (corners + rootCorners).map(\.y).max()!)
         guard minX < maxX, minY < maxY else { return nil }
-        func axis(_ lo: Double, _ hi: Double, edges: [Double]) -> [Double] {
-            Array(Set((0...80).map { lo + (hi - lo) * Double($0) / 80 } +
-                edges.filter { $0 > lo && $0 < hi })).sorted()
+        func axis(_ lo: Double, _ hi: Double, originalLo: Double, originalHi: Double,
+                  edges: [Double]) -> [Double] {
+            // Retain the existing knots for the other five fields; extend the
+            // lattice only where the separately anchored root needs support.
+            let step = (originalHi - originalLo) / 80
+            var knots = (0...80).map { originalLo + step * Double($0) }
+            if lo < originalLo {
+                knots += (1...max(1, Int(ceil((originalLo - lo) / step))))
+                    .map { max(lo, originalLo - step * Double($0)) }
+            }
+            if hi > originalHi {
+                knots += (1...max(1, Int(ceil((hi - originalHi) / step))))
+                    .map { min(hi, originalHi + step * Double($0)) }
+            }
+            return Array(Set(knots + [lo, hi] + edges.filter { $0 > lo && $0 < hi })).sorted()
         }
-        let xs = axis(minX, maxX, edges: boxes.flatMap { [$0.minX, $0.maxX] })
-        let ys = axis(minY, maxY, edges: boxes.flatMap { [$0.minY, $0.maxY] })
+        let xs = axis(minX, maxX, originalLo: max(0, corners.map(\.x).min()!),
+                      originalHi: min(w, corners.map(\.x).max()!),
+                      edges: boxes.flatMap { [$0.minX, $0.maxX] })
+        let ys = axis(minY, maxY, originalLo: max(0, corners.map(\.y).min()!),
+                      originalHi: min(h, corners.map(\.y).max()!),
+                      edges: boxes.flatMap { [$0.minY, $0.maxY] })
         let caps: [Float] = [BeautySafetyCaps.noseSlim, BeautySafetyCaps.noseWingSlim,
                             BeautySafetyCaps.noseTipSize, BeautySafetyCaps.noseBridge,
                             BeautySafetyCaps.noseRootNarrowing, BeautySafetyCaps.noseTipLift]
@@ -134,14 +171,16 @@ struct BeautyContinuousNoseMap {
             [widthCoefficient(values[0], positive: 0.08, negative: 0.08),
              widthCoefficient(values[1], positive: 0.045, negative: 0.045),
              widthCoefficient(values[2], positive: 0.36, negative: 0.33),
-             widthCoefficient(values[3], positive: 0.105, negative: 0.105),
-             widthCoefficient(values[4], positive: 0.11, negative: 0.11),
+             widthCoefficient(values[3], positive: 0.16, negative: 0.16),
+             widthCoefficient(values[4], positive: 0.11, negative: 0.16),
              values[5] >= 0 ? -length * 0.038 * values[5] : -length * 0.028 * values[5],
-             values[2] >= 0 ? -length * 0.004 * values[2] : -length * 0.003 * values[2]]
+             widthCoefficient(values[2], positive: 0.04, negative: 0.04),
+             length * 0.01 * values[0]]
         }
         let actualCoefficients = coefficients(values)
         let capCoefficients = coefficients(values.map { $0 == 0 ? 0 : ($0 > 0 ? 1 : -1) })
-        func field(_ p: SIMD2<Double>, coefficients c: [Double]) -> SIMD2<Double> {
+        func field(_ p: SIMD2<Double>, coefficients c: [Double],
+                   rootClearance: Double, protectionWeight: Double) -> SIMD2<Double> {
             let y = (p.y - rootY) / length, x = p.x - centerX(p.y)
             let lateral = 1 - ramp(abs(x), half * 1.15, half * 2.5)
             let bottom = 1 - ramp(y, 1.02, 1.38)
@@ -150,23 +189,41 @@ struct BeautyContinuousNoseMap {
             // width change. Its extra support ends before the philtrum.
             let sizeBand = ramp(y, 0.02, 0.40) * (1 + 0.75 * ramp(y, 0.40, 0.72)) *
                 (1 - ramp(y, 1.0, 1.22))
-            var dx = x * c[0] * sizeBand
+            let sizeSides = 1 - ramp(abs(x), nasalWidth * 0.38, nasalWidth * 0.80)
+            var dx = x * c[0] * sizeBand * sizeSides
             dx += x * c[1] * ramp(y, 0.48, 0.79)
-            // Widening retains a little more of the low inner dorsum. The
-            // continuation fades across the nostril-to-alar transition, so the
-            // already admitted outer-wing response is not amplified with it.
-            let bridgeInner = 1 - ramp(abs(x), half * 0.50, half * 0.95)
-            let bridgeFade = c[3] > 0 ? 0.60 - 0.24 * bridgeInner : 0.60
-            let bridgeBand = ramp(y, 0.12, 0.44) * (1 - bridgeFade * ramp(y, 0.75, 1.0))
-            // Reduce lower outer-side coupling without removing the narrower
-            // central/nostril continuation of the bridge.
-            let bridgeSides = 1 - 0.55 * ramp(y, 0.40, 0.75) *
-                ramp(abs(x), half * 0.50, half)
+            // The dorsum has its own finite support. Retain a weaker inner
+            // lower continuation, then return to identity at the nasal base;
+            // outer alae must not behave like another whole-nose size control.
+            let bridgeBand = ramp(y, 0.05, 0.40) * (1 - ramp(y, 0.62, 1.0))
+            let bridgeSides = (1 - ramp(abs(x), half * 0.70, half * 1.55)) *
+                (1 - 0.90 * ramp(y, 0.40, 0.80) * ramp(abs(x), half * 0.45, half * 0.95))
             dx += x * c[3] * bridgeBand * bridgeSides
-            let rootBand = (1 - ramp(y, 0.12, 0.30)) *
+            let rootBand = ramp(p.y, rootTop, rootCenterY - length * 0.04) *
+                (1 - ramp(p.y, rootCenterY + length * 0.10, rootBottom)) *
                 exp(-pow(x / (nasalWidth * 0.45), 4))
-            dx += x * c[4] * rootBand
+            // Spend the available gradient on the inner root rather than
+            // amplifying the already limiting transition near the eye boxes.
+            // This extra response ends inside the existing lateral support.
+            let rootCore = 1 + 1.5 * (1 - ramp(abs(x), nasalWidth * 0.10, nasalWidth * 0.35))
+            // Reject an inconsistent root anchor locally, preserving valid
+            // sibling fields when the root control has no usable support.
+            let rootRequested = rootAnchorValid ?
+                x * c[4] * rootBand * rootCore * lateral * protectionWeight : 0
+            // A narrow protected corner must not consume the entire root's
+            // gradient quota. Limit its request smoothly by the local clear
+            // distance after applying the unchanged protection envelope.
+            let rootBudget = rootClearance * 0.33
+            let rootDX = rootBudget > 0 ? rootBudget * tanh(rootRequested / rootBudget) : 0
             var dy = c[5] * ramp(y, 0.05, 0.70) * (1 - 0.18 * ramp(y, 0.87, 1.03))
+            // Size carries the two skin shoulders in the same longitudinal
+            // direction while keeping the nasal core's height. The inner
+            // boundary widens toward the base instead of shifting the nose.
+            let shoulderStart = half * (0.75 + 0.25 * ramp(y, 0.25, 0.75))
+            let sizeShoulders = ramp(abs(x), shoulderStart, shoulderStart + half * 0.30) *
+                (1 - ramp(abs(x), half * 1.58, half * 1.80))
+            let sizeFollowBand = ramp(y, 0.30, 0.46) * (1 - ramp(y, 0.67, 0.90))
+            dy += c[7] * sizeShoulders * sizeFollowBand
             // The bulb is above the nostril/base: strong local width control
             // fades laterally before the outer alae and gently below the tip.
             let bulbY = tip.y - length * 0.09
@@ -194,23 +251,40 @@ struct BeautyContinuousNoseMap {
             let tipBottom = c[2] < 0 ? 1 - ramp(by, -0.06, 0.12) : 1 - ramp(by, -0.02, 0.16)
             let vertical = ramp(by, -0.45, -0.22) * tipBottom
             dx += bx * c[2] * horizontal * vertical
-            dy += c[6] * exp(-pow(bx / (nasalWidth * 0.25), 4)) * ramp(y, 0.65, 0.90)
-            return (axisX * dx + axisY * dy) * (lateral * bottom * top)
+            // Longitudinal contraction is independent of bulb width. In the
+            // inverse map, multiplying distance from the bulb center by the
+            // signed scale coefficient gives downward motion above it and
+            // upward motion below it. Its lower support reaches the nasal
+            // base; the width envelope intentionally ends earlier.
+            let tipVerticalBand = ramp(by, -0.48, -0.25) * (1 - ramp(by, 0.18, 0.36))
+            let tipVerticalWidth = nasalWidth * (0.20 + 0.10 * ramp(by, -0.25, -0.08))
+            let tipLowerWeight = 1 - 0.20 * ramp(by, 0, 0.12)
+            dy += (p.y - bulbY) * c[6] *
+                exp(-pow(bx / tipVerticalWidth, 4)) * tipVerticalBand * tipLowerWeight
+            return (axisX * dx + axisY * dy) * (lateral * bottom * top) * protectionWeight + axisX * rootDX
         }
         var offsets = [SIMD2<Double>](), ceiling = [SIMD2<Double>]()
-        var locations = [SIMD2<Double>](), weights = [Double]()
+        var locations = [SIMD2<Double>](), weights = [Double](), rootClearances = [Double]()
         offsets.reserveCapacity(xs.count * ys.count)
         ceiling.reserveCapacity(xs.count * ys.count)
         locations.reserveCapacity(xs.count * ys.count)
         weights.reserveCapacity(xs.count * ys.count)
+        rootClearances.reserveCapacity(xs.count * ys.count)
         for y in ys { for x in xs {
             var weight = 1.0
-            for b in boxes { weight *= Self.smooth(b.distance(x: x, y: y) / (nasalWidth * 0.10)) }
+            var clearance = Double.infinity
+            for b in boxes {
+                let distance = b.distance(x: x, y: y)
+                weight *= Self.smooth(distance / (nasalWidth * 0.10))
+                clearance = min(clearance, distance)
+            }
             if x == minX || x == maxX || y == minY || y == maxY { weight = 0 }
             let point = local(SIMD2(x, y))
-            locations.append(point); weights.append(weight)
-            offsets.append(field(point, coefficients: actualCoefficients) * weight)
-            ceiling.append(field(point, coefficients: capCoefficients) * weight)
+            locations.append(point); weights.append(weight); rootClearances.append(clearance)
+            offsets.append(field(point, coefficients: actualCoefficients,
+                                 rootClearance: clearance, protectionWeight: weight))
+            ceiling.append(field(point, coefficients: capCoefficients,
+                                 rootClearance: clearance, protectionWeight: weight))
         } }
         var gradient = Self.gradient(offsets, xs: xs, ys: ys)
         var magnitude = offsets.map { hypot($0.x, $0.y) }.max() ?? 0
@@ -239,8 +313,10 @@ struct BeautyContinuousNoseMap {
                 var a = [SIMD2<Double>](), b = [SIMD2<Double>]()
                 a.reserveCapacity(locations.count); b.reserveCapacity(locations.count)
                 for i in locations.indices {
-                    a.append(field(locations[i], coefficients: actual) * weights[i])
-                    b.append(field(locations[i], coefficients: cap) * weights[i])
+                    a.append(field(locations[i], coefficients: actual,
+                                   rootClearance: rootClearances[i], protectionWeight: weights[i]))
+                    b.append(field(locations[i], coefficients: cap,
+                                   rootClearance: rootClearances[i], protectionWeight: weights[i]))
                 }
                 let g = max(Self.gradient(a, xs: xs, ys: ys), Self.gradient(b, xs: xs, ys: ys))
                 let m = max(a.map { hypot($0.x, $0.y) }.max() ?? 0,
@@ -264,6 +340,35 @@ struct BeautyContinuousNoseMap {
         maximumDisplacement = magnitude * scale
     }
 
+    /// The admitted inverse map in pixel-index coordinates, before image-edge
+    /// clamping. Keeping this evaluation separate from color sampling permits
+    /// source-corresponding endpoint comparisons without subtracting unlike grids.
+    func ordinaryUnclippedSampleIndex(at point: SIMD2<Double>) -> SIMD2<Double>? {
+        guard point.x.isFinite, point.y.isFinite else { return nil }
+        let px = point.x + 0.5, py = point.y + 0.5
+        guard px >= xs[0], px < xs.last!, py >= ys[0], py < ys.last!,
+              !protection.contains(where: { $0.contains(x: px, y: py) }) else { return point }
+        func cell(_ value: Double, _ axis: [Double]) -> Int {
+            var lo = 0, hi = axis.count - 1
+            while hi - lo > 1 {
+                let mid = (lo + hi) / 2
+                if value < axis[mid] { hi = mid } else { lo = mid }
+            }
+            return lo
+        }
+        let col = cell(px, xs), row = cell(py, ys)
+        let fx = (px - xs[col]) / (xs[col + 1] - xs[col])
+        let fy = (py - ys[row]) / (ys[row + 1] - ys[row])
+        return point - interpolatedOffset(column: col, row: row, fx: fx, fy: fy)
+    }
+
+    private func interpolatedOffset(column: Int, row: Int, fx: Double, fy: Double) -> SIMD2<Double> {
+        let i = row * xs.count + column
+        let top = offsets[i] * (1 - fx) + offsets[i + 1] * fx
+        let bottom = offsets[i + xs.count] * (1 - fx) + offsets[i + xs.count + 1] * fx
+        return top * (1 - fy) + bottom * fy
+    }
+
     func applyRGBA(_ source: [UInt8]) -> [UInt8] {
         guard source.count == width * height * 4 else { return source }
         var output = source
@@ -278,10 +383,8 @@ struct BeautyContinuousNoseMap {
                 let px = Double(x) + 0.5
                 guard px >= xs[0], px < xs.last!, !protection.contains(where: { $0.contains(x: px, y: py) }) else { continue }
                 while col + 1 < xs.count - 1 && px >= xs[col + 1] { col += 1 }
-                let fx = (px - xs[col]) / (xs[col + 1] - xs[col]), i = row * xs.count + col
-                let top = offsets[i] * (1 - fx) + offsets[i + 1] * fx
-                let bottom = offsets[i + xs.count] * (1 - fx) + offsets[i + xs.count + 1] * fx
-                let d = top * (1 - fy) + bottom * fy
+                let fx = (px - xs[col]) / (xs[col + 1] - xs[col])
+                let d = interpolatedOffset(column: col, row: row, fx: fx, fy: fy)
                 guard abs(d.x) + abs(d.y) > 1e-10 else { continue }
                 let sx = min(Double(width - 1), max(0, Double(x) - d.x))
                 let sy = min(Double(height - 1), max(0, Double(y) - d.y))
