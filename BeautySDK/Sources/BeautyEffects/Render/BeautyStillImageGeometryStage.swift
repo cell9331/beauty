@@ -11,6 +11,7 @@ struct BeautyStillImageGeometryStage {
     private let width: Int
     private let height: Int
     private let continuousMap: BeautyContinuousFaceMap?
+    private let faceDisplacementMap: BeautyFaceDisplacementMap?
     private let eyeMap: BeautyContinuousEyeMap?
     private let noseMap: BeautyContinuousNoseMap?
     private let mouthMap: BeautyContinuousMouthMap?
@@ -19,6 +20,7 @@ struct BeautyStillImageGeometryStage {
     private let translationY: Float
     private let jawlineShadow: BeautyJawlineShadow.Evidence?
     private let jawlineShadowStrength: Float
+    private let movesJawlineShadowWithFaceField: Bool
     let jawlineShadowRefusal: BeautyJawlineShadow.Refusal?
 
     var usesDenseMap: Bool { face?.denseSupport != nil }
@@ -90,11 +92,21 @@ struct BeautyStillImageGeometryStage {
         }
         var geometryStrengths = plan.effectiveStrengths
         geometryStrengths.jawlineShadow = 0
+        faceDisplacementMap = face.flatMap {
+            BeautyFaceDisplacementMap(width: width, height: height, face: $0, strengths: geometryStrengths,
+                                      sourceRGBA: sourceOwnershipRGBA ?? mapAdmissionRGBA)
+        }
+        movesJawlineShadowWithFaceField = jawlineShadow != nil && faceDisplacementMap != nil
+        // The reference-derived fields own these controls even when geometry
+        // or inverse admission refuses. A refusal cannot revive old point pulls,
+        // old whole-feature protection, or the pixel-boundary smoother.
+        var legacyFaceStrengths = geometryStrengths
+        for key in BeautyFaceDisplacementMap.keys { legacyFaceStrengths[keyPath: key] = 0 }
         continuousMap = face.flatMap { geometry in
             let proof = BeautyContinuousFaceMap.requiresSourceOwnershipProof(
-                face: geometry, strengths: geometryStrengths) ? (sourceOwnershipRGBA ?? mapAdmissionRGBA) : mapAdmissionRGBA
+                face: geometry, strengths: legacyFaceStrengths) ? (sourceOwnershipRGBA ?? mapAdmissionRGBA) : mapAdmissionRGBA
             return BeautyContinuousFaceMap(width: width, height: height, face: geometry,
-                strengths: geometryStrengths, sourceRGBA: proof)
+                strengths: legacyFaceStrengths, sourceRGBA: proof)
         }
         var eyeStrengths = geometryStrengths
         if face?.denseSupport != nil { eyeStrengths.pupilSize = 0 }
@@ -135,6 +147,7 @@ struct BeautyStillImageGeometryStage {
         // Observed eyes own the continuous stage, including when its local
         // admission rejects. Rejection never revives a coarse point proxy.
         var pointStrengths = strengths
+        for key in BeautyFaceDisplacementMap.keys { pointStrengths[keyPath: key] = 0 }
         // Observed source smoothing owns the raster even when its local admission refuses.
         if face.observedFaceSupport != nil {
             pointStrengths.faceContourSmooth = 0
@@ -177,14 +190,12 @@ struct BeautyStillImageGeometryStage {
                 suppressHeadWrap: false, suppressPhiltrum: false))
         }
         let strengths = plan.effectiveStrengths
-        let contour = FaceContourSubpixelRefiner.refineWithProtection(
-            sourceRGBA, width: width, height: height, face: face,
-            strength: strengths.faceContourSmooth
-        )
+        // Hairline height is owned by the wide two-dimensional source field.
+        // The legacy raster refiner remains only for forehead height here.
         let hairline = HairlineBoundaryRefiner.apply(
-            contour.bytes, width: width, height: height, face: face,
+            sourceRGBA, width: width, height: height, face: face,
             strength: HairlineBoundaryRefiner.combinedStrength(
-                hairline: strengths.hairlineHeight, forehead: strengths.foreheadHeight
+                hairline: 0, forehead: strengths.foreheadHeight
             )
         )
         let submental = SubmentalContourRefiner.apply(
@@ -197,15 +208,15 @@ struct BeautyStillImageGeometryStage {
         // Failed source admission must not re-enable a legacy proxy emission.
         let suppressHeadWrap = strengths.headWrap != 0 &&
             !HairlineBoundaryRefiner.hasCoherentHairCap(
-                contour.bytes, width: width, height: height, face: face
+                sourceRGBA, width: width, height: height, face: face
             )
         let suppressPhiltrum = strengths.philtrumLength != 0 &&
             !PhiltrumSourceAdmission.hasRegisteredUpperLip(
-                contour.bytes, width: width, height: height, face: face
+                sourceRGBA, width: width, height: height, face: face
             )
         return SourcePrefix(rgba: submental, admission: SourceAdmission(
-            protectedLeftContour: contour.protectedLeft,
-            protectedRightContour: contour.protectedRight,
+            protectedLeftContour: false,
+            protectedRightContour: false,
             suppressHeadWrap: suppressHeadWrap, suppressPhiltrum: suppressPhiltrum))
     }
 
@@ -219,7 +230,13 @@ struct BeautyStillImageGeometryStage {
 
     func applyingContinuousContour(to bytes: [UInt8]) -> [UInt8] {
         let contour = continuousMap?.applyRGBA(bytes) ?? bytes
-        return eyeMap?.applyRGBA(contour) ?? contour
+        // The admitted jaw-angle/hairline fields and this tone share immutable
+        // source coordinates. Shade the current colour baseline before their
+        // single inverse sample, so material ownership moves with the jaw.
+        let source = movesJawlineShadowWithFaceField
+            ? (jawlineShadow?.apply(to: contour, strength: jawlineShadowStrength) ?? contour) : contour
+        let face = faceDisplacementMap?.applyRGBA(source) ?? source
+        return eyeMap?.applyRGBA(face) ?? face
     }
 
     func applyingContinuousNose(to bytes: [UInt8]) -> [UInt8] {
@@ -239,7 +256,8 @@ struct BeautyStillImageGeometryStage {
     func applyingTranslation(to bytes: [UInt8]) -> [UInt8] {
         // Both executors reach this point after their pointwise colour pass.
         // The immutable evidence never replaces the current stage's RGB bytes.
-        let shaded = jawlineShadow?.apply(to: bytes, strength: jawlineShadowStrength) ?? bytes
+        let shaded = movesJawlineShadowWithFaceField ? bytes :
+            (jawlineShadow?.apply(to: bytes, strength: jawlineShadowStrength) ?? bytes)
         guard let face else { return shaded }
         return WholeFaceTranslationRefiner.apply(
             shaded, width: width, height: height, face: face,

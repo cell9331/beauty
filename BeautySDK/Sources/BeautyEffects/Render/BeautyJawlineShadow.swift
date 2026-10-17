@@ -8,7 +8,7 @@ import Foundation
 enum BeautyJawlineShadow {
     enum Refusal: String, Sendable {
         case invalidRaster, nonopaqueSource, invalidSupport, unsupportedScope
-        case skinEvidenceUnavailable, jawContrastUnavailable, emptyTarget
+        case skinEvidenceUnavailable, neckEvidenceUnavailable, jawContrastUnavailable, emptyTarget
     }
     struct Qualification {
         let evidence: Evidence?
@@ -20,12 +20,13 @@ enum BeautyJawlineShadow {
         private let width: Int, height: Int, x0: Int, y0: Int, columns: Int
         private let weights: [Float]
         private let sourceDomain: [Bool]
+        private let sourceDecrement: SIMD3<Double>
 
         fileprivate init(width: Int, height: Int, x0: Int, y0: Int, columns: Int,
-                         weights: [Float], sourceDomain: [Bool], aggregates: [String: Int]) {
+                         weights: [Float], sourceDomain: [Bool], sourceDecrement: SIMD3<Double>, aggregates: [String: Int]) {
             self.width = width; self.height = height; self.x0 = x0; self.y0 = y0
             self.columns = columns; self.weights = weights; self.sourceDomain = sourceDomain
-            self.aggregates = aggregates
+            self.sourceDecrement = sourceDecrement; self.aggregates = aggregates
         }
 
         /// Gain-independent source authority, for local safety assertions.
@@ -43,10 +44,16 @@ enum BeautyJawlineShadow {
             var output = current
             for j in weights.indices where weights[j] > 0 {
                 let p = ((y0 + j / columns) * width + x0 + j % columns) * 4
-                let gain = 1 - 0.18 * fraction * Double(weights[j])
-                for channel in 0..<3 {
-                    output[p + channel] = UInt8((Double(current[p + channel]) * gain).rounded())
+                let rgb = SIMD3(Double(current[p]), Double(current[p + 1]), Double(current[p + 2]))
+                let cap = sourceDecrement * Double(weights[j])
+                // Qualify the full-strength colour once, then scale that same
+                // safe vector. A stronger request cannot erase a weaker shadow.
+                var budget = 1.0
+                for channel in 0..<3 where cap[channel] > 0 {
+                    budget = min(budget, rgb[channel] * 0.18 / cap[channel])
                 }
+                let shaded = rgb - cap * (max(0, budget) * fraction)
+                for channel in 0..<3 { output[p + channel] = UInt8(shaded[channel].rounded()) }
             }
             return output
         }
@@ -57,7 +64,9 @@ enum BeautyJawlineShadow {
         var chroma: SIMD2<Double> { let s = max(1, r + g + b); return SIMD2(r / s, g / s) }
     }
     private struct SourceLightingProfile {
-        let phase: Double, center: Double, width: Double
+        // The source transition centre reserves the actual face bright side.
+        // Its 90% dark phase is independent evidence and a wide-tail carrier.
+        let phase: Double, entryPhase: Double, center: Double, width: Double
         let netDescent: Double, brightLuma: Double
     }
     private struct Box {
@@ -86,11 +95,13 @@ enum BeautyJawlineShadow {
         }
     }
 
-    /// Pointwise colour may coexist. Geometry, texture and future fields
-    /// refuse this tone intent rather than moving a source-owned tonal mask.
+    /// Pointwise colour and the two audited source-fixed face fields may
+    /// coexist. The caller shades source RGB before their single inverse
+    /// sampling; all other geometry/texture still refuses this tone intent.
     static func hasIndependentSourceCoordinates(_ strengths: BeautyEffectiveStrengths) -> Bool {
         var remaining = strengths
         remaining.jawlineShadow = 0
+        remaining.jawSlim = 0; remaining.hairlineHeight = 0
         remaining.skinWhitening = 0; remaining.skinRosy = 0
         remaining.brightness = 0; remaining.contrast = 0; remaining.saturation = 0
         remaining.temperature = 0; remaining.tint = 0; remaining.exposure = 0
@@ -102,6 +113,7 @@ enum BeautyJawlineShadow {
     static func hasIndependentSourceRequest(_ parameters: BeautyParameters) -> Bool {
         var remaining = parameters.normalized()
         remaining.jawlineShadow = 0
+        remaining.jawSlim = 0; remaining.hairlineHeight = 0
         remaining.skinWhitening = 0; remaining.skinRosy = 0
         remaining.brightness = 0; remaining.contrast = 0; remaining.saturation = 0
         remaining.temperature = 0; remaining.tint = 0; remaining.exposure = 0
@@ -168,6 +180,35 @@ enum BeautyJawlineShadow {
             hypot(c.chroma.x - palette.chroma.x, c.chroma.y - palette.chroma.y) <= 0.035 &&
                 c.luma >= max(18, palette.luma * 0.58) && c.luma <= min(250, palette.luma * 1.30 + 8)
         }
+        // A face-colour family alone cannot authorize a broad neck field.
+        // Two independent native neck families must agree with the bilateral
+        // face palette. Every target still needs its own complete corridor.
+        var neckPalettes = [Color]()
+        for x in [-0.12, 0.12] {
+            guard let neck = patch(SIMD2(f.span * x, f.chin + f.span * 0.08), radius: seedRadius),
+                  neck.allSatisfy(skin) else {
+                return refuse(.neckEvidenceUnavailable, ["qualifiedSkinFamilies": 2])
+            }
+            let center = middle(neck)
+            guard median(neck.map { abs($0.luma - center.luma) }) <= 8 else {
+                return refuse(.neckEvidenceUnavailable, ["qualifiedSkinFamilies": 2])
+            }
+            neckPalettes.append(center)
+        }
+        guard hypot(neckPalettes[0].chroma.x - neckPalettes[1].chroma.x,
+                    neckPalettes[0].chroma.y - neckPalettes[1].chroma.y) <= 0.025,
+              max(neckPalettes[0].luma, neckPalettes[1].luma) /
+                max(1, min(neckPalettes[0].luma, neckPalettes[1].luma)) <= 1.35 else {
+            return refuse(.neckEvidenceUnavailable, ["qualifiedSkinFamilies": 2])
+        }
+        // Low-degree photographic hypothesis calibrated in encoded sRGB:
+        // add a source-family-sized decrement, preserving native texture.
+        // Only an already warm source family gets a warm opponent component;
+        // cold/neutral families keep their own direction. These are design
+        // coefficients, not a claim about the reference app's internal space.
+        let warm = max(0, palette.r - palette.b)
+        let sourceDecrement = SIMD3(max(palette.r * 0.25, palette.r - warm * 1.25),
+                                    palette.g, palette.b + warm * 0.25) * 0.105
         // A source-lighting edge is allowed to have moderate luminance
         // variation. Material identity still requires every native RGB sample
         // in the complete 3x3 footprint to match the corroborated palette.
@@ -175,7 +216,19 @@ enum BeautyJawlineShadow {
         // transition with a foreign material; it remains diagnostic below.
         func materialPatch(_ q: SIMD2<Double>) -> Bool {
             guard let samples = patch(q) else { return false }
-            return samples.allSatisfy(skin)
+            return samples.allSatisfy { c in
+                // Source lighting can change neck chroma relative to the face.
+                // The two original neck families were individually qualified
+                // against the face and corroborate one another above. A new
+                // material sample must match BOTH, using the original chroma
+                // limit and the original face-luminance bounds. Source edge
+                // registration continues to require the stricter face family.
+                skin(c) || (c.luma >= max(18, palette.luma * 0.58) &&
+                    c.luma <= min(250, palette.luma * 1.30 + 8) &&
+                    neckPalettes.allSatisfy {
+                        hypot(c.chroma.x - $0.chroma.x, c.chroma.y - $0.chroma.y) <= 0.035
+                    })
+            }
         }
         func smooth(_ t: Double) -> Double { let u = min(1, max(0, t)); return u * u * (3 - 2 * u) }
         func normal(_ x: Double) -> SIMD2<Double>? {
@@ -186,12 +239,21 @@ enum BeautyJawlineShadow {
         }
         enum ProfileReading { case complete(SourceLightingProfile), incomplete, missingDescent, outsideSearch }
         func sourceLightingProfile(_ base: SIMD2<Double>, normal n: SIMD2<Double>, center: Double) -> ProfileReading {
-            var samples = [(phase: Double, luma: Double)]()
+            var samples = [(phase: Double, luma: Double)](), nativeCenters = Set<Int>()
             for j in -5...5 {
                 let phase = center + Double(j) * f.span * 0.0024
-                guard let colors = patch(base + n * phase), colors.allSatisfy(skin) else { return .incomplete }
-                samples.append((phase, middle(colors).luma))
+                let point = base + n * phase
+                guard let colors = patch(point), colors.allSatisfy(skin) else { return .incomplete }
+                let imagePoint = f.image(point), x = Int(floor(imagePoint.x)), y = Int(floor(imagePoint.y))
+                guard nativeCenters.insert(y * width + x).inserted else { continue }
+                // A native patch is centred on its texel, rather than the
+                // requested subpixel ray position. Project that actual centre
+                // onto the same source normal; never assign several phases to
+                // repeated reads of one patch on a smaller physical raster.
+                let actual = f.local(SIMD2(Double(x) + 0.5, Double(y) + 0.5)) - base
+                samples.append((actual.x * n.x + actual.y * n.y, middle(colors).luma))
             }
+            guard samples.count >= 3 else { return .incomplete }
             var descent = [Double]()
             for i in 0..<(samples.count - 1) { descent.append(max(0, samples[i].luma - samples[i + 1].luma)) }
             let mass = descent.reduce(0, +)
@@ -208,9 +270,9 @@ enum BeautyJawlineShadow {
                 }
                 return (samples.last!.phase, samples.last!.phase)
             }
-            let light = quantile(0.10), dark = quantile(0.90)
-            guard abs(dark.upper) <= f.span * 0.025 else { return .outsideSearch }
-            return .complete(SourceLightingProfile(phase: dark.upper, center: center,
+            let light = quantile(0.10), midpoint = quantile(0.50), dark = quantile(0.90)
+            guard abs(dark.upper) <= f.span * 0.025, abs(midpoint.upper) <= f.span * 0.025 else { return .outsideSearch }
+            return .complete(SourceLightingProfile(phase: dark.upper, entryPhase: midpoint.upper, center: center,
                 width: max(0, dark.interpolated - light.interpolated),
                 netDescent: max(0, samples.first!.luma - samples.last!.luma), brightLuma: samples.first!.luma))
         }
@@ -272,7 +334,7 @@ enum BeautyJawlineShadow {
         // light-to-dark transition. Every proposal is read from original RGB;
         // neither an output nor a private annotation participates.
         var rays = [(x: Double, lighting: SourceLightingProfile)]()
-        var leftRays = 0, rightRays = 0, competingRays = 0
+        var leftRays = 0, rightRays = 0, competingRays = 0, fragmentedContrastWindows = 0
         var contrastWindowRays = 0, incompleteProfiles = 0, missingDescents = 0, outOfSearchPhases = 0
         var rawCompetingRays = 0, incompleteRawProfiles = 0
         for k in -7...7 {
@@ -290,17 +352,21 @@ enum BeautyJawlineShadow {
             }
             guard let peak = proposals.map(\.contrast).max() else { continue }
             let credible = proposals.filter { $0.contrast >= peak * 0.85 }
-            // Separate equally credible source edges cannot establish one jaw.
+            // Locate the high-contrast source window. A broad single source
+            // transition can have quantized holes in this proposal envelope;
+            // such fragments do not independently prove two physical edges.
+            // The three native context tracks below test actual competing
+            // descent/recovery/descent in the same source material component.
             var groups = [[(phase: Double, contrast: Double)]]()
             for item in credible {
                 if let last = groups.last?.last, item.phase - last.phase <= f.span * 0.003 {
                     groups[groups.count - 1].append(item)
                 } else { groups.append([item]) }
             }
-            guard groups.count == 1, let group = groups.first else { competingRays += 1; continue }
+            if groups.count > 1 { fragmentedContrastWindows += 1 }
             contrastWindowRays += 1
-            let total = group.reduce(0.0) { $0 + $1.contrast }
-            let center = group.reduce(0.0) { $0 + $1.phase * $1.contrast } / total
+            let total = credible.reduce(0.0) { $0 + $1.contrast }
+            let center = credible.reduce(0.0) { $0 + $1.phase * $1.contrast } / total
             // A wide contrast window locates the middle of a source lighting
             // transition, not its editable dark side. Observe the original
             // normal profile and reserve the bright side through 90% of its
@@ -313,7 +379,7 @@ enum BeautyJawlineShadow {
             case .outsideSearch: outOfSearchPhases += 1; continue
             }
             switch sourceProfileTopology(base, normal: n, contrast: peak, anchorPhase: lighting.phase) {
-            case .competing: rawCompetingRays += 1; continue
+            case .competing: rawCompetingRays += 1; competingRays += 1; continue
             case .incomplete: incompleteRawProfiles += 1; continue
             case .single: break
             }
@@ -322,6 +388,7 @@ enum BeautyJawlineShadow {
         }
         var counts = ["qualifiedSkinFamilies": 2, "contrastRayCount": rays.count,
                       "competingSourceRays": competingRays, "sourceContrastWindowRays": contrastWindowRays,
+                      "fragmentedContrastWindowRays": fragmentedContrastWindows,
                       "incompleteDarkProfiles": incompleteProfiles, "missingSourceDescents": missingDescents,
                       "darkPhaseOutsideSearchRays": outOfSearchPhases,
                       "rawCompetingSourceRays": rawCompetingRays, "incompleteRawSourceProfiles": incompleteRawProfiles,
@@ -342,7 +409,7 @@ enum BeautyJawlineShadow {
                     func mix(_ key: KeyPath<SourceLightingProfile, Double>) -> Double {
                         a.lighting[keyPath: key] + (b.lighting[keyPath: key] - a.lighting[keyPath: key]) * t
                     }
-                    return SourceLightingProfile(phase: mix(\.phase), center: mix(\.center), width: mix(\.width),
+                    return SourceLightingProfile(phase: mix(\.phase), entryPhase: mix(\.entryPhase), center: mix(\.center), width: mix(\.width),
                         netDescent: mix(\.netDescent), brightLuma: mix(\.brightLuma))
                 }
             }
@@ -354,10 +421,11 @@ enum BeautyJawlineShadow {
         // reserve the upper dark-side envelope of adjacent source columns.
         // Missing or competing material leaves a gap rather than a bridge.
         let axialStep = max(0.5, f.span / 2048)
-        let axialStart = -f.span * 0.30 - axialStep * 2
-        let axialCount = Int(ceil(f.span * 0.60 / axialStep)) + 5
+        let axialStart = -f.span * 0.40 - axialStep * 2
+        let axialCount = Int(ceil(f.span * 0.80 / axialStep)) + 5
         var localProfiles = [SourceLightingProfile?](repeating: nil, count: axialCount)
         var localIncomplete = 0, localCompeting = 0
+        var localVeto = [Bool](repeating: false, count: axialCount)
         let coarseSplitTracks = splitContextTracks
         for i in localProfiles.indices {
             let x = axialStart + Double(i) * axialStep
@@ -367,73 +435,96 @@ enum BeautyJawlineShadow {
                 localIncomplete += 1; continue
             }
             switch sourceProfileTopology(base, normal: n, contrast: max(1.5, local.netDescent), anchorPhase: local.phase) {
-            case .competing: localCompeting += 1; continue
+            case .competing: localCompeting += 1; localVeto[i] = true; continue
             case .incomplete: localIncomplete += 1; continue
             case .single: break
             }
-            localProfiles[i] = SourceLightingProfile(phase: max(coarse.phase, local.phase), center: local.center,
+            localProfiles[i] = SourceLightingProfile(phase: max(coarse.phase, local.phase),
+                entryPhase: local.entryPhase, center: local.center,
                 width: local.width, netDescent: local.netDescent, brightLuma: local.brightLuma)
         }
         counts["localSourceProfileColumns"] = localProfiles.compactMap { $0 }.count
         counts["incompleteLocalSourceProfiles"] = localIncomplete
         counts["competingLocalSourceProfiles"] = localCompeting
         counts["splitLocalContextTracks"] = splitContextTracks - coarseSplitTracks
-        // Source-only continuous segments own their own fade. No gain is
-        // carried across a missing profile, a competing edge or foreign RGB.
-        var arcDistances = [Double](repeating: 0, count: axialCount)
-        var segmentStart = 0
-        while segmentStart < axialCount {
-            guard localProfiles[segmentStart] != nil else { segmentStart += 1; continue }
-            var end = segmentStart
-            while end + 1 < axialCount && localProfiles[end + 1] != nil { end += 1 }
-            for i in segmentStart...end {
-                arcDistances[i] = Double(max(0, min(i - segmentStart - 1, end - i - 1))) * axialStep
+        // Source contrast establishes a jaw hypothesis, rather than capping
+        // the strength/thickness of a NEW shadow. Dense native dark phases
+        // reserve the bright side. An incomplete local lighting reading uses
+        // the neighbouring corroborated phase plus a geometric uncertainty
+        // reserve; this grants no material authority and never crosses a
+        // locally competing edge.
+        counts["maximumSourceGainPermille"] = 180 // Legacy aggregate name.
+        counts["maximumCurrentChannelDecreasePermille"] = 180
+        counts["qualifiedNeckFamilies"] = 2
+        counts["bilateralNeckMaterialCorroboration"] = 1
+        var conservativeColumns = 0
+        var darkEnvelope = [Double?](repeating: nil, count: axialCount)
+        var entryEnvelope = [Double?](repeating: nil, count: axialCount)
+        for i in darkEnvelope.indices where !localVeto[i] {
+            guard let coarse = coarseLighting(axialStart + Double(i) * axialStep) else { continue }
+            if let local = localProfiles[i] {
+                darkEnvelope[i] = local.phase; entryEnvelope[i] = local.entryPhase
+            } else {
+                // Lighting uncertainty differs from an unknown material.
+                // Reusing the entire registration-search exterior creates an
+                // artificial notch under finite native hairs. Reserve the
+                // source-correlated neighbour phase plus 0.005 face widths;
+                // complete material connectivity remains independently required.
+                darkEnvelope[i] = min(f.span * 0.025, max(0, coarse.phase) + f.span * 0.005)
+                entryEnvelope[i] = min(f.span * 0.025, max(0, coarse.entryPhase) + f.span * 0.0025)
+                conservativeColumns += 1
             }
-            segmentStart = end + 1
         }
-        func sourceGain(_ p: SourceLightingProfile) -> Double {
-            // The added peak cannot exceed the observed original contrast.
-            // Subpixel-width source steps cannot prove a broad light field.
-            min(0.18, p.netDescent / max(1, p.brightLuma)) * smooth(p.width)
+        // A missing lighting reading moves the entry outward; it cannot make
+        // a vertical seam in an otherwise continuous, verified neck material.
+        // The upper envelope never lowers an observed dark-side reservation.
+        // Nil (ambiguous lighting) splits the envelope and remains forbidden.
+        for i in 1..<darkEnvelope.count {
+            if let a = darkEnvelope[i - 1], let b = darkEnvelope[i] {
+                darkEnvelope[i] = max(b, a - axialStep * 0.5)
+            }
+            if let a = entryEnvelope[i - 1], let b = entryEnvelope[i] {
+                entryEnvelope[i] = max(b, a - axialStep * 0.5)
+            }
         }
-        let gains = localProfiles.compactMap { $0 }.map(sourceGain)
-        counts["maximumSourceGainPermille"] = Int(((gains.max() ?? 0) * 1000).rounded())
-        func registeredLighting(_ x: Double) -> (phase: Double, width: Double, gain: Double, arcFade: Double)? {
+        for i in stride(from: darkEnvelope.count - 2, through: 0, by: -1) {
+            if let a = darkEnvelope[i + 1], let b = darkEnvelope[i] {
+                darkEnvelope[i] = max(b, a - axialStep * 0.5)
+            }
+            if let a = entryEnvelope[i + 1], let b = entryEnvelope[i] {
+                entryEnvelope[i] = max(b, a - axialStep * 0.5)
+            }
+        }
+        counts["conservativeDarkSideColumns"] = conservativeColumns
+        counts["sourceCenterEntryRegistration"] = 1
+        counts["entryRampFaceWidthPermille"] = 6
+        func reservedPhase(_ envelope: [Double?], _ x: Double) -> Double? {
             let u = (x - axialStart) / axialStep, i = Int(floor(u))
-            guard i >= 1, i + 2 < localProfiles.count,
-                  let before = localProfiles[i - 1], let a = localProfiles[i],
-                  let b = localProfiles[i + 1], let after = localProfiles[i + 2] else { return nil }
-            let upperA = max(before.phase, a.phase, b.phase)
-            let upperB = max(a.phase, b.phase, after.phase)
-            let t = smooth(u - Double(i))
-            let sourceWidthA = max(before.width, a.width, b.width)
-            let sourceWidthB = max(a.width, b.width, after.width)
-            let sourceWidth = sourceWidthA + (sourceWidthB - sourceWidthA) * t
-            let gainA = min(sourceGain(before), sourceGain(a), sourceGain(b))
-            let gainB = min(sourceGain(a), sourceGain(b), sourceGain(after))
-            let arcDistance = arcDistances[i] + (arcDistances[i + 1] - arcDistances[i]) * t
-            return (upperA + (upperB - upperA) * t, sourceWidth, gainA + (gainB - gainA) * t,
-                smooth(arcDistance / max(f.span * 0.0125, sourceWidth * 2)))
+            guard i >= 1, i + 2 < envelope.count,
+                  let before = envelope[i - 1], let a = envelope[i],
+                  let b = envelope[i + 1], let after = envelope[i + 2] else { return nil }
+            let upperA = max(before, a, b), upperB = max(a, b, after)
+            return upperA + (upperB - upperA) * smooth(u - Double(i))
         }
-        func registered(_ q: SIMD2<Double>) -> (distance: Double, geometricOffset: Double, normalWidth: Double,
-                                               sourceWidth: Double, gain: Double, arcFade: Double, start: SIMD2<Double>)? {
-            guard abs(q.x) < f.span * 0.30, let edge = f.boundary(q.x),
-                  let n = normal(q.x), let lighting = registeredLighting(q.x), n.y > 0.5 else { return nil }
-            // A parallel normal offset intersects the vertical source column
-            // at phase/n.y; signed normal distance retains physical width.
-            let y = edge + lighting.phase / n.y
-            let normalWidth = min(f.span * 0.05, (edge + f.span * 0.045 - y) * n.y)
-            guard normalWidth >= f.span * 0.0125 else { return nil }
-            return ((q.y - y) * n.y, q.y - edge, normalWidth, lighting.width, lighting.gain, lighting.arcFade,
-                SIMD2(q.x, y - f.span * 0.025 / n.y))
+        func registered(_ q: SIMD2<Double>) -> (distance: Double, exitDistance: Double, geometricOffset: Double)? {
+            guard abs(q.x) < f.span * 0.40, let edge = f.boundary(q.x),
+                  let n = normal(q.x), n.y > 0.35,
+                  let entry = reservedPhase(entryEnvelope, q.x),
+                  let dark = reservedPhase(darkEnvelope, q.x) else { return nil }
+            // Source profiles measure NORMAL phase. Projection into a fixed
+            // source column is phase/n.y; equivalently use its signed normal
+            // distance directly. Entry centre and broad exit are independent.
+            let normalDistance = (q.y - edge) * n.y
+            let safeEntry = min(normalDistance - entry, (q.y - edge - f.span * 0.005) * n.y)
+            return (safeEntry, normalDistance - dark, q.y - edge)
         }
-        let minX = -f.span * 0.30, maxX = f.span * 0.30
+        let minX = -f.span * 0.40, maxX = f.span * 0.40
         let lower = f.curve.filter { $0.x >= minX - f.span * 0.05 && $0.x <= maxX + f.span * 0.05 }
         guard !lower.isEmpty else { return refuse(.emptyTarget, counts) }
         let corners = [f.image(SIMD2(minX, lower.map(\.y).min()! - f.span * 0.04)),
                        f.image(SIMD2(maxX, lower.map(\.y).min()! - f.span * 0.04)),
-                       f.image(SIMD2(minX, f.chin + f.span * 0.10)),
-                       f.image(SIMD2(maxX, f.chin + f.span * 0.10))]
+                       f.image(SIMD2(minX, f.chin + f.span * 0.30)),
+                       f.image(SIMD2(maxX, f.chin + f.span * 0.30))]
         let x0 = max(1, Int(floor(corners.map(\.x).min()!)) - 2)
         let y0 = max(1, Int(floor(corners.map(\.y).min()!)) - 2)
         let x1 = min(width - 2, Int(ceil(corners.map(\.x).max()!)) + 2)
@@ -443,6 +534,7 @@ enum BeautyJawlineShadow {
         var weights = [Float](repeating: 0, count: columns * rows)
         var sourceDomain = [Bool](repeating: false, count: weights.count)
         var material = [Bool](repeating: false, count: weights.count)
+        var sourceLightingSupport = [Bool](repeating: false, count: weights.count)
         var rangeRejected = 0
         for y in y0...y1 { for x in x0...x1 {
             let q = f.local(SIMD2(Double(x) + 0.5, Double(y) + 0.5))
@@ -452,53 +544,81 @@ enum BeautyJawlineShadow {
                 if values.max()! - values.min()! > 18 { rangeRejected += 1 }
             }
         } }
-        func connectedMaterial(_ q: SIMD2<Double>) -> Bool {
+        // Four-connected complete native source footprints establish a
+        // MATERIAL path, independently of the lighting-distance carrier.
+        // A fine strand remains foreign but no longer casts an artificial
+        // uneditable vertical column over verified skin behind/around it.
+        // No dilation, hole filling or cross-material jump is permitted.
+        var sourceConnected = [Bool](repeating: false, count: material.count)
+        var materialQueue = [Int]()
+        func seedMaterial(_ q: SIMD2<Double>) {
             let p = f.image(q), x = Int(floor(p.x)), y = Int(floor(p.y))
-            guard x >= x0, x <= x1, y >= y0, y <= y1 else { return false }
-            return material[(y - y0) * columns + x - x0]
+            guard x >= x0, x <= x1, y >= y0, y <= y1 else { return }
+            let j = (y - y0) * columns + x - x0
+            guard material[j], !sourceConnected[j] else { return }
+            sourceConnected[j] = true; materialQueue.append(j)
         }
+        for ray in rays {
+            if let edge = f.boundary(ray.x) { seedMaterial(SIMD2(ray.x, edge - f.span * 0.025)) }
+        }
+        // Neck families corroborate material, but cannot seed an isolated
+        // component behind a foreign barrier. All ownership starts inside
+        // the jaw and must remain connected to those original anchors.
+        counts["sourceConnectivitySeeds"] = materialQueue.count
+        var materialHead = 0
+        while materialHead < materialQueue.count {
+            let j = materialQueue[materialHead]; materialHead += 1
+            let x = j % columns, y = j / columns
+            for (dx, dy) in [(-1, 0), (1, 0), (0, -1), (0, 1)] {
+                let nx = x + dx, ny = y + dy
+                guard nx >= 0, ny >= 0, nx < columns, ny < rows else { continue }
+                let n = ny * columns + nx
+                guard material[n], !sourceConnected[n] else { continue }
+                sourceConnected[n] = true; materialQueue.append(n)
+            }
+        }
+        counts["sourceMaterialPixels"] = material.filter { $0 }.count
+        counts["connectedSourceMaterialPixels"] = materialQueue.count
         var domainPixels = 0, footprintRejected = 0, disconnectedPixels = 0
         for y in y0...y1 { for x in x0...x1 {
             let j = (y - y0) * columns + x - x0
             let p = SIMD2(Double(x) + 0.5, Double(y) + 0.5), q = f.local(p)
-            guard let r = registered(q), r.distance > 0, r.distance < f.span * 0.05,
-                  r.geometricOffset > f.span * 0.005, r.geometricOffset < f.span * 0.045 else { continue }
+            guard let r = registered(q) else { continue }
+            sourceLightingSupport[j] = true
+            guard r.distance > 0, r.exitDistance < f.span * 0.24,
+                  r.geometricOffset > f.span * 0.005 else { continue }
             domainPixels += 1
             guard material[j] else { continue }
-            var completeTexel = true
+            var completeTexel = true, safeEntryDistance = r.distance
             for dy in [-0.5, 0.5] { for dx in [-0.5, 0.5] {
                 guard let corner = registered(f.local(p + SIMD2(dx, dy))),
-                      corner.distance > 0, corner.distance < f.span * 0.05,
-                      corner.geometricOffset > f.span * 0.005, corner.geometricOffset < f.span * 0.045 else { completeTexel = false; continue }
+                      corner.distance > 0, corner.exitDistance < f.span * 0.24,
+                      corner.geometricOffset > f.span * 0.005 else { completeTexel = false; continue }
+                safeEntryDistance = min(safeEntryDistance, corner.distance)
             } }
             guard completeTexel else { footprintRejected += 1; continue }
-            // Native source samples, rather than an upsampled qualification
-            // raster, prove skin continuity all the way from inside the jaw.
-            let steps = max(1, Int(ceil(q.y - r.start.y)))
-            var connected = true
-            for k in 0...steps {
-                if !connectedMaterial(SIMD2(q.x, r.start.y + (q.y - r.start.y) * Double(k) / Double(steps))) {
-                    connected = false; break
-                }
-            }
-            guard connected else { disconnectedPixels += 1; continue }
+            guard sourceConnected[j] else { disconnectedPixels += 1; continue }
             sourceDomain[j] = true
-            // Fill the available legal thickness with a broad symmetric C1
-            // light field. The observed 10--90 width controls both ramps;
-            // a source segment's ends fade independently along the jaw arc.
-            let ramp = min(r.normalWidth * 0.5, max(r.sourceWidth, r.normalWidth * 0.25))
-            let lighting = smooth(r.distance / ramp) * smooth((r.normalWidth - r.distance) / ramp)
-            weights[j] = Float(lighting * r.arcFade * (r.gain / 0.18) * smooth((0.30 - abs(q.x) / f.span) / 0.08))
+            // Separate the short entry from the long neck-side exit. The
+            // single C1 field has no per-lighting-column gain/arc modulation.
+            // Thus a soft original edge cannot turn into a painted thin band.
+            let entering = smooth(safeEntryDistance / (f.span * 0.006))
+            let exiting = 1 - smooth((r.exitDistance / f.span - 0.02) / 0.22)
+            let lateral = smooth((0.40 - abs(q.x) / f.span) / 0.10)
+            weights[j] = Float(entering * exiting * lateral)
         } }
         counts["registeredDarkSideRayCount"] = rays.count
         counts["sourceDomainPixels"] = domainPixels
         counts["nativeFootprintRejectedPixels"] = footprintRejected
         counts["disconnectedMaterialPixels"] = disconnectedPixels
         counts["legacyNativeRangeRejectedPixels"] = rangeRejected
-        // Source rejection boundaries receive their own compact C1 feather.
+        // Feather native MATERIAL or ambiguous-column rejection. Generated-field zero
+        // pixels as distance seeds would multiply a second entry ramp onto the
+        // explicit C1 entrance and create an artificial light strip. Geometry
+        // and source-centre containment remain hard re-clipped above.
         // The rectangle carries a zero ring; no full-canvas float mask is kept.
         var distances = [Int](repeating: Int.max, count: weights.count), queue = [Int]()
-        for j in weights.indices where weights[j] == 0 || j % columns == 0 || j % columns == columns - 1 || j < columns || j >= (rows - 1) * columns {
+        for j in weights.indices where !material[j] || !sourceConnected[j] || !sourceLightingSupport[j] || j % columns == 0 || j % columns == columns - 1 || j < columns || j >= (rows - 1) * columns {
             if j % columns == 0 || j % columns == columns - 1 || j < columns || j >= (rows - 1) * columns { sourceDomain[j] = false }
             weights[j] = 0; distances[j] = 0; queue.append(j)
         }
@@ -521,7 +641,7 @@ enum BeautyJawlineShadow {
         counts["sourceAuthorityPixels"] = sourceDomain.filter { $0 }.count
         guard counts["eligibleTargetPixels", default: 0] >= 12 else { return refuse(.emptyTarget, counts) }
         let evidence = Evidence(width: width, height: height, x0: x0, y0: y0, columns: columns,
-            weights: weights, sourceDomain: sourceDomain, aggregates: counts)
+            weights: weights, sourceDomain: sourceDomain, sourceDecrement: sourceDecrement, aggregates: counts)
         return Qualification(evidence: evidence, refusal: nil, aggregates: counts)
     }
 

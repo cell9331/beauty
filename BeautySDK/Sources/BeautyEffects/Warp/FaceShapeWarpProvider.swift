@@ -20,15 +20,27 @@ struct FaceShapeWarpFieldEmissions: Equatable, Sendable {
     let doubleChinReductionPro: [WarpControlPoint]
     let faceVShape: [WarpControlPoint]
     var jawSlim: [WarpControlPoint]
-    let faceContourSmooth: [WarpControlPoint]
+    var faceContourSmooth: [WarpControlPoint]
     var templeFullness: [WarpControlPoint]
     var cheekboneSlim: [WarpControlPoint]
-    /// Geometry qualification for the independent source-raster hairline
-    /// refiner. This is not evidence that an RGB boundary has been admitted.
-    /// The real source edge and its protection remain owned by the refiner.
+    /// Geometry qualification for the source-raster hairline field. Locating
+    /// its broad source support remains a separate, pixel-domain decision.
     var sourceRefinementMask: UInt8 = 0
 
-    var hasAdmittedWork: Bool { sourceRefinementMask != 0 || !points.isEmpty }
+    /// Source-observation qualification for width, small-face, smooth, temple,
+    /// cheekbone, chin-length, chin-taper and V-face fields (bits 0...7).
+    /// Pixel extent, full support and inverse admission belong to the map.
+    var continuousFaceMask: UInt8 = 0
+
+    /// Raw compatibility point emissions do not own the chin controls. Source
+    /// planning explicitly owns their admission, including a rejected mask.
+    var ownsContinuousChin: Bool = false
+
+    /// The reference jaw-angle field owns admission without executable legacy
+    /// contour pulls. Keep the existing eight-bit mask stable for its callers.
+    var continuousJawAngle: Bool = false
+
+    var hasAdmittedWork: Bool { sourceRefinementMask != 0 || continuousFaceMask != 0 || continuousJawAngle || !points.isEmpty }
 
     var points: [WarpControlPoint] {
         faceSlim + faceSmall + wholeFaceYPosition + wholeFaceXPosition + wholeFaceTilt + faceShortening + foreheadHeight + midfaceLength + philtrumLength + lowerFaceLength + headSmall + headWrap + cranialCrownHeight + hairlineHeight + wholeFaceSymmetry + doubleChinReduction + doubleChinReductionPro + faceVShape + jawSlim +
@@ -37,8 +49,8 @@ struct FaceShapeWarpFieldEmissions: Equatable, Sendable {
 
     func sanitizing(_ strengths: BeautyEffectiveStrengths) -> BeautyEffectiveStrengths {
         var sanitized = strengths
-        if strengths.faceSlim != 0, faceSlim.isEmpty { sanitized.faceSlim = 0 }
-        if strengths.faceSmall != 0, faceSmall.isEmpty { sanitized.faceSmall = 0 }
+        if strengths.faceSlim != 0, faceSlim.isEmpty, continuousFaceMask & 1 == 0 { sanitized.faceSlim = 0 }
+        if strengths.faceSmall != 0, faceSmall.isEmpty, continuousFaceMask & 2 == 0 { sanitized.faceSmall = 0 }
         if strengths.wholeFaceYPosition != 0, wholeFaceYPosition.isEmpty {
             sanitized.wholeFaceYPosition = 0
         }
@@ -81,33 +93,122 @@ struct FaceShapeWarpFieldEmissions: Equatable, Sendable {
         if strengths.doubleChinReductionPro != 0, doubleChinReductionPro.isEmpty {
             sanitized.doubleChinReductionPro = 0
         }
-        if strengths.faceVShape != 0, faceVShape.isEmpty { sanitized.faceVShape = 0 }
-        if strengths.jawSlim != 0, jawSlim.isEmpty { sanitized.jawSlim = 0 }
-        if strengths.faceContourSmooth != 0, faceContourSmooth.isEmpty {
+        if strengths.faceVShape != 0, faceVShape.isEmpty, continuousFaceMask & 128 == 0 {
+            sanitized.faceVShape = 0
+        }
+        if strengths.jawSlim != 0, jawSlim.isEmpty, !continuousJawAngle { sanitized.jawSlim = 0 }
+        if strengths.faceContourSmooth != 0, faceContourSmooth.isEmpty, continuousFaceMask & 4 == 0 {
             sanitized.faceContourSmooth = 0
         }
-        if strengths.templeFullness != 0, templeFullness.isEmpty {
+        if strengths.templeFullness != 0, templeFullness.isEmpty, continuousFaceMask & 8 == 0 {
             sanitized.templeFullness = 0
         }
-        if strengths.cheekboneSlim != 0, cheekboneSlim.isEmpty {
+        if strengths.cheekboneSlim != 0, cheekboneSlim.isEmpty, continuousFaceMask & 16 == 0 {
             sanitized.cheekboneSlim = 0
+        }
+        if ownsContinuousChin {
+            if strengths.chinLength != 0, continuousFaceMask & 32 == 0 { sanitized.chinLength = 0 }
+            if strengths.chinTaper != 0, continuousFaceMask & 64 == 0 { sanitized.chinTaper = 0 }
         }
         return sanitized
     }
 }
 
 struct FaceShapeWarpProvider: WarpControlPointProvider {
-    /// Keep the legacy point inventory intact while admitting geometrically
-    /// qualified hairline refinement that does not use face-box proxy kernels.
+    /// Admit source-owned work without inventing executable point pulls. The
+    /// source-coordinate fields do not inherit legacy point-count, roughness
+    /// or median-line gates, which cannot qualify their reference motion.
     func planningEmissions(
         face: FaceGeometry,
         strengths: BeautyEffectiveStrengths
     ) -> FaceShapeWarpFieldEmissions {
-        var result = fieldEmissions(face: face, strengths: strengths)
+        var pointStrengths = strengths
+        // These controls have no executable point fallback, including coarse
+        // geometry. Only qualified source observations can admit their fields.
+        pointStrengths.faceSlim = 0; pointStrengths.faceSmall = 0; pointStrengths.faceContourSmooth = 0
+        pointStrengths.templeFullness = 0; pointStrengths.cheekboneSlim = 0; pointStrengths.faceVShape = 0
+        pointStrengths.jawSlim = 0; pointStrengths.hairlineHeight = 0
+        var result = fieldEmissions(face: face, strengths: pointStrengths)
+        // Preserve unrelated raw-emission identity. Nonfinite/nonzero chin
+        // requests still acquire ownership so rejection clears them below.
+        result.ownsContinuousChin = strengths.chinLength != 0 || strengths.chinTaper != 0
+        if face.observedFaceSupport != nil {
+            result.faceSlim = []; result.faceSmall = []; result.faceContourSmooth = []
+            if Self.hasContinuousFaceSourceGeometry(face) {
+                let nose = Self.hasContinuousFaceNose(face)
+                if nose, Self.admitsSigned(strengths.jawSlim, cap: BeautySafetyCaps.jawSlim) {
+                    result.continuousJawAngle = true
+                }
+                if nose, Self.admitsSigned(strengths.faceSlim, cap: BeautySafetyCaps.faceSlim) {
+                    result.continuousFaceMask |= 1
+                }
+                if Self.admitsSigned(strengths.faceSmall, cap: BeautySafetyCaps.faceSmall) {
+                    result.continuousFaceMask |= 2
+                }
+                if nose, strengths.faceContourSmooth.isFinite,
+                   strengths.faceContourSmooth > 0,
+                   strengths.faceContourSmooth <= BeautySafetyCaps.faceContourSmooth {
+                    result.continuousFaceMask |= 4
+                }
+                if nose, Self.admitsSigned(strengths.templeFullness, cap: BeautySafetyCaps.templeFullness) {
+                    result.continuousFaceMask |= 8
+                }
+                if nose, Self.admitsSigned(strengths.cheekboneSlim, cap: BeautySafetyCaps.cheekboneSlim) {
+                    result.continuousFaceMask |= 16
+                }
+                if nose, Self.admitsSigned(strengths.chinLength, cap: BeautySafetyCaps.chinLength) {
+                    result.continuousFaceMask |= 32
+                }
+                if nose, Self.admitsSigned(strengths.chinTaper, cap: BeautySafetyCaps.chinTaper) {
+                    result.continuousFaceMask |= 64
+                }
+                if nose, strengths.faceVShape.isFinite, strengths.faceVShape > 0,
+                   strengths.faceVShape <= BeautySafetyCaps.faceVShape {
+                    result.continuousFaceMask |= 128
+                }
+            }
+        }
         if Self.hasSourceHairlineGeometry(face: face, strength: strengths.hairlineHeight) {
             result.sourceRefinementMask |= 1
         }
         return result
+    }
+
+    private static func admitsSigned(_ value: Float, cap: Float) -> Bool {
+        value.isFinite && abs(value) > 0 && abs(value) <= cap
+    }
+
+    private static func continuousSourcePath(_ points: [SIMD2<Float>], count: ClosedRange<Int>) -> Bool {
+        guard count.contains(points.count), points.allSatisfy(sourceUnitPoint),
+              Set(points).count >= count.lowerBound,
+              let x0 = points.map(\.x).min(), let x1 = points.map(\.x).max(),
+              let y0 = points.map(\.y).min(), let y1 = points.map(\.y).max() else { return false }
+        return x1 > x0 && y1 > y0
+    }
+
+    private static func hasContinuousFaceSourceGeometry(_ face: FaceGeometry) -> Bool {
+        guard face.freshness == .fresh, let source = face.observedFaceSupport,
+              continuousSourcePath(source.contour, count: 7...32),
+              Set(source.contour).count == source.contour.count,
+              let left = face.leftEyeSupport, let right = face.rightEyeSupport,
+              left.side == .left, right.side == .right,
+              continuousSourcePath(left.contour, count: 4...32),
+              continuousSourcePath(right.contour, count: 4...32),
+              let lips = face.observedOuterLips,
+              continuousSourcePath(lips, count: 4...40) else { return false }
+        // Only ordering in source coordinates is checked here. The image's
+        // aspect ratio and eye-distance frame belong to pixel-domain admission.
+        let leftX = left.contour.map(\.x).reduce(0, +) / Float(left.contour.count)
+        let rightX = right.contour.map(\.x).reduce(0, +) / Float(right.contour.count)
+        return rightX > leftX
+    }
+
+    private static func hasContinuousFaceNose(_ face: FaceGeometry) -> Bool {
+        guard let source = face.observedNoseSupport,
+              (3...32).contains(source.crest.count), (3...32).contains(source.contour.count) else { return false }
+        let crest = source.crest.map { SIMD2<Float>(Float($0.x), Float($0.y)) }
+        let contour = source.contour.map { SIMD2<Float>(Float($0.x), Float($0.y)) }
+        return (crest + contour).allSatisfy(sourceUnitPoint) && Set(crest).count >= 3 && Set(contour).count >= 3
     }
 
     static func hasSourceHairlineGeometry(face: FaceGeometry, strength: Float) -> Bool {
@@ -119,13 +220,7 @@ struct FaceShapeWarpProvider: WarpControlPointProvider {
               [bounds.minX, bounds.maxX, bounds.minY, bounds.maxY].allSatisfy({
                   $0.isFinite && (0...1).contains($0)
               }),
-              face.faceContour.count >= 6,
-              face.faceContour.allSatisfy({ sourceUnitPoint($0) }),
-              let contourMinX = face.faceContour.map(\.x).min(),
-              let contourMaxX = face.faceContour.map(\.x).max(),
-              let contourMinY = face.faceContour.map(\.y).min(),
-              let contourMaxY = face.faceContour.map(\.y).max(),
-              contourMaxX > contourMinX, contourMaxY > contourMinY,
+              hasContinuousFaceSourceGeometry(face),
               let support = face.observedEyebrowSupport,
               let left = support.left, let right = support.right,
               left.side == .left, right.side == .right,
@@ -168,7 +263,8 @@ struct FaceShapeWarpProvider: WarpControlPointProvider {
         strengths: BeautyEffectiveStrengths
     ) -> FaceShapeWarpFieldEmissions {
         // Signed planning emissions are used for admission/counts. Observed
-        // still images replace these proxies with BeautyContinuousFaceMap.
+        // still images replace the reference controls with
+        // BeautyFaceDisplacementMap; other face controls keep their own map.
         let signedKeys: [WritableKeyPath<BeautyEffectiveStrengths, Float>] = [
             \.faceSlim, \.faceSmall, \.jawSlim, \.templeFullness, \.cheekboneSlim
         ]

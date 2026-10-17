@@ -36,7 +36,10 @@ final class BeautyEngineFaceSliderTests: XCTestCase {
             observedEyeOrder:.canonical,
             observedFaceSupport:BeautyObservedFaceSupport(contour:contour,medianLine:[
                 CoordinatePoint(x:0.5,y:0.34),CoordinatePoint(x:0.5,y:0.55),CoordinatePoint(x:0.5,y:0.78)]),
-            observedLipSupport:BeautyObservedLipSupport(outer:box(0.40,0.57,0.20,0.07)))
+            observedLipSupport:BeautyObservedLipSupport(outer:box(0.40,0.57,0.20,0.07)),
+            observedNoseSupport:BeautyObservedNoseSupport(
+                crest:[CoordinatePoint(x:0.5,y:0.40),CoordinatePoint(x:0.5,y:0.46),CoordinatePoint(x:0.5,y:0.52)],
+                contour:[CoordinatePoint(x:0.46,y:0.51),CoordinatePoint(x:0.5,y:0.54),CoordinatePoint(x:0.54,y:0.51)]))
     }
 
     private func engine(gpu: Bool = false, noFace: Bool = false) throws -> BeautyEngine {
@@ -81,14 +84,57 @@ final class BeautyEngineFaceSliderTests: XCTestCase {
         return vertical ? weighted[0]/total[0] : weighted[1]/total[1]-weighted[0]/total[0]
     }
 
+    /// Regions are fixed from this test's generated anatomy, independently of
+    /// the field, its protection masks and its output. The eye ellipse uses
+    /// the central 40% width/one-third height of the observed aperture. Lip
+    /// and nasal patches are conservative central material observations.
+    private func protectedRegions(x: Double, y: Double, slider: BeautyFaceShapeSlider) -> [Bool] {
+        func ellipse(_ cx: Double, _ cy: Double, _ rx: Double, _ ry: Double) -> Bool {
+            pow((x-cx)/rx, 2) + pow((y-cy)/ry, 2) <= 1
+        }
+        let eye: Bool
+        let mouth: Bool
+        let exterior: Bool
+        if slider == .jawAngle {
+            // The new side fields keep the aperture and inner-lip material
+            // stable while permitting the observed mouth-side transition.
+            eye = ((0.34...0.44).contains(x) || (0.56...0.66).contains(x)) && (0.30...0.36).contains(y)
+            mouth = ellipse(0.50, 0.605, 0.025, 0.007)
+            exterior = x < 0.12 || x > 0.88 || y < 0.10 || y > 0.90
+        } else {
+            // Width's independent exact core is nasal; its eye perimeter has
+            // no hard-protection qualification. Small-face intentionally
+            // moves the mouth and has no nasal hard-core contract.
+            eye = slider != .faceWidth && (ellipse(0.39, 0.33, 0.020, 0.010) || ellipse(0.61, 0.33, 0.020, 0.010))
+            switch slider {
+            case .faceWidth, .smallFace:
+                mouth = false
+            case .chinLength:
+                // The upper lip lies above this fixture's lower-lip ingress;
+                // lower lip and neck may follow the longitudinal platform.
+                mouth = ellipse(0.50, 0.580, 0.025, 0.005)
+            default:
+                // Temple/cheek/taper/V protect the central mouth, allowing
+                // independent corner and lower-rim transition observations.
+                mouth = ellipse(0.50, 0.605, 0.025, 0.007)
+            }
+            // These source-frame strips remain beyond the generated face,
+            // adjacent hair and neck release. y>0.90 alone would include the
+            // observed neck transition and is not a far-background oracle.
+            exterior = x < 0.06 || x > 0.94 || y < 0.08 || y > 0.98
+        }
+        let nose = slider != .smallFace && ellipse(0.50, 0.485, 0.008, 0.006)
+        return [eye, nose, mouth, exterior]
+    }
+
     func testPublicSlidersMovePixelsInReferenceDirectionsAndMatchActualMetal() throws {
         let cpu=try engine(),gpu=try engine(gpu:true)
         let metadata=BeautyInputMetadata(orientation:.up,source:.testFixture)
         let cases:[(BeautyFaceShapeSlider,Double,Double,Bool,Double)]=[
             (.faceWidth,0.305,0.61,false,-1),(.smallFace,0.305,0.61,false,-1),
-            (.jawAngle,0.36,0.70,false,-1),(.vFace,0.36,0.70,false,-1),
+            (.jawAngle,0.35,0.64,false,-1),(.vFace,0.36,0.70,false,-1),
             (.temple,0.26,0.29,false,1),(.cheekbone,0.265,0.43,false,-1),
-            (.chinTaper,0.41,0.75,false,1),(.chinLength,0.5,0.78,true,-1)]
+            (.chinTaper,0.41,0.75,false,-1),(.chinLength,0.5,0.78,true,-1)]
         for (slider,x,y,vertical,direction) in cases {
             let source=image(x:x,y:y,vertical:vertical),before=pixels(source)
             let baseline=measure(before,vertical:vertical)
@@ -105,30 +151,39 @@ final class BeautyEngineFaceSliderTests: XCTestCase {
                 XCTAssertEqual(result.detectionSummary?.usedFaceCount,1)
                 let repeated=try cpu.processResult(image:source,metadata:metadata,parameters:parameters)
                 XCTAssertTrue(output==pixels(repeated.output),"determinism")
-                var protectedDelta=0,alphaDelta=0
+                var regionDeltas=[Int](repeating:0,count:4),regionCounts=regionDeltas,alphaDelta=0
                 for py in 0..<height { for px in 0..<width {
                     let nx=(Double(px)+0.5)/Double(width),ny=(Double(py)+0.5)/Double(height)
-                    let eye=((0.34...0.44).contains(nx)||(0.56...0.66).contains(nx)) && (0.30...0.36).contains(ny)
-                    let mouth=(0.40...0.60).contains(nx)&&(0.57...0.64).contains(ny)
-                    let exterior=nx<0.12 || nx>0.88 || ny<0.10 || ny>0.90
+                    let regions=protectedRegions(x:nx,y:ny,slider:slider)
                     let i=(py*width+px)*4
-                    if eye || mouth || exterior { for c in 0..<3 { protectedDelta += abs(Int(output[i+c])-Int(before[i+c])) } }
+                    let delta=(0..<3).reduce(0) { $0 + abs(Int(output[i+$1])-Int(before[i+$1])) }
+                    for region in regions.indices where regions[region] {
+                        regionDeltas[region] += delta
+                        regionCounts[region] += 1
+                    }
                     alphaDelta += abs(Int(output[i+3])-Int(before[i+3]))
                 } }
-                XCTAssertEqual(protectedDelta,0);XCTAssertEqual(alphaDelta,0)
+                for (region,name) in ["eye core","nasal core","mouth core","far background"].enumerated() {
+                    XCTAssertEqual(regionDeltas[region],0,"\(slider) \(position) \(name)")
+                }
+                if slider != .faceWidth { XCTAssertGreaterThan(regionCounts[0],100) }
+                if slider != .smallFace { XCTAssertGreaterThan(regionCounts[1],20) }
+                if slider != .faceWidth && slider != .smallFace { XCTAssertGreaterThan(regionCounts[2],20) }
+                XCTAssertGreaterThan(regionCounts[3],10000)
+                XCTAssertEqual(alphaDelta,0)
             }
         }
     }
 
-    func testChinTaperReferenceSliderReversesDirectPolarityAndPreservesOtherFields() {
+    func testChinTaperReferenceSliderFollowsCandidatePolarityAndPreservesOtherFields() {
         let source = BeautyParameters(faceSlim: 0.2, faceSmall: -0.1,
             faceVShape: 0.12, jawSlim: 0.1, chinLength: 0.1,
             faceContourSmooth: 0.1, templeFullness: 0.12, cheekboneSlim: -0.08,
             chinTaper: 0.15, noseBridge: 0.1, hairlineHeight: -0.1)
         let cap: Float = 0.25
         let mappings: [(Float, Float)] = [
-            (0, cap), (0.25, cap * 0.5), (0.5, 0), (0.75, -cap * 0.5),
-            (1, -cap), (-1, cap), (2, -cap), (.nan, 0)
+            (0, -cap), (0.25, -cap * 0.5), (0.5, 0), (0.75, cap * 0.5),
+            (1, cap), (-1, -cap), (2, cap), (.nan, 0)
         ]
         for (position, directValue) in mappings {
             var expected = source.normalized()

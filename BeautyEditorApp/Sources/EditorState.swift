@@ -57,7 +57,7 @@ struct ToolDefinition: Identifiable, Sendable {
 
     func value(in parameters: BeautyParameters) -> Float {
         if let faceSlider {
-            let direction: Float = faceSlider == .chinLength || faceSlider == .chinTaper ? -1 : 1
+            let direction: Float = faceSlider == .chinLength ? -1 : 1
             return direction * sdkValue(in: parameters) / maximumSDKStrength * 100
         }
         if let mouthSlider {

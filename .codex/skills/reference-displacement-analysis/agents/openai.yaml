@@ -1,0 +1,4 @@
+interface:
+  display_name: "参考图位移分析"
+  short_description: "先测参考位移，再推导机制，输出热图、剖面与可验证的技术方案"
+  default_prompt: "使用 $reference-displacement-analysis 分析原图和参考效果图的几何位移，先给测量证据，再推导实现方案。"

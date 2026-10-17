@@ -1,6 +1,8 @@
-/// Owner-host slider contract inferred from the isolated reference endpoints.
+/// Owner-host slider contract selected from the reference candidate models.
 /// Position is 0...1; centered sliders are neutral at 0.5. V-face and smoothing
-/// are neutral at 0. No view or mutable slider state belongs to the SDK.
+/// use 0 as the host baseline. These host defaults are not a measured reference
+/// neutral state or response curve; V-face has no confirmed reference zero.
+/// No view or mutable slider state belongs to the SDK.
 public enum BeautyFaceShapeSlider: String, CaseIterable, Codable, Sendable {
     case faceWidth, smallFace, temple, cheekbone, chinLength, chinTaper
     case jawAngle, vFace, contourSmooth, hairline
@@ -12,8 +14,8 @@ public enum BeautyFaceShapeSlider: String, CaseIterable, Codable, Sendable {
     /// Returns a normalized snapshot, preserving all other requested fields.
     /// Mapping spans the full safety cap, avoiding an early plateau on a host
     /// slider. Direct positive `chinLength` still lengthens and direct positive
-    /// `chinTaper` still tapers. The reference-style sliders instead mean
-    /// right=shorter chin and right=rounder/wider chin, respectively.
+    /// `chinTaper` still tapers. The reference-style sliders mean right=shorter
+    /// chin and right=tapered/upward chin, respectively.
     public func applying(position: Float, to parameters: BeautyParameters) -> BeautyParameters {
         var result = parameters.normalized()
         let p = position.isFinite ? min(1, max(0, position)) : neutralPosition
@@ -24,7 +26,7 @@ public enum BeautyFaceShapeSlider: String, CaseIterable, Codable, Sendable {
         case .temple: result.templeFullness = signed * 0.25
         case .cheekbone: result.cheekboneSlim = signed * 0.25
         case .chinLength: result.chinLength = -signed * 0.35
-        case .chinTaper: result.chinTaper = -signed * 0.25
+        case .chinTaper: result.chinTaper = signed * 0.25
         case .jawAngle: result.jawSlim = signed * 0.45
         case .vFace: result.faceVShape = p * 0.50
         case .contourSmooth: result.faceContourSmooth = p * 0.25

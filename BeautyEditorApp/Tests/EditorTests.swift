@@ -85,7 +85,7 @@ enum TestImage {
                 tool.setValue(value, in: &parameters)
                 let expected = min(100, max(tool.range == .signed ? -100 : 0, value))
                 XCTAssertEqual(tool.value(in: parameters), expected, accuracy: 0.0001, tool.id)
-                let direction: Float = ["chinLength", "chinTaper"].contains(tool.field!) ? -1 : 1
+                let direction: Float = tool.field == "chinLength" ? -1 : 1
                 XCTAssertEqual(tool.sdkValue(in: parameters), expected / 100 * tool.maximumSDKStrength * direction,
                                accuracy: 0.000001, tool.id)
                 let updated = try dictionary(parameters)
@@ -107,7 +107,7 @@ enum TestImage {
         XCTAssertEqual(parameters.jawlineShadow, 0.178125, accuracy: 0.000001)
         XCTAssertFalse(ToolCatalog.find("face.jawline")!.isGeometry)
         XCTAssertEqual(ToolCatalog.find("face.chinLength")!.value(in: BeautyParameters(chinLength: 0.175)), -50, accuracy: 0.0001)
-        XCTAssertEqual(ToolCatalog.find("face.chinPoint")!.value(in: BeautyParameters(chinTaper: 0.125)), -50, accuracy: 0.0001)
+        XCTAssertEqual(ToolCatalog.find("face.chinPoint")!.value(in: BeautyParameters(chinTaper: 0.125)), 50, accuracy: 0.0001)
     }
 
     func testDoubleChinEntriesRemainDisabledWithoutClearingValuesOrHistory() throws {

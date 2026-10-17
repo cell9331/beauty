@@ -6,6 +6,7 @@ import Foundation
 // production planner hook, does not change emissions, and is not compiled into
 // BeautyEffects. The research worktree already owns its production definition;
 // do not add this file to that target or it would be a duplicate declaration.
+#if BEAUTY_ORIGINAL_SDK_HAIRLINE_DIAGNOSTIC_SHIM
 extension FaceShapeWarpProvider {
     static func hasSourceHairlineGeometry(face: FaceGeometry, strength: Float) -> Bool {
         func unit(_ point: SIMD2<Float>) -> Bool {
@@ -39,3 +40,4 @@ extension FaceShapeWarpProvider {
         return true
     }
 }
+#endif
