@@ -59,12 +59,21 @@ struct BeautyMouthReferenceGeometry {
         guard bottom - top > 0.006, bottom - top < 0.85,
               abs(Self.area(outer)) > (bottom - top) * 0.15 else { return nil }
         var inner: [Point]?
-        if let raw = face.observedInnerLips, (4...64).contains(raw.count), raw.allSatisfy(Self.valid), Set(raw).count == raw.count, BeautyDenseFaceSupport.simplePolygon(raw) {
+        var closedSeam: Model.Seam?
+        if let raw = face.observedInnerLips, (4...64).contains(raw.count), raw.allSatisfy(Self.valid) {
             let q = raw.map { local(pixel($0)) }
             let minX = q.map(\.x).min()!, maxX = q.map(\.x).max()!
             if maxX - minX >= 0.25, q.allSatisfy({ $0.x >= -0.525 && $0.x <= 0.525
                 && $0.y >= top - 0.025 && $0.y <= bottom + 0.025
-                && Self.contains($0, polygon: outer, tolerance: 0.025) }) { inner = q }
+                && Self.contains($0, polygon: outer, tolerance: 0.025) }) {
+                if Set(raw).count == raw.count, BeautyDenseFaceSupport.simplePolygon(raw) {
+                    inner = q
+                } else if let seam = Self.closedObservedSeam(q, top: top, bottom: bottom) {
+                    // A closed lip seam is observed tissue support even when
+                    // contact or a slight crossing leaves no simple oral area.
+                    inner = q; closedSeam = seam
+                }
+            }
         }
         let source = inner ?? outer
         let low = max(-0.48, source.map(\.x).min()! + 0.001)
@@ -76,7 +85,7 @@ struct BeautyMouthReferenceGeometry {
             guard let range = Self.verticalSpan(source, x: x) else { return nil }
             knots.append(Point(x, (range.0 + range.1) * 0.5))
         }
-        guard let seam = Model.Seam(knots: knots) else { return nil }
+        guard let seam = closedSeam ?? Model.Seam(knots: knots) else { return nil }
         let center = seam.sample(at: 0).value
         // A source-fixed half-plane containing every physical eye/nose box is
         // outside all field support. This avoids an unaccounted mask derivative.
@@ -161,6 +170,74 @@ struct BeautyMouthReferenceGeometry {
     }
     private static func area(_ p: [Point]) -> Double {
         p.indices.reduce(0) { s,i in let q=p[(i+1)%p.count]; return s+p[i].x*q.y-q.x*p[i].y } * 0.5
+    }
+
+    /// Admit only two source-ordered, x-monotone observations of a near-closed
+    /// seam. Never sort, form a hull, fabricate an opening, or relax the shared
+    /// polygon validator: missing or ambiguous inner evidence still abstains.
+    private static func closedObservedSeam(_ points: [Point], top: Double, bottom: Double) -> Model.Seam? {
+        guard let left = points.indices.min(by: { points[$0].x < points[$1].x }),
+              let right = points.indices.max(by: { points[$0].x < points[$1].x }), left != right else { return nil }
+        func trace(step: Int) -> [Point]? {
+            var result = [points[left]], index = left
+            for _ in 0..<points.count {
+                index = (index + step + points.count) % points.count
+                let p = points[index]
+                if p != result.last! {
+                    guard p.x > result.last!.x else { return nil }
+                    result.append(p)
+                }
+                if index == right { return result.count >= 3 ? result : nil }
+            }
+            return nil
+        }
+        guard let a = trace(step: 1), let b = trace(step: -1),
+              a[0].x == b[0].x, a.last!.x == b.last!.x else { return nil }
+        let low = max(-0.48, a[0].x + 0.001), high = min(0.48, a.last!.x - 0.001)
+        guard low < 0, high > 0 else { return nil }
+        func value(_ trace: [Point], _ x: Double) -> Double {
+            for (p, q) in zip(trace, trace.dropFirst()) where x <= q.x {
+                return p.y + (q.y - p.y) * (x - p.x) / (q.x - p.x)
+            }
+            return trace.last!.y
+        }
+        let observedX = Set((a + b).map(\.x)).sorted()
+        // The gap is piecewise linear: checking every original breakpoint
+        // bounds its absolute value everywhere, including between seam knots.
+        guard observedX.allSatisfy({ abs(value(a, $0) - value(b, $0)) <= 0.025 }) else { return nil }
+        func midpoint(_ x: Double) -> Double { (value(a, x) + value(b, x)) * 0.5 }
+        let knots = (0...8).map { i -> Point in
+            let x = low + (high - low) * Double(i) / 8
+            return Point(x, midpoint(x))
+        }
+        guard let seam = Model.Seam(knots: knots), seam.minimumValue >= top - 0.025,
+              seam.maximumValue <= bottom + 0.025 else { return nil }
+        let divisions = Set(observedX.filter { $0 > low && $0 < high } + knots.map(\.x)).sorted()
+        // On each interval the reconstructed seam is cubic and the original
+        // midpoint linear. Check all extrema of their difference, so a narrow
+        // spike or Hermite overshoot cannot be hidden by the nine-knot fit.
+        for (x0, x1) in zip(divisions, divisions.dropFirst()) {
+            let h = x1 - x0, slope = (midpoint(x1) - midpoint(x0)) / h
+            let d0 = seam.sample(at: x0).slope - slope
+            let d1 = seam.sample(at: x1).slope - slope
+            let dm = seam.sample(at: (x0 + x1) * 0.5).slope - slope
+            let qa = 2 * (d0 + d1 - 2 * dm), qb = d1 - d0 - qa
+            var candidates = [0.0, 1.0]
+            if abs(qa) < 1e-12 {
+                if abs(qb) > 1e-12 { candidates.append(-d0 / qb) }
+            } else {
+                let discriminant = qb * qb - 4 * qa * d0
+                if discriminant >= 0 {
+                    let r = sqrt(discriminant)
+                    candidates += [(-qb - r) / (2 * qa), (-qb + r) / (2 * qa)]
+                }
+            }
+            for t in candidates where t >= 0 && t <= 1 {
+                let x = x0 + h * t
+                guard abs(seam.sample(at: x).value - midpoint(x)) <= 0.025 else { return nil }
+            }
+        }
+        return seam
     }
     private static func verticalSpan(_ p: [Point], x: Double) -> (Double,Double)? {
         var values = [Double]()
